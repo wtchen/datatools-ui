@@ -28,9 +28,9 @@ export function checkExistingLogin() {
     if(login) {
       login.then((userTokenAndProfile) => {
         return dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
-      }).then(() => {
+      })/*.then(() => {
         dispatch(fetchProjects())
-      })
+      })*/
     } else {
       console.log('no login found');
       dispatch(noExistingLogin())

@@ -11,8 +11,11 @@ export default class ProjectsList extends React.Component {
     super(props)
   }
 
+  componentWillMount () {
+    this.props.onComponentMount(this.props.routeParams.projectId)
+  }
+
   render () {
-    console.log('proj props', this.props)
     return (
       <div>
         <ManagerNavbar />

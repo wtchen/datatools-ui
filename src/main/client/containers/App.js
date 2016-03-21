@@ -4,7 +4,7 @@ import { Router, Route } from 'react-router'
 
 import NoAccessScreen from '../components/NoAccessScreen'
 import VisibleProjectsList from '../containers/VisibleProjectsList'
-import ProjectViewer from '../components/ProjectViewer'
+import ActiveProjectViewer from '../containers/ActiveProjectViewer'
 import { checkExistingLogin, userLoggedIn } from '../actions/user'
 import { fetchConfig } from '../actions/config'
 
@@ -28,14 +28,13 @@ class App extends React.Component {
       canAccess = true
     }
 
-``
     return (
       <div>
         {!canAccess
           ? <NoAccessScreen reason={noAccessReason} />
           : <Router history={this.props.history}>
             <Route path='/' component={VisibleProjectsList} />
-            <Route path='/project/:projectId' component={ProjectViewer} />
+            <Route path='/project/:projectId' component={ActiveProjectViewer} />
 
           </Router>
         }
