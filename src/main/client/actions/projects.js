@@ -41,8 +41,7 @@ export function updateProject(project, changes) {
       body: JSON.stringify(changes)
     }).then((res) => {
       console.log('status='+res.status)
-      //browserHistory.push('/')
-      //dispatch(fetchRtdAlerts())
+      return fetchProjects()
     })
   }
 }
