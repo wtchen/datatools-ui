@@ -7,6 +7,8 @@ import ManagerNavbar from '../containers/ManagerNavbar'
 import EditableTextField from './EditableTextField'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 
+import defaultSorter from '../util/util'
+
 export default class ProjectsList extends React.Component {
 
   constructor (props) {
@@ -51,7 +53,7 @@ export default class ProjectsList extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.props.projects.map((project) => {
+                  {this.props.projects.sort(defaultSorter).map((project) => {
                     return (
                       <tr key={project.id}>
                         <td className="col-md-4">

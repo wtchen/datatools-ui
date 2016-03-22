@@ -152,6 +152,23 @@ export function updateFeedSource(feedSource, changes) {
   }
 }
 
+export function deletingFeedSource() {
+  return {
+    type: 'DELETING_FEEDSOURCE'
+  }
+}
+
+export function deleteFeedSource(feedSource, changes) {
+  return function (dispatch, getState) {
+    dispatch(deletingFeedSource())
+    const url = '/api/manager/secure/feedsource/' + feedSource.id
+    return secureFetch(url, getState(), 'delete')
+      .then((res) => {
+        return dispatch(fetchProjectFeeds(feedSource.projectId))
+      })
+  }
+}
+
 // Utilties
 
 function secureFetch(url, state, method, payload) {

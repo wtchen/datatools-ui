@@ -4,7 +4,13 @@ import { connect } from 'react-redux'
 import ProjectViewer from '../components/ProjectViewer'
 
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
-import { fetchProject, createFeedSource, saveFeedSource, updateFeedSource } from '../actions/projects'
+import {
+  fetchProject,
+  createFeedSource,
+  saveFeedSource,
+  updateFeedSource,
+  deleteFeedSource
+} from '../actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -27,7 +33,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     feedSourceNameChanged: (feedSource, newName) => {
       dispatch(updateFeedSource(feedSource, { name : newName }))
     },
-    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))}
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
+    deleteFeedSourceConfirmed: (feedSource) => {
+      dispatch(deleteFeedSource(feedSource))
+    }
   }
 }
 

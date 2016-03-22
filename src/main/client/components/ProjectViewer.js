@@ -1,11 +1,14 @@
 import React from 'react'
 
-import { Grid, Row, Col, Button, Table, Input, Panel } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 import EditableTextField from './EditableTextField'
+import ConfirmModal from './ConfirmModal'
+
+import defaultSorter from '../util/util'
 
 export default class ProjectsList extends React.Component {
 
@@ -13,6 +16,16 @@ export default class ProjectsList extends React.Component {
     super(props)
   }
 
+  deleteFeedSource (feedSource) {
+    this.refs['confirmModal'].open({
+      title: 'Delete Feed Source?',
+      body: `Are you sure you want to delete the feed source ${feedSource.name}?`,
+      onConfirm: () => {
+        console.log('OK, deleting')
+        this.props.deleteFeedSourceConfirmed(feedSource)
+      }
+    })
+  }
   componentWillMount () {
     this.props.onComponentMount(this.props.routeParams.projectId)
   }
@@ -23,7 +36,7 @@ export default class ProjectsList extends React.Component {
       ? this.props.project.feedSources.filter(feedSource => {
           if(feedSource.isCreating) return true // feeds actively being created are always visible
           return feedSource.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
-        })
+        }).sort(defaultSorter)
       : []
 
     return (
@@ -96,9 +109,10 @@ export default class ProjectsList extends React.Component {
                     {filteredFeedSources.map((feedSource) => {
                       return <FeedSourceTableRow
                         feedSource={feedSource}
+                        key={feedSource.id}
                         newFeedSourceNamed={this.props.newFeedSourceNamed}
                         feedSourceNameChanged={this.props.feedSourceNameChanged}
-                        key={feedSource.id}
+                        deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
                       />
                     })}
                   </tbody>
@@ -108,6 +122,7 @@ export default class ProjectsList extends React.Component {
           </Panel>
         </Grid>
         <CurrentStatusMessage />
+        <ConfirmModal ref='confirmModal'/>
       </div>
     )
   }
@@ -141,7 +156,16 @@ class FeedSourceTableRow extends React.Component {
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
+        <td>
+          <Button
+            bsStyle='danger'
+            bsSize='small'
+            className='pull-right'
+            onClick={this.props.deleteFeedSourceClicked}
+          >
+            <Glyphicon glyph='remove' />
+          </Button>
+        </td>
       </tr>
     )
   }
