@@ -3,10 +3,8 @@ import React from 'react'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
-import ManagerNavbar from '../containers/ManagerNavbar'
-import CurrentStatusMessage from '../containers/CurrentStatusMessage'
+import ManagerPage from '../components/ManagerPage'
 import EditableTextField from './EditableTextField'
-import ConfirmModal from './ConfirmModal'
 
 import defaultSorter from '../util/util'
 
@@ -17,7 +15,7 @@ export default class ProjectsList extends React.Component {
   }
 
   deleteFeedSource (feedSource) {
-    this.refs['confirmModal'].open({
+    this.refs['page'].showConfirmModal({
       title: 'Delete Feed Source?',
       body: `Are you sure you want to delete the feed source ${feedSource.name}?`,
       onConfirm: () => {
@@ -40,8 +38,7 @@ export default class ProjectsList extends React.Component {
       : []
 
     return (
-      <div>
-        <ManagerNavbar />
+      <ManagerPage ref='page'>
         <Grid>
           <Row>
             <Col xs={12}>
@@ -121,9 +118,7 @@ export default class ProjectsList extends React.Component {
             </Row>
           </Panel>
         </Grid>
-        <CurrentStatusMessage />
-        <ConfirmModal ref='confirmModal'/>
-      </div>
+      </ManagerPage>
     )
   }
 }

@@ -3,9 +3,8 @@ import React from 'react'
 import { Grid, Row, Col, Button, Table, Input, Panel } from 'react-bootstrap'
 import { Link } from 'react-router'
 
-import ManagerNavbar from '../containers/ManagerNavbar'
+import ManagerPage from '../components/ManagerPage'
 import EditableTextField from './EditableTextField'
-import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 
 import defaultSorter from '../util/util'
 
@@ -21,8 +20,7 @@ export default class ProjectsList extends React.Component {
 
   render () {
     return (
-      <div>
-        <ManagerNavbar />
+      <ManagerPage ref='page'>
         <Grid>
           <Panel header={(<h3>Projects</h3>)}>
           <Row>
@@ -80,8 +78,7 @@ export default class ProjectsList extends React.Component {
           </Row>
           </Panel>
         </Grid>
-        <CurrentStatusMessage />
-      </div>
+      </ManagerPage>
     )
   }
 }
