@@ -29,7 +29,7 @@ const projects = (state = {
         // add new empty feed source to feedSources array
         const feedSource = {
           isCreating: true,
-          name: 'new fs'
+          name: ''
         }
         return update(newState || state, {all: {[projectIndex]: {feedSources: {$unshift: [feedSource]}}}})
 
