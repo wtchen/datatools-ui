@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Grid, Row, Col, Button, Table, Input } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
@@ -22,6 +22,7 @@ export default class ProjectsList extends React.Component {
       <div>
         <ManagerNavbar />
         <Grid>
+          <Panel header={(<h3>Projects</h3>)}>
           <Row>
             <Col xs={4}>
               <Input
@@ -39,9 +40,6 @@ export default class ProjectsList extends React.Component {
                 New Project
               </Button>
             </Col>
-          </Row>
-          <Row>
-            <Col xs={12}>&nbsp;</Col>
           </Row>
           <Row>
             <Col xs={12}>
@@ -78,6 +76,7 @@ export default class ProjectsList extends React.Component {
               </Table>
             </Col>
           </Row>
+          </Panel>
         </Grid>
         <CurrentStatusMessage />
       </div>
