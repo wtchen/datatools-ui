@@ -18,6 +18,13 @@ export default class ProjectsList extends React.Component {
   }
 
   render () {
+
+    const filteredFeedSources = this.props.project.feedSources
+      ? this.props.project.feedSources.filter(feedSource => {
+          return feedSource.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
+        })
+      : []
+
     return (
       <div>
         <ManagerNavbar />
@@ -85,17 +92,14 @@ export default class ProjectsList extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.props.project.feedSources
-                      ? this.props.project.feedSources.map((feedSource) => {
-                          return <FeedSourceTableRow
-                            feedSource={feedSource}
-                            newFeedSourceNamed={this.props.newFeedSourceNamed}
-                            feedSourceNameChanged={this.props.feedSourceNameChanged}
-                            key={feedSource.id}
-                          />
-                        })
-                      : null
-                    }
+                    {filteredFeedSources.map((feedSource) => {
+                      return <FeedSourceTableRow
+                        feedSource={feedSource}
+                        newFeedSourceNamed={this.props.newFeedSourceNamed}
+                        feedSourceNameChanged={this.props.feedSourceNameChanged}
+                        key={feedSource.id}
+                      />
+                    })}
                   </tbody>
                 </Table>
               </Col>

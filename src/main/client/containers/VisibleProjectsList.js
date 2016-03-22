@@ -17,7 +17,10 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onComponentMount: () => { dispatch(fetchProjects()) },
+    onComponentMount: () => {
+      dispatch(setVisibilitySearchText(null))
+      dispatch(fetchProjects())
+    },
     onNewProjectClick: () => { dispatch(createProject()) },
     newProjectNamed: (name) => {
       dispatch(saveProject({ name }))
