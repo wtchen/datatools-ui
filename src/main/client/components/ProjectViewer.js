@@ -21,6 +21,7 @@ export default class ProjectsList extends React.Component {
 
     const filteredFeedSources = this.props.project.feedSources
       ? this.props.project.feedSources.filter(feedSource => {
+          if(feedSource.isCreating) return true // feeds actively being created are always visible
           return feedSource.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
         })
       : []
