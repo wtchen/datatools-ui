@@ -7,7 +7,7 @@ export default class EditableTextField extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      isEditing : false,
+      isEditing : this.props.isEditing || false,
       value: this.props.value
     }
   }

@@ -25,7 +25,12 @@ export default class ProjectsList extends React.Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <Button bsStyle="primary">New Project</Button>
+              <Button
+                bsStyle="primary"
+                onClick={() => this.props.onNewProjectClick()}
+              >
+                New Project
+              </Button>
             </Col>
           </Row>
           <Row>
@@ -49,8 +54,12 @@ export default class ProjectsList extends React.Component {
                             <td className="col-md-4">
                               <div>
                                 <EditableTextField
+                                  isEditing={(project.isCreating === true)}
                                   value={project.name}
-                                  onChange={(value) => this.props.projectNameChanged(project, value)}
+                                  onChange={(value) => {
+                                    if(project.isCreating) this.props.newProjectNamed(value)
+                                    else this.props.projectNameChanged(project, value)
+                                  }}
                                 />
                               </div>
                             </td>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import ProjectsList from '../components/ProjectsList'
 
-import { fetchProjects, updateProject } from '../actions/projects'
+import { fetchProjects, updateProject, createProject, saveProject } from '../actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -14,7 +14,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: () => { dispatch(fetchProjects()) },
-    onNewProjectClick: () => { console.log('new project') },
+    onNewProjectClick: () => { dispatch(createProject()) },
+    newProjectNamed: (name) => {
+      dispatch(saveProject({ name }))
+    },
     projectNameChanged: (project, newName) => {
       dispatch(updateProject(project, { name : newName }))
     }

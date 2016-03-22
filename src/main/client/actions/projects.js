@@ -41,7 +41,31 @@ export function updateProject(project, changes) {
       body: JSON.stringify(changes)
     }).then((res) => {
       console.log('status='+res.status)
-      return fetchProjects()
+      return dispatch(fetchProjects())
+    })
+  }
+}
+
+export function createProject() {
+  console.log("createProject");
+  return {
+    type: 'CREATE_PROJECT'
+  }
+}
+
+export function saveProject(initialProps) {
+  return function (dispatch, getState) {
+    console.log('saveProject', initialProps)
+    fetch('/api/manager/project', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(initialProps)
+    }).then((res) => {
+      console.log('status='+res.status)
+      return dispatch(fetchProjects())
     })
   }
 }
