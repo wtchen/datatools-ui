@@ -4,6 +4,8 @@ import { Grid, Row, Col, Button, Table, Input, Panel } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
+import CurrentStatusMessage from '../containers/CurrentStatusMessage'
+import EditableTextField from './EditableTextField'
 
 export default class ProjectsList extends React.Component {
 
@@ -54,7 +56,7 @@ export default class ProjectsList extends React.Component {
                 <Button
                   bsStyle="primary"
                   className="pull-right"
-                  onClick={() => this.props.onNewProjectClick()}
+                  onClick={() => this.props.onNewFeedSourceClick()}
                 >
                   New Feed Source
                 </Button>
@@ -75,13 +77,59 @@ export default class ProjectsList extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
+                    {this.props.project.feedSources
+                      ? this.props.project.feedSources.map((feedSource) => {
+                          return <FeedSourceTableRow
+                            feedSource={feedSource}
+                            newFeedSourceNamed={this.props.newFeedSourceNamed}
+                            feedSourceNameChanged={this.props.feedSourceNameChanged}
+                            key={feedSource.id}
+                          />
+                        })
+                      : null
+                    }
                   </tbody>
                 </Table>
               </Col>
             </Row>
           </Panel>
         </Grid>
+        <CurrentStatusMessage />
       </div>
+    )
+  }
+}
+
+class FeedSourceTableRow extends React.Component {
+
+  constructor (props) {
+    super(props)
+  }
+
+  render () {
+    const fs = this.props.feedSource
+    return (
+      <tr key={fs.id}>
+        <td className="col-md-4">
+          <div>
+            <EditableTextField
+              isEditing={(fs.isCreating === true)}
+              value={fs.name}
+              onChange={(value) => {
+                if(fs.isCreating) this.props.newFeedSourceNamed(value)
+                else this.props.feedSourceNameChanged(fs, value)
+              }}
+              link={`/feed/${fs.id}`}
+            />
+          </div>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
     )
   }
 }

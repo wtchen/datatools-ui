@@ -3,19 +3,25 @@ import { connect } from 'react-redux'
 
 import ProjectViewer from '../components/ProjectViewer'
 
-import { fetchProjectFeeds } from '../actions/projects'
+import { fetchProject, createFeedSource, saveFeedSource, updateFeedSource } from '../actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
-  console.log('AVP', ownProps.routeParams.projectId)
   return {
     project: state.projects.all.find(p => p.id === ownProps.routeParams.projectId)
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const projectId = ownProps.routeParams.projectId
   return {
-    onComponentMount: (projectId) => { dispatch(fetchProjectFeeds(projectId)) },
-    onNewFeedClick: () => { console.log('new feed') }
+    onComponentMount: () => { dispatch(fetchProject(projectId)) },
+    onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
+    newFeedSourceNamed: (name) => {
+      dispatch(saveFeedSource({ projectId, name }))
+    },
+    feedSourceNameChanged: (feedSource, newName) => {
+      dispatch(updateFeedSource(feedSource, { name : newName }))
+    }
   }
 }
 
