@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-fetch'
 
-function requestProjects() {
+function requestingProjects() {
   return {
-    type: 'REQUEST_PROJECTS',
+    type: 'REQUESTING_PROJECTS',
   }
 }
 
@@ -15,7 +15,7 @@ function receiveProjects(projects) {
 
 export function fetchProjects() {
   return function (dispatch, getState) {
-    dispatch(requestProjects())
+    dispatch(requestingProjects())
     return fetch('/api/manager/project')
       .then(response => response.json())
       .then(projects =>
@@ -29,9 +29,15 @@ export function fetchProjectFeeds(projectId) {
   }
 }
 
+function savingProject() {
+  return {
+    type: 'SAVING_PROJECT',
+  }
+}
+
 export function updateProject(project, changes) {
   return function (dispatch, getState) {
-    console.log('updateProject', project.id, changes)
+    dispatch(savingProject())
     fetch('/api/manager/project/'+project.id, {
       method: 'put',
       headers: {
@@ -40,7 +46,6 @@ export function updateProject(project, changes) {
       },
       body: JSON.stringify(changes)
     }).then((res) => {
-      console.log('status='+res.status)
       return dispatch(fetchProjects())
     })
   }
@@ -55,7 +60,7 @@ export function createProject() {
 
 export function saveProject(initialProps) {
   return function (dispatch, getState) {
-    console.log('saveProject', initialProps)
+    dispatch(savingProject())
     fetch('/api/manager/project', {
       method: 'post',
       headers: {
@@ -64,7 +69,6 @@ export function saveProject(initialProps) {
       },
       body: JSON.stringify(initialProps)
     }).then((res) => {
-      console.log('status='+res.status)
       return dispatch(fetchProjects())
     })
   }

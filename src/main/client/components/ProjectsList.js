@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
 import EditableTextField from './EditableTextField'
+import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 
 export default class ProjectsList extends React.Component {
 
@@ -38,42 +39,40 @@ export default class ProjectsList extends React.Component {
           </Row>
           <Row>
             <Col xs={12}>
-              {this.props.projects.isFetching
-                ? <p>Loading projects...</p>
-                : <Table striped hover>
-                    <thead>
-                      <tr>
-                        <th className="col-md-4">Project Name</th>
-                        <th className="col-md-8"></th>
+              <Table striped hover>
+                <thead>
+                  <tr>
+                    <th className="col-md-4">Project Name</th>
+                    <th className="col-md-8"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.props.projects.all.map((project) => {
+                    return (
+                      <tr key={project.id}>
+                        <td className="col-md-4">
+                          <div>
+                            <EditableTextField
+                              isEditing={(project.isCreating === true)}
+                              value={project.name}
+                              onChange={(value) => {
+                                if(project.isCreating) this.props.newProjectNamed(value)
+                                else this.props.projectNameChanged(project, value)
+                              }}
+                            />
+                          </div>
+                        </td>
+                        <td className="col-md-8">
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {this.props.projects.all.map((project) => {
-                        return (
-                          <tr key={project.id}>
-                            <td className="col-md-4">
-                              <div>
-                                <EditableTextField
-                                  isEditing={(project.isCreating === true)}
-                                  value={project.name}
-                                  onChange={(value) => {
-                                    if(project.isCreating) this.props.newProjectNamed(value)
-                                    else this.props.projectNameChanged(project, value)
-                                  }}
-                                />
-                              </div>
-                            </td>
-                            <td className="col-md-8">
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </Table>
-              }
+                    )
+                  })}
+                </tbody>
+              </Table>
             </Col>
           </Row>
         </Grid>
+        <CurrentStatusMessage />
       </div>
     )
   }
