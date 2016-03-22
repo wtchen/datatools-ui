@@ -16,7 +16,8 @@ function receiveProjects(projects) {
 export function fetchProjects() {
   return function (dispatch, getState) {
     dispatch(requestingProjects())
-    return fetch('/api/manager/project')
+    console.log('get secure');
+    return secureFetch('/api/manager/secure/project', getState())
       .then(response => response.json())
       .then(projects =>
         dispatch(receiveProjects(projects))
@@ -38,16 +39,11 @@ function savingProject() {
 export function updateProject(project, changes) {
   return function (dispatch, getState) {
     dispatch(savingProject())
-    fetch('/api/manager/project/'+project.id, {
-      method: 'put',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(changes)
-    }).then((res) => {
-      return dispatch(fetchProjects())
-    })
+    const url = '/api/manager/secure/project/' + project.id
+    return secureFetch(url, getState(), 'put', changes)
+      .then((res) => {
+        return dispatch(fetchProjects())
+      })
   }
 }
 
@@ -61,15 +57,23 @@ export function createProject() {
 export function saveProject(initialProps) {
   return function (dispatch, getState) {
     dispatch(savingProject())
-    fetch('/api/manager/project', {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(initialProps)
-    }).then((res) => {
-      return dispatch(fetchProjects())
-    })
+    const url = '/api/manager/secure/project'
+    return secureFetch(url, getState(), 'post', initialProps)
+      .then((res) => {
+        return dispatch(fetchProjects())
+      })
   }
+}
+
+function secureFetch(url, state, method, payload) {
+  var opts = {
+    method: method || 'get',
+    headers: {
+      'Authorization': 'Bearer: ' + state.user.token,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }
+  if(payload) opts.body = JSON.stringify(payload)
+  return fetch(url, opts)
 }
