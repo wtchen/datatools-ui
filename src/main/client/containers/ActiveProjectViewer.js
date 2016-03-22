@@ -6,9 +6,9 @@ import ProjectViewer from '../components/ProjectViewer'
 import { fetchProjectFeeds } from '../actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
-  console.log('AVP', ownProps)
+  console.log('AVP', ownProps.routeParams.projectId)
   return {
-    //projects: state.projects
+    project: state.projects.all.find(p => p.id === ownProps.routeParams.projectId)
   }
 }
 

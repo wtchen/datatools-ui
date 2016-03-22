@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Input, Glyphicon } from 'react-bootstrap'
+import { Link } from 'react-router'
 
 export default class EditableTextField extends React.Component {
 
@@ -44,6 +45,7 @@ export default class EditableTextField extends React.Component {
       onClick={() => this.save()}
     />
 
+    //console.log('onClick' + this.);
     return (
       <div>
         {this.state.isEditing
@@ -56,7 +58,12 @@ export default class EditableTextField extends React.Component {
               />
             </span>
 
-          : <span>{this.state.value}&nbsp;&nbsp;
+          : <span>
+              {this.props.link
+                ? <Link to={this.props.link}>{this.state.value}</Link>
+                : this.state.value
+              }
+              &nbsp;&nbsp;
               <Glyphicon style={iconStyle}
                 glyph={ "pencil" }
                 onClick={() => this.edit()}

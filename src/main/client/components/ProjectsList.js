@@ -18,7 +18,6 @@ export default class ProjectsList extends React.Component {
   }
 
   render () {
-    console.log("projects", this.props.projects);
     return (
       <div>
         <ManagerNavbar />
@@ -66,6 +65,7 @@ export default class ProjectsList extends React.Component {
                                 if(project.isCreating) this.props.newProjectNamed(value)
                                 else this.props.projectNameChanged(project, value)
                               }}
+                              link={`/project/${project.id}`}
                             />
                           </div>
                         </td>
