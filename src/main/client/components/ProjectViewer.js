@@ -24,6 +24,14 @@ export default class ProjectsList extends React.Component {
         <Grid>
           <Row>
             <Col xs={12}>
+              <ul className='breadcrumb'>
+                <li><Link to='/'>Projects</Link></li>
+                <li className='active'>{this.props.project.name}</li>
+              </ul>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
               <h2>{this.props.project.name}</h2>
             </Col>
           </Row>
