@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Grid, Row, Col, Button, Table } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
@@ -14,7 +14,6 @@ export default class ProjectsList extends React.Component {
   }
 
   componentWillMount () {
-    console.log("projList mount");
     this.props.onComponentMount()
   }
 
@@ -25,9 +24,17 @@ export default class ProjectsList extends React.Component {
         <ManagerNavbar />
         <Grid>
           <Row>
-            <Col xs={12}>
+            <Col xs={4}>
+              <Input
+                type="text"
+                placeholder="Search by Project Name"
+                onChange={evt => this.props.searchTextChanged(evt.target.value)}
+              />
+            </Col>
+            <Col xs={8}>
               <Button
                 bsStyle="primary"
+                className="pull-right"
                 onClick={() => this.props.onNewProjectClick()}
               >
                 New Project
@@ -47,7 +54,7 @@ export default class ProjectsList extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.props.projects.all.map((project) => {
+                  {this.props.projects.map((project) => {
                     return (
                       <tr key={project.id}>
                         <td className="col-md-4">

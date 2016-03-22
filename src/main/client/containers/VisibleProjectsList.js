@@ -3,11 +3,15 @@ import { connect } from 'react-redux'
 
 import ProjectsList from '../components/ProjectsList'
 
+import { setVisibilitySearchText } from '../actions/visibilityFilter'
 import { fetchProjects, updateProject, createProject, saveProject } from '../actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects
+    projects: state.projects.all.filter((project) => {
+      if(project.isCreating) return true // projects actively being created are always visible
+      return project.name.toLowerCase().indexOf((state.visibilityFilter.searchText || '').toLowerCase()) !== -1
+    })
   }
 }
 
@@ -20,7 +24,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     projectNameChanged: (project, newName) => {
       dispatch(updateProject(project, { name : newName }))
-    }
+    },
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))}
   }
 }
 
