@@ -12,6 +12,8 @@ const config = (state = {
       return update(state, { message: { $set: 'Saving project...' }})
     case 'REQUESTING_FEEDSOURCES':
       return update(state, { message: { $set: 'Loading feeds...' }})
+    case 'REQUESTING_FEEDSOURCE':
+      return update(state, { message: { $set: 'Loading feed...' }})
     case 'SAVING_FEEDSOURCE':
       return update(state, { message: { $set: 'Saving feed...' }})
     case 'DELETING_FEEDSOURCE':
