@@ -30,6 +30,10 @@ export default class ProjectsList extends React.Component {
 
   render () {
 
+    if(!this.props.project) {
+      return <ManagerPage />
+    }
+
     const filteredFeedSources = this.props.project.feedSources
       ? this.props.project.feedSources.filter(feedSource => {
           if(feedSource.isCreating) return true // feeds actively being created are always visible
