@@ -6,6 +6,7 @@ import ProjectViewer from '../components/ProjectViewer'
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 import {
   fetchProject,
+  fetchProjectFeeds,
   createFeedSource,
   saveFeedSource,
   updateFeedSource,
@@ -14,7 +15,9 @@ import {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    project: state.projects.all.find(p => p.id === ownProps.routeParams.projectId),
+    project: state.projects.all
+      ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId)
+      : null,
     visibilitySearchText: state.visibilityFilter.searchText
   }
 }
@@ -22,9 +25,10 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const projectId = ownProps.routeParams.projectId
   return {
-    onComponentMount: () => {
+    onComponentMount: (initialProps) => {
       dispatch(setVisibilitySearchText(null))
-      dispatch(fetchProject(projectId))
+      if (!initialProps.project) dispatch(fetchProject(projectId))
+      else if (!initialProps.project.feedSources) dispatch(fetchProjectFeeds(projectId))
     },
     onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
     newFeedSourceNamed: (name) => {

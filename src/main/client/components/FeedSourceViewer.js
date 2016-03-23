@@ -13,7 +13,7 @@ export default class FeedSourceViewer extends React.Component {
   }
 
   componentWillMount () {
-    this.props.onComponentMount(this.props.feedSource)
+    this.props.onComponentMount(this.props)
   }
 
   render () {

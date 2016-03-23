@@ -8,16 +8,14 @@ import { fetchProjects, updateProject, createProject, saveProject } from '../act
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.all.filter((project) => {
-      if(project.isCreating) return true // projects actively being created are always visible
-      return project.name.toLowerCase().indexOf((state.visibilityFilter.searchText || '').toLowerCase()) !== -1
-    })
+    projects: state.projects.all,
+    visibilitySearchText: state.visibilityFilter.searchText
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onComponentMount: () => {
+    onComponentMount: (initialProps) => {
       dispatch(setVisibilitySearchText(null))
       dispatch(fetchProjects())
     },
@@ -32,9 +30,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-const VisibleProjectsList = connect(
+const ActiveProjectsList = connect(
   mapStateToProps,
   mapDispatchToProps
 )(ProjectsList)
 
-export default VisibleProjectsList
+export default ActiveProjectsList

@@ -25,7 +25,7 @@ export default class ProjectsList extends React.Component {
     })
   }
   componentWillMount () {
-    this.props.onComponentMount(this.props.routeParams.projectId)
+    this.props.onComponentMount(this.props)
   }
 
   render () {

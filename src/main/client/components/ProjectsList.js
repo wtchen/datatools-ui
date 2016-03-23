@@ -15,10 +15,20 @@ export default class ProjectsList extends React.Component {
   }
 
   componentWillMount () {
-    this.props.onComponentMount()
+    this.props.onComponentMount(this.props)
   }
 
   render () {
+
+    if (!this.props.projects) {
+      return <ManagerPage />
+    }
+
+    const visibleProjects = this.props.projects.filter((project) => {
+      if(project.isCreating) return true // projects actively being created are always visible
+      return project.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
+    }).sort(defaultSorter)
+
     return (
       <ManagerPage ref='page'>
         <Grid>
@@ -51,7 +61,7 @@ export default class ProjectsList extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {this.props.projects.sort(defaultSorter).map((project) => {
+                  {visibleProjects.map((project) => {
                     return (
                       <tr key={project.id}>
                         <td className="col-md-4">

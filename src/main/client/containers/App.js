@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Router, Route } from 'react-router'
 
 import NoAccessScreen from '../components/NoAccessScreen'
-import VisibleProjectsList from '../containers/VisibleProjectsList'
+import ActiveProjectsList from '../containers/ActiveProjectsList'
 import ActiveProjectViewer from '../containers/ActiveProjectViewer'
 import ActiveFeedSourceViewer from '../containers/ActiveFeedSourceViewer'
 
@@ -35,7 +35,7 @@ class App extends React.Component {
         {!canAccess
           ? <NoAccessScreen reason={noAccessReason} />
           : <Router history={this.props.history}>
-              <Route path='/' component={VisibleProjectsList} />
+              <Route path='/' component={ActiveProjectsList} />
               <Route path='/project/:projectId' component={ActiveProjectViewer} />
               <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} />
             </Router>

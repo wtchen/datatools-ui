@@ -2,7 +2,7 @@ import update from 'react-addons-update'
 
 const projects = (state = {
   isFetching: false,
-  all: []
+  all: null
 }, action) => {
   let projects, projectIndex
   switch (action.type) {
@@ -43,12 +43,23 @@ const projects = (state = {
       }
 
     case 'RECEIVE_PROJECT':
-      projectIndex = state.all.findIndex(p => p.id === action.project.id)
-      projects = [
-        ...state.all.slice(0, projectIndex),
-        action.project,
-        ...state.all.slice(projectIndex + 1)
-      ]
+      if (!state.all) { // there are no current projects loaded
+        projects = [action.project]
+      } else { // projects already loaded
+        projectIndex = state.all.findIndex(p => p.id === action.project.id)
+        if (projectIndex === -1) { // projects loaded but not this one; add it
+          projects = [
+            ...state.all,
+            action.project
+          ]
+        } else { // projects loaded including this one, replace it
+          projects = [
+            ...state.all.slice(0, projectIndex),
+            action.project,
+            ...state.all.slice(projectIndex + 1)
+          ]
+        }
+      }
       return update(state, { all: { $set: projects }})
 
     case 'RECEIVE_FEEDSOURCES':

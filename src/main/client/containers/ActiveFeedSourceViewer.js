@@ -28,8 +28,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
   return {
-    onComponentMount: (feedSource) => {
-      if(!feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
+    onComponentMount: (initialProps) => {
+      if (!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
     }
   }
 }
