@@ -34,8 +34,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newFeedSourceNamed: (name) => {
       dispatch(saveFeedSource({ projectId, name }))
     },
-    feedSourceNameChanged: (feedSource, newName) => {
-      dispatch(updateFeedSource(feedSource, { name : newName }))
+    feedSourcePropertyChanged: (feedSource, propName, newValue) => {
+      dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
     },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
     deleteFeedSourceConfirmed: (feedSource) => {

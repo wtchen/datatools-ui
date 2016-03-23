@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../components/ManagerPage'
 import EditableTextField from './EditableTextField'
 
-import defaultSorter from '../util/util'
+import { defaultSorter, retrievalMethodString } from '../util/util'
 
 export default class ProjectsList extends React.Component {
 
@@ -112,7 +112,7 @@ export default class ProjectsList extends React.Component {
                         feedSource={feedSource}
                         key={feedSource.id}
                         newFeedSourceNamed={this.props.newFeedSourceNamed}
-                        feedSourceNameChanged={this.props.feedSourceNameChanged}
+                        feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
                         deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
                       />
                     })}
@@ -144,14 +144,16 @@ class FeedSourceTableRow extends React.Component {
               value={fs.name}
               onChange={(value) => {
                 if(fs.isCreating) this.props.newFeedSourceNamed(value)
-                else this.props.feedSourceNameChanged(fs, value)
+                else this.props.feedSourcePropertyChanged(fs, 'name', value)
               }}
               link={`/feed/${fs.id}`}
             />
           </div>
         </td>
         <td></td>
-        <td></td>
+        <td>
+          <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
+        </td>
         <td></td>
         <td></td>
         <td></td>
