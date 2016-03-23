@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import { browserHistory } from 'react-router'
+import { browserHistory, hashHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
 import managerApp from './reducers'
@@ -27,7 +27,7 @@ let unsubscribe = store.subscribe(() =>
   console.log('store updated', store.getState())
 )
 
-const appHistory = syncHistoryWithStore(browserHistory, store)
+const appHistory = syncHistoryWithStore(hashHistory, store)
 
 ReactDOM.render(
   <Provider store={store}>
