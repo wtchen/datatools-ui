@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 
 import ManagerPage from '../components/ManagerPage'
 import EditableTextField from './EditableTextField'
+import FeedVersionNavigator from './FeedVersionNavigator'
 
 import { retrievalMethodString } from '../util/util'
 
@@ -50,7 +51,7 @@ export default class FeedSourceViewer extends React.Component {
             </Col>
           </Row>
 
-          <Panel header={(<h3>Feed Source Properties</h3>)}>
+          <Panel header={(<h3><Glyphicon glyph='cog' /> Feed Source Properties</h3>)}>
             <Row>
               <Col xs={6}>
                 <Table striped>
@@ -89,14 +90,30 @@ export default class FeedSourceViewer extends React.Component {
                         </Input>
                       </td>
                     </tr>
+
+                    {fs.retrievalMethod === 'FETCHED_AUTOMATICALLY'
+                      ? <tr>
+                          <td>Retrieval URL</td>
+                          <td>
+                            <EditableTextField
+                              value={fs.url}
+                              onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
+                            />
+                          </td>
+                        </tr>
+                      : null
+                    }
                   </tbody>
                 </Table>
               </Col>
             </Row>
           </Panel>
 
-          <Panel header={(<h3>Feed Versions</h3>)}>
-            Versions
+          <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
+            <FeedVersionNavigator
+              versions={fs.feedVersions}
+              updateFeedClicked={() => this.props.updateFeedClicked(fs)}
+            />
           </Panel>
         </Grid>
       </ManagerPage>

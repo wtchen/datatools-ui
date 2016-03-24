@@ -3,7 +3,12 @@ import { connect } from 'react-redux'
 
 import FeedSourceViewer from '../components/FeedSourceViewer'
 
-import { fetchFeedSourceAndProject, updateFeedSource } from '../actions/projects'
+import {
+  fetchFeedSourceAndProject,
+  updateFeedSource,
+  runFetchFeed,
+  fetchFeedVersions
+} from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId
@@ -31,11 +36,18 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
   return {
     onComponentMount: (initialProps) => {
-      if (!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
+      if (!initialProps.feedSource) {
+        dispatch(fetchFeedSourceAndProject(feedSourceId))
+        .then((feedSource) => {
+          console.log('fetch versions')
+          dispatch(fetchFeedVersions(feedSource))
+        })
+      }
     },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
       dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
-    }
+    },
+    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) }
   }
 }
 

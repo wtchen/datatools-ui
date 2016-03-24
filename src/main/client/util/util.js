@@ -1,3 +1,6 @@
+
+import fetch from 'isomorphic-fetch'
+
 export function defaultSorter(a, b) {
   if(a.isCreating && !b.isCreating) return -1
   if(!a.isCreating && b.isCreating) return 1
@@ -12,4 +15,17 @@ export function retrievalMethodString(method) {
     case 'FETCHED_AUTOMATICALLY': return 'Fetched Automatically'
     case 'PRODUCED_IN_HOUSE': return 'Produced In-house'
   }
+}
+
+export function secureFetch(url, state, method, payload) {
+  var opts = {
+    method: method || 'get',
+    headers: {
+      'Authorization': 'Bearer: ' + state.user.token,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }
+  if(payload) opts.body = JSON.stringify(payload)
+  return fetch(url, opts)
 }

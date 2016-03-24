@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import ProjectViewer from '../components/ProjectViewer'
 
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
+import { fetchProject } from '../actions/projects'
 import {
-  fetchProject,
   fetchProjectFeeds,
   createFeedSource,
   saveFeedSource,
   updateFeedSource,
   deleteFeedSource
-} from '../actions/projects'
+} from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
   return {

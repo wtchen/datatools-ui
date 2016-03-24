@@ -18,9 +18,15 @@ const config = (state = {
       return update(state, { message: { $set: 'Saving feed...' }})
     case 'DELETING_FEEDSOURCE':
       return update(state, { message: { $set: 'Deleting feed...' }})
+    case 'RUNNING_FETCH_FEED':
+      return update(state, { message: { $set: 'Updating feed...' }})
+    case 'REQUESTING_FEEDVERSIONS':
+      return update(state, { message: { $set: 'Loading feed versions...' }})
+
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
     case 'RECEIVE_FEEDSOURCES':
+    case 'RECEIVE_FEEDVERSIONS':
       return update(state, { message: { $set: null }})
     default:
       return state

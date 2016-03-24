@@ -4,7 +4,7 @@ const projects = (state = {
   isFetching: false,
   all: null
 }, action) => {
-  let projects, projectIndex
+  let projects, projectIndex, sourceIndex
   switch (action.type) {
     case 'CREATE_PROJECT':
       projects = [{
@@ -65,6 +65,24 @@ const projects = (state = {
     case 'RECEIVE_FEEDSOURCES':
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
       return update(state, {all: {[projectIndex]: {$merge: {feedSources: action.feedSources}}}})
+
+    case 'RECEIVE_FEEDVERSIONS':
+      projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {feedSources:
+              {[sourceIndex]:
+                {$merge: {feedVersions: action.feedVersions}}
+              }
+            }
+          }
+        }
+      )
+
+
+      return state
 
     default:
       return state
