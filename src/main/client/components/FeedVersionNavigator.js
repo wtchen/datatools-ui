@@ -46,6 +46,7 @@ export default class FeedVersionNavigator extends React.Component {
               >
                 <Glyphicon glyph='arrow-left' /> Previous Version
               </Button>
+
               <Button href='#'
                 disabled={!hasVersions}
                 onClick={(evt) => {
@@ -54,12 +55,23 @@ export default class FeedVersionNavigator extends React.Component {
               >
                 <Glyphicon glyph='download' /> Download Feed
               </Button>
-              <Button href='#' onClick={(evt) => {
-                evt.preventDefault()
-                this.props.updateFeedClicked()
-              }}>
-                <Glyphicon glyph='refresh' /> Update Feed
-              </Button>
+
+              {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
+                ? <Button href='#' onClick={(evt) => {
+                    evt.preventDefault()
+                    this.props.uploadFeedClicked()
+                  }}>
+                    <Glyphicon glyph='upload' /> Upload Feed
+                  </Button>
+                : <Button href='#' onClick={(evt) => {
+                    evt.preventDefault()                    
+                    this.props.updateFeedClicked()
+                  }}>
+                    <Glyphicon glyph='refresh' /> Update Feed
+                  </Button>
+
+              }
+
               <Button href='#'
                 disabled={!hasVersions || !version.nextVersionId}
                 onClick={(evt) => {

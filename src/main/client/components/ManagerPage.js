@@ -5,6 +5,7 @@ import { Grid, Row, Col } from 'react-bootstrap'
 import ManagerNavbar from '../containers/ManagerNavbar'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 import ConfirmModal from '../components/ConfirmModal'
+import SelectFileModal from '../components/SelectFileModal'
 
 export default class ManagerPage extends React.Component {
 
@@ -16,6 +17,10 @@ export default class ManagerPage extends React.Component {
     this.refs.confirmModal.open(props)
   }
 
+  showSelectFileModal (props) {
+    this.refs.selectFileModal.open(props)
+  }
+
   render () {
     return (
       <div>
@@ -23,6 +28,7 @@ export default class ManagerPage extends React.Component {
           {this.props.children}
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>
+        <SelectFileModal ref='selectFileModal'/>
       </div>
     )
   }

@@ -7,7 +7,8 @@ import {
   fetchFeedSourceAndProject,
   updateFeedSource,
   runFetchFeed,
-  fetchFeedVersions
+  fetchFeedVersions,
+  uploadFeed
 } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -47,7 +48,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
       dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
     },
-    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) }
+    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
+    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) }
   }
 }
 

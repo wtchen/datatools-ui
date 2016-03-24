@@ -112,7 +112,19 @@ export default class FeedSourceViewer extends React.Component {
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
             <FeedVersionNavigator
               versions={fs.feedVersions}
+              feedSource={fs}
               updateFeedClicked={() => this.props.updateFeedClicked(fs)}
+              uploadFeedClicked={() => {
+                console.log('showing modal');
+                this.refs.page.showSelectFileModal({
+                  title: 'Upload Feed',
+                  body: 'Select a GTFS feed to upload:',
+                  onConfirm: (files) => {
+                    console.log('selected file', files[0]);
+                    this.props.uploadFeedClicked(fs, files[0])
+                  }
+                })
+              }}
             />
           </Panel>
         </Grid>

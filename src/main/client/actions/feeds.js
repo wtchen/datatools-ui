@@ -146,3 +146,29 @@ export function fetchFeedVersions(feedSource) {
       })
   }
 }
+
+export function uploadingFeed() {
+  return {
+    type: 'UPLOADING_FEED'
+  }
+}
+
+export function uploadFeed(feedSource, file) {
+  return function (dispatch, getState) {
+    dispatch(uploadingFeed())
+    const url = `/api/manager/secure/feedversion?feedSourceId=${feedSource.id}`
+
+    var data = new FormData()
+    data.append('file', file)
+    //data.append('user', 'hubot')
+
+    return fetch(url, {
+      method: 'post',
+      headers: { 'Authorization': 'Bearer: ' + getState().user.token },
+      body: data
+    }).then(result => {
+        console.log('uploadFeed result', result)
+        dispatch(fetchFeedVersions(feedSource))
+      })
+  }
+}
