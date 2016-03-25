@@ -1,4 +1,5 @@
 application.data.mapdb=/path/to/mapdb
+application.data.gtfs=/path/to/gtfs
 
 application.port=9001
 
