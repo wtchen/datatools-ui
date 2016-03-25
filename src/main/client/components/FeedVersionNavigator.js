@@ -42,6 +42,7 @@ export default class FeedVersionNavigator extends React.Component {
                 disabled={!hasVersions || !version.previousVersionId}
                 onClick={(evt) => {
                   evt.preventDefault()
+                  this.setState({ versionIndex: this.state.versionIndex - 1 })
                 }}
               >
                 <Glyphicon glyph='arrow-left' /> Previous Version
@@ -64,7 +65,7 @@ export default class FeedVersionNavigator extends React.Component {
                     <Glyphicon glyph='upload' /> Upload Feed
                   </Button>
                 : <Button href='#' onClick={(evt) => {
-                    evt.preventDefault()                    
+                    evt.preventDefault()
                     this.props.updateFeedClicked()
                   }}>
                     <Glyphicon glyph='refresh' /> Update Feed
@@ -76,6 +77,7 @@ export default class FeedVersionNavigator extends React.Component {
                 disabled={!hasVersions || !version.nextVersionId}
                 onClick={(evt) => {
                   evt.preventDefault()
+                  this.setState({ versionIndex: this.state.versionIndex + 1 })
                 }}
               >
                 Next Version <Glyphicon glyph='arrow-right' />
