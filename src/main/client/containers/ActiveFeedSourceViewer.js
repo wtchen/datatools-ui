@@ -44,6 +44,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(fetchFeedVersions(feedSource))
         })
       }
+      else if(!initialProps.feedSource.versions) {
+        dispatch(fetchFeedVersions(initialProps.feedSource))        
+      }
     },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
       dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
