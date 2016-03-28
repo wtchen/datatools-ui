@@ -1,6 +1,6 @@
 import { secureFetch } from '../util/util'
 
-import { fetchProjectFeeds } from './feeds'
+import { fetchProjectFeeds, updateFeedSource } from './feeds'
 // Bulk Project Actions
 
 function requestingProjects() {
@@ -61,7 +61,7 @@ export function updateProject(project, changes) {
     const url = '/api/manager/secure/project/' + project.id
     return secureFetch(url, getState(), 'put', changes)
       .then((res) => {
-        return dispatch(fetchProjects())
+        return dispatch(fetchProject(project.id))
       })
   }
 }
@@ -69,6 +69,56 @@ export function updateProject(project, changes) {
 export function createProject() {
   return {
     type: 'CREATE_PROJECT'
+  }
+}
+
+export function requestingSync(projectId, type) {
+  return {
+    type: 'REQUESTING_SYNC',
+    projectId,
+    type
+  }
+}
+
+export function receiveSync(projectId, type) {
+  return {
+    type: 'RECEIVE_SYNC',
+    projectId,
+    type
+  }
+}
+
+export function thirdPartySync(projectId, type) {
+  return function (dispatch, getState) {
+    dispatch(requestingSync(projectId, type))
+    const url = '/api/manager/secure/project/' + projectId + '/thirdPartySync/' + type 
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(project => {
+        dispatch(receiveSync(projectId, type))
+        dispatch(fetchProject(projectId))
+      })
+  }
+}
+
+export function runningFetchFeedsForProject(project) {
+  return {
+    type: 'RUNNING_FETCH_FEED_FOR_PROJECT',
+    project
+  }
+}
+
+export function fetchFeedsForProject(project) {
+  return function (dispatch, getState) {
+    
+    dispatch(runningFetchFeedsForProject(project.id))
+    const url = `/api/manager/secure/project/${project.id}/fetch`
+    return secureFetch(url, getState(), 'post')
+      .then(response => response.json())
+      .then(result => {
+        console.log('fetchFeed result', result)
+        // dispatch(fetchFeedVersions(feedSource))
+      })
   }
 }
 

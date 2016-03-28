@@ -4,7 +4,12 @@ import { connect } from 'react-redux'
 import ProjectViewer from '../components/ProjectViewer'
 
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
-import { fetchProject } from '../actions/projects'
+import { 
+  fetchProject, 
+  thirdPartySync, 
+  fetchFeedsForProject,
+  updateProject
+   } from '../actions/projects'
 import {
   fetchProjectFeeds,
   createFeedSource,
@@ -31,6 +36,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       else if (!initialProps.project.feedSources) dispatch(fetchProjectFeeds(projectId))
     },
     onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
+    updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue })) 
+    thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
+    updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
     newFeedSourceNamed: (name) => {
       dispatch(saveFeedSource({ projectId, name }))
     },

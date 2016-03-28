@@ -24,9 +24,12 @@ const config = (state = {
       return update(state, { message: { $set: 'Loading feed versions...' }})
     case 'UPLOADING_FEED':
       return update(state, { message: { $set: 'Uploading feed...' }})
+    case 'REQUESTING_SYNC':
+      return update(state, { message: { $set: 'Syncing feeds...' }})
 
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
+    case 'RECEIVE_SYNC':
     case 'RECEIVE_FEEDSOURCES':
     case 'RECEIVE_FEEDVERSIONS':
       return update(state, { message: { $set: null }})
