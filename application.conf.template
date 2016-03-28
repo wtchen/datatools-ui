@@ -14,3 +14,9 @@ application.auth0.client_secret=your-auth0-client-secret
 application.editor_url=http://localhost:9001
 application.user_admin_url=http://localhost:3000
 application.logo=http://gtfs-assets-dev.conveyal.com/data_manager.png
+
+# Extensions settings
+application.extensions.rtd_integration.api=http://some-third-party.com/feeds
+application.extensions.transitland.api=https://transit.land/api/v1/feeds
+application.extensions.transitfeeds.api=http://api.transitfeeds.com/v1/getFeeds
+application.extensions.transitfeeds.key=your-transitfeeds-api-key
