@@ -25,7 +25,7 @@ export function secureFetch(url, state, method, payload) {
   var opts = {
     method: method || 'get',
     headers: {
-      'Authorization': 'Bearer: ' + state.user.token,
+      'Authorization': 'Bearer ' + state.user.token,
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     }
