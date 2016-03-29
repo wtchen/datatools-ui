@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Input, Glyphicon } from 'react-bootstrap'
+import { Input, Glyphicon, Button } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 export default class EditableTextField extends React.Component {
@@ -33,28 +33,40 @@ export default class EditableTextField extends React.Component {
       value
     })
   }
+  handleKeyUp (e) {
+    // if [Enter] is pressed
+    if (e.keyCode == 13) {
+      this.save()
+    }
+  }
 
   render () {
     var iconStyle = {
       cursor: 'pointer'
     }
 
-    const saveIcon = <Glyphicon
-      glyph="ok"
+    const saveIcon = <Button
+      onClick={() => this.save()}
+    >
+    <Glyphicon
+      glyph='ok'
       style={iconStyle}
       onClick={() => this.save()}
     />
+    </Button>
 
-    //console.log('onClick' + this.);
     return (
       <div>
         {this.state.isEditing
           ? <span>
               <Input
-                ref="input"
-                type="text"
+                ref='input'
+                type='text'
+                autoFocus='true'
+                onKeyUp={(e) => this.handleKeyUp(e)}
+                onFocus={(e) => e.target.select()}
                 defaultValue={ this.state.value }
-                addonAfter={saveIcon}
+                buttonAfter={saveIcon}
               />
             </span>
 
@@ -64,10 +76,14 @@ export default class EditableTextField extends React.Component {
                 : this.state.value
               }
               &nbsp;&nbsp;
-              <Glyphicon style={iconStyle}
-                glyph={ "pencil" }
+              <Button bsStyle='link'
                 onClick={() => this.edit()}
-              />
+              >
+                <Glyphicon style={iconStyle}
+                  glyph={ 'pencil' }
+                  onClick={() => this.edit()}
+                />
+              </Button>
             </span>
         }
       </div>
