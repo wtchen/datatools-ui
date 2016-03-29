@@ -1,6 +1,8 @@
 import React from 'react'
 
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, DropdownButton, MenuItem, ButtonInput, form } from 'react-bootstrap'
+import moment from 'moment'
+
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../components/ManagerPage'
@@ -67,7 +69,7 @@ export default class ProjectsList extends React.Component {
                 <form>
                   <Input
                     type="text"
-                    defaultValue={this.props.project.defaultLocationLat !== null &&  this.props.project.defaultLocationLon !== null ? 
+                    defaultValue={this.props.project.defaultLocationLat !== null &&  this.props.project.defaultLocationLon !== null ?
                       `${this.props.project.defaultLocationLat},${this.props.project.defaultLocationLon}` :
                       ''}
                     placeholder="34.8977,-87.29987"
@@ -80,7 +82,7 @@ export default class ProjectsList extends React.Component {
                         this.setState({defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]})
                       else
                         console.log('invalid value for latlng')
-                    }} 
+                    }}
                   />
                   <Input
                     type="text"
@@ -92,7 +94,7 @@ export default class ProjectsList extends React.Component {
                       const bBox = evt.target.value.split(',')
                       if (bBox.length === 4)
                         this.setState({west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]})
-                    }} 
+                    }}
                   />
                   <ButtonInput
                     bsStyle="primary"
@@ -179,6 +181,7 @@ export default class ProjectsList extends React.Component {
                       <th>Public?</th>
                       <th>Retrieval Method</th>
                       <th>Last Updated</th>
+                      <th>Last Fetched</th>
                       <th>Error<br/>Count</th>
                       <th>Valid Range</th>
                       <th></th>
@@ -232,7 +235,8 @@ class FeedSourceTableRow extends React.Component {
         <td>
           <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
         </td>
-        <td></td>
+        <td>{moment(fs.lastUpdated).format('MMM Do YYYY')}</td>
+        <td>{fs.lastFetched !== null ? moment(fs.lastFetched).format('MMM Do YYYY') : 'N/A'}</td>
         <td></td>
         <td></td>
         <td>
