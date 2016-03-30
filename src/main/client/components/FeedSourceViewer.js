@@ -1,4 +1,5 @@
 import React from 'react'
+import fetch from 'isomorphic-fetch'
 
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
@@ -19,10 +20,31 @@ export default class FeedSourceViewer extends React.Component {
 
   constructor (props) {
     super(props)
+
+    this.state = {
+      snapshotVersions: []
+    }
+
+    if(this.props.feedSource) this.updateSnapshotVersions(this.props.feedSource)
   }
 
   componentWillMount () {
     this.props.onComponentMount(this.props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if(nextProps.feedSource) this.updateSnapshotVersions(nextProps.feedSource)
+  }
+
+  updateSnapshotVersions (feedSource) {
+    const url = this.props.editorUrl + '/api/mgrsnapshot?sourceId=' + feedSource.id
+    fetch(url)
+      .then(res => res.json())
+      .then(snapshots => {
+        this.setState({
+          snapshotVersions: snapshots
+        })
+      })
   }
 
   render () {
@@ -99,6 +121,28 @@ export default class FeedSourceViewer extends React.Component {
                               value={fs.url}
                               onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
                             />
+                          </td>
+                        </tr>
+                      : null
+                    }
+
+                    {fs.retrievalMethod === 'PRODUCED_IN_HOUSE'
+                      ? <tr>
+                          <td>Editor Snapshot</td>
+                          <td>
+                            <Input type='select'
+                              value={fs.snapshotVersion}
+                              onChange={(evt) => {
+                                console.log(evt.target.value);
+                                this.props.feedSourcePropertyChanged(fs, 'snapshotVersion', evt.target.value)
+                              }}
+                            >
+                              {this.state.snapshotVersions.map(snapshot => {
+                                return <option value={snapshot.id} key={snapshot.id}>
+                                  {snapshot.name}
+                                </option>
+                              })}
+                            </Input>
                           </td>
                         </tr>
                       : null

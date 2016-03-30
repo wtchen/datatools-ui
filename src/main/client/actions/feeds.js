@@ -73,7 +73,8 @@ export function updateFeedSource (feedSource, changes) {
     const url = '/api/manager/secure/feedsource/' + feedSource.id
     return secureFetch(url, getState(), 'put', changes)
       .then((res) => {
-        return dispatch(fetchProjectFeeds(feedSource.projectId))
+        //return dispatch(fetchProjectFeeds(feedSource.projectId))
+        return dispatch(fetchFeedSource(feedSource.id, true))
       })
   }
 }
@@ -98,6 +99,30 @@ export function deleteFeedSource (feedSource, changes) {
 export function requestingFeedSource () {
   return {
     type: 'REQUESTING_FEEDSOURCE'
+  }
+}
+
+export function receiveFeedSource(feedSource) {
+  return {
+    type: 'RECEIVE_FEEDSOURCE',
+    feedSource
+  }
+}
+
+export function fetchFeedSource(feedSourceId, fetchVersions) {
+  return function (dispatch, getState) {
+    console.log('fetchFeedSource', feedSourceId);
+    dispatch(requestingFeedSource())
+    const url = '/api/manager/secure/feedsource/' + feedSourceId
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(feedSource => {
+        console.log('got feedSource', feedSource);
+        //dispatch(fetchProject(feedSource.projectId))
+        //return feedSource
+        dispatch(receiveFeedSource(feedSource))
+        if(fetchVersions) dispatch(fetchFeedVersions(feedSource))
+      })
   }
 }
 
@@ -217,7 +242,7 @@ export function uploadFeed (feedSource, file) {
 
     return secureFetch(url, {
       method: 'post',
-      headers: { 'Authorization': 'Bearer: ' + getState().user.token },
+      headers: { 'Authorization': 'Bearer ' + getState().user.token },
       body: data
     }).then(result => {
       console.log('uploadFeed result', result)

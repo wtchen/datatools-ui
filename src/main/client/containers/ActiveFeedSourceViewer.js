@@ -33,7 +33,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     feedSource,
     project,
-    user
+    user,
+    editorUrl: state.config.editorUrl
   }
 }
 

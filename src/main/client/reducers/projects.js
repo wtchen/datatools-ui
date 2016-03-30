@@ -4,7 +4,7 @@ const projects = (state = {
   isFetching: false,
   all: null
 }, action) => {
-  let projects, projectIndex, sourceIndex
+  let projects, sources, projectIndex, sourceIndex
   switch (action.type) {
     case 'CREATE_PROJECT':
       projects = [{
@@ -65,6 +65,30 @@ const projects = (state = {
     case 'RECEIVE_FEEDSOURCES':
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
       return update(state, {all: {[projectIndex]: {$merge: {feedSources: action.feedSources}}}})
+
+    case 'RECEIVE_FEEDSOURCE':
+      projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
+      let existingSources = state.all[projectIndex].feedSources, updatedSources
+      sourceIndex = existingSources.findIndex(s => s.id === action.feedSource.id)
+      if (sourceIndex === -1) { // source does not currently; add it
+        updatedSources = [
+          ...existingSources,
+          action.feedSource
+        ]
+      } else { // existing feedsource array includes this one, replace it
+        updatedSources = [
+          ...existingSources.slice(0, sourceIndex),
+          action.feedSource,
+          ...existingSources.slice(sourceIndex + 1)
+        ]
+      }
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {$merge: {feedSources: updatedSources}}
+          }
+        }
+      )
 
     case 'RECEIVE_FEEDVERSIONS':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
