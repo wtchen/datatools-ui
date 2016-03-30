@@ -6,7 +6,7 @@ import SignupPage from '../components/SignupPage'
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 
 import { fetchProjectsWithPublicFeeds } from '../actions/projects'
-import { login, createUser, getUser, userLoggedIn, checkExistingLogin } from '../actions/user'
+import { login, createPublicUser, fetchUser, userLoggedIn, checkExistingLogin } from '../actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loginHandler: () => { dispatch(login()) },
     signupHandler: (credentials) => {
       console.log('creating user', credentials)
-      dispatch(createUser(credentials))
+      dispatch(createPublicUser(credentials))
       .then((user) => {
         console.log('logging in', user)
         dispatch(login(credentials, user))

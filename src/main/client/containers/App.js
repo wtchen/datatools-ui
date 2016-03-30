@@ -9,6 +9,7 @@ import ActiveFeedSourceViewer from '../containers/ActiveFeedSourceViewer'
 import ActivePublicFeedsViewer from '../containers/ActivePublicFeedsViewer'
 import ActiveUserAccount from '../containers/ActiveUserAccount'
 import ActiveSignupPage from '../containers/ActiveSignupPage'
+import ActiveUserAdmin from '../containers/ActiveUserAdmin'
 
 
 import { checkExistingLogin, userLoggedIn } from '../actions/user'
@@ -58,6 +59,7 @@ class App extends React.Component {
       <Router history={this.props.history}>
         <Redirect from='/' to='explore' />
         <Route path='/account' component={UserIsAuthenticated(ActiveUserAccount)} />
+        <Route path='/admin' component={UserIsAuthenticated(ActiveUserAdmin)} />
         <Route path='/signup' component={ActiveSignupPage} />
         <Route path='/explore' component={ActivePublicFeedsViewer} />
         <Route path='/project' component={UserIsAuthenticated(ActiveProjectsList)} />

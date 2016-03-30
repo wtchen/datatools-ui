@@ -6,7 +6,7 @@ import UserAccount from '../components/UserAccount'
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 
 import { fetchProjectsWithPublicFeeds } from '../actions/projects'
-import { updateUser, getUser } from '../actions/user'
+import { updateUser, fetchUser } from '../actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -20,11 +20,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // const projectId = ownProps.routeParams.projectId
   return {
     onComponentMount: (initialProps) => {
-      dispatch(fetchProjectsWithPublicFeeds())
+      // dispatch(fetchProjectsWithPublicFeeds())
     },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
     updateUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
-    getUser: (user, permissions) => { dispatch(getUser(user)) }
+    fetchUser: (user, permissions) => { dispatch(fetchUser(user)) }
   }
 }
 
