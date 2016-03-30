@@ -1,14 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Router, Route } from 'react-router'
+import { Router, Route, Redirect } from 'react-router'
 
 import NoAccessScreen from '../components/NoAccessScreen'
 import ActiveProjectsList from '../containers/ActiveProjectsList'
 import ActiveProjectViewer from '../containers/ActiveProjectViewer'
 import ActiveFeedSourceViewer from '../containers/ActiveFeedSourceViewer'
+import ActivePublicFeedsViewer from '../containers/ActivePublicFeedsViewer'
+import ActiveUserAccount from '../containers/ActiveUserAccount'
 
 import { checkExistingLogin, userLoggedIn } from '../actions/user'
 import { fetchConfig } from '../actions/config'
+
+import { UserIsAuthenticated } from '../util/util'
 
 class App extends React.Component {
 
@@ -19,8 +23,27 @@ class App extends React.Component {
       return this.props.checkExistingLogin()
     })
   }
-
+  // componentDidMount () {
+  //   this.props.fetchConfig().then(() => {
+  //     return this.props.checkExistingLogin()
+  //   })
+  // }
   render () {
+    // const requireAuth = (nextState, replace, callback) => {
+    //   this.props.fetchConfig().then(() => {
+    //     return this.props.checkExistingLogin(callback)
+    //   })
+    //   console.log(nextState)
+    //   console.log('props', this.props)
+    //   if (
+    //     this.props.config.title &&
+    //     this.props.user.profile === null) {
+    //     replace({
+    //       pathname: '/explore',
+    //       state: { nextPathname: nextState.location.pathname }
+    //     })
+    //   }
+    // }
 
     let canAccess = false, noAccessReason
     if(this.props.user.profile === null) {
@@ -29,18 +52,15 @@ class App extends React.Component {
     else {
       canAccess = true
     }
-
     return (
-      <div>
-        {!canAccess
-          ? <NoAccessScreen reason={noAccessReason} />
-          : <Router history={this.props.history}>
-              <Route path='/' component={ActiveProjectsList} />
-              <Route path='/project/:projectId' component={ActiveProjectViewer} />
-              <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} />
-            </Router>
-        }
-      </div>
+      <Router history={this.props.history}>
+        <Redirect from='/' to='explore' />
+        <Route path='/account' component={UserIsAuthenticated(ActiveUserAccount)} />
+        <Route path='/explore' component={ActivePublicFeedsViewer} />
+        <Route path='/project' component={UserIsAuthenticated(ActiveProjectsList)} />
+        <Route path='/project/:projectId' component={UserIsAuthenticated(ActiveProjectViewer)} />
+        <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} />
+      </Router>
     )
   }
 }

@@ -27,10 +27,11 @@ export function checkExistingLogin() {
     var login = getState().user.auth0.checkExistingLogin()
     if(login) {
       login.then((userTokenAndProfile) => {
+        console.log(userTokenAndProfile)
         return dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
-      })/*.then(() => {
-        dispatch(fetchProjects())
-      })*/
+      })
+      // .then(() => {
+      // })
     } else {
       console.log('no login found');
       dispatch(noExistingLogin())
@@ -38,7 +39,7 @@ export function checkExistingLogin() {
   }
 }
 
-export function login() {
+export function login () {
   return function (dispatch, getState) {
     getState().user.auth0.loginViaLock().then((userInfo) => {
       return dispatch(userLoggedIn(userInfo.token, userInfo.profile))
@@ -48,8 +49,15 @@ export function login() {
   }
 }
 
-export function logout() {
+export function userLogout () {
+  return {
+    type: 'USER_LOGGED_OUT'
+  }
+}
+
+export function logout () {
   return function (dispatch, getState) {
+    dispatch(userLogout())
     getState().user.auth0.logout()
   }
 }

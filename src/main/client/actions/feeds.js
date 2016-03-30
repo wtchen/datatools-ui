@@ -4,13 +4,13 @@ import { fetchProject } from './projects'
 
 // Feed Source Actions
 
-export function requestingFeedSources() {
+export function requestingFeedSources () {
   return {
     type: 'REQUESTING_FEEDSOURCES'
   }
 }
 
-export function receiveFeedSources(projectId, feedSources) {
+export function receiveFeedSources (projectId, feedSources) {
   return {
     type: 'RECEIVE_FEEDSOURCES',
     projectId,
@@ -18,7 +18,7 @@ export function receiveFeedSources(projectId, feedSources) {
   }
 }
 
-export function fetchProjectFeeds(projectId) {
+export function fetchProjectFeeds (projectId) {
   return function (dispatch, getState) {
     dispatch(requestingFeedSources())
     const url = '/api/manager/secure/feedsource?projectId=' + projectId
@@ -30,21 +30,33 @@ export function fetchProjectFeeds(projectId) {
   }
 }
 
-export function createFeedSource(projectId) {
+function requestingPublicFeeds () {
+  return {
+    type: 'REQUESTING_PUBLIC_FEEDS'
+  }
+}
+
+function receivePublicFeeds (feeds) {
+  return {
+    type: 'RECEIVE_PUBLIC_FEEDS',
+    feeds
+  }
+}
+
+export function createFeedSource (projectId) {
   return {
     type: 'CREATE_FEEDSOURCE',
     projectId
   }
 }
 
-
-export function savingFeedSource() {
+export function savingFeedSource () {
   return {
     type: 'SAVING_FEEDSOURCE'
   }
 }
 
-export function saveFeedSource(props) {
+export function saveFeedSource (props) {
   return function (dispatch, getState) {
     dispatch(savingFeedSource())
     const url = '/api/manager/secure/feedsource'
@@ -55,7 +67,7 @@ export function saveFeedSource(props) {
   }
 }
 
-export function updateFeedSource(feedSource, changes) {
+export function updateFeedSource (feedSource, changes) {
   return function (dispatch, getState) {
     dispatch(savingFeedSource())
     const url = '/api/manager/secure/feedsource/' + feedSource.id
@@ -66,13 +78,13 @@ export function updateFeedSource(feedSource, changes) {
   }
 }
 
-export function deletingFeedSource() {
+export function deletingFeedSource () {
   return {
     type: 'DELETING_FEEDSOURCE'
   }
 }
 
-export function deleteFeedSource(feedSource, changes) {
+export function deleteFeedSource (feedSource, changes) {
   return function (dispatch, getState) {
     dispatch(deletingFeedSource())
     const url = '/api/manager/secure/feedsource/' + feedSource.id
@@ -83,32 +95,46 @@ export function deleteFeedSource(feedSource, changes) {
   }
 }
 
-export function requestingFeedSource() {
+export function requestingFeedSource () {
   return {
     type: 'REQUESTING_FEEDSOURCE'
   }
 }
 
-export function fetchFeedSourceAndProject(feedSourceId) {
+export function fetchFeedSourceAndProject (feedSourceId, unsecured) {
   return function (dispatch, getState) {
     dispatch(requestingFeedSource())
-    const url = '/api/manager/secure/feedsource/' + feedSourceId
+    const apiRoot = unsecured ? 'public' : 'secure'
+    const url = `/api/manager/${apiRoot}/feedsource/${feedSourceId}`
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(feedSource => {
-        dispatch(fetchProject(feedSource.projectId))
+        dispatch(fetchProject(feedSource.projectId, unsecured))
         return feedSource
       })
   }
 }
 
-export function runningFetchFeed() {
+export function fetchPublicFeedSource (feedSourceId) {
+  return function (dispatch, getState) {
+    dispatch(requestingFeedSource())
+    const url = '/api/manager/public/feedsource/' + feedSourceId
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(feedSource => {
+        dispatch(receivePublicFeeds())
+        return feedSource
+      })
+  }
+}
+
+export function runningFetchFeed () {
   return {
     type: 'RUNNING_FETCH_FEED'
   }
 }
 
-export function runFetchFeed(feedSource) {
+export function runFetchFeed (feedSource) {
   return function (dispatch, getState) {
     dispatch(runningFetchFeed())
     const url = `/api/manager/secure/feedsource/${feedSource.id}/fetch`
@@ -121,13 +147,13 @@ export function runFetchFeed(feedSource) {
   }
 }
 
-export function requestingFeedVersions() {
+export function requestingFeedVersions () {
   return {
     type: 'REQUESTING_FEEDVERSIONS'
   }
 }
 
-export function receiveFeedVersions(feedSource, feedVersions) {
+export function receiveFeedVersions (feedSource, feedVersions) {
   return {
     type: 'RECEIVE_FEEDVERSIONS',
     feedSource,
@@ -135,10 +161,11 @@ export function receiveFeedVersions(feedSource, feedVersions) {
   }
 }
 
-export function fetchFeedVersions(feedSource) {
+export function fetchFeedVersions (feedSource, unsecured) {
   return function (dispatch, getState) {
     dispatch(requestingFeedVersions())
-    const url = `/api/manager/secure/feedversion?feedSourceId=${feedSource.id}`
+    const apiRoot = unsecured ? 'public' : 'secure'
+    const url = `/api/manager/${apiRoot}/feedversion?feedSourceId=${feedSource.id}`
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(versions => {
@@ -147,13 +174,39 @@ export function fetchFeedVersions(feedSource) {
   }
 }
 
-export function uploadingFeed() {
+// export function requestingPublicFeedVersions () {
+//   return {
+//     type: 'REQUESTING_PUBLIC_FEEDVERSIONS'
+//   }
+// }
+//
+// export function receivePublicFeedVersions (feedSource, feedVersions) {
+//   return {
+//     type: 'RECEIVE_PUBLIC_FEEDVERSIONS',
+//     feedSource,
+//     feedVersions
+//   }
+// }
+
+export function fetchPublicFeedVersions (feedSource) {
+  return function (dispatch, getState) {
+    dispatch(requestingFeedVersions())
+    const url = `/api/manager/public/feedversion?feedSourceId=${feedSource.id}&public=true`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(versions => {
+        dispatch(receiveFeedVersions(feedSource, versions))
+      })
+  }
+}
+
+export function uploadingFeed () {
   return {
     type: 'UPLOADING_FEED'
   }
 }
 
-export function uploadFeed(feedSource, file) {
+export function uploadFeed (feedSource, file) {
   return function (dispatch, getState) {
     dispatch(uploadingFeed())
     const url = `/api/manager/secure/feedversion?feedSourceId=${feedSource.id}`
@@ -162,13 +215,13 @@ export function uploadFeed(feedSource, file) {
     data.append('file', file)
     //data.append('user', 'hubot')
 
-    return fetch(url, {
+    return secureFetch(url, {
       method: 'post',
       headers: { 'Authorization': 'Bearer: ' + getState().user.token },
       body: data
     }).then(result => {
-        console.log('uploadFeed result', result)
-        dispatch(fetchFeedVersions(feedSource))
-      })
+      console.log('uploadFeed result', result)
+      dispatch(fetchFeedVersions(feedSource))
+    })
   }
 }

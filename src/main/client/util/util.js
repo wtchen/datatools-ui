@@ -1,3 +1,7 @@
+import { UserAuthWrapper } from 'redux-auth-wrapper'
+import { routerActions, push } from 'react-router-redux';
+
+// import { redirectUser } from '../actions/user'
 
 import fetch from 'isomorphic-fetch'
 
@@ -29,3 +33,11 @@ export function secureFetch(url, state, method, payload) {
   if(payload) opts.body = JSON.stringify(payload)
   return fetch(url, opts)
 }
+
+export const UserIsAuthenticated = UserAuthWrapper({
+  authSelector: state => state.user,
+  predicate: user => user.profile !== null,
+  redirectAction: push,
+  failureRedirectPath: '/',
+  wrapperDisplayName: 'UserIsAuthenticated'
+})

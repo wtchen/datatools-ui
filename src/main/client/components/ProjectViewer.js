@@ -49,7 +49,8 @@ export default class ProjectsList extends React.Component {
           <Row>
             <Col xs={12}>
               <ul className='breadcrumb'>
-                <li><Link to='/'>Projects</Link></li>
+                <li><Link to='/'>Explore</Link></li>
+                <li><Link to='/project'>Projects</Link></li>
                 <li className='active'>{this.props.project.name}</li>
               </ul>
             </Col>
@@ -231,7 +232,17 @@ class FeedSourceTableRow extends React.Component {
             />
           </div>
         </td>
-        <td></td>
+        <td>
+          <Input
+            type='checkbox'
+            defaultChecked={fs.isPublic}
+            onChange={(e) => {
+              console.log(e.target.checked)
+
+              this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
+            }}
+          />
+        </td>
         <td>
           <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
         </td>

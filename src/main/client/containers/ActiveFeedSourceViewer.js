@@ -8,12 +8,15 @@ import {
   updateFeedSource,
   runFetchFeed,
   fetchFeedVersions,
-  uploadFeed
+  uploadFeed,
+  fetchPublicFeedSource,
+  receiveFeedVersions,
+  fetchPublicFeedVersions
 } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId
-
+  let user = state.user
   // find the containing project
   let project = state.projects.all
     ? state.projects.all.find(p => {
@@ -29,7 +32,8 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     feedSource,
-    project
+    project,
+    user
   }
 }
 
@@ -37,15 +41,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
   return {
     onComponentMount: (initialProps) => {
+      let unsecured = true
+      if (initialProps.user.profile !== null) {
+        unsecured = false
+      }
       if (!initialProps.feedSource) {
-        dispatch(fetchFeedSourceAndProject(feedSourceId))
+        dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
         .then((feedSource) => {
           console.log('fetch versions')
-          dispatch(fetchFeedVersions(feedSource))
+          dispatch(fetchFeedVersions(feedSource, unsecured))
         })
       }
       else if(!initialProps.feedSource.versions) {
-        dispatch(fetchFeedVersions(initialProps.feedSource))        
+        dispatch(fetchFeedVersions(initialProps.feedSource, unsecured))
       }
     },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {

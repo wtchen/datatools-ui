@@ -27,6 +27,18 @@ export function fetchProjects() {
   }
 }
 
+export function fetchProjectsWithPublicFeeds () {
+  return function (dispatch, getState) {
+    dispatch(requestingProjects())
+    const url = '/api/manager/public/project'
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(projects => {
+        dispatch(receiveProjects(projects))
+      })
+  }
+}
+
 // Single Project Actions
 
 function requestingProject() {
@@ -42,15 +54,17 @@ function receiveProject(project) {
   }
 }
 
-export function fetchProject(projectId) {
+export function fetchProject(projectId, unsecure) {
   return function (dispatch, getState) {
     dispatch(requestingProject())
-    const url = '/api/manager/secure/project/' + projectId
+    const apiRoot = unsecure ? 'public' : 'secure'
+    const url = `/api/manager/${apiRoot}/project/${projectId}`
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(project => {
         dispatch(receiveProject(project))
-        return dispatch(fetchProjectFeeds(project.id))
+        if (!unsecure)
+          return dispatch(fetchProjectFeeds(project.id))
       })
   }
 }
@@ -58,7 +72,7 @@ export function fetchProject(projectId) {
 export function updateProject(project, changes) {
   return function (dispatch, getState) {
     dispatch(savingProject())
-    const url = '/api/manager/secure/project/' + project.id
+    const url = `/api/manager/secure/project/${project.id}`
     return secureFetch(url, getState(), 'put', changes)
       .then((res) => {
         return dispatch(fetchProject(project.id))
@@ -87,7 +101,7 @@ export function receiveSync() {
 export function thirdPartySync(projectId, type) {
   return function (dispatch, getState) {
     dispatch(requestingSync())
-    const url = '/api/manager/secure/project/' + projectId + '/thirdPartySync/' + type 
+    const url = '/api/manager/secure/project/' + projectId + '/thirdPartySync/' + type
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(project => {
@@ -111,7 +125,7 @@ export function receiveFetchFeedsForProject() {
 
 export function fetchFeedsForProject(project) {
   return function (dispatch, getState) {
-    
+
     dispatch(runningFetchFeedsForProject())
     const url = `/api/manager/secure/project/${project.id}/fetch`
     return secureFetch(url, getState(), 'post')

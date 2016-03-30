@@ -28,6 +28,8 @@ const config = (state = {
       return update(state, { message: { $set: 'Syncing feeds...' }})
     case 'RUNNING_FETCH_FEED_FOR_PROJECT':
       return update(state, { message: { $set: 'Updating feeds for project...' }})
+    case 'REQUESTING_PUBLIC_FEEDS':
+      return update(state, { message: { $set: 'Loading public feeds...' }})
 
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
@@ -35,6 +37,7 @@ const config = (state = {
     case 'RECEIVE_FEEDSOURCES':
     case 'RECEIVE_FEEDVERSIONS':
     case 'RECEIVE_FETCH_FEED_FOR_PROJECT':
+    case 'RECEIVE_PUBLIC_FEEDS':
       return update(state, { message: { $set: null }})
     default:
       return state

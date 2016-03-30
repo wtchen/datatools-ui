@@ -8,7 +8,7 @@ import { fetchProjects, updateProject, createProject, saveProject } from '../act
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.all,
+    projects: state.projects.all ? state.projects.all : [],
     visibilitySearchText: state.visibilityFilter.searchText
   }
 }

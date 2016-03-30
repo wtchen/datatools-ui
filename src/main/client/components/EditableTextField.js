@@ -51,7 +51,6 @@ export default class EditableTextField extends React.Component {
     <Glyphicon
       glyph='ok'
       style={iconStyle}
-      onClick={() => this.save()}
     />
     </Button>
 
@@ -81,7 +80,6 @@ export default class EditableTextField extends React.Component {
               >
                 <Glyphicon style={iconStyle}
                   glyph={ 'pencil' }
-                  onClick={() => this.edit()}
                 />
               </Button>
             </span>
