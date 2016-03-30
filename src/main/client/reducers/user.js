@@ -29,6 +29,8 @@ const user = (state = {
         profile: { $set: null },
         permissions: { $set: null}
       })
+    case 'CREATED_PUBLIC_USER':
+      return update(state, { profile: { $set: action.profile }})
     case 'RECEIVE_CONFIG':
       return update(state, { auth0: { $set: new Auth0Manager(action.config) }})
     default:
