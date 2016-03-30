@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
     title: state.config.title,
     managerUrl: '#',
     editorUrl: state.config.editorUrl,
-    userAdminUrl: state.config.editorUrl,
+    userAdminUrl: '#/admin',
     username: state.user.profile ? state.user.profile.email : null
   }
 }
