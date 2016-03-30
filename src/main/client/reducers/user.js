@@ -22,7 +22,13 @@ const user = (state = {
         permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools)}
       })
     case 'USER_LOGGED_OUT':
-      return {}
+      console.log('USER_LOGGED_OUT');
+      return update(state, {
+        isCheckingLogin: { $set: false },
+        token: { $set: null },
+        profile: { $set: null },
+        permissions: { $set: null}
+      })
     case 'RECEIVE_CONFIG':
       return update(state, { auth0: { $set: new Auth0Manager(action.config) }})
     default:
