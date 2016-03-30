@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch'
 import { Grid, Row, Col } from 'react-bootstrap'
 
 import UserList from './UserList'
-import ManagerPage from './ManagerPage'
+import ManagerPage from '../ManagerPage'
 
 export default class UserAdmin extends React.Component {
 
