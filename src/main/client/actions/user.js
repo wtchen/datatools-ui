@@ -42,7 +42,7 @@ export function checkExistingLogin() {
 }
 
 // server call
-export function getUser (user) {
+export function fetchUser (user) {
   return function (dispatch, getState) {
     const url = '/api/manager/secure/user/' + user
     return secureFetch(url, getState())
@@ -71,15 +71,31 @@ export function updateUser (user, permissions) {
   }
 }
 
+export function creatingPublicUser () {
+  return {
+    type: 'CREATING_PUBLIC_USER'
+  }
+}
+
+export function createdPublicUser (profile) {
+  return {
+    type: 'CREATED_PUBLIC_USER',
+    profile
+  }
+}
+
 // server call
-export function createUser (user) {
+export function createPublicUser (credentials) {
   return function (dispatch, getState) {
+    dispatch(creatingPublicUser())
+    console.log(credentials)
     const url = '/api/manager/public/user'
-    return secureFetch(url, getState(), 'post', user)
+    return secureFetch(url, getState(), 'post', credentials)
       .then(response => response.json())
-      .then(user => {
-        // console.log(JSON.parse(user))
-        return JSON.parse(user)
+      .then(profile => {
+        // console.log(JSON.parse(profile))
+        return dispatch(createdPublicUser(JSON.parse(profile)))
+        // return JSON.parse(user)
       })
   }
 }
