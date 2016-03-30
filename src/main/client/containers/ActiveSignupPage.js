@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import UserAccount from '../components/UserAccount'
+import SignupPage from '../components/SignupPage'
 
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 
 import { fetchProjectsWithPublicFeeds } from '../actions/projects'
-import { updateUser, getUser } from '../actions/user'
+import { login, createUser, getUser, userLoggedIn, checkExistingLogin } from '../actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -22,15 +22,22 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       dispatch(fetchProjectsWithPublicFeeds())
     },
-    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
-    updateUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
-    getUser: (user, permissions) => { dispatch(getUser(user)) }
+    loginHandler: () => { dispatch(login()) },
+    signupHandler: (credentials) => {
+      console.log('creating user', credentials)
+      dispatch(createUser(credentials))
+      .then((user) => {
+        console.log('logging in', user)
+        dispatch(login(credentials, user))
+        // dispatch(checkExistingLogin())
+      })
+    }
   }
 }
 
 const ActiveUserAccount = connect(
   mapStateToProps,
   mapDispatchToProps
-)(UserAccount)
+)(SignupPage)
 
 export default ActiveUserAccount

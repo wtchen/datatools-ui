@@ -43,6 +43,9 @@ class PublicNavbar extends Component {
         </Navbar.Header>
         <Nav pullRight>
           <NavItem href='#'><Glyphicon glyph='question-sign' /> Guide</NavItem>
+          <LinkContainer to={{ pathname: '/signup' }}>
+            <NavItem>Sign up</NavItem>
+          </LinkContainer>
           {userControl}
         </Nav>
       </Navbar>
