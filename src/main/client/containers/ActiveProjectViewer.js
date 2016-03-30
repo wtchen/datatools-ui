@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
       dispatch(setVisibilitySearchText(null))
       if (!initialProps.project) dispatch(fetchProject(projectId))
-      else if (initialProps.project.feedSources === null || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) dispatch(fetchProjectFeeds(projectId))
+      else if (!initialProps.project.feedSources || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) dispatch(fetchProjectFeeds(projectId))
     },
     onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
     updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))
