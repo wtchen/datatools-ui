@@ -21,6 +21,7 @@
     "leaflet": "^0.7.7",
     "react": "^0.14.3",
     "react-bootstrap": "^0.28.1",
+    "react-bootstrap-table": "^2.1.0",
     "react-dom": "^0.14.3",
     "react-leaflet": "^0.10.1",
     "react-pure-render": "^1.0.2",
