@@ -1,6 +1,7 @@
 import React from 'react'
 
 import moment from 'moment'
+import moment_tz from 'moment-timezone'
 
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
 import { Link } from 'react-router'
@@ -9,11 +10,14 @@ import ManagerPage from '../components/ManagerPage'
 import EditableTextField from './EditableTextField'
 
 import { defaultSorter, retrievalMethodString } from '../util/util'
+import languages from '../util/languages'
 
 export default class ProjectsList extends React.Component {
 
   constructor (props) {
     super(props)
+
+    this.state = {}
   }
 
   deleteFeedSource (feedSource) {
@@ -62,19 +66,19 @@ export default class ProjectsList extends React.Component {
           </Row>
 
           <Panel
-            header={(<b>Project Settings</b>)}
+            header={(<h3><Glyphicon glyph='cog' /> Project Settings</h3>)}
             collapsible
           >
+            <form>
             <Row>
-              <Col xs={12}>
-                <form>
+              <Col xs={6}>
                   <Input
                     type="text"
                     defaultValue={this.props.project.defaultLocationLat !== null &&  this.props.project.defaultLocationLon !== null ?
                       `${this.props.project.defaultLocationLat},${this.props.project.defaultLocationLon}` :
                       ''}
                     placeholder="34.8977,-87.29987"
-                    label="Default location (lat, lng)"
+                    label={(<span><Glyphicon glyph='map-marker' /> Default location (lat, lng)</span>)}
                     ref="defaultLocation"
                     onChange={(evt) => {
                       const latLng = evt.target.value.split(',')
@@ -89,7 +93,7 @@ export default class ProjectsList extends React.Component {
                     type="text"
                     defaultValue={this.props.project.north !== null ? `${this.props.project.west},${this.props.project.south},${this.props.project.east},${this.props.project.north}` : ''}
                     placeholder="-88.45,33.22,-87.12,34.89"
-                    label="Bounding box (west, south, east, north)"
+                    label={(<span><Glyphicon glyph='fullscreen' /> Bounding box (west, south, east, north)</span>)}
                     ref="boundingBox"
                     onChange={(evt) => {
                       const bBox = evt.target.value.split(',')
@@ -97,25 +101,61 @@ export default class ProjectsList extends React.Component {
                         this.setState({west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]})
                     }}
                   />
-                  <ButtonInput
-                    bsStyle="primary"
-                    type="submit"
-                    onClick={(evt) => {
-                      evt.preventDefault()
-                      console.log(this.state)
-                      console.log(this.props.project)
-                      this.props.updateProjectSettings(this.props.project, this.state)
-                    }}
-                  >
-                    Save
-                  </ButtonInput>
-                </form>
+              </Col>
+              <Col xs={6}>
+                <Input type='select'
+                  label={(<span><Glyphicon glyph='time' /> Default time zone</span>)}
+                  value={this.state.defaultTimeZone || this.props.project.defaultTimeZone}
+                  onChange={(evt) => {
+                    console.log(evt.target.value);
+                    this.setState({ defaultTimeZone: evt.target.value })
+                  }}
+                >
+                  {moment_tz.tz.names().map(tz => {
+                    return <option value={tz} key={tz}>
+                      {tz}
+                    </option>
+                  })}
+                </Input>
+
+                <Input type='select'
+                  label={(<span><Glyphicon glyph='globe' /> Default language</span>)}
+                  value={this.state.defaultLanguage || this.props.project.defaultLanguage}
+                  onChange={(evt) => {
+                    console.log(evt.target.value);
+                    this.setState({ defaultLanguage: evt.target.value })
+                    //this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', evt.target.value)
+                  }}
+                >
+                  {languages.map(language => {
+                    return <option value={language.code} key={language.code}>
+                      {language.name}
+                    </option>
+                  })}
+                </Input>
               </Col>
             </Row>
+            <Row>
+              <Col xs={12}>
+                <ButtonInput
+                  bsStyle="primary"
+                  type="submit"
+                  onClick={(evt) => {
+                    evt.preventDefault()
+                    console.log(this.state)
+                    console.log(this.props.project)
+                    this.props.updateProjectSettings(this.props.project, this.state)
+                  }}
+                >
+                  Save
+                </ButtonInput>
+              </Col>
+            </Row>
+            </form>
           </Panel>
 
           <Panel
-            header={(<b>Feed Sources</b>)}
+            header={(<h3><Glyphicon glyph='list' /> Feed Sources</h3>)}
             collapsible
             defaultExpanded={true}
           >

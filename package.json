@@ -1,34 +1,26 @@
 {
-  "name": "datatools-user-manager",
+  "name": "datatools-manager",
   "version": "0.1.0",
-  "description": "Webapp for managing users/permissions for the Conveyal transit data tools projects",
+  "description": "Core application for the Conveyal transit data tools suite",
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/conveyal/datatools-user-manager.git"
+    "url": "https://github.com/conveyal/datatools-manager.git"
   },
   "author": "Conveyal LLC",
   "license": "MIT",
   "scripts": {
-    "test": "",
-    "start": "./node_modules/.bin/babel-node server",
-    "build": "rimraf dist && set NODE_ENV=production && webpack --config ./webpack.production.config.js --progress --profile --colors"
+    "test": ""
   },
   "dependencies": {
     "body-parser": "^1.14.2",
     "cors": "^2.3.1",
-    "datatools-common": "^0.1.1",
-    "datatools-navbar": "^0.1.0",
     "express": "^4.13.3",
     "express-jwt": "^3.3.0",
-    "history": "^2.0.1",
     "isomorphic-fetch": "^2.2.1",
     "leaflet": "^0.7.7",
-    "moment": "^2.11.2",
     "react": "^0.14.3",
-    "react-addons-update": "^0.14.7",
     "react-bootstrap": "^0.28.1",
-    "react-bootstrap-datetimepicker": "^0.0.22",
     "react-dom": "^0.14.3",
     "react-leaflet": "^0.10.1",
     "react-pure-render": "^1.0.2",
@@ -37,10 +29,18 @@
     "react-router-bootstrap": "^0.20.1",
     "react-router-redux": "^4.0.0",
     "react-select": "^1.0.0-beta9",
+    "request": "^2.67.0",
     "redux": "^3.3.1",
     "redux-auth-wrapper": "^0.3.0",
     "redux-thunk": "^2.0.1",
-    "request": "^2.67.0"
+    "react-bootstrap-datetimepicker": "^0.0.22",
+    "moment": "^2.11.2",
+    "moment-timezone": "^0.5.3",
+    "react-addons-update": "^0.14.7",
+    "datatools-common": "^0.1.1",
+    "react-router": "^2.0.0",
+    "react-router-redux": "^4.0.0",
+    "history": "^2.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.0.3",
