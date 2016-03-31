@@ -7,6 +7,7 @@ import { setVisibilitySearchText } from '../actions/visibilityFilter'
 
 import { fetchProjectsWithPublicFeeds } from '../actions/projects'
 import { login, createPublicUser, fetchUser, userLoggedIn, checkExistingLogin } from '../actions/user'
+import { routerPush } from '../actions/config'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -29,7 +30,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       .then((user) => {
         console.log('logging in', user)
         dispatch(login(credentials, user))
-        // dispatch(checkExistingLogin())
+      }).then((something) => {
+        console.log(something)
+        dispatch(routerPush())
       })
     }
   }

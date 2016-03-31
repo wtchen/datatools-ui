@@ -28,7 +28,6 @@ export default class SignupPage extends React.Component {
       placeholder='user@example.com'
       label='Email'
       onChange={(evt) => {
-        console.log(evt.target.value)
         const email = evt.target.value
         this.setState({email: email})
       }}
@@ -38,7 +37,6 @@ export default class SignupPage extends React.Component {
       placeholder='user123'
       label='Username'
       onChange={(evt) => {
-        console.log(evt.target.value)
         const username = evt.target.value
         this.setState({username: username})
       }}
@@ -48,7 +46,6 @@ export default class SignupPage extends React.Component {
       placeholder='password'
       label='Password'
       onChange={(evt) => {
-        console.log(evt.target.value)
         const password = evt.target.value
         this.setState({password: password})
       }}
