@@ -34,16 +34,20 @@ export function secureFetch(url, state, method, payload) {
   return fetch(url, opts)
 }
 
-export const UserIsAuthenticated = UserAuthWrapper({
-  authSelector: state => state.user,
-  predicate: user => user.profile !== null,
-  redirectAction: routerPush,
-  wrapperDisplayName: 'UserIsAuthenticated'
-})
-
-export const UserIsAdmin = UserAuthWrapper({
-  authSelector: state => state.user,
-  predicate: user => user.permissions && user.permissions.isApplicationAdmin(),
-  redirectAction: routerPush,
-  wrapperDisplayName: 'UserIsAdmin'
-})
+// export const UserIsAuthenticated = UserAuthWrapper({
+//   authSelector: state => state.user,
+//   predicate: user => user.profile !== null,
+//   // redirectAction: routerPush,
+//   failureRedirectPath: '/',
+//   allowRedirectBack: false,
+//   wrapperDisplayName: 'UserIsAuthenticated'
+// })
+//
+// export const UserIsAdmin = UserAuthWrapper({
+//   authSelector: state => state.user,
+//   predicate: user => user.permissions && user.permissions.isApplicationAdmin(),
+//   // redirectAction: routerPush,
+//   failureRedirectPath: '/',
+//   allowRedirectBack: false,
+//   wrapperDisplayName: 'UserIsAdmin'
+// })

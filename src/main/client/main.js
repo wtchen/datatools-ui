@@ -5,6 +5,8 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { browserHistory, hashHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import { fetchConfig } from './actions/config'
+import { checkExistingLogin } from './actions/user'
 
 import managerApp from './reducers'
 import App from './containers/App'

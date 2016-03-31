@@ -28,15 +28,16 @@ export function checkExistingLogin() {
     console.log('checkExistingLogin');
     var login = getState().user.auth0.checkExistingLogin()
     if(login) {
-      login.then((userTokenAndProfile) => {
+      return login.then((userTokenAndProfile) => {
         console.log(userTokenAndProfile)
-        return dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
+        dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
       })
-      // .then(() => {
-      // })
-    } else {
+    }
+    else {
       console.log('no login found');
       dispatch(noExistingLogin())
+      // return empty promise
+      return new Promise((resolve) => { resolve(null); })
     }
   }
 }
