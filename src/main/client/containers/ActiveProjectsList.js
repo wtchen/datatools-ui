@@ -8,7 +8,7 @@ import { fetchProjects, updateProject, createProject, saveProject } from '../act
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.all ? state.projects.all : [],
+    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id)) : [],
     visibilitySearchText: state.visibilityFilter.searchText
   }
 }

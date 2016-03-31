@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Grid, Row, Col, Button, Table, Input, Panel } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, OverlayTrigger, Popover, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../components/ManagerPage'
@@ -42,13 +42,17 @@ export default class ProjectsList extends React.Component {
               />
             </Col>
             <Col xs={8}>
-              <Button
-                bsStyle="primary"
-                className="pull-right"
-                onClick={() => this.props.onNewProjectClick()}
-              >
-                New Project
-              </Button>
+
+            <Button
+              bsStyle='primary'
+              className='pull-right'
+              onClick={() => this.props.onNewProjectClick()}
+            >
+              New Project
+            </Button>
+            <OverlayTrigger trigger="click" placement="left" overlay={<Popover title="What's a project?">A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.</Popover>}>
+              <Button bsStyle="link" className='pull-right'><Glyphicon glyph='question-sign'/></Button>
+            </OverlayTrigger>
             </Col>
           </Row>
           <Row>
@@ -61,7 +65,7 @@ export default class ProjectsList extends React.Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {visibleProjects.map((project) => {
+                  {visibleProjects.length > 0 ? visibleProjects.map((project) => {
                     return (
                       <tr key={project.id}>
                         <td className="col-md-4">
@@ -81,7 +85,18 @@ export default class ProjectsList extends React.Component {
                         </td>
                       </tr>
                     )
-                  })}
+                  })
+                  : <tr>
+                  <td className='col-md-12 text-center'>
+                    You currently do not have any projects. &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Button
+                      bsStyle='primary'
+                      onClick={() => this.props.onNewProjectClick()}
+                    >
+                      Create my first project
+                    </Button>
+                  </td></tr>
+                }
                 </tbody>
               </Table>
             </Col>

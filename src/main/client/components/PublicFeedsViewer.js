@@ -79,19 +79,22 @@ class FeedTable extends React.Component {
     let feeds = []
     const feedArray = this.props.projects.map(p => {
       const regions = p.name.split(', ')
-      return p.feedSources.map(f => {
-        const feed = {
-          name: f.name,
-          id: f.id,
-          lastUpdated: moment(f.lastUpdated).format('MMMM Do YYYY, h:mm a'),
-          region: regions[regions.length - 3],
-          state: regions[regions.length - 2],
-          country: regions[regions.length - 1],
-          url: f.url
-        }
-        feeds.push(feed)
-        return feed
-      })
+      if (p.feedSources){
+        return p.feedSources.map(f => {
+          const feed = {
+            name: f.name,
+            id: f.id,
+            lastUpdated: moment(f.lastUpdated).format('MMMM Do YYYY, h:mm a'),
+            region: regions[regions.length - 3],
+            state: regions[regions.length - 2],
+            country: regions[regions.length - 1],
+            url: f.url
+          }
+          feeds.push(feed)
+          return feed
+        })
+      }
+
     })
     console.log(feeds)
     console.log(feedArray)
