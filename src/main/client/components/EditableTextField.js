@@ -72,7 +72,7 @@ export default class EditableTextField extends React.Component {
           : <span>
               {this.props.link
                 ? <Link to={this.props.link}>{this.state.value}</Link>
-                : this.state.value
+                : this.state.value || '(none)'
               }
               &nbsp;&nbsp;
               <Button bsStyle='link'

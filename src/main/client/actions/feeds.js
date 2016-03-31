@@ -79,6 +79,19 @@ export function updateFeedSource (feedSource, changes) {
   }
 }
 
+export function updateExternalFeedResource (feedSource, resourceType, properties) {
+  return function (dispatch, getState) {
+    console.log('updateExternalFeedResource', feedSource, resourceType, properties);
+    dispatch(savingFeedSource())
+    const url = `/api/manager/secure/feedsource/${feedSource.id}/updateExternal?resourceType=${resourceType}`
+    return secureFetch(url, getState(), 'put', properties)
+      .then((res) => {
+        return dispatch(fetchFeedSource(feedSource.id, true))
+      })
+  }
+}
+
+
 export function deletingFeedSource () {
   return {
     type: 'DELETING_FEEDSOURCE'
@@ -240,7 +253,7 @@ export function uploadFeed (feedSource, file) {
     data.append('file', file)
     //data.append('user', 'hubot')
 
-    return secureFetch(url, {
+    return fetch(url, {
       method: 'post',
       headers: { 'Authorization': 'Bearer ' + getState().user.token },
       body: data

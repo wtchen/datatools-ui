@@ -11,7 +11,8 @@ import {
   uploadFeed,
   fetchPublicFeedSource,
   receiveFeedVersions,
-  fetchPublicFeedVersions
+  fetchPublicFeedVersions,
+  updateExternalFeedResource
 } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -49,7 +50,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.feedSource) {
         dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
         .then((feedSource) => {
-          console.log('fetch versions')
           dispatch(fetchFeedVersions(feedSource, unsecured))
         })
       }
@@ -59,6 +59,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
       dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
+    },
+    externalPropertyChanged: (feedSource, resourceType, propName, newValue) => {
+      dispatch(updateExternalFeedResource(feedSource, resourceType, { [propName]: newValue } ))
     },
     updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) }

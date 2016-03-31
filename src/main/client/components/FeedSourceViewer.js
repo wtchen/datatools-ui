@@ -7,6 +7,7 @@ import { Link } from 'react-router'
 import ManagerPage from '../components/ManagerPage'
 import EditableTextField from './EditableTextField'
 import FeedVersionNavigator from './FeedVersionNavigator'
+import ExternalPropertiesTable from './ExternalPropertiesTable'
 
 import { retrievalMethodString } from '../util/util'
 
@@ -151,7 +152,23 @@ export default class FeedSourceViewer extends React.Component {
                   </tbody>
                 </Table>
               </Col>
+
+              <Col xs={6}>
+                {Object.keys(fs.externalProperties || {}).map(resourceType => {
+                  console.log('>> resourceType=' + resourceType);
+                  return (<ExternalPropertiesTable
+                    resourceType={resourceType}
+                    resourceProps={fs.externalProperties[resourceType]}
+                    externalPropertyChanged={(name, value) => {
+                      this.props.externalPropertyChanged(fs, resourceType, name, value)
+                    }}
+                  />)
+                })}
+              </Col>
+
             </Row>
+
+
           </Panel>
 
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
