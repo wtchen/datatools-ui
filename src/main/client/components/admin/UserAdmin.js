@@ -23,14 +23,17 @@ export default class UserAdmin extends React.Component {
   }
 
   isAdmin () {
-    var appAdmin = this.props.user && this.props.user.permissions.isApplicationAdmin()
+    var appAdmin = this.props.user && this.props.user.permissions && this.props.user.permissions.isApplicationAdmin()
     return appAdmin
   }
 
   render () {
     return (
       <ManagerPage ref='page'>
-        {this.isAdmin() && this.props.users && this.props.projects
+        {
+          this.isAdmin() &&
+          this.props.users &&
+          this.props.projects
           ? <UserList
             token={this.props.user.token}
             projects={this.props.projects}

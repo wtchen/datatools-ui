@@ -57,7 +57,7 @@ export default class PublicFeedsViewer extends React.Component {
 
 class FeedTable extends React.Component {
   feedFormat (cell, row) {
-    return cell ? <Link to={'/feed/' + row.id}>{cell}</Link> : ''
+    return cell ? <Link to={'/public/feed/' + row.id}>{cell}</Link> : ''
   }
   dateFormat (cell, row) {
     return cell ? moment(cell).format('MMMM Do YYYY, h:mm a') : ''

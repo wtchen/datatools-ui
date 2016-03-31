@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch'
 
+import { push } from 'react-router-redux'
+
 function requestConfig() {
   return {
     type: 'REQUEST_CONFIG',
@@ -31,5 +33,15 @@ export function fetchConfig() {
       .catch((err) => {
         console.error('error fetching config', err)
       })
+  }
+}
+
+export function routerPush() {
+
+  return function (dispatch, getState) {
+
+    // dispatch(requestConfig())
+    console.log('pushing')
+    window.location.href = '/#/explore'
   }
 }

@@ -1,7 +1,7 @@
 import { UserAuthWrapper } from 'redux-auth-wrapper'
 import { routerActions, push } from 'react-router-redux';
 
-// import { redirectUser } from '../actions/user'
+import { routerPush } from '../actions/config'
 
 import fetch from 'isomorphic-fetch'
 
@@ -37,7 +37,13 @@ export function secureFetch(url, state, method, payload) {
 export const UserIsAuthenticated = UserAuthWrapper({
   authSelector: state => state.user,
   predicate: user => user.profile !== null,
-  redirectAction: push,
-  failureRedirectPath: '/',
+  redirectAction: routerPush,
   wrapperDisplayName: 'UserIsAuthenticated'
+})
+
+export const UserIsAdmin = UserAuthWrapper({
+  authSelector: state => state.user,
+  predicate: user => user.permissions && user.permissions.isApplicationAdmin(),
+  redirectAction: routerPush,
+  wrapperDisplayName: 'UserIsAdmin'
 })

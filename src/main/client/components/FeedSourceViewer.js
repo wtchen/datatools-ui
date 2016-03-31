@@ -60,7 +60,8 @@ export default class FeedSourceViewer extends React.Component {
           <Row>
             <Col xs={12}>
               <ul className='breadcrumb'>
-                <li><Link to='/'>Projects</Link></li>
+                <li><Link to='/'>Explore</Link></li>
+                <li><Link to='/project'>Projects</Link></li>
                 <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
                 <li className='active'>{fs.name}</li>
               </ul>
@@ -69,7 +70,7 @@ export default class FeedSourceViewer extends React.Component {
 
           <Row>
             <Col xs={12}>
-              <h2>{fs.name}</h2>
+              <h2>{fs.name} <small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small></h2>
             </Col>
           </Row>
 

@@ -58,16 +58,24 @@ export default class FeedVersionNavigator extends React.Component {
               </Button>
 
               {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
-                ? <Button href='#' onClick={(evt) => {
-                    evt.preventDefault()
-                    this.props.uploadFeedClicked()
-                  }}>
+                ? <Button
+                    href='#'
+                    disabled={typeof this.props.uploadFeedClicked === 'undefined'}
+                    onClick={(evt) => {
+                      evt.preventDefault()
+                      this.props.uploadFeedClicked()
+                    }}
+                  >
                     <Glyphicon glyph='upload' /> Upload Feed
                   </Button>
-                : <Button href='#' onClick={(evt) => {
-                    evt.preventDefault()
-                    this.props.updateFeedClicked()
-                  }}>
+                : <Button
+                    href='#'
+                    disabled={typeof this.props.updateFeedClicked === 'undefined'}
+                    onClick={(evt) => {
+                      evt.preventDefault()
+                      this.props.updateFeedClicked()
+                    }}
+                  >
                     <Glyphicon glyph='refresh' /> Update Feed
                   </Button>
 
