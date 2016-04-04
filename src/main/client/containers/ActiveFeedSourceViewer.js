@@ -12,7 +12,8 @@ import {
   fetchPublicFeedSource,
   receiveFeedVersions,
   fetchPublicFeedVersions,
-  updateExternalFeedResource
+  updateExternalFeedResource,
+  deleteFeedVersion
 } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -64,7 +65,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateExternalFeedResource(feedSource, resourceType, { [propName]: newValue } ))
     },
     updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
-    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) }
+    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
+    deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
+      dispatch(deleteFeedVersion(feedSource, feedVersion))
+    }
   }
 }
 

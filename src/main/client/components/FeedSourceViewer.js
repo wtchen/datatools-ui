@@ -48,6 +48,16 @@ export default class FeedSourceViewer extends React.Component {
       })
   }
 
+  deleteFeedVersion (feedSource, feedVersion) {
+    this.refs['page'].showConfirmModal({
+      title: 'Delete Feed Version?',
+      body: 'Are you sure you want to delete this version?',
+      onConfirm: () => {
+        this.props.deleteFeedVersionConfirmed(feedSource, feedVersion)
+      }
+    })
+  }
+
   render () {
     const fs = this.props.feedSource
 
@@ -186,6 +196,9 @@ export default class FeedSourceViewer extends React.Component {
                     this.props.uploadFeedClicked(fs, files[0])
                   }
                 })
+              }}
+              deleteVersionClicked={(version) => {
+                this.deleteFeedVersion(fs, version)
               }}
             />
           </Panel>

@@ -22,6 +22,8 @@ const config = (state = {
       return update(state, { message: { $set: 'Updating feed...' }})
     case 'REQUESTING_FEEDVERSIONS':
       return update(state, { message: { $set: 'Loading feed versions...' }})
+    case 'DELETING_FEEDVERSION':
+      return update(state, { message: { $set: 'Deleting feed version...' }})
     case 'UPLOADING_FEED':
       return update(state, { message: { $set: 'Uploading feed...' }})
     case 'REQUESTING_SYNC':

@@ -263,3 +263,20 @@ export function uploadFeed (feedSource, file) {
     })
   }
 }
+
+export function deletingFeedVersion () {
+  return {
+    type: 'DELETING_FEEDVERSION'
+  }
+}
+
+export function deleteFeedVersion (feedSource, feedVersion, changes) {
+  return function (dispatch, getState) {
+    dispatch(deletingFeedVersion())
+    const url = '/api/manager/secure/feedversion/' + feedVersion.id
+    return secureFetch(url, getState(), 'delete')
+      .then((res) => {
+        return dispatch(fetchFeedVersions(feedSource))
+      })
+  }
+}

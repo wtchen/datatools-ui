@@ -82,6 +82,17 @@ export default class FeedVersionNavigator extends React.Component {
               }
 
               <Button href='#'
+                disabled={!hasVersions }
+                onClick={(evt) => {
+                  evt.preventDefault()
+                  console.log('deleting version');
+                  this.props.deleteVersionClicked(version)
+                }}
+              >
+                <Glyphicon glyph='remove' /> Delete Version
+              </Button>
+
+              <Button href='#'
                 disabled={!hasVersions || !version.nextVersionId}
                 onClick={(evt) => {
                   evt.preventDefault()
