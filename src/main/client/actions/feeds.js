@@ -280,3 +280,30 @@ export function deleteFeedVersion (feedSource, feedVersion, changes) {
       })
   }
 }
+
+export function requestingValidationResult () {
+  return {
+    type: 'REQUESTING_VALIDATION_RESULT'
+  }
+}
+
+export function receiveValidationResult (feedSource, feedVersion, validationResult) {
+  return {
+    type: 'RECEIVE_VALIDATION_RESULT',
+    feedSource,
+    feedVersion,
+    validationResult
+  }
+}
+
+export function fetchValidationResult (feedSource, feedVersion) {
+  return function (dispatch, getState) {
+    dispatch(requestingValidationResult())
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/validation`
+    return secureFetch(url, getState())
+    .then(response => response.json())
+    .then(result => {
+      dispatch(receiveValidationResult(feedSource, feedVersion, result))
+    })
+  }
+}

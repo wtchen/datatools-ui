@@ -26,7 +26,9 @@ export default class FeedSourceViewer extends React.Component {
       snapshotVersions: []
     }
 
-    if(this.props.feedSource) this.updateSnapshotVersions(this.props.feedSource)
+    if(this.props.feedSource && this.props.feedSource.retrievalMethod === 'PRODUCED_IN_HOUSE') {
+      this.updateSnapshotVersions(this.props.feedSource)
+    }
   }
 
   componentWillMount () {
@@ -34,7 +36,9 @@ export default class FeedSourceViewer extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if(nextProps.feedSource) this.updateSnapshotVersions(nextProps.feedSource)
+    if(nextProps.feedSource && nextProps.feedSource.retrievalMethod === 'PRODUCED_IN_HOUSE') {
+      this.updateSnapshotVersions(nextProps.feedSource)
+    }
   }
 
   updateSnapshotVersions (feedSource) {
@@ -45,6 +49,9 @@ export default class FeedSourceViewer extends React.Component {
         this.setState({
           snapshotVersions: snapshots
         })
+      })
+      .catch(err => {
+        console.log('Error fetching snapshots', err)
       })
   }
 
@@ -185,6 +192,7 @@ export default class FeedSourceViewer extends React.Component {
             <FeedVersionNavigator
               versions={fs.feedVersions}
               feedSource={fs}
+              validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }
               updateFeedClicked={() => this.props.updateFeedClicked(fs)}
               uploadFeedClicked={() => {
                 console.log('showing modal');

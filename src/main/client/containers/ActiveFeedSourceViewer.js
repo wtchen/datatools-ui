@@ -13,7 +13,8 @@ import {
   receiveFeedVersions,
   fetchPublicFeedVersions,
   updateExternalFeedResource,
-  deleteFeedVersion
+  deleteFeedVersion,
+  fetchValidationResult
 } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -68,6 +69,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
       dispatch(deleteFeedVersion(feedSource, feedVersion))
+    },
+    validationResultRequested: (feedSource, feedVersion) => {
+      dispatch(fetchValidationResult(feedSource, feedVersion))
     }
   }
 }

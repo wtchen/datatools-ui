@@ -3,6 +3,8 @@ import moment from 'moment'
 
 import { Grid, Row, Col, ButtonGroup, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 
+import GtfsValidationViewer from './validation/GtfsValidationViewer'
+
 export default class FeedVersionNavigator extends React.Component {
 
   constructor (props) {
@@ -113,7 +115,12 @@ export default class FeedVersionNavigator extends React.Component {
         <Row><Col xs={12}>&nbsp;</Col></Row>
 
         {version
-          ? <FeedVersionViewer version={version} />
+          ? <FeedVersionViewer
+              version={version}
+              validationResultRequested={(version) => {
+                this.props.validationResultRequested(version)
+              }}
+            />
           : <p>No versions exist for this feed source.</p>
         }
 
@@ -170,11 +177,10 @@ class FeedVersionViewer extends React.Component {
           </Col>
         </Row>
 
-        <Panel
-          header={(<h3><Glyphicon glyph='check' /> Validation Results</h3>)}
-          collapsible
-        >
-        </Panel>
+        <GtfsValidationViewer
+          validationResult={version.validationResult}
+          validationResultRequested={() => { this.props.validationResultRequested(version) }}
+        />
 
         <Panel
           header={(<h3><Glyphicon glyph='comment' /> Comments on this Version</h3>)}
