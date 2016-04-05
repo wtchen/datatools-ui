@@ -14,6 +14,12 @@ export default class FeedVersionNavigator extends React.Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    this.setState({
+      versionIndex: nextProps.versions ? nextProps.versions.length - 1 : 0
+    })
+  }
+
   render () {
 
     const versionTitleStyle = {
