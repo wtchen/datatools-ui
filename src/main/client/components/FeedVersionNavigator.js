@@ -130,6 +130,7 @@ export default class FeedVersionNavigator extends React.Component {
 }
 
 class FeedVersionViewer extends React.Component {
+
   render () {
     const version = this.props.version
 
