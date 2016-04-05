@@ -29,7 +29,7 @@ let unsubscribe = store.subscribe(() =>
   console.log('store updated', store.getState())
 )
 
-const appHistory = syncHistoryWithStore(hashHistory, store)
+const appHistory = syncHistoryWithStore(browserHistory, store)
 
 ReactDOM.render(
   <Provider store={store}>
