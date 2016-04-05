@@ -168,33 +168,46 @@ export default class ProjectsList extends React.Component {
                 />
               </Col>
               <Col xs={8}>
-                <Button
-                  bsStyle="primary"
-                  id='TRANSITLAND'
-                  onClick={(evt) => {
-                    this.props.thirdPartySync("TRANSITLAND")
-                  }}
-                >
-                  <Glyphicon glyph='refresh' /> transit.land
-                </Button>
-                <Button
-                  bsStyle="primary"
-                  id='TRANSITFEEDS'
-                  onClick={(evt) => {
-                    this.props.thirdPartySync("TRANSITFEEDS")
-                  }}
-                >
-                  <Glyphicon glyph='refresh' /> transitfeeds.com
-                </Button>
-                <Button
-                  bsStyle='primary'
-                  id='MTC'
-                  onClick={(evt) => {
-                    this.props.thirdPartySync("MTC")
-                  }}
-                >
-                  <Glyphicon glyph='refresh' /> MTC
-                </Button>
+
+                {this.props.resourceTypes && this.props.resourceTypes.indexOf('TRANSITLAND') != -1
+                  ? <Button
+                      bsStyle="primary"
+                      id='TRANSITLAND'
+                      onClick={(evt) => {
+                        this.props.thirdPartySync("TRANSITLAND")
+                      }}
+                    >
+                      <Glyphicon glyph='refresh' /> transit.land
+                    </Button>
+                  : null
+                }
+
+                {this.props.resourceTypes && this.props.resourceTypes.indexOf('TRANSITFEEDS') != -1
+                  ? <Button
+                      bsStyle="primary"
+                      id='TRANSITFEEDS'
+                      onClick={(evt) => {
+                        this.props.thirdPartySync("TRANSITFEEDS")
+                      }}
+                    >
+                      <Glyphicon glyph='refresh' /> transitfeeds.com
+                    </Button>
+                  : null
+                }
+
+                {this.props.resourceTypes && this.props.resourceTypes.indexOf('MTC') != -1
+                  ? <Button
+                      bsStyle='primary'
+                      id='MTC'
+                      onClick={(evt) => {
+                        this.props.thirdPartySync("MTC")
+                      }}
+                    >
+                      <Glyphicon glyph='refresh' /> MTC
+                    </Button>
+                  : null
+                }
+
                 <Button
                   bsStyle='default'
                   onClick={() => {
