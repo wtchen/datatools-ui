@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import DatatoolsNavbar from 'datatools-navbar'
+import { DatatoolsNavbar } from 'datatools-common'
 
 import { login, logout, resetPassword } from '../actions/user'
 
