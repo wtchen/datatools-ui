@@ -234,8 +234,7 @@ export default class ProjectsList extends React.Component {
                       <th className='col-md-4'>Name</th>
                       <th>Public?</th>
                       <th>Retrieval Method</th>
-                      <th>Last Updated</th>
-                      <th>Last Fetched</th>
+                      <th>GTFS Last Updated</th>
                       <th>Error<br/>Count</th>
                       <th>Valid Range</th>
                       <th></th>
@@ -270,6 +269,7 @@ class FeedSourceTableRow extends React.Component {
 
   render () {
     const fs = this.props.feedSource
+    const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     return (
       <tr key={fs.id}>
         <td className="col-md-4">
@@ -288,6 +288,7 @@ class FeedSourceTableRow extends React.Component {
         <td>
           <Input
             type='checkbox'
+            label='&nbsp;'
             defaultChecked={fs.isPublic}
             onChange={(e) => {
               console.log(e.target.checked)
@@ -299,10 +300,12 @@ class FeedSourceTableRow extends React.Component {
         <td>
           <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
         </td>
-        <td>{moment(fs.lastUpdated).format('MMM Do YYYY')}</td>
-        <td>{fs.lastFetched !== null ? moment(fs.lastFetched).format('MMM Do YYYY') : 'N/A'}</td>
-        <td></td>
-        <td></td>
+        <td>{fs.lastUpdated ? moment(fs.lastUpdated).format('MMM Do YYYY') : na}</td>
+        <td>{fs.latestValidation ? fs.latestValidation.errorCount : na}</td>
+        <td>{fs.latestValidation
+          ? (<span>{moment(fs.latestValidation.startDate).format('MMM Do YYYY')} to {moment(fs.latestValidation.endDate).format('MMM Do YYYY')}</span>)
+          : na
+        }</td>
         <td>
           <Button
             bsStyle='danger'
