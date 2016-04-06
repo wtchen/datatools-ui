@@ -112,9 +112,11 @@ export default class FeedVersionNavigator extends React.Component {
             </ButtonGroup>
           </Col>
           <Col xs={2}>
+            {/*
             <Button className='pull-right' disabled={!hasVersions}>
               <Glyphicon glyph='list' /> All Versions
             </Button>
+            */}
           </Col>
         </Row>
 
