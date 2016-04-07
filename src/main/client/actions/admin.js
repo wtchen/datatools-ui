@@ -21,9 +21,11 @@ export function fetchUsers () {
       .then(response => response.json())
       .then(data => {
         const users = JSON.parse(data)
-        // console.log(data)
-        dispatch(receiveUsers(users))
+        return dispatch(receiveUsers(users))
       })
+      // .catch( err => {
+      //   console.log(err)
+      // })
   }
 }
 

@@ -3,6 +3,7 @@ import { Row, Col, Input, Panel, SplitButton, MenuItem, Label, ButtonGroup, Butt
 
 import allPermissions from './permissions'
 
+import { fetchFeedsForProject } from '../../actions/projects'
 
 import update from 'react-addons-update'
 
@@ -10,6 +11,35 @@ export default class UserSettings extends React.Component {
 
   constructor (props) {
     super(props)
+    this.state = {
+      appAdminChecked: this.props.permissions.isApplicationAdmin(),
+      currentProjectIndex: 0,
+      projectSettings: {},
+    }
+    this.props.projects.forEach((project, i) => {
+      console.log(project.id)
+      console.log(this.props.permissions)
+      let access = 'none'
+      let defaultFeeds = []
+      let permissions = []
+      console.log(this.props.permissions.hasProject(project.id))
+      if(this.props.permissions.hasProject(project.id)) {
+        if(this.props.permissions.isProjectAdmin(project.id)) {
+          console.log('is admin')
+          access = 'admin'
+        }
+        else {
+          console.log('custom')
+          access = 'custom'
+          let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
+          permissions = projectPermissions.map((p) => { return p.type })
+          defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
+        }
+      }
+      console.log({ access, defaultFeeds, permissions })
+      this.state.projectSettings[project.id] = { access, defaultFeeds, permissions }
+    })
+    console.log(this.state)
   }
 
   getSettings () {
@@ -25,7 +55,7 @@ export default class UserSettings extends React.Component {
     let settings = { projects: [] }
 
     this.props.projects.forEach((project, i) => {
-      let stateProjectSettings = projectSettings[project.id]
+      let stateProjectSettings = this.state.projectSettings[project.id]
       if (stateProjectSettings.access === 'none') return
 
       let projectSettings = {
@@ -55,10 +85,10 @@ export default class UserSettings extends React.Component {
 
   projectSelected (evt, key) {
     let currentProject = this.props.projects[key]
-
     this.setState({
       currentProjectIndex: key
     })
+    console.log('project selected', key, currentProject)
   }
 
   appAdminClicked () {
@@ -68,8 +98,11 @@ export default class UserSettings extends React.Component {
   }
 
   projectAccessUpdated(projectId, newAccess) {
+
     var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } };
     this.setState(update(this.state, stateUpdate));
+    console.log('project access updated', stateUpdate)
+    console.log(this.state)
   }
 
   projectFeedsUpdated(projectId, newFeeds) {
@@ -83,49 +116,35 @@ export default class UserSettings extends React.Component {
   }
 
   render () {
-    let currentProjectIndex = 0
-    let appAdminChecked = this.props.permissions.isApplicationAdmin()
-    let projectSettings = {}
-    this.props.projects.forEach((project, i) => {
-      let access = 'none'
-      let defaultFeeds = []
-      let permissions = []
-      if(this.props.permissions.hasProject(project.id)) {
-        if(this.props.permissions.isProjectAdmin(project.id)) access = 'admin'
-        else {
-          access = 'custom'
-          let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
-          permissions = projectPermissions.map((p) => { return p.type })
-          defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
-        }
+    let currentProject = this.props.projects[this.state.currentProjectIndex]
+
+    let projectPanel = (
+      <Panel header={
+        <h3>
+          Project Settings for&nbsp;
+          <SplitButton
+            title={currentProject.name}
+            onSelect={this.projectSelected.bind(this)}
+            pullRight
+          >
+            {this.props.projects.map((project, i) => {
+              let settings = this.state.projectSettings[project.id]
+              if (typeof settings !== 'undefined')
+                return <MenuItem eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
+            })}
+          </SplitButton>
+        </h3>
       }
-      projectSettings[project.id] = { access, defaultFeeds, permissions }
-    })
-
-    let currentProject = this.props.projects[currentProjectIndex]
-
-    let projectPanel = (<Panel header={
-      <h3>
-        Project Settings for&nbsp;
-        <SplitButton
-          title={currentProject.name}
-          onSelect={this.projectSelected.bind(this)}
-          pullRight
-        >
-          {this.props.projects.map((project, i) => {
-            let settings = projectSettings[project.id]
-            if (typeof settings !== 'undefined')
-              return <MenuItem eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
-          })}
-        </SplitButton>
-      </h3>
-    }>
+      >
+      <div></div>
       {this.props.projects.map((project, i) => {
-        let settings = projectSettings[project.id]
+        // console.log(projectSettings)
+        let settings = this.state.projectSettings[project.id]
         return <ProjectSettings
           project={project}
           settings={settings}
-          visible={(i === currentProjectIndex)}
+          fetchFeedsForProject={this.props.fetchFeedsForProject}
+          visible={(i === this.state.currentProjectIndex)}
           projectAccessUpdated={this.projectAccessUpdated.bind(this)}
           projectFeedsUpdated={this.projectFeedsUpdated.bind(this)}
           projectPermissionsUpdated={this.projectPermissionsUpdated.bind(this)}
@@ -140,14 +159,14 @@ export default class UserSettings extends React.Component {
             <Input
               type='checkbox'
               label='Application Administrator'
-              defaultChecked={appAdminChecked}
+              defaultChecked={this.state.appAdminChecked}
               onClick={this.appAdminClicked.bind(this)}
               ref='appAdminCheckbox'
             />
           </Panel>
         </Col>
         <Col xs={8}>
-          {appAdminChecked
+          {this.state.appAdminChecked
             ? <i>Application administrators have full access to all projects.</i>
             : projectPanel
           }
@@ -166,19 +185,30 @@ function getProjectLabel(access) {
 }
 
 class ProjectSettings extends React.Component {
-
+  constructor (props) {
+    super(props)
+    this.state = {
+      projectSettings: this.props.settings
+    }
+  }
   static propTypes = {
     project: React.PropTypes.object.isRequired,
     settings: React.PropTypes.object.isRequired
   }
-
+  componentWillMount () {
+    if (!this.props.project.feedSources) {
+      console.log('fetchingFeeds for ' + this.props.project.id)
+      this.props.fetchFeedsForProject(this.props.project)
+    }
+  }
   setAccess (access) {
+    console.log(access)
     this.props.projectAccessUpdated(this.props.project.id, access)
   }
 
   feedsUpdated () {
     let selectedFeeds = []
-    this.props.project.feeds.forEach((feed) => {
+    this.props.project.feedSources.forEach((feed) => {
       var checkbox = this.refs['feed-' + feed.id]
       if(checkbox.getChecked()) selectedFeeds.push(feed.id)
     })
@@ -223,7 +253,7 @@ class ProjectSettings extends React.Component {
             <Row>
               <Col xs={6}>
                 <h4>Feed Sources</h4>
-                {this.props.project.feeds.map((feed, i) => {
+                {this.props.project.feedSources ? this.props.project.feedSources.map((feed, i) => {
                   let name = (feed.name === '') ? '(unnamed feed)' : feed.name
                   let ref = 'feed-' + feed.id
                   let checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
@@ -234,7 +264,8 @@ class ProjectSettings extends React.Component {
                     label={name}
                     onClick={this.feedsUpdated.bind(this)}
                   />
-                })}
+                }) : 'Cannot fetch feeds'
+              }
               </Col>
               <Col xs={6}>
                 <h4>Permissions</h4>

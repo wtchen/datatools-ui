@@ -39,7 +39,9 @@ export default class UserList extends React.Component {
             projects={this.props.projects}
             user={user}
             key={i}
-            updateUser={this.props.updateUser.bind(this)}
+            fetchFeedsForProject={this.props.fetchFeedsForProject}
+            // setUserPermission={this.props.setUserPermission}
+            saveUser={this.props.saveUser.bind(this)}
             token={this.props.token}
           />
         })}
@@ -71,7 +73,7 @@ class UserRow extends React.Component {
   save () {
     console.log('saving ', this.props.user)
     console.log(this.refs.userSettings.getSettings())
-    this.props.updateUser(this.props.user, this.refs.userSettings.getSettings())
+    this.props.saveUser(this.props.user.user_id, this.refs.userSettings.getSettings())
   }
 
   render () {
@@ -89,10 +91,13 @@ class UserRow extends React.Component {
           </Col>
         </Row>
       }>
-        <UserSettings ref='userSettings'
-          projects={this.props.projects}
-          permissions={permissions}
-        />
+        { this.state.isEditing ?
+          <UserSettings ref='userSettings'
+            projects={this.props.projects}
+            fetchFeedsForProject={this.props.fetchFeedsForProject}
+            permissions={permissions}
+          /> : ''
+        }
       </Panel>
     )
   }

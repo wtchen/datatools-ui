@@ -2,13 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import UserAdmin from '../components/admin/UserAdmin'
+import { DataManager } from 'datatools-common'
 
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 
-import { fetchProjectsWithPublicFeeds } from '../actions/projects'
 import { updateUser } from '../actions/user'
 import { fetchUsers, createUser } from '../actions/admin'
-import { fetchProjects } from '../actions/projects'
+import { fetchProjects, fetchFeedsForProject } from '../actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -23,10 +23,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       if (!initialProps.users)
         dispatch(fetchUsers())
-      if (!initialProps.projects)
+      if (!initialProps.projects){
         dispatch(fetchProjects())
+      }
     },
-    updateUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
+    fetchFeedsForProject: (project) => { dispatch(fetchFeedsForProject(project)) },
+    saveUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
+    // setUserPermission: (user, permissions) => { dispatch(setUserPermission(user, permissions)) },
     createUser: (credentials) => { dispatch(createUser(credentials)) }
   }
 }

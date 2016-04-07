@@ -38,7 +38,9 @@ export default class UserAdmin extends React.Component {
             token={this.props.user.token}
             projects={this.props.projects}
             users={this.props.users}
-            updateUser={this.props.updateUser}
+            setUserPermission={this.props.setUserPermission}
+            saveUser={this.props.saveUser}
+            fetchFeedsForProject={this.props.fetchFeedsForProject}
             createUser={this.props.createUser}
           />
           : (

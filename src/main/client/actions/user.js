@@ -58,6 +58,7 @@ export function fetchUser (user) {
 // server call
 export function updateUser (user, permissions) {
   return function (dispatch, getState) {
+    console.log(permissions)
     var payload = {
       user_id: user,
       data: permissions
@@ -71,6 +72,22 @@ export function updateUser (user, permissions) {
       })
   }
 }
+
+// export function updateUserPermissions (user, permissions) {
+//   return function (dispatch, getState) {
+//     var payload = {
+//       user_id: user.user_id,
+//       data: permissions
+//     }
+//
+//     return secureFetch(url, getState(), 'put', payload)
+//
+//     }).done((data) => {
+//       console.log('update user ok', data)
+//       this.fetchUsers()
+//     })
+//   }
+// }
 
 export function creatingPublicUser () {
   return {
