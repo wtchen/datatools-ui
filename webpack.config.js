@@ -36,6 +36,9 @@ module.exports = {
     }, {
       test: /\.json?$/,
       loader: 'json'
+    }, {
+      test: /\.yml$/,
+      loader: 'yaml'
     // }, {
     //   test: /\.css$/,
     //   loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]'

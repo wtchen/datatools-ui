@@ -11,6 +11,8 @@ import { checkExistingLogin } from './actions/user'
 import managerApp from './reducers'
 import App from './containers/App'
 
+import config from 'json!yaml!../../../config.yml'
+
 import * as reducers from './reducers'
 
 const store = createStore(
@@ -22,6 +24,9 @@ const store = createStore(
 )
 
 console.log('initial store', store.getState())
+
+console.log('config', config)
+window.config = config
 
 // Every time the state changes, log it
 // Note that subscribe() returns a function for unregistering the listener
