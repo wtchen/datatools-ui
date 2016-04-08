@@ -1,0 +1,3 @@
+auth0:
+  client_secret: your-auth0-client-secret
+  api_token: your-auth0-api-token
