@@ -5,28 +5,27 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { browserHistory, hashHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-import { fetchConfig } from './actions/config'
-import { checkExistingLogin } from './actions/user'
+import { checkExistingLogin } from './manager/actions/user'
 
-import managerApp from './reducers'
-import App from './containers/App'
+import App from './common/containers/App'
 
 import config from 'json!yaml!../../../config.yml'
+console.log('config', config)
+window.DT_CONFIG = config
 
-import * as reducers from './reducers'
+import * as managerReducers from './manager/reducers'
+import * as adminReducers from './admin/reducers'
 
 const store = createStore(
   combineReducers({
-    ...reducers,
+    ...managerReducers,
+    ...adminReducers,
     routing: routerReducer
   }),
   applyMiddleware(thunkMiddleware)
 )
 
 console.log('initial store', store.getState())
-
-console.log('config', config)
-window.config = config
 
 // Every time the state changes, log it
 // Note that subscribe() returns a function for unregistering the listener
