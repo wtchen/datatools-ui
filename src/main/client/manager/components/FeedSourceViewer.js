@@ -1,7 +1,7 @@
 import fetch  from 'isomorphic-fetch'
 import React  from 'react'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 
 import ManagerPage  from '../../common/components/ManagerPage'
 import EditableTextField from '../../common/components/EditableTextField'
@@ -85,8 +85,20 @@ export default class FeedSourceViewer extends React.Component {
           </Row>
 
           <Row>
-            <Col xs={12}>
+            <Col xs={8}>
               <h2>{fs.name} <small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small></h2>
+            </Col>
+            <Col xs={4}>
+              <h2>
+                {DT_CONFIG.modules.gtfsplus && DT_CONFIG.modules.gtfsplus.enabled
+                  ? <Button
+                      bsStyle='primary'
+                      className='pull-right'
+                      onClick={() => { browserHistory.push(`/gtfsplus/${fs.id}`) }}
+                    >Edit GTFS+</Button>
+                  : null
+                }
+              </h2>
             </Col>
           </Row>
 

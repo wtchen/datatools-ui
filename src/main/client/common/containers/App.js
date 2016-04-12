@@ -13,6 +13,8 @@ import ActiveSignupPage  from '../../public/containers/ActiveSignupPage'
 import ActiveUserAccount  from '../../public/containers/ActiveUserAccount'
 import ActiveUserAdmin  from '../../admin/containers/ActiveUserAdmin'
 
+import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
+
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
 class App extends React.Component {
@@ -98,6 +100,7 @@ class App extends React.Component {
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
+        <Route path='/gtfsplus/:feedSourceId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
       </Router>
     )
   }
