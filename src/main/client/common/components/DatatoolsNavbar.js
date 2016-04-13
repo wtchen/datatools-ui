@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
 
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 
 export default class DatatoolsNavbar extends Component {
 
@@ -12,6 +13,7 @@ export default class DatatoolsNavbar extends Component {
     editorUrl: PropTypes.string,
     userAdminUrl: PropTypes.string,
     alertsUrl: PropTypes.string,
+    signConfigUrl: PropTypes.string,
     loginHandler: PropTypes.func,
     logoutHandler: PropTypes.func,
     resetPasswordHandler: PropTypes.func
@@ -40,9 +42,9 @@ export default class DatatoolsNavbar extends Component {
           </Navbar.Brand>
         </Navbar.Header>
         <Nav>
-          <NavItem href={this.props.managerUrl} active={this.props.managerUrl === '#'}>
-            Manager
-          </NavItem>
+          <LinkContainer to={this.props.managerUrl}>
+            <NavItem>Manager</NavItem>
+          </LinkContainer>
           {this.props.editorUrl
             ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
                 Editor
@@ -50,15 +52,21 @@ export default class DatatoolsNavbar extends Component {
             : null
           }
           {this.props.alertsUrl
-            ? <NavItem href={this.props.alertsUrl} active={this.props.alertsUrl === '#'}>
-                Alerts
-              </NavItem>
+            ? <LinkContainer to={this.props.alertsUrl}>
+                <NavItem>Alerts</NavItem>
+              </LinkContainer>
             : null
           }
           {this.props.userAdminUrl
-            ? <NavItem href={this.props.userAdminUrl} active={this.props.userAdminUrl === '#'}>
-                Users
-              </NavItem>
+            ? <LinkContainer to={this.props.userAdminUrl}>
+                <NavItem>Users</NavItem>
+              </LinkContainer>
+            : null
+          }
+          {this.props.signConfigUrl
+            ? <LinkContainer to={this.props.signConfigUrl}>
+                <NavItem>Sign Config</NavItem>
+              </LinkContainer>
             : null
           }
         </Nav>

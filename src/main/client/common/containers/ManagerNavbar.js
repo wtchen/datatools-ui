@@ -1,16 +1,17 @@
-import { DatatoolsNavbar } from 'datatools-common'
-import React  from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 
+import DatatoolsNavbar from '../components/DatatoolsNavbar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
     title: DT_CONFIG.application.title,
-    managerUrl: '#',
+    managerUrl: '/project',
     editorUrl: DT_CONFIG.modules.editor.url,
-    //userAdminUrl: state.config.userAdminUrl,
+    userAdminUrl: DT_CONFIG.modules.user_admin.url,
     alertsUrl: DT_CONFIG.modules.alerts.url,
+    signConfigUrl: DT_CONFIG.modules.sign_config.url,
     username: state.user.profile ? state.user.profile.email : null
   }
 }
