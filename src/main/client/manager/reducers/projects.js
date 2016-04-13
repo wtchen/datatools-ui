@@ -2,9 +2,10 @@ import update from 'react-addons-update'
 
 const projects = (state = {
   isFetching: false,
-  all: null
+  all: null,
+  active: null
 }, action) => {
-  let projects, sources, projectIndex, sourceIndex, versionIndex, activeIndex
+  let projects, sources, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds
   switch (action.type) {
     case 'CREATE_PROJECT':
       projects = [{
@@ -62,18 +63,31 @@ const projects = (state = {
           ]
         }
       }
-      return update(state, { all: { $set: projects }})
+      activeProject = action.project.id === DT_CONFIG.modules.alerts.active_project ? action.project : null
+      if (state.active && !activeProject) { // active project already exists and received project does not match active project
+        activeProject = state.active
+      }
+      return update(state, {active: { $set: activeProject }, all: { $set: projects }})
 
     case 'RECEIVE_FEEDSOURCES':
-      activeIndex = action.projectId === DT_CONFIG.modules.alerts.active_project
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
-      return update(state,
+      if (state.active && action.projectId === state.active.id) {
+        return update(state,
         {
           active: {$merge: {feedSources: action.feedSources}},
           all: {
             [projectIndex]: {$merge: {feedSources: action.feedSources}}
           }
         })
+      } else { // if projectId does not match active project
+        return update(state,
+          {
+            all: {
+              [projectIndex]: {$merge: {feedSources: action.feedSources}}
+            }
+          }
+        )
+      }
 
     case 'RECEIVE_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
