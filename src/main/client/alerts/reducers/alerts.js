@@ -96,7 +96,7 @@ const alerts = (state = {
             }
 
             if(ent.AgencyId !== null) {
-              let feed = project.feeds.find(f => f.externalProperties.MTC.AgencyId === ent.AgencyId)
+              let feed = project.feedSources.find(f => f.externalProperties.MTC.AgencyId === ent.AgencyId)
               entity.agency = feed
               entity.type = 'AGENCY'
             }

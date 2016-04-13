@@ -69,7 +69,7 @@ const projects = (state = {
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
       return update(state,
         {
-          active: {$merge: {feeds: action.feedSources}},
+          active: {$merge: {feedSources: action.feedSources}},
           all: {
             [projectIndex]: {$merge: {feedSources: action.feedSources}}
           }

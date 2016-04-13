@@ -10,10 +10,10 @@ const gtfsFilter = (state = {
     case 'UPDATE_GTFS_FILTER':
       let userFeeds = []
       if(action.user.permissions.isProjectAdmin(action.activeProject.id)) {
-        userFeeds = action.activeProject.feeds
+        userFeeds = action.activeProject.feedSources
       }
       else if(action.user.permissions.hasProjectPermission(action.activeProject.id, 'edit-alert')) {
-        userFeeds = action.activeProject.feeds.filter((feed) => {
+        userFeeds = action.activeProject.feedSources.filter((feed) => {
           return action.user.permissions.hasFeedPermission(action.activeProject.id, feed.id, 'edit-alert') !== null
         })
       }

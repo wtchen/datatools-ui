@@ -1,5 +1,5 @@
 export const getFeedsForPermission = (project, user, permission) => {
-  return project && project.feeds ? project.feeds.filter((feed) => {
+  return project && project.feedSources ? project.feedSources.filter((feed) => {
     return user.permissions.hasFeedPermission(project.id, feed.id, permission) !== null
   }) : []
 }

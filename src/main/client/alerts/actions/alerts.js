@@ -223,7 +223,7 @@ export function editAlert(alert) {
 
 export function fetchEntity(entity, activeProject) {
   console.log()
-  const feed = activeProject.feeds.find(f => f.externalProperties.MTC.AgencyId === entity.entity.AgencyId)
+  const feed = activeProject.feedSources.find(f => f.externalProperties.MTC.AgencyId === entity.entity.AgencyId)
   const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feed.externalProperties.MTC.AgencyId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feed.externalProperties.MTC.AgencyId}`
   return fetch(url)
   .then((response) => {
