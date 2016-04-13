@@ -24,6 +24,7 @@ export function fetchProjectFeeds (projectId) {
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(feedSources => {
+        console.log('received feeds for project', feedSources)
         dispatch(receiveFeedSources(projectId, feedSources))
       })
   }

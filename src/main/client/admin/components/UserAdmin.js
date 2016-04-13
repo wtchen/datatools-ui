@@ -40,7 +40,7 @@ export default class UserAdmin extends React.Component {
             users={this.props.users}
             setUserPermission={this.props.setUserPermission}
             saveUser={this.props.saveUser}
-            fetchFeedsForProject={this.props.fetchFeedsForProject}
+            fetchProjectFeeds={this.props.fetchProjectFeeds}
             createUser={this.props.createUser}
           />
           : (

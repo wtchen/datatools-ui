@@ -38,7 +38,7 @@ export default class UserList extends React.Component {
             projects={this.props.projects}
             user={user}
             key={i}
-            fetchFeedsForProject={this.props.fetchFeedsForProject}
+            fetchProjectFeeds={this.props.fetchProjectFeeds}
             // setUserPermission={this.props.setUserPermission}
             saveUser={this.props.saveUser.bind(this)}
             token={this.props.token}
@@ -93,7 +93,7 @@ class UserRow extends React.Component {
         { this.state.isEditing ?
           <UserSettings ref='userSettings'
             projects={this.props.projects}
-            fetchFeedsForProject={this.props.fetchFeedsForProject}
+            fetchProjectFeeds={this.props.fetchProjectFeeds}
             permissions={permissions}
           /> : ''
         }

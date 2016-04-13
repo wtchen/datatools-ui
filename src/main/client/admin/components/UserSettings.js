@@ -3,7 +3,6 @@ import { Row, Col, Input, Panel, SplitButton, MenuItem, Label, ButtonGroup, Butt
 import update from 'react-addons-update'
 
 import allPermissions from './permissions'
-import { fetchFeedsForProject } from '../../manager/actions/projects'
 
 export default class UserSettings extends React.Component {
 
@@ -14,6 +13,7 @@ export default class UserSettings extends React.Component {
       currentProjectIndex: 0,
       projectSettings: {},
     }
+    console.log(this.props.projects)
     this.props.projects.forEach((project, i) => {
       console.log(project.id)
       console.log(this.props.permissions)
@@ -141,7 +141,7 @@ export default class UserSettings extends React.Component {
         return <ProjectSettings
           project={project}
           settings={settings}
-          fetchFeedsForProject={this.props.fetchFeedsForProject}
+          fetchProjectFeeds={this.props.fetchProjectFeeds}
           visible={(i === this.state.currentProjectIndex)}
           projectAccessUpdated={this.projectAccessUpdated.bind(this)}
           projectFeedsUpdated={this.projectFeedsUpdated.bind(this)}
@@ -196,7 +196,7 @@ class ProjectSettings extends React.Component {
   componentWillMount () {
     if (!this.props.project.feedSources) {
       console.log('fetchingFeeds for ' + this.props.project.id)
-      this.props.fetchFeedsForProject(this.props.project)
+      this.props.fetchProjectFeeds(this.props.project.id)
     }
   }
   setAccess (access) {

@@ -6,7 +6,8 @@ import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
 
 import { updateUser } from '../../manager/actions/user'
 import { fetchUsers, createUser } from '../actions/admin'
-import { fetchProjects, fetchFeedsForProject } from '../../manager/actions/projects'
+import { fetchProjects } from '../../manager/actions/projects'
+import { fetchProjectFeeds } from '../../manager/actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -25,7 +26,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(fetchProjects())
       }
     },
-    fetchFeedsForProject: (project) => { dispatch(fetchFeedsForProject(project)) },
+    fetchProjectFeeds: (project) => { dispatch(fetchProjectFeeds(project)) },
     saveUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
     // setUserPermission: (user, permissions) => { dispatch(setUserPermission(user, permissions)) },
     createUser: (credentials) => { dispatch(createUser(credentials)) }

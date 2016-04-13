@@ -1,0 +1,6 @@
+@import url('~react-select/dist/react-select.css');
+
+.leaflet-top,
+.leaflet-bottom {
+	z-index: 0;
+}

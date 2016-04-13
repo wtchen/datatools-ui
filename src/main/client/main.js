@@ -15,14 +15,18 @@ window.DT_CONFIG = config
 
 import * as managerReducers from './manager/reducers'
 import * as adminReducers from './admin/reducers'
+import * as alertsReducers from './alerts/reducers'
 
 import * as gtfsPlusReducers from './gtfsplus/reducers'
+import * as gtfsReducers from './gtfs/reducers'
 
 const store = createStore(
   combineReducers({
     ...managerReducers,
     ...adminReducers,
+    ...alertsReducers,
     ...gtfsPlusReducers,
+    ...gtfsReducers,
     routing: routerReducer
   }),
   applyMiddleware(thunkMiddleware)

@@ -12,6 +12,8 @@ import ActivePublicFeedsViewer  from '../../public/containers/ActivePublicFeedsV
 import ActiveSignupPage  from '../../public/containers/ActiveSignupPage'
 import ActiveUserAccount  from '../../public/containers/ActiveUserAccount'
 import ActiveUserAdmin  from '../../admin/containers/ActiveUserAdmin'
+import MainAlertsViewer  from '../../alerts/containers/MainAlertsViewer'
+import ActiveAlertEditor  from '../../alerts/containers/ActiveAlertEditor'
 
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 
@@ -97,6 +99,12 @@ class App extends React.Component {
         <Route path='/signup' component={ActiveSignupPage} />
         <Route path='/explore' component={ActivePublicFeedsViewer} />
         <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />
+        <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />
+        <Route path='alerts/newalert' component={ActiveAlertEditor} onEnter={requireAuth} />
+        <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />
+        <Route path='signs' component={MainAlertsViewer} onEnter={requireAuth} />
+        <Route path='signs/newsign' component={ActiveAlertEditor} onEnter={requireAuth} />
+        <Route path='signs/sign/:signId' component={ActiveAlertEditor} onEnter={requireAuth} />
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />

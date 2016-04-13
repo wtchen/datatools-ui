@@ -4,7 +4,7 @@ const projects = (state = {
   isFetching: false,
   all: null
 }, action) => {
-  let projects, sources, projectIndex, sourceIndex, versionIndex
+  let projects, sources, projectIndex, sourceIndex, versionIndex, activeIndex
   switch (action.type) {
     case 'CREATE_PROJECT':
       projects = [{
@@ -37,9 +37,11 @@ const projects = (state = {
       return update(state, { isFetching: { $set: true }})
 
     case 'RECEIVE_PROJECTS':
+      activeIndex = action.projects.findIndex(p => p.id === DT_CONFIG.modules.alerts.active_project)
       return {
         isFetching: false,
-        all: action.projects
+        all: action.projects,
+        active: activeIndex !== -1 ? action.projects[activeIndex] : null
       }
 
     case 'RECEIVE_PROJECT':
@@ -63,8 +65,15 @@ const projects = (state = {
       return update(state, { all: { $set: projects }})
 
     case 'RECEIVE_FEEDSOURCES':
+      activeIndex = action.projectId === DT_CONFIG.modules.alerts.active_project
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
-      return update(state, {all: {[projectIndex]: {$merge: {feedSources: action.feedSources}}}})
+      return update(state,
+        {
+          active: {$merge: {feeds: action.feedSources}},
+          all: {
+            [projectIndex]: {$merge: {feedSources: action.feedSources}}
+          }
+        })
 
     case 'RECEIVE_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
