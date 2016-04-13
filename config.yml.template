@@ -14,12 +14,17 @@ modules:
   editor:
     enabled: true
     url: http://localhost:9001
-  alerts:
-    enabled: true
-    url: http://localhost:3000
+    alerts:
+      enabled: true
+      use_extension: mtc
+      url: /alerts
+      active_project: project-id
+    sign_config:
+      enabled: true
+      url: /signs
   user_admin:
     enabled: true
-    url: /admin # eventually remove this
+    url: /admin
 extensions:
   transitland:
     enabled: true
