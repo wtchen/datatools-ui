@@ -119,7 +119,14 @@ export default class GtfsPlusTable extends Component {
             {table.fields.map(field => {
               return (<th style={colHeaderStyle} className={`col-md-${field.columnWidth}`}>
                 {field.name}{field.required ? ' *' : ''}
-                <Glyphicon glyph='question-sign' className='pull-right' />
+                <Glyphicon
+                  glyph='question-sign'
+                  className='pull-right'
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    this.props.showHelpClicked(table.id, field.name)
+                  }}
+                />
               </th>)
             })}
             <th></th>

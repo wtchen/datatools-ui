@@ -5,11 +5,16 @@ import ManagerNavbar from '../containers/ManagerNavbar'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 import ConfirmModal from './ConfirmModal.js'
 import SelectFileModal from './SelectFileModal.js'
+import InfoModal from './InfoModal.js'
 
 export default class ManagerPage extends React.Component {
 
   constructor (props) {
     super(props)
+  }
+
+  showInfoModal (props) {
+    this.refs.infoModal.open(props)
   }
 
   showConfirmModal (props) {
@@ -27,6 +32,7 @@ export default class ManagerPage extends React.Component {
           {this.props.children}
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>
+        <InfoModal ref='infoModal'/>
         <SelectFileModal ref='selectFileModal'/>
       </div>
     )

@@ -7,7 +7,8 @@ export default [
         name: 'route_id',
         required: true,
         inputType: 'GTFS_ROUTE',
-        columnWidth: 4
+        columnWidth: 4,
+        helpContent: 'From GTFS routes.txt file. This is necessary to maintain relationship between routes in this file and routes in the standard GTFS routes.txt file.'
       },
       {
         name: 'realtime_enabled',
@@ -17,19 +18,22 @@ export default [
           { value: '0', text: 'Disabled' },
           { value: '1', text: 'Enabled' }
         ],
-        columnWidth: 2
+        columnWidth: 2,
+        helpContent: 'Standard GTFS does not include a field to indicate real-time status of a route. This allows the flexibility for agencies to identify routes that may not have real-time predictions.'
       },
       {
         name: 'realtime_routename',
         required: false,
         inputType: 'TEXT',
-        columnWidth: 3
+        columnWidth: 3,
+        helpContent: 'This field may be empty if route_long_name in GTFS routes.txt file is provided. Otherwise, it should contain the data defined for route_long_name in GTFS routes.txt file.'
       },
       {
         name: 'realtime_routecode',
         required: false,
         inputType: 'TEXT',
-        columnWidth: 3
+        columnWidth: 3,
+        helpContent: 'This field can be empty if real-time route code in MTC’s real-time feed is the same as route_short_name in GTFS routes.txt file'
       }
     ]
   },

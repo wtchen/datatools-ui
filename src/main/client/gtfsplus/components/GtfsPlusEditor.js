@@ -201,6 +201,13 @@ export default class GtfsPlusEditor extends Component {
                   this.gtfsEntityLookup[type][entity[type+'_id']] = entity
                 }}
                 getGtfsEntity={(type, id) => this.getGtfsEntity(type, id)}
+                showHelpClicked={(tableId, fieldName) => {
+                  console.log();
+                  this.refs.page.showInfoModal({
+                    title: `Help for ${tableId}.txt: ${fieldName}`,
+                    body: gtfsPlusTables.find(t => t.id === tableId).fields.find(f => f.name === fieldName).helpContent || '(No help content found for this field)'
+                  })
+                }}
               />
             </Col>
           </Row>
