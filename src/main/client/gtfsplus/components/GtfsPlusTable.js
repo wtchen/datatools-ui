@@ -44,6 +44,15 @@ export default class GtfsPlusTable extends Component {
         case 'GTFS_ROUTE':
           const routeEntity = this.props.getGtfsEntity('route', currentValue)
           console.log('>> routeEntity', routeEntity);
+
+          const value = routeEntity
+            ? { 'value': routeEntity.route_id,
+                'label': routeEntity.route_short_name
+                  ? `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`
+                  : routeEntity.route_long_name
+              }
+            : ''
+
           return (
             <GtfsSearch
               feeds={[this.props.feedSource]}
@@ -54,7 +63,7 @@ export default class GtfsPlusTable extends Component {
                 this.props.fieldEdited(table.id, row, field.name, evt.route.route_id)
                 this.props.gtfsEntitySelected('route', evt.route)
               }}
-              value={routeEntity ? {'value': routeEntity.route_id, 'label': `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`} : ''}
+              value={value}
             />
           )
         case 'GTFS_STOP':

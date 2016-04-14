@@ -27,7 +27,6 @@ export default class GtfsPlusEditor extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log('>>> new gtfs+ props', nextProps);
     if(!nextProps.feedSource) return;
 
     // lookup table for mapping tableId:fieldName keys to inputType values
@@ -50,18 +49,19 @@ export default class GtfsPlusEditor extends Component {
           switch(getDataType(tableId, fieldName)) {
             case 'GTFS_ROUTE':
               const routeId = rowData[fieldName]
-              if(!(routeId in this.gtfsEntityLookup['route'])) routesToLoad.push(routeId)
+              if(routeId && !(routeId in this.gtfsEntityLookup['route'])) routesToLoad.push(routeId)
               break;
             case 'GTFS_STOP':
               const stopId = rowData[fieldName]
-              if(!(stopId in this.gtfsEntityLookup['stop'])) stopsToLoad.push(stopId)
+              if(stopId && !(stopId in this.gtfsEntityLookup['stop'])) stopsToLoad.push(stopId)
               break;
           }
         }
       }
     }
 
-    console.log('loading routes, stops: ', routesToLoad, stopsToLoad);
+    if(routesToLoad.length === 0 && stopsToLoad.length === 0) return
+
     var loadRoutes = Promise.all(routesToLoad.map(routeId => {
       const url = `/api/manager/routes/${routeId}?feed=${nextProps.feedSource.externalProperties.MTC.AgencyId}`
       return fetch(url)
@@ -81,12 +81,10 @@ export default class GtfsPlusEditor extends Component {
     Promise.all([loadRoutes, loadStops]).then(results => {
       const loadedRoutes = results[0]
       const loadedStops = results[1]
-      console.log('>>> got routes!', loadedRoutes);
       for(const route of loadedRoutes) {
         this.gtfsEntityLookup['route'][route.route_id] = route
       }
 
-      console.log('>>> got stops!', loadedStops);
       for(const stop of loadedStops) {
         this.gtfsEntityLookup['stop'][stop.stop_id] = stop
       }
