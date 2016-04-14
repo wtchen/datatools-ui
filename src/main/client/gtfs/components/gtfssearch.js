@@ -40,7 +40,7 @@ export default class GtfsSearch extends React.Component {
     this.setState({value})
   }
   render() {
-    console.log('render search feeds', this.props.feeds)
+    //console.log('render search feeds', this.props.feeds)
     const getStops = (input) => {
       const feedIds = this.props.feeds.map(getFeedId)
       // console.log(feedIds)

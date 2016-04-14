@@ -85,3 +85,35 @@ export function uploadGtfsPlusFeed (feedSourceId, file) {
     })
   }
 }
+
+export function importGtfsPlusFromGtfs (versionId) {
+  return function (dispatch, getState) {
+    fetch(`/api/manager/secure/feedversion/${versionId}/download`, {
+      method: 'get',
+      cache: 'default',
+      headers: { 'Authorization': 'Bearer ' + getState().user.token }
+    }).then((response) => {
+      if(response.status !== 200) {
+        console.log('error downloading gtfs feed', response.statusCode)
+        return null
+      }
+      return response.blob()
+    }).then((blob) => {
+      JSZip.loadAsync(blob).then((zip) => {
+        console.log('>>>>>>>>> got main gtfs zip', zip);
+        let filenames = []
+        let filePromises = []
+        zip.forEach((path, file) => {
+          if(gtfsPlusTables.find(t => t.id === path.split('.')[0])) {
+            console.log(' gen promise for '+ path);
+            filenames.push(path)
+            filePromises.push(file.async('string'))
+          }
+        })
+        Promise.all(filePromises).then(fileContent => {
+          dispatch(receiveGtfsPlusContent(filenames, fileContent))
+        })
+      })
+    })
+  }
+}

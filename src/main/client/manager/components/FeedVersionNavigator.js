@@ -1,6 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import { Grid, Row, Col, ButtonGroup, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
 
@@ -182,6 +183,20 @@ class FeedVersionViewer extends React.Component {
                 </tr>
               </tbody>
           </Table>
+          </Col>
+        </Row>
+
+        <Row style={{marginBottom: '20px'}}>
+          <Col xs={12}>
+            <Button
+              className='pull-right'
+              onClick={() => {
+                console.log('edit GTFS+', version);
+                browserHistory.push(`/gtfsplus/${version.feedSource.id}?version=${version.id}`)
+              }}
+            >
+              <Glyphicon glyph='edit' /> Edit GTFS+ from Version
+            </Button>
           </Col>
         </Row>
 

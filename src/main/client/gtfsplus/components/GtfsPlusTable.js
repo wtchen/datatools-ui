@@ -58,6 +58,7 @@ export default class GtfsPlusTable extends Component {
               feeds={[this.props.feedSource]}
               limit={100}
               entities={['routes']}
+              minimumInput={1}
               clearable={false}
               onChange={(evt) => {
                 this.props.fieldEdited(table.id, row, field.name, evt.route.route_id)
@@ -74,6 +75,7 @@ export default class GtfsPlusTable extends Component {
               limit={100}
               entities={['stops']}
               clearable={false}
+              minimumInput={1}
               onChange={(evt) => {
                 this.props.fieldEdited(table.id, row, field.name, evt.stop.stop_id)
                 this.props.gtfsEntitySelected('stop', evt.stop)

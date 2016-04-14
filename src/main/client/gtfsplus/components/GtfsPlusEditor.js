@@ -35,6 +35,8 @@ export default class GtfsPlusEditor extends Component {
       const lookupKey = tableId + ':' + fieldName
       if(lookupKey in typeLookup) return typeLookup[lookupKey]
       const fieldInfo = gtfsPlusTables.find(t => t.id === tableId).fields.find(f => f.name === fieldName)
+      if(!fieldInfo) return null
+      console.log('f', fieldName, fieldInfo);
       typeLookup[lookupKey] = fieldInfo.inputType
       return fieldInfo.inputType
     }

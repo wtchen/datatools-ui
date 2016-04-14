@@ -7,7 +7,8 @@ import {
   updateGtfsPlusField,
   deleteGtfsPlusRow,
   uploadGtfsPlusFeed,
-  downloadGtfsPlusFeed
+  downloadGtfsPlusFeed,
+  importGtfsPlusFromGtfs
 } from '../actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
@@ -40,7 +41,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       dispatch(fetchFeedSourceAndProject(feedSourceId))
-      dispatch(downloadGtfsPlusFeed(feedSourceId))
+
+      if(initialProps.location.query.version) { // init from a full GTFS feed
+        console.log();
+        dispatch(importGtfsPlusFromGtfs(initialProps.location.query.version))
+
+      } else { // download the latest saved GTFS+
+        dispatch(downloadGtfsPlusFeed(feedSourceId))
+      }
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsPlusRow(tableId))
