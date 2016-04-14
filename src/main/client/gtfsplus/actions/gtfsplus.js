@@ -44,9 +44,10 @@ export function receiveGtfsPlusContent (filenames, fileContent) {
 
 export function downloadGtfsPlusFeed (feedSourceId) {
   return function (dispatch, getState) {
-    fetch('/api/manager/gtfsplus/'+  feedSourceId, {
+    fetch('/api/manager/secure/gtfsplus/'+  feedSourceId, {
       method: 'get',
-      cache: 'default'
+      cache: 'default',
+      headers: { 'Authorization': 'Bearer ' + getState().user.token }
     }).then((response) => {
       if(response.status !== 200) {
         console.log('error downloading gtfs+ feed', response.statusCode)
