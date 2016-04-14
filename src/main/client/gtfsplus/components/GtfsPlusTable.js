@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, Input, Button, Glyphicon } from 'react-bootstrap'
 
+import GtfsSearch from '../../gtfs/components/gtfssearch'
+
 import EditableTextField from '../../common/components/EditableTextField'
 
 export default class GtfsPlusTable extends Component {
@@ -34,11 +36,43 @@ export default class GtfsPlusTable extends Component {
             >
               {field.options.map(option => {
                 return <option value={option.value} key={option.value}>
-                  {option.text}
+                  {option.text || option.value}
                 </option>
               })}
             </Input>
           )
+        case 'GTFS_ROUTE':
+          const routeEntity = this.props.getGtfsEntity('route', currentValue)
+          console.log('>> routeEntity', routeEntity);
+          return (
+            <GtfsSearch
+              feeds={[this.props.feedSource]}
+              limit={100}
+              entities={['routes']}
+              clearable={false}
+              onChange={(evt) => {
+                this.props.fieldEdited(table.id, row, field.name, evt.route.route_id)
+                this.props.gtfsEntitySelected('route', evt.route)
+              }}
+              value={routeEntity ? {'value': routeEntity.route_id, 'label': `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`} : ''}
+            />
+          )
+        case 'GTFS_STOP':
+          const stopEntity = this.props.getGtfsEntity('stop', currentValue)
+          return (
+            <GtfsSearch
+              feeds={[this.props.feedSource]}
+              limit={100}
+              entities={['stops']}
+              clearable={false}
+              onChange={(evt) => {
+                this.props.fieldEdited(table.id, row, field.name, evt.stop.stop_id)
+                this.props.gtfsEntitySelected('stop', evt.stop)
+              }}
+              value={stopEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''}
+            />
+          )
+
       }
     }
 
@@ -74,7 +108,7 @@ export default class GtfsPlusTable extends Component {
         <thead>
           <tr>
             {table.fields.map(field => {
-              return (<th style={colHeaderStyle}>
+              return (<th style={colHeaderStyle} className={`col-md-${field.columnWidth}`}>
                 {field.name}{field.required ? ' *' : ''}
                 <Glyphicon glyph='question-sign' className='pull-right' />
               </th>)

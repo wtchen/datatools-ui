@@ -2,7 +2,13 @@ import { connect } from 'react-redux'
 
 import GtfsPlusEditor  from '../components/GtfsPlusEditor'
 import { fetchFeedSourceAndProject } from '../../manager/actions/feeds'
-import { addGtfsPlusRow, updateGtfsPlusField, deleteGtfsPlusRow } from '../actions/gtfsplus'
+import {
+  addGtfsPlusRow,
+  updateGtfsPlusField,
+  deleteGtfsPlusRow,
+  uploadGtfsPlusFeed,
+  downloadGtfsPlusFeed
+} from '../actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
 
@@ -34,6 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       dispatch(fetchFeedSourceAndProject(feedSourceId))
+      dispatch(downloadGtfsPlusFeed(feedSourceId))
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsPlusRow(tableId))
@@ -43,6 +50,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     fieldEdited: (tableId, rowIndex, fieldName, newValue) => {
       dispatch(updateGtfsPlusField(tableId, rowIndex, fieldName, newValue))
+    },
+    feedSaved: (file) => {
+      console.log('dispatching upload');
+      dispatch(uploadGtfsPlusFeed(feedSourceId, file))
     }
   }
 }

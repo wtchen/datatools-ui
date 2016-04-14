@@ -6,7 +6,8 @@ export default [
       {
         name: 'route_id',
         required: true,
-        inputType: 'GTFS_ROUTE'
+        inputType: 'GTFS_ROUTE',
+        columnWidth: 4
       },
       {
         name: 'realtime_enabled',
@@ -15,17 +16,20 @@ export default [
         options: [
           { value: '0', text: 'Disabled' },
           { value: '1', text: 'Enabled' }
-        ]
+        ],
+        columnWidth: 2
       },
       {
         name: 'realtime_routename',
         required: false,
-        inputType: 'TEXT'
+        inputType: 'TEXT',
+        columnWidth: 3
       },
       {
         name: 'realtime_routecode',
         required: false,
-        inputType: 'TEXT'
+        inputType: 'TEXT',
+        columnWidth: 3
       }
     ]
   },
@@ -37,17 +41,20 @@ export default [
       {
         name: 'trip_id',
         required: true,
-        inputType: 'GTFS_TRIP'
+        inputType: 'GTFS_TRIP',
+        columnWidth: 5
       },
       {
         name: 'stop_id',
         required: true,
-        inputType: 'GTFS_STOP'
+        inputType: 'GTFS_STOP',
+        columnWidth: 5
       },
       {
         name: 'realtime_stop_id',
         required: true,
-        inputType: 'TEXT'
+        inputType: 'TEXT',
+        columnWidth: 2
       }
     ]
   },
@@ -59,7 +66,8 @@ export default [
       {
         name: 'route_id',
         required: true,
-        inputType: 'GTFS_ROUTE'
+        inputType: 'GTFS_ROUTE',
+        columnWidth: 6
       },
       {
         name: 'direction_id',
@@ -68,7 +76,8 @@ export default [
         options: [
           { value: '0' },
           { value: '1' }
-        ]
+        ],
+        columnWidth: 3
       },
       {
         name: 'Direction',
@@ -90,7 +99,8 @@ export default [
           { value: 'Loop' },
           { value: 'A Loop' },
           { value: 'B Loop' }
-        ]
+        ],
+        columnWidth: 3
       }
     ]
   },
@@ -102,13 +112,15 @@ export default [
       {
         name: 'trip_id',
         required: true,
-        inputType: 'GTFS_TRIP'
+        inputType: 'GTFS_TRIP',
+        columnWidth: 6
       },
       {
         name: 'realtime_trip_id',
         required: true,
         inputType: 'TEXT',
-        maxLength: 15
+        maxLength: 15,
+        columnWidth: 6
       }
     ]
   },
@@ -120,7 +132,8 @@ export default [
       {
         name: 'stop_id',
         required: true,
-        inputType: 'GTFS_STOP'
+        inputType: 'GTFS_STOP',
+        columnWidth: 4
       },
       {
         name: 'accessibility_id',
@@ -136,7 +149,8 @@ export default [
           { value: '6', text: 'Blind/Wheel Chair' },
           { value: '7', text: 'Deaf/Blind' },
           { value: '8', text: 'Deaf/Wheel Chair' }
-        ]
+        ],
+        columnWidth: 2
       },
       {
         name: 'cardinal_direction',
@@ -151,7 +165,8 @@ export default [
           { value: 'NW', text: 'Northwest' },
           { value: 'SE', text: 'Southeast' },
           { value: 'SW', text: 'Southwest' }
-        ]
+        ],
+        columnWidth: 2
       },
       {
         name: 'relative_position',
@@ -162,13 +177,15 @@ export default [
           { value: 'FS', text: 'Far side of intersection' },
           { value: 'AT', text: 'Stop is at position' },
           { value: 'OP', text: 'Stop is across street' }
-        ]
+        ],
+        columnWidth: 2
       },
       {
         name: 'stop_city',
         required: true,
         inputType: 'TEXT',
-        maxLength: 60
+        maxLength: 60,
+        columnWidth: 2
       }
     ]
   },
@@ -180,12 +197,14 @@ export default [
       {
         name: 'trip_id',
         required: true,
-        inputType: 'GTFS_TRIP'
+        inputType: 'GTFS_TRIP',
+        columnWidth: 6
       },
       {
         name: 'stop_id',
         required: true,
-        inputType: 'GTFS_STOP'
+        inputType: 'GTFS_STOP',
+        columnWidth: 6
       }
     ]
   },
@@ -217,13 +236,15 @@ export default [
           { value: '23', text: 'Custom (23)' },
           { value: '24', text: 'Custom (24)' },
           { value: '25', text: 'Custom (25)' }
-        ]
+        ],
+        columnWidth: 6
       },
       {
         name: 'rider_category_description',
         required: true,
         inputType: 'TEXT',
-        maxLength: 256
+        maxLength: 256,
+        columnWidth: 6
       }
     ]
   },
@@ -235,7 +256,8 @@ export default [
       {
         name: 'fare_id',
         required: true,
-        inputType: 'GTFS_FARE'
+        inputType: 'GTFS_FARE',
+        columnWidth: 6
       },
       {
         name: 'rider_category_id',
@@ -260,13 +282,15 @@ export default [
           { value: '23', text: 'Custom (23)' },
           { value: '24', text: 'Custom (24)' },
           { value: '25', text: 'Custom (25)' }
-        ]
+        ],
+        columnWidth: 3
       },
       {
         name: 'price',
         required: true,
         inputType: 'TEXT',
-        maxLength: 8
+        maxLength: 8,
+        columnWidth: 3
       }
     ]
   },

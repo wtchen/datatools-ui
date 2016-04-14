@@ -1,4 +1,5 @@
 import gtfsPlusTables from '../gtfsPlusTables'
+import JSZip from 'jszip'
 
 export function addGtfsPlusRow (tableId) {
   const table = gtfsPlusTables.find(t => t.id === tableId)
@@ -30,5 +31,56 @@ export function deleteGtfsPlusRow (tableId, rowIndex) {
     type: 'DELETE_GTFSPLUS_ROW',
     tableId,
     rowIndex
+  }
+}
+
+export function receiveGtfsPlusContent (filenames, fileContent) {
+  return {
+    type: 'RECEIVE_GTFSPLUS_CONTENT',
+    filenames,
+    fileContent
+  }
+}
+
+export function downloadGtfsPlusFeed (feedSourceId) {
+  return function (dispatch, getState) {
+    fetch('/api/manager/gtfsplus/'+  feedSourceId, {
+      method: 'get',
+      cache: 'default'
+    }).then((response) => {
+      if(response.status !== 200) {
+        console.log('error downloading gtfs+ feed', response.statusCode)
+        return null
+      }
+      return response.blob()
+    }).then((blob) => {
+      JSZip.loadAsync(blob).then((zip) => {
+        let filenames = []
+        let filePromises = []
+        zip.forEach((path,file) => {
+          filenames.push(path)
+          filePromises.push(file.async('string'))
+        })
+        Promise.all(filePromises).then(fileContent => {
+          dispatch(receiveGtfsPlusContent(filenames, fileContent))
+        })
+      })
+    })
+  }
+}
+
+export function uploadGtfsPlusFeed (feedSourceId, file) {
+  return function (dispatch, getState) {
+    const url = `/api/manager/secure/gtfsplus?feedSourceId=${feedSourceId}`
+    var data = new FormData()
+    data.append('file', file)
+
+    return fetch(url, {
+      method: 'post',
+      headers: { 'Authorization': 'Bearer ' + getState().user.token },
+      body: data
+    }).then(result => {
+      console.log('uploadGtfsPlusFeed result', result)
+    })
   }
 }

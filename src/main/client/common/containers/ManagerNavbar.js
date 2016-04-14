@@ -8,10 +8,10 @@ const mapStateToProps = (state, ownProps) => {
   return {
     title: DT_CONFIG.application.title,
     managerUrl: '/project',
-    editorUrl: DT_CONFIG.modules.editor.url,
-    userAdminUrl: DT_CONFIG.modules.user_admin.url,
-    alertsUrl: DT_CONFIG.modules.alerts.url,
-    signConfigUrl: DT_CONFIG.modules.sign_config.url,
+    editorUrl: DT_CONFIG.modules.editor ? DT_CONFIG.modules.editor.url : null,
+    userAdminUrl: DT_CONFIG.modules.user_admin ? DT_CONFIG.modules.user_admin.url : null,
+    alertsUrl: DT_CONFIG.modules.alerts ? DT_CONFIG.modules.alerts.url : null,
+    signConfigUrl: DT_CONFIG.modules.sign_config ? DT_CONFIG.modules.sign_config.url : null,
     username: state.user.profile ? state.user.profile.email : null
   }
 }

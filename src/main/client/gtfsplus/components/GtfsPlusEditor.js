@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Grid, Row, Col, Button, Glyphicon, PageHeader } from 'react-bootstrap'
+import JSZip from 'jszip'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsPlusTable from './GtfsPlusTable'
@@ -13,10 +14,114 @@ export default class GtfsPlusEditor extends Component {
     this.state = {
       activeTableId: 'realtime_routes'
     }
+
+    this.gtfsEntityLookup = {
+      stop: {},
+      route: {}
+    }
   }
 
   componentWillMount () {
     this.props.onComponentMount(this.props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    console.log('>>> new gtfs+ props', nextProps);
+    if(!nextProps.feedSource) return;
+
+    // lookup table for mapping tableId:fieldName keys to inputType values
+    const typeLookup = {}
+    const getDataType = function(tableId, fieldName) {
+      const lookupKey = tableId + ':' + fieldName
+      if(lookupKey in typeLookup) return typeLookup[lookupKey]
+      const fieldInfo = gtfsPlusTables.find(t => t.id === tableId).fields.find(f => f.name === fieldName)
+      typeLookup[lookupKey] = fieldInfo.inputType
+      return fieldInfo.inputType
+    }
+
+    // determine which routes, stops, etc. aren't currently in the gtfsEntityLookup table and need to be loaded from the API
+    const routesToLoad = []
+    const stopsToLoad = []
+
+    for(const tableId in nextProps.tableData) {
+      for(const rowData of nextProps.tableData[tableId]) {
+        for(const fieldName in rowData) {
+          switch(getDataType(tableId, fieldName)) {
+            case 'GTFS_ROUTE':
+              const routeId = rowData[fieldName]
+              if(!(routeId in this.gtfsEntityLookup['route'])) routesToLoad.push(routeId)
+              break;
+            case 'GTFS_STOP':
+              const stopId = rowData[fieldName]
+              if(!(stopId in this.gtfsEntityLookup['stop'])) stopsToLoad.push(stopId)
+              break;
+          }
+        }
+      }
+    }
+
+    console.log('loading routes, stops: ', routesToLoad, stopsToLoad);
+    var loadRoutes = Promise.all(routesToLoad.map(routeId => {
+      const url = `/api/manager/routes/${routeId}?feed=${nextProps.feedSource.externalProperties.MTC.AgencyId}`
+      return fetch(url)
+      .then((response) => {
+        return response.json()
+      })
+    }))
+
+    var loadStops = Promise.all(stopsToLoad.map(stopId => {
+      const url = `/api/manager/stops/${stopId}?feed=${nextProps.feedSource.externalProperties.MTC.AgencyId}`
+      return fetch(url)
+      .then((response) => {
+        return response.json()
+      })
+    }))
+
+    Promise.all([loadRoutes, loadStops]).then(results => {
+      const loadedRoutes = results[0]
+      const loadedStops = results[1]
+      console.log('>>> got routes!', loadedRoutes);
+      for(const route of loadedRoutes) {
+        this.gtfsEntityLookup['route'][route.route_id] = route
+      }
+
+      console.log('>>> got stops!', loadedStops);
+      for(const stop of loadedStops) {
+        this.gtfsEntityLookup['stop'][stop.stop_id] = stop
+      }
+
+      this.forceUpdate()
+    })
+  }
+
+  getGtfsEntity (type, id) {
+    return this.gtfsEntityLookup[type][id]
+  }
+
+  save () {
+    const zip = new JSZip()
+
+    for(const table of gtfsPlusTables) {
+      let fileContent = ''
+      // white the header line
+      const fieldNameArr = table.fields.map(field => field['name'])
+      fileContent += fieldNameArr.join(',') + '\n'
+
+      // write the data rows
+      var dataRows = this.props.tableData[table.id].map(rowData => {
+        const rowText = fieldNameArr.map(fieldName => {
+          return rowData[fieldName] || ''
+        }).join(',')
+        fileContent += rowText + '\n'
+      })
+
+      // add to the zip archive
+      zip.file(table.name, fileContent)
+    }
+
+    zip.generateAsync({type:"blob"}).then((content) => {
+      this.props.feedSaved(content)
+    })
   }
 
   render () {
@@ -50,6 +155,7 @@ export default class GtfsPlusEditor extends Component {
                   className='pull-right'
                   onClick={() => {
                     console.log('save');
+                    this.save()
                   }}
                 >Save</Button>
               </PageHeader>
@@ -75,11 +181,16 @@ export default class GtfsPlusEditor extends Component {
             </Col>
             <Col xs={10}>
               <GtfsPlusTable
+                feedSource={this.props.feedSource}
                 table={activeTable}
                 tableData={this.props.tableData[activeTable.id]}
                 newRowClicked={this.props.newRowClicked}
                 deleteRowClicked={this.props.deleteRowClicked}
                 fieldEdited={this.props.fieldEdited}
+                gtfsEntitySelected={(type, entity) => {
+                  this.gtfsEntityLookup[type][entity[type+'_id']] = entity
+                }}
+                getGtfsEntity={(type, id) => this.getGtfsEntity(type, id)}
               />
             </Col>
           </Row>
