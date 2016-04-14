@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Grid, Row, Col, Button, Glyphicon, PageHeader } from 'react-bootstrap'
 import JSZip from 'jszip'
+import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsPlusTable from './GtfsPlusTable'
@@ -137,6 +138,17 @@ export default class GtfsPlusEditor extends Component {
     return (
       <ManagerPage ref='page'>
         <Grid>
+          <Row>
+            <Col xs={12}>
+              <ul className='breadcrumb'>
+                <li><Link to='/'>Explore</Link></li>
+                <li><Link to='/project'>Projects</Link></li>
+                <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
+                <li><Link to={`/feed/${this.props.feedSource.id}`}>{this.props.feedSource.name}</Link></li>
+                <li className='active'>Edit GTFS+</li>
+              </ul>
+            </Col>
+          </Row>
           <Row>
             <Col xs={12}>
               <PageHeader>Editing GTFS+ for {this.props.feedSource.name}
