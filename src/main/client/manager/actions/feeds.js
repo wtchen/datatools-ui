@@ -307,3 +307,14 @@ export function fetchValidationResult (feedSource, feedVersion) {
     })
   }
 }
+
+export function downloadFeedViaToken (feedVersion) {
+  return function (dispatch, getState) {
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/downloadtoken`
+    secureFetch(url, getState())
+    .then(response => response.json())
+    .then(result => {
+      window.location.assign(`/api/manager/downloadfeed/${result.id}`)
+    })
+  }
+}

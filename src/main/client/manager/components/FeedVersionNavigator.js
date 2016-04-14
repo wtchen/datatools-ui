@@ -60,6 +60,7 @@ export default class FeedVersionNavigator extends React.Component {
                 disabled={!hasVersions}
                 onClick={(evt) => {
                   evt.preventDefault()
+                  this.props.downloadFeedClicked(version)
                 }}
               >
                 <Glyphicon glyph='download' /> Download Feed

@@ -215,6 +215,7 @@ export default class FeedSourceViewer extends React.Component {
                   }
                 })
               }}
+              downloadFeedClicked={(version) => this.props.downloadFeedClicked(version)}
               deleteVersionClicked={(version) => {
                 this.deleteFeedVersion(fs, version)
               }}
