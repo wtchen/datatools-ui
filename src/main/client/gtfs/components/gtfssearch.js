@@ -28,9 +28,8 @@ export default class GtfsSearch extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!shallowEqual(nextProps.value, this.props.value)) {
+    if (!shallowEqual(nextProps.filterByRoute, this.props.filterByRoute) || !shallowEqual(nextProps.filterByStop, this.props.filterByStop)) {
       this.setState({value: nextProps.value})
-      console.log('props received', this.state.value)
     }
   }
   renderOption (option) {

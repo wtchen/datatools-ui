@@ -1,7 +1,7 @@
 import update from 'react-addons-update'
 
 const activeAlert = (state = null, action) => {
-  let entities, foundIndex
+  let entities, foundIndex, updatedEntity
   switch (action.type) {
     case 'UPDATE_ACTIVE_ALERT_ALERT':
       console.log('update active alert', action.alert)
@@ -36,7 +36,7 @@ const activeAlert = (state = null, action) => {
           let ent = action.gtfsObjects[i]
           if (typeof ent.gtfs !== 'undefined' && ent.AlertId === state.id){
             // let alert = action.gtfsAlerts.find(a => a.id === ent.entity.AlertId)
-            let updatedEntity = state.affectedEntities.find(e => e.id === ent.entity.Id)
+            updatedEntity = state.affectedEntities.find(e => e.id === ent.entity.Id)
             updatedEntity[ent.type] = ent.gtfs
             entities.push(selectedEnt)
             entities = [
@@ -58,7 +58,7 @@ const activeAlert = (state = null, action) => {
       if(foundIndex !== -1) {
         switch (action.field) {
           case 'TYPE':
-            let updatedEntity = update(action.entity, {
+            updatedEntity = update(action.entity, {
               type: {$set: action.value},
               stop: {$set: null},
               route: {$set: null},
@@ -89,14 +89,27 @@ const activeAlert = (state = null, action) => {
             return update(state, {affectedEntities: {$set: entities}})
           case 'STOP':
             let stopId = action.value !== null ? action.value.stop_id : null
-            updatedEntity = update(action.entity, {
-              stop: {$set: action.value},
-              stop_id: {$set: stopId},
-              agency: {$set: action.agency},
-              route: {$set: null},
-              route_id: {$set: null},
-              // TODO: update agency id from feed id?
-            })
+            console.log(action.entity)
+            // set route to null if stop is updated for type stop
+            if (action.entity.type === 'STOP') {
+              updatedEntity = update(action.entity, {
+                stop: {$set: action.value},
+                stop_id: {$set: stopId},
+                agency: {$set: action.agency},
+                route: {$set: null},
+                route_id: {$set: null},
+                // TODO: update agency id from feed id?
+              })
+            }
+            else {
+              updatedEntity = update(action.entity, {
+                stop: {$set: action.value},
+                stop_id: {$set: stopId},
+                agency: {$set: action.agency},
+                // TODO: update agency id from feed id?
+              })
+            }
+            console.log(updatedEntity)
             entities = [
               ...state.affectedEntities.slice(0, foundIndex),
               updatedEntity,
@@ -105,14 +118,25 @@ const activeAlert = (state = null, action) => {
             return update(state, {affectedEntities: {$set: entities}})
           case 'ROUTE':
             let routeId = action.value !== null ? action.value.route_id : null
-            updatedEntity = update(action.entity, {
-              route: {$set: action.value},
-              route_id: {$set: routeId},
-              agency: {$set: action.agency},
-              stop: {$set: null},
-              stop_id: {$set: null},
-              // TODO: update agency id from feed id?
-            })
+            // set route to null if stop is updated for type stop
+            if (action.entity.type === 'ROUTE') {
+              updatedEntity = update(action.entity, {
+                route: {$set: action.value},
+                route_id: {$set: routeId},
+                agency: {$set: action.agency},
+                stop: {$set: null},
+                stop_id: {$set: null},
+                // TODO: update agency id from feed id?
+              })
+            }
+            else {
+              updatedEntity = update(action.entity, {
+                route: {$set: action.value},
+                route_id: {$set: routeId},
+                agency: {$set: action.agency},
+                // TODO: update agency id from feed id?
+              })
+            }
             entities = [
               ...state.affectedEntities.slice(0, foundIndex),
               updatedEntity,
