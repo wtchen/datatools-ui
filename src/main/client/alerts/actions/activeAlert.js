@@ -2,56 +2,56 @@
 
 export const setActiveTitle = (title) => {
   return {
-    type: 'SET_ACTIVE_TITLE',
+    type: 'SET_ACTIVE_ALERT_TITLE',
     title
   }
 }
 
 export const setActiveDescription = (description) => {
   return {
-    type: 'SET_ACTIVE_DESCRIPTION',
+    type: 'SET_ACTIVE_ALERT_DESCRIPTION',
     description
   }
 }
 
 export const setActiveUrl = (url) => {
   return {
-    type: 'SET_ACTIVE_URL',
+    type: 'SET_ACTIVE_ALERT_URL',
     url
   }
 }
 
 export const setActiveCause = (cause) => {
   return {
-    type: 'SET_ACTIVE_CAUSE',
+    type: 'SET_ACTIVE_ALERT_CAUSE',
     cause
   }
 }
 
 export const setActiveEffect = (effect) => {
   return {
-    type: 'SET_ACTIVE_EFFECT',
+    type: 'SET_ACTIVE_ALERT_EFFECT',
     effect
   }
 }
 
 export const setActiveStart = (start) => {
   return {
-    type: 'SET_ACTIVE_START',
+    type: 'SET_ACTIVE_ALERT_START',
     start
   }
 }
 
 export const setActiveEnd = (end) => {
   return {
-    type: 'SET_ACTIVE_END',
+    type: 'SET_ACTIVE_ALERT_END',
     end
   }
 }
 
 export const setActivePublished = (published) => {
   return {
-    type: 'SET_ACTIVE_PUBLISHED',
+    type: 'SET_ACTIVE_ALERT_PUBLISHED',
     published
   }
 }
@@ -60,7 +60,7 @@ let nextEntityId = -1
 export const addActiveEntity = (field = 'AGENCY', value = null, agency = null) => {
   nextEntityId--
   let newEntity = {
-    type: 'ADD_ACTIVE_AFFECTED_ENTITY',
+    type: 'ADD_ACTIVE_ALERT_AFFECTED_ENTITY',
     entity: {
       id: nextEntityId,
       type: field
@@ -76,14 +76,14 @@ export const addActiveEntity = (field = 'AGENCY', value = null, agency = null) =
 
 export const deleteActiveEntity = (entity) => {
   return {
-    type: 'DELETE_ACTIVE_AFFECTED_ENTITY',
+    type: 'DELETE_ACTIVE_ALERT_AFFECTED_ENTITY',
     entity
   }
 }
 
 export const updateActiveEntity = (entity, field, value, agency) => {
   return {
-    type: 'UPDATE_ACTIVE_ENTITY',
+    type: 'UPDATE_ACTIVE_ALERT_ENTITY',
     entity,
     field,
     value,

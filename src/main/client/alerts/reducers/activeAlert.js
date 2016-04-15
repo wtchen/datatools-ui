@@ -3,31 +3,31 @@ import update from 'react-addons-update'
 const activeAlert = (state = null, action) => {
   let entities, foundIndex
   switch (action.type) {
-    case 'UPDATE_ACTIVE_ALERT':
+    case 'UPDATE_ACTIVE_ALERT_ALERT':
       console.log('update active alert', action.alert)
     case 'CREATE_ALERT':
     case 'EDIT_ALERT':
       return action.alert
     /*case 'SAVE_ALERT':
     case 'DELETE_ALERT':
-    case 'SET_ACTIVE_PUBLISHED':
+    case 'SET_ACTIVE_ALERT_PUBLISHED':
       return null*/
 
-    case 'SET_ACTIVE_TITLE':
+    case 'SET_ACTIVE_ALERT_TITLE':
       return update(state, {title: {$set: action.title}})
-    case 'SET_ACTIVE_DESCRIPTION':
+    case 'SET_ACTIVE_ALERT_DESCRIPTION':
       return update(state, {description: {$set: action.description}})
-    case 'SET_ACTIVE_URL':
+    case 'SET_ACTIVE_ALERT_URL':
       return update(state, {url: {$set: action.url}})
-    case 'SET_ACTIVE_CAUSE':
+    case 'SET_ACTIVE_ALERT_CAUSE':
       return update(state, {cause: {$set: action.cause}})
-    case 'SET_ACTIVE_EFFECT':
+    case 'SET_ACTIVE_ALERT_EFFECT':
       return update(state, {effect: {$set: action.effect}})
-    case 'SET_ACTIVE_START':
+    case 'SET_ACTIVE_ALERT_START':
       return update(state, {start: {$set: parseInt(action.start)}})
-    case 'SET_ACTIVE_END':
+    case 'SET_ACTIVE_ALERT_END':
       return update(state, {end: {$set: parseInt(action.end)}})
-    case 'SET_ACTIVE_PUBLISHED':
+    case 'SET_ACTIVE_ALERT_PUBLISHED':
       return update(state, {published: {$set: action.published}})
     case 'RECEIVED_GTFS_ENTITIES':
       // TODO: update GTFS entities for active alert
@@ -49,10 +49,10 @@ const activeAlert = (state = null, action) => {
         return update(state, {affectedEntities: {$set: entities}})
       }
       return state
-    case 'ADD_ACTIVE_AFFECTED_ENTITY':
+    case 'ADD_ACTIVE_ALERT_AFFECTED_ENTITY':
       entities = [...state.affectedEntities, action.entity]
       return update(state, {affectedEntities: {$set: entities}})
-    case 'UPDATE_ACTIVE_ENTITY':
+    case 'UPDATE_ACTIVE_ALERT_ENTITY':
       console.log('update entity', action.entity, action.field, action.value)
       foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
       if(foundIndex !== -1) {
@@ -123,7 +123,7 @@ const activeAlert = (state = null, action) => {
 
       }
       return state
-    case 'DELETE_ACTIVE_AFFECTED_ENTITY':
+    case 'DELETE_ACTIVE_ALERT_AFFECTED_ENTITY':
       foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
       if(foundIndex !== -1) {
         entities = [

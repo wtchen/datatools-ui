@@ -10,6 +10,7 @@ import AlertsList from '../components/AlertsList'
 import { getFeedsForPermission } from '../util/util'
 
 const getVisibleAlerts = (alerts, visibilityFilter) => {
+  if (!alerts) return []
   let visibleAlerts = alerts.filter(alert =>
     alert.title.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1)
   let now = moment()

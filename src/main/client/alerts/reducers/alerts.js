@@ -42,7 +42,7 @@ const alerts = (state = {
       let index = 0
       for (var i = 0; i < action.gtfsObjects.length; i++) {
         let ent = action.gtfsObjects[i]
-        if (typeof ent.gtfs !== 'undefined'){
+        if (typeof ent.gtfs !== 'undefined'  && action.gtfsAlerts){
           let alert = action.gtfsAlerts.find(a => a.id === ent.entity.AlertId)
           let selectedEnt = alert.affectedEntities.find(e => e.id === ent.entity.Id)
           selectedEnt[ent.type] = ent.gtfs
@@ -86,6 +86,8 @@ const alerts = (state = {
           description: rtdAlert.DescriptionText,
           cause: rtdAlert.Cause,
           effect: rtdAlert.Effect,
+          editedBy: rtdAlert.EditedBy,
+          editedDate: rtdAlert.EditedDate,
           url: rtdAlert.Url,
           start: rtdAlert.StartDateTime*1000,
           end: rtdAlert.EndDateTime*1000,

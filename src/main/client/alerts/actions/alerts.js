@@ -209,7 +209,7 @@ export function fetchRtdAlerts () {
 
 export const updateActiveAlert = (alert) => {
   return {
-    type: 'UPDATE_ACTIVE_ALERT',
+    type: 'UPDATE_ACTIVE_ALERT_ALERT',
     alert
   }
 }

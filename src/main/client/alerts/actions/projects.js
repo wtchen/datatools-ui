@@ -26,7 +26,7 @@ export function fetchProjects() {
       .then((projects) => {
         console.log('received projects', projects)
         dispatch(receiveProjects(projects))
-        let project = projects.find(proj => proj.id === DT_CONFIG.modules.alerts.active_project)
+        let project = projects.find(proj => proj.id === DT_CONFIG.application.active_project)
         return dispatch(fetchProjectFeeds(project.id))
       })
       .then(() => {
