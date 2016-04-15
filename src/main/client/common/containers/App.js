@@ -1,19 +1,21 @@
-import React  from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 
 import { checkExistingLogin, userLoggedIn } from '../../manager/actions/user'
-import NoAccessScreen  from '../components/NoAccessScreen'
-import ActiveFeedSourceViewer  from '../../manager/containers/ActiveFeedSourceViewer'
-import ActiveProjectViewer  from '../../manager/containers/ActiveProjectViewer'
-import ActiveProjectsList  from '../../manager/containers/ActiveProjectsList'
-import ActivePublicFeedSourceViewer  from '../../public/containers/ActivePublicFeedSourceViewer'
-import ActivePublicFeedsViewer  from '../../public/containers/ActivePublicFeedsViewer'
-import ActiveSignupPage  from '../../public/containers/ActiveSignupPage'
-import ActiveUserAccount  from '../../public/containers/ActiveUserAccount'
-import ActiveUserAdmin  from '../../admin/containers/ActiveUserAdmin'
-import MainAlertsViewer  from '../../alerts/containers/MainAlertsViewer'
-import ActiveAlertEditor  from '../../alerts/containers/ActiveAlertEditor'
+// import NoAccessScreen from '../components/NoAccessScreen'
+import ActiveFeedSourceViewer from '../../manager/containers/ActiveFeedSourceViewer'
+import ActiveProjectViewer from '../../manager/containers/ActiveProjectViewer'
+import ActiveProjectsList from '../../manager/containers/ActiveProjectsList'
+import ActivePublicFeedSourceViewer from '../../public/containers/ActivePublicFeedSourceViewer'
+import ActivePublicFeedsViewer from '../../public/containers/ActivePublicFeedsViewer'
+import ActiveSignupPage from '../../public/containers/ActiveSignupPage'
+import ActiveUserAccount from '../../public/containers/ActiveUserAccount'
+import ActiveUserAdmin from '../../admin/containers/ActiveUserAdmin'
+import MainAlertsViewer from '../../alerts/containers/MainAlertsViewer'
+import ActiveAlertEditor from '../../alerts/containers/ActiveAlertEditor'
+import MainSignsViewer from '../../signs/containers/MainSignsViewer'
+import ActiveSignEditor from '../../signs/containers/ActiveSignEditor'
 
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 
@@ -71,13 +73,6 @@ class App extends React.Component {
       })
     }
 
-    let canAccess = false, noAccessReason
-    if(this.props.user.profile === null) {
-      noAccessReason = 'NOT_LOGGED_ID'
-    }
-    else {
-      canAccess = true
-    }
     return (
       // AUTH WITH HOC
       // <Router history={this.props.history}>
@@ -102,9 +97,9 @@ class App extends React.Component {
         <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />
         <Route path='alerts/newalert' component={ActiveAlertEditor} onEnter={requireAuth} />
         <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />
-        <Route path='signs' component={MainAlertsViewer} onEnter={requireAuth} />
-        <Route path='signs/newsign' component={ActiveAlertEditor} onEnter={requireAuth} />
-        <Route path='signs/sign/:signId' component={ActiveAlertEditor} onEnter={requireAuth} />
+        <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />
+        <Route path='signs/newsign' component={ActiveSignEditor} onEnter={requireAuth} />
+        <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />

@@ -16,6 +16,7 @@ window.DT_CONFIG = config
 import * as managerReducers from './manager/reducers'
 import * as adminReducers from './admin/reducers'
 import * as alertsReducers from './alerts/reducers'
+import * as signsReducers from './signs/reducers'
 
 import * as gtfsPlusReducers from './gtfsplus/reducers'
 import * as gtfsReducers from './gtfs/reducers'
@@ -25,6 +26,7 @@ const store = createStore(
     ...managerReducers,
     ...adminReducers,
     ...alertsReducers,
+    ...signsReducers,
     ...gtfsPlusReducers,
     ...gtfsReducers,
     routing: routerReducer
