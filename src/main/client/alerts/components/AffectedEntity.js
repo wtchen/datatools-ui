@@ -255,7 +255,7 @@ class RouteSelector extends React.Component {
       return routeName
     }
     var routes = []
-    const feed = this.state.route ? getFeed(this.props.feeds, this.state.route.feed_id) : null
+    const feed = this.props.route ? getFeed(this.props.feeds, this.props.route.feed_id) : null
     const agencyName = feed ? feed.name : 'Unknown agency'
 
     return (
@@ -273,7 +273,7 @@ class RouteSelector extends React.Component {
             else if (evt == null)
               this.props.entityUpdated(this.props.entity, 'ROUTE', null, null)
           }}
-          value={this.state.route ? {'value': this.state.route.route_id, 'label': `${getRouteName(this.state.route)} (${agencyName})`} : ''}
+          value={this.props.route ? {'value': this.props.route.route_id, 'label': `${getRouteName(this.props.route)} (${agencyName})`} : ''}
         />
       </div>
     )
