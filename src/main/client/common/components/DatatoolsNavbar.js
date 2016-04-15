@@ -38,42 +38,45 @@ export default class DatatoolsNavbar extends Component {
       <Navbar>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href='#'>{this.props.title}</a>
+            <a href='/explore'>{this.props.title}</a>
           </Navbar.Brand>
+          <Navbar.Toggle />
         </Navbar.Header>
-        <Nav>
-          <LinkContainer to={this.props.managerUrl}>
-            <NavItem>Manager</NavItem>
-          </LinkContainer>
-          {this.props.editorUrl
-            ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
-                Editor
-              </NavItem>
-            : null
-          }
-          {this.props.alertsUrl
-            ? <LinkContainer to={this.props.alertsUrl}>
-                <NavItem>Alerts</NavItem>
-              </LinkContainer>
-            : null
-          }
-          {this.props.userAdminUrl
-            ? <LinkContainer to={this.props.userAdminUrl}>
-                <NavItem>Users</NavItem>
-              </LinkContainer>
-            : null
-          }
-          {this.props.signConfigUrl
-            ? <LinkContainer to={this.props.signConfigUrl}>
-                <NavItem>Sign Config</NavItem>
-              </LinkContainer>
-            : null
-          }
-        </Nav>
-        <Nav pullRight>
-          <NavItem href='#'><Glyphicon glyph='question-sign' /> Guide</NavItem>
-          {userControl}
-        </Nav>
+        <Navbar.Collapse>
+          <Nav>
+            <LinkContainer to={this.props.managerUrl}>
+              <NavItem>Manager</NavItem>
+            </LinkContainer>
+            {this.props.editorUrl
+              ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
+                  Editor
+                </NavItem>
+              : null
+            }
+            {this.props.alertsUrl
+              ? <LinkContainer to={this.props.alertsUrl}>
+                  <NavItem>Alerts</NavItem>
+                </LinkContainer>
+              : null
+            }
+            {this.props.userAdminUrl
+              ? <LinkContainer to={this.props.userAdminUrl}>
+                  <NavItem>Users</NavItem>
+                </LinkContainer>
+              : null
+            }
+            {this.props.signConfigUrl
+              ? <LinkContainer to={this.props.signConfigUrl}>
+                  <NavItem>Sign Config</NavItem>
+                </LinkContainer>
+              : null
+            }
+          </Nav>
+          <Nav pullRight>
+            <NavItem href='#'><Glyphicon glyph='question-sign' /> Guide</NavItem>
+            {userControl}
+          </Nav>
+        </Navbar.Collapse>
       </Navbar>
     )
   }
