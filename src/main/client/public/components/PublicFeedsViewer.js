@@ -1,16 +1,21 @@
 import React from 'react'
 import moment from 'moment'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
-import { Link } from 'react-router'
+import { Link, browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
+import RegionSearch from './RegionSearch'
 
 import PublicPage from './PublicPage'
+import FeedsMap from './FeedsMap'
 
 export default class PublicFeedsViewer extends React.Component {
 
   constructor (props) {
     super(props)
+    this.state = {
+
+    }
   }
 
   componentWillMount () {
@@ -21,29 +26,77 @@ export default class PublicFeedsViewer extends React.Component {
     if (!this.props.projects) {
       return <PublicPage />
     }
-
+    let position = this.state.position
+    let explore =
+      <Row>
+        <Col xs={12} sm={6} md={4}>
+          Explore Transit Data
+        </Col>
+        <Col xs={12} sm={6} md={4}>
+          <Input type='text' bsSize='large' placeholder='Search for regions or agencies' />
+        </Col>
+      </Row>
+    let exploreHeader =
+      <span>
+        Explore Transit Data
+        <Input style={{width: '300px'}} type='text' bsSize='large' placeholder='Search for regions or agencies' />
+      </span>
+    let feeds = []
+    const feedArray = this.props.projects.map(p => {
+      const regions = p.name.split(', ')
+      if (p.feedSources) {
+        return p.feedSources.map(f => {
+          feeds.push(f)
+          return f
+        })
+      }
+    })
     return (
       <PublicPage ref='publicPage'>
         <Grid>
           <Row>
-            <Col xs={12}>
-              <h2>
-                Explore GTFS Feeds &nbsp;&nbsp;&nbsp;
-                <LinkContainer to={{ pathname: '/project' }}>
-                  <Button>View Projects</Button>
-                </LinkContainer>
-              </h2>
+            <Col xs={12} sm={6} md={4}>
+              <RegionSearch
+                feeds={feeds}
+                limit={100}
+                entities={['regions', 'feeds']}
+                minimumInput={0}
+                bsSize='large'
+                clearable={true}
+                onChange={(evt) => {
+                  console.log(evt)
+                  if (evt && evt.region) {
+                    this.setState({
+                      position: [evt.region.lat, evt.region.lon],
+                      bounds: [[evt.region.north, evt.region.east], [evt.region.south, evt.region.west]]
+                    })
+                  }
+                  if (evt && evt.feed) {
+                    browserHistory.push('/public/feed/' + evt.feed.id)
+                  }
+                  else if (evt == null)
+                    this.setState({position: null, bounds: null})
+                }}
+              />
             </Col>
           </Row>
-
+        </Grid>
+        <FeedsMap
+          projects={this.props.projects}
+          onFeedClick={(feedId) => browserHistory.push('/public/feed/' + feedId) }
+          bounds={this.state.bounds}
+        />
+        <Grid>
           <Row>
             <Col xs={12}>
-              <h3>Feeds</h3>
+
             </Col>
           </Row>
-          <FeedTable
-            projects={this.props.projects}
-          />
+          <Row>
+            <Col xs={12}>
+              <FeedTable projects={this.props.projects} />
+            </Col>
+          </Row>
         </Grid>
       </PublicPage>
     )
@@ -74,7 +127,7 @@ class FeedTable extends React.Component {
     let feeds = []
     const feedArray = this.props.projects.map(p => {
       const regions = p.name.split(', ')
-      if (p.feedSources){
+      if (p.feedSources) {
         return p.feedSources.map(f => {
           const feed = {
             name: f.name,
@@ -89,11 +142,8 @@ class FeedTable extends React.Component {
           return feed
         })
       }
-
     })
-    console.log(feeds)
-    console.log(feedArray)
-    return (
+    return feeds.length ? (
       <BootstrapTable
         data={feeds}
         pagination={true}
@@ -101,16 +151,16 @@ class FeedTable extends React.Component {
         hover={true}
         search={true}
       >
-        <TableHeaderColumn isKey={true} dataSort={true} hidden={true} dataField="id">Feed ID</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField="name" dataFormat={this.feedFormat}>Feed Name</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField="region">Region</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField="state">State or Province</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField="country">Country</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField="lastUpdated" sortFunc={this.dateSort}>Last Updated</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField="lastUpdated" hidden={true}>last_update</TableHeaderColumn>
-        <TableHeaderColumn dataField="url" dataFormat={this.urlFormat}>Link to GTFS</TableHeaderColumn>
+        <TableHeaderColumn isKey={true} dataSort={true} hidden={true} dataField='id'>Feed ID</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='name' dataFormat={this.feedFormat}>Feed Name</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='region'>Region</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='state'>State or Province</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='country'>Country</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='lastUpdated' sortFunc={this.dateSort}>Last Updated</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='lastUpdated' hidden={true}>last_update</TableHeaderColumn>
+        <TableHeaderColumn dataField='url' dataFormat={this.urlFormat}>Link to GTFS</TableHeaderColumn>
       </BootstrapTable>
-    )
+    ) : ''
   }
 }
 

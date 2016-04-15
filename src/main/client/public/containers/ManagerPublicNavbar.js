@@ -1,12 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import PublicNavbar from '../components/PublicNavbar'
+import DatatoolsNavbar from '../../common/components/DatatoolsNavbar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    auth0: state.user.auth0,
+    title: DT_CONFIG.application.title,
+    managerUrl: '/project',
+    editorUrl: null,
+    userAdminUrl: null,
+    alertsUrl: null,
+    signConfigUrl: null,
     username: state.user.profile ? state.user.profile.email : null
   }
 }
@@ -23,6 +28,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 var ManagerPublicNavbar = connect(
   mapStateToProps,
   mapDispatchToProps
-)(PublicNavbar)
+)(DatatoolsNavbar)
 
 export default ManagerPublicNavbar

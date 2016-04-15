@@ -18,7 +18,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       dispatch(fetchProjectsWithPublicFeeds())
     },
-    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) }
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
+    // onFeedClick: (feed) => {dispatch()}
   }
 }
 
