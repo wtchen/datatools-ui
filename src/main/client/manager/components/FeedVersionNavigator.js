@@ -91,7 +91,7 @@ export default class FeedVersionNavigator extends React.Component {
               }
 
               <Button href='#'
-                disabled={!hasVersions }
+                disabled={!hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
                 onClick={(evt) => {
                   evt.preventDefault()
                   console.log('deleting version');
