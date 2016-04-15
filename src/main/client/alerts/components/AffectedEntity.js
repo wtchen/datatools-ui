@@ -268,7 +268,6 @@ class RouteSelector extends React.Component {
           clearable={this.props.clearable}
           entities={['routes']}
           onChange={(evt) => {
-            console.log(this.state.value)
             if (typeof evt !== 'undefined' && evt !== null)
               this.props.entityUpdated(this.props.entity, 'ROUTE', evt.route, evt.agency)
             else if (evt == null)
@@ -310,13 +309,8 @@ class StopSelector extends React.Component {
           entities={['stops']}
           clearable={this.props.clearable}
           onChange={(evt) => {
-            // console.log(this.state.value)
-            if (typeof evt !== 'undefined' && evt !== null) {
+            if (typeof evt !== 'undefined' && evt !== null)
               this.props.entityUpdated(this.props.entity, 'STOP', evt.stop, evt.agency)
-              // if (!this.props.clearable) {
-              //
-              // }
-            }
             else if (evt == null)
               this.props.entityUpdated(this.props.entity, 'STOP', null, null)
           }}
