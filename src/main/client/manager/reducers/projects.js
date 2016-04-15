@@ -38,7 +38,7 @@ const projects = (state = {
       return update(state, { isFetching: { $set: true }})
 
     case 'RECEIVE_PROJECTS':
-      activeIndex = action.projects.findIndex(p => p.id === DT_CONFIG.modules.alerts.active_project)
+      activeIndex = action.projects.findIndex(p => p.id === DT_CONFIG.application.active_project)
       return {
         isFetching: false,
         all: action.projects,
@@ -63,7 +63,7 @@ const projects = (state = {
           ]
         }
       }
-      activeProject = action.project.id === DT_CONFIG.modules.alerts.active_project ? action.project : null
+      activeProject = action.project.id === DT_CONFIG.application.active_project ? action.project : null
       if (state.active && !activeProject) { // active project already exists and received project does not match active project
         activeProject = state.active
       }
