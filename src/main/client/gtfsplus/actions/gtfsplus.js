@@ -1,8 +1,7 @@
-import gtfsPlusTables from '../gtfsPlusTables'
 import JSZip from 'jszip'
 
 export function addGtfsPlusRow (tableId) {
-  const table = gtfsPlusTables.find(t => t.id === tableId)
+  const table = DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === tableId)
 
   let rowData = {}
   for(const field of table.fields) {
@@ -104,7 +103,7 @@ export function importGtfsPlusFromGtfs (versionId) {
         let filenames = []
         let filePromises = []
         zip.forEach((path, file) => {
-          if(gtfsPlusTables.find(t => t.id === path.split('.')[0])) {
+          if(DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === path.split('.')[0])) {
             console.log(' gen promise for '+ path);
             filenames.push(path)
             filePromises.push(file.async('string'))

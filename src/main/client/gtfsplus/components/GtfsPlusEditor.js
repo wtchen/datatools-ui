@@ -5,7 +5,6 @@ import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsPlusTable from './GtfsPlusTable'
-import gtfsPlusTables from '../gtfsPlusTables'
 
 export default class GtfsPlusEditor extends Component {
 
@@ -34,7 +33,8 @@ export default class GtfsPlusEditor extends Component {
     const getDataType = function(tableId, fieldName) {
       const lookupKey = tableId + ':' + fieldName
       if(lookupKey in typeLookup) return typeLookup[lookupKey]
-      const fieldInfo = gtfsPlusTables.find(t => t.id === tableId).fields.find(f => f.name === fieldName)
+      const fieldInfo = DT_CONFIG.modules.gtfsplus.spec
+        .find(t => t.id === tableId).fields.find(f => f.name === fieldName)
       if(!fieldInfo) return null
       console.log('f', fieldName, fieldInfo);
       typeLookup[lookupKey] = fieldInfo.inputType
@@ -102,7 +102,7 @@ export default class GtfsPlusEditor extends Component {
   save () {
     const zip = new JSZip()
 
-    for(const table of gtfsPlusTables) {
+    for(const table of DT_CONFIG.modules.gtfsplus.spec) {
       let fileContent = ''
       // white the header line
       const fieldNameArr = table.fields.map(field => field['name'])
@@ -133,7 +133,8 @@ export default class GtfsPlusEditor extends Component {
       width: '100%'
     }
 
-    const activeTable = gtfsPlusTables.find(t => t.id === this.state.activeTableId)
+    const activeTable = DT_CONFIG.modules.gtfsplus.spec
+      .find(t => t.id === this.state.activeTableId)
 
     return (
       <ManagerPage ref='page'>
@@ -176,7 +177,7 @@ export default class GtfsPlusEditor extends Component {
 
           <Row>
             <Col xs={2}>
-              {gtfsPlusTables.map(table => {
+              {DT_CONFIG.modules.gtfsplus.spec.map(table => {
                 return (<p>
                   <Button
                     bsStyle={table.id === this.state.activeTableId ? 'info' : 'default'}
@@ -207,7 +208,10 @@ export default class GtfsPlusEditor extends Component {
                   console.log();
                   this.refs.page.showInfoModal({
                     title: `Help for ${tableId}.txt: ${fieldName}`,
-                    body: gtfsPlusTables.find(t => t.id === tableId).fields.find(f => f.name === fieldName).helpContent || '(No help content found for this field)'
+                    body: DT_CONFIG.modules.gtfsplus.spec
+                      .find(t => t.id === tableId).fields
+                        .find(f => f.name === fieldName).helpContent
+                          || '(No help content found for this field)'
                   })
                 }}
               />

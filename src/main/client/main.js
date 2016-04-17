@@ -10,8 +10,14 @@ import { checkExistingLogin } from './manager/actions/user'
 import App from './common/containers/App'
 
 import config from 'json!yaml!../../../config.yml'
+
+if(config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
+  config.modules.gtfsplus.spec = require('json!yaml!../../../gtfsplus.yml')
+}
 console.log('config', config)
 window.DT_CONFIG = config
+
+
 
 import * as managerReducers from './manager/reducers'
 import * as adminReducers from './admin/reducers'
