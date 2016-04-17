@@ -1,20 +1,28 @@
 import update from 'react-addons-update'
 
+const emptyTableData = {
+  'realtime_routes': [],
+  'realtime_stops': [],
+  'directions': [],
+  'realtime_trips': [],
+  'stop_attributes': [],
+  'timepoints': [],
+  'rider_categories': [],
+  'fare_rider_categories': [],
+  'calendar_attributes': [],
+  'farezone_attributes': []
+}
+
 const gtfsplus = (state = {
-  tableData: {
-    'realtime_routes': [],
-    'realtime_stops': [],
-    'directions': [],
-    'realtime_trips': [],
-    'stop_attributes': [],
-    'timepoints': [],
-    'rider_categories': [],
-    'fare_rider_categories': [],
-    'calendar_attributes': [],
-    'farezone_attributes': []
-  }
+  tableData: Object.assign({}, emptyTableData)
 }, action) => {
   switch (action.type) {
+    case 'CLEAR_GTFSPLUS_CONTENT':
+      return update(state,
+        {tableData:
+          {$merge: Object.assign({}, emptyTableData)}
+        }
+      )
     case 'RECEIVE_GTFSPLUS_CONTENT':
       let newTableData = {}
       for(let i = 0; i < action.filenames.length; i++) {

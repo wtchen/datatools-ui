@@ -36,7 +36,6 @@ export default class GtfsPlusEditor extends Component {
       const fieldInfo = DT_CONFIG.modules.gtfsplus.spec
         .find(t => t.id === tableId).fields.find(f => f.name === fieldName)
       if(!fieldInfo) return null
-      console.log('f', fieldName, fieldInfo);
       typeLookup[lookupKey] = fieldInfo.inputType
       return fieldInfo.inputType
     }

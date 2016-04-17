@@ -43,7 +43,6 @@ export default class GtfsPlusTable extends Component {
           )
         case 'GTFS_ROUTE':
           const routeEntity = this.props.getGtfsEntity('route', currentValue)
-          console.log('>> routeEntity', routeEntity);
 
           const value = routeEntity
             ? { 'value': routeEntity.route_id,

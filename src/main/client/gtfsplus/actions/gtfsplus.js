@@ -33,6 +33,12 @@ export function deleteGtfsPlusRow (tableId, rowIndex) {
   }
 }
 
+export function clearGtfsPlusContent () {
+  return {
+    type: 'CLEAR_GTFSPLUS_CONTENT',
+  }
+}
+
 export function receiveGtfsPlusContent (filenames, fileContent) {
   return {
     type: 'RECEIVE_GTFSPLUS_CONTENT',
@@ -50,7 +56,7 @@ export function downloadGtfsPlusFeed (feedSourceId) {
     }).then((response) => {
       if(response.status !== 200) {
         console.log('error downloading gtfs+ feed', response.statusCode)
-        return null
+        dispatch(clearGtfsPlusContent())
       }
       return response.blob()
     }).then((blob) => {
