@@ -43,7 +43,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchFeedSourceAndProject(feedSourceId))
 
       if(initialProps.location.query.version) { // init from a full GTFS feed
-        console.log();
         dispatch(importGtfsPlusFromGtfs(initialProps.location.query.version))
 
       } else { // download the latest saved GTFS+

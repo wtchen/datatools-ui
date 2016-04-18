@@ -93,7 +93,7 @@ export function uploadGtfsPlusFeed (feedSourceId, file) {
 
 export function importGtfsPlusFromGtfs (versionId) {
   return function (dispatch, getState) {
-    fetch(`/api/manager/secure/feedversion/${versionId}/download`, {
+    fetch(`/api/manager/secure/gtfsplus/import/${versionId}`, {
       method: 'get',
       cache: 'default',
       headers: { 'Authorization': 'Bearer ' + getState().user.token }
