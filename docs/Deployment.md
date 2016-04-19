@@ -15,25 +15,37 @@ $ git clone https://github.com/conveyal/datatools-manager.git
 $ cd datatools-manager
 ```
 
-Copy the included configuration template to `application.conf`:
+Copy the included configuration templates:
 
 ```bash
-$ cp application.conf.template application.conf
+$ cp config.yml.template config.yml
+$ cp config_server.yml.template config_server.yml
 ```
 
-Create directories on your local machine to store the MapDB database and the GTFS feeds. Update the following lines in `application.conf` to reflect these locations:
+Create directories on your local machine to store the MapDB database, GTFS feeds, and GeoJSON data. Update the following properties in `config.yml` to reflect these locations:
 
-```
-application.data.mapdb=/path/to/mapdb
-application.data.gtfs=/path/to/gtfs
+```yaml
+application:
+  data:
+    mapdb: /path/to/mapdb
+    gtfs: /path/to/gtfs
+    regions: /path/to/regions/geojson
 ```
 
-Update the following lines in `application.conf` to reflect your Auth0 settings:
+Update the following properties in `config.yml` to reflect the public Auth0 settings:
 
+```yaml
+auth0:
+  domain: your-auth0-domain
+  client_id: your-auth0-client-id
 ```
-application.auth0.domain=your-auth0-domain
-application.auth0.client_id=your-auth0-client-id
-application.auth0.client_secret=your-auth0-client-secret
+
+Update the following properties in `config_server.yml` to reflect the secure Auth0 settings:
+
+```yaml
+auth0:
+  client_secret: your-auth0-client-secret
+  api_token: your-auth0-api-token
 ```
 
 ## Building and Running the Application
@@ -70,19 +82,23 @@ The application supports integration with several third-party resources for retr
 
 ### Integration with [transit.land](https://transit.land/)
 
-Uncomment the following lines in `application.conf`:
+Ensure that the `extensions:transitland:enabled` flag is set to `true` in `config.yml`:
 
-```
-application.extensions.transitland.enabled=true
-application.extensions.transitland.api=https://transit.land/api/v1/feeds
+```yaml
+extensions:
+  transitland:
+    enabled: true
+    api: https://transit.land/api/v1/feeds
 ```
 
 ### Integration with [TransitFeeds](http://transitfeeds.com/)
 
-Uncomment the following lines in `application.conf` and provide your API key:
+Ensure that the `extensions:transitfeeds:enabled` flag is set to `true` in `config.yml`, and provide your API key:
 
-```
-application.extensions.transitfeeds.enabled=true
-application.extensions.transitfeeds.api=http://api.transitfeeds.com/v1/getFeeds
-application.extensions.transitfeeds.key=your-api-key
+```yaml
+extensions:
+  transitfeeds:
+    enabled: true
+    api: http://api.transitfeeds.com/v1/getFeeds
+    key: your-api-key
 ```
