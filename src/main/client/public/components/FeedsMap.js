@@ -56,10 +56,10 @@ export default class FeedsMap extends React.Component {
     let position = [this.state.lat, this.state.lng];
     let bounds = getFeedBounds(feeds)
     let markers = []
-    let markerCluster =
-      <MarkerCluster
-        markers={markers}
-      />
+    // let markerCluster =
+    //   <MarkerCluster
+    //     markers={markers}
+    //   />
     feeds.map(feed => {
       if (feed.latestValidation && feed.latestValidation.bounds) {
         markers.push(
