@@ -105,12 +105,10 @@ export function importGtfsPlusFromGtfs (versionId) {
       return response.blob()
     }).then((blob) => {
       JSZip.loadAsync(blob).then((zip) => {
-        console.log('>>>>>>>>> got main gtfs zip', zip);
         let filenames = []
         let filePromises = []
         zip.forEach((path, file) => {
           if(DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === path.split('.')[0])) {
-            console.log(' gen promise for '+ path);
             filenames.push(path)
             filePromises.push(file.async('string'))
           }
@@ -119,6 +117,76 @@ export function importGtfsPlusFromGtfs (versionId) {
           dispatch(receiveGtfsPlusContent(filenames, fileContent))
         })
       })
+    })
+  }
+}
+
+export function receiveGtfsEntities (gtfsEntities) {
+  return {
+    type: 'RECEIVE_GTFS_ENTITIES',
+    gtfsEntities
+  }
+}
+
+export function loadGtfsEntities (tableId, rows, feedSource) {
+
+  return function (dispatch, getState) {
+
+    // lookup table for mapping tableId:fieldName keys to inputType values
+    const typeLookup = {}
+    const getDataType = function(tableId, fieldName) {
+      const lookupKey = tableId + ':' + fieldName
+      if(lookupKey in typeLookup) return typeLookup[lookupKey]
+      const fieldInfo = DT_CONFIG.modules.gtfsplus.spec
+        .find(t => t.id === tableId).fields.find(f => f.name === fieldName)
+      if(!fieldInfo) return null
+      typeLookup[lookupKey] = fieldInfo.inputType
+      return fieldInfo.inputType
+    }
+
+    // determine which routes, stops, etc. aren't currently in the gtfsEntityLookup table and need to be loaded from the API
+    const routesToLoad = []
+    const stopsToLoad = []
+
+    const currentLookup = getState().gtfsplus.gtfsEntityLookup
+
+    for(const rowData of rows) {
+      for(const fieldName in rowData) {
+        switch(getDataType(tableId, fieldName)) {
+          case 'GTFS_ROUTE':
+            const routeId = rowData[fieldName]
+            if(routeId && !(`route_${routeId}` in currentLookup)) routesToLoad.push(routeId)
+            break;
+          case 'GTFS_STOP':
+            const stopId = rowData[fieldName]
+            if(stopId && !(`stop_${stopId}` in currentLookup)) stopsToLoad.push(stopId)
+            break;
+        }
+      }
+    }
+
+    if(routesToLoad.length === 0 && stopsToLoad.length === 0) return
+
+    var loadRoutes = Promise.all(routesToLoad.map(routeId => {
+      const url = `/api/manager/routes/${routeId}?feed=${feedSource.externalProperties.MTC.AgencyId}`
+      return fetch(url)
+      .then((response) => {
+        return response.json()
+      })
+    }))
+
+    var loadStops = Promise.all(stopsToLoad.map(stopId => {
+      const url = `/api/manager/stops/${stopId}?feed=${feedSource.externalProperties.MTC.AgencyId}`
+      return fetch(url)
+      .then((response) => {
+        return response.json()
+      })
+    }))
+
+    Promise.all([loadRoutes, loadStops]).then(results => {
+      const loadedRoutes = results[0]
+      const loadedStops = results[1]
+      dispatch(receiveGtfsEntities(loadedRoutes.concat(loadedStops)))
     })
   }
 }

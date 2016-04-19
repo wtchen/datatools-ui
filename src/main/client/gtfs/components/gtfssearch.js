@@ -28,10 +28,11 @@ export default class GtfsSearch extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!shallowEqual(nextProps.filterByRoute, this.props.filterByRoute) || !shallowEqual(nextProps.filterByStop, this.props.filterByStop)) {
+    if (this.state.value !== nextProps.value) {
       this.setState({value: nextProps.value})
     }
   }
+
   renderOption (option) {
     return <span style={{ color: 'black' }}>{option.stop ? <Glyphicon glyph="map-marker" /> : <Glyphicon glyph="option-horizontal" />} {option.label} <Label>{option.agency.name}</Label> {option.link}</span>
   }

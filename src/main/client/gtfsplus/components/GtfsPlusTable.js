@@ -1,19 +1,45 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, Input, Button, Glyphicon } from 'react-bootstrap'
+import { Row, Col, Table, Input, Button, Glyphicon, Pagination } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import EditableTextField from '../../common/components/EditableTextField'
 
+const recordsPerPage = 25
+
 export default class GtfsPlusTable extends Component {
 
   constructor (props) {
     super(props)
+
+    this.state = {
+      currentPage: 1
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if(this.props.table !== nextProps.table) {
+      this.setState({ currentPage: 1 })
+    }
+  }
+
+  componentDidMount () {
+    this.props.newRowsDisplayed(this.getActiveRowData(this.state.currentPage))
+  }
+
+  componentDidUpdate () {
+    this.props.newRowsDisplayed(this.getActiveRowData(this.state.currentPage))
+  }
+
+  getActiveRowData (currentPage) {
+    return this.props.tableData.slice((currentPage - 1) * recordsPerPage,
+      Math.min(currentPage * recordsPerPage, this.props.tableData.length))
   }
 
   render () {
 
     const table = this.props.table
+    const rowData = this.getActiveRowData(this.state.currentPage)
 
     const getInput = (row, field, currentValue) => {
       switch(field.inputType) {
@@ -44,7 +70,7 @@ export default class GtfsPlusTable extends Component {
         case 'GTFS_ROUTE':
           const routeEntity = this.props.getGtfsEntity('route', currentValue)
 
-          const value = routeEntity
+          const routeValue = routeEntity
             ? { 'value': routeEntity.route_id,
                 'label': routeEntity.route_short_name
                   ? `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`
@@ -63,11 +89,13 @@ export default class GtfsPlusTable extends Component {
                 this.props.fieldEdited(table.id, row, field.name, evt.route.route_id)
                 this.props.gtfsEntitySelected('route', evt.route)
               }}
-              value={value}
+              value={routeValue}
             />
           )
         case 'GTFS_STOP':
           const stopEntity = this.props.getGtfsEntity('stop', currentValue)
+          const stopValue = stopEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
+
           return (
             <GtfsSearch
               feeds={[this.props.feedSource]}
@@ -79,7 +107,7 @@ export default class GtfsPlusTable extends Component {
                 this.props.fieldEdited(table.id, row, field.name, evt.stop.stop_id)
                 this.props.gtfsEntitySelected('stop', evt.stop)
               }}
-              value={stopEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''}
+              value={stopValue}
             />
           )
 
@@ -89,12 +117,13 @@ export default class GtfsPlusTable extends Component {
     const headerStyle = {
       fontWeight: 'bold',
       fontSize: '24px',
-      borderBottom: '2px solid black'
+      borderBottom: '2px solid black',
+      marginBottom: '12px'
     }
 
     const subHeaderStyle = {
       marginTop: '6px',
-      marginBottom: '8px',
+      marginBottom: '20px',
       textAlign: 'right'
     }
 
@@ -105,14 +134,64 @@ export default class GtfsPlusTable extends Component {
       color: 'white'
     }
 
-    return (<div>
-      <div style={headerStyle}>
-        {table.name}
-      </div>
+    const pageCount = Math.ceil(this.props.tableData.length / recordsPerPage)
 
-      <div style={subHeaderStyle}>
-        <i>Click (?) icon for details on field and validation rules. Required fields denoted by (*)</i>
-      </div>
+    return (<div>
+      <Row>
+        <Col xs={12}>
+          <div style={headerStyle}>
+            {table.name}
+          </div>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col xs={5}>
+          {(this.props.tableData.length > recordsPerPage)
+            ? <div className='form-inline'>
+                <Button
+                  disabled={this.state.currentPage <= 1}
+                  onClick={(evt => {
+                    this.setState({ currentPage: this.state.currentPage - 1 })
+                  })}
+                ><Glyphicon glyph='arrow-left' /></Button>
+
+                <span style={{ fontSize: '18px', margin: '0px 10px'}}>
+                  Page {this.state.currentPage} of {pageCount}
+                </span>
+
+                <Button
+                  disabled={this.state.currentPage >= pageCount}
+                  onClick={(evt => {
+                    this.setState({ currentPage: this.state.currentPage + 1 })
+                  })}
+                ><Glyphicon glyph='arrow-right' /></Button>
+
+                <span style={{ fontSize: '18px', marginLeft: '15px'}}>
+                  Go to <Input
+                    type='text'
+                    size={5}
+                    style={{ width: '50px', display: 'inline', textAlign: 'center' }}
+                    onKeyUp={(e) => {
+                      if (e.keyCode == 13) {
+                        const newPage = parseInt(e.target.value)
+                        if(newPage > 0 && newPage <= pageCount) {
+                          e.target.value = ''
+                          this.setState({ currentPage: newPage })
+                        }
+                      }
+                    }}
+                    onFocus={(e) => e.target.select()}
+                  />
+                </span>
+              </div>
+            : null
+          }
+        </Col>
+        <Col xs={7} style={subHeaderStyle}>
+          <i>Click (?) icon for details on field and validation rules. Required fields denoted by (*)</i>
+        </Col>
+      </Row>
 
       <Table>
         <thead>
@@ -134,33 +213,38 @@ export default class GtfsPlusTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.tableData.map((data, rowIndex) => {
-            return (<tr>
-              {table.fields.map(field => {
-                return <td>{getInput(rowIndex, field, data[field.name])}</td>
-              })}
-              <td>
-              <Button
-                  bsStyle='danger'
-                  bsSize='small'
-                  className='pull-right'
-                  onClick={() => { this.props.deleteRowClicked(table.id, rowIndex) }}
-                >
-                  <Glyphicon glyph='remove' />
-                </Button>
-              </td>
-            </tr>)
-          })}
+          {rowData.map((data, rowIndex) => {
+              return (<tr>
+                {table.fields.map(field => {
+                  return (<td>
+                    {getInput((this.state.currentPage - 1) * recordsPerPage + rowIndex,
+                      field, data[field.name])}
+                  </td>)
+                })}
+                <td>
+                <Button
+                    bsStyle='danger'
+                    bsSize='small'
+                    className='pull-right'
+                    onClick={() => { this.props.deleteRowClicked(table.id, rowIndex) }}
+                  >
+                    <Glyphicon glyph='remove' />
+                  </Button>
+                </td>
+              </tr>)
+            })}
         </tbody>
       </Table>
-      <Button
-        bsStyle='primary'
-        bsSize='large'
-        className='pull-right'
-        onClick={() => {
-          this.props.newRowClicked(table.id)
-        }}
-      ><Glyphicon glyph='plus' /> New Row</Button>
+      <div>
+        <Button
+          bsStyle='primary'
+          bsSize='large'
+          className='pull-right'
+          onClick={() => {
+            this.props.newRowClicked(table.id)
+          }}
+        ><Glyphicon glyph='plus' /> New Row</Button>
+      </div>
 
     </div>)
   }

@@ -12,7 +12,9 @@ export default class EditableTextField extends React.Component {
     }
   }
 
-  componentWillMount () {
+
+  componentWillReceiveProps (nextProps) {
+    if(this.state.value !== nextProps.value) this.setState({ value: nextProps.value })
   }
 
   edit () {

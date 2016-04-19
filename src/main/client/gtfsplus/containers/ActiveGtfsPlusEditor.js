@@ -8,7 +8,9 @@ import {
   deleteGtfsPlusRow,
   uploadGtfsPlusFeed,
   downloadGtfsPlusFeed,
-  importGtfsPlusFromGtfs
+  importGtfsPlusFromGtfs,
+  loadGtfsEntities,
+  receiveGtfsEntities
 } from '../actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
@@ -30,6 +32,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     tableData: state.gtfsplus.tableData,
+    gtfsEntityLookup: state.gtfsplus.gtfsEntityLookup,
     feedSource,
     project,
     user
@@ -59,8 +62,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateGtfsPlusField(tableId, rowIndex, fieldName, newValue))
     },
     feedSaved: (file) => {
-      console.log('dispatching upload');
       dispatch(uploadGtfsPlusFeed(feedSourceId, file))
+    },
+    newRowsDisplayed: (tableId, rows, feedSource) => {
+      if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
+    },
+    gtfsEntitySelected: (type, entity) => {
+      dispatch(receiveGtfsEntities([entity]))
     }
   }
 }

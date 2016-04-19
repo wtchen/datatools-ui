@@ -14,14 +14,16 @@ const emptyTableData = {
 }
 
 const gtfsplus = (state = {
-  tableData: Object.assign({}, emptyTableData)
+  tableData: Object.assign({}, emptyTableData),
+  gtfsEntityLookup: {}
 }, action) => {
   switch (action.type) {
     case 'CLEAR_GTFSPLUS_CONTENT':
       return update(state,
-        {tableData:
-          {$merge: Object.assign({}, emptyTableData)}
-        }
+        {$merge: {
+          tableData: Object.assign({}, emptyTableData),
+          gtfsEntityLookup: {}
+        }}
       )
     case 'RECEIVE_GTFSPLUS_CONTENT':
       let newTableData = {}
@@ -78,6 +80,25 @@ const gtfsplus = (state = {
           {[action.tableId]:
             {$set: newTable}
           }
+        }
+      )
+
+    case 'RECEIVE_GTFS_ENTITIES':
+      const getType = function (entity) {
+        if(entity.hasOwnProperty('route_id')) return 'route'
+        if(entity.hasOwnProperty('stop_id')) return 'stop'
+      }
+
+      const newLookupEntries = {}
+      for(const entity of action.gtfsEntities) {
+        const type = getType(entity)
+        const key = type + '_' + entity[type+'_id']
+        newLookupEntries[key] = entity
+      }
+
+      return update(state,
+        {gtfsEntityLookup:
+          {$merge: newLookupEntries}
         }
       )
 
