@@ -32,17 +32,9 @@ export default class SignsList extends React.Component {
               onClick={() => this.props.visibilityFilterChanged('ALL')}
               href="#">All</Button>
             <Button
-              bsStyle={this.props.visibilityFilter.filter === 'ACTIVE' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('ACTIVE')}
-              href="#">Active</Button>
-            <Button
-              bsStyle={this.props.visibilityFilter.filter === 'FUTURE' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('FUTURE')}
-              href="#">Future</Button>
-            <Button
-              bsStyle={this.props.visibilityFilter.filter === 'ARCHIVED' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('ARCHIVED')}
-              href="#">Archived</Button>
+              bsStyle={this.props.visibilityFilter.filter === 'PUBLISHED' ? 'primary' : 'default'}
+              onClick={() => this.props.visibilityFilterChanged('PUBLISHED')}
+              href="#">Published</Button>
             <Button
               bsStyle={this.props.visibilityFilter.filter === 'DRAFT' ? 'primary' : 'default'}
               onClick={() => this.props.visibilityFilterChanged('DRAFT')}

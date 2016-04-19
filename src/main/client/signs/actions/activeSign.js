@@ -56,11 +56,12 @@ export const setActivePublished = (published) => {
   }
 }
 
-export const toggleAssociatedSign = (display, draftConfigId) => {
+export const toggleConfigForDisplay = (display, configType = 'DRAFT', configId) => {
   return {
-    type: 'TOGGLE_ASSOCIATED_SIGN',
+    type: 'TOGGLE_CONFIG_FOR_DISPLAY',
     display,
-    draftConfigId
+    configType,
+    configId
   }
 }
 

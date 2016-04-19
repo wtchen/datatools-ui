@@ -14,9 +14,6 @@ export default class AffectedEntity extends React.Component {
     super(props)
   }
   render () {
-    const getMode = (id) => {
-      return modes.find((mode) => mode.gtfsType === +id )
-    }
     const getRouteName = (route) => {
       let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
         route.route_long_name ? route.route_long_name :
@@ -24,43 +21,31 @@ export default class AffectedEntity extends React.Component {
       return routeName
     }
     const getEntitySummary = (entity) => {
-      console.log(entity)
       const type = entity.type
       const val = entity[type.toLowerCase()]
-      console.log('val', val)
       let agencyName = ''
-      if (typeof entity.agency !== 'undefined' && entity.agency !== null){
+      if (entity.agency) {
         agencyName = entity.agency.name
       }
-      else if (typeof entity.stop !== 'undefined' && entity.stop !== null){
+      else if (entity.stop) {
         const feed = getFeed(this.props.feeds, entity.stop.feed_id)
         agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
       }
 
-      const routeName = typeof entity.route !== 'undefined' && entity.route !== null ? getRouteName(entity.route) : entity.route_id
+      const routes = entity.route ? ` for ${entity.route.length} routes`
+                    : entity.route_id ? ` for ${entity.route_id.length} routes`
+                    : ' [add routes]'
       let stopName = typeof entity.stop !== 'undefined' && entity.stop !== null ? `${entity.stop.stop_name} (${agencyName})` : entity.stop_id
       let summary = ''
         switch (type) {
-          case 'AGENCY' :
-            return agencyName
           case 'STOP' :
             summary = stopName
-            if (typeof routeName !== 'undefined'){
-              summary += ` for ${routeName}`
+            if (routes) {
+              summary += routes
             }
             return summary
-          case 'ROUTE' :
-            summary = routeName
-            if (typeof stopName !== 'undefined'){
-              summary += ` at ${stopName}`
-            }
-            return summary
-          case 'MODE' :
-            summary = val.name
-            if (typeof stopName !== 'undefined'){
-              summary += ` at ${stopName}`
-            }
-            return summary
+          default:
+            return ''
         }
     }
 
@@ -68,7 +53,7 @@ export default class AffectedEntity extends React.Component {
       <Panel collapsible header={
         <Row>
           <Col xs={10}>
-            {this.props.entity.type}: {getEntitySummary(this.props.entity)}
+            <span><Glyphicon glyph="map-marker" /> {getEntitySummary(this.props.entity)}</span>
           </Col>
           <Col xs={2}>
             <ButtonGroup className='pull-right'>
@@ -90,43 +75,6 @@ export default class AffectedEntity extends React.Component {
           let selectedStop = this.props.entity.stop
           console.log(selectedStop)
           switch (this.props.entity.type) {
-            case "AGENCY":
-              return (
-                <div>
-                  <span><b>Agency:</b></span>
-                  <AgencySelector
-                    feeds={this.props.feeds}
-                    entityUpdated={this.props.entityUpdated}
-                    entity={this.props.entity}
-                  />
-                </div>
-              )
-            case "MODE":
-              return (
-                <div>
-                  <span><b>Mode:</b></span>
-                  <ModeSelector
-                    entityUpdated={this.props.entityUpdated}
-                    value={this.props.entity.type}
-                    entity={this.props.entity}
-                  />
-                  <div style={indent}>
-                    <span><i>Refine by Agency:</i></span>
-                    <AgencySelector
-                      feeds={this.props.feeds}
-                      entityUpdated={this.props.entityUpdated}
-                      entity={this.props.entity}
-                    />
-                    <span><i>Refine by Stop:</i></span>
-                    <StopSelector
-                      feeds={selectedFeeds}
-                      stop={this.props.entity.stop}
-                      entityUpdated={this.props.entityUpdated}
-                      entity={this.props.entity}
-                    />
-                  </div>
-                </div>
-              )
             case "STOP":
               return (
                 <div>
@@ -151,31 +99,6 @@ export default class AffectedEntity extends React.Component {
                   </div>
                 </div>
               )
-            case "ROUTE":
-              return (
-                <div>
-                  <span><b>Route:</b></span>
-                  <RouteSelector
-                    feeds={this.props.activeFeeds}
-                    route={this.props.entity.route}
-                    clearable={false}
-                    entityUpdated={this.props.entityUpdated}
-                    entity={this.props.entity}
-                  />
-                  <div style={indent}>
-                    <span><i>Refine by Stop:</i></span>
-                    <StopSelector
-                      feeds={selectedFeeds}
-                      minimumInput={0}
-                      filterByRoute={selectedRoute}
-                      stop={this.props.entity.stop}
-                      entityUpdated={this.props.entityUpdated}
-                      entity={this.props.entity}
-                    />
-                  </div>
-                </div>
-              )
-
           }
         })()}
 
@@ -184,66 +107,12 @@ export default class AffectedEntity extends React.Component {
   }
 }
 
-
-class AgencySelector extends React.Component {
-
-  render () {
-    const getMode = (id) => {
-      return modes.find((mode) => mode.gtfsType === +id )
-    }
-    return (
-      <div>
-        <Input
-          type="select"
-          value={this.props.entity.agency && this.props.entity.agency.externalProperties.MTC.AgencyId}
-          onChange={(evt) => {
-            this.props.entityUpdated(this.props.entity, "AGENCY", getFeed(this.props.feeds, evt.target.value))
-          }}
-          //value={this.props.entity.type}
-        >
-          {this.props.feeds.map((feed) => {
-            return <option key={feed.externalProperties.MTC.AgencyId} value={feed.externalProperties.MTC.AgencyId}>{feed.name}</option>
-          })}
-        </Input>
-      </div>
-    )
-  }
-}
-
-class ModeSelector extends React.Component {
-
-  render () {
-    const getMode = (id) => {
-      return modes.find((mode) => mode.gtfsType === +id )
-    }
-    return (
-      <div>
-        <Input
-          type="select"
-          value={this.props.entity.mode.gtfsType}
-          onChange={(evt) => {
-            this.props.entityUpdated(this.props.entity, "MODE", getMode(evt.target.value))
-          }}
-          //value={this.props.entity.type}
-        >
-          {modes.map((mode) => {
-            return <option value={mode.gtfsType}>{mode.name}</option>
-          })}
-        </Input>
-      </div>
-    )
-  }
-}
-
 class RouteSelector extends React.Component {
-  state = {
-    route: this.props.route
-  };
+  constructor (props) {
+    super(props)
+  }
   render () {
     console.log('render route ent', this.props.route)
-    const getMode = (id) => {
-      return modes.find((mode) => mode.gtfsType === +id )
-    }
     const getRouteName = (route) => {
       let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
         route.route_long_name ? route.route_long_name :
@@ -251,7 +120,7 @@ class RouteSelector extends React.Component {
       return routeName
     }
     var routes = []
-    const feed = typeof this.state.route !== 'undefined' ? getFeed(this.props.feeds, this.state.route.feed_id) : null
+    const feed = this.props.route ? getFeed(this.props.feeds, this.props.route.feed_id) : null
     const agencyName = feed ? feed.name : 'Unknown agency'
 
     return (
@@ -259,18 +128,21 @@ class RouteSelector extends React.Component {
         <GtfsSearch
           feeds={this.props.feeds}
           limit={100}
+          multi={true}
           minimumInput={this.props.minimumInput}
           filterByStop={this.props.filterByStop}
           clearable={this.props.clearable}
           entities={['routes']}
           onChange={(evt) => {
-            console.log(this.state.value)
-            if (typeof evt !== 'undefined' && evt !== null)
-              this.props.entityUpdated(this.props.entity, "ROUTE", evt.route, evt.agency)
+            console.log(evt)
+            if (evt) {
+              let routes = evt.map(e => e.route)
+              this.props.entityUpdated(this.props.entity, "ROUTES", routes)
+            }
             else if (evt == null)
-              this.props.entityUpdated(this.props.entity, "ROUTE", null, null)
+              this.props.entityUpdated(this.props.entity, "ROUTES", [])
           }}
-          value={this.state.route ? {'value': this.state.route.route_id, 'label': `${getRouteName(this.state.route)} (${agencyName})`} : ''}
+          value={this.props.route ? this.props.route.map(r => ({'route': r, 'value': r.route_id, 'label': `${getRouteName(r)}`})) : ''}
         />
       </div>
     )
@@ -278,26 +150,13 @@ class RouteSelector extends React.Component {
 }
 
 class StopSelector extends React.Component {
-  state = {
-    stop: this.props.stop
-  };
-  // TODO: clear stop or route if parent select changes...
-  componentWillReceiveProps (nextProps) {
-    // if (!shallowEqual(nextProps.value, this.props.value)) {
-    //   this.setState({value: nextProps.value})
-      console.log('props received', this.state.stop)
-      // console.log()
-    //   this.refs.gtfsSelect.onChange()
-    // }
+  constructor (props) {
+    super(props)
   }
-
   render () {
     console.log('render stop ent', this.props.stop)
-    const getMode = (id) => {
-      return modes.find((mode) => mode.gtfsType === +id )
-    }
     var stops = []
-    const feed = typeof this.state.stop !== 'undefined' ? getFeed(this.props.feeds, this.state.stop.feed_id) : null
+    const feed = this.props.stop ? getFeed(this.props.feeds, this.props.stop.feed_id) : null
     const agencyName = feed ? feed.name : 'Unkown agency'
     return (
       <div>
@@ -309,13 +168,12 @@ class StopSelector extends React.Component {
           entities={['stops']}
           clearable={this.props.clearable}
           onChange={(evt) => {
-            console.log(this.state.value)
             if (typeof evt !== 'undefined' && evt !== null)
               this.props.entityUpdated(this.props.entity, "STOP", evt.stop, evt.agency)
             else if (evt == null)
               this.props.entityUpdated(this.props.entity, "STOP", null, null)
           }}
-          value={this.state.stop ? {'value': this.state.stop.stop_id, 'label': `${this.state.stop.stop_name} (${agencyName})`} : ''}
+          value={this.props.stop ? {'value': this.props.stop.stop_id, 'label': `${this.props.stop.stop_name} (${agencyName})`} : ''}
         />
 
       </div>

@@ -17,13 +17,8 @@ const getVisibleSigns = (signs, visibilityFilter) => {
   switch (visibilityFilter.filter) {
     case 'ALL':
       return visibleSigns
-    case 'ACTIVE':
-      return visibleSigns.filter(sign =>
-        moment(sign.start).isBefore(now) && moment(sign.end).isAfter(now))
-    case 'FUTURE':
-      return visibleSigns.filter(sign => moment(sign.start).isAfter(now))
-    case 'ARCHIVED':
-      return visibleSigns.filter(sign => moment(sign.end).isBefore(now))
+    case 'PUBLISHED':
+      return visibleSigns.filter(sign => sign.published)
     case 'DRAFT':
       return visibleSigns.filter(sign => !sign.published)
   }

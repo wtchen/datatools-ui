@@ -2,11 +2,11 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import { fetchProjects } from '../actions/projects'
-import { saveSign, deleteSign, createSign, setActiveSign } from '../actions/signs'
+import { saveSign, deleteSign, createSign, setActiveSign, createDisplay } from '../actions/signs'
 import { setActiveTitle, setActiveDescription, setActiveUrl, setActiveCause,
   setActiveEffect, setActiveStart, setActiveEnd, setActivePublished,
   addActiveEntity, deleteActiveEntity, updateActiveEntity, updateDisplays,
-  toggleAssociatedSign } from '../actions/activeSign'
+  toggleConfigForDisplay } from '../actions/activeSign'
 
 import SignEditor from '../components/SignEditor'
 
@@ -58,8 +58,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
     },
+    createDisplay: (displayName) => dispatch(createDisplay(displayName)),
     updateDisplays: (displayList) => dispatch(updateDisplays(displayList)),
-    handleDisplayClick: (display, draftConfigId) => dispatch(toggleAssociatedSign(display, draftConfigId)),
+    toggleConfigForDisplay: (display, configType, draftConfigId) => dispatch(toggleConfigForDisplay(display, configType, draftConfigId)),
     onSaveClick: (sign) => dispatch(saveSign(sign)),
     onDeleteClick: (sign) => dispatch(deleteSign(sign)),
     onPublishClick: (sign, published) => dispatch(setActivePublished(published)),

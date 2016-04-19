@@ -34,27 +34,31 @@ export default class SignPreview extends React.Component {
           <Col xs={4}>
             <ButtonGroup className='pull-right'>
               <Button title={editButtonMessage} disabled={editingIsDisabled} onClick={() => this.props.onEditClick(this.props.sign)}>
-                <Glyphicon glyph="pencil" />
+                <Glyphicon glyph='pencil' />
               </Button>
               <Button title={deleteButtonMessage} disabled={deleteIsDisabled} onClick={() => this.props.onDeleteClick(this.props.sign)}>
-                <Glyphicon glyph="remove" />
+                <Glyphicon glyph='remove' />
               </Button>
             </ButtonGroup>
           </Col>
         </Row>
       }>
         <p>
-          <i>{moment(this.props.sign.start).format('MMM Do YYYY, h:mm:ssa')} to {moment(this.props.sign.end).format('MMM Do YYYY, h:mm:ssa')} </i>
           {this.props.sign.published
-            ? <Label bsStyle="success" className='pull-right'>published</Label>
-            : <Label bsStyle="warning" className='pull-right'>unpublished</Label>
+            ? <Label bsStyle='success' className='pull-right'>published</Label>
+            : <Label bsStyle='warning' className='pull-right'>unpublished</Label>
           }
         </p>
-        <p>{this.props.sign.description}</p>
-        <p>URL: <a href={this.props.sign.url} target="_blank">{this.props.sign.url}</a></p>
+        <p>Stops:&nbsp;
+        {this.props.sign.affectedEntities ? this.props.sign.affectedEntities.map(e =>
+          {
+            return e.stop ? (<span>{e.stop.stop_name} <Label bsStyle='primary'>{e.route.length} routes</Label></span>) : e.stop_id
+          }) : ''
+        }
+        </p>
         <p>
         {this.props.sign.affectedEntities.length
-          ? <Label bsStyle="danger" className='pull-right'>{this.props.sign.affectedEntities.length} affected service(s)</Label>
+          ? <Label bsStyle='default' className='pull-right'>{this.props.sign.displays ? this.props.sign.displays.length : 0} display(s)</Label>
           : <Label className='pull-right'>General sign</Label>
         }
         </p>

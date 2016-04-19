@@ -5,7 +5,7 @@ import DisplaySelector from './DisplaySelector'
 
 import DateTimeField from 'react-bootstrap-datetimepicker'
 
-import ManagerNavbar from '../../common/containers/ManagerNavbar'
+import ManagerPage from '../../common/components/ManagerPage'
 import AffectedEntity from './AffectedEntity'
 import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
@@ -22,10 +22,9 @@ export default class SignEditor extends React.Component {
   }
 
   render () {
-    console.log('SignEditor')
-    console.log(this.props.sign)
+    // console.log('SignEditor')
     if (!this.props.sign) {
-      return <ManagerNavbar/>
+      return <ManagerPage/>
     }
 
     const canPublish = checkEntitiesForFeeds(this.props.sign.affectedEntities, this.props.publishableFeeds)
@@ -40,13 +39,12 @@ export default class SignEditor extends React.Component {
 
     const editButtonMessage = this.props.sign.published && deleteIsDisabled ? 'Cannot edit because sign is published'
       : !canEdit ? 'Cannot alter signs for other agencies' : 'Edit sign'
-
+    console.log('displays', this.props.sign.displays)
     return (
-      <div>
-        <ManagerNavbar/>
+      <ManagerPage ref='page'>
         <Grid>
           <Row>
-            <Col xs={1}>
+            <Col xs={4} sm={8} md={9}>
               <Button
                 onClick={
                   (evt) => {
@@ -54,20 +52,7 @@ export default class SignEditor extends React.Component {
                 }}
               ><Glyphicon glyph='chevron-left'/> Back</Button>
             </Col>
-            <Col xs={3}>
-              <Input
-                type="text"
-                label="Configuration Name"
-                defaultValue={this.props.sign.title}
-                onChange={evt => {
-                  this.props.titleChanged(evt.target.value)
-                }}
-              />
-            </Col>
-            <Col xs={5}>
-            </Col>
-
-            <Col xs={3}>
+            <Col xs={8} sm={4} md={3}>
               <ButtonGroup className='pull-right'>
                 <Button
                   title={editButtonMessage}
@@ -79,10 +64,10 @@ export default class SignEditor extends React.Component {
                     //   alert('Sign end date cannot be before the current date')
                     //   return
                     // }
-                    // if(this.props.sign.affectedEntities.length === 0) {
-                    //   alert('You must specify at least one stop/route')
-                    //   return
-                    // }
+                    if(this.props.sign.affectedEntities.length === 0) {
+                      alert('You must specify at least one stop')
+                      return
+                    }
 
                     this.props.onSaveClick(this.props.sign)
                   }}
@@ -109,52 +94,63 @@ export default class SignEditor extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={6}>
-              <DisplaySelector
-                feeds={this.props.activeFeeds}
-                placeholder='Add displays'
-                sign={this.props.sign}
-                label='List of Signs'
-                clearable={true}
-                handleClick={this.props.handleDisplayClick}
-                onChange={(evt) => {
-                  console.log('we need to add this sign to the draft config', evt)
-                  // if (typeof evt !== 'undefined' && evt !== null){
-                      this.props.updateDisplays(evt.map(s => s.display))
-                  // }
-
+            <Col xs={12} sm={6} style={{marginTop: '10px'}}>
+              <Input
+                type='text'
+                label='Configuration Name'
+                bsSize='large'
+                placeholder='E.g., Fremont (Inside Station)'
+                defaultValue={this.props.sign.title || ''}
+                onChange={evt => {
+                  this.props.titleChanged(evt.target.value)
                 }}
               />
-              <Panel header={<b>Affected </b>}>
+              <Panel header={<b><Glyphicon glyph='modal-window'/> Associated Displays for Sign Configuration</b>}>
+                <Row>
+                  <Col xs={12}>
+                    <DisplaySelector
+                      feeds={this.props.activeFeeds}
+                      createDisplay={(input) => {
+                        this.refs.page.showConfirmModal({
+                          title: 'Create New Display?',
+                          body: <p>Create new display for <strong>{input}</strong>?</p>,
+                          onConfirm: () => {
+                            this.props.createDisplay(input)
+                          }
+                        })
+                      }}
+                      placeholder='Click to add displays...'
+                      sign={this.props.sign}
+                      label='List of Signs'
+                      clearable={true}
+                      toggleConfigForDisplay={this.props.toggleConfigForDisplay}
+                      onChange={(evt) => {
+                        console.log('we need to add this sign to the draft config', evt)
+                        // if (typeof evt !== 'undefined' && evt !== null){
+                            this.props.updateDisplays(evt.map(s => s.display))
+                        // }
+
+                      }}
+                      value={this.props.sign.displays ? this.props.sign.displays.map(d => ({'display': d, 'value': d.Id, 'label': <span><strong>{d.DisplayTitle}</strong> {d.LocationDescription}</span>})) : ''}
+                    />
+                  </Col>
+                </Row>
+              </Panel>
+              <Panel header={<b><Glyphicon glyph='th-list'/> Stops/Routes for Sign Configuration</b>}>
                 <Row>
                   <Col xs={12}>
                     <Row style={{marginBottom: '15px'}}>
-                      <Col xs={5}>
-                        <Button style={{marginRight: '5px'}} onClick={(evt) => {
-                          console.log('editable feeds', this.props.editableFeeds)
-                          this.props.onAddEntityClick('AGENCY', this.props.editableFeeds[0])
-                        }}>
-                          Add Agency
-                        </Button>
-                        <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, this.props.editableFeeds[0])}>
-                          Add Mode
-                        </Button>
-                      </Col>
-                      <Col xs={7}>
+                      <Col xs={12}>
                         <GtfsSearch
                           feeds={this.props.activeFeeds}
-                          placeholder='Add stop/route'
+                          placeholder='Click to add stops...'
                           limit={100}
-                          entities={['stops', 'routes']}
+                          entities={['stops']}
                           clearable={true}
                           onChange={(evt) => {
                             console.log('we need to add this entity to the store', evt)
-                            if (typeof evt !== 'undefined' && evt !== null){
-                              if (evt.stop){
-                                this.props.onAddEntityClick('STOP', evt.stop, evt.agency)
-                              }
-                              else if (evt.route)
-                                this.props.onAddEntityClick('ROUTE', evt.route, evt.agency)
+                            if (typeof evt !== 'undefined' && evt !== null) {
+                              this.props.onAddEntityClick('STOP', evt.stop, evt.agency)
                             }
                           }}
                         />
@@ -175,7 +171,7 @@ export default class SignEditor extends React.Component {
               </Panel>
             </Col>
 
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <GlobalGtfsFilter />
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
@@ -187,7 +183,7 @@ export default class SignEditor extends React.Component {
 
           </Row>
         </Grid>
-      </div>
+      </ManagerPage>
     )
   }
 }
