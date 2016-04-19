@@ -15,7 +15,9 @@ import {
   updateExternalFeedResource,
   deleteFeedVersion,
   fetchValidationResult,
-  downloadFeedViaToken
+  downloadFeedViaToken,
+  fetchNotesForFeedVersion,
+  postNoteForFeedVersion
 } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -73,6 +75,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     validationResultRequested: (feedSource, feedVersion) => {
       dispatch(fetchValidationResult(feedSource, feedVersion))
+    },
+    notesRequestedForVersion: (feedVersion) => {
+      dispatch(fetchNotesForFeedVersion(feedVersion))
+    },
+    newNotePostedForVersion: (version, note) => {
+      dispatch(postNoteForFeedVersion(version, note))
     }
   }
 }

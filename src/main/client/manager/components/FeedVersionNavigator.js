@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Grid, Row, Col, ButtonGroup, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 
-import GtfsValidationViewer from './validation/GtfsValidationViewer'
+import FeedVersionViewer from './FeedVersionViewer'
 
 export default class FeedVersionNavigator extends React.Component {
 
@@ -129,88 +129,12 @@ export default class FeedVersionNavigator extends React.Component {
               validationResultRequested={(version) => {
                 this.props.validationResultRequested(version)
               }}
+              notesRequested={() => { this.props.notesRequestedForVersion(version) }}
+              newNotePosted={(note) => { this.props.newNotePostedForVersion(version, note) }}
             />
           : <p>No versions exist for this feed source.</p>
         }
 
-      </div>
-    )
-  }
-}
-
-class FeedVersionViewer extends React.Component {
-
-  render () {
-    const version = this.props.version
-
-    return (
-      <div>
-        <Row>
-          <Col xs={6}>
-            <Table striped>
-              <tbody>
-                <tr>
-                  <td className='col-md-4'><b>Status</b></td>
-                  <td>{version.validationSummary.loadStatus}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>Agency Count</b></td>
-                  <td>{version.validationSummary.agencyCount}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>Route Count</b></td>
-                  <td>{version.validationSummary.routeCount}</td>
-                </tr>
-              </tbody>
-            </Table>
-          </Col>
-          <Col xs={6}>
-            <Table striped>
-              <tbody>
-                <tr>
-                  <td className='col-md-4'><b>Trip Count</b></td>
-                  <td>{version.validationSummary.tripCount}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>Stop time Count</b></td>
-                  <td>{version.validationSummary.stopTimesCount}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>Valid Dates</b></td>
-                  <td>
-                    {moment(version.validationSummary.startDate).format("MMM Do YYYY")} to&nbsp;
-                    {moment(version.validationSummary.endDate).format("MMM Do YYYY")}
-                  </td>
-                </tr>
-              </tbody>
-          </Table>
-          </Col>
-        </Row>
-
-        <Row style={{marginBottom: '20px'}}>
-          <Col xs={12}>
-            <Button
-              className='pull-right'
-              onClick={() => {
-                console.log('edit GTFS+', version);
-                browserHistory.push(`/gtfsplus/${version.feedSource.id}?version=${version.id}`)
-              }}
-            >
-              <Glyphicon glyph='edit' /> Edit GTFS+ from Version
-            </Button>
-          </Col>
-        </Row>
-
-        <GtfsValidationViewer
-          validationResult={version.validationResult}
-          validationResultRequested={() => { this.props.validationResultRequested(version) }}
-        />
-
-        <Panel
-          header={(<h3><Glyphicon glyph='comment' /> Comments on this Version</h3>)}
-          collapsible
-        >
-        </Panel>
       </div>
     )
   }

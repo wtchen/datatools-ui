@@ -194,8 +194,9 @@ export default class FeedSourceViewer extends React.Component {
               </Col>
 
             </Row>
+          </Panel>
 
-
+          <Panel>
           </Panel>
 
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
@@ -218,6 +219,12 @@ export default class FeedSourceViewer extends React.Component {
               downloadFeedClicked={(version) => this.props.downloadFeedClicked(version)}
               deleteVersionClicked={(version) => {
                 this.deleteFeedVersion(fs, version)
+              }}
+              notesRequestedForVersion={(version) => {
+                  this.props.notesRequestedForVersion(version)
+              }}
+              newNotePostedForVersion={(version,note) => {
+                this.props.newNotePostedForVersion(version, note)
               }}
             />
           </Panel>
