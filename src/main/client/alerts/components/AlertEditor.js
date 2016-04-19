@@ -71,7 +71,7 @@ export default class AlertEditor extends React.Component {
         <ManagerNavbar/>
         <Grid>
           <Row>
-            <Col xs={1}>
+            <Col xs={4} sm={8} md={9}>
               <Button
                 onClick={
                   (evt) => {
@@ -79,32 +79,7 @@ export default class AlertEditor extends React.Component {
                 }}
               ><Glyphicon glyph='chevron-left'/> Back</Button>
             </Col>
-            <Col xs={3}>
-              <Input
-                type="text"
-                label="Title"
-                defaultValue={this.props.alert.title}
-                onChange={evt => this.props.titleChanged(evt.target.value)}
-              />
-            </Col>
-            <Col xs={5}>
-              <Row>
-                <Col xs={6}>
-                  <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
-                  <DateTimeField
-                    dateTime={this.props.alert.start}
-                    onChange={time => this.props.startChanged(time)} />
-                </Col>
-                <Col xs={6}>
-                  <div style={{marginBottom: '5px'}}><strong>End</strong></div>
-                  <DateTimeField
-                    dateTime={this.props.alert.end}
-                    onChange={time => this.props.endChanged(time)} />
-                </Col>
-              </Row>
-            </Col>
-
-            <Col xs={3}>
+            <Col xs={8} sm={4} md={3}>
               <ButtonGroup className='pull-right'>
                 <Button
                   title={editButtonMessage}
@@ -112,6 +87,10 @@ export default class AlertEditor extends React.Component {
                   disabled={editingIsDisabled}
                   onClick={(evt) => {
                     console.log('times', this.props.alert.end, this.props.alert.start);
+                    if(!this.props.alert.title) {
+                      alert('You must specify an alert title')
+                      return
+                    }
                     if(this.props.alert.end < this.props.alert.start) {
                       alert('Alert end date cannot be before start date')
                       return
@@ -124,7 +103,6 @@ export default class AlertEditor extends React.Component {
                       alert('You must specify at least one affected entity')
                       return
                     }
-
                     this.props.onSaveClick(this.props.alert)
                   }}
                 >Save</Button>
@@ -143,15 +121,44 @@ export default class AlertEditor extends React.Component {
                   disabled={deleteIsDisabled}
                   onClick={
                     (evt) => {
-                    this.props.onDeleteClick(this.props.alert)
+                      let r = confirm('Are you sure you want to delete this alert?')
+                      if (r == true) {
+                          this.props.onDeleteClick(this.props.alert)
+                      } else {
+                          return
+                      }
                   }}
                 >Delete</Button>
               </ButtonGroup>
             </Col>
           </Row>
-          <Row>
-            <Col xs={6}>
 
+          <Row>
+            <Col xs={12} sm={6}>
+              <Row>
+                <Col xs={12} style={{marginTop: '10px'}}>
+                  <Input
+                    type='text'
+                    bsSize='large'
+                    label='Alert Title'
+                    placeholder='E.g., Sig. Delays due to Golden Gate Bridge Closure'
+                    defaultValue={this.props.alert.title || ''}
+                    onChange={evt => this.props.titleChanged(evt.target.value)}
+                  />
+                </Col>
+                <Col xs={6}>
+                  <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
+                  <DateTimeField
+                    dateTime={this.props.alert.start}
+                    onChange={time => this.props.startChanged(time)} />
+                </Col>
+                <Col xs={6}>
+                  <div style={{marginBottom: '5px'}}><strong>End</strong></div>
+                  <DateTimeField
+                    dateTime={this.props.alert.end}
+                    onChange={time => this.props.endChanged(time)} />
+                </Col>
+              </Row>
               <Row>
                 <Col xs={6}>
                   <Input
@@ -190,7 +197,6 @@ export default class AlertEditor extends React.Component {
                   />
                 </Col>
               </Row>
-
               <Row>
                 <Col xs={12}>
                   <Input
@@ -202,7 +208,6 @@ export default class AlertEditor extends React.Component {
                   />
                 </Col>
               </Row>
-
               <Row>
                 <Col xs={12}>
                   <Panel header={<b>Affected Service</b>}>
@@ -257,7 +262,7 @@ export default class AlertEditor extends React.Component {
               </Row>
             </Col>
 
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <GlobalGtfsFilter />
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
