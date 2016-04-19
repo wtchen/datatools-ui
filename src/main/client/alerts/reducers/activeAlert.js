@@ -29,7 +29,7 @@ const activeAlert = (state = null, action) => {
       return update(state, {end: {$set: parseInt(action.end)}})
     case 'SET_ACTIVE_ALERT_PUBLISHED':
       return update(state, {published: {$set: action.published}})
-    case 'RECEIVED_GTFS_ENTITIES':
+    case 'RECEIVED_ALERT_GTFS_ENTITIES':
       // TODO: update GTFS entities for active alert
       if (state !== null && state.affectedEntities !== null){
         for (var i = 0; i < action.gtfsObjects.length; i++) {

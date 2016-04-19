@@ -32,13 +32,13 @@ export function createAlert (entity, agency) {
 
     const alert = {
       id: nextAlertId,
-      title: 'New Alert',
+      title: '', // 'New Alert',
       affectedEntities: entities,
       published: false,
       start: moment().unix()*1000,
       end: moment().add(30, 'day').unix()*1000
     }
-    browserHistory.push('/alerts/newalert')
+    browserHistory.push('/alerts/new')
     dispatch(updateActiveAlert(alert))
   }
 }
@@ -112,7 +112,7 @@ export const requestRtdAlerts = () => {
 
 export const receivedGtfsEntities = (gtfsObjects, gtfsAlerts) => {
   return {
-    type: 'RECEIVED_GTFS_ENTITIES',
+    type: 'RECEIVED_ALERT_GTFS_ENTITIES',
     gtfsObjects,
     gtfsAlerts
   }

@@ -38,7 +38,7 @@ const alerts = (state = {
         isFetching: true,
         all: []
       }
-    case 'RECEIVED_GTFS_ENTITIES':
+    case 'RECEIVED_ALERT_GTFS_ENTITIES':
       let index = 0
       for (var i = 0; i < action.gtfsObjects.length; i++) {
         let ent = action.gtfsObjects[i]
