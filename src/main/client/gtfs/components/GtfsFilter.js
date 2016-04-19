@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Panel, Button, DropdownButton, MenuItem, Badge, Glyphicon } from 'react-bootstrap'
+import { Panel, Button, DropdownButton, MenuItem, Badge, Glyphicon, Label } from 'react-bootstrap'
 
 export default class GtfsFilter extends React.Component {
 
@@ -24,6 +24,12 @@ export default class GtfsFilter extends React.Component {
       textAlign: 'center'
     }
 
+    var buttonMinimalStyle = {
+      marginTop: '10px',
+      marginBottom: '5px',
+      textAlign: 'right'
+    }
+
     var compare = function(a, b) {
       var aName = a.shortName || a.name
       var bName = b.shortName || b.name
@@ -39,13 +45,15 @@ export default class GtfsFilter extends React.Component {
 
     var feedLookup = {}
     for(var f of this.props.allFeeds) feedLookup[f.id] = f
-
-    return (
-      <Panel>
-        <div>
-          {(activeFeeds.length > 0)
-            ? activeFeeds.map((feed) => {
-              return <span>
+    var oldInterface = (
+    <div>
+    <label className='control-label'>Searchable feeds</label>
+    <Panel>
+      <div>
+        {(activeFeeds.length > 0)
+          ? activeFeeds.map((feed) => {
+            return (
+              <span>
                 <Badge style={badgeStyle}>
                   {feed.shortName || feed.name}&nbsp;
                   <Glyphicon
@@ -55,25 +63,65 @@ export default class GtfsFilter extends React.Component {
                   />
                 </Badge>&nbsp;
               </span>
-            })
-            : <i>(No feeds selected)</i>
-          }
-        </div>
-        <div style={buttonRowStyle}>
+            )
+          })
+          : <i>(No feeds selected)</i>
+        }
+      </div>
+      <div style={buttonRowStyle}>
+        <DropdownButton
+          title="Add Feed"
+          onSelect={(evt, eventKey) => { this.props.onAddFeed(feedLookup[eventKey]) }}
+        >
+          {nonActiveFeeds.map((feed) => {
+            return <MenuItem eventKey={feed.id}>
+              {feed.shortName || feed.name}
+            </MenuItem>
+          })}
+        </DropdownButton>
+        <Button onClick={this.props.onAddAllFeeds}>Add All</Button>
+        <Button onClick={this.props.onRemoveAllFeeds}>Remove All</Button>
+      </div>
+    </Panel>
+    </div>
+    )
+    console.log(oldInterface)
+    return (
+        <div style={buttonMinimalStyle}>
           <DropdownButton
-            title="Add Feed"
-            onSelect={(evt, eventKey) => { this.props.onAddFeed(feedLookup[eventKey]) }}
+            bsStyle='default'
+            bsSize='small'
+            title={activeFeeds.length === 0 ? 'No feeds selected'
+              : activeFeeds.length < 3 ? `Searching ${activeFeeds.map(feed => feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name).join(' and ')}`
+              : `Searching ${activeFeeds.length} feeds`}
+            alt={activeFeeds.join(', ')}
+            onSelect={(evt, eventKey) => {
+              let feed = feedLookup[eventKey]
+              activeFeeds.indexOf(feed) === -1 ? this.props.onAddFeed(feed) : this.props.onRemoveFeed(feed)
+            }}
           >
-            {nonActiveFeeds.map((feed) => {
-              return <MenuItem eventKey={feed.id}>
-                {feed.shortName || feed.name}
-              </MenuItem>
+            {this.props.allFeeds.map((feed) => {
+              return (
+                <MenuItem
+                  eventKey={feed.id}
+                  alt={feed.shortName || feed.name}
+                  title={feed.shortName || feed.name}
+                >
+                  <span>
+                    <Label bsStyle={activeFeeds.indexOf(feed) === -1 ? 'danger' : 'success'} className='pull-right'>{activeFeeds.indexOf(feed) === -1 ? 'off' : 'on'}</Label>
+                    <span>{feed.shortName || feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name}</span>
+                  </span>
+                </MenuItem>
+              )
             })}
           </DropdownButton>
-          <Button onClick={this.props.onAddAllFeeds}>Add All</Button>
-          <Button onClick={this.props.onRemoveAllFeeds}>Remove All</Button>
+          <Button
+            bsSize='small'
+            onClick={() => {activeFeeds.length > 0 ? this.props.onRemoveAllFeeds() : this.props.onAddAllFeeds()}}
+          >
+            {activeFeeds.length > 0 ? 'Remove All' : 'Add All'}
+          </Button>
         </div>
-      </Panel>
     )
   }
 }
