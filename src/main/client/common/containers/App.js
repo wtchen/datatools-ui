@@ -95,10 +95,10 @@ class App extends React.Component {
         <Route path='/explore' component={ActivePublicFeedsViewer} />
         <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />
         <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />
-        <Route path='alerts/newalert' component={ActiveAlertEditor} onEnter={requireAuth} />
+        <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />
         <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />
         <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />
-        <Route path='signs/newsign' component={ActiveSignEditor} onEnter={requireAuth} />
+        <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />
         <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
