@@ -91,7 +91,12 @@ export default class SignEditor extends React.Component {
                   disabled={deleteIsDisabled}
                   onClick={
                     (evt) => {
-                    this.props.onDeleteClick(this.props.sign)
+                      let r = confirm('Are you sure you want to delete this sign configuration?')
+                      if (r == true) {
+                          this.props.onDeleteClick(this.props.sign)
+                      } else {
+                          return
+                      }
                   }}
                 >Delete</Button>
               </ButtonGroup>

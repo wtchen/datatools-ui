@@ -36,7 +36,19 @@ export default class SignPreview extends React.Component {
               <Button title={editButtonMessage} disabled={editingIsDisabled} onClick={() => this.props.onEditClick(this.props.sign)}>
                 <Glyphicon glyph='pencil' />
               </Button>
-              <Button title={deleteButtonMessage} disabled={deleteIsDisabled} onClick={() => this.props.onDeleteClick(this.props.sign)}>
+              <Button
+                title={deleteButtonMessage}
+                disabled={deleteIsDisabled}
+                onClick={
+                  (evt) => {
+                    let r = confirm('Are you sure you want to delete this sign configuration?')
+                    if (r == true) {
+                        this.props.onDeleteClick(this.props.sign)
+                    } else {
+                        return
+                    }
+                }}
+              >
                 <Glyphicon glyph='remove' />
               </Button>
             </ButtonGroup>

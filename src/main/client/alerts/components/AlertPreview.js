@@ -36,7 +36,19 @@ export default class AlertPreview extends React.Component {
               <Button title={editButtonMessage} disabled={editingIsDisabled} onClick={() => this.props.onEditClick(this.props.alert)}>
                 <Glyphicon glyph="pencil" />
               </Button>
-              <Button title={deleteButtonMessage} disabled={deleteIsDisabled} onClick={() => this.props.onDeleteClick(this.props.alert)}>
+              <Button
+                title={deleteButtonMessage}
+                disabled={deleteIsDisabled}
+                onClick={
+                  (evt) => {
+                    let r = confirm('Are you sure you want to delete this alert?')
+                    if (r == true) {
+                        this.props.onDeleteClick(this.props.alert)
+                    } else {
+                        return
+                    }
+                }}
+              >
                 <Glyphicon glyph="remove" />
               </Button>
             </ButtonGroup>
