@@ -16,6 +16,8 @@ import {
   deleteFeedVersion,
   fetchValidationResult,
   downloadFeedViaToken,
+  fetchNotesForFeedSource,
+  postNoteForFeedSource,
   fetchNotesForFeedVersion,
   postNoteForFeedVersion
 } from '../actions/feeds'
@@ -75,6 +77,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     validationResultRequested: (feedSource, feedVersion) => {
       dispatch(fetchValidationResult(feedSource, feedVersion))
+    },
+    notesRequestedForFeedSource: (feedSource) => {
+      dispatch(fetchNotesForFeedSource(feedSource))
+    },
+    newNotePostedForFeedSource: (feedSource, note) => {
+      dispatch(postNoteForFeedSource(feedSource, note))
     },
     notesRequestedForVersion: (feedVersion) => {
       dispatch(fetchNotesForFeedVersion(feedVersion))

@@ -9,6 +9,7 @@ export default class FeedVersionViewer extends Component {
 
   render () {
     const version = this.props.version
+
     return (
       <div>
         <Row>
@@ -75,6 +76,7 @@ export default class FeedVersionViewer extends Component {
         <NotesViewer
           title='Comments for this Version'
           notes={version.notes}
+          noteCount={version.noteCount}
           notesRequested={() => { this.props.notesRequested() }}
           newNotePosted={(note) => { this.props.newNotePosted(note) }}
         />

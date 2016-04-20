@@ -8,6 +8,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable  from './ExternalPropertiesTable'
 import FeedVersionNavigator  from './FeedVersionNavigator'
+import NotesViewer from './NotesViewer'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -196,8 +197,13 @@ export default class FeedSourceViewer extends React.Component {
             </Row>
           </Panel>
 
-          <Panel>
-          </Panel>
+          <NotesViewer
+            title='Comments for this Feed Source'
+            notes={fs.notes}
+            noteCount={fs.noteCount}
+            notesRequested={() => { this.props.notesRequestedForFeedSource(fs) }}
+            newNotePosted={(note) => { this.props.newNotePostedForFeedSource(fs, note) }}
+          />
 
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
             <FeedVersionNavigator
