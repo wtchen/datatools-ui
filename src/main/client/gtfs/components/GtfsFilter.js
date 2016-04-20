@@ -45,47 +45,6 @@ export default class GtfsFilter extends React.Component {
 
     var feedLookup = {}
     for(var f of this.props.allFeeds) feedLookup[f.id] = f
-    var oldInterface = (
-    <div>
-    <label className='control-label'>Searchable feeds</label>
-    <Panel>
-      <div>
-        {(activeFeeds.length > 0)
-          ? activeFeeds.map((feed) => {
-            return (
-              <span>
-                <Badge style={badgeStyle}>
-                  {feed.shortName || feed.name}&nbsp;
-                  <Glyphicon
-                    glyph='remove'
-                    style={removeIconStyle}
-                    onClick={(evt) => { this.props.onRemoveFeed(feed) }}
-                  />
-                </Badge>&nbsp;
-              </span>
-            )
-          })
-          : <i>(No feeds selected)</i>
-        }
-      </div>
-      <div style={buttonRowStyle}>
-        <DropdownButton
-          title="Add Feed"
-          onSelect={(evt, eventKey) => { this.props.onAddFeed(feedLookup[eventKey]) }}
-        >
-          {nonActiveFeeds.map((feed) => {
-            return <MenuItem eventKey={feed.id}>
-              {feed.shortName || feed.name}
-            </MenuItem>
-          })}
-        </DropdownButton>
-        <Button onClick={this.props.onAddAllFeeds}>Add All</Button>
-        <Button onClick={this.props.onRemoveAllFeeds}>Remove All</Button>
-      </div>
-    </Panel>
-    </div>
-    )
-    console.log(oldInterface)
     return (
         <div style={buttonMinimalStyle}>
           <DropdownButton
@@ -103,6 +62,7 @@ export default class GtfsFilter extends React.Component {
             {this.props.allFeeds.map((feed) => {
               return (
                 <MenuItem
+                  key={feed.id}
                   eventKey={feed.id}
                   alt={feed.shortName || feed.name}
                   title={feed.shortName || feed.name}
