@@ -23,14 +23,12 @@ export default class AlertsList extends React.Component {
             type="text"
             placeholder="Search Alerts"
             onChange={evt => this.props.searchTextChanged(evt.target.value)}
+            defaultValue={this.props.visibilityFilter.searchText}
           />
         </Row>
         <Row>
           <ButtonGroup justified>
-            <Button
-              bsStyle={this.props.visibilityFilter.filter === 'ALL' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('ALL')}
-              href="#">All</Button>
+
             <Button
               bsStyle={this.props.visibilityFilter.filter === 'ACTIVE' ? 'primary' : 'default'}
               onClick={() => this.props.visibilityFilterChanged('ACTIVE')}
@@ -47,6 +45,10 @@ export default class AlertsList extends React.Component {
               bsStyle={this.props.visibilityFilter.filter === 'DRAFT' ? 'primary' : 'default'}
               onClick={() => this.props.visibilityFilterChanged('DRAFT')}
               href="#">Draft</Button>
+            <Button
+              bsStyle={this.props.visibilityFilter.filter === 'ALL' ? 'primary' : 'default'}
+              onClick={() => this.props.visibilityFilterChanged('ALL')}
+              href="#">All</Button>
           </ButtonGroup>
           <div className="form-group">&nbsp;</div>
         </Row>

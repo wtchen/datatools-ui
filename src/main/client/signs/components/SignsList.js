@@ -23,6 +23,7 @@ export default class SignsList extends React.Component {
             type="text"
             placeholder="Search Signs"
             onChange={evt => this.props.searchTextChanged(evt.target.value)}
+            defaultValue={this.props.visibilityFilter.searchText}
           />
         </Row>
         <Row>
