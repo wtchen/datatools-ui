@@ -318,3 +318,42 @@ export function downloadFeedViaToken (feedVersion) {
     })
   }
 }
+
+
+export function requestingNotes () {
+  return {
+    type: 'REQUESTING_NOTES'
+  }
+}
+
+export function receiveNotesForFeedVersion (feedVersion, notes) {
+  console.log('receiveNotesForFeedVersion', feedVersion, notes);
+  return {
+    type: 'RECEIVE_NOTES_FOR_FEEDVERSION',
+    feedVersion,
+    notes
+  }
+}
+
+export function fetchNotesForFeedVersion (feedVersion) {
+  return function (dispatch, getState) {
+    const url = `/api/manager/secure/note?type=FEED_VERSION&objectId=${feedVersion.id}`
+    secureFetch(url, getState())
+    .then(response => response.json())
+    .then(notes => {
+      console.log('got notes', notes);
+      dispatch(receiveNotesForFeedVersion(feedVersion, notes))
+    })
+  }
+}
+
+export function postNoteForFeedVersion (feedVersion, note) {
+  return function (dispatch, getState) {
+    const url = `/api/manager/secure/note?type=FEED_VERSION&objectId=${feedVersion.id}`
+    secureFetch(url, getState(), 'post', note)
+    .then(response => response.json())
+    .then(note => {
+      dispatch(fetchNotesForFeedVersion(feedVersion))
+    })
+  }
+}

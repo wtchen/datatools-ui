@@ -34,6 +34,8 @@ const config = (state = {
       return update(state, { message: { $set: 'Loading public feeds...' }})
     case 'REQUESTING_VALIDATION_RESULT':
       return update(state, { message: { $set: 'Loading validation result...' }})
+    case 'REQUESTING_NOTES':
+    return update(state, { message: { $set: 'Loading comments...' }})
 
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
@@ -43,6 +45,7 @@ const config = (state = {
     case 'RECEIVE_FETCH_FEED_FOR_PROJECT':
     case 'RECEIVE_PUBLIC_FEEDS':
     case 'RECEIVE_VALIDATION_RESULT':
+    case 'RECEIVE_NOTES_FOR_FEEDVERSION':
       return update(state, { message: { $set: null }})
     default:
       return state

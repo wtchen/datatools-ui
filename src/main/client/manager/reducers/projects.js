@@ -148,6 +148,26 @@ const projects = (state = {
         }
       )
 
+    case 'RECEIVE_NOTES_FOR_FEEDVERSION':
+      projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
+      versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {feedSources:
+              {[sourceIndex]:
+                {feedVersions:
+                  {[versionIndex]:
+                    {$merge: {notes: action.notes}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      )
+
     default:
       return state
   }

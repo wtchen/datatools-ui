@@ -118,12 +118,12 @@ export default class GtfsPlusTable extends Component {
       fontWeight: 'bold',
       fontSize: '24px',
       borderBottom: '2px solid black',
-      marginBottom: '12px'
+      marginBottom: '16px'
     }
 
     const subHeaderStyle = {
       marginTop: '6px',
-      marginBottom: '20px',
+      marginBottom: '24px',
       textAlign: 'right'
     }
 
