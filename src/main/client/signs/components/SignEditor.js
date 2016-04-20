@@ -11,7 +11,7 @@ import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
 
-import { checkEntitiesForFeeds } from '../util/util'
+import { checkEntitiesForFeeds } from '../../common/util/permissions'
 import { browserHistory } from 'react-router'
 
 import moment from 'moment'
@@ -64,6 +64,10 @@ export default class SignEditor extends React.Component {
                     //   alert('Sign end date cannot be before the current date')
                     //   return
                     // }
+                    if(!this.props.sign.title) {
+                      alert('You must specify a name for the sign configuration')
+                      return
+                    }
                     if(this.props.sign.affectedEntities.length === 0) {
                       alert('You must specify at least one stop')
                       return

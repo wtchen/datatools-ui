@@ -10,7 +10,7 @@ import { setActiveTitle, setActiveDescription, setActiveUrl, setActiveCause,
 
 import SignEditor from '../components/SignEditor'
 
-import { getFeedsForPermission } from '../util/util'
+import { getFeedsForPermission } from '../../common/util/permissions'
 
 import '../style.css'
 

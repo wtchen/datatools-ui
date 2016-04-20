@@ -3,13 +3,13 @@ import React from 'react'
 import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon } from 'react-bootstrap'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 
-import ManagerNavbar from '../../common/containers/ManagerNavbar'
+import ManagerPage from '../../common/components/ManagerPage'
 import AffectedEntity from './AffectedEntity'
 import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
 
-import { checkEntitiesForFeeds } from '../util/util'
+import { checkEntitiesForFeeds } from '../../common/util/permissions'
 import { browserHistory } from 'react-router'
 
 import moment from 'moment'
@@ -50,7 +50,7 @@ export default class AlertEditor extends React.Component {
     console.log('AlertEditor')
     console.log(this.props.alert)
     if (!this.props.alert) {
-      return <ManagerNavbar/>
+      return <ManagerPage/>
     }
 
     const canPublish = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.publishableFeeds)
@@ -67,214 +67,211 @@ export default class AlertEditor extends React.Component {
       : !canEdit ? 'Cannot alter alerts for other agencies' : 'Edit alert'
 
     return (
-      <div>
-        <ManagerNavbar/>
-        <Grid>
-          <Row>
-            <Col xs={4} sm={8} md={9}>
-              <Button
-                onClick={
-                  (evt) => {
-                  browserHistory.push('/alerts')
-                }}
-              ><Glyphicon glyph='chevron-left'/> Back</Button>
-            </Col>
-            <Col xs={8} sm={4} md={3}>
-              <ButtonGroup className='pull-right'>
+        <ManagerPage ref='page'>
+          <Grid>
+            <Row>
+              <Col xs={4} sm={8} md={9}>
                 <Button
-                  title={editButtonMessage}
-                  bsStyle='default'
-                  disabled={editingIsDisabled}
-                  onClick={(evt) => {
-                    console.log('times', this.props.alert.end, this.props.alert.start);
-                    if(!this.props.alert.title) {
-                      alert('You must specify an alert title')
-                      return
-                    }
-                    if(this.props.alert.end < this.props.alert.start) {
-                      alert('Alert end date cannot be before start date')
-                      return
-                    }
-                    if(moment(this.props.alert.end).isBefore(moment())) {
-                      alert('Alert end date cannot be before the current date')
-                      return
-                    }
-                    if(this.props.alert.affectedEntities.length === 0) {
-                      alert('You must specify at least one affected entity')
-                      return
-                    }
-                    this.props.onSaveClick(this.props.alert)
-                  }}
-                >Save</Button>
-
-                <Button
-                  disabled={!canPublish}
-                  bsStyle={this.props.alert.published ? 'warning' : 'success'}
-                  onClick={(evt) => {
-                    this.props.onPublishClick(this.props.alert, !this.props.alert.published)
-                  }}
-                >
-                  {this.props.alert.published ? 'Unpublish' : 'Publish'}</Button>
-                <Button
-                  title={deleteButtonMessage}
-                  bsStyle='danger'
-                  disabled={deleteIsDisabled}
                   onClick={
                     (evt) => {
-                      let r = confirm('Are you sure you want to delete this alert?')
-                      if (r == true) {
-                          this.props.onDeleteClick(this.props.alert)
-                      } else {
-                          return
-                      }
+                    browserHistory.push('/alerts')
                   }}
-                >Delete</Button>
-              </ButtonGroup>
-            </Col>
-          </Row>
+                ><Glyphicon glyph='chevron-left'/> Back</Button>
+              </Col>
+              <Col xs={8} sm={4} md={3}>
+                <ButtonGroup className='pull-right'>
+                  <Button
+                    title={editButtonMessage}
+                    bsStyle='default'
+                    disabled={editingIsDisabled}
+                    onClick={(evt) => {
+                      console.log('times', this.props.alert.end, this.props.alert.start);
+                      if(!this.props.alert.title) {
+                        alert('You must specify an alert title')
+                        return
+                      }
+                      if(this.props.alert.end < this.props.alert.start) {
+                        alert('Alert end date cannot be before start date')
+                        return
+                      }
+                      if(moment(this.props.alert.end).isBefore(moment())) {
+                        alert('Alert end date cannot be before the current date')
+                        return
+                      }
+                      if(this.props.alert.affectedEntities.length === 0) {
+                        alert('You must specify at least one affected entity')
+                        return
+                      }
+                      this.props.onSaveClick(this.props.alert)
+                    }}
+                  >Save</Button>
 
-          <Row>
-            <Col xs={12} sm={6}>
-              <Row>
-                <Col xs={12} style={{marginTop: '10px'}}>
-                  <Input
-                    type='text'
-                    bsSize='large'
-                    label='Alert Title'
-                    placeholder='E.g., Sig. Delays due to Golden Gate Bridge Closure'
-                    defaultValue={this.props.alert.title || ''}
-                    onChange={evt => this.props.titleChanged(evt.target.value)}
-                  />
-                </Col>
-                <Col xs={6}>
-                  <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
-                  <DateTimeField
-                    dateTime={this.props.alert.start}
-                    onChange={time => this.props.startChanged(time)} />
-                </Col>
-                <Col xs={6}>
-                  <div style={{marginBottom: '5px'}}><strong>End</strong></div>
-                  <DateTimeField
-                    dateTime={this.props.alert.end}
-                    onChange={time => this.props.endChanged(time)} />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={6}>
-                  <Input
-                    type="select"
-                    label="Cause"
-                    onChange={(evt) => this.props.causeChanged(evt.target.value)}
-                    value={this.props.alert.cause}
+                  <Button
+                    disabled={!canPublish}
+                    bsStyle={this.props.alert.published ? 'warning' : 'success'}
+                    onClick={(evt) => {
+                      this.props.onPublishClick(this.props.alert, !this.props.alert.published)
+                    }}
                   >
-                    {causes.map((cause) => {
-                      return <option value={cause}>{cause}</option>
-                    })}
-                  </Input>
-                </Col>
-                <Col xs={6}>
-                  <Input
-                    type="select"
-                    label="Effect"
-                    onChange={(evt) => this.props.effectChanged(evt.target.value)}
-                    value={this.props.alert.effect}
-                  >
-                    {effects.map((effect) => {
-                      return <option value={effect}>{effect}</option>
-                    })}
-                  </Input>
-                </Col>
-              </Row>
+                    {this.props.alert.published ? 'Unpublish' : 'Publish'}</Button>
+                  <Button
+                    title={deleteButtonMessage}
+                    bsStyle='danger'
+                    disabled={deleteIsDisabled}
+                    onClick={
+                      (evt) => {
+                        let r = confirm('Are you sure you want to delete this alert?')
+                        if (r == true) {
+                            this.props.onDeleteClick(this.props.alert)
+                        } else {
+                            return
+                        }
+                    }}
+                  >Delete</Button>
+                </ButtonGroup>
+              </Col>
+            </Row>
 
-              <Row>
-                <Col xs={12}>
-                  <Input
-                    type="textarea"
-                    label="Description"
-                    placeholder="Detailed description of alert..."
-                    defaultValue={this.props.alert.description}
-                    onChange={(evt) => this.props.descriptionChanged(evt.target.value)}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <Input
-                    type="text"
-                    label="URL"
-                    placeholder="http://511.org/alerts/transit/123"
-                    defaultValue={this.props.alert.url}
-                    onChange={(evt) => this.props.urlChanged(evt.target.value)}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <Panel header={<b>Affected Service</b>}>
-                    <Row>
-                      <Col xs={12}>
-                        <Row style={{marginBottom: '15px'}}>
-                          <Col xs={5}>
-                            <Button style={{marginRight: '5px'}} onClick={(evt) => {
-                              console.log('editable feeds', this.props.editableFeeds)
-                              this.props.onAddEntityClick('AGENCY', this.props.editableFeeds[0])
-                            }}>
-                              Add Agency
-                            </Button>
-                            <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, this.props.editableFeeds[0])}>
-                              Add Mode
-                            </Button>
-                          </Col>
-                          <Col xs={7}>
-                            <GtfsSearch
-                              feeds={this.props.activeFeeds}
-                              placeholder='Add stop/route'
-                              limit={100}
-                              entities={['stops', 'routes']}
-                              clearable={true}
-                              onChange={(evt) => {
-                                console.log('we need to add this entity to the store', evt)
-                                if (typeof evt !== 'undefined' && evt !== null){
-                                  if (evt.stop){
-                                    this.props.onAddEntityClick('STOP', evt.stop, evt.agency)
+            <Row>
+              <Col xs={12} sm={6}>
+                <Row>
+                  <Col xs={12} style={{marginTop: '10px'}}>
+                    <Input
+                      type='text'
+                      bsSize='large'
+                      label='Alert Title'
+                      placeholder='E.g., Sig. Delays due to Golden Gate Bridge Closure'
+                      defaultValue={this.props.alert.title || ''}
+                      onChange={evt => this.props.titleChanged(evt.target.value)}
+                    />
+                  </Col>
+                  <Col xs={6}>
+                    <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
+                    <DateTimeField
+                      dateTime={this.props.alert.start}
+                      onChange={time => this.props.startChanged(time)} />
+                  </Col>
+                  <Col xs={6}>
+                    <div style={{marginBottom: '5px'}}><strong>End</strong></div>
+                    <DateTimeField
+                      dateTime={this.props.alert.end}
+                      onChange={time => this.props.endChanged(time)} />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={6}>
+                    <Input
+                      type="select"
+                      label="Cause"
+                      onChange={(evt) => this.props.causeChanged(evt.target.value)}
+                      value={this.props.alert.cause}
+                    >
+                      {causes.map((cause) => {
+                        return <option value={cause}>{cause}</option>
+                      })}
+                    </Input>
+                  </Col>
+                  <Col xs={6}>
+                    <Input
+                      type="select"
+                      label="Effect"
+                      onChange={(evt) => this.props.effectChanged(evt.target.value)}
+                      value={this.props.alert.effect}
+                    >
+                      {effects.map((effect) => {
+                        return <option value={effect}>{effect}</option>
+                      })}
+                    </Input>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col xs={12} sm={6}>
+                    <Input
+                      type="textarea"
+                      label="Description"
+                      placeholder="Detailed description of alert..."
+                      defaultValue={this.props.alert.description}
+                      onChange={(evt) => this.props.descriptionChanged(evt.target.value)}
+                    />
+                  </Col>
+                  <Col xs={12} sm={6}>
+                    <Input
+                      type="text"
+                      label="URL"
+                      placeholder="http://511.org/alerts/transit/123"
+                      defaultValue={this.props.alert.url}
+                      onChange={(evt) => this.props.urlChanged(evt.target.value)}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <Panel header={<b>Affected Service</b>}>
+                      <Row>
+                        <Col xs={12}>
+                          <Row style={{marginBottom: '15px'}}>
+                            <Col xs={5}>
+                              <Button style={{marginRight: '5px'}} onClick={(evt) => {
+                                console.log('editable feeds', this.props.editableFeeds)
+                                this.props.onAddEntityClick('AGENCY', this.props.editableFeeds[0])
+                              }}>
+                                Add Agency
+                              </Button>
+                              <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, this.props.editableFeeds[0])}>
+                                Add Mode
+                              </Button>
+                            </Col>
+                            <Col xs={7}>
+                              <GtfsSearch
+                                feeds={this.props.activeFeeds}
+                                placeholder='Add stop/route'
+                                limit={100}
+                                entities={['stops', 'routes']}
+                                clearable={true}
+                                onChange={(evt) => {
+                                  console.log('we need to add this entity to the store', evt)
+                                  if (typeof evt !== 'undefined' && evt !== null){
+                                    if (evt.stop){
+                                      this.props.onAddEntityClick('STOP', evt.stop, evt.agency)
+                                    }
+                                    else if (evt.route)
+                                      this.props.onAddEntityClick('ROUTE', evt.route, evt.agency)
                                   }
-                                  else if (evt.route)
-                                    this.props.onAddEntityClick('ROUTE', evt.route, evt.agency)
-                                }
-                              }}
+                                }}
+                              />
+                            </Col>
+                          </Row>
+                          {this.props.alert.affectedEntities.map((entity) => {
+                            return <AffectedEntity
+                              entity={entity}
+                              key={entity.id}
+                              activeFeeds={this.props.activeFeeds}
+                              feeds={this.props.editableFeeds}
+                              onDeleteEntityClick={this.props.onDeleteEntityClick}
+                              entityUpdated={this.props.entityUpdated}
                             />
-                          </Col>
-                        </Row>
-                        {this.props.alert.affectedEntities.map((entity) => {
-                          return <AffectedEntity
-                            entity={entity}
-                            key={entity.id}
-                            activeFeeds={this.props.activeFeeds}
-                            feeds={this.props.editableFeeds}
-                            onDeleteEntityClick={this.props.onDeleteEntityClick}
-                            entityUpdated={this.props.entityUpdated}
-                          />
-                        })}
-                      </Col>
-                    </Row>
-                  </Panel>
-                </Col>
-              </Row>
-            </Col>
+                          })}
+                        </Col>
+                      </Row>
+                    </Panel>
+                  </Col>
+                </Row>
+              </Col>
 
-            <Col xs={12} sm={6}>
-              <GlobalGtfsFilter />
-              <GtfsMapSearch
-                feeds={this.props.activeFeeds}
-                onStopClick={this.props.editorStopClick}
-                onRouteClick={this.props.editorRouteClick}
-                popupAction='Add'
-              />
-            </Col>
+              <Col xs={12} sm={6}>
+                <GlobalGtfsFilter />
+                <GtfsMapSearch
+                  feeds={this.props.activeFeeds}
+                  onStopClick={this.props.editorStopClick}
+                  onRouteClick={this.props.editorRouteClick}
+                  popupAction='Add'
+                />
+              </Col>
 
-          </Row>
-        </Grid>
-      </div>
+            </Row>
+          </Grid>
+        </ManagerPage>
     )
   }
 }

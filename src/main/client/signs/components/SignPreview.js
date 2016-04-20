@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import { Panel, Grid, Row, Col, ButtonGroup, Button, Glyphicon, Label } from 'react-bootstrap'
 import { Link } from 'react-router'
-import { checkEntitiesForFeeds } from '../util/util'
+import { checkEntitiesForFeeds } from '../../common/util/permissions'
 
 export default class SignPreview extends React.Component {
 
