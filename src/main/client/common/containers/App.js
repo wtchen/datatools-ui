@@ -16,7 +16,7 @@ import MainAlertsViewer from '../../alerts/containers/MainAlertsViewer'
 import ActiveAlertEditor from '../../alerts/containers/ActiveAlertEditor'
 import MainSignsViewer from '../../signs/containers/MainSignsViewer'
 import ActiveSignEditor from '../../signs/containers/ActiveSignEditor'
-
+import PageNotFound from '../components/PageNotFound'
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
@@ -104,6 +104,7 @@ class App extends React.Component {
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
         <Route path='/gtfsplus/:feedSourceId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
+        <Route path='*' component={PageNotFound} />
       </Router>
     )
   }
