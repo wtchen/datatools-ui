@@ -37,7 +37,7 @@ export default class DatatoolsNavbar extends Component {
     if (!this.props.username) {
       projectControl = ('')
     } else if (!this.props.projects || !this.props.projects.active) {
-      projectControl = (<NavItem href='#'>No project selected</NavItem>)
+      projectControl = ('') // (<NavItem href='#'>No project selected</NavItem>)
     } else {
       let activeProject = this.props.projects.active
       projectControl = (
@@ -48,6 +48,7 @@ export default class DatatoolsNavbar extends Component {
           {this.props.projects.all.map(proj => {
             return (
               <MenuItem
+                key={proj.id}
                 onClick={(evt) =>{
                   evt.preventDefault()
                   this.props.setActiveProject(proj)
