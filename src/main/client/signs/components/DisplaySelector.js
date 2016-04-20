@@ -58,13 +58,14 @@ export default class DisplaySelector extends React.Component {
       if (!display) return ''
       let displayDraftId = display.DraftDisplayConfigurationId
       let displayPublishedId = display.PublishedDisplayConfigurationId
-      let draftLabel = displayDraftId === null ? <Label>Unassigned</Label>
-                      : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
-                      : <Label bsStyle='warning'>Unpublished</Label>
-      let publishedLabel = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-                          : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
-                          : ''
-      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
+      // let draftLabel = displayDraftId === null ? <Label>Unassigned</Label>
+      //                 : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
+      //                 : <Label bsStyle='warning'>Unpublished</Label>
+      // let publishedLabel = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
+      //                     : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
+      //                     : ''
+      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 && displayDraftId === this.props.sign.id ? <Label bsStyle='warning'>Assigned to {displayDraftId} (Pub. to {displayPublishedId})</Label>
+            : displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
             : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
             : displayDraftId === null ? <Label>Unassigned</Label>
             : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>

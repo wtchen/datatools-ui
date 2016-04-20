@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
-import ManagerNavbar from '../../common/containers/ManagerNavbar'
+import ManagerPage from '../../common/components/ManagerPage'
 import CreateSign from '../containers/CreateSign'
 import VisibleSignsList from '../containers/VisibleSignsList'
 import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
@@ -23,8 +23,7 @@ export default class SignsViewer extends React.Component {
 
   render () {
     return (
-      <div>
-        <ManagerNavbar/>
+      <ManagerPage ref='page'>
         <Grid>
           <Row>
             <Col xs={12}>
@@ -46,7 +45,7 @@ export default class SignsViewer extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </div>
+      </ManagerPage>
     )
   }
 }

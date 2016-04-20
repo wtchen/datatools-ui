@@ -68,11 +68,27 @@ export default class SignEditor extends React.Component {
                       alert('You must specify a name for the sign configuration')
                       return
                     }
+                    // check for no entities
                     if(this.props.sign.affectedEntities.length === 0) {
                       alert('You must specify at least one stop')
                       return
                     }
-
+                    // check for entities without routes
+                    for (var i = 0; i < this.props.sign.affectedEntities.length; i++) {
+                      let ent = this.props.sign.affectedEntities[i]
+                      if (!ent.route || ent.route.length === 0) {
+                        alert('You must specify at least one route for ' + ent.stop.stop_name)
+                        return
+                      }
+                    }
+                    // check for published displays for unpublished config
+                    for (var i = 0; i < this.props.sign.displays.length; i++) {
+                      let disp = this.props.sign.displays[i]
+                      if (disp.PublishedDisplayConfigurationId === this.props.sign.id && !this.props.sign.published) {
+                        alert('Published displays may not be associated with an unpublished sign configuration.')
+                        return
+                      }
+                    }
                     this.props.onSaveClick(this.props.sign)
                   }}
                 >Save</Button>
@@ -91,12 +107,19 @@ export default class SignEditor extends React.Component {
                   disabled={deleteIsDisabled}
                   onClick={
                     (evt) => {
-                      let r = confirm('Are you sure you want to delete this sign configuration?')
-                      if (r == true) {
+                      // let r = confirm('Are you sure you want to delete this sign configuration?')
+                      // if (r == true) {
+                      //     this.props.onDeleteClick(this.props.sign)
+                      // } else {
+                      //     return
+                      // }
+                      this.refs.page.showConfirmModal({
+                        title: 'Delete Configuration #' + this.props.sign.id + '?',
+                        body: <p>Are you sure you want to delete <strong>Sign Configuration {this.props.sign.id}</strong>?</p>,
+                        onConfirm: () => {
                           this.props.onDeleteClick(this.props.sign)
-                      } else {
-                          return
-                      }
+                        }
+                      })
                   }}
                 >Delete</Button>
               </ButtonGroup>

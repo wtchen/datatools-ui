@@ -47,6 +47,13 @@ export default class SignPreview extends React.Component {
                     } else {
                         return
                     }
+                    // this.props.showConfirmModal({
+                    //   title: 'Delete Configuration #' + this.props.sign.id + '?',
+                    //   body: <p>Are you sure you want to delete <strong>Sign Configuration {this.props.sign.id}</strong>?</p>,
+                    //   onConfirm: () => {
+                    //     this.props.onDeleteClick(this.props.sign)
+                    //   }
+                    // })
                 }}
               >
                 <Glyphicon glyph='remove' />
@@ -69,7 +76,7 @@ export default class SignPreview extends React.Component {
         }
         </p>
         <p>
-        {this.props.sign.affectedEntities.length
+        {this.props.sign.displays
           ? <Label bsStyle='default' className='pull-right'>{this.props.sign.displays ? this.props.sign.displays.length : 0} display(s)</Label>
           : <Label className='pull-right'>General sign</Label>
         }

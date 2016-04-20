@@ -37,7 +37,7 @@ const activeSign = (state = null, action) => {
           if (d.DraftDisplayConfigurationId) {
             if (displayMap[d.DraftDisplayConfigurationId] && displayMap[d.DraftDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.DraftDisplayConfigurationId].push(d)
-            } else {
+            } else if (!displayMap[d.DraftDisplayConfigurationId]) {
               displayMap[d.DraftDisplayConfigurationId] = []
               displayMap[d.DraftDisplayConfigurationId].push(d)
             }
@@ -45,7 +45,7 @@ const activeSign = (state = null, action) => {
           if (d.PublishedDisplayConfigurationId) {
             if (displayMap[d.PublishedDisplayConfigurationId] && displayMap[d.PublishedDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.PublishedDisplayConfigurationId].push(d)
-            } else {
+            } else if (!displayMap[d.PublishedDisplayConfigurationId]) {
               displayMap[d.PublishedDisplayConfigurationId] = []
               displayMap[d.PublishedDisplayConfigurationId].push(d)
             }

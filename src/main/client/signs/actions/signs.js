@@ -263,11 +263,12 @@ export function saveSign (sign) {
       console.log(json)
       let saveDisplays = []
       let newSignId = json.SequenceId ? json.SequenceId : sign.id
+      console.log(newSignId)
       if (sign.displays) {
         sign.displays.map(display => {
-          if (display.DraftDisplayConfigurationId === sign.Id)
+          if (display.DraftDisplayConfigurationId === sign.id)
             display.DraftDisplayConfigurationId = newSignId
-          if (display.PublishedDisplayConfigurationId === sign.Id)
+          if (display.PublishedDisplayConfigurationId === sign.id)
             display.PublishedDisplayConfigurationId = newSignId
           console.log(display)
           saveDisplays.push(saveDisplay(display, user))

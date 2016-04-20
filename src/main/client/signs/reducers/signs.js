@@ -9,6 +9,7 @@ const signs = (state = {
     filter: 'ALL'
   }
 }, action) => {
+  console.log(action)
   let foundIndex
   switch (action.type) {
     case 'SET_SIGN_VISIBILITY_SEARCH_TEXT':
@@ -65,14 +66,17 @@ const signs = (state = {
       // let signIndex = state.all.find
       if (state.all !== null) {
         let displayMap = {}
+        let count = 0
         for (var i = 0; i < action.rtdDisplays.length; i++) {
           let d = action.rtdDisplays[i]
           if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId)
             continue
+          count++
+          console.log(d)
           if (d.DraftDisplayConfigurationId) {
             if (displayMap[d.DraftDisplayConfigurationId] && displayMap[d.DraftDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.DraftDisplayConfigurationId].push(d)
-            } else {
+            } else if (!displayMap[d.DraftDisplayConfigurationId]) {
               displayMap[d.DraftDisplayConfigurationId] = []
               displayMap[d.DraftDisplayConfigurationId].push(d)
             }
@@ -80,12 +84,13 @@ const signs = (state = {
           if (d.PublishedDisplayConfigurationId) {
             if (displayMap[d.PublishedDisplayConfigurationId] && displayMap[d.PublishedDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.PublishedDisplayConfigurationId].push(d)
-            } else {
+            } else if (!displayMap[d.PublishedDisplayConfigurationId]) {
               displayMap[d.PublishedDisplayConfigurationId] = []
               displayMap[d.PublishedDisplayConfigurationId].push(d)
             }
           }
         }
+        console.log(count)
         console.log('display map', displayMap)
         let newSigns = state.all.map(s => {
           s.displays = displayMap[s.id] ? displayMap[s.id] : []
