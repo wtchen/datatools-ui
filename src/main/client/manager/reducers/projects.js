@@ -10,7 +10,7 @@ const projects = (state = {
 }, action) => {
   let projects, sources, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds, activeProjectId
   switch (action.type) {
-    case 'SET_VISIBILITY_SEARCH_TEXT':
+    case 'SET_PROJECT_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
     case 'CREATE_PROJECT':
       projects = [{
