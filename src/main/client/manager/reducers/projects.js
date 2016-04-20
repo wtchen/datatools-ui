@@ -3,10 +3,15 @@ import update from 'react-addons-update'
 const projects = (state = {
   isFetching: false,
   all: null,
-  active: null
+  active: null,
+  filter: {
+    searchText: null
+  }
 }, action) => {
-  let projects, sources, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds
+  let projects, sources, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds, activeProjectId
   switch (action.type) {
+    case 'SET_VISIBILITY_SEARCH_TEXT':
+      return update(state, {filter: {searchText: {$set: action.text}}})
     case 'CREATE_PROJECT':
       projects = [{
         isCreating: true,
@@ -38,13 +43,18 @@ const projects = (state = {
       return update(state, { isFetching: { $set: true }})
 
     case 'RECEIVE_PROJECTS':
-      activeIndex = action.projects.findIndex(p => p.id === DT_CONFIG.application.active_project)
+      activeProjectId = state.active ? state.active.id : DT_CONFIG.application.active_project
+      activeIndex = action.projects.findIndex(p => p.id === activeProjectId)
       return {
         isFetching: false,
         all: action.projects,
-        active: activeIndex !== -1 ? action.projects[activeIndex] : null
+        active: activeIndex !== -1 ? action.projects[activeIndex] : null,
+        filter: {
+          searchText: null
+        }
       }
-
+    case 'SET_ACTIVE_PROJECT':
+      return update(state, { active: { $set: action.project }})
     case 'RECEIVE_PROJECT':
       if (!state.all) { // there are no current projects loaded
         projects = [action.project]
@@ -63,7 +73,8 @@ const projects = (state = {
           ]
         }
       }
-      activeProject = action.project.id === DT_CONFIG.application.active_project ? action.project : null
+      activeProjectId = state.active ? state.active.id : DT_CONFIG.application.active_project
+      activeProject = action.project.id === activeProjectId ? action.project : null
       if (state.active && !activeProject) { // active project already exists and received project does not match active project
         activeProject = state.active
       }

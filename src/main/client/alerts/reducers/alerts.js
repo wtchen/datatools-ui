@@ -1,42 +1,31 @@
 import modes from '../modes'
+import update from 'react-addons-update'
 
 const alerts = (state = {
   isFetching: false,
   all: [],
-  entities: []
+  entities: [],
+  filter: {
+    searchText: null,
+    filter: 'ACTIVE'
+  }
 }, action) => {
   let foundIndex
   switch (action.type) {
-    /*case 'SAVE_ALERT':
-      // if alert exists, overwrite
-      foundIndex = state.findIndex(a => a.id === action.alert.id)
-      if(foundIndex !== -1) {
-        return [
-          ...state.slice(0, foundIndex),
-          action.alert,
-          ...state.slice(foundIndex + 1)
-        ]
-      }
-
-      // otherwise, add new
-      return [
-        ...state,
-        action.alert
-      ]*/
-
+    case 'SET_ALERT_VISIBILITY_SEARCH_TEXT':
+      return update(state, {filter: {searchText: {$set: action.text}}})
+    case 'SET_ALERT_VISIBILITY_FILTER':
+      return update(state, {filter: {filter: {$set: action.filter}}})
     case 'DELETE_ALERT':
-      // foundIndex = state.findIndex(a => a.id === action.alert.id)
-      // if(foundIndex !== -1) {
-      //   return [
-      //     ...state.slice(0, foundIndex),
-      //     ...state.slice(foundIndex + 1)
-      //   ]
-      // }
 
     case 'REQUEST_RTD_ALERTS':
       return {
         isFetching: true,
-        all: []
+        all: [],
+        filter: {
+          searchText: null,
+          filter: 'ACTIVE'
+        }
       }
     case 'RECEIVED_ALERT_GTFS_ENTITIES':
       let index = 0
@@ -52,7 +41,11 @@ const alerts = (state = {
       return {
         isFetching: false,
         all: action.gtfsAlerts,
-        entities: []
+        entities: [],
+        filter: {
+          searchText: null,
+          filter: 'ACTIVE'
+        }
       }
 
     case 'RECEIVED_RTD_ALERTS':
@@ -132,7 +125,11 @@ const alerts = (state = {
       return {
         isFetching: false,
         all: allAlerts,
-        entities: entityList
+        entities: entityList,
+        filter: {
+          searchText: null,
+          filter: 'ACTIVE'
+        }
       }
 
     default:

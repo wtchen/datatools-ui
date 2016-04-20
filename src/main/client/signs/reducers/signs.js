@@ -3,10 +3,19 @@ import update from 'react-addons-update'
 const signs = (state = {
   isFetching: false,
   all: [],
-  entities: []
+  entities: [],
+  filter: {
+    searchText: null,
+    filter: 'ALL'
+  }
 }, action) => {
   let foundIndex
   switch (action.type) {
+    case 'SET_SIGN_VISIBILITY_SEARCH_TEXT':
+      return update(state, {filter: {searchText: {$set: action.text}}})
+    case 'SET_SIGN_VISIBILITY_FILTER':
+      return update(state, {filter: {filter: {$set: action.filter}}})
+
     case 'DELETE_SIGN':
       // foundIndex = state.findIndex(a => a.id === action.sign.id)
       // if(foundIndex !== -1) {
@@ -19,7 +28,11 @@ const signs = (state = {
     case 'REQUEST_RTD_SIGNS':
       return {
         isFetching: true,
-        all: []
+        all: [],
+        filter: {
+          searchText: null,
+          filter: 'ALL'
+        }
       }
     case 'RECEIVED_SIGN_GTFS_ENTITIES':
       let index = 0
@@ -41,7 +54,11 @@ const signs = (state = {
       return {
         isFetching: false,
         all: action.gtfsSigns,
-        entities: []
+        entities: [],
+        filter: {
+          searchText: null,
+          filter: 'ALL'
+        }
       }
     case 'RECEIVED_RTD_DISPLAYS':
       console.log('got displays', state, action.rtdDisplays)
@@ -141,7 +158,11 @@ const signs = (state = {
       return {
         isFetching: false,
         all: allSigns,
-        entities: entityList
+        entities: entityList,
+        filter: {
+          searchText: null,
+          filter: 'ALL'
+        }
       }
 
     default:

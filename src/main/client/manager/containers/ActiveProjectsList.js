@@ -8,7 +8,7 @@ import ProjectsList  from '../components/ProjectsList'
 const mapStateToProps = (state, ownProps) => {
   return {
     projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id)) : [],
-    visibilitySearchText: state.visibilityFilter.searchText
+    visibilitySearchText: state.projects.filter.searchText
   }
 }
 

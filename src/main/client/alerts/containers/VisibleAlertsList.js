@@ -7,7 +7,7 @@ import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibil
 
 import AlertsList from '../components/AlertsList'
 
-import { getFeedsForPermission } from '../util/util'
+import { getFeedsForPermission } from '../../common/util/permissions'
 
 const getVisibleAlerts = (alerts, visibilityFilter) => {
   if (!alerts) return []
@@ -35,8 +35,8 @@ const mapStateToProps = (state, ownProps) => {
   // if (state.projects.active !== null && state.projects.active.feeds !== null )
   return {
     isFetching: state.alerts.isFetching,
-    alerts: getVisibleAlerts(state.alerts.all, state.visibilityFilter),
-    visibilityFilter: state.visibilityFilter,
+    alerts: getVisibleAlerts(state.alerts.all, state.alerts.filter),
+    visibilityFilter: state.alerts.filter,
     editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-alert'),
     publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-alert')
   }
