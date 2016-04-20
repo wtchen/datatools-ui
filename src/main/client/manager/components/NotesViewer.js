@@ -14,6 +14,12 @@ export default class NotesViewer extends Component {
     if(!nextProps.notes) this.setState({ expanded: false })
   }
 
+  noteCount () {
+    if(this.props.notes) return this.props.notes.length
+    if(this.props.noteCount != null) return this.props.noteCount
+    return null
+  }
+
   render () {
 
     const header = (
@@ -21,7 +27,7 @@ export default class NotesViewer extends Component {
         if(!this.props.notes) this.props.notesRequested()
         this.setState({ expanded: !this.state.expanded })
       }}>
-        <Glyphicon glyph='comment' /> {this.props.title}
+        <Glyphicon glyph='comment' /> {this.props.title} {this.noteCount() !== null ? `(${this.noteCount()})` : ''}
       </h3>
     )
 
@@ -33,7 +39,15 @@ export default class NotesViewer extends Component {
       >
         <Row>
           <Col xs={6}>
-            <h3>All Comments</h3>
+            <h3>
+              All Comments
+              <Button
+                className='pull-right'
+                onClick={() => { this.props.notesRequested() }}
+              >
+                <Glyphicon glyph='refresh' /> Refresh
+              </Button>
+            </h3>
             {this.props.notes && this.props.notes.length > 0
               ? this.props.notes.map(note => {
                   return (

@@ -159,6 +159,21 @@ const projects = (state = {
         }
       )
 
+    case 'RECEIVE_NOTES_FOR_FEEDSOURCE':
+      projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {feedSources:
+              {[sourceIndex]:
+                {$merge: {notes: action.notes}}
+              }
+            }
+          }
+        }
+      )
+
     case 'RECEIVE_NOTES_FOR_FEEDVERSION':
       projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
