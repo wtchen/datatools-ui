@@ -11,14 +11,14 @@ function requestProjects() {
   }
 }
 
-function receiveProjects(projects) {
+function receiveProjects (projects) {
   return {
     type: 'RECEIVE_PROJECTS',
     projects
   }
 }
 
-export function fetchProjects() {
+export function fetchProjects () {
   return function (dispatch, getState) {
     dispatch(requestProjects())
     return secureFetch('/api/manager/secure/project', getState())
@@ -26,7 +26,7 @@ export function fetchProjects() {
       .then((projects) => {
         console.log('received projects', projects)
         dispatch(receiveProjects(projects))
-        let project = projects.find(proj => proj.id === DT_CONFIG.application.active_project)
+        let project = getState().projects.active || projects.find(proj => proj.id === DT_CONFIG.application.active_project)
         return dispatch(fetchProjectFeeds(project.id))
       })
       .then(() => {

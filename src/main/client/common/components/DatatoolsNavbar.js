@@ -33,6 +33,31 @@ export default class DatatoolsNavbar extends Component {
         </NavDropdown>
       )
     }
+    let projectControl
+    if (!this.props.username) {
+      projectControl = ('')
+    } else if (!this.props.projects || !this.props.projects.active) {
+      projectControl = (<NavItem href='#'>No project selected</NavItem>)
+    } else {
+      let activeProject = this.props.projects.active
+      projectControl = (
+        <NavDropdown
+          title={<span><Glyphicon glyph='briefcase' /> {activeProject.name}</span>}
+          id='basic-nav-dropdown'
+        >
+          {this.props.projects.all.map(proj => {
+            return (
+              <MenuItem
+                onClick={(evt) =>{
+                  evt.preventDefault()
+                  this.props.setActiveProject(proj)
+                }}
+              >{proj.name}</MenuItem>
+            )
+          })}
+        </NavDropdown>
+      )
+    }
 
     return (
       <Navbar>
@@ -73,6 +98,7 @@ export default class DatatoolsNavbar extends Component {
             }
           </Nav>
           <Nav pullRight>
+            {projectControl}
             <NavItem href='#'><Glyphicon glyph='question-sign' /> Guide</NavItem>
             {userControl}
           </Nav>

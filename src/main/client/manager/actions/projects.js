@@ -1,22 +1,36 @@
 import { secureFetch } from '../../common/util/util'
-
+import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
 import { fetchProjectFeeds, updateFeedSource } from './feeds'
 // Bulk Project Actions
 
-function requestingProjects() {
+function requestingProjects () {
   return {
     type: 'REQUESTING_PROJECTS',
   }
 }
 
-function receiveProjects(projects) {
+function receiveProjects (projects) {
   return {
     type: 'RECEIVE_PROJECTS',
     projects
   }
 }
 
-export function fetchProjects() {
+function settingActiveProject (project) {
+  return {
+    type: 'SET_ACTIVE_PROJECT',
+    project
+  }
+}
+export function setActiveProject (project) {
+  return function (dispatch, getState) {
+    dispatch(settingActiveProject(project))
+    dispatch(fetchProjectFeeds(project.id))
+    dispatch(updateGtfsFilter(getState().projects.active, getState().user))
+  }
+}
+
+export function fetchProjects () {
   return function (dispatch, getState) {
     dispatch(requestingProjects())
     return secureFetch('/api/manager/secure/project', getState())
@@ -41,20 +55,20 @@ export function fetchProjectsWithPublicFeeds () {
 
 // Single Project Actions
 
-function requestingProject() {
+function requestingProject () {
   return {
     type: 'REQUESTING_PROJECT',
   }
 }
 
-function receiveProject(project) {
+function receiveProject (project) {
   return {
     type: 'RECEIVE_PROJECT',
     project
   }
 }
 
-export function fetchProject(projectId, unsecure) {
+export function fetchProject (projectId, unsecure) {
   return function (dispatch, getState) {
     dispatch(requestingProject())
     const apiRoot = unsecure ? 'public' : 'secure'
@@ -69,7 +83,7 @@ export function fetchProject(projectId, unsecure) {
   }
 }
 
-export function updateProject(project, changes) {
+export function updateProject (project, changes) {
   return function (dispatch, getState) {
     dispatch(savingProject())
     const url = `/api/manager/secure/project/${project.id}`
@@ -80,25 +94,25 @@ export function updateProject(project, changes) {
   }
 }
 
-export function createProject() {
+export function createProject () {
   return {
     type: 'CREATE_PROJECT'
   }
 }
 
-export function requestingSync() {
+export function requestingSync () {
   return {
     type: 'REQUESTING_SYNC',
   }
 }
 
-export function receiveSync() {
+export function receiveSync () {
   return {
     type: 'RECEIVE_SYNC',
   }
 }
 
-export function thirdPartySync(projectId, type) {
+export function thirdPartySync (projectId, type) {
   return function (dispatch, getState) {
     dispatch(requestingSync())
     const url = '/api/manager/secure/project/' + projectId + '/thirdPartySync/' + type
@@ -111,19 +125,19 @@ export function thirdPartySync(projectId, type) {
   }
 }
 
-export function runningFetchFeedsForProject() {
+export function runningFetchFeedsForProject () {
   return {
     type: 'RUNNING_FETCH_FEED_FOR_PROJECT',
   }
 }
 
-export function receiveFetchFeedsForProject() {
+export function receiveFetchFeedsForProject () {
   return {
     type: 'RECEIVE_FETCH_FEED_FOR_PROJECT',
   }
 }
 
-export function fetchFeedsForProject(project) {
+export function fetchFeedsForProject (project) {
   return function (dispatch, getState) {
 
     dispatch(runningFetchFeedsForProject())
@@ -138,13 +152,13 @@ export function fetchFeedsForProject(project) {
   }
 }
 
-function savingProject() {
+function savingProject () {
   return {
     type: 'SAVING_PROJECT',
   }
 }
 
-export function saveProject(props) {
+export function saveProject (props) {
   return function (dispatch, getState) {
     dispatch(savingProject())
     const url = '/api/manager/secure/project'

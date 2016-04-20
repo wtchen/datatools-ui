@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import DatatoolsNavbar from '../components/DatatoolsNavbar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
+import { setActiveProject } from '../../manager/actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -12,7 +13,8 @@ const mapStateToProps = (state, ownProps) => {
     userAdminUrl: DT_CONFIG.modules.user_admin ? DT_CONFIG.modules.user_admin.url : null,
     alertsUrl: DT_CONFIG.modules.alerts ? DT_CONFIG.modules.alerts.url : null,
     signConfigUrl: DT_CONFIG.modules.sign_config ? DT_CONFIG.modules.sign_config.url : null,
-    username: state.user.profile ? state.user.profile.email : null
+    username: state.user.profile ? state.user.profile.email : null,
+    projects: state.projects ? state.projects : null
   }
 }
 
@@ -20,7 +22,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loginHandler: () => { dispatch(login()) },
     logoutHandler: () => { dispatch(logout()) },
-    resetPasswordHandler: () => { dispatch(resetPassword()) }
+    resetPasswordHandler: () => { dispatch(resetPassword()) },
+    setActiveProject: (project) => { dispatch(setActiveProject(project)) }
   }
 }
 
