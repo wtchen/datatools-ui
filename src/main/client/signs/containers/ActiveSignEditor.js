@@ -27,8 +27,8 @@ const mapStateToProps = (state, ownProps) => {
     activeFeeds: state.gtfsFilter.activeFeeds,
     project: state.projects.active,
     user: state.user,
-    editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-sign'),
-    publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-sign')
+    editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-etid'),
+    publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-etid')
   }
 }
 

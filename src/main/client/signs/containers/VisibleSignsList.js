@@ -32,8 +32,8 @@ const mapStateToProps = (state, ownProps) => {
     isFetching: state.signs.isFetching,
     signs: getVisibleSigns(state.signs.all, state.signs.filter),
     visibilityFilter: state.signs.filter,
-    editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-sign'),
-    publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-sign')
+    editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-etid'),
+    publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-etid')
   }
 }
 
