@@ -120,12 +120,13 @@ export default class AlertEditor extends React.Component {
                     disabled={deleteIsDisabled}
                     onClick={
                       (evt) => {
-                        let r = confirm('Are you sure you want to delete this alert?')
-                        if (r == true) {
+                        this.refs.page.showConfirmModal({
+                          title: 'Delete Alert #' + this.props.alert.id + '?',
+                          body: <p>Are you sure you want to delete <strong>Alert {this.props.alert.id}</strong>?</p>,
+                          onConfirm: () => {
                             this.props.onDeleteClick(this.props.alert)
-                        } else {
-                            return
-                        }
+                          }
+                        })
                     }}
                   >Delete</Button>
                 </ButtonGroup>
