@@ -23,7 +23,7 @@ const mapStateToProps = (state, ownProps) => {
     project: state.projects.all
       ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId)
       : null,
-    visibilitySearchText: state.visibilityFilter.searchText,
+    visibilitySearchText: state.projects.filter.searchText,
     user: state.user
   }
 }

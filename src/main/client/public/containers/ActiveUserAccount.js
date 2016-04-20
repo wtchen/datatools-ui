@@ -8,7 +8,7 @@ import { updateUser, fetchUser } from '../../manager/actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    visibilitySearchText: state.visibilityFilter.searchText,
+    visibilitySearchText: state.projects.filter.searchText,
     projects: state.projects.all,
     user: state.user
   }

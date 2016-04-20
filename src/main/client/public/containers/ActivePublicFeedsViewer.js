@@ -7,7 +7,7 @@ import { fetchProjectsWithPublicFeeds } from '../../manager/actions/projects'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    visibilitySearchText: state.visibilityFilter.searchText,
+    visibilitySearchText: state.projects.filter.searchText,
     projects: state.projects.all
   }
 }
