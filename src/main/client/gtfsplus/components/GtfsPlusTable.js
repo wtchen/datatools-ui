@@ -141,6 +141,13 @@ export default class GtfsPlusTable extends Component {
         <Col xs={12}>
           <div style={headerStyle}>
             {table.name}
+            <Glyphicon
+              glyph='question-sign'
+              style={{ cursor: 'pointer', fontSize: '18px', marginLeft: '10px' }}
+              onClick={() => {
+                this.props.showHelpClicked(table.id)
+              }}
+            />
           </div>
         </Col>
       </Row>
@@ -235,7 +242,8 @@ export default class GtfsPlusTable extends Component {
             })}
         </tbody>
       </Table>
-      <div>
+
+      <Row>
         <Button
           bsStyle='primary'
           bsSize='large'
@@ -244,7 +252,7 @@ export default class GtfsPlusTable extends Component {
             this.props.newRowClicked(table.id)
           }}
         ><Glyphicon glyph='plus' /> New Row</Button>
-      </div>
+      </Row>
 
     </div>)
   }

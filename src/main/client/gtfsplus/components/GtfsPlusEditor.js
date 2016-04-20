@@ -132,12 +132,15 @@ export default class GtfsPlusEditor extends Component {
                   return this.props.gtfsEntityLookup[`${type}_${id}`]
                 }}
                 showHelpClicked={(tableId, fieldName) => {
+                  const helpContent = fieldName
+                    ? DT_CONFIG.modules.gtfsplus.spec
+                        .find(t => t.id === tableId).fields
+                          .find(f => f.name === fieldName).helpContent
+                    : DT_CONFIG.modules.gtfsplus.spec
+                        .find(t => t.id === tableId).helpContent
                   this.refs.page.showInfoModal({
-                    title: `Help for ${tableId}.txt: ${fieldName}`,
-                    body: DT_CONFIG.modules.gtfsplus.spec
-                      .find(t => t.id === tableId).fields
-                        .find(f => f.name === fieldName).helpContent
-                          || '(No help content found for this field)'
+                    title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),
+                    body: helpContent || '(No help content found for this field)'
                   })
                 }}
                 newRowsDisplayed={(rows) => {
