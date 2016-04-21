@@ -21,7 +21,7 @@ export default class ProjectsList extends React.Component {
     if (!this.props.projects) {
       return <ManagerPage />
     }
-
+    const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const visibleProjects = this.props.projects.filter((project) => {
       if(project.isCreating) return true // projects actively being created are always visible
       return project.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
@@ -43,6 +43,7 @@ export default class ProjectsList extends React.Component {
 
             <Button
               bsStyle='primary'
+              disabled={projectCreationDisabled}
               className='pull-right'
               onClick={() => this.props.onNewProjectClick()}
             >
@@ -92,6 +93,7 @@ export default class ProjectsList extends React.Component {
                     You currently do not have any projects. &nbsp;&nbsp;&nbsp;&nbsp;
                     <Button
                       bsStyle='primary'
+                      disabled={projectCreationDisabled}
                       onClick={() => this.props.onNewProjectClick()}
                     >
                       Create my first project
