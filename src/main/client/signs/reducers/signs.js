@@ -9,7 +9,6 @@ const signs = (state = {
     filter: 'ALL'
   }
 }, action) => {
-  console.log(action)
   let foundIndex
   switch (action.type) {
     case 'SET_SIGN_VISIBILITY_SEARCH_TEXT':
