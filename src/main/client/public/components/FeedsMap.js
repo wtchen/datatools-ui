@@ -7,10 +7,7 @@ export default class FeedsMap extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      lat: 0,
-      lng: 0,
-      zoom: 1,
-      bounds: {}
+      bounds: this.props.bounds || [[70, 130], [-70, -130]]
     }
   }
   render () {
@@ -38,20 +35,22 @@ export default class FeedsMap extends React.Component {
       return [(latNorth + latSouth) / 2, (lngWest + lngEast) / 2]
     }
     const getFeedBounds = (feeds) => {
-      return feeds.reduce((previousFeed, currentFeed) => {
-        let bounds = previousFeed.latestValidation ? previousFeed.latestValidation.bounds : previousFeed
-        if (currentFeed.latestValidation && currentFeed.latestValidation.bounds) {
-          return {
-            east: currentFeed.latestValidation.bounds.east > bounds.east ? currentFeed.latestValidation.bounds.east : bounds.east,
-            west: currentFeed.latestValidation.bounds.west < bounds.west ? currentFeed.latestValidation.bounds.west : bounds.west,
-            north: currentFeed.latestValidation.bounds.north > bounds.north ? currentFeed.latestValidation.bounds.north : bounds.north,
-            south: currentFeed.latestValidation.bounds.south < bounds.south ? currentFeed.latestValidation.bounds.south : bounds.south
+      return feeds
+        // .filter(feed => feed.latestValidation)
+        .reduce((previousFeed, currentFeed) => {
+          let bounds = previousFeed.latestValidation ? previousFeed.latestValidation.bounds : previousFeed
+          if (currentFeed.latestValidation && currentFeed.latestValidation.bounds) {
+            return {
+              east: currentFeed.latestValidation.bounds.east > bounds.east ? currentFeed.latestValidation.bounds.east : bounds.east,
+              west: currentFeed.latestValidation.bounds.west < bounds.west ? currentFeed.latestValidation.bounds.west : bounds.west,
+              north: currentFeed.latestValidation.bounds.north > bounds.north ? currentFeed.latestValidation.bounds.north : bounds.north,
+              south: currentFeed.latestValidation.bounds.south < bounds.south ? currentFeed.latestValidation.bounds.south : bounds.south
+            }
           }
-        }
-        else {
-          return bounds
-        }
-      })
+          else {
+            return bounds
+          }
+        })
     }
     console.log(feeds)
     let position = [this.state.lat, this.state.lng];
@@ -60,8 +59,7 @@ export default class FeedsMap extends React.Component {
         <Map
           ref='feedsMap'
           style={mapStyle}
-          center={position}
-          zoom={this.state.zoom}
+          bounds={this.props.bounds || this.state.bounds}
           scrollWheelZoom={false}
         >
           <TileLayer
@@ -73,6 +71,7 @@ export default class FeedsMap extends React.Component {
     }
 
     let bounds = getFeedBounds(feeds)
+
     let markers = []
     // let markerCluster =
     //   <MarkerCluster
@@ -91,7 +90,7 @@ export default class FeedsMap extends React.Component {
       }
     })
     console.log(bounds)
-    bounds = this.props.bounds || [[bounds.north, bounds.east], [bounds.south, bounds.west]]
+    bounds = bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
     console.log(markers)
     return (
       <Map
