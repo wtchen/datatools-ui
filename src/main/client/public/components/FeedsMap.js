@@ -59,7 +59,7 @@ export default class FeedsMap extends React.Component {
         <Map
           ref='feedsMap'
           style={mapStyle}
-          bounds={this.props.bounds || this.state.bounds}
+          bounds={this.state.bounds}
           scrollWheelZoom={false}
         >
           <TileLayer
@@ -90,7 +90,8 @@ export default class FeedsMap extends React.Component {
       }
     })
     console.log(bounds)
-    bounds = bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
+    bounds = typeof bounds.north === 'undefined' ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
+    console.log(bounds)
     console.log(markers)
     return (
       <Map
