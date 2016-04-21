@@ -69,7 +69,7 @@ export default class FeedVersionNavigator extends React.Component {
               {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
                 ? <Button
                     href='#'
-                    disabled={typeof this.props.uploadFeedClicked === 'undefined'}
+                    disabled={this.props.updateDisabled || typeof this.props.uploadFeedClicked === 'undefined'}
                     onClick={(evt) => {
                       evt.preventDefault()
                       this.props.uploadFeedClicked()
@@ -79,7 +79,7 @@ export default class FeedVersionNavigator extends React.Component {
                   </Button>
                 : <Button
                     href='#'
-                    disabled={typeof this.props.updateFeedClicked === 'undefined'}
+                    disabled={this.props.updateDisabled || typeof this.props.updateFeedClicked === 'undefined'}
                     onClick={(evt) => {
                       evt.preventDefault()
                       this.props.updateFeedClicked()
@@ -91,7 +91,7 @@ export default class FeedVersionNavigator extends React.Component {
               }
 
               <Button href='#'
-                disabled={!hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
+                disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
                 onClick={(evt) => {
                   evt.preventDefault()
                   console.log('deleting version');
