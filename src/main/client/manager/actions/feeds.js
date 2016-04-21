@@ -147,8 +147,10 @@ export function fetchFeedSourceAndProject (feedSourceId, unsecured) {
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(feedSource => {
-        dispatch(fetchProject(feedSource.projectId, unsecured))
-        return feedSource
+        return dispatch(fetchProject(feedSource.projectId, unsecured))
+          .then(proj => {
+            return feedSource
+          })
       })
   }
 }
