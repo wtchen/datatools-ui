@@ -78,8 +78,10 @@ export default class EditableTextField extends React.Component {
               &nbsp;&nbsp;
               <Button bsStyle='link'
                 onClick={() => this.edit()}
+                disabled={this.props.disabled !== null ? this.props.disabled : false}
               >
-                <Glyphicon style={iconStyle}
+                <Glyphicon
+                  style={iconStyle}
                   glyph={ 'pencil' }
                 />
               </Button>
