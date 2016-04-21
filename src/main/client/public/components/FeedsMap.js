@@ -9,7 +9,8 @@ export default class FeedsMap extends React.Component {
     this.state = {
       lat: 0,
       lng: 0,
-      zoom: 1
+      zoom: 1,
+      bounds: {}
     }
   }
   render () {
@@ -54,6 +55,23 @@ export default class FeedsMap extends React.Component {
     }
     console.log(feeds)
     let position = [this.state.lat, this.state.lng];
+    if (feeds.length === 0) {
+      return (
+        <Map
+          ref='feedsMap'
+          style={mapStyle}
+          center={position}
+          zoom={this.state.zoom}
+          scrollWheelZoom={false}
+        >
+          <TileLayer
+            url='http://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+            attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
+          />
+        </Map>
+      )
+    }
+
     let bounds = getFeedBounds(feeds)
     let markers = []
     // let markerCluster =
@@ -75,15 +93,11 @@ export default class FeedsMap extends React.Component {
     console.log(bounds)
     bounds = this.props.bounds || [[bounds.north, bounds.east], [bounds.south, bounds.west]]
     console.log(markers)
-    if (this.refs.feedsMap){
-      this.refs.feedsMap.getLeafletElement().fitBounds(bounds)
-    }
     return (
       <Map
         ref='feedsMap'
         style={mapStyle}
-        center={position}
-        zoom={this.state.zoom}
+        bounds={bounds}
         scrollWheelZoom={false}
       >
         <TileLayer
