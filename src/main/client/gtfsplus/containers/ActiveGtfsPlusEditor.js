@@ -33,6 +33,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     tableData: state.gtfsplus.tableData,
     gtfsEntityLookup: state.gtfsplus.gtfsEntityLookup,
+    validation: state.gtfsplus.validation,
     feedSource,
     project,
     user
@@ -59,6 +60,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     feedSaved: (file) => {
       dispatch(uploadGtfsPlusFeed(feedVersionId, file))
+      .then(() => {
+        console.log('re-downloading');
+        dispatch(downloadGtfsPlusFeed(feedVersionId))
+      })
     },
     newRowsDisplayed: (tableId, rows, feedSource) => {
       if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))

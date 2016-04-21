@@ -18,17 +18,19 @@ const emptyTableData = { }
 const gtfsplus = (state = {
   feedVersionId: null,
   timestamp: null,
-  tableData: null, //Object.assign({}, emptyTableData),
+  tableData: null,
+  validation: null,
   gtfsEntityLookup: {}
 }, action) => {
   switch (action.type) {
     case 'CLEAR_GTFSPLUS_CONTENT':
-      return update(state,
-        {$merge: {
-          tableData: Object.assign({}, emptyTableData),
-          gtfsEntityLookup: {}
-        }}
-      )
+      return {
+        feedVersionId: null,
+        timestamp: null,
+        tableData: null,
+        validation: null,
+        gtfsEntityLookup: {}
+      }
 
     case 'RECEIVE_GTFSPLUS_CONTENT':
       let newTableData = {}
@@ -38,9 +40,9 @@ const gtfsplus = (state = {
         const fields = lines[0].split(',')
         newTableData[action.filenames[i].split('.')[0]] = lines.slice(1)
           .filter(line => line.split(',').length === fields.length)
-          .map(line => {
+          .map((line, rowIndex) => {
             const values = line.split(',')
-            let rowData = {}
+            let rowData = { origRowIndex: rowIndex }
             for(let f = 0; f < fields.length; f++) {
               rowData[fields[f]] = values[f]
             }
@@ -116,6 +118,20 @@ const gtfsplus = (state = {
       return update(state,
         {gtfsEntityLookup:
           {$merge: newLookupEntries}
+        }
+      )
+
+    case 'RECEIVE_GTFSPLUS_VALIDATION':
+      const validationTable = {}
+      for(const issue of action.validationIssues) {
+        if(!(issue.tableId in validationTable)) {
+          validationTable[issue.tableId] = []
+        }
+        validationTable[issue.tableId].push(issue)
+      }
+      return update(state,
+        {validation:
+          {$set: validationTable}
         }
       )
 

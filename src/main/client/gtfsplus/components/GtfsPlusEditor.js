@@ -88,7 +88,7 @@ export default class GtfsPlusEditor extends Component {
                     console.log('save');
                     this.save()
                   }}
-                ><Glyphicon glyph='save' /> Save</Button>
+                ><Glyphicon glyph='save' /> Save & Revalidate</Button>
               </PageHeader>
             </Col>
           </Row>
@@ -105,7 +105,11 @@ export default class GtfsPlusEditor extends Component {
                       this.setState({ activeTableId: table.id })
                     }}
                   >
-                    {table.name}
+                    {this.props.validation && (table.id in this.props.validation)
+                      ? <Glyphicon glyph='alert' style={{ color: 'red', marginRight: '8px' }}/>
+                      : null
+                    }
+                    {table.id}
                   </Button>
                 </p>)
               })}
@@ -116,6 +120,7 @@ export default class GtfsPlusEditor extends Component {
                 feedSource={this.props.feedSource}
                 table={activeTable}
                 tableData={this.props.tableData[activeTable.id]}
+                validation={this.props.validation[activeTable.id]}
                 newRowClicked={this.props.newRowClicked}
                 deleteRowClicked={this.props.deleteRowClicked}
                 fieldEdited={this.props.fieldEdited}
