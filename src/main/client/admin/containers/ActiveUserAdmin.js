@@ -27,7 +27,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
     fetchProjectFeeds: (project) => { dispatch(fetchProjectFeeds(project)) },
-    saveUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
+    saveUser: (user, permissions) => {
+      dispatch(updateUser(user, permissions))
+      .then(() => {
+        dispatch(fetchUsers())
+      })
+    },
     // setUserPermission: (user, permissions) => { dispatch(setUserPermission(user, permissions)) },
     createUser: (credentials) => { dispatch(createUser(credentials)) }
   }
