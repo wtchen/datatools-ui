@@ -1,5 +1,8 @@
 import JSZip from 'jszip'
 
+import { secureFetch } from '../../common/util/util'
+import { fetchFeedVersions } from '../../manager/actions/feeds'
+
 export function addGtfsPlusRow (tableId) {
   const table = DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === tableId)
 
@@ -33,23 +36,34 @@ export function deleteGtfsPlusRow (tableId, rowIndex) {
   }
 }
 
+
+export function requestingGtfsPlusContent () {
+  return {
+    type: 'REQUESTING_GTFSPLUS_CONTENT',
+  }
+}
+
 export function clearGtfsPlusContent () {
   return {
     type: 'CLEAR_GTFSPLUS_CONTENT',
   }
 }
 
-export function receiveGtfsPlusContent (filenames, fileContent) {
+export function receiveGtfsPlusContent (feedVersionId, filenames, fileContent, timestamp) {
   return {
     type: 'RECEIVE_GTFSPLUS_CONTENT',
+    feedVersionId,
     filenames,
-    fileContent
+    fileContent,
+    timestamp
   }
 }
 
-export function downloadGtfsPlusFeed (feedSourceId) {
+export function downloadGtfsPlusFeed (feedVersionId) {
   return function (dispatch, getState) {
-    fetch('/api/manager/secure/gtfsplus/'+  feedSourceId, {
+    dispatch(requestingGtfsPlusContent())
+
+    const fetchFeed = fetch('/api/manager/secure/gtfsplus/'+  feedVersionId, {
       method: 'get',
       cache: 'default',
       headers: { 'Authorization': 'Bearer ' + getState().user.token }
@@ -59,8 +73,13 @@ export function downloadGtfsPlusFeed (feedSourceId) {
         dispatch(clearGtfsPlusContent())
       }
       return response.blob()
-    }).then((blob) => {
-      JSZip.loadAsync(blob).then((zip) => {
+    })
+
+    const fetchTimestamp = secureFetch(`/api/manager/secure/gtfsplus/${feedVersionId}/timestamp`, getState())
+    .then(response => response.json())
+
+    Promise.all([fetchFeed, fetchTimestamp]).then(([feed, timestamp]) => {
+      JSZip.loadAsync(feed).then((zip) => {
         let filenames = []
         let filePromises = []
         zip.forEach((path,file) => {
@@ -68,16 +87,29 @@ export function downloadGtfsPlusFeed (feedSourceId) {
           filePromises.push(file.async('string'))
         })
         Promise.all(filePromises).then(fileContent => {
-          dispatch(receiveGtfsPlusContent(filenames, fileContent))
+          dispatch(receiveGtfsPlusContent(feedVersionId, filenames, fileContent, timestamp))
         })
       })
     })
   }
 }
 
-export function uploadGtfsPlusFeed (feedSourceId, file) {
+export function uploadingGtfsPlusFeed () {
+  return {
+    type: 'UPLOADING_GTFSPLUS_FEED',
+  }
+}
+
+export function uploadedGtfsPlusFeed () {
+  return {
+    type: 'UPLOADED_GTFSPLUS_FEED',
+  }
+}
+
+export function uploadGtfsPlusFeed (feedVersionId, file) {
   return function (dispatch, getState) {
-    const url = `/api/manager/secure/gtfsplus?feedSourceId=${feedSourceId}`
+    dispatch(uploadingGtfsPlusFeed())
+    const url = `/api/manager/secure/gtfsplus/${feedVersionId}`
     var data = new FormData()
     data.append('file', file)
 
@@ -86,37 +118,7 @@ export function uploadGtfsPlusFeed (feedSourceId, file) {
       headers: { 'Authorization': 'Bearer ' + getState().user.token },
       body: data
     }).then(result => {
-      console.log('uploadGtfsPlusFeed result', result)
-    })
-  }
-}
-
-export function importGtfsPlusFromGtfs (versionId) {
-  return function (dispatch, getState) {
-    fetch(`/api/manager/secure/gtfsplus/import/${versionId}`, {
-      method: 'get',
-      cache: 'default',
-      headers: { 'Authorization': 'Bearer ' + getState().user.token }
-    }).then((response) => {
-      if(response.status !== 200) {
-        console.log('error downloading gtfs feed', response.statusCode)
-        return null
-      }
-      return response.blob()
-    }).then((blob) => {
-      JSZip.loadAsync(blob).then((zip) => {
-        let filenames = []
-        let filePromises = []
-        zip.forEach((path, file) => {
-          if(DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === path.split('.')[0])) {
-            filenames.push(path)
-            filePromises.push(file.async('string'))
-          }
-        })
-        Promise.all(filePromises).then(fileContent => {
-          dispatch(receiveGtfsPlusContent(filenames, fileContent))
-        })
-      })
+      dispatch(uploadedGtfsPlusFeed())
     })
   }
 }
@@ -188,5 +190,23 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
       const loadedStops = results[1]
       dispatch(receiveGtfsEntities(loadedRoutes.concat(loadedStops)))
     })
+  }
+}
+
+export function publishingGtfsPlusFeed () {
+  return {
+    type: 'PUBLISHING_GTFSPLUS_FEED',
+  }
+}
+
+export function publishGtfsPlusFeed (feedVersion) {
+  return function (dispatch, getState) {
+    dispatch(publishingGtfsPlusFeed())
+    const url = `/api/manager/secure/gtfsplus/${feedVersion.id}/publish`
+    return secureFetch(url, getState(), 'post')
+      .then((res) => {
+        console.log('published done');
+        return dispatch(fetchFeedVersions(feedVersion.feedSource))
+      })
   }
 }

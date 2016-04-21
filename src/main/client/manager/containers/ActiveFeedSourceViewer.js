@@ -22,6 +22,8 @@ import {
   postNoteForFeedVersion
 } from '../actions/feeds'
 
+import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
+
 const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId
   let user = state.user
@@ -89,6 +91,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     newNotePostedForVersion: (version, note) => {
       dispatch(postNoteForFeedVersion(version, note))
+    },
+    gtfsPlusDataRequested: () => {
+      dispatch(downloadGtfsPlusFeed(version.id))
     }
   }
 }

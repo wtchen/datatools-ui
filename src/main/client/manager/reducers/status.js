@@ -36,6 +36,12 @@ const config = (state = {
       return update(state, { message: { $set: 'Loading validation result...' }})
     case 'REQUESTING_NOTES':
       return update(state, { message: { $set: 'Loading comments...' }})
+    case 'REQUESTING_GTFSPLUS_CONTENT':
+      return update(state, { message: { $set: 'Loading GTFS+ data...' }})
+    case 'UPLOADING_GTFSPLUS_FEED':
+      return update(state, { message: { $set: 'Saving GTFS+ data...' }})
+    case 'PUBLISHING_GTFSPLUS_FEED':
+      return update(state, { message: { $set: 'Publishing GTFS+ feed...' }})
 
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
@@ -47,6 +53,8 @@ const config = (state = {
     case 'RECEIVE_VALIDATION_RESULT':
     case 'RECEIVE_NOTES_FOR_FEEDVERSION':
     case 'RECEIVE_NOTES_FOR_FEEDSOURCE':
+    case 'RECEIVE_GTFSPLUS_CONTENT':
+    case 'UPLOADED_GTFSPLUS_FEED':
       return update(state, { message: { $set: null }})
     default:
       return state
