@@ -34,6 +34,7 @@ export default class ExternalPropertiesTable extends React.Component {
                   <td>
                     <EditableTextField
                       key={propName}
+                      disabled={this.props.editingIsDisabled}
                       value={this.props.resourceProps[propName]}
                       onChange={(value) => this.props.externalPropertyChanged(propName, value)}
                     />
