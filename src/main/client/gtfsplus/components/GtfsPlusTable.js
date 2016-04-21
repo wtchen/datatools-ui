@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table, Input, Button, Glyphicon, Pagination } from 'react-bootstrap'
+import { Row, Col, Table, Input, Button, Glyphicon, Tooltip, OverlayTrigger } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
@@ -13,7 +13,8 @@ export default class GtfsPlusTable extends Component {
     super(props)
 
     this.state = {
-      currentPage: 1
+      currentPage: 1,
+      visibility: 'all'
     }
   }
 
@@ -33,6 +34,13 @@ export default class GtfsPlusTable extends Component {
 
   getActiveRowData (currentPage) {
     if(!this.props.tableData) return []
+    const tableValidation = this.props.validation || []
+    if(this.state.visibility === 'validation' && tableValidation.length < 5000) {
+      return this.props.tableData
+        .filter(record => (tableValidation.find(v => v.rowIndex === record.origRowIndex)))
+          .slice((currentPage - 1) * recordsPerPage,
+            Math.min(currentPage * recordsPerPage, this.props.tableData.length))
+    }
     return this.props.tableData.slice((currentPage - 1) * recordsPerPage,
       Math.min(currentPage * recordsPerPage, this.props.tableData.length))
   }
@@ -45,6 +53,10 @@ export default class GtfsPlusTable extends Component {
     const getInput = (row, field, currentValue) => {
       switch(field.inputType) {
         case 'TEXT':
+        case 'GTFS_TRIP':
+        case 'GTFS_FARE':
+        case 'GTFS_SERVICE':
+        case 'GTFS_ZONE':
           return (
             <EditableTextField
               value={currentValue}
@@ -123,7 +135,6 @@ export default class GtfsPlusTable extends Component {
     }
 
     const subHeaderStyle = {
-      marginTop: '6px',
       marginBottom: '24px',
       textAlign: 'right'
     }
@@ -154,50 +165,68 @@ export default class GtfsPlusTable extends Component {
       </Row>
 
       <Row>
-        <Col xs={5}>
-          {(pageCount > 1)
-            ? <div className='form-inline'>
-                <Button
-                  disabled={this.state.currentPage <= 1}
-                  onClick={(evt => {
-                    this.setState({ currentPage: this.state.currentPage - 1 })
-                  })}
-                ><Glyphicon glyph='arrow-left' /></Button>
+        <Col xs={8}>
+          <div className='form-inline'>
+            {(pageCount > 1)
+              ? <span style={{ marginRight: '15px' }}>
+                  <Button
+                    disabled={this.state.currentPage <= 1}
+                    onClick={(evt => {
+                      this.setState({ currentPage: this.state.currentPage - 1 })
+                    })}
+                  ><Glyphicon glyph='arrow-left' /></Button>
 
-                <span style={{ fontSize: '18px', margin: '0px 10px'}}>
-                  Page {this.state.currentPage} of {pageCount}
-                </span>
+                  <span style={{ fontSize: '18px', margin: '0px 10px'}}>
+                    Page {this.state.currentPage} of {pageCount}
+                  </span>
 
-                <Button
-                  disabled={this.state.currentPage >= pageCount}
-                  onClick={(evt => {
-                    this.setState({ currentPage: this.state.currentPage + 1 })
-                  })}
-                ><Glyphicon glyph='arrow-right' /></Button>
+                  <Button
+                    disabled={this.state.currentPage >= pageCount}
+                    onClick={(evt => {
+                      this.setState({ currentPage: this.state.currentPage + 1 })
+                    })}
+                  ><Glyphicon glyph='arrow-right' /></Button>
 
-                <span style={{ fontSize: '18px', marginLeft: '15px'}}>
-                  Go to <Input
-                    type='text'
-                    size={5}
-                    style={{ width: '50px', display: 'inline', textAlign: 'center' }}
-                    onKeyUp={(e) => {
-                      if (e.keyCode == 13) {
-                        const newPage = parseInt(e.target.value)
-                        if(newPage > 0 && newPage <= pageCount) {
-                          e.target.value = ''
-                          this.setState({ currentPage: newPage })
+                  <span style={{ fontSize: '18px', marginLeft: '15px'}}>
+                    Go to <Input
+                      type='text'
+                      size={5}
+                      style={{ width: '50px', display: 'inline', textAlign: 'center' }}
+                      onKeyUp={(e) => {
+                        if (e.keyCode == 13) {
+                          const newPage = parseInt(e.target.value)
+                          if(newPage > 0 && newPage <= pageCount) {
+                            e.target.value = ''
+                            this.setState({ currentPage: newPage })
+                          }
                         }
-                      }
-                    }}
-                    onFocus={(e) => e.target.select()}
-                  />
+                      }}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </span>
                 </span>
-              </div>
-            : null
-          }
+              : null
+            }
+            <span style={{ fontSize: '18px' }}>
+              Show&nbsp;
+              <Input type="select"
+                onChange={(evt) => {
+                  console.log('evt', evt.target.value);
+                  this.setState({
+                    visibility: evt.target.value,
+                    currentPage: 1
+                  })
+                }}
+              >
+                <option value='all'>All Records</option>
+                <option value='validation'>Validation Issues Only</option>
+              </Input>
+            </span>
+          </div>
         </Col>
-        <Col xs={7} style={subHeaderStyle}>
-          <i>Click (?) icon for details on field and validation rules. Required fields denoted by (*)</i>
+
+        <Col xs={4} style={subHeaderStyle}>
+          <i>Click (?) icon for details on field.<br />Required fields denoted by (*)</i>
         </Col>
       </Row>
 
@@ -223,11 +252,31 @@ export default class GtfsPlusTable extends Component {
         <tbody>
           {rowData && rowData.length > 0
             ? rowData.map((data, rowIndex) => {
+                const tableRowIndex = (this.state.currentPage - 1) * recordsPerPage + rowIndex
                 return (<tr>
                   {table.fields.map(field => {
+
+                    const validationIssue = this.props.validation
+                      ? this.props.validation.find(v =>
+                          (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
+                      : null
+
+                    const tooltip = validationIssue ? (
+                      <Tooltip>{validationIssue.description}</Tooltip>
+                    ) : null
+
                     return (<td>
-                      {getInput((this.state.currentPage - 1) * recordsPerPage + rowIndex,
-                        field, data[field.name])}
+                      {validationIssue
+                        ? <div style={{ float: 'left' }}>
+                            <OverlayTrigger placement='top' overlay={tooltip}>
+                              <Glyphicon glyph='alert' style={{ color: 'red', marginTop: '4px' }} />
+                            </OverlayTrigger>
+                          </div>
+                        : null
+                      }
+                      <div style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
+                        {getInput(tableRowIndex, field, data[field.name])}
+                      </div>
                     </td>)
                   })}
                   <td>

@@ -21,6 +21,12 @@ export default class GtfsPlusVersionSummary extends Component {
     return this.props.gtfsplus.tableData[tableId].length.toLocaleString()
   }
 
+  validationIssueCount (tableId) {
+    if(!this.props.gtfsplus.validation) return null
+    if(!(tableId in this.props.gtfsplus.validation)) return 'None'
+    return this.props.gtfsplus.validation[tableId].length.toLocaleString()
+  }
+
   feedStatus () {
     if(!this.props.gtfsplus.timestamp) return null
     if(!this.gtfsPlusEdited()) return <i>GTFS+ data for this feed version has not been edited.</i>
@@ -34,7 +40,7 @@ export default class GtfsPlusVersionSummary extends Component {
   render () {
     const header = (
       <h3 onClick={() => {
-        this.props.gtfsPlusDataRequested(this.props.version)
+        if(!this.state.expanded) this.props.gtfsPlusDataRequested(this.props.version)
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> GTFS+ for this Version
@@ -93,7 +99,7 @@ export default class GtfsPlusVersionSummary extends Component {
                     <td>{table.name}</td>
                     <td>{this.isTableIncluded(table.id)}</td>
                     <td>{this.tableRecordCount(table.id)}</td>
-                    <td></td>
+                    <td>{this.validationIssueCount(table.id)}</td>
                     <td></td>
                   </tr>)
                 })}

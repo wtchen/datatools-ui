@@ -3,6 +3,8 @@ import JSZip from 'jszip'
 import { secureFetch } from '../../common/util/util'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
 
+// EDIT ACTIVE GTFS+ ACTIONS
+
 export function addGtfsPlusRow (tableId) {
   const table = DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === tableId)
 
@@ -36,6 +38,8 @@ export function deleteGtfsPlusRow (tableId, rowIndex) {
   }
 }
 
+
+// DOWNLOAD/RECEIVE DATA ACTIONS
 
 export function requestingGtfsPlusContent () {
   return {
@@ -88,11 +92,42 @@ export function downloadGtfsPlusFeed (feedVersionId) {
         })
         Promise.all(filePromises).then(fileContent => {
           dispatch(receiveGtfsPlusContent(feedVersionId, filenames, fileContent, timestamp))
+          dispatch(validateGtfsPlusFeed(feedVersionId))
         })
       })
     })
   }
 }
+
+// VALIDATION ACTIONS
+
+export function validatingGtfsPlusFeed () {
+  return {
+    type: 'VALIDATING_GTFSPLUS_FEED',
+  }
+}
+
+export function receiveGtfsPlusValidation (validationIssues) {
+  return {
+    type: 'RECEIVE_GTFSPLUS_VALIDATION',
+    validationIssues
+  }
+}
+
+export function validateGtfsPlusFeed (feedVersionId) {
+  return function (dispatch, getState) {
+    dispatch(validatingGtfsPlusFeed())
+    const url = `/api/manager/secure/gtfsplus/${feedVersionId}/validation`
+    return secureFetch(url, getState())
+      .then(res => res.json())
+      .then(validationIssues => {
+        //console.log('got GTFS+ val result', validationResult)
+        dispatch(receiveGtfsPlusValidation(validationIssues))
+      })
+  }
+}
+
+// UPLOAD ACTIONS
 
 export function uploadingGtfsPlusFeed () {
   return {
@@ -118,10 +153,12 @@ export function uploadGtfsPlusFeed (feedVersionId, file) {
       headers: { 'Authorization': 'Bearer ' + getState().user.token },
       body: data
     }).then(result => {
-      dispatch(uploadedGtfsPlusFeed())
+      return dispatch(uploadedGtfsPlusFeed())
     })
   }
 }
+
+// GTFS ENTITY LOOKUP ACTIONS
 
 export function receiveGtfsEntities (gtfsEntities) {
   return {
@@ -192,6 +229,8 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     })
   }
 }
+
+// PUBLISH ACTIONS
 
 export function publishingGtfsPlusFeed () {
   return {
