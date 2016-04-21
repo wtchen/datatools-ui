@@ -129,6 +129,9 @@ export default class FeedVersionNavigator extends React.Component {
               validationResultRequested={(version) => {
                 this.props.validationResultRequested(version)
               }}
+              gtfsPlusDataRequested={(version) => {
+                this.props.gtfsPlusDataRequested(version)
+              }}
               notesRequested={() => { this.props.notesRequestedForVersion(version) }}
               newNotePosted={(note) => { this.props.newNotePostedForVersion(version, note) }}
             />

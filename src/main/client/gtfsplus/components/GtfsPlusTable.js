@@ -32,6 +32,7 @@ export default class GtfsPlusTable extends Component {
   }
 
   getActiveRowData (currentPage) {
+    if(!this.props.tableData) return []
     return this.props.tableData.slice((currentPage - 1) * recordsPerPage,
       Math.min(currentPage * recordsPerPage, this.props.tableData.length))
   }
@@ -134,7 +135,7 @@ export default class GtfsPlusTable extends Component {
       color: 'white'
     }
 
-    const pageCount = Math.ceil(this.props.tableData.length / recordsPerPage)
+    const pageCount = this.props.tableData ? Math.ceil(this.props.tableData.length / recordsPerPage) : 0
 
     return (<div>
       <Row>
@@ -154,7 +155,7 @@ export default class GtfsPlusTable extends Component {
 
       <Row>
         <Col xs={5}>
-          {(this.props.tableData.length > recordsPerPage)
+          {(pageCount > 1)
             ? <div className='form-inline'>
                 <Button
                   disabled={this.state.currentPage <= 1}
@@ -220,26 +221,29 @@ export default class GtfsPlusTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {rowData.map((data, rowIndex) => {
-              return (<tr>
-                {table.fields.map(field => {
-                  return (<td>
-                    {getInput((this.state.currentPage - 1) * recordsPerPage + rowIndex,
-                      field, data[field.name])}
-                  </td>)
-                })}
-                <td>
-                <Button
-                    bsStyle='danger'
-                    bsSize='small'
-                    className='pull-right'
-                    onClick={() => { this.props.deleteRowClicked(table.id, rowIndex) }}
-                  >
-                    <Glyphicon glyph='remove' />
-                  </Button>
-                </td>
-              </tr>)
-            })}
+          {rowData && rowData.length > 0
+            ? rowData.map((data, rowIndex) => {
+                return (<tr>
+                  {table.fields.map(field => {
+                    return (<td>
+                      {getInput((this.state.currentPage - 1) * recordsPerPage + rowIndex,
+                        field, data[field.name])}
+                    </td>)
+                  })}
+                  <td>
+                  <Button
+                      bsStyle='danger'
+                      bsSize='small'
+                      className='pull-right'
+                      onClick={() => { this.props.deleteRowClicked(table.id, rowIndex) }}
+                    >
+                      <Glyphicon glyph='remove' />
+                    </Button>
+                  </td>
+                </tr>)
+              })
+            : <div style={{ marginTop: '12px' }}><i>No entries exist for this table.</i></div>
+          }
         </tbody>
       </Table>
 

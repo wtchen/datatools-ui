@@ -41,16 +41,12 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
+  const feedVersionId = ownProps.routeParams.feedVersionId
+
   return {
     onComponentMount: (initialProps) => {
-      dispatch(fetchFeedSourceAndProject(feedSourceId))
-
-      if(initialProps.location.query.version) { // init from a full GTFS feed
-        dispatch(importGtfsPlusFromGtfs(initialProps.location.query.version))
-
-      } else { // download the latest saved GTFS+
-        dispatch(downloadGtfsPlusFeed(feedSourceId))
-      }
+      if(!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
+      if(!initialProps.tableData) dispatch(downloadGtfsPlusFeed(feedVersionId))
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsPlusRow(tableId))
@@ -62,7 +58,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateGtfsPlusField(tableId, rowIndex, fieldName, newValue))
     },
     feedSaved: (file) => {
-      dispatch(uploadGtfsPlusFeed(feedSourceId, file))
+      dispatch(uploadGtfsPlusFeed(feedVersionId, file))
     },
     newRowsDisplayed: (tableId, rows, feedSource) => {
       if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))

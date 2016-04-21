@@ -86,20 +86,8 @@ export default class FeedSourceViewer extends React.Component {
           </Row>
 
           <Row>
-            <Col xs={8}>
+            <Col xs={12}>
               <h2>{fs.name} <small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small></h2>
-            </Col>
-            <Col xs={4}>
-              <h2>
-                {DT_CONFIG.modules.gtfsplus && DT_CONFIG.modules.gtfsplus.enabled
-                  ? <Button
-                      bsStyle='primary'
-                      className='pull-right'
-                      onClick={() => { browserHistory.push(`/gtfsplus/${fs.id}`) }}
-                    >Edit GTFS+</Button>
-                  : null
-                }
-              </h2>
             </Col>
           </Row>
 
@@ -231,6 +219,9 @@ export default class FeedSourceViewer extends React.Component {
               }}
               newNotePostedForVersion={(version,note) => {
                 this.props.newNotePostedForVersion(version, note)
+              }}
+              gtfsPlusDataRequested={(version) => {
+                this.props.gtfsPlusDataRequested(version)
               }}
             />
           </Panel>

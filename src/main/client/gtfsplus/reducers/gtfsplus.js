@@ -1,6 +1,6 @@
 import update from 'react-addons-update'
 
-const emptyTableData = {
+/*const emptyTableData = {
   'realtime_routes': [],
   'realtime_stops': [],
   'directions': [],
@@ -11,10 +11,14 @@ const emptyTableData = {
   'fare_rider_categories': [],
   'calendar_attributes': [],
   'farezone_attributes': []
-}
+}*/
+
+const emptyTableData = { }
 
 const gtfsplus = (state = {
-  tableData: Object.assign({}, emptyTableData),
+  feedVersionId: null,
+  timestamp: null,
+  tableData: null, //Object.assign({}, emptyTableData),
   gtfsEntityLookup: {}
 }, action) => {
   switch (action.type) {
@@ -25,6 +29,7 @@ const gtfsplus = (state = {
           gtfsEntityLookup: {}
         }}
       )
+
     case 'RECEIVE_GTFSPLUS_CONTENT':
       let newTableData = {}
       for(let i = 0; i < action.filenames.length; i++) {
@@ -42,12 +47,22 @@ const gtfsplus = (state = {
             return rowData
           })
       }
-      return update(state,
-        {tableData:
-          {$merge: newTableData}
-        }
-      )
+      return update(state, {
+        feedVersionId: {$set: action.feedVersionId},
+        timestamp: {$set: action.timestamp},
+        tableData: {$set: newTableData}
+      })
+
     case 'ADD_GTFSPLUS_ROW':
+      // create this table if it doesn already exist
+      if(!(action.tableId in state.tableData)) {
+        return update(state,
+          {tableData:
+            {$merge: {[action.tableId]: [action.rowData]} }
+          }
+        )
+      }
+      // otherwise, add it to the exising table
       return update(state,
         {tableData:
           {[action.tableId]:
@@ -55,6 +70,7 @@ const gtfsplus = (state = {
           }
         }
       )
+
     case 'UPDATE_GTFSPLUS_FIELD':
       return update(state,
         {tableData:
@@ -67,6 +83,7 @@ const gtfsplus = (state = {
           }
         }
       )
+
     case 'DELETE_GTFSPLUS_ROW':
       console.log('DELETE_GTFSPLUS_ROW', state, action);
       const table = state.tableData[action.tableId]

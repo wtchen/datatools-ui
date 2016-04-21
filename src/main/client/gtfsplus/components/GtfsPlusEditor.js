@@ -27,6 +27,8 @@ export default class GtfsPlusEditor extends Component {
     const zip = new JSZip()
 
     for(const table of DT_CONFIG.modules.gtfsplus.spec) {
+      if(!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
+
       let fileContent = ''
       // white the header line
       const fieldNameArr = table.fields.map(field => field['name'])
@@ -82,19 +84,10 @@ export default class GtfsPlusEditor extends Component {
                   bsSize='large'
                   className='pull-right'
                   onClick={() => {
-                    console.log('publish');
-                  }}
-                >Publish</Button>
-                &nbsp;
-                <Button
-                  bsStyle='primary'
-                  bsSize='large'
-                  className='pull-right'
-                  onClick={() => {
                     console.log('save');
                     this.save()
                   }}
-                >Save</Button>
+                ><Glyphicon glyph='save' /> Save</Button>
               </PageHeader>
             </Col>
           </Row>

@@ -103,7 +103,7 @@ class App extends React.Component {
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
-        <Route path='/gtfsplus/:feedSourceId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
+        <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
         <Route path='*' component={PageNotFound} />
       </Router>
     )
