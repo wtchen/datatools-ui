@@ -158,6 +158,7 @@ export default class FeedSourceViewer extends React.Component {
                                 this.props.feedSourcePropertyChanged(fs, 'snapshotVersion', evt.target.value)
                               }}
                             >
+                              <option>(None Selected)</option>
                               {this.state.snapshotVersions.map(snapshot => {
                                 return <option value={snapshot.id} key={snapshot.id}>
                                   {snapshot.name}
