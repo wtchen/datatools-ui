@@ -143,7 +143,7 @@ class FeedTable extends React.Component {
         })
       }
     })
-    return feeds.length ? (
+    return  (
       <BootstrapTable
         data={feeds}
         pagination={true}
@@ -160,7 +160,7 @@ class FeedTable extends React.Component {
         <TableHeaderColumn dataSort={true} dataField='lastUpdated' hidden={true}>last_update</TableHeaderColumn>
         <TableHeaderColumn dataField='url' dataFormat={this.urlFormat}>Link to GTFS</TableHeaderColumn>
       </BootstrapTable>
-    ) : ''
+    )
   }
 }
 
