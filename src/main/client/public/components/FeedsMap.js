@@ -35,24 +35,25 @@ export default class FeedsMap extends React.Component {
       return [(latNorth + latSouth) / 2, (lngWest + lngEast) / 2]
     }
     const getFeedBounds = (feeds) => {
-      return feeds
-        // .filter(feed => feed.latestValidation)
-        .reduce((previousFeed, currentFeed) => {
-          let bounds = previousFeed.latestValidation ? previousFeed.latestValidation.bounds : previousFeed
-          if (currentFeed.latestValidation && currentFeed.latestValidation.bounds) {
+      let feedsWithBounds = feeds.filter(feed => feed.latestValidation && feed.latestValidation.bounds)
+      if (feedsWithBounds.length === 1) {
+        return feedsWithBounds[0].latestValidation.bounds
+      }
+      else if (feedsWithBounds.length === 0) {
+        return null
+      }
+      else {
+        return feedsWithBounds.reduce((previousFeed, currentFeed) => {
             return {
-              east: currentFeed.latestValidation.bounds.east > bounds.east ? currentFeed.latestValidation.bounds.east : bounds.east,
-              west: currentFeed.latestValidation.bounds.west < bounds.west ? currentFeed.latestValidation.bounds.west : bounds.west,
-              north: currentFeed.latestValidation.bounds.north > bounds.north ? currentFeed.latestValidation.bounds.north : bounds.north,
-              south: currentFeed.latestValidation.bounds.south < bounds.south ? currentFeed.latestValidation.bounds.south : bounds.south
+              east: currentFeed.latestValidation.bounds.east > previousFeed.latestValidation.bounds.east ? currentFeed.latestValidation.bounds.east : previousFeed.latestValidation.bounds.east,
+              west: currentFeed.latestValidation.bounds.west < previousFeed.latestValidation.bounds.west ? currentFeed.latestValidation.bounds.west : previousFeed.latestValidation.bounds.west,
+              north: currentFeed.latestValidation.bounds.north > previousFeed.latestValidation.bounds.north ? currentFeed.latestValidation.bounds.north : previousFeed.latestValidation.bounds.north,
+              south: currentFeed.latestValidation.bounds.south < previousFeed.latestValidation.bounds.south ? currentFeed.latestValidation.bounds.south : previousFeed.latestValidation.bounds.south
             }
-          }
-          else {
-            return bounds
-          }
         })
+      }
     }
-    console.log(feeds)
+    console.log(feeds.filter(feed => feed.latestValidation))
     let position = [this.state.lat, this.state.lng];
     if (feeds.length === 0) {
       return (
@@ -90,7 +91,7 @@ export default class FeedsMap extends React.Component {
       }
     })
     console.log(bounds)
-    bounds = bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
+    bounds = bounds && bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
     console.log(bounds)
     console.log(markers)
     return (
