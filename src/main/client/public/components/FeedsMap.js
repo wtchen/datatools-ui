@@ -90,7 +90,7 @@ export default class FeedsMap extends React.Component {
       }
     })
     console.log(bounds)
-    bounds = typeof bounds.north === 'undefined' ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
+    bounds = bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
     console.log(bounds)
     console.log(markers)
     return (
