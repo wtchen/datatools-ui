@@ -64,6 +64,8 @@ export default class ProjectsList extends React.Component {
                 </thead>
                 <tbody>
                   {visibleProjects.length > 0 ? visibleProjects.map((project) => {
+                    let disabled = !this.props.user.permissions.isProjectAdmin(project.id)
+                    console.log(disabled)
                     return (
                       <tr key={project.id}>
                         <td className="col-md-4">
@@ -71,6 +73,7 @@ export default class ProjectsList extends React.Component {
                             <EditableTextField
                               isEditing={(project.isCreating === true)}
                               value={project.name}
+                              disabled={disabled}
                               onChange={(value) => {
                                 if(project.isCreating) this.props.newProjectNamed(value)
                                 else this.props.projectNameChanged(project, value)

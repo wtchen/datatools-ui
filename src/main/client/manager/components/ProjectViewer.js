@@ -241,7 +241,9 @@ export default class ProjectsList extends React.Component {
                     {filteredFeedSources.map((feedSource) => {
                       return <FeedSourceTableRow
                         feedSource={feedSource}
+                        project={this.props.project}
                         key={feedSource.id}
+                        user={this.props.user}
                         newFeedSourceNamed={this.props.newFeedSourceNamed}
                         feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
                         deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
@@ -266,7 +268,9 @@ class FeedSourceTableRow extends React.Component {
 
   render () {
     const fs = this.props.feedSource
+    console.log(fs.name, fs.isPublic)
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
+    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     return (
       <tr key={fs.id}>
         <td className="col-md-4">
@@ -274,6 +278,7 @@ class FeedSourceTableRow extends React.Component {
             <EditableTextField
               isEditing={(fs.isCreating === true)}
               value={fs.name}
+              disabled={disabled}
               onChange={(value) => {
                 if(fs.isCreating) this.props.newFeedSourceNamed(value)
                 else this.props.feedSourcePropertyChanged(fs, 'name', value)
@@ -286,6 +291,7 @@ class FeedSourceTableRow extends React.Component {
           <Input
             type='checkbox'
             label='&nbsp;'
+            disabled={disabled}
             defaultChecked={fs.isPublic}
             onChange={(e) => {
               console.log(e.target.checked)
