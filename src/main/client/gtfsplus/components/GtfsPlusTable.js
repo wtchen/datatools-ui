@@ -46,7 +46,6 @@ export default class GtfsPlusTable extends Component {
   }
 
   render () {
-
     const table = this.props.table
     const rowData = this.getActiveRowData(this.state.currentPage)
 
@@ -253,9 +252,8 @@ export default class GtfsPlusTable extends Component {
           {rowData && rowData.length > 0
             ? rowData.map((data, rowIndex) => {
                 const tableRowIndex = (this.state.currentPage - 1) * recordsPerPage + rowIndex
-                return (<tr>
+                return (<tr key={rowIndex}>
                   {table.fields.map(field => {
-
                     const validationIssue = this.props.validation
                       ? this.props.validation.find(v =>
                           (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
@@ -265,7 +263,7 @@ export default class GtfsPlusTable extends Component {
                       <Tooltip>{validationIssue.description}</Tooltip>
                     ) : null
 
-                    return (<td>
+                    return (<td key={field.name}>
                       {validationIssue
                         ? <div style={{ float: 'left' }}>
                             <OverlayTrigger placement='top' overlay={tooltip}>
@@ -291,10 +289,17 @@ export default class GtfsPlusTable extends Component {
                   </td>
                 </tr>)
               })
-            : <div style={{ marginTop: '12px' }}><i>No entries exist for this table.</i></div>
+            : null
           }
         </tbody>
       </Table>
+
+      {!rowData || rowData.length === 0
+        ? <Row><Col xs={12}>
+            <i>No entries exist for this table.</i>
+          </Col></Row>
+        : null
+      }
 
       <Row>
         <Button

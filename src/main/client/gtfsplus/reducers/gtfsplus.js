@@ -19,7 +19,7 @@ const gtfsplus = (state = {
   feedVersionId: null,
   timestamp: null,
   tableData: null,
-  validation: null,
+  validation: {},
   gtfsEntityLookup: {}
 }, action) => {
   switch (action.type) {
@@ -87,9 +87,7 @@ const gtfsplus = (state = {
       )
 
     case 'DELETE_GTFSPLUS_ROW':
-      console.log('DELETE_GTFSPLUS_ROW', state, action);
       const table = state.tableData[action.tableId]
-      console.log(table);
       const newTable = [
         ...table.slice(0, action.rowIndex),
         ...table.slice(action.rowIndex + 1)
