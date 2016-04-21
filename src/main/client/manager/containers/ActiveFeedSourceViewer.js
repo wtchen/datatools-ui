@@ -55,8 +55,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (initialProps.user.profile !== null) {
         unsecured = false
       }
-      if (!initialProps.feedSource) {
+      if (!initialProps.project) {
         dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
+        .then((feedSource) => {
+          console.log(feedSource)
+          dispatch(fetchFeedVersions(feedSource, unsecured))
+        })
+      }
+      else if(!initialProps.feedSource) {
+        dispatch(fetchFeedSource(initialProps.feedSource, unsecured))
         .then((feedSource) => {
           dispatch(fetchFeedVersions(feedSource, unsecured))
         })

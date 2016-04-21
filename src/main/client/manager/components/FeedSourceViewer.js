@@ -70,7 +70,7 @@ export default class FeedSourceViewer extends React.Component {
     if(!fs) {
       return <ManagerPage />
     }
-
+    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     return (
       <ManagerPage ref='page'>
         <Grid>
@@ -107,6 +107,7 @@ export default class FeedSourceViewer extends React.Component {
                       <td>
                         <EditableTextField
                           value={fs.name}
+                          disabled={disabled}
                           onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'name', value)}
                         />
                       </td>
@@ -117,6 +118,7 @@ export default class FeedSourceViewer extends React.Component {
                       <td>
                         <Input type='select'
                           value={fs.retrievalMethod}
+                          disabled={disabled}
                           onChange={(evt) => {
                             console.log(evt.target.value);
                             this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', evt.target.value)
@@ -137,6 +139,7 @@ export default class FeedSourceViewer extends React.Component {
                           <td>
                             <EditableTextField
                               value={fs.url}
+                              disabled={disabled}
                               onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
                             />
                           </td>
@@ -174,6 +177,7 @@ export default class FeedSourceViewer extends React.Component {
                   console.log('>> resourceType=' + resourceType);
                   return (<ExternalPropertiesTable
                     resourceType={resourceType}
+                    editingIsDisabled={disabled}
                     resourceProps={fs.externalProperties[resourceType]}
                     externalPropertyChanged={(name, value) => {
                       this.props.externalPropertyChanged(fs, resourceType, name, value)
@@ -197,6 +201,8 @@ export default class FeedSourceViewer extends React.Component {
             <FeedVersionNavigator
               versions={fs.feedVersions}
               feedSource={fs}
+              updateDisabled={disabled}
+              deleteDisabled={disabled}
               validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }
               updateFeedClicked={() => this.props.updateFeedClicked(fs)}
               uploadFeedClicked={() => {
