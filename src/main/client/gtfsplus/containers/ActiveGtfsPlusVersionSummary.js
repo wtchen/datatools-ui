@@ -9,7 +9,8 @@ import {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    gtfsplus: state.gtfsplus
+    gtfsplus: state.gtfsplus,
+    user: state.user
   }
 }
 

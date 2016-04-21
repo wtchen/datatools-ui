@@ -32,6 +32,8 @@ export default class GtfsPlusVersionSummary extends Component {
   }
 
   render () {
+    const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'edit-gtfs')
+    const publishingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'approve-gtfs')
     const header = (
       <h3 onClick={() => {
         this.props.gtfsPlusDataRequested(this.props.version)
@@ -54,6 +56,7 @@ export default class GtfsPlusVersionSummary extends Component {
           <Col xs={6} style={{ textAlign: 'right' }}>
             <Button
               bsSize='large'
+              disabled={editingIsDisabled}
               bsStyle='primary'
               onClick={() => { browserHistory.push(`/gtfsplus/${this.props.version.feedSource.id}/${this.props.version.id}`) }}
             >
@@ -62,6 +65,7 @@ export default class GtfsPlusVersionSummary extends Component {
             {this.gtfsPlusEdited()
               ? <Button
                   bsSize='large'
+                  disabled={publishingIsDisabled}
                   bsStyle='primary'
                   style={{ marginLeft: '6px' }}
                   onClick={() => {

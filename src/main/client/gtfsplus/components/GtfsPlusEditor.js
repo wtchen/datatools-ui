@@ -53,7 +53,7 @@ export default class GtfsPlusEditor extends Component {
 
   render () {
     if(!this.props.feedSource) return null
-
+    const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs')
     const buttonStyle = {
       display: 'block',
       width: '100%'
@@ -82,6 +82,7 @@ export default class GtfsPlusEditor extends Component {
                 <Button
                   bsStyle='primary'
                   bsSize='large'
+                  disabled={editingIsDisabled}
                   className='pull-right'
                   onClick={() => {
                     console.log('save');
