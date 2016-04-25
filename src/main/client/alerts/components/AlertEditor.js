@@ -52,12 +52,18 @@ export default class AlertEditor extends React.Component {
     if (!this.props.alert) {
       return <ManagerPage/>
     }
-
+    var compare = function (a, b) {
+      var aName = a.shortName || a.name
+      var bName = b.shortName || b.name
+      if(aName < bName) return -1
+      if(aName > bName) return 1
+      return 0
+    }
     const canPublish = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.publishableFeeds)
     const canEdit = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.editableFeeds)
 
     const editingIsDisabled = this.props.alert.published && !canPublish ? true : !canEdit
-
+    const sortedFeeds = this.props.editableFeeds.sort(compare)
     // if user has edit rights and alert is unpublished, user can delete alert, else check if they have publish rights
     const deleteIsDisabled = !editingIsDisabled && !this.props.alert.published ? false : !canPublish
     const deleteButtonMessage = this.props.alert.published && deleteIsDisabled ? 'Cannot delete because alert is published'
@@ -214,12 +220,12 @@ export default class AlertEditor extends React.Component {
                           <Row style={{marginBottom: '15px'}}>
                             <Col xs={5}>
                               <Button style={{marginRight: '5px'}} onClick={(evt) => {
-                                console.log('editable feeds', this.props.editableFeeds)
-                                this.props.onAddEntityClick('AGENCY', this.props.editableFeeds[0])
+                                console.log('editable feeds', sortedFeeds)
+                                this.props.onAddEntityClick('AGENCY', sortedFeeds[0])
                               }}>
                                 Add Agency
                               </Button>
-                              <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, this.props.editableFeeds[0])}>
+                              <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0])}>
                                 Add Mode
                               </Button>
                             </Col>
@@ -248,7 +254,7 @@ export default class AlertEditor extends React.Component {
                               entity={entity}
                               key={entity.id}
                               activeFeeds={this.props.activeFeeds}
-                              feeds={this.props.editableFeeds}
+                              feeds={sortedFeeds}
                               onDeleteEntityClick={this.props.onDeleteEntityClick}
                               entityUpdated={this.props.entityUpdated}
                             />
@@ -261,7 +267,9 @@ export default class AlertEditor extends React.Component {
               </Col>
 
               <Col xs={12} sm={6}>
-                <GlobalGtfsFilter />
+                <GlobalGtfsFilter
+                  permissionFilter='edit-alert'
+                />
                 <GtfsMapSearch
                   feeds={this.props.activeFeeds}
                   onStopClick={this.props.editorStopClick}
