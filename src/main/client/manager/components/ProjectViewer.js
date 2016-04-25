@@ -268,7 +268,6 @@ class FeedSourceTableRow extends React.Component {
 
   render () {
     const fs = this.props.feedSource
-    console.log(fs.name, fs.isPublic)
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     return (
