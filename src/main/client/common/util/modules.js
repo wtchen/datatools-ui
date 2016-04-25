@@ -1,5 +1,5 @@
 export const getFeed = (feeds, id) => {
-  const feed = feeds.find(f => f.externalProperties.MTC.AgencyId === id)
+  const feed = feeds ? feeds.find(f => f.externalProperties.MTC.AgencyId === id) : null
   return feed
 }
 
