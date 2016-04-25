@@ -47,11 +47,6 @@ class App extends React.Component {
     }
 
     const requireAuth = (nextState, replace, callback) => {
-      // checkLogin(callback).then(something => {
-      //   if (this.props.user.profile === null) {
-      //     replace(null, '/')
-      //   }
-      // })
       this.props.checkExistingLogin()
       .then((action) => {
         console.log('requiring auth')
@@ -74,19 +69,6 @@ class App extends React.Component {
     }
 
     return (
-      // AUTH WITH HOC
-      // <Router history={this.props.history}>
-      //   <Redirect from='/' to='explore' />
-      //   <Route path='/account' component={UserIsAuthenticated(ActiveUserAccount)} />
-      //   <Route path='/admin' component={UserIsAdmin(ActiveUserAdmin)} />
-      //   <Route path='/signup' component={ActiveSignupPage} />
-      //   <Route path='/explore' component={ActivePublicFeedsViewer} />
-      //   <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />
-      //   <Route path='/project' component={UserIsAuthenticated(ActiveProjectsList)} />
-      //   <Route path='/project/:projectId' component={UserIsAuthenticated(ActiveProjectViewer)} />
-      //   <Route path='/feed/:feedSourceId' component={UserIsAuthenticated(ActiveFeedSourceViewer)} />
-      // </Router>
-
       <Router history={this.props.history}>
         <Redirect from='/' to='explore' />
         <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />
