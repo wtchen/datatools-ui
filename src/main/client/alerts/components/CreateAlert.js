@@ -2,21 +2,19 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 
-import { createAlert } from '../actions/alerts'
-
-let CreateAlert = ({ dispatch }) => {
-  return (
-    <Button
-      bsStyle='primary'
-      bsSize='large'
-      onClick={() => {
-        dispatch(createAlert())
-      }}
-      className='pull-right'
-    >New Alert</Button>
-  )
+export default class CreateAlert extends React.Component {
+  constructor (props) {
+    super(props)
+  }
+  render () {
+    return (
+      <Button
+        bsStyle='primary'
+        bsSize='large'
+        disabled={this.props.disabled != null ? this.props.disabled : false}
+        onClick={this.props.createAlert}
+        className='pull-right'
+      >New Alert</Button>
+    )
+  }
 }
-
-CreateAlert = connect()(CreateAlert)
-
-export default CreateAlert

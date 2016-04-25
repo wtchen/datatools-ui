@@ -1,22 +1,19 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 
-import { createSign } from '../actions/signs'
-
-let CreateSign = ({ dispatch }) => {
-  return (
-    <Button
-      bsStyle='primary'
-      bsSize='large'
-      onClick={() => {
-        dispatch(createSign())
-      }}
-      className='pull-right'
-    >New Configuration</Button>
-  )
+export default class CreateAlert extends React.Component {
+  constructor (props) {
+    super(props)
+  }
+  render () {
+    return (
+      <Button
+        bsStyle='primary'
+        bsSize='large'
+        disabled={this.props.disabled != null ? this.props.disabled : false}
+        onClick={this.props.createSign}
+        className='pull-right'
+      >New Configuration</Button>
+    )
+  }
 }
-
-CreateSign = connect()(CreateSign)
-
-export default CreateSign

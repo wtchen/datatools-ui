@@ -21,18 +21,22 @@ function receiveProjects(projects) {
 export function fetchProjects() {
   return function (dispatch, getState) {
     dispatch(requestProjects())
+    let project
     return secureFetch('/api/manager/secure/project', getState())
       .then(response => response.json())
       .then((projects) => {
         console.log('received projects', projects)
         dispatch(receiveProjects(projects))
-        let project = getState().projects.active || projects.find(proj => proj.id === DT_CONFIG.application.active_project)
+        project = getState().projects.active || projects.find(proj => proj.id === DT_CONFIG.application.active_project)
         return dispatch(fetchProjectFeeds(project.id))
       })
       .then(() => {
         console.log('updating filter')
         dispatch(updateGtfsFilter(getState().projects.active, getState().user))
         return dispatch(fetchRtdAlerts())
+      })
+      .then(() => {
+        return project
       })
   }
 }

@@ -9,7 +9,7 @@ import { setActiveTitle, setActiveDescription, setActiveUrl, setActiveCause,
   toggleConfigForDisplay } from '../actions/activeSign'
 
 import SignEditor from '../components/SignEditor'
-
+import { browserHistory } from 'react-router'
 import { getFeedsForPermission } from '../../common/util/permissions'
 
 import '../style.css'
@@ -43,16 +43,26 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!signId) {
         console.log('sign', initialProps.sign)
         dispatch(fetchProjects())
-        .then(() => {
+        .then((activeProject) => {
           console.log('done fetching projects')
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')){
+            console.log('cannot create sign!')
+            browserHistory.push('/signs')
+            return
+          }
           return dispatch(createSign())
         })
       }
       else {
         console.log('need to set active sign')
         dispatch(fetchProjects())
-        .then(() => {
+        .then((activeProject) => {
           console.log('done fetching projects')
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')){
+            console.log('cannot create sign!')
+            browserHistory.push('/signs')
+            return
+          }
           console.log('getting', signId)
           dispatch(setActiveSign(+signId))
         })

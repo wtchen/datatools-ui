@@ -3,7 +3,7 @@ import React from 'react'
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
 import ManagerNavbar from '../../common/containers/ManagerNavbar'
-import CreateAlert from '../containers/CreateAlert'
+import CreateAlert from '../components/CreateAlert'
 import VisibleAlertsList from '../containers/VisibleAlertsList'
 import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
 import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
@@ -22,13 +22,17 @@ export default class AlertsViewer extends React.Component {
   }
 
   render () {
+    const createDisabled = this.props.project && this.props.user ? !this.props.user.permissions.hasProjectPermission(this.props.project.id, 'edit-alert') : true
     return (
       <div>
         <ManagerNavbar/>
         <Grid>
           <Row>
             <Col xs={12}>
-              <CreateAlert />
+              <CreateAlert
+                disabled={createDisabled}
+                createAlert={this.props.createAlert}
+              />
             </Col>
           </Row>
           <Row>
@@ -36,7 +40,9 @@ export default class AlertsViewer extends React.Component {
               <VisibleAlertsList />
             </Col>
             <Col xs={6}>
-              <GlobalGtfsFilter />
+              <GlobalGtfsFilter
+                permissionFilter='edit-alert'
+              />
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.onStopClick}

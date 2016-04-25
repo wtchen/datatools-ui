@@ -204,7 +204,9 @@ export default class SignEditor extends React.Component {
             </Col>
 
             <Col xs={12} sm={6}>
-              <GlobalGtfsFilter />
+              <GlobalGtfsFilter
+                permissionFilter='edit-etid'
+              />
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.editorStopClick}

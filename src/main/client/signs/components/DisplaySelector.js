@@ -64,9 +64,11 @@ export default class DisplaySelector extends React.Component {
       // let publishedLabel = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
       //                     : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
       //                     : ''
-      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 && displayDraftId === this.props.sign.id ? <Label bsStyle='warning'>Assigned to {displayDraftId} (Pub. to {displayPublishedId})</Label>
+
+
+      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 && displayDraftId === this.props.sign.id ? <span><Label bsStyle='warning'>Assigned here</Label><Label bsStyle='danger'>Published to {displayPublishedId}</Label></span>
             : displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-            : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
+            : displayPublishedId !== null && displayDraftId !== null ? <span><Label bsStyle='success'>Published</Label><Label bsStyle='warning'>Assigned to {displayDraftId}</Label></span>
             : displayDraftId === null ? <Label>Unassigned</Label>
             : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
             : <Label bsStyle='warning'>Unpublished</Label>

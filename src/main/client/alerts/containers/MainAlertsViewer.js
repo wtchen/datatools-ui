@@ -12,7 +12,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     activeFeeds: state.gtfsFilter.activeFeeds,
     allFeeds: state.gtfsFilter.allFeeds,
-    alerts: state.alerts.all
+    alerts: state.alerts.all,
+    user: state.user,
+    project: state.projects.active
   }
 }
 
@@ -20,12 +22,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       console.log(initialProps)
-      if (!initialProps.alerts || initialProps.alerts.length === 0) {
+      if (!initialProps.alerts || initialProps.alerts.length === 0 || !initialProps.project.feedSources) {
         console.log('fetching projects...')
         dispatch(fetchProjects())
       }
 
     },
+    createAlert: () => dispatch(createAlert()),
     onStopClick: (stop, agency) => dispatch(createAlert(stop, agency)),
     onRouteClick: (route, agency) => dispatch(createAlert(route, agency)),
   }

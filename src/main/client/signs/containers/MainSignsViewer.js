@@ -12,7 +12,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     activeFeeds: state.gtfsFilter.activeFeeds,
     allFeeds: state.gtfsFilter.allFeeds,
-    signs: state.signs.all
+    signs: state.signs.all,
+    user: state.user,
+    project: state.projects.active
   }
 }
 
@@ -20,7 +22,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       console.log(initialProps)
-      if (!initialProps.signs || initialProps.signs.length === 0) {
+      if (!initialProps.signs || initialProps.signs.length === 0 || !initialProps.project.feedSources) {
         console.log('fetching projects...')
         dispatch(fetchProjects())
       }
@@ -28,6 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onStopClick: (stop, agency) => dispatch(createSign(stop, agency)),
     onRouteClick: (route, agency) => dispatch(createSign(route, agency)),
+    createSign: () => dispatch(createSign()),
   }
 }
 

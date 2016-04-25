@@ -8,7 +8,7 @@ import { setActiveTitle, setActiveDescription, setActiveUrl, setActiveCause,
   addActiveEntity, deleteActiveEntity, updateActiveEntity } from '../actions/activeAlert'
 
 import AlertEditor from '../components/AlertEditor'
-
+import { browserHistory } from 'react-router'
 import { getFeedsForPermission } from '../../common/util/permissions'
 
 import '../style.css'
@@ -42,16 +42,25 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!alertId) {
         console.log('alert', initialProps.alert)
         dispatch(fetchProjects())
-        .then(() => {
-          console.log('done fetching projects')
-          return dispatch(createAlert())
+        .then((activeProject) => {
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')){
+            console.log('cannot create alert!')
+            browserHistory.push('/alerts')
+            return
+          }
+          dispatch(createAlert())
         })
       }
       else {
         console.log('need to set active alert')
         dispatch(fetchProjects())
-        .then(() => {
+        .then((activeProject) => {
           console.log('done fetching projects')
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')){
+            console.log('cannot create alert!')
+            browserHistory.push('/alerts')
+            return
+          }
           console.log('getting', alertId)
           dispatch(setActiveAlert(+alertId))
         })
