@@ -102,7 +102,7 @@ const projects = (state = {
 
     case 'RECEIVE_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
-      let existingSources = state.all[projectIndex].feedSources, updatedSources
+      let existingSources = state.all[projectIndex].feedSources || [], updatedSources
       sourceIndex = existingSources.findIndex(s => s.id === action.feedSource.id)
       if (sourceIndex === -1) { // source does not currently; add it
         updatedSources = [

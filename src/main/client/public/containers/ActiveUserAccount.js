@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 
 import UserAccount from '../components/UserAccount'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
-import { fetchProjectsWithPublicFeeds } from '../../manager/actions/projects'
-import { updateUser, fetchUser } from '../../manager/actions/user'
+import { fetchProjectsWithPublicFeeds, fetchProjects } from '../../manager/actions/projects'
+import { fetchFeedSource, receiveFeedSource } from '../../manager/actions/feeds'
+import { updateUserData, fetchUser, updateTargetForSubscription, removeUserSubscription } from '../../manager/actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -18,10 +19,45 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // const projectId = ownProps.routeParams.projectId
   return {
     onComponentMount: (initialProps) => {
-      // dispatch(fetchProjectsWithPublicFeeds())
+      if (!initialProps.projects){
+        dispatch(fetchProjects())
+        .then(() => {
+          if (initialProps.user.profile.app_metadata.datatools.subscriptions) {
+            Promise.all(
+              initialProps.user.profile.app_metadata.datatools.subscriptions.map(sub => {
+                console.log(sub)
+                sub.target.map(target => {
+                  console.log('queuing feed source ', target)
+                  return (dispatch(fetchFeedSource(target)))
+                })
+              })
+            ).then(results => {
+              console.log('got feed sources', results)
+            })
+          }
+        })
+      }
+      else {
+        if (initialProps.user.profile.app_metadata.datatools.subscriptions) {
+          Promise.all(
+            initialProps.user.profile.app_metadata.datatools.subscriptions.map(sub => {
+              console.log(sub)
+              sub.target.map(target => {
+                console.log('queuing feed source ', target)
+                return (dispatch(fetchFeedSource(target)))
+              })
+            })
+          ).then(results => {
+            console.log('got feed sources', results)
+          })
+        }
+      }
+
     },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
-    updateUser: (user, permissions) => { dispatch(updateUser(user, permissions)) },
+    updateUserName: (user, permissions) => { dispatch(updateUserData(user, permissions)) },
+    updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
+    removeUserSubscription: (profile, subscriptionType) => { dispatch(removeUserSubscription(profile, subscriptionType)) },
     fetchUser: (user, permissions) => { dispatch(fetchUser(user)) }
   }
 }

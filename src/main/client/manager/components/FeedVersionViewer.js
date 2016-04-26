@@ -16,7 +16,7 @@ export default class FeedVersionViewer extends Component {
     return (
       <div>
         <Row>
-          <Col xs={6}>
+          <Col xs={12} sm={6}>
             <Table striped>
               <tbody>
                 <tr>
@@ -41,7 +41,7 @@ export default class FeedVersionViewer extends Component {
               </tbody>
             </Table>
           </Col>
-          <Col xs={6}>
+          <Col xs={12} sm={6}>
             <Table striped>
               <tbody>
                 <tr>

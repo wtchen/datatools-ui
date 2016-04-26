@@ -19,6 +19,11 @@ export default class UserAccount extends React.Component {
   }
 
   render () {
+    var removeIconStyle = {
+      color: 'red',
+      cursor: 'pointer'
+    }
+    let subscriptions = this.props.user.profile.app_metadata.datatools.subscriptions
     return (
       <PublicPage ref='publicPage'>
         <Grid>
@@ -39,18 +44,59 @@ export default class UserAccount extends React.Component {
               <EditableTextField
                 value={this.props.user.profile.email}
                 onChange={(value) => {
-                  this.props.updateUser(this.props.user.profile.user_id, {
-                    "permissions": [
-                      {
-                        "type": "administer-application"
-                      }
-                    ],
-                    "projects": []
-                  })
+                  this.props.updateUserName(this.props.user, value)
                 }}
               />
               <Button onClick={() => {this.props.getUser(this.props.user.profile.user_id)}}>Get User</Button>
             </Col>
+            { DT_CONFIG.application.notifications_enabled ?
+              <Col xs={4}>
+                <h3>My Subscriptions</h3>
+                <ul>
+                  {subscriptions.length ? subscriptions.map(sub => {
+                    return (
+                      <li>
+                        {sub.type.replace('-', ' ')} &nbsp;
+                          <Glyphicon
+                            glyph='remove'
+                            style={removeIconStyle}
+                            onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
+                          />
+                        <ul>
+                          {sub.target.length ? sub.target.map(target => {
+                            let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
+                            if (this.props.projects) {
+                              for (var i = 0; i < this.props.projects.length; i++) {
+                                let feed = this.props.projects[i].feedSources ? this.props.projects[i].feedSources.find(fs => fs.id === target) : null
+                                fs = feed ? feed : fs
+                              }
+                            }
+                            return (
+                              <li>
+                                {
+                                  fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
+                                  :
+                                  <span>{target}</span>
+                                } &nbsp;
+                                <Glyphicon
+                                  glyph='remove'
+                                  style={removeIconStyle}
+                                  onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
+                                />
+                              </li>
+                            )
+                          }) : <li>No feeds subscribed to.</li>
+                        }
+                        </ul>
+                      </li>
+                    )
+                  })
+                  : <li>No subscriptions.</li>
+                }
+                </ul>
+              </Col>
+              : ''
+            }
           </Row>
         </Grid>
       </PublicPage>

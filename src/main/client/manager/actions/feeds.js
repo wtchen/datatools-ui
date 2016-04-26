@@ -131,8 +131,6 @@ export function fetchFeedSource(feedSourceId, fetchVersions) {
       .then(response => response.json())
       .then(feedSource => {
         console.log('got feedSource', feedSource);
-        //dispatch(fetchProject(feedSource.projectId))
-        //return feedSource
         dispatch(receiveFeedSource(feedSource))
         if(fetchVersions) dispatch(fetchFeedVersions(feedSource))
       })

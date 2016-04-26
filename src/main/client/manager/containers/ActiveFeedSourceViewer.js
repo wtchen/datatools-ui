@@ -22,6 +22,8 @@ import {
   postNoteForFeedVersion
 } from '../actions/feeds'
 
+import { updateTargetForSubscription } from '../../manager/actions/user'
+
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
@@ -80,6 +82,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
+    updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
     downloadFeedClicked: (feedVersion) => { dispatch(downloadFeedViaToken(feedVersion)) },
     deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
       dispatch(deleteFeedVersion(feedSource, feedVersion))

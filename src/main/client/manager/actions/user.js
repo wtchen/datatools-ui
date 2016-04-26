@@ -54,20 +54,62 @@ export function fetchUser (user) {
   }
 }
 
-// server call
-export function updateUser (user, permissions) {
+export function removeUserSubscription (profile, subscriptionType) {
   return function (dispatch, getState) {
-    console.log(permissions)
-    var payload = {
-      user_id: user,
-      data: permissions
+    let subscriptions = profile.app_metadata.datatools.subscriptions || [{type: subscriptionType, target: []}]
+    let index = subscriptions.findIndex(sub => sub.type === subscriptionType)
+    if (index > -1) {
+      subscriptions.splice(index, 1)
+    } else {
+      return
     }
-    const url = '/api/manager/secure/user/' + user
+    return dispatch(updateUserData(profile, {subscriptions: subscriptions}))
+  }
+}
+
+export function updateTargetForSubscription (profile, target, subscriptionType) {
+  return function (dispatch, getState) {
+    let subscriptions = profile.app_metadata.datatools.subscriptions || [{type: subscriptionType, target: []}]
+    if (subscriptions.findIndex(sub => sub.type === subscriptionType) === -1) {
+      subscriptions.push({type: subscriptionType, target: []})
+    }
+    for (var i = 0; i < subscriptions.length; i++) {
+      let sub = subscriptions[i]
+      if (sub.type === subscriptionType) {
+        let index = sub.target.indexOf(target)
+        if (index > -1) {
+          sub.target.splice(index, 1)
+        }
+        else {
+          sub.target.push(target)
+        }
+      }
+    }
+    return dispatch(updateUserData(profile, {subscriptions: subscriptions}))
+  }
+}
+
+// server call
+export function updateUserData (user, userData) {
+  return function (dispatch, getState) {
+    var datatools = user.profile ? user.profile.app_metadata.datatools : user.app_metadata.datatools
+    for (var type in userData) {
+      datatools[type] = userData[type]
+    }
+    var payload = {
+      user_id: user.user_id,
+      data: datatools
+    }
+    const url = '/api/manager/secure/user/' + user.user_id
     return secureFetch(url, getState(), 'put', payload)
       .then(response => response.json())
       .then(user => {
-        // console.log(user)
-        return JSON.parse(user)
+        user = JSON.parse(user)
+        console.log(user)
+        if (user.user_id === getState().user.profile.user_id) {
+          dispatch(checkExistingLogin())
+        }
+        return user
       })
   }
 }

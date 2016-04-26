@@ -71,6 +71,7 @@ export default class FeedSourceViewer extends React.Component {
       return <ManagerPage />
     }
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
+    const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     return (
       <ManagerPage ref='page'>
         <Grid>
@@ -87,13 +88,29 @@ export default class FeedSourceViewer extends React.Component {
 
           <Row>
             <Col xs={12}>
-              <h2>{fs.name} <small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small></h2>
+              <h2>
+                {fs.name} &nbsp;
+                <small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small> &nbsp;
+                {
+                  DT_CONFIG.application.notifications_enabled ?
+                  <Button
+                    className={`pull-right`}
+                    onClick={() => { this.props.updateUserSubscription(this.props.user.profile, fs.id, 'feed-updated') }}
+                  >
+                    {
+                      isWatchingFeed ? <span><Glyphicon glyph='eye-close'/> Unwatch</span>
+                      : <span><Glyphicon glyph='eye-open'/> Watch</span>
+                    }
+                  </Button>
+                  : ''
+                }
+              </h2>
             </Col>
           </Row>
 
           <Panel header={(<h3><Glyphicon glyph='cog' /> Feed Source Properties</h3>)}>
             <Row>
-              <Col xs={6}>
+              <Col xs={12} sm={6}>
                 <Table striped>
                   <thead>
                     <tr>
@@ -139,6 +156,7 @@ export default class FeedSourceViewer extends React.Component {
                           <td>
                             <EditableTextField
                               value={fs.url}
+                              maxLength={30}
                               disabled={disabled}
                               onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
                             />
@@ -173,7 +191,7 @@ export default class FeedSourceViewer extends React.Component {
                 </Table>
               </Col>
 
-              <Col xs={6}>
+              <Col xs={12} sm={6}>
                 {Object.keys(fs.externalProperties || {}).map(resourceType => {
                   console.log('>> resourceType=' + resourceType);
                   return (<ExternalPropertiesTable
@@ -193,6 +211,9 @@ export default class FeedSourceViewer extends React.Component {
           <NotesViewer
             title='Comments for this Feed Source'
             notes={fs.notes}
+            feedSource={fs}
+            user={this.props.user}
+            updateUserSubscription={this.props.updateUserSubscription}
             noteCount={fs.noteCount}
             notesRequested={() => { this.props.notesRequestedForFeedSource(fs) }}
             newNotePosted={(note) => { this.props.newNotePostedForFeedSource(fs, note) }}
@@ -202,6 +223,8 @@ export default class FeedSourceViewer extends React.Component {
             <FeedVersionNavigator
               versions={fs.feedVersions}
               feedSource={fs}
+              user={this.props.user}
+              updateUserSubscription={this.props.updateUserSubscription}
               updateDisabled={disabled}
               deleteDisabled={disabled}
               validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }

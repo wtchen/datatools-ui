@@ -30,7 +30,7 @@ export default class NotesViewer extends Component {
         <Glyphicon glyph='comment' /> {this.props.title} {this.noteCount() !== null ? `(${this.noteCount()})` : ''}
       </h3>
     )
-
+    const isWatchingComments = this.props.feedSource ? this.props.user.subscriptions.hasFeedSubscription(this.props.feedSource.projectId, this.props.feedSource.id, 'feed-commented-on') : false
     return (
       <Panel
         header={header}
@@ -38,15 +38,30 @@ export default class NotesViewer extends Component {
         expanded={this.state.expanded}
       >
         <Row>
-          <Col xs={6}>
+          <Col xs={12} sm={8} md={6}>
             <h3>
               All Comments
               <Button
                 className='pull-right'
+                title='Refresh comments'
                 onClick={() => { this.props.notesRequested() }}
               >
-                <Glyphicon glyph='refresh' /> Refresh
+                <Glyphicon glyph='refresh' /><span className='hidden-xs'> Refresh</span>
               </Button>
+              {
+                DT_CONFIG.application.notifications_enabled ?
+                <Button
+                  title={isWatchingComments ? 'Unwatch comments' : 'Watch comments'}
+                  className='pull-right'
+                  onClick={() => { this.props.updateUserSubscription(this.props.user.profile, this.props.feedSource.id, 'feed-commented-on') }}
+                >
+                  {
+                    isWatchingComments ? <span><Glyphicon glyph='eye-close'/><span className='hidden-xs'> Unwatch</span></span>
+                    : <span><Glyphicon glyph='eye-open'/><span className='hidden-xs'> Watch</span></span>
+                  }
+                </Button>
+                : ''
+              }
             </h3>
             {this.props.notes && this.props.notes.length > 0
               ? this.props.notes.map(note => {
@@ -61,7 +76,7 @@ export default class NotesViewer extends Component {
 
             }
           </Col>
-          <Col xs={6}>
+          <Col xs={12} sm={4} md={6}>
             <h3>Post a New Comment</h3>
             <Input
               ref='newNoteBody'

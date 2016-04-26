@@ -49,6 +49,7 @@ const config = (state = {
     case 'RECEIVE_PROJECT':
     case 'RECEIVE_SYNC':
     case 'RECEIVE_FEEDSOURCES':
+    case 'RECEIVE_FEEDSOURCE':
     case 'RECEIVE_FEEDVERSIONS':
     case 'RECEIVE_FETCH_FEED_FOR_PROJECT':
     case 'RECEIVE_PUBLIC_FEEDS':

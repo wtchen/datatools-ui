@@ -38,13 +38,13 @@ export default class FeedVersionNavigator extends React.Component {
     return (
       <div>
         <Row>
-          <Col xs={2} style={versionTitleStyle}>
+          <Col xs={12} sm={2} style={versionTitleStyle}>
             {hasVersions
               ? `Version ${version.version} of ${this.props.versions.length}`
               : '(No Versions)'
             }
           </Col>
-          <Col xs={8}>
+          <Col xs={12} sm={8}>
             <ButtonGroup justified>
               <Button href='#'
                 disabled={!hasVersions || !version.previousVersionId}
@@ -53,7 +53,7 @@ export default class FeedVersionNavigator extends React.Component {
                   this.setState({ versionIndex: this.state.versionIndex - 1 })
                 }}
               >
-                <Glyphicon glyph='arrow-left' /> Previous Version
+                <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> Previous</span><span className='hidden-xs hidden-sm'> Version</span>
               </Button>
 
               <Button href='#'
@@ -63,7 +63,7 @@ export default class FeedVersionNavigator extends React.Component {
                   this.props.downloadFeedClicked(version)
                 }}
               >
-                <Glyphicon glyph='download' /> Download Feed
+                <Glyphicon glyph='download' /><span className='hidden-xs'> Download</span><span className='hidden-xs hidden-sm'> Feed</span>
               </Button>
 
               {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
@@ -75,7 +75,7 @@ export default class FeedVersionNavigator extends React.Component {
                       this.props.uploadFeedClicked()
                     }}
                   >
-                    <Glyphicon glyph='upload' /> Upload Feed
+                    <Glyphicon glyph='upload' /><span className='hidden-xs'> Upload</span><span className='hidden-xs hidden-sm'> Feed</span>
                   </Button>
                 : <Button
                     href='#'
@@ -85,7 +85,7 @@ export default class FeedVersionNavigator extends React.Component {
                       this.props.updateFeedClicked()
                     }}
                   >
-                    <Glyphicon glyph='refresh' /> Update Feed
+                    <Glyphicon glyph='refresh' /><span className='hidden-xs'> Update</span><span className='hidden-xs hidden-sm'> Feed</span>
                   </Button>
 
               }
@@ -98,7 +98,7 @@ export default class FeedVersionNavigator extends React.Component {
                   this.props.deleteVersionClicked(version)
                 }}
               >
-                <Glyphicon glyph='remove' /> Delete Version
+                <Glyphicon glyph='remove' /><span className='hidden-xs'> Delete</span><span className='hidden-xs hidden-sm'> Version</span>
               </Button>
 
               <Button href='#'
@@ -108,7 +108,7 @@ export default class FeedVersionNavigator extends React.Component {
                   this.setState({ versionIndex: this.state.versionIndex + 1 })
                 }}
               >
-                Next Version <Glyphicon glyph='arrow-right' />
+                <span className='hidden-xs'>Next </span><span className='hidden-xs hidden-sm'>Version </span><Glyphicon glyph='arrow-right' />
               </Button>
             </ButtonGroup>
           </Col>

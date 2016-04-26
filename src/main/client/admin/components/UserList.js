@@ -71,8 +71,12 @@ class UserRow extends React.Component {
 
   save () {
     console.log('saving ', this.props.user)
-    console.log(this.refs.userSettings.getSettings())
-    this.props.saveUser(this.props.user.user_id, this.refs.userSettings.getSettings())
+
+    const settings = this.refs.userSettings.getSettings()
+    const type = ['projects', 'permissions']
+    console.log(settings)
+    console.log(this.props.user)
+    this.props.saveUser(this.props.user, settings)
   }
 
   render () {

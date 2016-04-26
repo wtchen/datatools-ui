@@ -46,11 +46,12 @@ export default class UserSettings extends React.Component {
       return {
         permissions: [{
           type: 'administer-application'
-        }]
+        }],
+        projects: []
       }
     }
 
-    let settings = { projects: [] }
+    let settings = { permissions: [], projects: [] }
 
     this.props.projects.forEach((project, i) => {
       let stateProjectSettings = this.state.projectSettings[project.id]
