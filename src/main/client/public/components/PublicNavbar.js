@@ -41,7 +41,7 @@ class PublicNavbar extends Component {
           </Navbar.Brand>
         </Navbar.Header>
         <Nav pullRight>
-          <NavItem href='#'><Glyphicon glyph='question-sign' /> Guide</NavItem>
+          <NavItem href={DT_CONFIG.application.docs_url}><Glyphicon glyph='question-sign' /> Guide</NavItem>
           <LinkContainer to={{ pathname: '/signup' }}>
             <NavItem>Sign up</NavItem>
           </LinkContainer>

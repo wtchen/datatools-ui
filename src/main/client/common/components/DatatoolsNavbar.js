@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
+import { browserHistory } from 'react-router'
 
 export default class DatatoolsNavbar extends Component {
 
@@ -28,6 +29,7 @@ export default class DatatoolsNavbar extends Component {
         <NavDropdown title={
           <span><Glyphicon glyph='user' /> {this.props.username}</span>
         } id='basic-nav-dropdown'>
+        <MenuItem onClick={() => browserHistory.push('/account')}>My Account</MenuItem>
           <MenuItem onClick={this.props.resetPasswordHandler}>Reset Password</MenuItem>
           <MenuItem onClick={this.props.logoutHandler}>Log Out</MenuItem>
         </NavDropdown>
@@ -100,7 +102,7 @@ export default class DatatoolsNavbar extends Component {
           </Nav>
           <Nav pullRight>
             {projectControl}
-            <NavItem href='#'><Glyphicon glyph='question-sign' /> Guide</NavItem>
+            <NavItem href={DT_CONFIG.application.docs_url}><Glyphicon glyph='question-sign' /> Guide</NavItem>
             {userControl}
           </Nav>
         </Navbar.Collapse>
