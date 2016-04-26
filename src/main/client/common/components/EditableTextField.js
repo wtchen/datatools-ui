@@ -34,10 +34,19 @@ export default class EditableTextField extends React.Component {
       value
     })
   }
+  cancel () {
+    this.setState({
+      isEditing: false
+    })
+  }
   handleKeyUp (e) {
     // if [Enter] is pressed
     if (e.keyCode == 13) {
       this.save()
+    }
+    // if [Esc] is pressed
+    if (e.keyCode == 27) {
+      this.cancel()
     }
   }
 
@@ -53,8 +62,10 @@ export default class EditableTextField extends React.Component {
       glyph='ok'
       style={iconStyle}
     />
-    </Button>
-
+    </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
+    const displayValue = this.props.maxLength !== null && this.state.value && this.state.value.length > this.props.maxLength
+          ? this.state.value.substr(0, this.props.maxLength) + '...'
+          : this.state.value
     return (
       <div>
         {this.state.isEditing
@@ -65,15 +76,18 @@ export default class EditableTextField extends React.Component {
                 autoFocus='true'
                 onKeyUp={(e) => this.handleKeyUp(e)}
                 onFocus={(e) => e.target.select()}
+                onBlur={(e) => this.cancel()}
                 defaultValue={ this.state.value }
                 buttonAfter={saveIcon}
               />
             </span>
 
-          : <span>
+          : <span
+              title={this.state.value}
+            >
               {this.props.link
-                ? <Link to={this.props.link}>{this.state.value}</Link>
-                : this.state.value || '(none)'
+                ? <Link to={this.props.link}>{displayValue}</Link>
+                : displayValue || '(none)'
               }
               &nbsp;&nbsp;
               <Button bsStyle='link'
