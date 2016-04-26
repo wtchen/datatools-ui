@@ -25,6 +25,10 @@ export default class EditableTextField extends React.Component {
 
   save () {
     const value = this.refs['input'].getValue()
+    if (value === this.state.value) {
+      this.cancel()
+      return
+    }
     if(this.props.onChange) {
       this.props.onChange(value)
     }
