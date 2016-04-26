@@ -90,7 +90,10 @@ export default class FeedSourceViewer extends React.Component {
             <Col xs={12}>
               <h2>
                 {fs.name} &nbsp;
-                <small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small> &nbsp;
+                {fs.isPublic
+                  ? <span><small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small> &nbsp;</span>
+                  : null
+                }
                 {
                   DT_CONFIG.application.notifications_enabled ?
                   <Button
@@ -102,7 +105,7 @@ export default class FeedSourceViewer extends React.Component {
                       : <span><Glyphicon glyph='eye-open'/> Watch</span>
                     }
                   </Button>
-                  : ''
+                  : null
                 }
               </h2>
             </Col>
@@ -187,6 +190,20 @@ export default class FeedSourceViewer extends React.Component {
                         </tr>
                       : null
                     }
+                    <tr>
+                      <td>Public?</td>
+                      <td>
+                        <Input
+                          type='checkbox'
+                          label='&nbsp;'
+                          disabled={disabled}
+                          defaultChecked={fs.isPublic}
+                          onChange={(e) => {
+                            this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
+                          }}
+                        />
+                      </td>
+                    </tr>
                   </tbody>
                 </Table>
               </Col>
