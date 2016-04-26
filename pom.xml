@@ -189,6 +189,12 @@
             <version>14.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.sparkpost</groupId>
+            <artifactId>sparkpost-lib</artifactId>
+            <version>0.15</version>
+        </dependency>
+
     </dependencies>
 
 </project>
