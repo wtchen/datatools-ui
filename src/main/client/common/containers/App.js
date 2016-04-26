@@ -61,7 +61,7 @@ class App extends React.Component {
       this.props.checkExistingLogin()
       .then((action) => {
         console.log('requiring admin')
-        if (!this.props.user.permissions.isApplicationAdmin()) {
+        if (this.props.user.profile === null || !this.props.user.permissions.isApplicationAdmin()) {
           replace(null, '/')
         }
         callback()
