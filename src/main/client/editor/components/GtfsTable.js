@@ -52,13 +52,84 @@ export default class GtfsTable extends Component {
     const getInput = (row, field, currentValue) => {
       switch(field.inputType) {
         case 'TEXT':
+        case 'TIMEZONE':
+        case 'URL':
+        case 'GTFS_AGENCY':
         case 'GTFS_TRIP':
+        case 'GTFS_SHAPE':
+        case 'GTFS_BLOCK':
         case 'GTFS_FARE':
         case 'GTFS_SERVICE':
         case 'GTFS_ZONE':
           return (
             <EditableTextField
               value={currentValue}
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, field.name, value)
+              }}
+            />
+          )
+        case 'TIME':
+          return (
+            <EditableTextField
+              value={currentValue}
+              placeholder='HH:MM:SS'
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, field.name, value)
+              }}
+            />
+          )
+        case 'LATITUDE':
+        case 'LONGITUDE':
+        case 'NUMBER':
+          return (
+            <EditableTextField
+              value={currentValue}
+              type='number'
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, field.name, value)
+              }}
+            />
+          )
+        case 'DATE':
+          return (
+            <EditableTextField
+              value={currentValue}
+              placeholder='YYYYMMDD'
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, field.name, value)
+              }}
+            />
+          )
+        case 'COLOR':
+          return (
+            <EditableTextField
+              value={currentValue}
+              placeholder='00FF00'
+              type='number'
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, field.name, value)
+              }}
+            />
+          )
+        case 'POSITIVE_INT':
+          return (
+            <EditableTextField
+              value={currentValue}
+              type='number'
+              min={0}
+              step={1}
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, field.name, value)
+              }}
+            />
+          )
+        case 'POSITIVE_NUM':
+          return (
+            <EditableTextField
+              value={currentValue}
+              type='number'
+              min={0}
               onChange={(value) => {
                 this.props.fieldEdited(table.id, row, field.name, value)
               }}

@@ -76,7 +76,10 @@ export default class EditableTextField extends React.Component {
           ? <span>
               <Input
                 ref='input'
-                type='text'
+                type={this.props.type ? this.props.type.toLowerCase() : 'text'}
+                min={this.props.min ? this.props.min : null}
+                step={this.props.step ? this.props.step : null}
+                placeholder={this.props.placeholder ? this.props.placeholder : ''}
                 autoFocus='true'
                 onKeyUp={(e) => this.handleKeyUp(e)}
                 onFocus={(e) => e.target.select()}

@@ -72,6 +72,7 @@ export default class FeedSourceViewer extends React.Component {
     }
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
+    const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
     return (
       <ManagerPage ref='page'>
         <Grid>
@@ -243,6 +244,7 @@ export default class FeedSourceViewer extends React.Component {
               user={this.props.user}
               updateUserSubscription={this.props.updateUserSubscription}
               updateDisabled={disabled}
+              editGtfsDisabled={editGtfsDisabled}
               deleteDisabled={disabled}
               validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }
               updateFeedClicked={() => this.props.updateFeedClicked(fs)}

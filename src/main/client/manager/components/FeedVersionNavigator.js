@@ -87,8 +87,18 @@ export default class FeedVersionNavigator extends React.Component {
                   >
                     <Glyphicon glyph='refresh' /><span className='hidden-xs'> Update</span><span className='hidden-xs hidden-sm'> Feed</span>
                   </Button>
-
               }
+
+              <Button href='#'
+                disabled={this.props.editGtfsDisabled || !hasVersions}
+                onClick={(evt) => {
+                  evt.preventDefault()
+                  console.log('editing version');
+                  browserHistory.push(`/editor/${version.feedSource.id}/${version.id}`)
+                }}
+              >
+                <Glyphicon glyph='pencil' /><span className='hidden-xs'> Edit</span><span className='hidden-xs hidden-sm'></span>
+              </Button>
 
               <Button href='#'
                 disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
