@@ -64,6 +64,17 @@ export default class FeedSourceViewer extends React.Component {
     })
   }
 
+  showUploadFeedModal () {
+    this.refs.page.showSelectFileModal({
+      title: 'Upload Feed',
+      body: 'Select a GTFS feed to upload:',
+      onConfirm: (files) => {
+        console.log('selected file', files[0]);
+        this.props.uploadFeedClicked(this.props.feedSource, files[0])
+      }
+    })
+  }
+
   render () {
     const fs = this.props.feedSource
 
@@ -113,12 +124,12 @@ export default class FeedSourceViewer extends React.Component {
 
           <Panel header={(<h3><Glyphicon glyph='cog' /> Feed Source Properties</h3>)}>
             <Row>
-              <Col xs={12} sm={6}>
-                <Table striped>
+              <Col xs={6}>
+                <Table striped style={{ tableLayout: 'fixed' }}>
                   <thead>
                     <tr>
                       <th className='col-md-4'>Property</th>
-                      <th>Value</th>
+                      <th className='col-md-8'>Value</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -136,20 +147,42 @@ export default class FeedSourceViewer extends React.Component {
                     <tr>
                       <td>Retrieval Method</td>
                       <td>
-                        <Input type='select'
-                          value={fs.retrievalMethod}
-                          disabled={disabled}
-                          onChange={(evt) => {
-                            console.log(evt.target.value);
-                            this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', evt.target.value)
-                          }}
-                        >
-                          {retrievalMethods.map(method => {
-                            return <option value={method} key={method}>
-                              {retrievalMethodString(method)}
-                            </option>
-                          })}
-                        </Input>
+                        <Row>
+                          <Col xs={8}>
+                            <Input type='select'
+                              value={fs.retrievalMethod}
+                              disabled={disabled}
+                              onChange={(evt) => {
+                                console.log(evt.target.value);
+                                this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', evt.target.value)
+                              }}
+                            >
+                              {retrievalMethods.map(method => {
+                                return <option value={method} key={method}>
+                                  {retrievalMethodString(method)}
+                                </option>
+                              })}
+                            </Input>
+                          </Col>
+                          <Col xs={4}>
+                            {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
+                              ? <Button
+                                  className='pull-right'
+                                  disabled={this.props.updateDisabled || typeof this.props.uploadFeedClicked === 'undefined'}
+                                  onClick={(evt) => { this.showUploadFeedModal() }}
+                                >
+                                  <Glyphicon glyph='upload' /> Upload
+                                </Button>
+                              : <Button
+                                  className='pull-right'
+                                  disabled={this.props.updateDisabled || typeof this.props.updateFeedClicked === 'undefined'}
+                                  onClick={(evt) => { this.props.updateFeedClicked(fs) }}
+                                >
+                                  <Glyphicon glyph='refresh' /> Update
+                                </Button>
+                            }
+                          </Col>
+                        </Row>
                       </td>
                     </tr>
 
@@ -245,18 +278,6 @@ export default class FeedSourceViewer extends React.Component {
               updateDisabled={disabled}
               deleteDisabled={disabled}
               validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }
-              updateFeedClicked={() => this.props.updateFeedClicked(fs)}
-              uploadFeedClicked={() => {
-                console.log('showing modal');
-                this.refs.page.showSelectFileModal({
-                  title: 'Upload Feed',
-                  body: 'Select a GTFS feed to upload:',
-                  onConfirm: (files) => {
-                    console.log('selected file', files[0]);
-                    this.props.uploadFeedClicked(fs, files[0])
-                  }
-                })
-              }}
               downloadFeedClicked={(version) => this.props.downloadFeedClicked(version)}
               deleteVersionClicked={(version) => {
                 this.deleteFeedVersion(fs, version)
