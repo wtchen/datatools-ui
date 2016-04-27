@@ -413,6 +413,7 @@
     helpContent: "The date field specifies a particular date when service availability is different than the norm. You can use the exception_type field to indicate whether service is available on the specified date."
   - name: "exception_type"
     required: true
+    inputType: DROPDOWN
     options:
     - value: '1'
     - value: '2'
