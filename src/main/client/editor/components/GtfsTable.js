@@ -49,7 +49,7 @@ export default class GtfsTable extends Component {
     const table = this.props.table
     const rowData = this.getActiveRowData(this.state.currentPage)
 
-    const getInput = (row, field, currentValue) => {
+    const getInput = (row, field, currentValue, index) => {
       switch(field.inputType) {
         case 'TEXT':
         case 'TIMEZONE':
@@ -63,6 +63,7 @@ export default class GtfsTable extends Component {
         case 'GTFS_ZONE':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               onChange={(value) => {
                 this.props.fieldEdited(table.id, row, field.name, value)
@@ -72,6 +73,7 @@ export default class GtfsTable extends Component {
         case 'TIME':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               placeholder='HH:MM:SS'
               onChange={(value) => {
@@ -84,6 +86,7 @@ export default class GtfsTable extends Component {
         case 'NUMBER':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               type='number'
               onChange={(value) => {
@@ -94,6 +97,7 @@ export default class GtfsTable extends Component {
         case 'DATE':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               placeholder='YYYYMMDD'
               onChange={(value) => {
@@ -104,6 +108,7 @@ export default class GtfsTable extends Component {
         case 'COLOR':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               placeholder='00FF00'
               type='number'
@@ -115,6 +120,7 @@ export default class GtfsTable extends Component {
         case 'POSITIVE_INT':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               type='number'
               min={0}
@@ -127,6 +133,7 @@ export default class GtfsTable extends Component {
         case 'POSITIVE_NUM':
           return (
             <EditableTextField
+              tabIndex={index}
               value={currentValue}
               type='number'
               min={0}
@@ -138,6 +145,7 @@ export default class GtfsTable extends Component {
         case 'DROPDOWN':
           return (
             <Input type='select'
+              tabIndex={index}
               value={currentValue}
               onChange={(evt) => {
                 this.props.fieldEdited(table.id, row, field.name, evt.target.value)
@@ -163,6 +171,7 @@ export default class GtfsTable extends Component {
 
           return (
             <GtfsSearch
+              tabIndex={index}
               feeds={[this.props.feedSource]}
               limit={100}
               entities={['routes']}
@@ -181,6 +190,7 @@ export default class GtfsTable extends Component {
 
           return (
             <GtfsSearch
+              tabIndex={index}
               feeds={[this.props.feedSource]}
               limit={100}
               entities={['stops']}
@@ -324,7 +334,8 @@ export default class GtfsTable extends Component {
             ? rowData.map((data, rowIndex) => {
                 const tableRowIndex = (this.state.currentPage - 1) * recordsPerPage + rowIndex
                 return (<tr key={rowIndex}>
-                  {table.fields.map(field => {
+                  {
+                    table.fields.map((field, colIndex) => {
                     const validationIssue = this.props.validation
                       ? this.props.validation.find(v =>
                           (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
@@ -344,7 +355,7 @@ export default class GtfsTable extends Component {
                         : null
                       }
                       <div style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
-                        {getInput(tableRowIndex, field, data[field.name])}
+                        {getInput(tableRowIndex, field, data[field.name], (rowIndex * table.fields.length) + colIndex + 1)}
                       </div>
                     </td>)
                   })}

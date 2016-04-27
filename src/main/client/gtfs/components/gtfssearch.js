@@ -117,6 +117,7 @@ export default class GtfsSearch extends React.Component {
     return (
     <Select.Async
       ref='gtfsSelect'
+      tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
       cache={false}
       onFocus={onFocus}
       filterOptions={true}

@@ -98,6 +98,7 @@ export default class EditableTextField extends React.Component {
               }
               &nbsp;&nbsp;
               <Button bsStyle='link'
+                tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
                 onClick={() => this.edit()}
                 disabled={this.props.disabled !== null ? this.props.disabled : false}
               >
