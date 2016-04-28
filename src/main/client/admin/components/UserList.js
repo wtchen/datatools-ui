@@ -28,6 +28,7 @@ export default class UserList extends React.Component {
           <Col xs={4}>
             <CreateUser
               projects={this.props.projects}
+              fetchProjectFeeds={this.props.fetchProjectFeeds}
               createUser={this.props.createUser.bind(this)}
             />
           </Col>

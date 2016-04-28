@@ -48,6 +48,7 @@ export default class CreateUser extends React.Component {
             <Input ref='password' type='password' label='Password' />
             <UserSettings
               projects={this.props.projects}
+              fetchProjectFeeds={this.props.fetchProjectFeeds}
               permissions={new UserPermissions()}
               ref='userSettings'
             />

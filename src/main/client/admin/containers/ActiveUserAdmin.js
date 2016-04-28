@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       if (!initialProps.users)
         dispatch(fetchUsers())
-      if (!initialProps.projects){
+      if (!initialProps.projects) {
         dispatch(fetchProjects())
       }
     },
