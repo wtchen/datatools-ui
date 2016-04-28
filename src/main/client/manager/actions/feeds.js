@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { fetchProject } from './projects'
+import { fetchProject, receiveProject } from './projects'
 
 // Feed Source Actions
 
@@ -147,6 +147,7 @@ export function fetchFeedSourceAndProject (feedSourceId, unsecured) {
       .then(feedSource => {
         return dispatch(fetchProject(feedSource.projectId, unsecured))
           .then(proj => {
+            dispatch(receiveFeedSource(feedSource))
             return feedSource
           })
       })

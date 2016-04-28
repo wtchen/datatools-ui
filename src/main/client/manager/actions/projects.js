@@ -77,8 +77,9 @@ export function fetchProject (projectId, unsecure) {
       .then(response => response.json())
       .then(project => {
         dispatch(receiveProject(project))
-        if (!unsecure)
-          return dispatch(fetchProjectFeeds(project.id))
+        return project
+        // if (!unsecure)
+        //   return dispatch(fetchProjectFeeds(project.id))
       })
   }
 }
