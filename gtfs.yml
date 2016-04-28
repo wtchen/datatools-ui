@@ -44,7 +44,7 @@
     columnWidth: 2
     helpContent: "The agency_email field contains a single valid email address actively monitored by the agency’s customer service department. This email address will be considered a direct contact point where transit riders can reach a customer service representative at the agency."
 
-- id: stops
+- id: stop
   name: stops.txt
   helpContent: Individual locations where vehicles pick up or drop off passengers.
   fields:
@@ -117,7 +117,7 @@
     helpContent: "The wheelchair_boarding field identifies whether wheelchair boardings are possible from the specified stop or station. The field can have the following values:"
 
 
-- id: routes
+- id: route
   name: routes.txt
   helpContent: This file contains information for a route.
   fields:
@@ -184,7 +184,7 @@
     columnWidth: 4
     helpContent: The route_text_color field can be used to specify a legible color to use for text drawn against a background of route_color. The color must be provided as a six-character hexadecimal number, for example, FFD700. If no color is specified, the default text color is black (000000).
 
-- id: trips
+- id: trip
   name: trips.txt
   helpContent: Trips for each route. A trip is a sequence of two or more stops that occurs at specific time.
   fields:
@@ -251,7 +251,7 @@
     helpContent: "0 (or empty) - indicates that there is no bike information for the trip"
 
 
-- id: stop_times
+- id: stop_time
   name: stop_times.txt
   helpContent: Times that a vehicle arrives at and departs from individual stops for each trip.
   fields:
