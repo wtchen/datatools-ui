@@ -18,6 +18,8 @@ import MainSignsViewer from '../../signs/containers/MainSignsViewer'
 import ActiveSignEditor from '../../signs/containers/ActiveSignEditor'
 import PageNotFound from '../components/PageNotFound'
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
+import ActiveGtfsEditor from '../../editor/containers/ActiveGtfsEditor'
+import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
 
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
@@ -85,7 +87,11 @@ class App extends React.Component {
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
+        <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />
+
         <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
+        <Route path='/editor/:feedSourceId/:feedVersionId' component={ActiveGtfsEditor} onEnter={requireAuth} />
+
         <Route path='*' component={PageNotFound} />
       </Router>
     )
