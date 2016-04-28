@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Grid, Row, Col, Button, Glyphicon, PageHeader } from 'react-bootstrap'
 import JSZip from 'jszip'
-import { Link } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsTable from './GtfsTable'
@@ -12,7 +12,7 @@ export default class GtfsEditor extends Component {
     super(props)
 
     this.state = {
-      activeTableId: 'routes'
+      activeTableId: this.props.currentTable
     }
   }
 
@@ -72,13 +72,13 @@ export default class GtfsEditor extends Component {
                 <li><Link to='/project'>Projects</Link></li>
                 <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
                 <li><Link to={`/feed/${this.props.feedSource.id}`}>{this.props.feedSource.name}</Link></li>
-                <li className='active'>Edit GTFS+</li>
+                <li className='active'>Edit GTFS</li>
               </ul>
             </Col>
           </Row>
           <Row>
             <Col xs={12}>
-              <PageHeader>Editing GTFS+ for {this.props.feedSource.name}
+              <PageHeader>Editing GTFS for {this.props.feedSource.name}
                 <Button
                   bsStyle='primary'
                   bsSize='large'
@@ -99,9 +99,11 @@ export default class GtfsEditor extends Component {
                 return (<p>
                   <Button
                     bsStyle={table.id === this.state.activeTableId ? 'info' : 'default'}
+                    href={`#${table.id}`}
                     key={table.id}
                     style={buttonStyle}
                     onClick={() => {
+                      this.props.getGtfsTable(table.id)
                       this.setState({ activeTableId: table.id })
                     }}
                   >
@@ -122,6 +124,7 @@ export default class GtfsEditor extends Component {
                 tableData={this.props.tableData ? this.props.tableData[activeTable.id] : []}
                 validation={this.props.validation[activeTable.id]}
                 newRowClicked={this.props.newRowClicked}
+                saveRowClicked={this.props.saveRowClicked}
                 deleteRowClicked={this.props.deleteRowClicked}
                 fieldEdited={this.props.fieldEdited}
                 gtfsEntitySelected={(type, entity) => {

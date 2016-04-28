@@ -3,6 +3,76 @@ import JSZip from 'jszip'
 import { secureFetch } from '../../common/util/util'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
 
+
+
+export function createAgency (agency) {
+  return function (dispatch, getState) {
+    const agency = {
+      defaultLat:"33.755",
+      defaultLon:"-84.39",
+      gtfsAgencyId:"CCT GTFS",
+      id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
+      lang:"en",
+      name:"CCT GTFS",
+      phone:null,
+      routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
+      sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
+      timezone:"America/New_York",
+      url:"http://test.com",
+    }
+    const url = `/api/manager/secure/agency`
+    return secureFetch(url, getState(), 'post', agency)
+      .then(res => res.json())
+      .then(validationIssues => {
+        //console.log('got GTFS+ val result', validationResult)
+        dispatch(receiveGtfsValidation(validationIssues))
+      })
+  }
+}
+
+export function getGtfsTable (tableId) {
+  return function (dispatch, getState) {
+    const url = `/api/manager/secure/${tableId}`
+    return secureFetch(url, getState())
+      .then(res => res.json())
+      .then(entities => {
+        console.log('got editor result', entities)
+        // dispatch(receiveGtfsValidation(validationIssues))
+      })
+  }
+}
+
+export function saveGtfsRow (tableId, rowIndex) {
+  return function (dispatch, getState) {
+    // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
+    // for(const field of table.fields) {
+    //   rowData[field.name] = null
+    // }
+    const data = getState().editor.tableData[tableId][rowIndex]
+    console.log(data)
+    const agency = {
+      defaultLat:"33.755",
+      defaultLon:"-84.39",
+      gtfsAgencyId:"CCT GTFS",
+      id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
+      lang:"en",
+      name:"CCT GTFS",
+      phone:null,
+      routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
+      sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
+      timezone:"America/New_York",
+      url:"http://test.com",
+    }
+    const url = `/api/manager/secure/${tableId}`
+    return secureFetch(url, getState(), 'post', agency)
+      .then(res => res.json())
+      .then(entity => {
+        console.log('got editor result', entity)
+        // dispatch(receiveGtfsValidation(validationIssues))
+      })
+  }
+}
+
 // EDIT ACTIVE GTFS+ ACTIONS
 
 export function addGtfsRow (tableId) {

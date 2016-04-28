@@ -360,7 +360,15 @@ export default class GtfsTable extends Component {
                     </td>)
                   })}
                   <td>
-                  <Button
+                    <Button
+                      bsStyle='primary'
+                      bsSize='small'
+                      className='pull-right'
+                      onClick={() => { this.props.saveRowClicked(table.id, rowIndex) }}
+                    >
+                      <Glyphicon glyph='floppy-disk' />
+                    </Button>
+                    <Button
                       bsStyle='danger'
                       bsSize='small'
                       className='pull-right'

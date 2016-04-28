@@ -6,6 +6,8 @@ import {
   addGtfsRow,
   updateGtfsField,
   deleteGtfsRow,
+  saveGtfsRow,
+  getGtfsTable,
   uploadGtfsFeed,
   downloadGtfsFeed,
   importGtfsFromGtfs,
@@ -34,6 +36,7 @@ const mapStateToProps = (state, ownProps) => {
     tableData: state.editor.tableData,
     gtfsEntityLookup: state.editor.gtfsEntityLookup,
     validation: state.editor.validation,
+    currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
     project,
     user
@@ -54,6 +57,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     deleteRowClicked: (tableId, rowIndex) => {
       dispatch(deleteGtfsRow(tableId, rowIndex))
+    },
+    getGtfsTable: (tableId) => {
+      dispatch(getGtfsTable(tableId))
+    },
+    saveRowClicked: (tableId, rowIndex) => {
+      dispatch(saveGtfsRow(tableId, rowIndex))
     },
     fieldEdited: (tableId, rowIndex, fieldName, newValue) => {
       dispatch(updateGtfsField(tableId, rowIndex, fieldName, newValue))
