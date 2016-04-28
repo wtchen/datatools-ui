@@ -39,16 +39,19 @@ export default class EditableTextField extends React.Component {
     })
   }
   cancel () {
+    // console.log(this.refs.editableContainer)
     this.setState({
       isEditing: false
     })
+    // this.refs.editableContainer.focus()
   }
-  handleKeyUp (e) {
-    // if [Enter] is pressed
-    if (e.keyCode == 13) {
+  handleKeyDown (e) {
+    // if [Enter] or [Tab] is pressed
+    if ((e.keyCode == 9 || e.keyCode == 13) && this.state.isEditing) {
       this.save()
     }
-    // if [Esc] is pressed
+  }
+  handleKeyUp (e) {
     if (e.keyCode == 27) {
       this.cancel()
     }
@@ -71,7 +74,9 @@ export default class EditableTextField extends React.Component {
           ? this.state.value.substr(0, this.props.maxLength) + '...'
           : this.state.value
     return (
-      <div>
+      <div
+        ref='editableContainer'
+      >
         {this.state.isEditing
           ? <span>
               <Input
@@ -82,6 +87,7 @@ export default class EditableTextField extends React.Component {
                 placeholder={this.props.placeholder ? this.props.placeholder : ''}
                 autoFocus='true'
                 onKeyUp={(e) => this.handleKeyUp(e)}
+                onKeyDown={(e) => this.handleKeyDown(e)}
                 onFocus={(e) => e.target.select()}
                 onBlur={(e) => this.cancel()}
                 defaultValue={ this.state.value }
@@ -98,6 +104,7 @@ export default class EditableTextField extends React.Component {
               }
               &nbsp;&nbsp;
               <Button bsStyle='link'
+                ref='editButton'
                 tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
                 onClick={() => this.edit()}
                 disabled={this.props.disabled !== null ? this.props.disabled : false}
