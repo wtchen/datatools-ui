@@ -65,7 +65,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
       else if(!initialProps.feedSource) {
-        dispatch(fetchFeedSource(initialProps.feedSource, unsecured))
+        dispatch(fetchFeedSource(feedSourceId, unsecured))
         .then((feedSource) => {
           dispatch(fetchFeedVersions(feedSource, unsecured))
         })

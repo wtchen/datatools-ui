@@ -133,6 +133,7 @@ export function fetchFeedSource(feedSourceId, fetchVersions) {
         console.log('got feedSource', feedSource);
         dispatch(receiveFeedSource(feedSource))
         if(fetchVersions) dispatch(fetchFeedVersions(feedSource))
+        return feedSource
       })
   }
 }
@@ -208,6 +209,7 @@ export function fetchFeedVersions (feedSource, unsecured) {
       .then(response => response.json())
       .then(versions => {
         dispatch(receiveFeedVersions(feedSource, versions))
+        return versions
       })
   }
 }

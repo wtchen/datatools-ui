@@ -120,7 +120,7 @@ export function thirdPartySync (projectId, type) {
       .then(response => response.json())
       .then(project => {
         dispatch(receiveSync())
-        dispatch(fetchProject(projectId))
+        return dispatch(fetchProject(projectId))
       })
   }
 }
