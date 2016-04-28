@@ -1,5 +1,6 @@
 import React from 'react'
-import { Panel, Table, Glyphicon } from 'react-bootstrap'
+import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 
 export default class GtfsValidationViewer extends React.Component {
 
@@ -54,6 +55,11 @@ export default class GtfsValidationViewer extends React.Component {
         collapsible
         expanded={this.state.expanded}
       >
+        <Button
+          onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/${this.props.version.id}`)}
+        >
+        View Map
+        </Button>
         {report}
       </Panel>
     )
