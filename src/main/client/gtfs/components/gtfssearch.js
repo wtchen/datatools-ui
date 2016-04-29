@@ -34,6 +34,7 @@ export default class GtfsSearch extends React.Component {
   }
 
   renderOption (option) {
+    console.log(option)
     return <span style={{ color: 'black' }}>{option.stop ? <Glyphicon glyph="map-marker" /> : <Glyphicon glyph="option-horizontal" />} {option.label} <Label>{option.agency.name}</Label> {option.link}</span>
   }
   onChange (value) {
@@ -52,7 +53,17 @@ export default class GtfsSearch extends React.Component {
           return response.json()
         })
         .then((stops) => {
-          const stopOptions = stops !== null && stops.length > 0 ? stops.map(stop => ({stop, value: stop.stop_id, label: stop.stop_name, agency: getFeed(this.props.feeds, stop.feed_id)})) : []
+          const stopOptions = stops !== null && stops.length > 0
+            ? stops.map(stop => {
+              const agency = getFeed(this.props.feeds, stop.feed_id)
+              return {
+                stop,
+                value: stop.stop_id,
+                label: stop.stop_name,
+                agency: agency
+              }
+            })
+            : []
           return stopOptions
         })
         .catch((error) => {

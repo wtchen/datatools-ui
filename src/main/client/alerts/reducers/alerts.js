@@ -1,5 +1,6 @@
 import modes from '../modes'
 import update from 'react-addons-update'
+import { getFeedId } from '../../common/util/modules'
 
 const alerts = (state = {
   isFetching: false,
@@ -91,7 +92,7 @@ const alerts = (state = {
             }
 
             if(ent.AgencyId !== null) {
-              let feed = project.feedSources.find(f => f.externalProperties.MTC.AgencyId === ent.AgencyId)
+              let feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
               entity.agency = feed
               entity.type = 'AGENCY'
             }

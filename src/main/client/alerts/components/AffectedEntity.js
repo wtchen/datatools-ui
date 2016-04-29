@@ -6,7 +6,7 @@ import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import modes from '../modes'
 
-import { getFeed } from '../../common/util/modules'
+import { getFeed, getFeedId } from '../../common/util/modules'
 
 export default class AffectedEntity extends React.Component {
   constructor (props) {
@@ -196,14 +196,14 @@ class AgencySelector extends React.Component {
       <div>
         <Input
           type='select'
-          value={this.props.entity.agency && this.props.entity.agency.externalProperties.MTC.AgencyId}
+          value={this.props.entity.agency && getFeedId(this.props.entity.agency)}
           onChange={(evt) => {
             this.props.entityUpdated(this.props.entity, 'AGENCY', getFeed(this.props.feeds, evt.target.value))
           }}
           //value={this.props.entity.type}
         >
           {this.props.feeds.map((feed) => {
-            return <option key={feed.externalProperties.MTC.AgencyId} value={feed.externalProperties.MTC.AgencyId}>{feed.name}</option>
+            return <option key={getFeedId(feed)} value={getFeedId(feed)}>{feed.name}</option>
           })}
         </Input>
       </div>

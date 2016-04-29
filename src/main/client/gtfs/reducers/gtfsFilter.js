@@ -6,6 +6,7 @@ const gtfsFilter = (state = {
   loadedFeeds: [],
   permissionFilter: 'view-feed'
 }, action) => {
+  console.log(action)
   let activeFeeds
   switch (action.type) {
     case 'SET_GTFS_PERMISSION_FILTER':

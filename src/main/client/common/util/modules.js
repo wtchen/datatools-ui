@@ -1,11 +1,13 @@
 export const getFeed = (feeds, id) => {
-  const feed = feeds ? feeds.find(f => f.externalProperties.MTC.AgencyId === id) : null
+  // console.log(feeds, id)
+  const useMtc = DT_CONFIG.modules.gtfsapi.use_extension === 'mtc'
+  const feed = feeds ? feeds.find(f => useMtc ? f.externalProperties.MTC.AgencyId === id : f.id === id) : null
   return feed
 }
 
 export const getFeedId = (feed) => {
-  // console.log(feed)
-  return feed.externalProperties.MTC.AgencyId
+  const useMtc = DT_CONFIG.modules.gtfsapi.use_extension === 'mtc'
+  return !feed ? null : useMtc ? feed.externalProperties.MTC.AgencyId : feed.id
 }
 
 export const getAlertsUrl = () => {

@@ -1,4 +1,5 @@
 import update from 'react-addons-update'
+import { getFeedId } from '../../common/util/modules'
 
 const signs = (state = {
   isFetching: false,
@@ -132,7 +133,7 @@ const signs = (state = {
           }
           // else, construct new object for entity
           else {
-            let feed = project.feedSources.find(f => f.externalProperties.MTC.AgencyId === ent.AgencyId)
+            let feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
             entities[ent.AgencyId + ent.StopId] = {
               id: ent.AgencyId + ent.StopId
             }

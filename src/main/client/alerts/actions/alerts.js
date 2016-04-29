@@ -1,7 +1,7 @@
 import { push } from 'react-router-redux'
 import { browserHistory } from 'react-router'
 
-import { getAlertsUrl } from '../../common/util/modules'
+import { getAlertsUrl, getFeedId } from '../../common/util/modules'
 import moment from 'moment'
 
 // alerts management action
@@ -223,8 +223,9 @@ export function editAlert(alert) {
 
 export function fetchEntity(entity, activeProject) {
   console.log()
-  const feed = activeProject.feedSources.find(f => f.externalProperties.MTC.AgencyId === entity.entity.AgencyId)
-  const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feed.externalProperties.MTC.AgencyId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feed.externalProperties.MTC.AgencyId}`
+  const feed = activeProject.feedSources.find(f => getFeedId(f) === entity.entity.AgencyId)
+  const feedId = getFeedId(feed)
+  const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
   return fetch(url)
   .then((response) => {
     return response.json()
@@ -255,7 +256,7 @@ export function saveAlert(alert) {
         return {
           Id: entity.id < 0 ? null : entity.id,
           AlertId: alert.id,
-          AgencyId: entity.agency ? entity.agency.externalProperties.MTC.AgencyId : null,
+          AgencyId: entity.agency ? getFeedId(entity.agency) : null,
           RouteId: entity.route ? entity.route.route_id : null,
           RouteType: entity.mode ? entity.mode.gtfsType : null,
           StopId: entity.stop ? entity.stop.stop_id : null,
