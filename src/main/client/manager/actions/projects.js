@@ -26,7 +26,9 @@ export function setActiveProject (project) {
   return function (dispatch, getState) {
     dispatch(settingActiveProject(project))
     dispatch(fetchProjectFeeds(project.id))
-    dispatch(updateGtfsFilter(getState().projects.active, getState().user))
+    .then(() => {
+      dispatch(updateGtfsFilter(getState().projects.active, getState().user))
+    })
   }
 }
 
