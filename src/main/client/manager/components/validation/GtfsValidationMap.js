@@ -2,8 +2,10 @@ import React from 'react'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import { Map, Marker, Popup, TileLayer, Rectangle, FeatureGroup } from 'react-leaflet'
+import Dock from 'react-dock'
 
 import ManagerPage  from '../../../common/components/ManagerPage'
+import GtfsValidationSummary from './GtfsValidationSummary'
 
 export default class GtfsValidationMap extends React.Component {
 
@@ -33,6 +35,9 @@ export default class GtfsValidationMap extends React.Component {
     return (
       <ManagerPage ref='page'>
         <ValidationMap
+          version={this.props.version}
+        />
+        <ValidationPanel
           version={this.props.version}
         />
       </ManagerPage>
@@ -104,6 +109,52 @@ class ValidationMap extends React.Component {
         />
         {stopIssues}
       </Map>
+    )
+  }
+}
+
+class ValidationPanel extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isVisible: true
+    }
+  }
+  render () {
+    const version = this.props.version
+    const validation = this.props.version.validationResult
+    console.log(validation)
+    const dockStyle = {
+      marginLeft: '20px',
+      marginRight: '20px',
+    }
+    const panelStyle = {
+      position: 'absolute',
+      paddingTop: '50px',
+      top: 0,
+      right: 0,
+      zIndex: 5000,
+      height: '100%',
+      width: '33%',
+      backgroundColor: 'white',
+    }
+    return (
+      <Dock
+        position='right'
+        dockStyle={dockStyle}
+        dimMode='none'
+        fluid
+        isVisible
+      >
+        {/* you can pass a function as a child here */}
+        <div onClick={() => this.setState({ isVisible: !this.state.isVisible })}>X</div>
+        <h2>{version.feedSource.name} Validation Results</h2>
+        <GtfsValidationSummary
+          validationResult={version.validationResult}
+          version={version}
+          validationResultRequested={() => { this.props.validationResultRequested(version) }}
+        />
+      </Dock>
     )
   }
 }
