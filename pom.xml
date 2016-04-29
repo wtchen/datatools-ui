@@ -172,6 +172,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.conveyal</groupId>
+            <artifactId>r5</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.10.66</version>
