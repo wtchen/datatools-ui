@@ -5,6 +5,7 @@ import GtfsValidationMap from '../../components/validation/GtfsValidationMap'
 
 import {
   fetchFeedSource,
+  fetchFeedVersionIsochrones,
   fetchFeedSourceAndProject,
   updateFeedSource,
   runFetchFeed,
@@ -98,37 +99,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         // dispatch(fetchValidationResult(version.feedSource, version))
       }
     },
-    feedSourcePropertyChanged: (feedSource, propName, newValue) => {
-      dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
+    fetchIsochrones: (feedVersion) => {
+      dispatch(fetchFeedVersionIsochrones(feedVersion))
     },
-    externalPropertyChanged: (feedSource, resourceType, propName, newValue) => {
-      dispatch(updateExternalFeedResource(feedSource, resourceType, { [propName]: newValue } ))
-    },
-    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
-    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
-    updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
-    downloadFeedClicked: (feedVersion) => { dispatch(downloadFeedViaToken(feedVersion)) },
-    deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
-      dispatch(deleteFeedVersion(feedSource, feedVersion))
-    },
-    validationResultRequested: (feedSource, feedVersion) => {
-      dispatch(fetchValidationResult(feedSource, feedVersion))
-    },
-    notesRequestedForFeedSource: (feedSource) => {
-      dispatch(fetchNotesForFeedSource(feedSource))
-    },
-    newNotePostedForFeedSource: (feedSource, note) => {
-      dispatch(postNoteForFeedSource(feedSource, note))
-    },
-    notesRequestedForVersion: (feedVersion) => {
-      dispatch(fetchNotesForFeedVersion(feedVersion))
-    },
-    newNotePostedForVersion: (version, note) => {
-      dispatch(postNoteForFeedVersion(version, note))
-    },
-    gtfsPlusDataRequested: () => {
-      dispatch(downloadGtfsPlusFeed(version.id))
-    }
   }
 }
 

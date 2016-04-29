@@ -39,6 +39,7 @@ export default class GtfsValidationMap extends React.Component {
         />
         <ValidationPanel
           version={this.props.version}
+          fetchIsochrones={this.props.fetchIsochrones}
         />
       </ManagerPage>
     )
@@ -122,6 +123,7 @@ class ValidationPanel extends React.Component {
   }
   render () {
     const version = this.props.version
+    this.props.fetchIsochrones(version)
     const validation = this.props.version.validationResult
     console.log(validation)
     const dockStyle = {
@@ -149,6 +151,17 @@ class ValidationPanel extends React.Component {
         {/* you can pass a function as a child here */}
         <div onClick={() => this.setState({ isVisible: !this.state.isVisible })}>X</div>
         <h2>{version.feedSource.name} Validation Results</h2>
+        <Button
+          bsStyle='default'
+          href='#'
+          onclick={(evt) => {
+            evt.preventDefault()
+            console.log(evt)
+            this.props.fetchIsochrones(version)
+          }}
+        >
+          Isochrones
+        </Button>
         <GtfsValidationSummary
           validationResult={version.validationResult}
           version={version}

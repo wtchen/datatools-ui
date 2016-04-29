@@ -30,6 +30,19 @@ export function fetchProjectFeeds (projectId) {
   }
 }
 
+export function fetchFeedVersionIsochrones (feedVersion) {
+  return function (dispatch, getState) {
+    // dispatch(requestingFeedSources())
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(isochrones => {
+        console.log('received isochrones ', isochrones)
+        return isochrones
+      })
+  }
+}
+
 function requestingPublicFeeds () {
   return {
     type: 'REQUESTING_PUBLIC_FEEDS'
