@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap'
 import { Map, Marker, Popup, TileLayer, GeoJson } from 'react-leaflet'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
+import { getFeedsBounds } from '../../common/util/geo'
 
 export default class GtfsMap extends React.Component {
 
@@ -19,7 +20,7 @@ export default class GtfsMap extends React.Component {
       searchFocus: this.props.searchFocus || false,
       patterns: [],
       message: '',
-      position: [37.779871, -122.426966],
+      bounds: this.props.bounds || [[70, 130], [-70, -130]],
       map: {}
     }
   }
@@ -47,6 +48,10 @@ export default class GtfsMap extends React.Component {
     // WebkitTransition: 'all', // note the capital 'W' here
     // msTransition: 'all' // 'ms' is the only lowercase vendor prefix
     }
+    let bounds = getFeedsBounds(this.props.feeds)
+    console.log(bounds)
+    bounds = bounds && bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
+
     const layerAddHandler = (e) => {
       if (this.props.stops.length === 1 && typeof e.layer !== 'undefined' && typeof e.layer._popup !== 'undefined' && this.state.searchFocus){
         e.layer.openPopup()
@@ -64,8 +69,7 @@ export default class GtfsMap extends React.Component {
       <Map
         ref='map'
         style={mapStyle}
-        center={this.props.position || this.state.position}
-        zoom={13}
+        bounds={bounds}
         onLeafletZoomend={() => this.refreshGtfsElements()}
         onLeafletMoveend={() => this.refreshGtfsElements()}
         onLeafletLayeradd={layerAddHandler}
@@ -165,7 +169,7 @@ export default class GtfsMap extends React.Component {
 
   refreshGtfsElements (feeds) {
     const feedIds = (feeds || this.props.feeds).map(getFeedId)
-    const zoomLevel = this.refs['map'].getLeafletElement().getZoom()
+    const zoomLevel = this.refs['map'] ? this.refs['map'].getLeafletElement().getZoom() : 13
     if (feedIds.length === 0 || zoomLevel <= 13) {
       this.setState({ stops: [], patterns: [], routes: [] })
       return

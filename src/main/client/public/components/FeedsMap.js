@@ -1,6 +1,8 @@
 import React from 'react'
 import { Map, Marker, Popup, TileLayer, FeatureGroup } from 'react-leaflet'
 import { Button } from 'react-bootstrap'
+
+import { getFeedsBounds } from '../../common/util/geo'
 // import { MarkerCluster } from './MarkerCluster2'
 
 export default class FeedsMap extends React.Component {
@@ -34,25 +36,6 @@ export default class FeedsMap extends React.Component {
       // return averaged location
       return [(latNorth + latSouth) / 2, (lngWest + lngEast) / 2]
     }
-    const getFeedBounds = (feeds) => {
-      let feedsWithBounds = feeds.filter(feed => feed.latestValidation && feed.latestValidation.bounds)
-      if (feedsWithBounds.length === 1) {
-        return feedsWithBounds[0].latestValidation.bounds
-      }
-      else if (feedsWithBounds.length === 0) {
-        return null
-      }
-      else {
-        return feedsWithBounds.reduce((previousFeed, currentFeed) => {
-            return {
-              east: currentFeed.latestValidation.bounds.east > previousFeed.latestValidation.bounds.east ? currentFeed.latestValidation.bounds.east : previousFeed.latestValidation.bounds.east,
-              west: currentFeed.latestValidation.bounds.west < previousFeed.latestValidation.bounds.west ? currentFeed.latestValidation.bounds.west : previousFeed.latestValidation.bounds.west,
-              north: currentFeed.latestValidation.bounds.north > previousFeed.latestValidation.bounds.north ? currentFeed.latestValidation.bounds.north : previousFeed.latestValidation.bounds.north,
-              south: currentFeed.latestValidation.bounds.south < previousFeed.latestValidation.bounds.south ? currentFeed.latestValidation.bounds.south : previousFeed.latestValidation.bounds.south
-            }
-        })
-      }
-    }
     console.log(feeds.filter(feed => feed.latestValidation))
     let position = [this.state.lat, this.state.lng];
     if (feeds.length === 0) {
@@ -71,7 +54,7 @@ export default class FeedsMap extends React.Component {
       )
     }
 
-    let bounds = getFeedBounds(feeds)
+    let bounds = getFeedsBounds(feeds)
 
     let markers = []
     // let markerCluster =
