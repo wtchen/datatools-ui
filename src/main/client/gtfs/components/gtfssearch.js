@@ -34,8 +34,7 @@ export default class GtfsSearch extends React.Component {
   }
 
   renderOption (option) {
-    console.log(option)
-    return <span style={{ color: 'black' }}>{option.stop ? <Glyphicon glyph="map-marker" /> : <Glyphicon glyph="option-horizontal" />} {option.label} <Label>{option.agency.name}</Label> {option.link}</span>
+    return <span style={{ color: 'black' }}>{option.stop ? <Glyphicon glyph="map-marker" /> : <Glyphicon glyph="option-horizontal" />} {option.label} <Label>{option.agency ? option.agency.name : ''}</Label> {option.link}</span>
   }
   onChange (value) {
     this.setState({value})
@@ -45,6 +44,8 @@ export default class GtfsSearch extends React.Component {
     const getStops = (input) => {
       const feedIds = this.props.feeds.map(getFeedId)
       // console.log(feedIds)
+      if (!feedIds.length) return []
+
       const limit = this.props.limit ? '&limit=' + this.props.limit : ''
       const nameQuery = input ? '&name=' + input : ''
       const url = this.props.filterByRoute ? `/api/manager/stops?route=${this.props.filterByRoute.route_id}&feed=${feedIds.toString()}${limit}` : `/api/manager/stops?feed=${feedIds.toString()}${nameQuery}${limit}`
@@ -73,6 +74,10 @@ export default class GtfsSearch extends React.Component {
     }
     const getRoutes = (input) => {
       const feedIds = this.props.feeds.map(getFeedId)
+      console.log(feedIds)
+
+      if (!feedIds.length) return []
+
       const getRouteName = (route) => {
         let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
           route.route_long_name ? route.route_long_name :
