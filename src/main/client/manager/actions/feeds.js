@@ -30,10 +30,10 @@ export function fetchProjectFeeds (projectId) {
   }
 }
 
-export function fetchFeedVersionIsochrones (feedVersion) {
+export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon) {
   return function (dispatch, getState) {
     // dispatch(requestingFeedSources())
-    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones`
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(isochrones => {

@@ -35,6 +35,7 @@ export default class GtfsValidationMap extends React.Component {
     return (
       <ManagerPage ref='page'>
         <ValidationMap
+          fetchIsochrones={this.props.fetchIsochrones}
           version={this.props.version}
         />
         <ValidationPanel
@@ -52,6 +53,9 @@ class ValidationMap extends React.Component {
     const validation = this.props.version.validationResult
     console.log(validation)
     const bounds = [[validation.bounds.north, validation.bounds.east], [validation.bounds.south, validation.bounds.west]]
+
+    this.props.fetchIsochrones(this.props.version, 33.756381, -84.388651, 33.7563, -84.3886) //, 33.881842, -84.465262)
+
     const stopIssues = validation.stops.invalidValues ? validation.stops.invalidValues.map(stop => {
       if (!stop.problemData) return null
 
@@ -123,7 +127,7 @@ class ValidationPanel extends React.Component {
   }
   render () {
     const version = this.props.version
-    this.props.fetchIsochrones(version)
+
     const validation = this.props.version.validationResult
     console.log(validation)
     const dockStyle = {
@@ -157,7 +161,7 @@ class ValidationPanel extends React.Component {
           onclick={(evt) => {
             evt.preventDefault()
             console.log(evt)
-            this.props.fetchIsochrones(version)
+            // this.props.fetchIsochrones(version)
           }}
         >
           Isochrones
