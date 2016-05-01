@@ -32,7 +32,7 @@ export default class GtfsMap extends React.Component {
     if (nextProps.feeds.length !== this.props.feeds.length && this.refs.map) {
       this.refreshGtfsElements(nextProps.feeds)
     }
-    
+
     // handle stop: panning to
     if (nextProps && nextProps.position !== this.props.position) {
       this.refs.map.getLeafletElement().panTo(nextProps.position)
@@ -151,7 +151,6 @@ export default class GtfsMap extends React.Component {
         : null
       }
         {this.props.patterns ? this.props.patterns.map((pattern, index) => {
-          console.log(pattern.geometry.coordinates.length)
           if (pattern) {
             const route = pattern.associatedRoutes[0]
             const routeName = route.route_short_name !== null ? route.route_short_name : route.route_long_name
