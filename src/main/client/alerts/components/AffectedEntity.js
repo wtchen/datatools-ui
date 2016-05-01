@@ -309,7 +309,7 @@ class StopSelector extends React.Component {
           entities={['stops']}
           clearable={this.props.clearable}
           onChange={(evt) => {
-            if (typeof evt !== 'undefined' && evt !== null)
+            if (evt)
               this.props.entityUpdated(this.props.entity, 'STOP', evt.stop, evt.agency)
             else if (evt == null)
               this.props.entityUpdated(this.props.entity, 'STOP', null, null)
