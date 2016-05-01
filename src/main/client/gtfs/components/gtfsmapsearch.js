@@ -57,8 +57,16 @@ export default class GtfsMapSearch extends React.Component {
         return Promise.all([getPatterns(input)]).then((results) => {
           const patterns = results[0]
           console.log('patterns for route ' + input.route.route_id, patterns)
-          this.setState(Object.assign({}, this.state, { routes: null, patterns: null, stops: null, searchFocus: true }))
-          this.setState(Object.assign({}, this.state, { routes: [input.route], patterns: [patterns], stops: null, searchFocus: true }))
+
+          // hack to clear out patterns to ensure map GeoJson is cleared
+          if (this.state.patterns) {
+            this.setState(Object.assign({}, this.state, { routes: null, patterns: null, stops: null, searchFocus: true }))
+            this.setState(Object.assign({}, this.state, { routes: [input.route], patterns: [patterns], stops: null, searchFocus: true }))
+          }
+          else {
+            this.setState(Object.assign({}, this.state, { routes: [input.route], patterns: [patterns], stops: null, searchFocus: true }))
+          }
+
           return patterns
         })
 
