@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 
 import fetch from 'isomorphic-fetch'
 
-import { Panel, Grid, Row, Col, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
 import { PureComponent, shallowEqual } from 'react-pure-render'
 
@@ -19,6 +19,7 @@ export default class GtfsMapSearch extends React.Component {
       patterns: [],
       position: null,
       message: '',
+      searching: ['stops', 'routes'],
       map: {}
     }
   }
@@ -81,8 +82,20 @@ export default class GtfsMapSearch extends React.Component {
         limit={100}
         placeholder={this.props.placeholder}
         onChange={handleSelection}
-        entities={['stops', 'routes']}
+        entities={this.state.searching}
       />
+      <Button
+        bsSize='small'
+        style={{marginTop: '5px'}}
+        onClick={() => {
+          this.state.searching.indexOf('routes') > -1 && this.state.searching.indexOf('stops') > -1
+          ? this.setState({searching: ['routes']})
+          : this.state.searching.indexOf('stops') === -1
+          ? this.setState({searching: ['stops']}) : this.setState({searching: ['stops', 'routes']})
+        }}
+      >
+        Searching {this.state.searching.join(' and ')}
+      </Button>
       <GtfsMap
         feeds={this.props.feeds}
         position={this.state.position}
