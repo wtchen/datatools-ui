@@ -85,8 +85,8 @@ export default class GtfsMapSearch extends React.Component {
         entities={this.state.searching}
       />
       <Button
-        bsSize='small'
-        style={{marginTop: '5px'}}
+        bsSize='xsmall'
+        style={{marginTop: '5px', marginBottom: '5px'}}
         onClick={() => {
           this.state.searching.indexOf('routes') > -1 && this.state.searching.indexOf('stops') > -1
           ? this.setState({searching: ['routes']})

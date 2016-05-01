@@ -62,7 +62,6 @@ export default class GtfsMap extends React.Component {
 
     return (
     <div>
-      <div>&nbsp;</div>
       <Map
         ref='map'
         style={mapStyle}
@@ -141,7 +140,11 @@ export default class GtfsMap extends React.Component {
                       <li><strong>ID:</strong> {route.route_id}</li>
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, route.feed_id).name}</li>
                     </ul>
-                    <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id))}>{this.props.popupAction} {route.route_id}</Button>
+                    {this.props.onRouteClick
+                      ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id))}>{this.props.popupAction} {route.route_id}</Button>
+                      : <p>[Must add stops first]</p>
+                    }
+
                   </div>
                 </Popup>
               </GeoJson>
@@ -162,32 +165,12 @@ export default class GtfsMap extends React.Component {
                     <li><strong>ID:</strong> {route.route_id}</li>
                     <li><strong>Agency:</strong> {getFeed(this.props.feeds, route.feed_id).name}</li>
                   </ul>
-                  <Button href='#' onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id))}>{this.props.popupAction} {route.route_id}</Button>
+                  {this.props.onRouteClick
+                    ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id))}>{this.props.popupAction} {route.route_id}</Button>
+                    : <p>[Must add stops first]</p>
+                  }
                 </div>
               </Popup>
-            )
-            const geojson = (
-              <GeoJson
-                color={route.route_color !== null ? '#' + route.route_color : 'blue' }
-                data={{type: 'LineString', coordinates: pattern.geometry.coordinates}}
-                onEachFeature={(feature, layer) => {
-                  layer.feature.properties.route = route
-                  layer.feature.properties.patternId = pattern.pattern_id
-                  // layer.feature.geometry.coordinates.push(pattern.geometry.coordinates)
-                }}
-                properties={route}
-              >
-                {popup}
-              </GeoJson>
-            )
-            const polyline = (
-              <Polyline
-                color={route.route_color !== null ? '#' + route.route_color : 'blue' }
-                style={{color: 'blue'}}
-                positions={pattern.geometry.coordinates}
-              >
-                {popup}
-              </Polyline>
             )
             return (
               <GeoJson

@@ -210,7 +210,6 @@ export default class SignEditor extends React.Component {
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.editorStopClick}
-                onRouteClick={this.props.editorRouteClick}
                 popupAction='Add'
               />
             </Col>

@@ -45,7 +45,6 @@ export default class SignsViewer extends React.Component {
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.onStopClick}
-                onRouteClick={this.props.onRouteClick}
                 popupAction='Create Sign for'
               />
             </Col>
