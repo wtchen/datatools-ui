@@ -27,10 +27,19 @@ export default class GtfsMapSearch extends React.Component {
   componentDidMount() {
     // this.fetchUsers()
     console.log(this.props)
-
   }
 
   render() {
+    let zoomMessage = 'Zoom in to view ' + this.state.searching.join(' and ')
+    if (this.refs.map && this.refs.map.refs.map) {
+      let mapZoom = this.refs.map.refs.map.getLeafletElement().getZoom()
+      zoomMessage = mapZoom <= 13 ? zoomMessage : ''
+    }
+    console.log(zoomMessage)
+    const onZoomChange = (e) => {
+      let mapZoom = e.target._zoom
+      zoomMessage = mapZoom <= 13 ? zoomMessage : ''
+    }
     const {attribution, centerCoordinates, geojson, markers, transitive, url, zoom} = this.props
     const getPatterns = (input) => {
       return fetch(`/api/manager/patterns?route=${input.route.route_id}&feed=${input.route.feed_id}`)
@@ -58,19 +67,8 @@ export default class GtfsMapSearch extends React.Component {
         return Promise.all([getPatterns(input)]).then((results) => {
           const patterns = results[0]
           console.log('patterns for route ' + input.route.route_id, patterns)
-
-          // hack to clear out patterns to ensure map GeoJson is cleared
-          if (this.state.patterns) {
-            this.setState(Object.assign({}, this.state, { routes: null, patterns: null, stops: null, searchFocus: true }))
-            this.setState(Object.assign({}, this.state, { routes: [input.route], patterns: [patterns], stops: null, searchFocus: true }))
-          }
-          else {
-            this.setState(Object.assign({}, this.state, { routes: [input.route], patterns: [patterns], stops: null, searchFocus: true }))
-          }
-
-          return patterns
+          this.setState(Object.assign({}, this.state, { routes: [input.route], patterns: [patterns], stops: null, searchFocus: true }))
         })
-
       }
     }
 
@@ -84,26 +82,34 @@ export default class GtfsMapSearch extends React.Component {
         onChange={handleSelection}
         entities={this.state.searching}
       />
-      <Button
-        bsSize='xsmall'
-        style={{marginTop: '5px', marginBottom: '5px'}}
-        onClick={() => {
-          this.state.searching.indexOf('routes') > -1 && this.state.searching.indexOf('stops') > -1
-          ? this.setState({searching: ['routes']})
-          : this.state.searching.indexOf('stops') === -1
-          ? this.setState({searching: ['stops']}) : this.setState({searching: ['stops', 'routes']})
-        }}
-      >
-        Searching {this.state.searching.join(' and ')}
-      </Button>
+      <ul style={{marginBottom: 0}} className='list-inline'>
+        <li style={{width:'50%'}} className='text-left'>
+          <Button
+            bsSize='xsmall'
+            style={{marginTop: '5px', marginBottom: '5px'}}
+            onClick={() => {
+              this.state.searching.indexOf('routes') > -1 && this.state.searching.indexOf('stops') > -1
+              ? this.setState({searching: ['routes']})
+              : this.state.searching.indexOf('stops') === -1
+              ? this.setState({searching: ['stops']}) : this.setState({searching: ['stops', 'routes']})
+            }}
+          >
+            Searching {this.state.searching.join(' and ')}
+          </Button>
+        </li>
+        <li style={{width:'50%'}} className='text-right'>{zoomMessage}</li>
+      </ul>
       <GtfsMap
+        ref='map'
         feeds={this.props.feeds}
         position={this.state.position}
         onStopClick={this.props.onStopClick}
         onRouteClick={this.props.onRouteClick}
+        onZoomChange={onZoomChange}
         stops={this.state.stops}
         searchFocus={this.state.searchFocus}
         patterns={this.state.patterns}
+        entities={this.state.searching}
         popupAction={this.props.popupAction}
       />
     </div>

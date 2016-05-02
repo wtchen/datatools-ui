@@ -33,6 +33,10 @@ export default class GtfsMap extends React.Component {
       this.refreshGtfsElements(nextProps.feeds)
     }
 
+    if (nextProps.entities !== this.props.entities && this.refs.map) {
+      this.refreshGtfsElements(nextProps.feeds, nextProps.entities)
+    }
+
     // handle stop: panning to
     if (nextProps && nextProps.position !== this.props.position) {
       this.refs.map.getLeafletElement().panTo(nextProps.position)
@@ -66,12 +70,18 @@ export default class GtfsMap extends React.Component {
         ref='map'
         style={mapStyle}
         bounds={bounds}
-        onLeafletZoomend={() => this.refs.map && this.refreshGtfsElements()}
+        onLeafletZoomend={(e) => {
+          this.props.onZoomChange(e)
+          this.refs.map && this.refreshGtfsElements()
+        }}
         onLeafletMoveend={() => this.refs.map && this.refreshGtfsElements()}
         onLeafletLayeradd={layerAddHandler}
         className='Gtfs-Map'
         >
-        <TileLayer url='http://{s}.tile.osm.org/{z}/{x}/{y}.png' attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors' />
+        <TileLayer
+          url='http://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+          attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
+        />
         {this.props.stops ? this.props.stops.map((stop, index) => {
           if (stop) {
             return (
@@ -130,6 +140,7 @@ export default class GtfsMap extends React.Component {
             const routeName = route.route_short_name !== null ? route.route_short_name : route.route_long_name
             return (
               <GeoJson
+                key={pattern.pattern_id}
                 color={route.route_color !== null ? '#' + route.route_color : 'blue' }
                 data={{type: 'LineString', coordinates: pattern.geometry.coordinates}}
               >
@@ -175,6 +186,7 @@ export default class GtfsMap extends React.Component {
             return (
               <GeoJson
                 color={route.route_color !== null ? '#' + route.route_color : 'blue' }
+                key={pattern.pattern_id}
                 data={{type: 'LineString', coordinates: pattern.geometry.coordinates}}
                 onEachFeature={(feature, layer) => {
                   layer.feature.properties.route = route
@@ -196,8 +208,9 @@ export default class GtfsMap extends React.Component {
     )
   }
 
-  refreshGtfsElements (feeds) {
+  refreshGtfsElements (feeds, entities) {
     const feedIds = (feeds || this.props.feeds).map(getFeedId)
+    const ents = (entities || this.props.entities || ['routes', 'stops'])
     const zoomLevel = this.refs.map.getLeafletElement().getZoom()
     if (feedIds.length === 0 || zoomLevel <= 13) {
       this.setState({ stops: [], patterns: [], routes: [] })
@@ -220,9 +233,24 @@ export default class GtfsMap extends React.Component {
         return response.json()
       })
 
-    Promise.all([getStops, getRoutes]).then((results) => {
-      const stops = results[0]
-      const patterns = results[1]
+
+    let entitySearches = []
+    if (ents.indexOf('stops') > -1){
+      entitySearches.push(getStops)
+    }
+    else {
+      entitySearches.push(null)
+    }
+    if (ents.indexOf('routes') > -1){
+      entitySearches.push(getRoutes)
+    }
+    else {
+      entitySearches.push(null)
+    }
+    Promise.all(entitySearches).then((results) => {
+      console.log(results)
+      const stops = results[0] ? results[0] : []
+      const patterns = results[1] ? results[1] : []
       const routes = patterns.map(p => p.associatedRoutes[0])
       this.setState({ stops, patterns, routes })
     })
