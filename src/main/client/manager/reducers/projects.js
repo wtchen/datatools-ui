@@ -158,7 +158,25 @@ const projects = (state = {
           }
         }
       )
-
+    case 'RECEIVE_FEEDVERSION_ISOCHRONES':
+      projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
+      versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {feedSources:
+              {[sourceIndex]:
+                {feedVersions:
+                  {[versionIndex]:
+                    {$merge: {isochrones: action.isochrones}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      )
     case 'RECEIVE_NOTES_FOR_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)

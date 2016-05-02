@@ -1,7 +1,7 @@
 import React from 'react'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
-import { Map, Marker, Popup, TileLayer, Rectangle, FeatureGroup } from 'react-leaflet'
+import { Map, Marker, Popup, TileLayer, Rectangle, GeoJson, FeatureGroup } from 'react-leaflet'
 import Dock from 'react-dock'
 
 import ManagerPage  from '../../../common/components/ManagerPage'
@@ -11,12 +11,20 @@ export default class GtfsValidationMap extends React.Component {
 
   constructor (props) {
     super(props)
+    this.state = {
+      mapHeight: '500px'
+    }
   }
 
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
+  componentDidMount () {
+    window.addEventListener('resize', this.handleResize)
+  }
+  handleResize () {
+    console.log(window.innerHeight)
+  }
   render () {
     console.log(this.props.version)
 
@@ -32,30 +40,92 @@ export default class GtfsValidationMap extends React.Component {
         </ManagerPage>
       )
     }
-    return (
+    const bs = (
       <ManagerPage ref='page'>
-        <ValidationMap
-          fetchIsochrones={this.props.fetchIsochrones}
-          version={this.props.version}
-        />
-        <ValidationPanel
-          version={this.props.version}
-          fetchIsochrones={this.props.fetchIsochrones}
-        />
+        <Grid
+          style={{margin: 0, padding: 0}}
+        >
+          <Row
+            style={{margin: 0, padding: 0}}
+          >
+            <Col
+              md={9}
+              style={{margin: 0, padding: 0}}
+            >
+            <ValidationMap
+              fetchIsochrones={this.props.fetchIsochrones}
+              version={this.props.version}
+            />
+            </Col>
+            <Col
+              md={3}
+              style={{margin: 0, padding: 0}}
+            >
+            <ValidationPanel
+              version={this.props.version}
+              fetchIsochrones={this.props.fetchIsochrones}
+            />
+            </Col>
+          </Row>
+        </Grid>
+      </ManagerPage>
+    )
+    const nonbs = (
+      <ManagerPage ref='page'>
+
+            <ValidationMap
+              fetchIsochrones={this.props.fetchIsochrones}
+              version={this.props.version}
+            />
+
+            <ValidationPanel
+              version={this.props.version}
+              fetchIsochrones={this.props.fetchIsochrones}
+            />
+
+      </ManagerPage>
+    )
+    return (
+      <ManagerPage ref='page' noMargin={true}>
+        <Grid fluid style={{margin: 0, padding: 0}}>
+            <Col mdOffset={8} md={4} xs={12}>
+              <ValidationPanel
+                version={this.props.version}
+                fetchIsochrones={this.props.fetchIsochrones}
+              />
+            </Col>
+            <Col md={8} style={{margin: 0, padding: 0}}>
+              <ValidationMap
+                fetchIsochrones={this.props.fetchIsochrones}
+                version={this.props.version}
+                height={this.state.mapHeight}
+              />
+            </Col>
+        </Grid>
       </ManagerPage>
     )
   }
 }
 
 class ValidationMap extends React.Component {
-
+  constructor (props) {
+    super(props)
+  }
   render () {
-    const validation = this.props.version.validationResult
+    const version = this.props.version
+    const validation = version.validationResult
     console.log(validation)
     const bounds = [[validation.bounds.north, validation.bounds.east], [validation.bounds.south, validation.bounds.west]]
 
-    this.props.fetchIsochrones(this.props.version, 33.756381, -84.388651, 33.7563, -84.3886) //, 33.881842, -84.465262)
-
+    const getIsochrones = (e) => {
+      console.log(e)
+      const center = this.refs.validationMap.getLeafletElement().getCenter()
+      console.log(center)
+      this.props.fetchIsochrones(this.props.version, e.latlng.lat, e.latlng.lng, center.lat, center.lng)
+    }
+    const getIsochroneColor = (time) => {
+      return time ? 'blue' : 'red'
+    }
     const stopIssues = validation.stops.invalidValues ? validation.stops.invalidValues.map(stop => {
       if (!stop.problemData) return null
 
@@ -89,16 +159,19 @@ class ValidationMap extends React.Component {
       )
     }) : null
     const mapStyle = {
-      position: 'absolute',
-      top: '50px',
-      bottom: 0,
-      width: '100%'
+      // position: 'absolute',
+      // top: '50px',
+      // bottom: 0,
+      height: '620px',
+      // height: '88%',
     }
     return (
       <Map
         ref='validationMap'
         style={mapStyle}
         bounds={bounds}
+        onLeafletClick={getIsochrones}
+        onLeafletLayeradd={(e) => console.log(e)}
         scrollWheelZoom={true}
       >
         <TileLayer
@@ -113,6 +186,30 @@ class ValidationMap extends React.Component {
           fillOpacity={0}
         />
         {stopIssues}
+        {
+          version.isochrones ? version.isochrones.features.map(iso => {
+            if (iso.properties.time !== 60*60) return null
+            return (
+              <GeoJson
+                key={Math.random()}
+                data={{type: 'MultiPolygon', coordinates: iso.geometry.coordinates}}
+                color={'blue'}
+                style={(feature) => {
+                  console.log(feature)
+                  return {
+                    color: getIsochroneColor(iso.properties.time),
+                  }
+                }}
+                onEachFeature={(feature, layer) => {
+                  // feature.properties.time = iso.properties.time
+                }}
+              >
+
+              </GeoJson>
+            )
+          })
+          : null
+        }
       </Map>
     )
   }
@@ -136,32 +233,22 @@ class ValidationPanel extends React.Component {
     }
     const panelStyle = {
       position: 'absolute',
-      paddingTop: '50px',
-      top: 0,
       right: 0,
-      zIndex: 5000,
-      height: '100%',
-      width: '33%',
+      // height: '88%',
+      // width: '33%',
       backgroundColor: 'white',
     }
     return (
-      <Dock
-        position='right'
-        dockStyle={dockStyle}
-        dimMode='none'
-        fluid
-        isVisible
+      <div
+        style={panelStyle}
+        className='pull-right'
       >
-        {/* you can pass a function as a child here */}
-        <div onClick={() => this.setState({ isVisible: !this.state.isVisible })}>X</div>
         <h2>{version.feedSource.name} Validation Results</h2>
         <Button
           bsStyle='default'
           href='#'
-          onclick={(evt) => {
-            evt.preventDefault()
-            console.log(evt)
-            // this.props.fetchIsochrones(version)
+          onClick={(evt) => {
+            this.props.fetchIsochrones(version, 33.756381, -84.388651, 33.7563, -84.3886)
           }}
         >
           Isochrones
@@ -171,7 +258,7 @@ class ValidationPanel extends React.Component {
           version={version}
           validationResultRequested={() => { this.props.validationResultRequested(version) }}
         />
-      </Dock>
+      </div>
     )
   }
 }
