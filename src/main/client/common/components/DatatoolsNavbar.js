@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
-import { browserHistory } from 'react-router'
+import { browserHistory, Link } from 'react-router'
 
 export default class DatatoolsNavbar extends Component {
 
@@ -61,48 +61,59 @@ export default class DatatoolsNavbar extends Component {
         </NavDropdown>
       )
     }
+    const navBarStyle = this.props.noMargin ? {marginBottom: 0} : {}
 
     return (
-      <Navbar>
+      <Navbar
+        style={navBarStyle}
+      >
         <Navbar.Header>
           <Navbar.Brand>
-            <a href='/explore'>{this.props.title}</a>
+            <Link to='/'>{this.props.title}</Link>
           </Navbar.Brand>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav>
-            <LinkContainer to={this.props.managerUrl}>
-              <NavItem>Manager</NavItem>
-            </LinkContainer>
-            {this.props.editorUrl
+            {this.props.managerUrl && this.props.username
+              ? <LinkContainer to={this.props.managerUrl}>
+                  <NavItem>Manager</NavItem>
+                </LinkContainer>
+              : null
+            }
+            {this.props.editorUrl && this.props.username
               ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
                   Editor
                 </NavItem>
               : null
             }
-            {this.props.alertsUrl
+            {this.props.alertsUrl && this.props.username
               ? <LinkContainer to={this.props.alertsUrl}>
                   <NavItem>Alerts</NavItem>
                 </LinkContainer>
               : null
             }
-            {this.props.userAdminUrl
+            {this.props.userAdminUrl && this.props.userIsAdmin
               ? <LinkContainer to={this.props.userAdminUrl}>
                   <NavItem>Users</NavItem>
                 </LinkContainer>
               : null
             }
-            {this.props.signConfigUrl
+            {this.props.signConfigUrl && this.props.username
               ? <LinkContainer to={this.props.signConfigUrl}>
-                  <NavItem>Sign Config</NavItem>
+                  <NavItem>eTID Config</NavItem>
                 </LinkContainer>
               : null
             }
           </Nav>
           <Nav pullRight>
             {projectControl}
-            <NavItem href={DT_CONFIG.application.docs_url}><Glyphicon glyph='question-sign' /> Guide</NavItem>
+            {this.props.docsUrl
+              ? <NavItem href={this.props.docsUrl} active={this.props.docsUrl === '#'}>
+                  <Glyphicon glyph='question-sign' /> Guide
+                </NavItem>
+              : null
+            }
             {userControl}
           </Nav>
         </Navbar.Collapse>
