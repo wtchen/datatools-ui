@@ -169,7 +169,9 @@ export function editSign (sign) {
 export function fetchEntity (entity, activeProject) {
   const feed = activeProject.feedSources.find(f => getFeedId(f) === entity.entity.AgencyId)
   const feedId = getFeedId(feed)
-  const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
+  const url = entity.type === 'stop'
+    ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}`
+    : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
   return fetch(url)
   .then((response) => {
     return response.json()
@@ -229,7 +231,7 @@ export function saveSign (sign) {
       console.log('ent', entity)
       return entity.route ? entity.route.map(r => {
         return {
-          Id: entity.id < 0 ? null : entity.id,
+          Id: entity.id,
           DisplayConfigurationId: sign.id,
           AgencyId: entity.agency ? getFeedId(entity.agency) : null,
           RouteId: r ? r.route_id : null,

@@ -39,6 +39,11 @@ export default class SignEditor extends React.Component {
 
     const editButtonMessage = this.props.sign.published && deleteIsDisabled ? 'Cannot edit because sign is published'
       : !canEdit ? 'Cannot alter signs for other agencies' : 'Edit sign'
+
+    const newEntityId = this.props.sign.affectedEntities.length
+      ? 1 + this.props.sign.affectedEntities.map(e => e.id).reduce((initial, current) => initial > current ? initial : current)
+      : 1
+
     console.log('displays', this.props.sign.displays)
     return (
       <ManagerPage ref='page'>
@@ -131,7 +136,7 @@ export default class SignEditor extends React.Component {
                 type='text'
                 label='Configuration Name'
                 bsSize='large'
-                placeholder='E.g., Fremont (Inside Station)'
+                placeholder='E.g., Civic Center surface bus services'
                 defaultValue={this.props.sign.title || ''}
                 onChange={evt => {
                   this.props.titleChanged(evt.target.value)
@@ -151,7 +156,7 @@ export default class SignEditor extends React.Component {
                           }
                         })
                       }}
-                      placeholder='Click to add displays...'
+                      placeholder='Click to add displays, or enter a new display name...'
                       sign={this.props.sign}
                       label='List of Signs'
                       clearable={true}
@@ -182,13 +187,15 @@ export default class SignEditor extends React.Component {
                           onChange={(evt) => {
                             console.log('we need to add this entity to the store', evt)
                             if (typeof evt !== 'undefined' && evt !== null) {
-                              this.props.onAddEntityClick('STOP', evt.stop, evt.agency)
+                              this.props.onAddEntityClick('STOP', evt.stop, evt.agency, newEntityId)
                             }
                           }}
                         />
                       </Col>
                     </Row>
-                    {this.props.sign.affectedEntities.map((entity) => {
+                    {this.props.sign.affectedEntities
+                      .sort((a, b) => b.id - a.id) // reverse sort by entity id
+                      .map((entity) => {
                       return <AffectedEntity
                         entity={entity}
                         key={entity.id}
@@ -210,6 +217,7 @@ export default class SignEditor extends React.Component {
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.editorStopClick}
+                newEntityId={newEntityId}
                 popupAction='Add'
               />
             </Col>

@@ -35,8 +35,8 @@ export function createAlert (entity, agency) {
       title: '', // 'New Alert',
       affectedEntities: entities,
       published: false,
-      start: moment().unix()*1000,
-      end: moment().add(30, 'day').unix()*1000
+      // start: moment().unix()*1000,
+      // end: moment().add(30, 'day').unix()*1000
     }
     browserHistory.push('/alerts/new')
     dispatch(updateActiveAlert(alert))
@@ -254,7 +254,7 @@ export function saveAlert(alert) {
       ServiceAlertEntities: alert.affectedEntities.map((entity) => {
         console.log('ent', entity)
         return {
-          Id: entity.id < 0 ? null : entity.id,
+          Id: entity.id,
           AlertId: alert.id,
           AgencyId: entity.agency ? getFeedId(entity.agency) : null,
           RouteId: entity.route ? entity.route.route_id : null,

@@ -1,11 +1,8 @@
 import React from 'react'
-import moment from 'moment'
 
-import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Input, DropdownButton, MenuItem } from 'react-bootstrap'
+import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Label } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
-
-import modes from '../modes'
 
 import { getFeed } from '../../common/util/modules'
 
@@ -14,12 +11,6 @@ export default class AffectedEntity extends React.Component {
     super(props)
   }
   render () {
-    const getRouteName = (route) => {
-      let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
-        route.route_long_name ? route.route_long_name :
-        route.route_short_name ? route.route_short_name : null
-      return routeName
-    }
     const getEntitySummary = (entity) => {
       const type = entity.type
       const val = entity[type.toLowerCase()]
@@ -31,34 +22,34 @@ export default class AffectedEntity extends React.Component {
         const feed = getFeed(this.props.feeds, entity.stop.feed_id)
         agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
       }
+      let labelComponents = []
+      const stopName = entity.stop
+        ? <span>{entity.stop.stop_name} ({entity.stop.stop_id}) <Label>{agencyName}</Label></span>
+        : entity.stop_id
+      labelComponents.push(stopName)
 
-      const routes = entity.route ? ` for ${entity.route.length} routes`
-                    : entity.route_id ? ` for ${entity.route_id.length} routes`
-                    : ' [add routes]'
-      let stopName = typeof entity.stop !== 'undefined' && entity.stop !== null ? `${entity.stop.stop_name} (${agencyName})` : entity.stop_id
-      let summary = ''
-        switch (type) {
-          case 'STOP' :
-            summary = stopName
-            if (routes) {
-              summary += routes
-            }
-            return summary
-          default:
-            return ''
-        }
+      const routes = entity.route ? <span> for {entity.route.length} routes</span>
+                    : entity.route_id ? <span> for {entity.route_id.length} routes</span>
+                    : <span>[add routes]</span>
+      labelComponents.push(routes)
+      console.log(stopName)
+      return (
+        <span>
+        {labelComponents ? labelComponents.map(l => (l)) : null}
+        </span>
+      )
     }
 
     return (
       <Panel collapsible header={
         <Row>
           <Col xs={10}>
-            <span><Glyphicon glyph="map-marker" /> {getEntitySummary(this.props.entity)}</span>
+            <span><Glyphicon glyph='map-marker' /> {getEntitySummary(this.props.entity)}</span>
           </Col>
           <Col xs={2}>
             <ButtonGroup className='pull-right'>
-              <Button bsSize="small" onClick={() => this.props.onDeleteEntityClick(this.props.entity)}>
-                <Glyphicon glyph="remove" />
+              <Button bsSize='small' onClick={() => this.props.onDeleteEntityClick(this.props.entity)}>
+                <Glyphicon glyph='remove' />
               </Button>
             </ButtonGroup>
           </Col>
@@ -75,7 +66,7 @@ export default class AffectedEntity extends React.Component {
           let selectedStop = this.props.entity.stop
           console.log(selectedStop)
           switch (this.props.entity.type) {
-            case "STOP":
+            case 'STOP':
               return (
                 <div>
                   <span><b>Stop:</b></span>
@@ -114,9 +105,12 @@ class RouteSelector extends React.Component {
   render () {
     console.log('render route ent', this.props.route)
     const getRouteName = (route) => {
-      let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
-        route.route_long_name ? route.route_long_name :
-        route.route_short_name ? route.route_short_name : null
+      let routeName = route.route_short_name && route.route_long_name
+        ? `${route.route_short_name} - ${route.route_long_name}`
+        : route.route_long_name ? route.route_long_name
+        : route.route_short_name ? route.route_short_name
+        : route.RouteId ? route.RouteId
+        : null
       return routeName
     }
     var routes = []
@@ -137,12 +131,16 @@ class RouteSelector extends React.Component {
             console.log(evt)
             if (evt) {
               let routes = evt.map(e => e.route)
-              this.props.entityUpdated(this.props.entity, "ROUTES", routes)
+              this.props.entityUpdated(this.props.entity, 'ROUTES', routes)
             }
             else if (evt == null)
-              this.props.entityUpdated(this.props.entity, "ROUTES", [])
+              this.props.entityUpdated(this.props.entity, 'ROUTES', [])
           }}
-          value={this.props.route ? this.props.route.map(r => ({'route': r, 'value': r.route_id, 'label': `${getRouteName(r)}`})) : ''}
+          value={
+            this.props.route
+            ? this.props.route.map(r => ({'route': r, 'value': r.route_id, 'label': `${getRouteName(r)}`}))
+            : ''
+          }
         />
       </div>
     )
@@ -169,11 +167,19 @@ class StopSelector extends React.Component {
           clearable={this.props.clearable}
           onChange={(evt) => {
             if (typeof evt !== 'undefined' && evt !== null)
-              this.props.entityUpdated(this.props.entity, "STOP", evt.stop, evt.agency)
+              this.props.entityUpdated(this.props.entity, 'STOP', evt.stop, evt.agency)
             else if (evt == null)
-              this.props.entityUpdated(this.props.entity, "STOP", null, null)
+              this.props.entityUpdated(this.props.entity, 'STOP', null, null)
           }}
-          value={this.props.stop ? {'value': this.props.stop.stop_id, 'label': `${this.props.stop.stop_name} (${agencyName})`} : ''}
+          value={
+            this.props.stop
+            ? {
+                stop: this.props.stop,
+                value: this.props.stop.stop_id,
+                label: `${this.props.stop.stop_name} (${agencyName})`,
+              }
+            : ''
+          }
         />
 
       </div>
