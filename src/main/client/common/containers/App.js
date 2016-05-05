@@ -72,11 +72,10 @@ class App extends React.Component {
 
     return (
       <Router history={this.props.history}>
-        <Redirect from='/' to='explore' />
         <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />
         <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />
         <Route path='/signup' component={ActiveSignupPage} />
-        <Route path='/explore' component={ActivePublicFeedsViewer} />
+        <Route path='/' component={ActivePublicFeedsViewer} />
         <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />
         <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />
         <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />
