@@ -55,3 +55,31 @@ export function createUser (credentials) {
       })
   }
 }
+
+export function deletingUser (user) {
+  return {
+    type: 'DELETING_USER',
+    user
+  }
+}
+
+export function deletedUser (user) {
+  return {
+    type: 'DELETED_USER',
+    user
+  }
+}
+
+// server call
+export function deleteUser (user) {
+  return function (dispatch, getState) {
+    dispatch(deletingUser(user))
+    const url = `/api/manager/secure/user/${user.user_id}`
+    return secureFetch(url, getState(), 'delete')
+      .then(response => response.json())
+      .then(result => {
+        return result
+        dispatch(deletedUser(user))
+      })
+  }
+}

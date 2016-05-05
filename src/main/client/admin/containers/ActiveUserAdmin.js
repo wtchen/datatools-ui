@@ -5,7 +5,7 @@ import UserAdmin from '../components/UserAdmin'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
 
 import { updateUserData } from '../../manager/actions/user'
-import { fetchUsers, createUser } from '../actions/admin'
+import { fetchUsers, createUser, deleteUser } from '../actions/admin'
 import { fetchProjects } from '../../manager/actions/projects'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
 
@@ -29,6 +29,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchProjectFeeds: (project) => { dispatch(fetchProjectFeeds(project)) },
     saveUser: (user, permissions) => {
       dispatch(updateUserData(user, permissions))
+      .then(() => {
+        dispatch(fetchUsers())
+      })
+    },
+    deleteUser: (user) => {
+      dispatch(deleteUser(user))
       .then(() => {
         dispatch(fetchUsers())
       })
