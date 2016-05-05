@@ -105,6 +105,7 @@ export default class GtfsMapSearch extends React.Component {
         position={this.state.position}
         onStopClick={this.props.onStopClick}
         onRouteClick={this.props.onRouteClick}
+        newEntityId={this.props.newEntityId}
         onZoomChange={onZoomChange}
         stops={this.state.stops}
         searchFocus={this.state.searchFocus}

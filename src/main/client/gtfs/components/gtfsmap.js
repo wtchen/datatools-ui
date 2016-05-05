@@ -101,7 +101,7 @@ export default class GtfsMap extends React.Component {
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, stop.feed_id).name}</li>
                       {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
                     </ul>
-                    <Button href="#" onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id))}>{this.props.popupAction} {stop.stop_id}</Button>
+                    <Button href="#" onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
                   </div>
                 </Popup>
               </Marker>
@@ -125,7 +125,7 @@ export default class GtfsMap extends React.Component {
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, stop.feed_id).name}</li>
                       {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
                     </ul>
-                    <Button href="#" onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id))}>{this.props.popupAction} {stop.stop_id}</Button>
+                    <Button href="#" onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
                   </div>
                 </Popup>
               </Marker>
@@ -152,7 +152,7 @@ export default class GtfsMap extends React.Component {
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, route.feed_id).name}</li>
                     </ul>
                     {this.props.onRouteClick
-                      ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id))}>{this.props.popupAction} {route.route_id}</Button>
+                      ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
                       : <p>[Must add stops first]</p>
                     }
 
@@ -177,7 +177,7 @@ export default class GtfsMap extends React.Component {
                     <li><strong>Agency:</strong> {getFeed(this.props.feeds, route.feed_id).name}</li>
                   </ul>
                   {this.props.onRouteClick
-                    ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id))}>{this.props.popupAction} {route.route_id}</Button>
+                    ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
                     : <p>[Must add stops first]</p>
                   }
                 </div>

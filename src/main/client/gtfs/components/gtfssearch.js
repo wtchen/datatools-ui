@@ -67,7 +67,7 @@ export default class GtfsSearch extends React.Component {
               return {
                 stop,
                 value: stop.stop_id,
-                label: stop.stop_name,
+                label: `${stop.stop_name} (${stop.stop_id})`,
                 agency: agency
               }
             })
@@ -94,7 +94,15 @@ export default class GtfsSearch extends React.Component {
           return response.json()
         })
         .then((routes) => {
-          const routeOptions = routes !== null && routes.length > 0 ? routes.map(route => ({route, value: route.route_id, label: `${getRouteName(route)}`, agency: getFeed(this.props.feeds, route.feed_id)})) : []
+          const routeOptions = routes !== null && routes.length > 0
+            ? routes.map(route => (
+              {
+                route,
+                value: route.route_id,
+                label: `${getRouteName(route)} (${route.route_id})`,
+                agency: getFeed(this.props.feeds, route.feed_id)}
+            ))
+            : []
           return routeOptions
         })
         .catch((error) => {
