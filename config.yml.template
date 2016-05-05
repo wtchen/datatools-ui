@@ -28,6 +28,8 @@ modules:
   user_admin:
     enabled: true
     url: /admin
+  validator:
+    enabled: true
   gtfsapi:
     enabled: true
     use_extension: mtc
