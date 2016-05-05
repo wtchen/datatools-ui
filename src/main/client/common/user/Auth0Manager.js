@@ -16,7 +16,7 @@ export default class Auth0Manager {
     if(userToken) return this.loginFromToken(userToken)
 
     // check if we have returned from an SSO redirect
-    var hash = this.lock.parseHash(window.location.hash)
+    var hash = this.lock.parseHash()
     if (hash && hash.id_token) { // the user came back from the login (either SSO or regular login)
       // save the token
       localStorage.setItem('userToken', hash.id_token)
@@ -59,7 +59,9 @@ export default class Auth0Manager {
   loginViaLock () {
     return new Promise((resolve, reject) => {
       var lockOptions = {
-        connections: ['Username-Password-Authentication']
+        connections: ['Username-Password-Authentication'],
+        disableSignupAction: true,
+        disableResetAction: true
       }
       if (this.props.logo) lockOptions.icon = this.props.logo
       this.lock.show(lockOptions, (err, profile, token) => {
