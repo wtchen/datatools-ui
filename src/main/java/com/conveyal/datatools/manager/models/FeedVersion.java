@@ -1,28 +1,36 @@
 package com.conveyal.datatools.manager.models;
 
 
+import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import com.conveyal.datatools.manager.DataManager;
+import com.conveyal.datatools.manager.controllers.api.GtfsApiController;
 import com.conveyal.datatools.manager.persistence.DataStore;
 import com.conveyal.datatools.manager.persistence.FeedStore;
 import com.conveyal.datatools.manager.utils.HashUtils;
+import com.conveyal.gtfs.api.ApiMain;
 import com.conveyal.gtfs.validator.json.FeedProcessor;
 import com.conveyal.gtfs.validator.json.FeedValidationResult;
+import com.conveyal.gtfs.validator.json.LoadStatus;
+import com.conveyal.r5.point_to_point.builder.TNBuilderConfig;
+import com.conveyal.r5.transit.TransportNetwork;
+import org.apache.commons.io.IOUtils;
 import org.mapdb.Fun.Function2;
 import org.mapdb.Fun.Tuple2;
 
-
-//import com.conveyal.gtfs.validator.json.FeedProcessor;
-//import com.conveyal.gtfs.validator.json.FeedValidationResult;
-//import com.conveyal.gtfs.validator.json.LoadStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -30,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.conveyal.datatools.manager.models.Deployment.getOsmExtract;
 import static com.conveyal.datatools.manager.utils.StringUtils.getCleanName;
 
 /**
@@ -89,6 +98,9 @@ public class FeedVersion extends Model implements Serializable {
     /** The feed source this is associated with */
     @JsonView(JsonViews.DataDump.class)
     public String feedSourceId;
+
+    @JsonIgnore
+    public TransportNetwork transportNetwork;
 
     @JsonView(JsonViews.UserInterface.class)
     public FeedSource getFeedSource () {
@@ -159,6 +171,15 @@ public class FeedVersion extends Model implements Serializable {
         File feed = getFeed();
         FeedProcessor fp = new FeedProcessor(feed);
 
+        // load feed into GTFS api
+        if (DataManager.config.get("modules").get("gtfsapi").get("load_on_fetch").asBoolean()) {
+            LOG.info("Loading feed into GTFS api");
+            String md5 = ApiMain.loadFeedFromFile(feed, this.feedSourceId);
+            if (GtfsApiController.feedUpdater != null) {
+                GtfsApiController.feedUpdater.addFeedETag(md5);
+            }
+        }
+
         try {
             fp.run();
         } catch (IOException e) {
@@ -189,22 +210,65 @@ public class FeedVersion extends Model implements Serializable {
         versionStore.commit();
     }
 
+    public TransportNetwork buildTransportNetwork() {
+        String gtfsDir = DataManager.config.get("application").get("data").get("gtfs").asText() + "/";
+        String feedSourceDir = gtfsDir + feedSourceId + "/";
+        File fsPath = new File(feedSourceDir);
+        if (!fsPath.isDirectory()) {
+            fsPath.mkdir();
+        }
+        // Fetch OSM extract
+        Rectangle2D bounds = this.validationResult.bounds;
+        String osmFileName = String.format("%s%.6f_%.6f_%.6f_%.6f.osm.pbf",feedSourceDir, bounds.getMaxX(), bounds.getMaxY(), bounds.getMinX(), bounds.getMinY());
+        File osmExtract = new File(osmFileName);
+        if (!osmExtract.exists()) {
+            InputStream is = getOsmExtract(this.validationResult.bounds);
+            OutputStream out = null;
+            try {
+                out = new FileOutputStream(osmExtract);
+                IOUtils.copy(is, out);
+                is.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Create/save r5 network
+        TransportNetwork tn = TransportNetwork.fromFiles(osmExtract.getAbsolutePath(), gtfsDir + this.id, TNBuilderConfig.defaultConfig());
+        this.transportNetwork = tn;
+        File tnFile = new File(feedSourceDir + this.id + "_network.dat");
+        OutputStream tnOut = null;
+        try {
+            tnOut = new FileOutputStream(tnFile);
+            tn.write(tnOut);
+            return transportNetwork;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     /**
      * Does this feed version have any critical errors that would prevent it being loaded to OTP?
      * @return
      */
-    /*public boolean hasCriticalErrors() {
+    public boolean hasCriticalErrors() {
         if (hasCriticalErrorsExceptingDate() || (new Date()).after(validationResult.endDate))
             return true;
 
         else
             return false;
-    }*/
+    }
 
     /**
      * Does this feed have any critical errors other than possibly being expired?
      */
-    /*public boolean hasCriticalErrorsExceptingDate () {
+    public boolean hasCriticalErrorsExceptingDate () {
         if (validationResult == null)
             return true;
 
@@ -215,7 +279,7 @@ public class FeedVersion extends Model implements Serializable {
             return true;
 
         return false;
-    }*/
+    }
 
     @JsonView(JsonViews.UserInterface.class)
     public int getNoteCount() {
@@ -243,7 +307,7 @@ public class FeedVersion extends Model implements Serializable {
      */
     public void delete() {
         File feed = getFeed();
-        if (feed.exists())
+        if (feed != null && feed.exists())
             feed.delete();
 
         /*for (Deployment d : Deployment.getAll()) {

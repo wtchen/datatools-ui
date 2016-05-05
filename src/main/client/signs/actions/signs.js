@@ -1,6 +1,6 @@
 import { browserHistory } from 'react-router'
 import fetch from 'isomorphic-fetch'
-import { getSignConfigUrl, getDisplaysUrl } from '../../common/util/modules'
+import { getSignConfigUrl, getDisplaysUrl, getFeedId } from '../../common/util/modules'
 
 // signs management action
 
@@ -167,8 +167,11 @@ export function editSign (sign) {
 }
 
 export function fetchEntity (entity, activeProject) {
-  const feed = activeProject.feedSources.find(f => f.externalProperties.MTC.AgencyId === entity.entity.AgencyId)
-  const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feed.externalProperties.MTC.AgencyId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feed.externalProperties.MTC.AgencyId}`
+  const feed = activeProject.feedSources.find(f => getFeedId(f) === entity.entity.AgencyId)
+  const feedId = getFeedId(feed)
+  const url = entity.type === 'stop'
+    ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}`
+    : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
   return fetch(url)
   .then((response) => {
     return response.json()
@@ -228,9 +231,9 @@ export function saveSign (sign) {
       console.log('ent', entity)
       return entity.route ? entity.route.map(r => {
         return {
-          Id: entity.id < 0 ? null : entity.id,
+          Id: entity.id,
           DisplayConfigurationId: sign.id,
-          AgencyId: entity.agency ? entity.agency.externalProperties.MTC.AgencyId : null,
+          AgencyId: entity.agency ? getFeedId(entity.agency) : null,
           RouteId: r ? r.route_id : null,
           StopId: entity.stop ? entity.stop.stop_id : null
         }

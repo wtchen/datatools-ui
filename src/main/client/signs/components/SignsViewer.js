@@ -35,17 +35,16 @@ export default class SignsViewer extends React.Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <VisibleSignsList />
             </Col>
-            <Col xs={6}>
+            <Col xs={12} sm={6}>
               <GlobalGtfsFilter
                 permissionFilter='edit-etid'
               />
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.onStopClick}
-                onRouteClick={this.props.onRouteClick}
                 popupAction='Create Sign for'
               />
             </Col>

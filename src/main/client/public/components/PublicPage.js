@@ -4,7 +4,7 @@ import { Grid, Row, Col } from 'react-bootstrap'
 import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import SelectFileModal from '../../common/components/SelectFileModal'
-import ManagerPublicNavbar from '../containers/ManagerPublicNavbar'
+import ManagerNavbar from '../../common/containers/ManagerNavbar'
 
 export default class PublicPage extends React.Component {
 
@@ -23,7 +23,7 @@ export default class PublicPage extends React.Component {
   render () {
     return (
       <div>
-        <ManagerPublicNavbar
+        <ManagerNavbar
         />
         {this.props.children}
         <CurrentStatusMessage />

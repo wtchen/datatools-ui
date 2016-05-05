@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { getFeed } from '../../common/util/modules'
+import { fetchProjectFeeds } from '../../manager/actions/feeds'
 export const updatingGtfsFilter = (activeProject, user) => {
   return {
     type: 'UPDATE_GTFS_FILTER',
@@ -21,8 +22,21 @@ export function updateGtfsFilter (activeProject, user) {
     return secureFetch('/api/manager/feeds', getState())
       .then(response => response.json())
       .then((feedIds) => {
-        let feeds = feedIds.map(id => getFeed(getState().projects.active.feedSources, id)).filter(n => n)
-        dispatch(updateLoadedFeeds(feeds))
+        let activeFeeds = getState().projects.active.feedSources
+        // if (!activeFeeds) {
+        //   return dispatch(fetchProjectFeeds(getState().projects.active.id))
+        //   .then((projectFeeds) => {
+        //     console.log(projectFeeds)
+        //     let feeds = feedIds.map(id => getFeed(projectFeeds, id)).filter(n => n)
+        //     console.log(feeds)
+        //     dispatch(updateLoadedFeeds(feeds))
+        //   })
+        // }
+        // else {
+          let feeds = feedIds.map(id => getFeed(activeFeeds, id)).filter(n => n)
+          console.log(feeds)
+          dispatch(updateLoadedFeeds(feeds))
+        // }
       })
   }
 }

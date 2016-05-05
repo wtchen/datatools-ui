@@ -13,7 +13,9 @@ const mapStateToProps = (state, ownProps) => {
     userAdminUrl: DT_CONFIG.modules.user_admin ? DT_CONFIG.modules.user_admin.url : null,
     alertsUrl: DT_CONFIG.modules.alerts ? DT_CONFIG.modules.alerts.url : null,
     signConfigUrl: DT_CONFIG.modules.sign_config ? DT_CONFIG.modules.sign_config.url : null,
+    docsUrl: DT_CONFIG.application.docs_url ? DT_CONFIG.application.docs_url : null,
     username: state.user.profile ? state.user.profile.email : null,
+    userIsAdmin: state.user.profile && state.user.permissions.isApplicationAdmin(),
     projects: state.projects ? state.projects : null
   }
 }

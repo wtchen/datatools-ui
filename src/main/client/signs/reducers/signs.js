@@ -1,4 +1,5 @@
 import update from 'react-addons-update'
+import { getFeedId } from '../../common/util/modules'
 
 const signs = (state = {
   isFetching: false,
@@ -9,6 +10,7 @@ const signs = (state = {
     filter: 'ALL'
   }
 }, action) => {
+  console.log(action)
   let foundIndex
   switch (action.type) {
     case 'SET_SIGN_VISIBILITY_SEARCH_TEXT':
@@ -39,14 +41,20 @@ const signs = (state = {
       for (var i = 0; i < action.gtfsObjects.length; i++) {
         let ent = action.gtfsObjects[i]
         // console.log(ent.gtfs)
-        if (typeof ent.gtfs !== 'undefined' && action.gtfsSigns) {
+        if (action.gtfsSigns) {
           let sign = action.gtfsSigns.find(a => a.id === ent.entity.DisplayConfigurationId)
-          let selectedEnt = sign.affectedEntities.find(e => e.id === ent.entity.Id) || sign.affectedEntities.find(e => e.id === ent.entity.AgencyId + ent.entity.StopId)
+          console.log(sign)
+          console.log(ent)
+          let selectedEnt =
+            sign.affectedEntities.find(e => e.agencyAndStop === ent.entity.agencyAndStop) // ||
+            // sign.affectedEntities.find(e => e.agency_id === ent.entity.AgencyId && ent.stop_id === ent.entity.StopId)
+          console.log(selectedEnt)
           if (selectedEnt && ent.type === 'stop'){
             selectedEnt.stop = ent.gtfs
           }
           if (ent.type === 'route'){
-            selectedEnt.route.push(ent.gtfs)
+            let route = ent.gtfs ? ent.gtfs : ent.entity
+            selectedEnt.route.push(route)
           }
         }
       }
@@ -108,6 +116,7 @@ const signs = (state = {
         if (typeof action !== 'undefined' && action.DisplayConfigurationDetails && action.DisplayConfigurationDetails.length > 0) {
           for (var j = 0; j < action.DisplayConfigurationDetails.length; j++) {
             let ent = action.DisplayConfigurationDetails[j]
+            ent.agencyAndStop = ent.AgencyId + ent.StopId
             if (ent.StopId !== null) {
               entityList.push({type: 'stop', entity: ent, gtfs: {}})
             }
@@ -132,11 +141,13 @@ const signs = (state = {
           }
           // else, construct new object for entity
           else {
-            let feed = project.feedSources.find(f => f.externalProperties.MTC.AgencyId === ent.AgencyId)
+            let feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
             entities[ent.AgencyId + ent.StopId] = {
-              id: ent.AgencyId + ent.StopId
+              id: ent.Id,
+              agencyAndStop: ent.AgencyId + ent.StopId
             }
             entities[ent.AgencyId + ent.StopId].agency = feed
+            entities[ent.AgencyId + ent.StopId].agency_id = ent.AgencyId
             if (ent.StopId !== null) {
               entities[ent.AgencyId + ent.StopId].stop_id = ent.StopId
               entities[ent.AgencyId + ent.StopId].type = 'STOP'

@@ -28,7 +28,7 @@ export default class ManagerPage extends React.Component {
   render () {
     return (
       <div>
-        <ManagerNavbar />
+        <ManagerNavbar noMargin={this.props.noMargin}/>
           {this.props.children}
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>

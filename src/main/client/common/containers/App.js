@@ -19,6 +19,8 @@ import ActiveSignEditor from '../../signs/containers/ActiveSignEditor'
 import PageNotFound from '../components/PageNotFound'
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 
+import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
+
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
 class App extends React.Component {
@@ -70,11 +72,10 @@ class App extends React.Component {
 
     return (
       <Router history={this.props.history}>
-        <Redirect from='/' to='explore' />
         <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />
         <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />
         <Route path='/signup' component={ActiveSignupPage} />
-        <Route path='/explore' component={ActivePublicFeedsViewer} />
+        <Route path='/' component={ActivePublicFeedsViewer} />
         <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />
         <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />
         <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />
@@ -85,7 +86,10 @@ class App extends React.Component {
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId' component={ActiveProjectViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
+        <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />
+
         <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
+
         <Route path='*' component={PageNotFound} />
       </Router>
     )

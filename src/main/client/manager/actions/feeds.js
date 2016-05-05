@@ -30,6 +30,35 @@ export function fetchProjectFeeds (projectId) {
   }
 }
 
+export function requestingFeedVersionIsochrones () {
+  return {
+    type: 'REQUESTING_FEEDVERSION_ISOCHRONES'
+  }
+}
+
+export function receiveFeedVersionIsochrones (feedSource, feedVersion, isochrones) {
+  return {
+    type: 'RECEIVE_FEEDVERSION_ISOCHRONES',
+    feedSource,
+    feedVersion,
+    isochrones
+  }
+}
+
+export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon) {
+  return function (dispatch, getState) {
+    dispatch(requestingFeedVersionIsochrones())
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(isochrones => {
+        console.log('received isochrones ', isochrones)
+        dispatch(receiveFeedVersionIsochrones(feedVersion.feedSource, feedVersion, isochrones))
+        return isochrones
+      })
+  }
+}
+
 function requestingPublicFeeds () {
   return {
     type: 'REQUESTING_PUBLIC_FEEDS'

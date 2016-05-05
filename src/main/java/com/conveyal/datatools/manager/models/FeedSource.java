@@ -1,6 +1,7 @@
 package com.conveyal.datatools.manager.models;
 
 import com.conveyal.datatools.manager.DataManager;
+import com.conveyal.datatools.manager.jobs.BuildTransportNetworkJob;
 import com.conveyal.datatools.manager.jobs.ProcessSingleFeedJob;
 import com.conveyal.datatools.manager.persistence.DataStore;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -66,7 +67,7 @@ public class FeedSource extends Model {
     public boolean isPublic;
 
     /** Is this feed deployable? */
-    //public boolean deployable;
+    public boolean deployable;
 
     /**
      * How do we receive this feed?
@@ -223,6 +224,7 @@ public class FeedSource extends Model {
             newFeed.userId = this.userId;
 
             new ProcessSingleFeedJob(newFeed).run();
+            new BuildTransportNetworkJob(newFeed).run();
 
             this.lastFetched = newFeed.updated;
             this.save();

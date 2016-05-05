@@ -72,6 +72,10 @@ export default class AlertEditor extends React.Component {
     const editButtonMessage = this.props.alert.published && deleteIsDisabled ? 'Cannot edit because alert is published'
       : !canEdit ? 'Cannot alter alerts for other agencies' : 'Edit alert'
 
+    const newEntityId = this.props.alert.affectedEntities.length
+      ? 1 + this.props.alert.affectedEntities.map(e => e.id).reduce((initial, current) => initial > current ? initial : current)
+      : 1
+
     return (
         <ManagerPage ref='page'>
           <Grid>
@@ -94,6 +98,10 @@ export default class AlertEditor extends React.Component {
                       console.log('times', this.props.alert.end, this.props.alert.start);
                       if(!this.props.alert.title) {
                         alert('You must specify an alert title')
+                        return
+                      }
+                      if(!this.props.alert.end || !this.props.alert.start) {
+                        alert('Alert must have a start and end date')
                         return
                       }
                       if(this.props.alert.end < this.props.alert.start) {
@@ -154,15 +162,29 @@ export default class AlertEditor extends React.Component {
                   </Col>
                   <Col xs={6}>
                     <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
-                    <DateTimeField
-                      dateTime={this.props.alert.start}
-                      onChange={time => this.props.startChanged(time)} />
+                    {this.props.alert.start
+                      ? <DateTimeField
+                        dateTime={this.props.alert.start}
+                        onChange={time => this.props.startChanged(time)}
+                      />
+                      : <DateTimeField
+                        defaultText='Please select a date'
+                        onChange={time => this.props.startChanged(time)}
+                      />
+                    }
                   </Col>
                   <Col xs={6}>
                     <div style={{marginBottom: '5px'}}><strong>End</strong></div>
-                    <DateTimeField
-                      dateTime={this.props.alert.end}
-                      onChange={time => this.props.endChanged(time)} />
+                    {this.props.alert.end
+                      ? <DateTimeField
+                        dateTime={this.props.alert.end}
+                        onChange={time => this.props.endChanged(time)}
+                      />
+                      : <DateTimeField
+                        defaultText='Please select a date'
+                        onChange={time => this.props.endChanged(time)}
+                      />
+                    }
                   </Col>
                 </Row>
                 <Row>
@@ -221,11 +243,11 @@ export default class AlertEditor extends React.Component {
                             <Col xs={5}>
                               <Button style={{marginRight: '5px'}} onClick={(evt) => {
                                 console.log('editable feeds', sortedFeeds)
-                                this.props.onAddEntityClick('AGENCY', sortedFeeds[0])
+                                this.props.onAddEntityClick('AGENCY', sortedFeeds[0], null, newEntityId)
                               }}>
                                 Add Agency
                               </Button>
-                              <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0])}>
+                              <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0], newEntityId)}>
                                 Add Mode
                               </Button>
                             </Col>
@@ -240,16 +262,18 @@ export default class AlertEditor extends React.Component {
                                   console.log('we need to add this entity to the store', evt)
                                   if (typeof evt !== 'undefined' && evt !== null){
                                     if (evt.stop){
-                                      this.props.onAddEntityClick('STOP', evt.stop, evt.agency)
+                                      this.props.onAddEntityClick('STOP', evt.stop, evt.agency, newEntityId)
                                     }
                                     else if (evt.route)
-                                      this.props.onAddEntityClick('ROUTE', evt.route, evt.agency)
+                                      this.props.onAddEntityClick('ROUTE', evt.route, evt.agency, newEntityId)
                                   }
                                 }}
                               />
                             </Col>
                           </Row>
-                          {this.props.alert.affectedEntities.map((entity) => {
+                          {this.props.alert.affectedEntities
+                            .sort((a, b) => b.id - a.id) // reverse sort by entity id
+                            .map((entity) => {
                             return <AffectedEntity
                               entity={entity}
                               key={entity.id}
@@ -275,6 +299,7 @@ export default class AlertEditor extends React.Component {
                   onStopClick={this.props.editorStopClick}
                   onRouteClick={this.props.editorRouteClick}
                   popupAction='Add'
+                  newEntityId={newEntityId}
                 />
               </Col>
 

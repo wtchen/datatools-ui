@@ -81,12 +81,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     effectChanged: (effect) => dispatch(setActiveEffect(effect)),
     startChanged: (start) => dispatch(setActiveStart(start)),
     endChanged: (end) => dispatch(setActiveEnd(end)),
-    onAddEntityClick: (type, value, agency) => dispatch(addActiveEntity(type, value, agency)),
+    onAddEntityClick: (type, value, agency, newEntityId) => dispatch(addActiveEntity(type, value, agency, newEntityId)),
     onDeleteEntityClick: (entity) => dispatch(deleteActiveEntity(entity)),
     entityUpdated: (entity, field, value, agency) => dispatch(updateActiveEntity(entity, field, value, agency)),
 
-    editorStopClick: (stop, agency) => dispatch(addActiveEntity('STOP', stop, agency)),
-    editorRouteClick: (route, agency) => dispatch(addActiveEntity('ROUTE', route, agency))
+    editorStopClick: (stop, agency, newEntityId) => dispatch(addActiveEntity('STOP', stop, agency, newEntityId)),
+    editorRouteClick: (route, agency, newEntityId) => dispatch(addActiveEntity('ROUTE', route, agency, newEntityId))
   }
 }
 

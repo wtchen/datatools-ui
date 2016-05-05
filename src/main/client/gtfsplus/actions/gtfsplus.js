@@ -2,6 +2,7 @@ import JSZip from 'jszip'
 
 import { secureFetch } from '../../common/util/util'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
+import { getFeedId } from '../../common/util/modules'
 
 // EDIT ACTIVE GTFS+ ACTIONS
 
@@ -205,9 +206,9 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     }
 
     if(routesToLoad.length === 0 && stopsToLoad.length === 0) return
-
+    const feedId = getFeedId(feedSource)
     var loadRoutes = Promise.all(routesToLoad.map(routeId => {
-      const url = `/api/manager/routes/${routeId}?feed=${feedSource.externalProperties.MTC.AgencyId}`
+      const url = `/api/manager/routes/${routeId}?feed=${feedId}`
       return fetch(url)
       .then((response) => {
         return response.json()
@@ -215,7 +216,7 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     }))
 
     var loadStops = Promise.all(stopsToLoad.map(stopId => {
-      const url = `/api/manager/stops/${stopId}?feed=${feedSource.externalProperties.MTC.AgencyId}`
+      const url = `/api/manager/stops/${stopId}?feed=${feedId}`
       return fetch(url)
       .then((response) => {
         return response.json()

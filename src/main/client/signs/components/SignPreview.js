@@ -24,12 +24,18 @@ export default class SignPreview extends React.Component {
 
     const editButtonMessage = this.props.sign.published && deleteIsDisabled ? 'Cannot edit because sign is published'
       : !canEdit ? 'Cannot alter signs for other agencies' : 'Edit sign'
-
+      const publishedLabel = this.props.sign.published
+        ? <Label title='Published' bsStyle="success"><Glyphicon glyph="ok" /></Label>
+        : <Label title='Draft' bsStyle="warning"><Glyphicon glyph="pencil" /></Label>
+      const displaysLabel = this.props.sign.displays
+        ? <Label title={`${this.props.sign.displays.length} associated display(s)`} bsStyle="default"><Glyphicon glyph="modal-window" /> {this.props.sign.displays.length}</Label>
+        : <Label title={`0 associated display(s)`} bsStyle="default"><Glyphicon glyph="modal-window" /> 0</Label>
     return (
       <Panel collapsible header={
         <Row>
           <Col xs={8}>
-            <strong>{this.props.sign.title} (#{this.props.sign.id})</strong>
+            <p style={{margin: 0}}><strong>{this.props.sign.title}</strong></p>
+            <p style={{margin: 0}}>ID: #{this.props.sign.id} <span>{publishedLabel} {displaysLabel}</span></p>
           </Col>
           <Col xs={4}>
             <ButtonGroup className='pull-right'>
@@ -63,10 +69,7 @@ export default class SignPreview extends React.Component {
         </Row>
       }>
         <p>
-          {this.props.sign.published
-            ? <Label bsStyle='success' className='pull-right'>published</Label>
-            : <Label bsStyle='warning' className='pull-right'>unpublished</Label>
-          }
+          <span className='pull-right'>{publishedLabel} {this.props.sign.published ? 'Published' : 'Draft'}</span>
         </p>
         <p>Stops:&nbsp;
         {this.props.sign.affectedEntities ? this.props.sign.affectedEntities.map(e =>
@@ -76,10 +79,7 @@ export default class SignPreview extends React.Component {
         }
         </p>
         <p>
-        {this.props.sign.displays
-          ? <Label bsStyle='default' className='pull-right'>{this.props.sign.displays ? this.props.sign.displays.length : 0} display(s)</Label>
-          : <Label className='pull-right'>General sign</Label>
-        }
+        <span className='pull-right'>{displaysLabel} associated display(s)</span>
         </p>
       </Panel>
     )

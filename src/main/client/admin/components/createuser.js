@@ -13,11 +13,17 @@ export default class CreateUser extends React.Component {
     }
   }
 
-  close () {
+  save () {
     this.setState({
       showModal: false
     })
     this.props.createUser({email: this.refs.email.getValue(), password: this.refs.password.getValue(), permissions: this.refs.userSettings.getSettings()})
+  }
+
+  cancel () {
+    this.setState({
+      showModal: false
+    })
   }
 
   open () {
@@ -39,7 +45,7 @@ export default class CreateUser extends React.Component {
           Create User
         </Button>
 
-        <Modal show={this.state.showModal} onHide={this.close.bind(this)}>
+        <Modal show={this.state.showModal} onHide={this.cancel.bind(this)}>
           <Modal.Header closeButton>
             <Modal.Title>Create User</Modal.Title>
           </Modal.Header>
@@ -54,7 +60,7 @@ export default class CreateUser extends React.Component {
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.close.bind(this)}>Create User</Button>
+            <Button onClick={this.save.bind(this)}>Create User</Button>
           </Modal.Footer>
         </Modal>
       </div>

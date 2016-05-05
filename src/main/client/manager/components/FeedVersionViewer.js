@@ -67,6 +67,7 @@ export default class FeedVersionViewer extends Component {
 
         <GtfsValidationViewer
           validationResult={version.validationResult}
+          version={version}
           validationResultRequested={() => { this.props.validationResultRequested(version) }}
         />
 

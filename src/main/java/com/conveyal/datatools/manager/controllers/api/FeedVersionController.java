@@ -1,20 +1,36 @@
 package com.conveyal.datatools.manager.controllers.api;
 
+import com.conveyal.datatools.manager.DataManager;
+import com.conveyal.datatools.manager.jobs.BuildTransportNetworkJob;
 import com.conveyal.datatools.manager.jobs.ProcessSingleFeedJob;
 import com.conveyal.datatools.manager.models.FeedDownloadToken;
 import com.conveyal.datatools.manager.models.FeedSource;
 import com.conveyal.datatools.manager.models.FeedVersion;
 import com.conveyal.datatools.manager.models.JsonViews;
 import com.conveyal.datatools.manager.utils.json.JsonManager;
-import com.conveyal.datatools.manager.utils.json.JsonUtil;
-import com.conveyal.gtfs.model.ValidationResult;
 import com.conveyal.gtfs.validator.json.FeedValidationResult;
+import com.conveyal.r5.analyst.PointSet;
+import com.conveyal.r5.analyst.cluster.AnalystClusterRequest;
+import com.conveyal.r5.analyst.cluster.ResultEnvelope;
+import com.conveyal.r5.analyst.cluster.TaskStatistics;
+import com.conveyal.r5.api.util.LegMode;
+import com.conveyal.r5.api.util.TransitModes;
+import com.conveyal.r5.profile.ProfileRequest;
+import com.conveyal.r5.profile.RepeatedRaptorProfileRouter;
+import com.conveyal.r5.profile.StreetMode;
+import com.conveyal.r5.streets.LinkedPointSet;
+import com.conveyal.r5.transit.TransportNetwork;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
-//import jobs.ProcessSingleFeedJob;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -152,6 +168,10 @@ public class FeedVersionController  {
         // it's pretty fast
         new ProcessSingleFeedJob(v).run();
 
+        if (DataManager.config.get("modules").get("validator").get("enabled").asBoolean()) {
+            new BuildTransportNetworkJob(v).run();
+        }
+
         return true;
     }
 
@@ -179,6 +199,68 @@ public class FeedVersionController  {
         return version.validationResult;
     }
 
+    public static Object getIsochrones(Request req, Response res) {
+        LOG.info(req.uri());
+
+        String id = req.params("id");
+        FeedVersion version = FeedVersion.get(id);
+        Double fromLat = Double.valueOf(req.queryParams("fromLat"));
+        Double fromLon = Double.valueOf(req.queryParams("fromLon"));
+        Double toLat = Double.valueOf(req.queryParams("toLat"));
+        Double toLon = Double.valueOf(req.queryParams("toLon"));
+
+        if (version.transportNetwork == null) {
+            InputStream is = null;
+            try {
+                is = new FileInputStream(DataManager.config.get("application").get("data").get("gtfs").asText() + "/"  + version.feedSourceId + "/" + version.id + "_network.dat");
+                version.transportNetwork = TransportNetwork.read(is);
+            } catch (Exception e) {
+                e.printStackTrace();
+                new BuildTransportNetworkJob(version).run();
+                halt(503, "Try again later. Building transport network");
+            }
+        }
+
+        if (version.transportNetwork != null) {
+            AnalystClusterRequest clusterRequest = new AnalystClusterRequest();
+            clusterRequest.profileRequest = new ProfileRequest();
+            clusterRequest.profileRequest.transitModes = EnumSet.of(TransitModes.TRANSIT);
+            clusterRequest.profileRequest.accessModes = EnumSet.of(LegMode.WALK);
+            clusterRequest.profileRequest.date = LocalDate.now();
+            clusterRequest.profileRequest.fromLat = fromLat;
+            clusterRequest.profileRequest.fromLon = fromLon;
+            clusterRequest.profileRequest.toLat = toLat;
+            clusterRequest.profileRequest.toLon = toLon;
+            clusterRequest.profileRequest.fromTime = 9*3600;
+            clusterRequest.profileRequest.toTime = 10*3600;
+            clusterRequest.profileRequest.egressModes = EnumSet.of(LegMode.WALK);
+            clusterRequest.profileRequest.zoneId = ZoneId.of("America/New_York");
+            PointSet targets = version.transportNetwork.getGridPointSet();
+            StreetMode mode = StreetMode.WALK;
+            final LinkedPointSet linkedTargets = targets.link(version.transportNetwork.streetLayer, mode);
+            RepeatedRaptorProfileRouter router = new RepeatedRaptorProfileRouter(version.transportNetwork, clusterRequest, linkedTargets, new TaskStatistics());
+            ResultEnvelope result = router.route();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try {
+                JsonGenerator jgen = new JsonFactory().createGenerator(out);
+                jgen.writeStartObject();
+                result.avgCase.writeIsochrones(jgen);
+                jgen.writeEndObject();
+                jgen.close();
+                out.close();
+                String outString = new String( out.toByteArray(), StandardCharsets.UTF_8 );
+//            return outString;
+                System.out.println(outString);
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readTree(outString);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        return null;
+    }
 
     private static Object downloadFeedVersion(FeedVersion version, Response res) {
         if(version == null) halt(500, "FeedVersion is null");
@@ -238,6 +320,7 @@ public class FeedVersionController  {
         get(apiPrefix + "secure/feedversion/:id/download", FeedVersionController::downloadFeedVersionDirectly);
         get(apiPrefix + "secure/feedversion/:id/downloadtoken", FeedVersionController::getDownloadToken, json::write);
         get(apiPrefix + "secure/feedversion/:id/validation", FeedVersionController::getValidationResult, json::write);
+        get(apiPrefix + "secure/feedversion/:id/isochrones", FeedVersionController::getIsochrones, json::write);
         get(apiPrefix + "secure/feedversion", FeedVersionController::getAllFeedVersions, json::write);
         post(apiPrefix + "secure/feedversion", FeedVersionController::createFeedVersion, json::write);
         delete(apiPrefix + "secure/feedversion/:id", FeedVersionController::deleteFeedVersion, json::write);

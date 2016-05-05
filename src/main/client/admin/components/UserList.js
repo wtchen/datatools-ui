@@ -42,6 +42,7 @@ export default class UserList extends React.Component {
             fetchProjectFeeds={this.props.fetchProjectFeeds}
             // setUserPermission={this.props.setUserPermission}
             saveUser={this.props.saveUser.bind(this)}
+            deleteUser={this.props.deleteUser.bind(this)}
             token={this.props.token}
           />
         })}
@@ -61,13 +62,13 @@ class UserRow extends React.Component {
   }
 
   toggleExpansion () {
-    if (this.state.isEditing) {
-      this.save()
-    }
-
     this.setState({
       isEditing: !this.state.isEditing
     })
+  }
+
+  cancel () {
+    this.toggleExpansion()
   }
 
   save () {
@@ -78,6 +79,20 @@ class UserRow extends React.Component {
     console.log(settings)
     console.log(this.props.user)
     this.props.saveUser(this.props.user, settings)
+
+    this.toggleExpansion()
+  }
+
+  delete () {
+    console.log('deleting ', this.props.user)
+
+    const settings = this.refs.userSettings.getSettings()
+    const type = ['projects', 'permissions']
+    console.log(settings)
+    console.log(this.props.user)
+    this.props.deleteUser(this.props.user)
+
+    this.toggleExpansion()
   }
 
   render () {
@@ -90,8 +105,30 @@ class UserRow extends React.Component {
           </Col>
           <Col xs={4}>
             <Button className='pull-right' onClick={this.toggleExpansion.bind(this)}>
-              {this.state.isEditing ? 'Save' : 'Edit'}
+               {this.state.isEditing ? 'Cancel' : 'Edit'}
             </Button>
+            {this.state.isEditing ?
+              <Button
+                className='pull-right'
+                bsStyle='info'
+                style={{marginRight: '5px'}}
+                onClick={this.save.bind(this)}
+              >
+                Save
+              </Button>
+              : null
+            }
+            {this.state.isEditing ?
+              <Button
+                className='pull-right'
+                bsStyle='danger'
+                style={{marginRight: '5px'}}
+                onClick={this.delete.bind(this)}
+              >
+                Delete
+              </Button>
+              : null
+            }
           </Col>
         </Row>
       }>

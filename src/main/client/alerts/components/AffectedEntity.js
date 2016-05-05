@@ -1,12 +1,12 @@
 import React from 'react'
 
-import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Input } from 'react-bootstrap'
+import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Input, Label } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import modes from '../modes'
 
-import { getFeed } from '../../common/util/modules'
+import { getFeed, getFeedId } from '../../common/util/modules'
 
 export default class AffectedEntity extends React.Component {
   constructor (props) {
@@ -37,8 +37,10 @@ export default class AffectedEntity extends React.Component {
         agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
       }
 
-      const routeName = typeof entity.route !== 'undefined' && entity.route !== null ? getRouteName(entity.route) : entity.route_id
-      let stopName = typeof entity.stop !== 'undefined' && entity.stop !== null ? `${entity.stop.stop_name} (${agencyName})` : entity.stop_id
+      const routeName = entity.route ? getRouteName(entity.route) : entity.route_id
+      let stopName = entity.stop
+        ? <span>{entity.stop.stop_name} ({entity.stop.stop_id}) <Label>{agencyName}</Label></span>
+        : entity.stop_id
       let summary = ''
         switch (type) {
           case 'AGENCY' :
@@ -68,7 +70,14 @@ export default class AffectedEntity extends React.Component {
       <Panel collapsible header={
         <Row>
           <Col xs={10}>
-            {this.props.entity.type}: {getEntitySummary(this.props.entity)}
+            <span>
+              {
+                this.props.entity.type === 'STOP' ? <Glyphicon glyph="map-marker" />
+                : this.props.entity.type === 'ROUTE' ? <Glyphicon glyph="option-horizontal" />
+                : this.props.entity.type + ':'
+              }
+              &nbsp;{getEntitySummary(this.props.entity)}
+            </span>
           </Col>
           <Col xs={2}>
             <ButtonGroup className='pull-right'>
@@ -196,14 +205,14 @@ class AgencySelector extends React.Component {
       <div>
         <Input
           type='select'
-          value={this.props.entity.agency && this.props.entity.agency.externalProperties.MTC.AgencyId}
+          value={this.props.entity.agency && getFeedId(this.props.entity.agency)}
           onChange={(evt) => {
             this.props.entityUpdated(this.props.entity, 'AGENCY', getFeed(this.props.feeds, evt.target.value))
           }}
           //value={this.props.entity.type}
         >
           {this.props.feeds.map((feed) => {
-            return <option key={feed.externalProperties.MTC.AgencyId} value={feed.externalProperties.MTC.AgencyId}>{feed.name}</option>
+            return <option key={getFeedId(feed)} value={getFeedId(feed)}>{feed.name}</option>
           })}
         </Input>
       </div>
@@ -309,12 +318,20 @@ class StopSelector extends React.Component {
           entities={['stops']}
           clearable={this.props.clearable}
           onChange={(evt) => {
-            if (typeof evt !== 'undefined' && evt !== null)
+            if (evt)
               this.props.entityUpdated(this.props.entity, 'STOP', evt.stop, evt.agency)
             else if (evt == null)
               this.props.entityUpdated(this.props.entity, 'STOP', null, null)
           }}
-          value={this.props.stop ? {'value': this.props.stop.stop_id, 'label': `${this.props.stop.stop_name} (${agencyName})`} : ''}
+          value={
+            this.props.stop
+            ? {
+                stop: this.props.stop,
+                value: this.props.stop.stop_id,
+                label: `${this.props.stop.stop_name} (${agencyName})`
+              }
+            : ''
+          }
         />
 
       </div>

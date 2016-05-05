@@ -59,14 +59,16 @@ export default class EditableTextField extends React.Component {
       cursor: 'pointer'
     }
 
-    const saveIcon = <Button
-      onClick={() => this.save()}
-    >
-    <Glyphicon
-      glyph='ok'
-      style={iconStyle}
-    />
-    </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
+    const saveIcon = (
+      <Button
+        onClick={() => this.save()}
+      >
+      <Glyphicon
+        glyph='ok'
+        style={iconStyle}
+      />
+      </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
+    )
     const displayValue = this.props.maxLength !== null && this.state.value && this.state.value.length > this.props.maxLength
           ? this.state.value.substr(0, this.props.maxLength) + '...'
           : this.state.value
@@ -80,7 +82,6 @@ export default class EditableTextField extends React.Component {
                 autoFocus='true'
                 onKeyUp={(e) => this.handleKeyUp(e)}
                 onFocus={(e) => e.target.select()}
-                onBlur={(e) => this.cancel()}
                 defaultValue={ this.state.value }
                 buttonAfter={saveIcon}
               />
