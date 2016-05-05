@@ -1,0 +1,17 @@
+site_name: Conveyal Transit Data Tools
+site_url: http://conveyal-data-tools.readthedocs.io
+repo_url: https://github.com/conveyal/datatools-manager
+docs_dir: ../docs
+site_dir: ../target/mkdocs
+theme: readthedocs
+
+pages:
+- Home: 'index.md'
+- User Guide:
+    - 'Indroduction': 'user/introduction.md'
+    - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
+    - 'Managing Users': 'user/managing-users.md'
+    - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
+- Development Guide:
+    - 'Deployment': 'dev/deployment.md'
+    - 'Development': 'dev/development.md'
