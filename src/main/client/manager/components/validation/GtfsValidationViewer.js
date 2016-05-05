@@ -29,7 +29,8 @@ export default class GtfsValidationViewer extends React.Component {
     let report = null
 
     if (result && result.loadStatus === 'SUCCESS') {
-      report = (<div>
+      report = (
+        <div>
           <ResultTable
             title='Route Issues'
             invalidValues={result.routes.invalidValues}
@@ -44,7 +45,8 @@ export default class GtfsValidationViewer extends React.Component {
             title='Trip Issues'
             invalidValues={result.trips.invalidValues}
           />
-        </div>)
+        </div>
+      )
     } else if (result) {
       report = (<div>No validation results to show.</div>)
     }
@@ -55,11 +57,14 @@ export default class GtfsValidationViewer extends React.Component {
         collapsible
         expanded={this.state.expanded}
       >
-        <Button
+      <p>{DT_CONFIG.modules.validator.enabled
+        ? <Button
           onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/${this.props.version.id}`)}
         >
-        View Map
+          View Map
         </Button>
+        : ''
+      }</p>
         {report}
       </Panel>
     )
