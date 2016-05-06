@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import { Map, Marker, Popup, TileLayer, Rectangle, GeoJson, FeatureGroup } from 'react-leaflet'
-import Dock from 'react-dock'
+// import Dock from 'react-dock'
 
 import ManagerPage  from '../../../common/components/ManagerPage'
 import GtfsValidationSummary from './GtfsValidationSummary'
