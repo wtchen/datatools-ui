@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 
 import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon } from 'react-bootstrap'
 import DateTimeField from 'react-bootstrap-datetimepicker'
@@ -78,6 +79,9 @@ export default class AlertEditor extends React.Component {
 
     return (
         <ManagerPage ref='page'>
+          <Helmet
+            title={this.props.alert.id > 0 ? `Alert ${this.props.alert.id}` : 'New Alert'}
+          />
           <Grid>
             <Row>
               <Col xs={4} sm={8} md={9}>

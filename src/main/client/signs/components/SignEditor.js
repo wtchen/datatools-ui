@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 
 import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon } from 'react-bootstrap'
 import DisplaySelector from './DisplaySelector'
@@ -47,6 +48,9 @@ export default class SignEditor extends React.Component {
     console.log('displays', this.props.sign.displays)
     return (
       <ManagerPage ref='page'>
+      <Helmet
+        title={this.props.sign.id > 0 ? `eTID Config ${this.props.sign.id}` : 'New eTID Config'}
+      />
         <Grid>
           <Row>
             <Col xs={4} sm={8} md={9}>

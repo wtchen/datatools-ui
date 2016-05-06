@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 import { Grid, Row, Col, Button, Table, Input, Panel, OverlayTrigger, Popover, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
@@ -29,6 +30,9 @@ export default class ProjectsList extends React.Component {
 
     return (
       <ManagerPage ref='page'>
+        <Helmet
+          title='Projects'
+        />
         <Grid>
           <Panel header={(<h3>Projects</h3>)}>
           <Row>

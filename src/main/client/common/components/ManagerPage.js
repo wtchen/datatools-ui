@@ -1,5 +1,6 @@
 import React from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
+import Helmet from 'react-helmet'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
@@ -28,6 +29,10 @@ export default class ManagerPage extends React.Component {
   render () {
     return (
       <div>
+        <Helmet
+          defaultTitle={DT_CONFIG.application.title}
+          titleTemplate={`${DT_CONFIG.application.title} - %s`}
+        />
         <ManagerNavbar noMargin={this.props.noMargin}/>
           {this.props.children}
         <CurrentStatusMessage />

@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 import moment from 'moment'
 import moment_tz from 'moment-timezone'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
@@ -46,6 +47,9 @@ export default class ProjectsList extends React.Component {
 
     return (
       <ManagerPage ref='page'>
+      <Helmet
+        title={this.props.project.name}
+      />
         <Grid>
           <Row>
             <Col xs={12}>

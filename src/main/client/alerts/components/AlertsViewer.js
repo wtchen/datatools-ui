@@ -1,8 +1,9 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
-import ManagerNavbar from '../../common/containers/ManagerNavbar'
+import ManagerPage from '../../common/components/ManagerPage'
 import CreateAlert from '../components/CreateAlert'
 import VisibleAlertsList from '../containers/VisibleAlertsList'
 import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
@@ -24,8 +25,10 @@ export default class AlertsViewer extends React.Component {
   render () {
     const createDisabled = this.props.project && this.props.user ? !this.props.user.permissions.hasProjectPermission(this.props.project.id, 'edit-alert') : true
     return (
-      <div>
-        <ManagerNavbar/>
+      <ManagerPage ref='page'>
+        <Helmet
+          title='Alerts'
+        />
         <Grid>
           <Row>
             <Col xs={12}>
@@ -52,7 +55,7 @@ export default class AlertsViewer extends React.Component {
             </Col>
           </Row>
         </Grid>
-      </div>
+      </ManagerPage>
     )
   }
 }

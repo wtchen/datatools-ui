@@ -1,6 +1,7 @@
 import fetch  from 'isomorphic-fetch'
 import React  from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
+import Helmet from 'react-helmet'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
@@ -30,6 +31,9 @@ export default class UserAdmin extends React.Component {
   render () {
     return (
       <ManagerPage ref='page'>
+      <Helmet
+        title='User Admin'
+      />
         {
           this.isAdmin() &&
           this.props.users &&

@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from 'react-helmet'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
@@ -25,6 +26,9 @@ export default class SignsViewer extends React.Component {
     const createDisabled = this.props.project && this.props.user ? !this.props.user.permissions.hasProjectPermission(this.props.project.id, 'edit-etid') : true
     return (
       <ManagerPage ref='page'>
+      <Helmet
+        title='eTID Config'
+      />
         <Grid>
           <Row>
             <Col xs={12}>

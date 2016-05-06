@@ -1,5 +1,6 @@
 import React from 'react'
 import { Grid, Row, Col } from 'react-bootstrap'
+import Helmet from 'react-helmet'
 
 import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import ConfirmModal from '../../common/components/ConfirmModal'
@@ -23,6 +24,10 @@ export default class PublicPage extends React.Component {
   render () {
     return (
       <div>
+        <Helmet
+          defaultTitle={DT_CONFIG.application.title}
+          titleTemplate={`${DT_CONFIG.application.title} - %s`}
+        />
         <ManagerNavbar
         />
         {this.props.children}

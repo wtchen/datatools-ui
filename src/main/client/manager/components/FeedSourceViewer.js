@@ -1,5 +1,6 @@
 import fetch  from 'isomorphic-fetch'
 import React  from 'react'
+import Helmet from 'react-helmet'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 
@@ -85,6 +86,9 @@ export default class FeedSourceViewer extends React.Component {
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     return (
       <ManagerPage ref='page'>
+      <Helmet
+        title={this.props.feedSource.name}
+      />
         <Grid>
           <Row>
             <Col xs={12}>
