@@ -172,14 +172,14 @@ export default class FeedSourceViewer extends React.Component {
                             {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
                               ? <Button
                                   className='pull-right'
-                                  disabled={this.props.updateDisabled || typeof this.props.uploadFeedClicked === 'undefined'}
+                                  disabled={disabled || typeof this.props.uploadFeedClicked === 'undefined'}
                                   onClick={(evt) => { this.showUploadFeedModal() }}
                                 >
                                   <Glyphicon glyph='upload' /> Upload
                                 </Button>
                               : <Button
                                   className='pull-right'
-                                  disabled={this.props.updateDisabled || typeof this.props.updateFeedClicked === 'undefined'}
+                                  disabled={disabled || typeof this.props.updateFeedClicked === 'undefined'}
                                   onClick={(evt) => { this.props.updateFeedClicked(fs) }}
                                 >
                                   <Glyphicon glyph='refresh' /> Update
