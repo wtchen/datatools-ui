@@ -38,6 +38,7 @@ export default class ProjectsList extends React.Component {
       return <ManagerPage />
     }
 
+    const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
     const filteredFeedSources = this.props.project.feedSources
       ? this.props.project.feedSources.filter(feedSource => {
           if(feedSource.isCreating) return true // feeds actively being created are always visible
@@ -141,6 +142,7 @@ export default class ProjectsList extends React.Component {
                 <ButtonInput
                   bsStyle="primary"
                   type="submit"
+                  disabled={projectEditDisabled}
                   onClick={(evt) => {
                     evt.preventDefault()
                     console.log(this.state)
@@ -172,10 +174,11 @@ export default class ProjectsList extends React.Component {
 
                 {DT_CONFIG.extensions.transitland && DT_CONFIG.extensions.transitland.enabled
                   ? <Button
-                      bsStyle="primary"
+                      bsStyle='primary'
+                      disabled={projectEditDisabled}
                       id='TRANSITLAND'
                       onClick={(evt) => {
-                        this.props.thirdPartySync("TRANSITLAND")
+                        this.props.thirdPartySync('TRANSITLAND')
                       }}
                     >
                       <Glyphicon glyph='refresh' /> transit.land
@@ -185,10 +188,11 @@ export default class ProjectsList extends React.Component {
 
                 {DT_CONFIG.extensions.transitfeeds && DT_CONFIG.extensions.transitfeeds.enabled
                   ? <Button
-                      bsStyle="primary"
+                      bsStyle='primary'
+                      disabled={projectEditDisabled}
                       id='TRANSITFEEDS'
                       onClick={(evt) => {
-                        this.props.thirdPartySync("TRANSITFEEDS")
+                        this.props.thirdPartySync('TRANSITFEEDS')
                       }}
                     >
                       <Glyphicon glyph='refresh' /> transitfeeds.com
@@ -199,9 +203,10 @@ export default class ProjectsList extends React.Component {
                 {DT_CONFIG.extensions.mtc && DT_CONFIG.extensions.mtc.enabled
                   ? <Button
                       bsStyle='primary'
+                      disabled={projectEditDisabled}
                       id='MTC'
                       onClick={(evt) => {
-                        this.props.thirdPartySync("MTC")
+                        this.props.thirdPartySync('MTC')
                       }}
                     >
                       <Glyphicon glyph='refresh' /> MTC
@@ -211,6 +216,7 @@ export default class ProjectsList extends React.Component {
 
                 <Button
                   bsStyle='default'
+                  disabled={projectEditDisabled}
                   onClick={() => {
                     console.log(this.props.project)
                     this.props.updateAllFeeds(this.props.project)
@@ -220,7 +226,8 @@ export default class ProjectsList extends React.Component {
                 </Button>
                 <Button
                   bsStyle='primary'
-                  className="pull-right"
+                  disabled={projectEditDisabled}
+                  className='pull-right'
                   onClick={() => this.props.onNewFeedSourceClick()}
                 >
                   New Feed Source
@@ -316,6 +323,7 @@ class FeedSourceTableRow extends React.Component {
           <Button
             bsStyle='danger'
             bsSize='small'
+            disabled={disabled}
             className='pull-right'
             onClick={this.props.deleteFeedSourceClicked}
           >
