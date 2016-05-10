@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { browserHistory } from 'react-router'
 
 import UserPermissions from './UserPermissions'
 
@@ -7,6 +8,7 @@ export default class Auth0Manager {
   constructor (props) {
     this.props = props
     this.lock = new Auth0Lock(props.client_id, props.domain)
+    this.auth0 = new Auth0({clientID: props.client_id, domain: props.domain})
   }
 
   checkExistingLogin () {
@@ -16,17 +18,19 @@ export default class Auth0Manager {
     if(userToken) return this.loginFromToken(userToken)
 
     // check if we have returned from an SSO redirect
-    var hash = this.lock.parseHash()
+    var hash = this.lock.parseHash(window.location)
     if (hash && hash.id_token) { // the user came back from the login (either SSO or regular login)
       // save the token
       localStorage.setItem('userToken', hash.id_token)
 
       // redirect to "targetUrl" if any
-      window.location.href = hash.state || ''
+      let newLocation = hash.state || ''
+      browserHistory.push(newLocation)
+
     }
     else {
       // check if logged in elsewhere via SSO
-      this.lock.$auth0.getSSOData((err, data) => {
+      this.auth0.getSSOData((err, data) => {
         if (!err && data.sso) {
           // there is! redirect to Auth0 for SSO
           this.lock.$auth0.signin({
@@ -96,7 +100,7 @@ export default class Auth0Manager {
       // if the token is not in local storage, there is nothing to check (i.e. the user is already logged out)
       if (!localStorage.getItem('userToken')) return
 
-      this.lock.$auth0.getSSOData((err, data) => {
+      this.auth0.getSSOData((err, data) => {
         // if there is still a session, do nothing
         if (err || (data && data.sso)) return
 
