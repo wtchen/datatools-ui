@@ -28,22 +28,22 @@ export default class GtfsValidationViewer extends React.Component {
 
     let report = null
 
-    if (result && result.loadStatus === 'SUCCESS') {
+    if (result) { // && result.loadStatus === 'SUCCESS') {
       report = (
         <div>
           <ResultTable
             title='Route Issues'
-            invalidValues={result.routes.invalidValues}
+            invalidValues={result.route}
           />
 
           <ResultTable
             title='Stop Issues'
-            invalidValues={result.stops.invalidValues}
+            invalidValues={result.stop}
           />
 
           <ResultTable
             title='Trip Issues'
-            invalidValues={result.trips.invalidValues}
+            invalidValues={result.trip}
           />
         </div>
       )
@@ -82,7 +82,14 @@ class ResultTable extends React.Component {
       wordWrap: 'break-word',
       overflowWrap: 'break-word'
     }
-
+    if (!this.props.invalidValues) {
+      return (
+        <Panel
+          header={(<span><Glyphicon glyph='alert' /> {this.props.title} (0)</span>)}
+          collapsible
+        />
+      )
+    }
     return (
       <Panel
         header={(<span><Glyphicon glyph='alert' /> {this.props.title} ({this.props.invalidValues.length})</span>)}
@@ -104,7 +111,7 @@ class ResultTable extends React.Component {
                   <td style={breakWordStyle}>{val.problemType}</td>
                   <td style={breakWordStyle}>{val.priority}</td>
                   <td style={breakWordStyle}>{val.affectedEntityId}</td>
-                  <td className='col-md-4' style={breakWordStyle}>{val.problemDescription}</td>
+                  <td className='col-md-4' style={breakWordStyle}>{val.message}</td>
                 </tr>
               )
             })}
