@@ -143,13 +143,13 @@ const projects = (state = {
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
-      let result = {}
-      action.validationResult.map(error => {
-        if (!result[error.file]) {
-          result[error.file] = []
-        }
-        result[error.file].push(error)
-      })
+      // let result = {}
+      // action.validationResult.map(error => {
+      //   if (!result[error.file]) {
+      //     result[error.file] = []
+      //   }
+      //   result[error.file].push(error)
+      // })
       return update(state,
         {all:
           {[projectIndex]:
@@ -157,7 +157,7 @@ const projects = (state = {
               {[sourceIndex]:
                 {feedVersions:
                   {[versionIndex]:
-                    {$merge: {validationResult: result}}
+                    {$merge: {validationResult: action.validationResult}}
                   }
                 }
               }

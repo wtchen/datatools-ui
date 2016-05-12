@@ -16,7 +16,13 @@ export default class GtfsValidationSummary extends React.Component {
   render () {
 
     const result = this.props.validationResult
-
+    let errors = {}
+    result && result.errors.map(error => {
+      if (!errors[error.file]) {
+        errors[error.file] = []
+      }
+      errors[error.file].push(error)
+    })
     const header = (
       <h3 onClick={() => {
         if(!result) this.props.validationResultRequested()
@@ -44,22 +50,22 @@ export default class GtfsValidationSummary extends React.Component {
           </thead>
           <ResultTable
             title='Route Issues'
-            invalidValues={result.route}
+            invalidValues={errors.route}
           />
 
           <ResultTable
             title='Stop Issues'
-            invalidValues={result.stop}
+            invalidValues={errors.stop}
           />
 
           <ResultTable
             title='Trip Issues'
-            invalidValues={result.trip}
+            invalidValues={errors.trip}
           />
 
           <ResultTable
             title='Shape Issues'
-            invalidValues={result.shape}
+            invalidValues={errors.shape}
           />
         </Table>)
     } else if (result) {

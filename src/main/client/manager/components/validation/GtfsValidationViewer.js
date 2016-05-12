@@ -2,6 +2,8 @@ import React from 'react'
 import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 
+import TripsChart from './TripsChart'
+
 export default class GtfsValidationViewer extends React.Component {
 
   constructor (props) {
@@ -25,25 +27,33 @@ export default class GtfsValidationViewer extends React.Component {
         <Glyphicon glyph='check' /> Validation Results
       </h3>
     )
-
+    const tripsChart = result && result.tripsPerDate
+      ? <TripsChart data={result.tripsPerDate}/>
+      : null
     let report = null
-
-    if (result) { // && result.loadStatus === 'SUCCESS') {
+    let errors = {}
+    result && result.errors.map(error => {
+      if (!errors[error.file]) {
+        errors[error.file] = []
+      }
+      errors[error.file].push(error)
+    })
+    if (result && errors) { // && result.loadStatus === 'SUCCESS') {
       report = (
         <div>
           <ResultTable
             title='Route Issues'
-            invalidValues={result.route}
+            invalidValues={errors.route}
           />
 
           <ResultTable
             title='Stop Issues'
-            invalidValues={result.stop}
+            invalidValues={errors.stop}
           />
 
           <ResultTable
             title='Trip Issues'
-            invalidValues={result.trip}
+            invalidValues={errors.trip}
           />
         </div>
       )
@@ -57,14 +67,17 @@ export default class GtfsValidationViewer extends React.Component {
         collapsible
         expanded={this.state.expanded}
       >
-      <p>{DT_CONFIG.modules.validator.enabled
-        ? <Button
-          onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/${this.props.version.id}`)}
-        >
-          View Map
-        </Button>
-        : ''
-      }</p>
+      <p>
+        {DT_CONFIG.modules.validator.enabled
+          ? <Button
+            onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/${this.props.version.id}`)}
+          >
+            View Map
+          </Button>
+          : ''
+        }
+      </p>
+        {tripsChart}
         {report}
       </Panel>
     )
