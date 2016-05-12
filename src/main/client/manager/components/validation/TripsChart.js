@@ -6,7 +6,7 @@ export default class TripsChart extends React.Component {
 
   render () {
     const data = Object.keys(this.props.data).map(key => [key, this.props.data[key]])
-    const WIDTH = data.length * 4
+    const WIDTH = '100%'
     const HEIGHT = 200
     const MAX_TRIPS = data.reduce((d, dPrev) => !d || dPrev[1] > d[1] ? dPrev[1] : d[1])
     // const BarChart = rd3.BarChart
@@ -15,10 +15,11 @@ export default class TripsChart extends React.Component {
         style={{
             width: '600px',
             height: HEIGHT + 20 + 'px',
-            overflowY: 'scroll'
+            overflowY: 'scroll',
+            border: '#ddd'
           }}
       >
-      <svg style={{width: WIDTH + 'px', height: HEIGHT + 'px'}}>
+      <svg style={{width: WIDTH, height: HEIGHT + 'px'}}>
         {data.map((d, index) => {
           const dow = moment(d[0]).day()
           console.log(dow)
