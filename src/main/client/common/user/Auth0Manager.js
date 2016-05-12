@@ -64,6 +64,7 @@ export default class Auth0Manager {
     return new Promise((resolve, reject) => {
       var lockOptions = {
         connections: ['Username-Password-Authentication'],
+        icon: DT_CONFIG.application.logo,
         disableSignupAction: true,
         disableResetAction: true
       }
