@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Input, Glyphicon, form } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
@@ -177,15 +177,15 @@ class FeedRow extends React.Component {
   render () {
     var buttons;
     if (this.props.feed.url){
-      // buttons = <Button {this.props.feed.url ? disabled} href={this.props.feed.url}><Glyphicon glyph="new-window" /></Button>
+      // buttons = <Button {this.props.feed.url ? disabled} href={this.props.feed.url}><Glyphicon glyph='new-window' /></Button>
     }
     return (
       <tr>
         <td>{this.props.feed.name}</td>
         <td>{moment(this.props.feed.lastUpdated).format('MMMM Do YYYY, h:mm:ss a')}</td>
         <td>
-          <Button disabled={this.props.feed.url ? false : true} href={this.props.feed.url}><Glyphicon glyph="new-window" /></Button>
-          <Button href="http://localhost:9001/"><Glyphicon glyph="edit" /></Button>
+          <Button disabled={this.props.feed.url ? false : true} href={this.props.feed.url}><Glyphicon glyph='new-window' /></Button>
+          <Button href='http://localhost:9001/'><Glyphicon glyph='edit' /></Button>
         </td>
       </tr>
     )

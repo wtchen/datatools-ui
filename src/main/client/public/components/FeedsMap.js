@@ -3,13 +3,17 @@ import { Map, Marker, Popup, TileLayer, FeatureGroup } from 'react-leaflet'
 import { Button } from 'react-bootstrap'
 
 import { getFeedsBounds } from '../../common/util/geo'
-// import { MarkerCluster } from './MarkerCluster2'
 
 export default class FeedsMap extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       bounds: this.props.bounds || [[70, 130], [-70, -130]]
+    }
+  }
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.bounds && this.props.bounds !== nextProps.bounds) {
+      this.refs.feedsMap.getLeafletElement().fitBounds(nextProps.bounds)
     }
   }
   render () {
