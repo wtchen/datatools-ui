@@ -94,9 +94,9 @@ export default class PublicFeedsViewer extends React.Component {
           </Row>
           <Row>
             <Col xs={12}>
-              {!DT_CONFIG.extensions.mtc.enabled
-                ? <FeedTable projects={this.props.projects} />
-                : null
+              {DT_CONFIG.extensions.mtc && DT_CONFIG.extensions.mtc.enabled
+                ? null
+                : <FeedTable projects={this.props.projects} />
               }
 
             </Col>
