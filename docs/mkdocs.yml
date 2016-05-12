@@ -8,9 +8,11 @@ theme: readthedocs
 pages:
 - Home: 'index.md'
 - User Guide:
-    - 'Indroduction': 'user/introduction.md'
+    - 'Introduction': 'user/introduction.md'
     - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
     - 'Managing Users': 'user/managing-users.md'
+    - 'Service Alerts Manager': 'user/service-alerts.md'
+    - 'eTID Configuration Manager': 'user/sign-config.md'
     - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
 - Development Guide:
     - 'Deployment': 'dev/deployment.md'
