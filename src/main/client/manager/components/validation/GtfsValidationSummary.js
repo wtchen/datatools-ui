@@ -31,12 +31,12 @@ export default class GtfsValidationSummary extends React.Component {
       tableLayout: 'fixed'
     }
 
-    if (result && result.loadStatus === 'SUCCESS') {
+    if (result) {
       report = (
         <Table striped style={tableStyle}>
           <thead>
             <tr>
-              <th>Entity</th>
+              <th>File</th>
               <th>Issue</th>
               <th>Priority</th>
               <th>Count</th>
@@ -44,22 +44,22 @@ export default class GtfsValidationSummary extends React.Component {
           </thead>
           <ResultTable
             title='Route Issues'
-            invalidValues={result.routes.invalidValues}
+            invalidValues={result.route}
           />
 
           <ResultTable
             title='Stop Issues'
-            invalidValues={result.stops.invalidValues}
+            invalidValues={result.stop}
           />
 
           <ResultTable
             title='Trip Issues'
-            invalidValues={result.trips.invalidValues}
+            invalidValues={result.trip}
           />
 
           <ResultTable
             title='Shape Issues'
-            invalidValues={result.shapes.invalidValues}
+            invalidValues={result.shape}
           />
         </Table>)
     } else if (result) {
@@ -83,20 +83,20 @@ class ResultTable extends React.Component {
       overflowWrap: 'break-word'
     }
     let problemMap = {}
-    this.props.invalidValues.map(val => {
-      if (!problemMap[val.problemType]) {
-        problemMap[val.problemType] = {
+    this.props.invalidValues && this.props.invalidValues.map(val => {
+      if (!problemMap[val.errorType]) {
+        problemMap[val.errorType] = {
           count: 1,
           priority: val.priority,
-          entity: val.affectedEntity,
+          file: val.file,
           affected: [val.affectedEntityId],
           description: val.problemDescription,
           data: [val.problemData],
         }
       }
-      problemMap[val.problemType].count++
-      problemMap[val.problemType].affected.push(val.affectedEntityId)
-      problemMap[val.problemType].data.push(val.problemData)
+      problemMap[val.errorType].count++
+      problemMap[val.errorType].affected.push(val.affectedEntityId)
+      problemMap[val.errorType].data.push(val.problemData)
     })
     console.log(problemMap)
     return (
@@ -105,7 +105,7 @@ class ResultTable extends React.Component {
             {Object.keys(problemMap).map((key) => {
               return (
                 <tr>
-                  <td style={breakWordStyle}>{problemMap[key].entity}</td>
+                  <td style={breakWordStyle}>{problemMap[key].file}</td>
                   <td style={breakWordStyle}>{key.replace(/([A-Z])/g, ' $1')}</td>
                   <td style={breakWordStyle}>{problemMap[key].priority}</td>
                   <td style={breakWordStyle} title={problemMap[key].affected.join(', ')}>{problemMap[key].count}</td>

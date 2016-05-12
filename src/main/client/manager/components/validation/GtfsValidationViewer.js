@@ -108,7 +108,7 @@ class ResultTable extends React.Component {
             {this.props.invalidValues.map(val => {
               return (
                 <tr>
-                  <td style={breakWordStyle}>{val.problemType}</td>
+                  <td style={breakWordStyle}>{val.errorType}</td>
                   <td style={breakWordStyle}>{val.priority}</td>
                   <td style={breakWordStyle}>{val.affectedEntityId}</td>
                   <td className='col-md-4' style={breakWordStyle}>{val.message}</td>

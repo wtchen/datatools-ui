@@ -113,8 +113,9 @@ class ValidationMap extends React.Component {
   render () {
     const version = this.props.version
     const validation = version.validationResult
+    const summary = version.validationSummary
     console.log(validation)
-    const bounds = [[validation.bounds.north, validation.bounds.east], [validation.bounds.south, validation.bounds.west]]
+    const bounds = [[summary.bounds.north, summary.bounds.east], [summary.bounds.south, summary.bounds.west]]
 
     const getIsochrones = (e) => {
       console.log(e)
@@ -125,7 +126,7 @@ class ValidationMap extends React.Component {
     const getIsochroneColor = (time) => {
       return time ? 'blue' : 'red'
     }
-    const stopIssues = validation.stops.invalidValues ? validation.stops.invalidValues.map(stop => {
+    const stopIssues = validation.stop ? validation.stop.map(stop => {
       if (!stop.problemData) return null
 
       let s1 = stop.problemData.stop1 ? stop.problemData.stop1 : null
