@@ -37,6 +37,15 @@ export default class GtfsPlusVersionSummary extends Component {
     return (this.props.gtfsplus.timestamp !== this.props.version.fileTimestamp)
   }
 
+  getGeneralValidationIssues() {
+    let issues = []
+    for(var tableId in this.props.gtfsplus.validation) {
+      let tableIssues = this.props.gtfsplus.validation[tableId].filter(issue => issue.rowIndex === -1)
+      issues = issues.concat(tableIssues)
+    }
+    return issues
+  }
+
   render () {
     const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'edit-gtfs')
     const publishingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'approve-gtfs')
@@ -48,6 +57,8 @@ export default class GtfsPlusVersionSummary extends Component {
         <Glyphicon glyph='check' /> GTFS+ for this Version
       </h3>
     )
+
+    const generalIssues = this.getGeneralValidationIssues()
 
     return (
       <Panel
@@ -87,6 +98,7 @@ export default class GtfsPlusVersionSummary extends Component {
         </Row>
         <Row>
           <Col xs={12}>
+            <h4>Field Validation Summary</h4>
             <Table striped>
               <thead>
                 <tr>
@@ -109,8 +121,31 @@ export default class GtfsPlusVersionSummary extends Component {
                 })}
               </tbody>
             </Table>
+            <h4>General Validation Issues</h4>
+            {generalIssues.length > 0
+              ? <Table striped>
+                  <thead>
+                    <tr>
+                      <th>Table</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {generalIssues.map(issue => {
+                      return (<tr>
+                        <td>{issue.tableId}</td>
+                        <td>{issue.description}</td>
+                      </tr>)
+                    })}
+                  </tbody>
+                </Table>
+              : <p><i>None Found</i></p>
+            }
+            <p>
+            </p>
           </Col>
         </Row>
+
       </Panel>
     )
   }

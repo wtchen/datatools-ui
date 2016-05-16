@@ -306,8 +306,14 @@ public class GtfsPlusController {
         JsonNode fieldsNode = tableNode.get("fields");
         for(int i = 0; i < fieldsNode.size(); i++) {
             JsonNode fieldNode = fieldsNode.get(i);
-            int index = fieldList.indexOf(fieldNode.get("name").asText());
-            if(index != -1) fieldNodes[index] = fieldNode;
+            String fieldName = fieldNode.get("name").asText();
+            int index = fieldList.indexOf(fieldName);
+            if(index != -1) {
+                fieldNodes[index] = fieldNode;
+            }
+            else {
+                issues.add(new ValidationIssue(tableId, fieldName, -1, fieldName + " column not found in table data for table " + tableId));
+            }
         }
 
         int rowIndex = 0;
