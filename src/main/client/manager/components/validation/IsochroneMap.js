@@ -27,7 +27,7 @@ export default class IsochroneMap extends ValidationMap {
         if (iso.properties.time !== 60*60) return null
         return (
           <GeoJson
-            key={index}
+            key={Math.random()}
             data={{type: 'MultiPolygon', coordinates: iso.geometry.coordinates}}
             color={'blue'}
             style={(feature) => {
