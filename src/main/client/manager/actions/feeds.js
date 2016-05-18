@@ -30,35 +30,6 @@ export function fetchProjectFeeds (projectId) {
   }
 }
 
-export function requestingFeedVersionIsochrones () {
-  return {
-    type: 'REQUESTING_FEEDVERSION_ISOCHRONES'
-  }
-}
-
-export function receiveFeedVersionIsochrones (feedSource, feedVersion, isochrones) {
-  return {
-    type: 'RECEIVE_FEEDVERSION_ISOCHRONES',
-    feedSource,
-    feedVersion,
-    isochrones
-  }
-}
-
-export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon) {
-  return function (dispatch, getState) {
-    dispatch(requestingFeedVersionIsochrones())
-    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`
-    return secureFetch(url, getState())
-      .then(response => response.json())
-      .then(isochrones => {
-        console.log('received isochrones ', isochrones)
-        dispatch(receiveFeedVersionIsochrones(feedVersion.feedSource, feedVersion, isochrones))
-        return isochrones
-      })
-  }
-}
-
 function requestingPublicFeeds () {
   return {
     type: 'REQUESTING_PUBLIC_FEEDS'
@@ -215,6 +186,10 @@ export function runFetchFeed (feedSource) {
   }
 }
 
+//**  FEED VERSION ACTIONS **//
+
+// Get all FeedVersions for FeedSource
+
 export function requestingFeedVersions () {
   return {
     type: 'REQUESTING_FEEDVERSIONS'
@@ -243,19 +218,6 @@ export function fetchFeedVersions (feedSource, unsecured) {
   }
 }
 
-// export function requestingPublicFeedVersions () {
-//   return {
-//     type: 'REQUESTING_PUBLIC_FEEDVERSIONS'
-//   }
-// }
-//
-// export function receivePublicFeedVersions (feedSource, feedVersions) {
-//   return {
-//     type: 'RECEIVE_PUBLIC_FEEDVERSIONS',
-//     feedSource,
-//     feedVersions
-//   }
-// }
 
 export function fetchPublicFeedVersions (feedSource) {
   return function (dispatch, getState) {
@@ -268,6 +230,8 @@ export function fetchPublicFeedVersions (feedSource) {
       })
   }
 }
+
+// Upload a GTFS File as a new FeedVersion
 
 export function uploadingFeed () {
   return {
@@ -295,6 +259,8 @@ export function uploadFeed (feedSource, file) {
   }
 }
 
+// Delete an existing FeedVersion
+
 export function deletingFeedVersion () {
   return {
     type: 'DELETING_FEEDVERSION'
@@ -311,6 +277,8 @@ export function deleteFeedVersion (feedSource, feedVersion, changes) {
       })
   }
 }
+
+// Get GTFS validation results for a FeedVersion
 
 export function requestingValidationResult () {
   return {
@@ -339,6 +307,39 @@ export function fetchValidationResult (feedSource, feedVersion) {
   }
 }
 
+// Request a FeedVersion isochrone
+
+export function requestingFeedVersionIsochrones () {
+  return {
+    type: 'REQUESTING_FEEDVERSION_ISOCHRONES'
+  }
+}
+
+export function receiveFeedVersionIsochrones (feedSource, feedVersion, isochrones) {
+  return {
+    type: 'RECEIVE_FEEDVERSION_ISOCHRONES',
+    feedSource,
+    feedVersion,
+    isochrones
+  }
+}
+
+export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon) {
+  return function (dispatch, getState) {
+    dispatch(requestingFeedVersionIsochrones())
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(isochrones => {
+        console.log('received isochrones ', isochrones)
+        dispatch(receiveFeedVersionIsochrones(feedVersion.feedSource, feedVersion, isochrones))
+        return isochrones
+      })
+  }
+}
+
+// Download a GTFS file for a FeedVersion
+
 export function downloadFeedViaToken (feedVersion) {
   return function (dispatch, getState) {
     const url = `/api/manager/secure/feedversion/${feedVersion.id}/downloadtoken`
@@ -350,6 +351,8 @@ export function downloadFeedViaToken (feedVersion) {
   }
 }
 
+
+//** NOTES ACTIONS **//
 
 export function requestingNotes () {
   return {

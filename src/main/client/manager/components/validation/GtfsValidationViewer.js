@@ -2,8 +2,6 @@ import React from 'react'
 import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 
-import TripsChart from './TripsChart'
-
 export default class GtfsValidationViewer extends React.Component {
 
   constructor (props) {
@@ -27,9 +25,7 @@ export default class GtfsValidationViewer extends React.Component {
         <Glyphicon glyph='check' /> Validation Results
       </h3>
     )
-    const tripsChart = result && result.tripsPerDate
-      ? <TripsChart data={result.tripsPerDate}/>
-      : null
+
     let report = null
     let errors = {}
     result && result.errors.map(error => {
@@ -70,14 +66,15 @@ export default class GtfsValidationViewer extends React.Component {
       <p>
         {DT_CONFIG.modules.validator.enabled
           ? <Button
-            onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/${this.props.version.id}`)}
-          >
-            View Map
-          </Button>
-          : ''
+              onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/validation/${this.props.version.version}`)}
+              bsSize='large'
+              bsStyle='primary'
+            >
+              Validation Explorer
+            </Button>
+          : null
         }
       </p>
-        {tripsChart}
         {report}
       </Panel>
     )

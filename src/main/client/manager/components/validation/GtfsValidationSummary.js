@@ -83,11 +83,11 @@ export default class GtfsValidationSummary extends React.Component {
 class ResultTable extends React.Component {
 
   render () {
-
     const breakWordStyle = {
       wordWrap: 'break-word',
       overflowWrap: 'break-word'
     }
+
     let problemMap = {}
     this.props.invalidValues && this.props.invalidValues.map(val => {
       if (!problemMap[val.errorType]) {
@@ -104,22 +104,20 @@ class ResultTable extends React.Component {
       problemMap[val.errorType].affected.push(val.affectedEntityId)
       problemMap[val.errorType].data.push(val.problemData)
     })
-    console.log(problemMap)
+
     return (
-      <div>
-          <tbody>
-            {Object.keys(problemMap).map((key) => {
-              return (
-                <tr>
-                  <td style={breakWordStyle}>{problemMap[key].file}</td>
-                  <td style={breakWordStyle}>{key.replace(/([A-Z])/g, ' $1')}</td>
-                  <td style={breakWordStyle}>{problemMap[key].priority}</td>
-                  <td style={breakWordStyle} title={problemMap[key].affected.join(', ')}>{problemMap[key].count}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-      </div>
+      <tbody>
+        {Object.keys(problemMap).map((key) => {
+          return (
+            <tr key={key}>
+              <td style={breakWordStyle}>{problemMap[key].file}</td>
+              <td style={breakWordStyle}>{key.replace(/([A-Z])/g, ' $1')}</td>
+              <td style={breakWordStyle}>{problemMap[key].priority}</td>
+              <td style={breakWordStyle} title={problemMap[key].affected.join(', ')}>{problemMap[key].count}</td>
+            </tr>
+          )
+        })}
+      </tbody>
     )
   }
 }
