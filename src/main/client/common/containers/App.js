@@ -2,12 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 
-import { checkExistingLogin, userLoggedIn } from '../../manager/actions/user'
+import { checkExistingLogin, userLoggedIn, login } from '../../manager/actions/user'
 // import NoAccessScreen from '../components/NoAccessScreen'
 import ActiveFeedSourceViewer from '../../manager/containers/ActiveFeedSourceViewer'
 import ActiveProjectViewer from '../../manager/containers/ActiveProjectViewer'
 import ActiveProjectsList from '../../manager/containers/ActiveProjectsList'
 import ActivePublicFeedSourceViewer from '../../public/containers/ActivePublicFeedSourceViewer'
+import ActiveDeploymentViewer from '../../manager/containers/ActiveDeploymentViewer'
 import ActivePublicFeedsViewer from '../../public/containers/ActivePublicFeedsViewer'
 import ActiveSignupPage from '../../public/containers/ActiveSignupPage'
 import ActiveUserAccount from '../../public/containers/ActiveUserAccount'
@@ -54,9 +55,15 @@ class App extends React.Component {
       .then((action) => {
         console.log('requiring auth')
         if (this.props.user.profile === null) {
-          replace(null, '/')
+          // replace(null, '/')
+          this.props.login({closable: false}, callback)
+          .then(() => {
+            callback()
+          })
         }
-        callback()
+        else {
+          callback()
+        }
       })
     }
 
@@ -89,6 +96,7 @@ class App extends React.Component {
         <Route path='/feed/:feedSourceId' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />
+        <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />
 
         <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
 
@@ -106,7 +114,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    checkExistingLogin: (callback) => dispatch(checkExistingLogin())
+    checkExistingLogin: (callback) => dispatch(checkExistingLogin()),
+    login: (options) => dispatch(login(null, null, options))
   }
 }
 

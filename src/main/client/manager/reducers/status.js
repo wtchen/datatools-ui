@@ -46,6 +46,10 @@ const config = (state = {
       return update(state, { message: { $set: 'Updating GTFS+ validation...' }})
     case 'REQUESTING_FEEDVERSION_ISOCHRONES':
       return update(state, { message: { $set: 'Calculating access shed...' }})
+    case 'REQUESTING_DEPLOYMENTS':
+      return update(state, { message: { $set: 'Loading deployments...' }})
+    case 'SET_ERROR_MESSAGE':
+      return update(state, { message: { $set: action.message }})
 
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
@@ -62,6 +66,7 @@ const config = (state = {
     case 'UPLOADED_GTFSPLUS_FEED':
     case 'RECEIVE_GTFSPLUS_VALIDATION':
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
+    case 'RECEIVE_DEPLOYMENTS':
       return update(state, { message: { $set: null }})
     default:
       return state
