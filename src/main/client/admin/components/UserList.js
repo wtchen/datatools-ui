@@ -1,7 +1,8 @@
 import React from 'react'
-import { Panel, Grid, Row, Col, Button } from 'react-bootstrap'
+import ReactDOM from 'react-dom'
+import { Panel, Grid, Row, Col, Button, FormGroup, InputGroup, FormControl, Glyphicon } from 'react-bootstrap'
 
-import CreateUser from './createuser'
+import CreateUser from './CreateUser'
 import UserSettings from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
 
@@ -11,19 +12,78 @@ export default class UserList extends React.Component {
     super(props)
   }
 
+  userSearch () {
+    this.props.userSearch(ReactDOM.findDOMNode(this.refs.searchInput).value)
+  }
+
   render () {
+
+    const headerStyle = {
+      fontSize: '18px',
+      marginLeft: '12px'
+    }
+
+    const minUserIndex = this.props.page * this.props.perPage + 1
+    const maxUserIndex = Math.min((this.props.page + 1) * this.props.perPage, this.props.userCount)
+    const maxPage = Math.ceil(this.props.userCount / this.props.perPage) - 1
+
     return (
 
       <Grid>
-        <Row>
+        <Row style={{ marginBottom: '18px' }}>
           <Col xs={12}>
             <h2>User Management</h2>
           </Col>
         </Row>
 
-        <Row>
-          <Col xs={8}>
-            <h3>All Users</h3>
+        <Row style={{ marginBottom: '18px' }}>
+          <Col xs={4}>
+            <Button
+              disabled={this.props.page <= 0}
+              onClick={() => {
+                this.props.setPage(this.props.page - 1)
+              }}
+            >
+              <Glyphicon glyph='arrow-left' />
+            </Button>
+            <Button
+              disabled={this.props.page >= maxPage}
+              onClick={() => {
+                this.props.setPage(this.props.page + 1)
+              }}
+            >
+              <Glyphicon glyph='arrow-right' />
+            </Button>
+            {this.props.userCount > 0
+              ? <span style={headerStyle}>Showing Users {minUserIndex } - {maxUserIndex} of {this.props.userCount}</span>
+              : <span style={headerStyle}>(No results to show)</span>
+            }
+          </Col>
+          <Col xs={4} className='form-inline' style={{ textAlign: 'center' }}>
+            <FormGroup>
+              <InputGroup ref='foo'>
+                <FormControl type="text"
+                  ref="searchInput"
+                  placeholder="Search by username"
+                  onKeyUp={e => {
+                    if(e.keyCode === 13) this.userSearch()
+                  }}
+                />
+                <InputGroup.Addon>
+                  <Glyphicon glyph='remove' style={{ cursor: 'pointer' }} onClick={() => {
+                    ReactDOM.findDOMNode(this.refs.searchInput).value = ''
+                    this.props.userSearch('')
+                  }}/>
+                </InputGroup.Addon>
+              </InputGroup>
+            </FormGroup>
+
+            <Button bsStyle='primary'
+              style={{ marginLeft: '8px' }}
+              onClick={e => { this.userSearch() }}
+            >
+              <Glyphicon glyph='search' />
+            </Button>
           </Col>
           <Col xs={4}>
             <CreateUser
@@ -34,18 +94,21 @@ export default class UserList extends React.Component {
           </Col>
         </Row>
 
-        {this.props.users.map((user, i) => {
-          return <UserRow
-            projects={this.props.projects}
-            user={user}
-            key={i}
-            fetchProjectFeeds={this.props.fetchProjectFeeds}
-            // setUserPermission={this.props.setUserPermission}
-            saveUser={this.props.saveUser.bind(this)}
-            deleteUser={this.props.deleteUser.bind(this)}
-            token={this.props.token}
-          />
-        })}
+        {this.props.isFetching
+          ? <Row style={{ fontSize: '18px', textAlign: 'center' }}><i>Loading...</i></Row>
+          : this.props.users.map((user, i) => {
+              return <UserRow
+                projects={this.props.projects}
+                user={user}
+                key={i}
+                fetchProjectFeeds={this.props.fetchProjectFeeds}
+                // setUserPermission={this.props.setUserPermission}
+                saveUser={this.props.saveUser.bind(this)}
+                deleteUser={this.props.deleteUser.bind(this)}
+                token={this.props.token}
+              />
+            })
+        }
 
       </Grid>
     )
@@ -98,23 +161,26 @@ class UserRow extends React.Component {
   render () {
     let permissions = new UserPermissions(this.props.user.app_metadata ? this.props.user.app_metadata.datatools : null)
     return (
-      <Panel bsStyle='primary' collapsible expanded={this.state.isEditing} header={
+      <Panel collapsible expanded={this.state.isEditing} header={
         <Row>
           <Col xs={8}>
-            <h4>{this.props.user.email}</h4>
+            <h4><Glyphicon glyph='user' /> {this.props.user.email}</h4>
           </Col>
           <Col xs={4}>
             <Button className='pull-right' onClick={this.toggleExpansion.bind(this)}>
-               {this.state.isEditing ? 'Cancel' : 'Edit'}
+               {this.state.isEditing
+                 ? <span><Glyphicon glyph='remove' /> Cancel</span>
+                 : <span><Glyphicon glyph='edit' /> Edit</span>
+               }
             </Button>
             {this.state.isEditing ?
               <Button
                 className='pull-right'
-                bsStyle='info'
+                bsStyle='primary'
                 style={{marginRight: '5px'}}
                 onClick={this.save.bind(this)}
               >
-                Save
+                <Glyphicon glyph='save' /> Save
               </Button>
               : null
             }
@@ -125,7 +191,7 @@ class UserRow extends React.Component {
                 style={{marginRight: '5px'}}
                 onClick={this.delete.bind(this)}
               >
-                Delete
+                <Glyphicon glyph='trash' /> Delete
               </Button>
               : null
             }

@@ -1,5 +1,5 @@
 import React  from 'react'
-import { Button, Modal, Input } from 'react-bootstrap'
+import { Button, Modal, Input, Glyphicon } from 'react-bootstrap'
 
 import UserSettings  from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
@@ -42,6 +42,7 @@ export default class CreateUser extends React.Component {
           onClick={this.open.bind(this)}
           className='pull-right'
         >
+          <Glyphicon glyph='plus' />&nbsp;
           Create User
         </Button>
 
