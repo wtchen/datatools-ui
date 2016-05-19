@@ -13,35 +13,27 @@ export default class UserSettings extends React.Component {
       currentProjectIndex: 0,
       projectSettings: {},
     }
-    console.log(this.props.projects)
+
     this.props.projects.forEach((project, i) => {
-      console.log(project.id)
-      console.log(this.props.permissions)
       let access = 'none'
       let defaultFeeds = []
       let permissions = []
-      console.log(this.props.permissions.hasProject(project.id))
       if(this.props.permissions.hasProject(project.id)) {
         if(this.props.permissions.isProjectAdmin(project.id)) {
-          console.log('is admin')
           access = 'admin'
         }
         else {
-          console.log('custom')
           access = 'custom'
           let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
           permissions = projectPermissions.map((p) => { return p.type })
           defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
         }
       }
-      console.log({ access, defaultFeeds, permissions })
       this.state.projectSettings[project.id] = { access, defaultFeeds, permissions }
     })
-    console.log(this.state)
   }
 
   getSettings () {
-    console.log(this.state)
     if(this.state.appAdminChecked) {
       return {
         permissions: [{
@@ -82,12 +74,11 @@ export default class UserSettings extends React.Component {
     return settings
   }
 
-  projectSelected (evt, key) {
+  projectSelected (key) {
     let currentProject = this.props.projects[key]
     this.setState({
       currentProjectIndex: key
     })
-    console.log('project selected', key, currentProject)
   }
 
   appAdminClicked () {
@@ -97,11 +88,8 @@ export default class UserSettings extends React.Component {
   }
 
   projectAccessUpdated(projectId, newAccess) {
-
     var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } };
     this.setState(update(this.state, stateUpdate));
-    console.log('project access updated', stateUpdate)
-    console.log(this.state)
   }
 
   projectFeedsUpdated(projectId, newFeeds) {
@@ -123,7 +111,7 @@ export default class UserSettings extends React.Component {
           Project Settings for&nbsp;
           <SplitButton
             title={currentProject.name}
-            onSelect={this.projectSelected.bind(this)}
+            onSelect={(key) => this.projectSelected(key)}
             pullRight
           >
             {this.props.projects.map((project, i) => {
@@ -137,7 +125,6 @@ export default class UserSettings extends React.Component {
       >
       <div></div>
       {this.props.projects.map((project, i) => {
-        // console.log(projectSettings)
         let settings = this.state.projectSettings[project.id]
         return <ProjectSettings
           project={project}
@@ -225,6 +212,16 @@ class ProjectSettings extends React.Component {
 
   render () {
     let lookup = {}
+
+    let feedSources = this.props.project.feedSources
+    if (feedSources) {
+      feedSources = feedSources.slice(0).sort((a, b) => {
+        if (a.name < b.name) return -1
+        if (a.name > b.name) return 1
+        return 0
+      })
+    }
+
     return (
       <Row style={{display: this.props.visible ? 'block' : 'none'}}>
         <Col xs={12}>
@@ -252,7 +249,7 @@ class ProjectSettings extends React.Component {
             <Row>
               <Col xs={6}>
                 <h4>Feed Sources</h4>
-                {this.props.project.feedSources ? this.props.project.feedSources.map((feed, i) => {
+                {feedSources ? feedSources.map((feed, i) => {
                   let name = (feed.name === '') ? '(unnamed feed)' : feed.name
                   let ref = 'feed-' + feed.id
                   let checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
