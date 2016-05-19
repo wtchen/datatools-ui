@@ -2,6 +2,8 @@ import React from 'react'
 import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 
+import { isModuleEnabled, isExtensionEnabled } from '../../../common/util/config'
+
 export default class GtfsValidationViewer extends React.Component {
 
   constructor (props) {
@@ -64,7 +66,7 @@ export default class GtfsValidationViewer extends React.Component {
         expanded={this.state.expanded}
       >
       <p>
-        {DT_CONFIG.modules.validator.enabled
+        {isModuleEnabled('validator')
           ? <Button
               onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/validation/${this.props.version.version}`)}
               bsSize='large'

@@ -2,9 +2,11 @@ import React, {Component, PropTypes} from 'react'
 import { Row, Col, Table, Button, Glyphicon } from 'react-bootstrap'
 import moment from 'moment'
 import { browserHistory } from 'react-router'
+
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
 import NotesViewer from './NotesViewer'
 import ActiveGtfsPlusVersionSummary from '../../gtfsplus/containers/ActiveGtfsPlusVersionSummary'
+import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 const dateFormat = 'MMM. DD, YYYY', timeFormat = 'h:MMa'
 
@@ -71,7 +73,7 @@ export default class FeedVersionViewer extends Component {
           validationResultRequested={() => { this.props.validationResultRequested(version) }}
         />
 
-        {DT_CONFIG.modules.gtfsplus && DT_CONFIG.modules.gtfsplus.enabled
+        {isModuleEnabled('gtfsplus')
           ? <ActiveGtfsPlusVersionSummary
               version={version}
             />
