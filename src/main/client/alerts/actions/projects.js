@@ -1,5 +1,4 @@
 import { secureFetch } from '../../common/util/util'
-import { DataManager } from 'datatools-common'
 
 import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
 import { fetchRtdAlerts } from './alerts'
