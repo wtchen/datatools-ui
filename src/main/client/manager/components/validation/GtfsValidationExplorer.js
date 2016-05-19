@@ -26,7 +26,6 @@ export default class GtfsValidationExplorer extends Component {
     if(this.props.version && nextProps && nextProps.version &&
         this.props.version.id !== nextProps.version.id &&
         !nextProps.version.validationResult) {
-      console.log('>>>>>>>>>>>>>>> version changed!!!!!');
       this.props.fetchValidationResult(nextProps.version)
     }
   }
@@ -91,15 +90,15 @@ export default class GtfsValidationExplorer extends Component {
           </Row>
           <Row>
             <Col xs={12}>
-              <Tabs
+              <Tabs id='validation-explorer-tabs'
                 activeKey={this.state.activeTab}
+                animation={false}
                 onSelect={(key) => {
                   this.setState({activeTab: key})
                   setTimeout(() => {
-                    console.log('tab switch', key)
                     const map = this.refs[key + '-map']
                     if(map) map.initializeMap()
-                  }, 300); // Adjust timeout to tab transition
+                  }, 100); // Adjust timeout to tab transition
                 }}
               >
                 <Tab eventKey="issues" title="Validation Issues">
@@ -121,7 +120,7 @@ export default class GtfsValidationExplorer extends Component {
                   </Row>
                 </Tab>
 
-                <Tab eventKey="isochrones" title="Accessibilty Explorer">
+                <Tab eventKey="isochrones" title="Accessibility Explorer">
                   <Row style={tabRowStyle}>
                     <Col xs={12}>
                       <IsochroneMap
