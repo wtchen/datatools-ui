@@ -1,7 +1,8 @@
-site_name: Conveyal Transit Data Tools
+site_name: Transit Data Tools Docs
 site_url: http://mtc-datatools.readthedocs.io
 repo_url: https://github.com/conveyal/datatools-manager
 theme: readthedocs
+extra_css: [style.css]
 
 pages:
 - Home: 'index.md'
