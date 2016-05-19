@@ -6,26 +6,46 @@ export function requestingUsers () {
   }
 }
 
-export function receiveUsers (users) {
+export function receiveUsers (users, totalUserCount) {
   return {
     type: 'RECEIVE_USERS',
-    users
+    users,
+    totalUserCount
   }
 }
 
 export function fetchUsers () {
   return function (dispatch, getState) {
     dispatch(requestingUsers())
-    const url = '/api/manager/secure/user'
+    const queryString = getState().admin.userQueryString
+
+    let countUrl = '/api/manager/secure/usercount'
+    if(queryString) countUrl += `?queryString=${queryString}`
+    const getCount = secureFetch(countUrl, getState())
+      .then(response => response.json())
+
+    let usersUrl = `/api/manager/secure/user?page=${getState().admin.page}`
+    if(queryString) usersUrl += `&queryString=${queryString}`
+    const getUsers = secureFetch(usersUrl, getState())
+      .then(response => response.json())
+
+    Promise.all([getCount, getUsers]).then((results) => {
+      return dispatch(receiveUsers(results[1], results[0]))
+    })
+  }
+}
+
+export function fetchUserCount () {
+  return function (dispatch, getState) {
+    dispatch(requestingUsers())
+    const url = '/api/manager/secure/user/count'
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(data => {
-        const users = JSON.parse(data)
-        return dispatch(receiveUsers(users))
+        console.log(data);
+        //const users = JSON.parse(data)
+        //return dispatch(receiveUsers(users))
       })
-      // .catch( err => {
-      //   console.log(err)
-      // })
   }
 }
 
@@ -51,7 +71,8 @@ export function createUser (credentials) {
     return secureFetch(url, getState(), 'post', credentials)
       .then(response => response.json())
       .then(profile => {
-        return dispatch(createdUser(JSON.parse(profile)))
+        dispatch(createdUser(JSON.parse(profile)))
+        return dispatch(fetchUsers())
       })
   }
 }
@@ -78,8 +99,22 @@ export function deleteUser (user) {
     return secureFetch(url, getState(), 'delete')
       .then(response => response.json())
       .then(result => {
-        return result
         dispatch(deletedUser(user))
+        return dispatch(fetchUsers())
       })
+  }
+}
+
+export function setUserPage (page) {
+  return {
+    type: 'SET_USER_PAGE',
+    page
+  }
+}
+
+export function setUserQueryString (queryString) {
+  return {
+    type: 'SET_USER_QUERY_STRING',
+    queryString
   }
 }

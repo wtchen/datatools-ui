@@ -4,8 +4,15 @@ import { connect } from 'react-redux'
 import UserAdmin from '../components/UserAdmin'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
 
+import {
+  fetchUsers,
+  createUser,
+  deleteUser,
+  setUserPage,
+  setUserQueryString
+} from '../actions/admin'
+
 import { updateUserData } from '../../manager/actions/user'
-import { fetchUsers, createUser, deleteUser } from '../actions/admin'
 import { fetchProjects } from '../../manager/actions/projects'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
 
@@ -13,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     projects: state.projects.all,
     user: state.user,
-    users: state.admin.users
+    admin: state.admin
   }
 }
 
@@ -40,7 +47,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       })
     },
     // setUserPermission: (user, permissions) => { dispatch(setUserPermission(user, permissions)) },
-    createUser: (credentials) => { dispatch(createUser(credentials)) }
+    createUser: (credentials) => { dispatch(createUser(credentials)) },
+    setPage: (page) => {
+      dispatch(setUserPage(page))
+      dispatch(fetchUsers())
+    },
+    userSearch: (queryString) => {
+      dispatch(setUserPage(0))
+      dispatch(setUserQueryString(queryString))
+      dispatch(fetchUsers())
+    }
   }
 }
 
