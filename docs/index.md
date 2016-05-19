@@ -2,7 +2,7 @@
 
 The Conveyal Transit Data Tools suite provides web-based tools for creating, managing, evaluating, and publishing transit data, specifically data stored in the General Transit Feed Specification (GTFS) format.
 
-![Screenshot](img/public-portal.png)
+![screenshot](img/public-portal.png)
 
 The following documentation is available (see full table of contents at left):
 

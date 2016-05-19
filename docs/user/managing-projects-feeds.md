@@ -4,13 +4,13 @@
 
 Projects are created from the main Project listing page. Click the "New Project" button to create a new Project; a row for the new Project will appear in the table. Type a name and click the check button (or hit Enter/Return) to finish creating the Project.
 
-![Screenshot](../img/create-project.png)
+![screenshot](../img/create-project.png)
 
 ## Managing Projects
 
 Clicking on a project in the main project listing will take you to the detailed project profile page:
 
-![Screenshot](../img/project-profile.png)
+![screenshot](../img/project-profile.png)
 
 At the top of the page is the **Project Settings** panel which can be expanded to reveal optional properties that can be specified for the project. These include the location of the project's geographic coverage area (specified either as a single coordinate or a rectangular region), the default time zone, and default language. These values, when provided, are used to populate the corresponding feed-level properties when creating new feeds within this project.
 
@@ -26,7 +26,7 @@ After a Feed Source has been created, it will appear in the Project's table of F
 
 To access all other settings for this Feed Source, click on the its name to access the full Feed Source profile page:
 
-![Screenshot](../img/feed-profile.png)
+![screenshot](../img/feed-profile.png)
 
 At the top of the page is the **Feed Source Settings** panel, which allows editing of basic Feed Source properties such as name and public visibility, and is also used to manage the retrieval of GTFS data (covered in more detail below). Any settings provided by custom extensions are also listed in this section.
 
@@ -48,6 +48,6 @@ Note: when uploading or fetching a feed, and the file being uploaded or fetched 
 
 The Feed Version navigator allows you to navigate through all available versions of a given feed using the "Next" and "Previous" buttons. You may also use this interface to download a Feed Version to your local machine as a GTFS data file and delete a Feed Version from the Data Manager. (Note: deleting a Feed Version cannot be undone.)
 
-![Screenshot](../img/feed-version-navigator.png)
+![screenshot](../img/feed-version-navigator.png)
 
 Below the navigator is information specific to the currently active version. This including basic feed statistics, the detailed feed validation report, and any user comments specific to this feed.
