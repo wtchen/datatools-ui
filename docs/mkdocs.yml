@@ -3,7 +3,7 @@ site_url: http://conveyal-data-tools.readthedocs.io
 repo_url: https://github.com/conveyal/datatools-manager
 docs_dir: ../docs
 site_dir: ../target/mkdocs
-theme: bootstrap
+theme: readthedocs
 extra_css: [style.css]
 
 pages:
