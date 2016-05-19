@@ -3,6 +3,10 @@ import { browserHistory } from 'react-router'
 
 import UserPermissions from './UserPermissions'
 
+// import '../../assets/mtc_manager_logo.png'
+
+import icon from '../../assets/application_logo.png'
+
 export default class Auth0Manager {
 
   constructor (props) {
@@ -60,13 +64,18 @@ export default class Auth0Manager {
     })
   }
 
-  loginViaLock () {
+  loginViaLock (additionalLockOptions) {
     return new Promise((resolve, reject) => {
       var lockOptions = {
         connections: ['Username-Password-Authentication'],
-        icon: DT_CONFIG.application.logo,
+        // callbackURL: DT_CONFIG.application.url,
+        icon: DT_CONFIG.application.logo ? DT_CONFIG.application.logo : icon,
         disableSignupAction: true,
-        disableResetAction: true
+        // disableResetAction: true,
+        authParams: {
+          state: window.location.href
+        },
+        ...additionalLockOptions
       }
       if (this.props.logo) lockOptions.icon = this.props.logo
       this.lock.show(lockOptions, (err, profile, token) => {
@@ -74,7 +83,6 @@ export default class Auth0Manager {
           console.log('Error w/ lock login', err)
           reject(err)
         }
-
         // save token to localStorage
         localStorage.setItem('userToken', token)
 
@@ -87,7 +95,8 @@ export default class Auth0Manager {
 
   logout () {
     localStorage.removeItem('userToken')
-    window.location.replace('https://' + this.props.domain + '/v2/logout?returnTo=' + window.location.href)
+    var redirect = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '')
+    window.location.replace('https://' + this.props.domain + '/v2/logout?returnTo=' + redirect)
   }
 
   resetPassword() {

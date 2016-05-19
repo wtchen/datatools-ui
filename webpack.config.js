@@ -29,23 +29,24 @@ module.exports = {
     })
   ],
   module: {
-    loaders: [{
-      test: /\.js?$/,
-      exclude: /node_modules/,
-      loader: 'babel'
-    }, {
-      test: /\.json?$/,
-      loader: 'json'
-    }, {
-      test: /\.yml$/,
-      loader: 'yaml'
-    // }, {
-    //   test: /\.css$/,
-    //   loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]'
-    },
+    loaders: [
+      {
+        test: /\.js?$/,
+        exclude: /node_modules/,
+        loader: 'babel'
+      }, {
+        test: /\.json?$/,
+        loader: 'json'
+      }, {
+        test: /\.yml$/,
+        loader: 'yaml'
+      // }, {
+      //   test: /\.css$/,
+      //   loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]'
+      },
       // css-loader
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.png$/, loader: 'url-loader?limit=100000' },
-      { test: /\.jpg$/, loader: 'file-loader' }]
+      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=10000'},
+    ]
   }
 }

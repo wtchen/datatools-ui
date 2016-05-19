@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 
-import { checkExistingLogin, userLoggedIn } from '../../manager/actions/user'
+import { checkExistingLogin, userLoggedIn, login } from '../../manager/actions/user'
 // import NoAccessScreen from '../components/NoAccessScreen'
 import ActiveFeedSourceViewer from '../../manager/containers/ActiveFeedSourceViewer'
 import ActiveProjectViewer from '../../manager/containers/ActiveProjectViewer'
@@ -53,9 +53,15 @@ class App extends React.Component {
       .then((action) => {
         console.log('requiring auth')
         if (this.props.user.profile === null) {
-          replace(null, '/')
+          // replace(null, '/')
+          this.props.login({closable: false}, callback)
+          .then(() => {
+            callback()
+          })
         }
-        callback()
+        else {
+          callback()
+        }
       })
     }
 
@@ -104,7 +110,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    checkExistingLogin: (callback) => dispatch(checkExistingLogin())
+    checkExistingLogin: (callback) => dispatch(checkExistingLogin()),
+    login: (options) => dispatch(login(null, null, options))
   }
 }
 

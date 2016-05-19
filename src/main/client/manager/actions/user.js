@@ -159,14 +159,16 @@ export function createPublicUser (credentials) {
   }
 }
 
-export function login (credentials, user) {
+export function login (credentials, user, lockOptions) {
   return function (dispatch, getState) {
     if (!credentials){
-      getState().user.auth0.loginViaLock().then((userInfo) => {
+      return getState().user.auth0.loginViaLock(lockOptions)
+      .then((userInfo) => {
         return dispatch(userLoggedIn(userInfo.token, userInfo.profile))
-      }).then(() => {
-        dispatch(fetchProjects())
       })
+      // .then(() => {
+      //   dispatch(fetchProjects())
+      // })
     }
     else {
       credentials.client_id = getState().config.auth0ClientId

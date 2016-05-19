@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProject } from './projects'
+import { setErrorMessage } from './status'
 
 // Feed Source Actions
 
@@ -121,18 +122,22 @@ export function updateExternalFeedResource (feedSource, resourceType, properties
 }
 
 
-export function deletingFeedSource () {
+export function deletingFeedSource (feedSource) {
   return {
-    type: 'DELETING_FEEDSOURCE'
+    type: 'DELETING_FEEDSOURCE',
+    feedSource
   }
 }
 
 export function deleteFeedSource (feedSource, changes) {
   return function (dispatch, getState) {
-    dispatch(deletingFeedSource())
+    dispatch(deletingFeedSource(feedSource))
     const url = '/api/manager/secure/feedsource/' + feedSource.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
+        // if (res.status >= 400) {
+        //   return dispatch(setErrorMessage('Error deleting feed source'))
+        // }
         return dispatch(fetchProjectFeeds(feedSource.projectId))
       })
   }
