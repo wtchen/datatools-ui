@@ -70,10 +70,14 @@ export default class UserList extends React.Component {
                   }}
                 />
                 <InputGroup.Addon>
-                  <Glyphicon glyph='remove' style={{ cursor: 'pointer' }} onClick={() => {
-                    ReactDOM.findDOMNode(this.refs.searchInput).value = ''
-                    this.props.userSearch('')
-                  }}/>
+                  <Glyphicon
+                    glyph='remove'
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      ReactDOM.findDOMNode(this.refs.searchInput).value = ''
+                      this.props.userSearch('')
+                    }}
+                  />
                 </InputGroup.Addon>
               </InputGroup>
             </FormGroup>
