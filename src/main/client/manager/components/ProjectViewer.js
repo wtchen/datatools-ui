@@ -1,14 +1,13 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import moment_tz from 'moment-timezone'
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
+import ProjectSettings from './ProjectSettings'
 import EditableTextField from '../../common/components/EditableTextField'
 import { defaultSorter, retrievalMethodString } from '../../common/util/util'
-import languages from '../../common/util/languages'
 import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 export default class ProjectViewer extends Component {
@@ -30,17 +29,6 @@ export default class ProjectViewer extends Component {
     })
   }
 
-  deleteDeployment (deployment) {
-    console.log(this.refs)
-    this.refs['page'].showConfirmModal({
-      title: 'Delete Deployment?',
-      body: `Are you sure you want to delete the deployment ${deployment.name}?`,
-      onConfirm: () => {
-        console.log('OK, deleting')
-        this.props.deleteDeploymentConfirmed(deployment)
-      }
-    })
-  }
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
@@ -80,99 +68,16 @@ export default class ProjectViewer extends Component {
             </Col>
           </Row>
 
-          <Panel
-            header={(<h3><Glyphicon glyph='cog' /> Project Settings</h3>)}
-            collapsible
-          >
-            <form>
-              <Row>
-                <Col xs={6}>
-                    <Input
-                      type="text"
-                      defaultValue={this.props.project.defaultLocationLat !== null &&  this.props.project.defaultLocationLon !== null ?
-                        `${this.props.project.defaultLocationLat},${this.props.project.defaultLocationLon}` :
-                        ''}
-                      placeholder="34.8977,-87.29987"
-                      label={(<span><Glyphicon glyph='map-marker' /> Default location (lat, lng)</span>)}
-                      ref="defaultLocation"
-                      onChange={(evt) => {
-                        const latLng = evt.target.value.split(',')
-                        console.log(latLng)
-                        if (typeof latLng[0] !== 'undefined' && typeof latLng[1] !== 'undefined')
-                          this.setState({defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]})
-                        else
-                          console.log('invalid value for latlng')
-                      }}
-                    />
-                    <Input
-                      type="text"
-                      defaultValue={this.props.project.north !== null ? `${this.props.project.west},${this.props.project.south},${this.props.project.east},${this.props.project.north}` : ''}
-                      placeholder="-88.45,33.22,-87.12,34.89"
-                      label={(<span><Glyphicon glyph='fullscreen' /> Bounding box (west, south, east, north)</span>)}
-                      ref="boundingBox"
-                      onChange={(evt) => {
-                        const bBox = evt.target.value.split(',')
-                        if (bBox.length === 4)
-                          this.setState({west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]})
-                      }}
-                    />
-                </Col>
-                <Col xs={6}>
-                  <Input type='select'
-                    label={(<span><Glyphicon glyph='time' /> Default time zone</span>)}
-                    value={this.state.defaultTimeZone || this.props.project.defaultTimeZone}
-                    onChange={(evt) => {
-                      console.log(evt.target.value);
-                      this.setState({ defaultTimeZone: evt.target.value })
-                    }}
-                  >
-                    {moment_tz.tz.names().map(tz => {
-                      return <option value={tz} key={tz}>
-                        {tz}
-                      </option>
-                    })}
-                  </Input>
+          <ProjectSettings
+            project={this.props.project}
+            updateProjectSettings={this.props.updateProjectSettings}
+            projectEditDisabled={projectEditDisabled}
+          />
 
-                  <Input type='select'
-                    label={(<span><Glyphicon glyph='globe' /> Default language</span>)}
-                    value={this.state.defaultLanguage || this.props.project.defaultLanguage}
-                    onChange={(evt) => {
-                      console.log(evt.target.value);
-                      this.setState({ defaultLanguage: evt.target.value })
-                      //this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', evt.target.value)
-                    }}
-                  >
-                    {languages.map(language => {
-                      return <option value={language.code} key={language.code}>
-                        {language.name}
-                      </option>
-                    })}
-                  </Input>
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  <ButtonInput
-                    bsStyle="primary"
-                    type="submit"
-                    disabled={projectEditDisabled}
-                    onClick={(evt) => {
-                      evt.preventDefault()
-                      console.log(this.state)
-                      console.log(this.props.project)
-                      this.props.updateProjectSettings(this.props.project, this.state)
-                    }}
-                  >
-                    Save
-                  </ButtonInput>
-                </Col>
-              </Row>
-            </form>
-          </Panel>
           {isModuleEnabled('deployment')
             ? <DeploymentsPanel
                 deployments={this.props.project.deployments}
-                deleteDeployment={this.deleteDeployment}
+                deleteDeploymentConfirmed={this.props.deleteDeploymentConfirmed}
                 deploymentsRequested={this.props.deploymentsRequested}
                 onNewDeploymentClick={this.props.onNewDeploymentClick}
                 newDeploymentNamed={this.props.newDeploymentNamed}
@@ -299,7 +204,17 @@ class DeploymentsPanel extends Component {
     super(props)
     this.state = { expanded: false }
   }
-
+  // deleteDeployment (deployment) {
+  //   console.log(this.refs)
+  //   this.refs['page'].showConfirmModal({
+  //     title: 'Delete Deployment?',
+  //     body: `Are you sure you want to delete the deployment ${deployment.name}?`,
+  //     onConfirm: () => {
+  //       console.log('OK, deleting')
+  //       this.props.deleteDeploymentConfirmed(deployment)
+  //     }
+  //   })
+  // }
   render () {
     const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
@@ -365,10 +280,10 @@ class DeploymentsPanel extends Component {
                         <td>
                           <Button
                             bsStyle='danger'
-                            bsSize='small'
+                            bsSize='xsmall'
                             /*disabled={disabled}*/
                             className='pull-right'
-                            onClick={() => this.props.deleteDeployment(dep)}
+                            onClick={() => this.props.deleteDeploymentConfirmed(dep)}
                           >
                             <Glyphicon glyph='remove' />
                           </Button>

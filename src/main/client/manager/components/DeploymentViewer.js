@@ -95,7 +95,7 @@ export default class DeploymentViewer extends Component {
             defaultExpanded={true}
           >
             <Row>
-              <Col xs={4}>
+              <Col xs={8} sm={6} md={4}>
                 <Input
                   type="text"
                   placeholder="Search by Feed Source Name"
@@ -112,12 +112,12 @@ export default class DeploymentViewer extends Component {
                     <tr>
                       <th className='col-md-4'>Name</th>
                       <th>Version</th>
-                      <th>Date retrieved</th>
-                      <th>Loaded successfully</th>
-                      <th>Error count</th>
-                      <th>Route count</th>
-                      <th>Trip count</th>
-                      <th>Stop time count</th>
+                      <th className='hidden-xs'>Date retrieved</th>
+                      <th className='hidden-xs'>Loaded successfully</th>
+                      <th className='hidden-xs'>Error count</th>
+                      <th className='hidden-xs'>Route count</th>
+                      <th className='hidden-xs'>Trip count</th>
+                      <th className='hidden-xs'>Stop time count</th>
                       <th>Valid from</th>
                       <th>Expires</th>
                       <th></th>
@@ -159,10 +159,12 @@ class FeedVersionTableRow extends Component {
     const version = this.props.version
     const result = this.props.version.validationResult
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
+    const hasVersionStyle = {cursor: 'pointer'}
+    const noVersionStyle = {color: 'lightGray'}
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     return (
       <tr key={fs.id}>
-        <td className="col-md-4">
+        <td>
           <div>
             <EditableTextField
               isEditing={(fs.isCreating === true)}
@@ -176,30 +178,58 @@ class FeedVersionTableRow extends Component {
             />
           </div>
         </td>
-        <td>
+        <td className='col-md-1 col-xs-3'>
           <Link to=''>Version {version.version}</Link>
+          <ButtonToolbar>
+            <Button
+              bsSize='xsmall'
+              bsStyle='default'
+              style={{color: 'black'}}
+              disabled={!version.previousVersionId}
+              onClick={this.props.previousVersionClicked}
+            >
+              <Glyphicon
+                glyph='menu-left'
+                style={version.previousVersionId ? hasVersionStyle : noVersionStyle}
+                title={version.previousVersionId ? 'Previous version' : 'No previous versions'}
+                alt='Previous version'
+              />
+            </Button>
+            <Button
+              bsSize='xsmall'
+              bsStyle='default'
+              style={{color: 'black'}}
+              disabled={!version.nextVersionId}
+              onClick={this.props.nextVersionClicked}
+            >
+              <Glyphicon
+                glyph='menu-right'
+                style={version.nextVersionId ? hasVersionStyle : noVersionStyle}
+                title={version.nextVersionId ? 'Next version' : 'No newer versions'}
+                alt='Next Version'
+              />
+            </Button>
+          </ButtonToolbar>
         </td>
-        <td>
+        <td className='hidden-xs'>
           {na}
         </td>
-        <td>
+        <td className='hidden-xs'>
           <Badge>{result.loadStatus}</Badge>
         </td>
-        <td>{result.errorCount}</td>
-        <td>{result.routeCount}</td>
-        <td>{result.tripCount}</td>
-        <td>{result.stopTimesCount}</td>
+        <td className='hidden-xs'>{result.errorCount}</td>
+        <td className='hidden-xs'>{result.routeCount}</td>
+        <td className='hidden-xs'>{result.tripCount}</td>
+        <td className='hidden-xs'>{result.stopTimesCount}</td>
         <td>{moment(result.startDate).format('MMM Do YYYY')} ({moment(result.startDate).fromNow()})</td>
         <td>{moment(result.endDate).format('MMM Do YYYY')} ({moment(result.endDate).fromNow()})</td>
         <td>
-          <Glyphicon style={{marginRight: '2px'}} glyph='arrow-left' />
-          <Glyphicon style={{marginLeft: '2px'}} glyph='arrow-right' />
           <Button
             bsStyle='danger'
-            bsSize='small'
+            bsSize='xsmall'
             disabled={disabled}
             className='pull-right'
-            onClick={this.props.deleteFeedSourceClicked}
+            onClick={this.props.removeFeedSourceClicked}
           >
             <Glyphicon glyph='remove' />
           </Button>

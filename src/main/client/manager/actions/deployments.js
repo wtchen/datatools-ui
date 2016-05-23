@@ -71,6 +71,18 @@ export function fetchDeploymentAndProject (id) {
   }
 }
 
+export function fetchDeploymentTargets () {
+  return function (dispatch, getState) {
+    dispatch(requestingDeploymentTargets())
+    const url = '/api/manager/secure/deployments/targets'
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(targets => {
+        return dispatch(receiveDeploymentTargets(targets))
+      })
+  }
+}
+
 export function createDeployment (projectId) {
   return {
     type: 'CREATE_DEPLOYMENT',
@@ -95,10 +107,10 @@ export function deletingDeployment (feedSource) {
 export function deleteDeployment (deployment) {
   return function (dispatch, getState) {
     dispatch(deletingDeployment(deployment))
-    const url = '/api/manager/secure/deployment/' + deployment.id
+    const url = '/api/manager/secure/deployments/' + deployment.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
-        return dispatch(fetchProjectFeeds(deployment.project.id))
+        return dispatch(fetchProjectDeployments(deployment.project.id))
       })
   }
 }

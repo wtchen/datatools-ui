@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import DeploymentViewer from '../components/DeploymentViewer'
-import { fetchDeployment, fetchDeploymentAndProject } from '../actions/deployments'
+import { fetchDeployment, fetchDeploymentAndProject, fetchDeploymentTargets } from '../actions/deployments'
 
 const mapStateToProps = (state, ownProps) => {
   let deploymentId = ownProps.routeParams.deploymentId
@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(fetchDeploymentAndProject(deploymentId))
       }
     },
-    // onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
+    onDeploymentTargetsClick: () => { dispatch(fetchDeploymentTargets()) },
     // updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))
     // thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
     // updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
