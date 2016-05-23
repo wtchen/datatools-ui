@@ -5,6 +5,8 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bo
 import { LinkContainer } from 'react-router-bootstrap'
 import { browserHistory, Link } from 'react-router'
 
+import { isModuleEnabled } from '../util/config'
+
 export default class DatatoolsNavbar extends Component {
 
   static propTypes = {
@@ -81,25 +83,25 @@ export default class DatatoolsNavbar extends Component {
                 </LinkContainer>
               : null
             }
-            {this.props.editorUrl && this.props.username
+            {isModuleEnabled('editor') && this.props.editorUrl && this.props.username
               ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
                   Editor
                 </NavItem>
               : null
             }
-            {this.props.alertsUrl && this.props.username
+            {isModuleEnabled('alerts') && this.props.alertsUrl && this.props.username
               ? <LinkContainer to={this.props.alertsUrl}>
                   <NavItem>Alerts</NavItem>
                 </LinkContainer>
               : null
             }
-            {this.props.userAdminUrl && this.props.userIsAdmin
+            {isModuleEnabled('user_admin') && this.props.userAdminUrl && this.props.userIsAdmin
               ? <LinkContainer to={this.props.userAdminUrl}>
                   <NavItem>Users</NavItem>
                 </LinkContainer>
               : null
             }
-            {this.props.signConfigUrl && this.props.username
+            {isModuleEnabled('sign_config') && this.props.signConfigUrl && this.props.username
               ? <LinkContainer to={this.props.signConfigUrl}>
                   <NavItem>eTID Config</NavItem>
                 </LinkContainer>
