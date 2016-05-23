@@ -261,8 +261,10 @@ export function saveAlert(alert) {
           AlertId: alert.id,
           AgencyId: entity.agency ? getFeedId(entity.agency) : null,
           RouteId: entity.route ? entity.route.route_id : null,
+          RouteShortName: entity.route ? entity.route.route_short_name : null,
           RouteType: entity.mode ? entity.mode.gtfsType : null,
           StopId: entity.stop ? entity.stop.stop_id : null,
+          StopCode: entity.stop ? entity.stop.stop_code : null,
           TripId: null,
           ServiceAlertTrips: []
         }
