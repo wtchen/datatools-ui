@@ -4,8 +4,6 @@ import Helmet from 'react-helmet'
 import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon } from 'react-bootstrap'
 import DisplaySelector from './DisplaySelector'
 
-import DateTimeField from 'react-bootstrap-datetimepicker'
-
 import ManagerPage from '../../common/components/ManagerPage'
 import AffectedEntity from './AffectedEntity'
 import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
