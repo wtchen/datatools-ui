@@ -1,6 +1,7 @@
 import { push } from 'react-router-redux'
 import { browserHistory } from 'react-router'
 
+import { secureFetch } from '../../common/util/util'
 import { getAlertsUrl, getFeedId } from '../../common/util/modules'
 import moment from 'moment'
 
@@ -137,7 +138,7 @@ export function setActiveAlert (alertId) {
 export function fetchRtdAlerts () {
   return function (dispatch, getState) {
     dispatch(requestRtdAlerts())
-    return fetch(getAlertsUrl()).then((res) => {
+    return secureFetch(getAlertsUrl(), getState()).then((res) => {
       return res.json()
     }).then((alerts) => {
       return dispatch(receivedRtdAlerts(alerts, getState().projects.active))
