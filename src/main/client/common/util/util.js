@@ -10,6 +10,14 @@ export function defaultSorter(a, b) {
   return 0
 }
 
+export function versionsSorter(a, b) {
+  // if(a.isCreating && !b.isCreating) return -1
+  // if(!a.isCreating && b.isCreating) return 1
+  if(a.feedSource.name < b.feedSource.name) return -1
+  if(a.feedSource.name > b.feedSource.name) return 1
+  return 0
+}
+
 export function retrievalMethodString(method) {
   switch (method) {
     case 'MANUALLY_UPLOADED': return 'Manually Uploaded'
