@@ -7,7 +7,7 @@ import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import EditableTextField from '../../common/components/EditableTextField'
-import { defaultSorter, retrievalMethodString } from '../../common/util/util'
+import { versionsSorter, retrievalMethodString } from '../../common/util/util'
 import languages from '../../common/util/languages'
 import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
@@ -19,16 +19,6 @@ export default class DeploymentViewer extends Component {
     this.state = {}
   }
 
-  deleteFeedSource (feedSource) {
-    this.refs['page'].showConfirmModal({
-      title: 'Delete Feed Source?',
-      body: `Are you sure you want to delete the feed source ${feedSource.name}?`,
-      onConfirm: () => {
-        console.log('OK, deleting')
-        this.props.deleteFeedSourceConfirmed(feedSource)
-      }
-    })
-  }
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
@@ -38,14 +28,13 @@ export default class DeploymentViewer extends Component {
     if(!this.props.deployment) {
       return <ManagerPage />
     }
+    const deployableFeeds = this.props.project.feedSources.filter(fs =>
+      this.props.deployment.feedVersions.findIndex(v => v.feedSource.id === fs.id) === -1 &&
+      fs.deployable &&
+      fs.latestValidation
+    )
+    const versions = this.props.deployment.feedVersions.sort(versionsSorter)
 
-    // const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
-    // const filteredFeedSources = this.props.project.feedSources
-    //   ? this.props.project.feedSources.filter(feedSource => {
-    //       if(feedSource.isCreating) return true // feeds actively being created are always visible
-    //       return feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1 : '[unnamed project]'
-    //     }).sort(defaultSorter)
-    //   : []
     console.log(this.props.deployment)
     return (
       <ManagerPage ref='page'>
@@ -59,6 +48,7 @@ export default class DeploymentViewer extends Component {
                 <li><Link to='/'>Explore</Link></li>
                 <li><Link to='/project'>Projects</Link></li>
                 <li><Link to={`/project/${this.props.deployment.project.id}`}>{this.props.deployment.project.name}</Link></li>
+                <li><Link to={`/project/${this.props.deployment.project.id}/deployments`}>Deployments</Link></li>
                 <li className='active'>{this.props.deployment.name}</li>
               </ul>
             </Col>
@@ -72,9 +62,17 @@ export default class DeploymentViewer extends Component {
                   >
                     <Glyphicon glyph='download' /> Download
                   </Button>
-                  <DropdownButton bsStyle='primary' title={<span><Glyphicon glyph='globe' /> Deploy</span>}>
-                    <MenuItem eventKey='1'>Production</MenuItem>
-                    <MenuItem eventKey='2'>Test</MenuItem>
+                  <DropdownButton
+                    bsStyle='primary'
+                    title={<span><Glyphicon glyph='globe' /> Deploy</span>}
+                    onSelect={(evt) => {
+                      console.log(evt)
+                      this.props.deployToTargetClicked(this.props.deployment, evt)
+                      setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
+                    }}
+                  >
+                    <MenuItem eventKey='production'>Production</MenuItem>
+                    <MenuItem eventKey='target'>Test</MenuItem>
                   </DropdownButton>
                 </ButtonToolbar>
                 <h2>
@@ -97,12 +95,29 @@ export default class DeploymentViewer extends Component {
             <Row>
               <Col xs={8} sm={6} md={4}>
                 <Input
-                  type="text"
-                  placeholder="Search by Feed Source Name"
+                  type='text'
+                  placeholder='Search by Feed Source Name'
                   onChange={evt => this.props.searchTextChanged(evt.target.value)}
                 />
               </Col>
-              <Col xs={8}>
+              <Col xs={4} sm={6} md={8}>
+                <DropdownButton
+                  bsStyle='primary'
+                  className='pull-right'
+                  disabled={!deployableFeeds.length}
+                  title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> Add Feed Source</span> : <span>All feeds added</span>}
+                  onSelect={(evt) => {
+                    console.log(evt)
+                    let feed = deployableFeeds.find(fs => fs.id === evt)
+                    this.props.addFeedVersion(this.props.deployment, {id: feed.latestVersionId})
+                  }}
+                >
+                  {
+                    deployableFeeds.map(fs => (
+                      <MenuItem eventKey={fs.id}>{fs.name}</MenuItem>
+                    ))
+                  }
+                </DropdownButton>
               </Col>
             </Row>
             <Row>
@@ -124,7 +139,7 @@ export default class DeploymentViewer extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.props.deployment.feedVersions.map((version) => {
+                    {versions.map((version) => {
                       return <FeedVersionTableRow
                         feedSource={version.feedSource}
                         version={version}
@@ -134,7 +149,8 @@ export default class DeploymentViewer extends Component {
                         user={this.props.user}
                         newFeedSourceNamed={this.props.newFeedSourceNamed}
                         feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
-                        deleteFeedSourceClicked={() => this.deleteFeedSource(version)}
+                        updateVersionForFeedSource={this.props.updateVersionForFeedSource}
+                        deleteFeedVersionClicked={this.props.deleteFeedVersion}
                       />
                     })}
                   </tbody>
@@ -165,28 +181,17 @@ class FeedVersionTableRow extends Component {
     return (
       <tr key={fs.id}>
         <td>
-          <div>
-            <EditableTextField
-              isEditing={(fs.isCreating === true)}
-              value={fs.name}
-              disabled={disabled}
-              onChange={(value) => {
-                if(fs.isCreating) this.props.newFeedSourceNamed(value)
-                else this.props.feedSourcePropertyChanged(fs, 'name', value)
-              }}
-              link={`/feed/${fs.id}`}
-            />
-          </div>
+          <Link to={`/feed/${fs.id}`}>{fs.name}</Link>
         </td>
         <td className='col-md-1 col-xs-3'>
-          <Link to=''>Version {version.version}</Link>
+          <Link to={`/feed/${fs.id}/version/${version.version - 1}`}>Version {version.version}</Link>
           <ButtonToolbar>
             <Button
               bsSize='xsmall'
               bsStyle='default'
               style={{color: 'black'}}
               disabled={!version.previousVersionId}
-              onClick={this.props.previousVersionClicked}
+              onClick={() => this.props.updateVersionForFeedSource(this.props.deployment, fs, {id: version.previousVersionId})}
             >
               <Glyphicon
                 glyph='menu-left'
@@ -200,7 +205,7 @@ class FeedVersionTableRow extends Component {
               bsStyle='default'
               style={{color: 'black'}}
               disabled={!version.nextVersionId}
-              onClick={this.props.nextVersionClicked}
+              onClick={() => this.props.updateVersionForFeedSource(this.props.deployment, fs, {id: version.nextVersionId})}
             >
               <Glyphicon
                 glyph='menu-right'
@@ -229,7 +234,7 @@ class FeedVersionTableRow extends Component {
             bsSize='xsmall'
             disabled={disabled}
             className='pull-right'
-            onClick={this.props.removeFeedSourceClicked}
+            onClick={() => this.props.deleteFeedVersionClicked(this.props.deployment, version)}
           >
             <Glyphicon glyph='remove' />
           </Button>

@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { Grid, Row, Col, ButtonGroup, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
 
 import FeedVersionViewer from './FeedVersionViewer'
 
@@ -9,15 +10,10 @@ export default class FeedVersionNavigator extends React.Component {
 
   constructor (props) {
     super(props)
-    this.state = {
-      versionIndex: 0
-    }
   }
 
   componentWillReceiveProps (nextProps) {
-    this.setState({
-      versionIndex: nextProps.versions ? nextProps.versions.length - 1 : 0
-    })
+    console.log(nextProps)
   }
 
   render () {
@@ -32,8 +28,10 @@ export default class FeedVersionNavigator extends React.Component {
     let version = null
 
     if(hasVersions) {
-      version = this.props.versions[this.state.versionIndex]
+      version = this.props.versions[this.props.versionIndex]
     }
+
+    console.log(version)
 
     return (
       <div>
@@ -48,14 +46,10 @@ export default class FeedVersionNavigator extends React.Component {
             <ButtonGroup justified>
               <Button href='#'
                 disabled={!hasVersions || !version.previousVersionId}
-                onClick={(evt) => {
-                  evt.preventDefault()
-                  this.setState({ versionIndex: this.state.versionIndex - 1 })
-                }}
+                onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex - 1}`)}
               >
                 <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> Previous</span><span className='hidden-xs hidden-sm'> Version</span>
               </Button>
-
               <Button href='#'
                 disabled={!hasVersions}
                 onClick={(evt) => {
@@ -76,13 +70,9 @@ export default class FeedVersionNavigator extends React.Component {
               >
                 <Glyphicon glyph='remove' /><span className='hidden-xs'> Delete</span><span className='hidden-xs hidden-sm'> Version</span>
               </Button>
-
               <Button href='#'
                 disabled={!hasVersions || !version.nextVersionId}
-                onClick={(evt) => {
-                  evt.preventDefault()
-                  this.setState({ versionIndex: this.state.versionIndex + 1 })
-                }}
+                onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex + 1}`)}
               >
                 <span className='hidden-xs'>Next </span><span className='hidden-xs hidden-sm'>Version </span><Glyphicon glyph='arrow-right' />
               </Button>

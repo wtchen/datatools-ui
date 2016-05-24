@@ -25,6 +25,7 @@ const mapStateToProps = (state, ownProps) => {
       ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId)
       : null,
     visibilitySearchText: state.projects.filter.searchText,
+    activeComponent: ownProps.routeParams.subpage,
     user: state.user
   }
 }

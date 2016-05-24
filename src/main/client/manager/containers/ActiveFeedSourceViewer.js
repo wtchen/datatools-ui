@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import FeedSourceViewer from '../components/FeedSourceViewer'
 
@@ -30,6 +31,7 @@ const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId
   let user = state.user
   // find the containing project
+  console.log(ownProps.routeParams)
   let project = state.projects.all
     ? state.projects.all.find(p => {
         if (!p.feedSources) return false
@@ -41,9 +43,28 @@ const mapStateToProps = (state, ownProps) => {
   if (project) {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
-
+  let feedVersionIndex
+  let routeVersionIndex = +ownProps.routeParams.feedVersionIndex
+  let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
+  if (feedSource) {
+    if ((hasVersionIndex && isNaN(routeVersionIndex)) || routeVersionIndex >= feedSource.feedVersionCount || routeVersionIndex < 0) {
+      console.log('version invalid')
+      // cannot use browserHistory.push in middle of state transition
+      // browserHistory.push(`/feed/${feedSourceId}`)
+      window.location.href = `/feed/${feedSourceId}`
+    }
+    else {
+      feedVersionIndex = hasVersionIndex
+        ? routeVersionIndex
+        : feedSource.feedVersionCount
+        ? feedSource.feedVersionCount - 1
+        : 0
+    }
+  }
+  console.log(feedVersionIndex)
   return {
     feedSource,
+    feedVersionIndex,
     project,
     user
   }
@@ -61,13 +82,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
         .then((feedSource) => {
           console.log(feedSource)
-          dispatch(fetchFeedVersions(feedSource, unsecured))
+          return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
       }
       else if(!initialProps.feedSource) {
         dispatch(fetchFeedSource(feedSourceId, unsecured))
         .then((feedSource) => {
-          dispatch(fetchFeedVersions(feedSource, unsecured))
+          return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
       }
       else if(!initialProps.feedSource.versions) {

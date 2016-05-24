@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -70,6 +70,7 @@ export default class ProjectViewer extends Component {
 
           <ProjectSettings
             project={this.props.project}
+            expanded={this.props.activeComponent === 'settings'}
             updateProjectSettings={this.props.updateProjectSettings}
             projectEditDisabled={projectEditDisabled}
           />
@@ -77,6 +78,7 @@ export default class ProjectViewer extends Component {
           {isModuleEnabled('deployment')
             ? <DeploymentsPanel
                 deployments={this.props.project.deployments}
+                expanded={this.props.activeComponent === 'deployments'}
                 deleteDeploymentConfirmed={this.props.deleteDeploymentConfirmed}
                 deploymentsRequested={this.props.deploymentsRequested}
                 onNewDeploymentClick={this.props.onNewDeploymentClick}
@@ -98,59 +100,6 @@ export default class ProjectViewer extends Component {
                 />
               </Col>
               <Col xs={8}>
-
-                {isExtensionEnabled('transitland')
-                  ? <Button
-                      bsStyle='primary'
-                      disabled={projectEditDisabled}
-                      id='TRANSITLAND'
-                      onClick={(evt) => {
-                        this.props.thirdPartySync('TRANSITLAND')
-                      }}
-                    >
-                      <Glyphicon glyph='refresh' /> transit.land
-                    </Button>
-                  : null
-                }
-
-                {isExtensionEnabled('transitfeeds')
-                  ? <Button
-                      bsStyle='primary'
-                      disabled={projectEditDisabled}
-                      id='TRANSITFEEDS'
-                      onClick={(evt) => {
-                        this.props.thirdPartySync('TRANSITFEEDS')
-                      }}
-                    >
-                      <Glyphicon glyph='refresh' /> transitfeeds.com
-                    </Button>
-                  : null
-                }
-
-                {isExtensionEnabled('mtc')
-                  ? <Button
-                      bsStyle='primary'
-                      disabled={projectEditDisabled}
-                      id='MTC'
-                      onClick={(evt) => {
-                        this.props.thirdPartySync('MTC')
-                      }}
-                    >
-                      <Glyphicon glyph='refresh' /> MTC
-                    </Button>
-                  : null
-                }
-
-                <Button
-                  bsStyle='default'
-                  disabled={projectEditDisabled}
-                  onClick={() => {
-                    console.log(this.props.project)
-                    this.props.updateAllFeeds(this.props.project)
-                  }}
-                >
-                  <Glyphicon glyph='refresh' /> Update all feeds
-                </Button>
                 <Button
                   bsStyle='primary'
                   disabled={projectEditDisabled}
@@ -159,6 +108,57 @@ export default class ProjectViewer extends Component {
                 >
                   New Feed Source
                 </Button>
+                <ButtonToolbar>
+                  {isExtensionEnabled('transitland')
+                    ? <Button
+                        bsStyle='primary'
+                        disabled={projectEditDisabled}
+                        id='TRANSITLAND'
+                        onClick={(evt) => {
+                          this.props.thirdPartySync('TRANSITLAND')
+                        }}
+                      >
+                        <Glyphicon glyph='refresh' /> transit.land
+                      </Button>
+                    : null
+                  }
+                  {isExtensionEnabled('transitfeeds')
+                    ? <Button
+                        bsStyle='primary'
+                        disabled={projectEditDisabled}
+                        id='TRANSITFEEDS'
+                        onClick={(evt) => {
+                          this.props.thirdPartySync('TRANSITFEEDS')
+                        }}
+                      >
+                        <Glyphicon glyph='refresh' /> transitfeeds.com
+                      </Button>
+                    : null
+                  }
+                  {isExtensionEnabled('mtc')
+                    ? <Button
+                        bsStyle='primary'
+                        disabled={projectEditDisabled}
+                        id='MTC'
+                        onClick={(evt) => {
+                          this.props.thirdPartySync('MTC')
+                        }}
+                      >
+                        <Glyphicon glyph='refresh' /> MTC
+                      </Button>
+                    : null
+                  }
+                  <Button
+                    bsStyle='default'
+                    disabled={projectEditDisabled}
+                    onClick={() => {
+                      console.log(this.props.project)
+                      this.props.updateAllFeeds(this.props.project)
+                    }}
+                  >
+                    <Glyphicon glyph='refresh' /> Update all
+                  </Button>
+                </ButtonToolbar>
               </Col>
             </Row>
             <Row>
@@ -202,7 +202,13 @@ export default class ProjectViewer extends Component {
 class DeploymentsPanel extends Component {
   constructor (props) {
     super(props)
-    this.state = { expanded: false }
+    console.log(this.props.expanded)
+    this.state = { expanded: this.props.expanded }
+  }
+  componentWillMount () {
+    if (this.props.expanded) {
+      this.props.deploymentsRequested()
+    }
   }
   // deleteDeployment (deployment) {
   //   console.log(this.refs)
@@ -230,6 +236,7 @@ class DeploymentsPanel extends Component {
           </h3>
         )}
         collapsible
+        expanded={this.state.expanded}
       >
         <Row>
           <Col xs={12}>

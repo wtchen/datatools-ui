@@ -48,6 +48,10 @@ const config = (state = {
       return update(state, { message: { $set: 'Calculating access shed...' }})
     case 'REQUESTING_DEPLOYMENTS':
       return update(state, { message: { $set: 'Loading deployments...' }})
+    case 'REQUESTING_DEPLOYMENT':
+      return update(state, { message: { $set: 'Loading deployment...' }})
+    case 'SAVING_DEPLOYMENT':
+      return update(state, { message: { $set: 'Saving deployment...' }})
     case 'SET_ERROR_MESSAGE':
       return update(state, { message: { $set: action.message }})
 
@@ -67,6 +71,7 @@ const config = (state = {
     case 'RECEIVE_GTFSPLUS_VALIDATION':
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
     case 'RECEIVE_DEPLOYMENTS':
+    case 'RECEIVE_DEPLOYMENT':
       return update(state, { message: { $set: null }})
     default:
       return state

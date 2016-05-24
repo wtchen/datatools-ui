@@ -247,7 +247,6 @@ export default class FeedSourceViewer extends React.Component {
 
               <Col xs={12} sm={6}>
                 {Object.keys(fs.externalProperties || {}).map(resourceType => {
-                  console.log('>> resourceType=' + resourceType);
                   return (<ExternalPropertiesTable
                     resourceType={resourceType}
                     editingIsDisabled={disabled}
@@ -277,6 +276,7 @@ export default class FeedSourceViewer extends React.Component {
             <FeedVersionNavigator
               versions={fs.feedVersions}
               feedSource={fs}
+              versionIndex={this.props.feedVersionIndex}
               user={this.props.user}
               updateUserSubscription={this.props.updateUserSubscription}
               updateDisabled={disabled}

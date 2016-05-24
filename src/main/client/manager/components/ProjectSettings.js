@@ -14,17 +14,20 @@ export default class ProjectSettings extends Component {
     super(props)
     this.state = {
       general: {},
-      deployment: {}
+      deployment: {
+        buildConfig: {},
+        routerConfig: {}
+      }
     }
   }
 
   componentWillReceiveProps (nextProps) {
-
   }
 
   render () {
     const tabRowStyle = { marginTop: '20px' }
     const project = this.props.project
+    const autoFetchChecked = typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds
     const projectEditDisabled = this.props.projectEditDisabled
     const defaultFetchTime = moment().startOf('day').add(2, 'hours')
     console.log(this.state)
@@ -33,6 +36,7 @@ export default class ProjectSettings extends Component {
       <Panel
         header={(<h3><Glyphicon glyph='cog' /> Project Settings</h3>)}
         collapsible
+        defaultExpanded={this.props.expanded}
       >
         <Tabs id='project-settings-tabs'
           animation={false}
@@ -123,7 +127,7 @@ export default class ProjectSettings extends Component {
                     <Col xs={6}>
                       <h4>Updates</h4>
                       <Checkbox
-                        checked={typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds}
+                        checked={autoFetchChecked}
                         onChange={(evt) => {
                           let minutes = moment(defaultFetchTime).minutes()
                           let hours = moment(defaultFetchTime).hours()
@@ -133,12 +137,15 @@ export default class ProjectSettings extends Component {
                       >
                         Auto fetch feed sources?
                       </Checkbox>
-                      {typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds
+                      {autoFetchChecked
                         ? <DateTimeField
-                            dateTime={project.autoFetchMinute !== null ? moment().startOf('day').add(project.autoFetchHour, 'hours').add(project.autoFetchMinute, 'minutes') : defaultFetchTime}
+                            dateTime={project.autoFetchMinute !== null
+                              ? +moment().startOf('day').add(project.autoFetchHour, 'hours').add(project.autoFetchMinute, 'minutes')
+                              : defaultFetchTime
+                            }
                             mode='time'
-                            onChange={time => {
-                              console.log(time)
+                            onChange={seconds => {
+                              let time = moment(+seconds)
                               let minutes = moment(time).minutes()
                               let hours = moment(time).hours()
                               let stateUpdate = { general: { $merge: { autoFetchMinute: minutes, autoFetchHour: hours } } }
@@ -182,9 +189,9 @@ export default class ProjectSettings extends Component {
                       type='select'
                       defaultValue={project.buildConfig && project.buildConfig.fetchElevationUS ? project.buildConfig.fetchElevationUS : ''}
                       label='Fetch Elevation'
-                      ref='elevation'
+                      ref='fetchElevationUS'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { elevation: evt.target.value } } }
+                        let stateUpdate = { deployment: { buildConfig: { fetchElevationUS: { $set: (evt.target.value === 'true') } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     >
@@ -199,7 +206,7 @@ export default class ProjectSettings extends Component {
                       label='Sta. Transfers'
                       ref='stationTransfers'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { stationTransfers: evt.target.value } } }
+                        let stateUpdate = { deployment: { buildConfig: { stationTransfers: { $set: (evt.target.value === 'true') } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     >
@@ -215,7 +222,7 @@ export default class ProjectSettings extends Component {
                       label='Subway Access Time'
                       ref='subwayAccessTime'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { subwayAccessTime: evt.target.value } } }
+                        let stateUpdate = { deployment: { buildConfig: { subwayAccessTime: { $set: +evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -226,7 +233,7 @@ export default class ProjectSettings extends Component {
                       label='Fares'
                       ref='fares'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { fares: evt.target.value } } }
+                        let stateUpdate = { deployment: { buildConfig: { fares: { $set: evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -242,7 +249,7 @@ export default class ProjectSettings extends Component {
                       label='# of Itineraries'
                       ref='numItineraries'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { routerConfig: { $merge: { numItineraries: evt.target.value } } } } }
+                        let stateUpdate = { deployment: {routerConfig: { numItineraries: { $set: +evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -255,7 +262,7 @@ export default class ProjectSettings extends Component {
                       label='Walk Speed'
                       ref='walkSpeed'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { routerConfig: { $merge: { walkSpeed: evt.target.value } } } } }
+                        let stateUpdate = { deployment: {routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -270,7 +277,7 @@ export default class ProjectSettings extends Component {
                       label='Stairs Reluctance'
                       ref='stairsReluctance'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { routerConfig: { $merge: { stairsReluctance: evt.target.value } } } } }
+                        let stateUpdate = { deployment: {routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -283,7 +290,7 @@ export default class ProjectSettings extends Component {
                       label='Car Dropoff Time'
                       ref='carDropoffTime'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { routerConfig: { $merge: { carDropoffTime: evt.target.value } } } } }
+                        let stateUpdate = { deployment: {routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -296,7 +303,7 @@ export default class ProjectSettings extends Component {
                       label='Branding URL Root'
                       ref='brandingUrlRoot'
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { $merge: { routerConfig: { $merge: { brandingUrlRoot: evt.target.value } } } } }
+                        let stateUpdate = { deployment: {routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
@@ -313,27 +320,26 @@ export default class ProjectSettings extends Component {
                     <h4>OSM Extract</h4>
                     <FormGroup
                       onChange={(evt) => {
-                        console.log(evt.target.value);
-                        this.setState({ useCustomOsmBounds: (evt.target.value === 'true') })
-                        //this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', evt.target.value)
+                        let stateUpdate = { deployment: {useCustomOsmBounds: { $set: (evt.target.value === 'true') } } }
+                        this.setState(update(this.state, stateUpdate))
                       }}
                     >
                       <Radio
                         name='osm-extract'
-                        checked={typeof this.state.deployment.useCustomOsmBounds !== 'undefined' ? !this.state.useCustomOsmBounds : !project.useCustomOsmBounds}
+                        checked={typeof this.state.deployment.useCustomOsmBounds !== 'undefined' ? !this.state.deployment.useCustomOsmBounds : !project.useCustomOsmBounds}
                         value={false}
                       >
                         Use GTFS-Derived Extract Bounds
                       </Radio>
                       <Radio
                         name='osm-extract'
-                        checked={typeof this.state.useCustomOsmBounds !== 'undefined' ? this.state.useCustomOsmBounds : project.useCustomOsmBounds}
+                        checked={typeof this.state.deployment.useCustomOsmBounds !== 'undefined' ? this.state.deployment.useCustomOsmBounds : project.useCustomOsmBounds}
                         value={true}
                       >
                         Use Custom Extract Bounds
                       </Radio>
                     </FormGroup>
-                    {project.useCustomOsmBounds || this.state.useCustomOsmBounds
+                    {project.useCustomOsmBounds || this.state.deployment.useCustomOsmBounds
                       ? <Input
                           type='text'
                           defaultValue={project.osmNorth !== null ? `${project.osmWest},${project.osmSouth},${project.osmEast},${project.osmNorth}` : ''}
@@ -342,8 +348,10 @@ export default class ProjectSettings extends Component {
                           ref='osmBounds'
                           onChange={(evt) => {
                             const bBox = evt.target.value.split(',')
-                            if (bBox.length === 4)
-                              this.setState({osmWest: bBox[0], osmSouth: bBox[1], osmEast: bBox[2], osmNorth: bBox[3]})
+                            if (bBox.length === 4){
+                              let stateUpdate = { deployment: { $merge: { osmWest: bBox[0], osmSouth: bBox[1], osmEast: bBox[2], osmNorth: bBox[3] } } }
+                              this.setState(update(this.state, stateUpdate))
+                            }
                           }}
                         />
                       : null
@@ -360,7 +368,7 @@ export default class ProjectSettings extends Component {
                         evt.preventDefault()
                         console.log(this.state)
                         console.log(project)
-                        this.props.updateProjectSettings(project, this.state)
+                        this.props.updateProjectSettings(project, this.state.deployment)
                       }}
                     >
                       Save

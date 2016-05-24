@@ -30,6 +30,35 @@ export function fetchProjectDeployments (projectId) {
   }
 }
 
+export function deployingToTarget (deployment, target) {
+  return {
+    type: 'DEPLOYING_TO_TARGET',
+    deployment,
+    target
+  }
+}
+
+export function deployedToTarget (deployment, target) {
+  return {
+    type: 'DEPLOYED_TO_TARGET',
+    deployment,
+    target
+  }
+}
+
+export function deployToTarget (deployment, target) {
+  return function (dispatch, getState) {
+    dispatch(deployingToTarget(deployment, target))
+    const url = `/api/manager/secure/deployments/${deployment.id}/deploy/${target}`
+    return secureFetch(url, getState(), 'post')
+      .then(response => response.json())
+      .then(() => {
+        dispatch(deployedToTarget(deployment, target))
+      })
+  }
+}
+
+
 export function requestingDeployment () {
   return {
     type: 'REQUESTING_DEPLOYMENT'
@@ -41,6 +70,33 @@ export function receiveDeployment (projectId, deployment) {
     type: 'RECEIVE_DEPLOYMENT',
     projectId,
     deployment
+  }
+}
+
+export function requestingDeploymentStatus () {
+  return {
+    type: 'REQUESTING_DEPLOYMENT_STATUS'
+  }
+}
+
+export function receiveDeploymentStatus (deployment, status) {
+  return {
+    type: 'RECEIVE_DEPLOYMENT_STATUS',
+    deployment,
+    status
+  }
+}
+
+export function fetchDeploymentStatus (deployment, target) {
+  return function (dispatch, getState) {
+    dispatch(requestingDeploymentStatus())
+    const url = `/api/manager/secure/deployments/status/${deployment.id}?target=${target}`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(status => {
+        console.log(status)
+        dispatch(receiveDeploymentStatus(deployment, status))
+      })
   }
 }
 
@@ -129,6 +185,18 @@ export function saveDeployment (props) {
       .then(deployment => {
         console.log('received feeds for project', deployment)
         dispatch(fetchProjectDeployments(deployment.project.id))
+      })
+  }
+}
+
+export function updateDeployment (deployment, changes) {
+  return function (dispatch, getState) {
+    dispatch(savingDeployment())
+    const url = '/api/manager/secure/deployments/' + deployment.id
+    return secureFetch(url, getState(), 'put', changes)
+      .then(response => response.json())
+      .then(deployment => {
+        dispatch(fetchDeployment(deployment.id))
       })
   }
 }
