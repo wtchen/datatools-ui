@@ -1,5 +1,6 @@
 import React  from 'react'
-import { Input, Glyphicon, Button } from 'react-bootstrap'
+import ReactDOM from 'react-dom'
+import { FormControl, InputGroup, FormGroup, Glyphicon, Button } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 export default class EditableTextField extends React.Component {
@@ -24,28 +25,36 @@ export default class EditableTextField extends React.Component {
   }
 
   save () {
-    const value = this.refs['input'].getValue()
+    console.log(this.refs['input'])
+    console.log(this.refs)
+    const value = ReactDOM.findDOMNode(this.refs.input).value
     if (value === this.state.value) {
       this.cancel()
       return
     }
-    if(this.props.onChange) {
+    if (this.props.onChange) {
+      console.log('saving... ' + value)
       this.props.onChange(value)
     }
-
     this.setState({
       isEditing: false,
       value
     })
+
   }
-  cancel () {
+  cancel (e) {
+    console.log(e.target)
     this.setState({
       isEditing: false
     })
   }
-  handleKeyUp (e) {
+  handleKeyDown (e) {
     // if [Enter] is pressed
     if (e.keyCode == 13) {
+      e.preventDefault()
+      this.setState({
+        isEditing: false
+      })
       this.save()
     }
     // if [Esc] is pressed
@@ -59,15 +68,20 @@ export default class EditableTextField extends React.Component {
       cursor: 'pointer'
     }
 
-    const saveIcon = (
-      <Button
-        onClick={() => this.save()}
-      >
-      <Glyphicon
-        glyph='ok'
-        style={iconStyle}
-      />
-      </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
+    const saveButton = (
+      <InputGroup.Button>
+        <Button
+          onClick={(evt) => {
+            evt.preventDefault()
+            this.save()
+          }}
+        >
+        <Glyphicon
+          glyph='ok'
+          style={iconStyle}
+        />
+        </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
+      </InputGroup.Button>
     )
     const displayValue = this.props.maxLength !== null && this.state.value && this.state.value.length > this.props.maxLength
           ? this.state.value.substr(0, this.props.maxLength) + '...'
@@ -75,17 +89,20 @@ export default class EditableTextField extends React.Component {
     return (
       <div>
         {this.state.isEditing
-          ? <span>
-              <Input
-                ref='input'
-                type='text'
-                autoFocus='true'
-                onKeyUp={(e) => this.handleKeyUp(e)}
-                onFocus={(e) => e.target.select()}
-                defaultValue={ this.state.value }
-                buttonAfter={saveIcon}
-              />
-            </span>
+          ? <FormGroup>
+              <InputGroup>
+                <FormControl
+                  ref='input'
+                  type='text'
+                  autoFocus='true'
+                  onKeyDown={(e) => this.handleKeyDown(e)}
+                  onFocus={(e) => e.target.select()}
+                  /*onBlur={(e) => this.cancel(e)}*/
+                  defaultValue={ this.state.value }
+                />
+                {saveButton}
+              </InputGroup>
+            </FormGroup>
 
           : <span
               title={this.state.value}
@@ -96,7 +113,10 @@ export default class EditableTextField extends React.Component {
               }
               &nbsp;&nbsp;
               <Button bsStyle='link'
-                onClick={() => this.edit()}
+                onClick={(evt) => {
+                  evt.preventDefault()
+                  this.edit()
+                }}
                 disabled={this.props.disabled !== null ? this.props.disabled : false}
               >
                 <Glyphicon
