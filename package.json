@@ -17,6 +17,7 @@
     "cors": "^2.3.1",
     "express": "^4.13.3",
     "express-jwt": "^3.3.0",
+    "file-loader": "^0.8.5",
     "history": "^2.0.1",
     "isomorphic-fetch": "^2.2.1",
     "jszip": "^3.0.0",
@@ -42,6 +43,7 @@
     "redux-auth-wrapper": "^0.3.0",
     "redux-thunk": "^2.0.1",
     "request": "^2.67.0",
+    "url-loader": "^0.5.7",
     "yaml-loader": "^0.1.0"
   },
   "devDependencies": {
