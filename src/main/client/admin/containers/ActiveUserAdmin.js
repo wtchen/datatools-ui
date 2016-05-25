@@ -29,9 +29,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       if (!initialProps.users)
         dispatch(fetchUsers())
-      if (!initialProps.projects) {
-        dispatch(fetchProjects())
-      }
+
+      // always load projects to prevent interference with public feeds viewer loading of projects
+      dispatch(fetchProjects())
     },
     fetchProjectFeeds: (project) => { dispatch(fetchProjectFeeds(project)) },
     saveUser: (user, permissions) => {
