@@ -39,11 +39,16 @@ export default class UserSettings extends React.Component {
         permissions: [{
           type: 'administer-application'
         }],
-        projects: []
+        projects: [],
+        client_id: DT_CONFIG.auth0.client_id
       }
     }
 
-    let settings = { permissions: [], projects: [] }
+    let settings = {
+      permissions: [],
+      projects: [],
+      client_id: DT_CONFIG.auth0.client_id
+    }
 
     this.props.projects.forEach((project, i) => {
       let stateProjectSettings = this.state.projectSettings[project.id]

@@ -163,7 +163,7 @@ class UserRow extends React.Component {
   }
 
   render () {
-    let permissions = new UserPermissions(this.props.user.app_metadata ? this.props.user.app_metadata.datatools : null)
+    let permissions = new UserPermissions(this.props.user.app_metadata && this.props.user.app_metadata.datatools ? this.props.user.app_metadata.datatools : null)
     return (
       <Panel collapsible expanded={this.state.isEditing} header={
         <Row>
