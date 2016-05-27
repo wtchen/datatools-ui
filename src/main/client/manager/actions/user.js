@@ -57,7 +57,7 @@ export function fetchUser (user) {
 
 export function removeUserSubscription (profile, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.subscriptions || [{type: subscriptionType, target: []}]
+    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions || [{type: subscriptionType, target: []}]
     let index = subscriptions.findIndex(sub => sub.type === subscriptionType)
     if (index > -1) {
       subscriptions.splice(index, 1)
@@ -70,7 +70,7 @@ export function removeUserSubscription (profile, subscriptionType) {
 
 export function updateTargetForSubscription (profile, target, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.subscriptions || [{type: subscriptionType, target: []}]
+    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions || [{type: subscriptionType, target: []}]
     if (subscriptions.findIndex(sub => sub.type === subscriptionType) === -1) {
       subscriptions.push({type: subscriptionType, target: []})
     }
