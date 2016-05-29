@@ -59,6 +59,7 @@ export default class DeploymentViewer extends Component {
                 <ButtonToolbar className='pull-right'>
                   <Button
                     bsStyle='default'
+                    onClick={() => this.props.downloadDeployment(this.props.deployment)}
                   >
                     <span><Glyphicon glyph='download' /> Download</span>
                   </Button>
