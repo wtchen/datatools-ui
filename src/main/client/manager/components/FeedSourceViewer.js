@@ -1,7 +1,7 @@
 import fetch  from 'isomorphic-fetch'
 import React  from 'react'
 import Helmet from 'react-helmet'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, ButtonToolbar } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 
 import ManagerPage  from '../../common/components/ManagerPage'
@@ -10,6 +10,7 @@ import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable  from './ExternalPropertiesTable'
 import FeedVersionNavigator  from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
+import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -109,19 +110,31 @@ export default class FeedSourceViewer extends React.Component {
                   ? <span><small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small> &nbsp;</span>
                   : null
                 }
-                {
-                  DT_CONFIG.application.notifications_enabled ?
-                  <Button
-                    className={`pull-right`}
-                    onClick={() => { this.props.updateUserSubscription(this.props.user.profile, fs.id, 'feed-updated') }}
-                  >
-                    {
-                      isWatchingFeed ? <span><Glyphicon glyph='eye-close'/> Unwatch</span>
-                      : <span><Glyphicon glyph='eye-open'/> Watch</span>
-                    }
-                  </Button>
-                  : null
-                }
+                <ButtonToolbar
+                  className={`pull-right`}
+                >
+                  {isModuleEnabled('deployment')
+                    ? <Button
+                        bsStyle='primary'
+                        disabled={disabled || (fs.feedVersionCount === 0)}
+                        onClick={() => { this.props.createDeployment(fs) }}
+                      >
+                        <Glyphicon glyph='globe'/> Deploy
+                      </Button>
+                    : null
+                  }
+                  {DT_CONFIG.application.notifications_enabled
+                    ? <Button
+                        onClick={() => { this.props.updateUserSubscription(this.props.user.profile, fs.id, 'feed-updated') }}
+                      >
+                        {
+                          isWatchingFeed ? <span><Glyphicon glyph='eye-close'/> Unwatch</span>
+                          : <span><Glyphicon glyph='eye-open'/> Watch</span>
+                        }
+                      </Button>
+                    : null
+                  }
+                </ButtonToolbar>
               </h2>
             </Col>
           </Row>
@@ -237,6 +250,20 @@ export default class FeedSourceViewer extends React.Component {
                           defaultChecked={fs.isPublic}
                           onChange={(e) => {
                             this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
+                          }}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Deployable?</td>
+                      <td>
+                        <Input
+                          type='checkbox'
+                          label='&nbsp;'
+                          disabled={disabled}
+                          defaultChecked={fs.deployable}
+                          onChange={(e) => {
+                            this.props.feedSourcePropertyChanged(fs, 'deployable', e.target.checked)
                           }}
                         />
                       </td>
