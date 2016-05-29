@@ -112,6 +112,19 @@ export function fetchDeployment (id) {
   }
 }
 
+export function downloadDeployment (deployment) {
+  return function (dispatch, getState) {
+    // dispatch(downloadingDeployment())
+    const url = '/api/manager/secure/deployments/' + deployment.id + '/download'
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(deployment => {
+        console.log(deployment)
+        // dispatch(receiveDeployment(deployment.project.id, deployment))
+      })
+  }
+}
+
 export function fetchDeploymentAndProject (id) {
   return function (dispatch, getState) {
     dispatch(requestingDeployment())
