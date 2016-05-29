@@ -133,9 +133,18 @@ export function fetchFeedSource(feedSourceId, fetchVersions) {
     dispatch(requestingFeedSource())
     const url = '/api/manager/secure/feedsource/' + feedSourceId
     return secureFetch(url, getState())
-      .then(response => response.json())
+      .then(res => {
+        if (res.status >= 400) {
+          dispatch(setErrorMessage('Error getting feed source'))
+          return null
+        }
+        return res.json()
+      })
       .then(feedSource => {
-        console.log('got feedSource', feedSource);
+        if (!feedSource) {
+          return null
+        }
+        console.log('got feedSource', feedSource)
         dispatch(receiveFeedSource(feedSource))
         if(fetchVersions) dispatch(fetchFeedVersions(feedSource))
         return feedSource
