@@ -43,18 +43,13 @@ export default class EditableTextField extends React.Component {
 
   }
   cancel (e) {
-    console.log(e.target)
     this.setState({
       isEditing: false
     })
   }
   handleKeyDown (e) {
-    // if [Enter] is pressed
-    if (e.keyCode == 13) {
-      e.preventDefault()
-      this.setState({
-        isEditing: false
-      })
+    // if [Enter] or [Tab] is pressed
+    if ((e.keyCode == 9 || e.keyCode == 13) && this.state.isEditing) {
       this.save()
     }
     // if [Esc] is pressed
