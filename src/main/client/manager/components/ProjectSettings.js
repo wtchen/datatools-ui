@@ -4,7 +4,7 @@ import moment_tz from 'moment-timezone'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
 
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, form, Tabs, Tab, Radio, Checkbox, FormGroup } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import languages from '../../common/util/languages'
 import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
@@ -16,7 +16,8 @@ export default class ProjectSettings extends Component {
       general: {},
       deployment: {
         buildConfig: {},
-        routerConfig: {}
+        routerConfig: {},
+        otpServers: this.props.project && this.props.project.otpServers ? this.props.project.otpServers : []
       }
     }
   }
@@ -25,13 +26,12 @@ export default class ProjectSettings extends Component {
   }
 
   render () {
+    console.log(this.state)
     const tabRowStyle = { marginTop: '20px' }
     const project = this.props.project
     const autoFetchChecked = typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds
     const projectEditDisabled = this.props.projectEditDisabled
     const defaultFetchTime = moment().startOf('day').add(2, 'hours')
-    console.log(this.state)
-    console.log(project)
     return (
       <Panel
         header={(<h3><Glyphicon glyph='cog' /> Project Settings</h3>)}
@@ -45,7 +45,7 @@ export default class ProjectSettings extends Component {
           <Tab eventKey='general' title='General'>
             <Row style={tabRowStyle}>
               <Col xs={12}>
-                <form>
+                <Form>
                   <Row>
                     <Col xs={6}>
                       <h4>Location</h4>
@@ -173,7 +173,7 @@ export default class ProjectSettings extends Component {
                       </Button>
                     </Col>
                   </Row>
-                </form>
+                </Form>
               </Col>
             </Row>
           </Tab>
@@ -310,10 +310,94 @@ export default class ProjectSettings extends Component {
                   </Col>
                   <Col md={3}>
                     <div>
-                    <Button className='pull-right' bsStyle='success' bsSize='xsmall'>
+                    <Button
+                      className='pull-right'
+                      bsStyle='success'
+                      bsSize='xsmall'
+                      onClick={() => {
+                        let stateUpdate = { deployment: {otpServers: { $push: [{name: '', publicUrl: '', internalUrl: [], admin: false}] } } }
+                        this.setState(update(this.state, stateUpdate))
+                      }}
+                    >
                       <Glyphicon glyph='plus'/> Add server
                     </Button>
                     <h4>Servers</h4>
+                    {this.state.deployment.otpServers.map((server, i) => {
+                      let title = (
+                        <h5>
+                          {server.name}{'  '}
+                          <small>{server.publicUrl}</small>
+                        </h5>
+                      )
+                      return (
+                        <Panel
+                          header={server.name ? title : '[Server name]'}
+                          defaultExpanded={server.name === ''}
+                          collapsible
+                        >
+                          <Form>
+                            <Button
+                              bsSize='xsmall'
+                              bsStyle='danger'
+                              className='pull-right'
+                              onClick={() => {
+                                let stateUpdate = { deployment: {otpServers: {$splice: [[i, 1]] } } }
+                                this.setState(update(this.state, stateUpdate))
+                              }}
+                            >
+                              Remove <Glyphicon glyph='remove'/>
+                            </Button>
+                            <FormGroup>
+                              <ControlLabel>Name</ControlLabel>
+                              <FormControl
+                                type='text'
+                                placeholder='Production'
+                                defaultValue={server.name}
+                                onChange={(evt) => {
+                                  let stateUpdate = { deployment: {otpServers: {[i]: {$merge: { name: evt.target.value} } } } }
+                                  this.setState(update(this.state, stateUpdate))
+                                }}
+                              />
+                            </FormGroup>
+                            <FormGroup>
+                              <ControlLabel>Public URL</ControlLabel>
+                              <FormControl
+                                type='text'
+                                placeholder='http://otp.example.com'
+                                defaultValue={server.publicUrl}
+                                onChange={(evt) => {
+                                  let stateUpdate = { deployment: {otpServers: {[i]: {$merge: { publicUrl: evt.target.value} } } } }
+                                  this.setState(update(this.state, stateUpdate))
+                                }}
+                              />
+                            </FormGroup>
+                            <FormGroup>
+                              <ControlLabel>Internal URLs</ControlLabel>
+                              <FormControl
+                                type='text'
+                                placeholder='http://127.0.0.1/otp,http://0.0.0.0/otp'
+                                defaultValue={server.internalUrl.join(',')}
+                                onChange={(evt) => {
+                                  let stateUpdate = { deployment: {otpServers: {[i]: {$merge: { internalUrl: evt.target.value.split(',')} } } } }
+                                  this.setState(update(this.state, stateUpdate))
+                                }}
+                              />
+                            </FormGroup>
+                            <Checkbox
+                              checked={server.admin}
+                              onChange={(evt) => {
+                                let stateUpdate = { deployment: {otpServers: {[i]: {$merge: { admin: evt.target.checked} } } } }
+                                this.setState(update(this.state, stateUpdate))
+                              }}
+                            >
+                              Admin access only?
+                            </Checkbox>
+                          </Form>
+                        </Panel>
+                      )
+                    })
+
+                    }
                     </div>
                   </Col>
                   <Col md={3}>
