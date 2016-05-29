@@ -162,6 +162,7 @@ export function fetchFeedSourceAndProject (feedSourceId, unsecured) {
       .then(feedSource => {
         return dispatch(fetchProject(feedSource.projectId, unsecured))
           .then(proj => {
+            dispatch(receiveFeedSource(feedSource))
             return feedSource
           })
       })
