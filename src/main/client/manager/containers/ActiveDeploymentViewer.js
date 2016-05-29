@@ -48,9 +48,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))
     // thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
     // updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
-    // newFeedSourceNamed: (name) => {
-    //   dispatch(saveFeedSource({ projectId, name }))
-    // },
     // feedSourcePropertyChanged: (feedSource, propName, newValue) => {
     //   dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
     // },

@@ -24,6 +24,7 @@ import {
 } from '../actions/feeds'
 
 import { updateTargetForSubscription } from '../../manager/actions/user'
+import { createDeploymentFromFeedSource } from '../../manager/actions/deployments'
 
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
@@ -125,6 +126,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     gtfsPlusDataRequested: () => {
       dispatch(downloadGtfsPlusFeed(version.id))
+    },
+    createDeployment: (feedSource) => {
+      dispatch(createDeploymentFromFeedSource(feedSource))
+      .then((deployment) => {
+        browserHistory.push(`/deployment/${deployment.id}`)
+      })
     }
   }
 }

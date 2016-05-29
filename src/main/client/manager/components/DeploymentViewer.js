@@ -60,19 +60,27 @@ export default class DeploymentViewer extends Component {
                   <Button
                     bsStyle='default'
                   >
-                    <Glyphicon glyph='download' /> Download
+                    <span><Glyphicon glyph='download' /> Download</span>
                   </Button>
                   <DropdownButton
                     bsStyle='primary'
-                    title={<span><Glyphicon glyph='globe' /> Deploy</span>}
+                    disabled={!this.props.project.otpServers || !this.props.project.otpServers.length}
+                    title={this.props.project.otpServers && this.props.project.otpServers.length
+                      ? <span><Glyphicon glyph='globe' /> Deploy</span>
+                      : <span>No servers defined</span>
+                    }
                     onSelect={(evt) => {
                       console.log(evt)
                       this.props.deployToTargetClicked(this.props.deployment, evt)
                       setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
                     }}
                   >
-                    <MenuItem eventKey='production'>Production</MenuItem>
-                    <MenuItem eventKey='target'>Test</MenuItem>
+                    {this.props.project.otpServers
+                      ? this.props.project.otpServers.map(server => (
+                          <MenuItem eventKey={server.name}>{server.name}</MenuItem>
+                        ))
+                      : null
+                    }
                   </DropdownButton>
                 </ButtonToolbar>
                 <h2>
@@ -147,8 +155,6 @@ export default class DeploymentViewer extends Component {
                         deployment={this.props.deployment}
                         key={version.id}
                         user={this.props.user}
-                        newFeedSourceNamed={this.props.newFeedSourceNamed}
-                        feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
                         updateVersionForFeedSource={this.props.updateVersionForFeedSource}
                         deleteFeedVersionClicked={this.props.deleteFeedVersion}
                       />
