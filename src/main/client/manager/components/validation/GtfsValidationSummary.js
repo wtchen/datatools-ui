@@ -50,22 +50,22 @@ export default class GtfsValidationSummary extends React.Component {
           </thead>
           <ResultTable
             title='Route Issues'
-            invalidValues={errors.route}
+            invalidValues={errors.routes}
           />
 
           <ResultTable
             title='Stop Issues'
-            invalidValues={errors.stop}
+            invalidValues={errors.stops}
           />
 
           <ResultTable
             title='Trip Issues'
-            invalidValues={errors.trip}
+            invalidValues={errors.trips}
           />
 
           <ResultTable
             title='Shape Issues'
-            invalidValues={errors.shape}
+            invalidValues={errors.shapes}
           />
         </Table>)
     } else if (result) {
