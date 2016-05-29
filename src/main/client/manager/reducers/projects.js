@@ -8,6 +8,7 @@ const projects = (state = {
     searchText: null
   }
 }, action) => {
+  console.log(action)
   let projects, sources, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds, activeProjectId, project, newState, deployment
   switch (action.type) {
     case 'SET_PROJECT_VISIBILITY_SEARCH_TEXT':

@@ -8,7 +8,8 @@ import {
   fetchProject,
   thirdPartySync,
   fetchFeedsForProject,
-  updateProject
+  updateProject,
+  downloadFeedForProject
    } from '../actions/projects'
 import {
   fetchProjectFeeds,
@@ -40,6 +41,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         return
       }
       dispatch(setVisibilitySearchText(null))
+      console.log(initialProps)
       if (!initialProps.project) {
         dispatch(fetchProject(projectId))
       }
@@ -59,7 +61,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
     deleteFeedSourceConfirmed: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
-    deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) }
+    deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) },
+    downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) },
   }
 }
 

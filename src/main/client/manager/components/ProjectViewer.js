@@ -80,6 +80,12 @@ export default class ProjectViewer extends Component {
                       </Button>
                     : null
                   }
+                  <Button
+                    bsStyle='primary'
+                    onClick={() => { this.props.downloadMergedFeed(this.props.project) }}
+                  >
+                    <Glyphicon glyph='download'/> Merge Feeds
+                  </Button>
                 </ButtonToolbar>
               </h2>
             </Col>
