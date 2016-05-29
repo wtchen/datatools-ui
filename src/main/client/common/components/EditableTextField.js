@@ -88,7 +88,11 @@ export default class EditableTextField extends React.Component {
               <InputGroup>
                 <FormControl
                   ref='input'
-                  type='text'
+                  type={this.props.type ? this.props.type.toLowerCase() : 'text'}
+                  min={this.props.min != null ? this.props.min : null}
+                  step={this.props.step != null ? this.props.step : null}
+                  placeholder={this.props.placeholder ? this.props.placeholder : ''}
+                  autoFocus='true'
                   autoFocus='true'
                   onKeyDown={(e) => this.handleKeyDown(e)}
                   onFocus={(e) => e.target.select()}
@@ -106,7 +110,7 @@ export default class EditableTextField extends React.Component {
                 ? <Link to={this.props.link}>{displayValue}</Link>
                 : displayValue || '(none)'
               }
-              &nbsp;&nbsp;
+              {'  '}
               <Button bsStyle='link'
                 ref='editButton'
                 tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
