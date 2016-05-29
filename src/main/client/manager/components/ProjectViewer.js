@@ -38,7 +38,7 @@ export default class ProjectViewer extends Component {
     if(!this.props.project) {
       return <ManagerPage />
     }
-
+    const isWatchingProject = this.props.user.subscriptions.hasProjectSubscription(this.props.project.id, 'project-updated')
     const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
     const filteredFeedSources = this.props.project.feedSources
       ? this.props.project.feedSources.filter(feedSource => {
@@ -64,7 +64,24 @@ export default class ProjectViewer extends Component {
           </Row>
           <Row>
             <Col xs={12}>
-              <h2>{this.props.project.name}</h2>
+              <h2>
+                {this.props.project.name}
+                <ButtonToolbar
+                  className={`pull-right`}
+                >
+                  {DT_CONFIG.application.notifications_enabled
+                    ? <Button
+                        onClick={() => { this.props.updateUserSubscription(this.props.user.profile, this.props.project.id, 'project-updated') }}
+                      >
+                        {
+                          isWatchingProject ? <span><Glyphicon glyph='eye-close'/> Unwatch</span>
+                          : <span><Glyphicon glyph='eye-open'/> Watch</span>
+                        }
+                      </Button>
+                    : null
+                  }
+                </ButtonToolbar>
+              </h2>
             </Col>
           </Row>
 
@@ -224,7 +241,6 @@ class DeploymentsPanel extends Component {
   render () {
     const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
-    console.log(this.refs)
     return (
       <Panel
         header={(
@@ -261,20 +277,20 @@ class DeploymentsPanel extends Component {
                 {this.props.deployments
                   ? this.props.deployments.map(dep => {
                     return (
-                      <tr>
+                      <tr
+                        key={dep.id || 'new-deployment-' + Math.random()}
+                      >
                         <td>
-                          <div>
-                            <EditableTextField
-                              isEditing={(dep.isCreating === true)}
-                              value={dep.name}
-                              /*disabled={disabled}*/
-                              onChange={(value) => {
-                                if(dep.isCreating) this.props.newDeploymentNamed(value)
-                                else this.props.feedSourcePropertyChanged(dep, 'name', value)
-                              }}
-                              link={`/deployment/${dep.id}`}
-                            />
-                          </div>
+                          <EditableTextField
+                            isEditing={(dep.isCreating === true)}
+                            value={dep.name}
+                            onChange={(value) => {
+                              console.log(dep.isCreating)
+                              if(dep.isCreating) this.props.newDeploymentNamed(value)
+                              else this.props.feedSourcePropertyChanged(dep, 'name', value)
+                            }}
+                            link={`/deployment/${dep.id}`}
+                          />
                         </td>
                         <td>{dep.dateCreated
                           ? (<span>{moment(dep.dateCreated).format('MMM Do YYYY')} ({moment(dep.dateCreated).fromNow()})</span>)
