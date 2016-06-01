@@ -22,6 +22,7 @@ export default class ProjectsList extends React.Component {
     if (!this.props.projects) {
       return <ManagerPage />
     }
+    const messages = DT_CONFIG.messages.ProjectsList
     const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const visibleProjects = this.props.projects.filter((project) => {
       if(project.isCreating) return true // projects actively being created are always visible
@@ -31,7 +32,7 @@ export default class ProjectsList extends React.Component {
     return (
       <ManagerPage ref='page'>
         <Helmet
-          title='Projects'
+          title={messages.title}
         />
         <Grid>
           <Panel header={(<h3>Projects</h3>)}>
@@ -39,7 +40,7 @@ export default class ProjectsList extends React.Component {
             <Col xs={4}>
               <Input
                 type="text"
-                placeholder="Search by Project Name"
+                placeholder={messages.search}
                 onChange={evt => this.props.searchTextChanged(evt.target.value)}
               />
             </Col>
@@ -51,9 +52,9 @@ export default class ProjectsList extends React.Component {
               className='pull-right'
               onClick={() => this.props.onNewProjectClick()}
             >
-              New Project
+              {messages.new}
             </Button>
-            <OverlayTrigger trigger="click" placement="left" overlay={<Popover title="What's a project?">A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.</Popover>}>
+            <OverlayTrigger trigger="click" placement="left" overlay={<Popover id='project-help' title={messages.help.title}>{messages.help.content}</Popover>}>
               <Button bsStyle="link" className='pull-right'><Glyphicon glyph='question-sign'/></Button>
             </OverlayTrigger>
             </Col>
@@ -63,7 +64,7 @@ export default class ProjectsList extends React.Component {
               <Table striped hover>
                 <thead>
                   <tr>
-                    <th className="col-md-4">Project Name</th>
+                    <th className="col-md-4">{messages.table.name}</th>
                     <th className="col-md-8"></th>
                   </tr>
                 </thead>
@@ -93,13 +94,14 @@ export default class ProjectsList extends React.Component {
                   })
                   : <tr>
                   <td className='col-md-12 text-center'>
-                    You currently do not have any projects. &nbsp;&nbsp;&nbsp;&nbsp;
+                    {messages.noProjects}
+                    {'    '}
                     <Button
                       bsStyle='primary'
                       disabled={projectCreationDisabled}
                       onClick={() => this.props.onNewProjectClick()}
                     >
-                      Create my first project
+                      {messages.createFirst}
                     </Button>
                   </td></tr>
                 }

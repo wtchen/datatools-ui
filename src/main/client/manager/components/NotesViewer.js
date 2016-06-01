@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
 
-import { Panel, Row, Col, Glyphicon, Input, Button } from 'react-bootstrap'
+import { Panel, Row, Col, Glyphicon, Input, Button, ButtonToolbar } from 'react-bootstrap'
+import WatchButton from '../../common/containers/WatchButton'
 
 export default class NotesViewer extends Component {
 
@@ -21,13 +22,16 @@ export default class NotesViewer extends Component {
   }
 
   render () {
-
+    const messages = DT_CONFIG.messages.NotesViewer
+    const type = this.props.type === 'feed-source'
+      ? messages.feedSource
+      : messages.feedVersion
     const header = (
       <h3 onClick={() => {
         if(!this.props.notes) this.props.notesRequested()
         this.setState({ expanded: !this.state.expanded })
       }}>
-        <Glyphicon glyph='comment' /> {this.props.title} {this.noteCount() !== null ? `(${this.noteCount()})` : ''}
+        <Glyphicon glyph='comment' /> {messages.title} {type} {this.noteCount() !== null ? `(${this.noteCount()})` : ''}
       </h3>
     )
     const isWatchingComments = this.props.feedSource ? this.props.user.subscriptions.hasFeedSubscription(this.props.feedSource.projectId, this.props.feedSource.id, 'feed-commented-on') : false
@@ -40,28 +44,23 @@ export default class NotesViewer extends Component {
         <Row>
           <Col xs={12} sm={8} md={6}>
             <h3>
-              All Comments
-              <Button
+              {messages.all}
+              <ButtonToolbar
                 className='pull-right'
-                title='Refresh comments'
-                onClick={() => { this.props.notesRequested() }}
               >
-                <Glyphicon glyph='refresh' /><span className='hidden-xs'> Refresh</span>
-              </Button>
-              {
-                DT_CONFIG.application.notifications_enabled ?
+                <WatchButton
+                  isWatching={isWatchingComments}
+                  user={this.props.user}
+                  target={this.props.version ? this.props.version.id : this.props.feedSource.id}
+                  subscriptionType={this.props.version ? 'feedversion-commented-on' : 'feed-commented-on'}
+                />
                 <Button
-                  title={isWatchingComments ? 'Unwatch comments' : 'Watch comments'}
-                  className='pull-right'
-                  onClick={() => { this.props.updateUserSubscription(this.props.user.profile, this.props.feedSource.id, 'feed-commented-on') }}
+                  title={messages.refresh}
+                  onClick={() => { this.props.notesRequested() }}
                 >
-                  {
-                    isWatchingComments ? <span><Glyphicon glyph='eye-close'/><span className='hidden-xs'> Unwatch</span></span>
-                    : <span><Glyphicon glyph='eye-open'/><span className='hidden-xs'> Watch</span></span>
-                  }
+                  <Glyphicon glyph='refresh' /><span className='hidden-xs'> {messages.refresh}</span>
                 </Button>
-                : ''
-              }
+              </ButtonToolbar>
             </h3>
             {this.props.notes && this.props.notes.length > 0
               ? this.props.notes.map(note => {
@@ -72,12 +71,12 @@ export default class NotesViewer extends Component {
                     </Panel>
                   )
                 })
-              : <p><i>No comments.</i></p>
+              : <p><i>{messages.none}</i></p>
 
             }
           </Col>
           <Col xs={12} sm={4} md={6}>
-            <h3>Post a New Comment</h3>
+            <h3>{messages.postComment}</h3>
             <Input
               ref='newNoteBody'
               type='textarea'
@@ -90,7 +89,7 @@ export default class NotesViewer extends Component {
                   body: this.refs.newNoteBody.getValue()
                 })
               }}
-            >Post</Button>
+            >{messages.new}</Button>
           </Col>
         </Row>
 

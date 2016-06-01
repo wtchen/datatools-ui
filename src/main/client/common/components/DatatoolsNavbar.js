@@ -24,16 +24,18 @@ export default class DatatoolsNavbar extends Component {
 
   render () {
     var userControl
+    const messages = DT_CONFIG.messages.DatatoolsNavbar
+
     if (!this.props.username) {
-      userControl = (<NavItem onClick={this.props.loginHandler} href='#'>Log In</NavItem>)
+      userControl = (<NavItem onClick={this.props.loginHandler} href='#'>{messages.login}</NavItem>)
     } else {
       userControl = (
         <NavDropdown title={
           <span><Glyphicon glyph='user' /> {this.props.username}</span>
         } id='basic-nav-dropdown'>
-        <MenuItem onClick={() => browserHistory.push('/account')}>My Account</MenuItem>
-          <MenuItem onClick={this.props.resetPasswordHandler}>Reset Password</MenuItem>
-          <MenuItem onClick={this.props.logoutHandler}>Log Out</MenuItem>
+        <MenuItem onClick={() => browserHistory.push('/account')}>{messages.account}</MenuItem>
+          <MenuItem onClick={this.props.resetPasswordHandler}>{messages.resetPassword}</MenuItem>
+          <MenuItem onClick={this.props.logoutHandler}>{messages.logout}</MenuItem>
         </NavDropdown>
       )
     }
@@ -79,31 +81,31 @@ export default class DatatoolsNavbar extends Component {
           <Nav>
             {this.props.managerUrl && this.props.username
               ? <LinkContainer to={this.props.managerUrl}>
-                  <NavItem>Manager</NavItem>
+                  <NavItem>{messages.manager}</NavItem>
                 </LinkContainer>
               : null
             }
             {isModuleEnabled('editor') && this.props.editorUrl && this.props.username
               ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
-                  Editor
+                  {messages.editor}
                 </NavItem>
               : null
             }
             {isModuleEnabled('alerts') && this.props.alertsUrl && this.props.username
               ? <LinkContainer to={this.props.alertsUrl}>
-                  <NavItem>Alerts</NavItem>
+                  <NavItem>{messages.alerts}</NavItem>
                 </LinkContainer>
               : null
             }
             {isModuleEnabled('user_admin') && this.props.userAdminUrl && this.props.userIsAdmin
               ? <LinkContainer to={this.props.userAdminUrl}>
-                  <NavItem>Users</NavItem>
+                  <NavItem>{messages.users}</NavItem>
                 </LinkContainer>
               : null
             }
             {isModuleEnabled('sign_config') && this.props.signConfigUrl && this.props.username
               ? <LinkContainer to={this.props.signConfigUrl}>
-                  <NavItem>eTID Config</NavItem>
+                  <NavItem>{messages.signConfig}</NavItem>
                 </LinkContainer>
               : null
             }
@@ -112,7 +114,7 @@ export default class DatatoolsNavbar extends Component {
             {projectControl}
             {this.props.docsUrl
               ? <NavItem href={this.props.docsUrl} active={this.props.docsUrl === '#'}>
-                  <Glyphicon glyph='question-sign' /> Guide
+                  <Glyphicon glyph='question-sign' /> {messages.guide}
                 </NavItem>
               : null
             }

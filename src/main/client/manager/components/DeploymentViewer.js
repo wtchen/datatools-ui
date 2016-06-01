@@ -6,6 +6,7 @@ import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonTo
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
+import Breadcrumbs from '../../common/components/Breadcrumbs'
 import EditableTextField from '../../common/components/EditableTextField'
 import { versionsSorter, retrievalMethodString } from '../../common/util/util'
 import languages from '../../common/util/languages'
@@ -33,6 +34,7 @@ export default class DeploymentViewer extends Component {
       fs.deployable &&
       fs.latestValidation
     )
+    const messages = DT_CONFIG.messages.DeploymentViewer
     const versions = this.props.deployment.feedVersions.sort(versionsSorter)
 
     console.log(this.props.deployment)
@@ -44,13 +46,10 @@ export default class DeploymentViewer extends Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <ul className='breadcrumb'>
-                <li><Link to='/'>Explore</Link></li>
-                <li><Link to='/project'>Projects</Link></li>
-                <li><Link to={`/project/${this.props.deployment.project.id}`}>{this.props.deployment.project.name}</Link></li>
-                <li><Link to={`/project/${this.props.deployment.project.id}/deployments`}>Deployments</Link></li>
-                <li className='active'>{this.props.deployment.name}</li>
-              </ul>
+              <Breadcrumbs
+                project={this.props.project}
+                deployment={this.props.deployment}
+              />
             </Col>
           </Row>
           <Row>
@@ -61,14 +60,14 @@ export default class DeploymentViewer extends Component {
                     bsStyle='default'
                     onClick={() => this.props.downloadDeployment(this.props.deployment)}
                   >
-                    <span><Glyphicon glyph='download' /> Download</span>
+                    <span><Glyphicon glyph='download' /> {messages.download}</span>
                   </Button>
                   <DropdownButton
                     bsStyle='primary'
                     disabled={!this.props.project.otpServers || !this.props.project.otpServers.length}
                     title={this.props.project.otpServers && this.props.project.otpServers.length
-                      ? <span><Glyphicon glyph='globe' /> Deploy</span>
-                      : <span>No servers defined</span>
+                      ? <span><Glyphicon glyph='globe' /> {messages.deploy}</span>
+                      : <span>{messages.noServers}</span>
                     }
                     onSelect={(evt) => {
                       console.log(evt)
@@ -97,7 +96,7 @@ export default class DeploymentViewer extends Component {
             </Col>
           </Row>
           <Panel
-            header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}
+            header={(<h3><Glyphicon glyph='list' /> {messages.versions}</h3>)}
             collapsible
             defaultExpanded={true}
           >
@@ -105,7 +104,7 @@ export default class DeploymentViewer extends Component {
               <Col xs={8} sm={6} md={4}>
                 <Input
                   type='text'
-                  placeholder='Search by Feed Source Name'
+                  placeholder={messages.search}
                   onChange={evt => this.props.searchTextChanged(evt.target.value)}
                 />
               </Col>
@@ -114,7 +113,7 @@ export default class DeploymentViewer extends Component {
                   bsStyle='primary'
                   className='pull-right'
                   disabled={!deployableFeeds.length}
-                  title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> Add Feed Source</span> : <span>All feeds added</span>}
+                  title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> {messages.addFeedSource}</span> : <span>{messages.allFeedsAdded}</span>}
                   onSelect={(evt) => {
                     console.log(evt)
                     let feed = deployableFeeds.find(fs => fs.id === evt)
@@ -134,16 +133,16 @@ export default class DeploymentViewer extends Component {
                 <Table striped hover>
                   <thead>
                     <tr>
-                      <th className='col-md-4'>Name</th>
+                      <th className='col-md-4'>{messages.table.name}</th>
                       <th>Version</th>
-                      <th className='hidden-xs'>Date retrieved</th>
-                      <th className='hidden-xs'>Loaded successfully</th>
-                      <th className='hidden-xs'>Error count</th>
-                      <th className='hidden-xs'>Route count</th>
-                      <th className='hidden-xs'>Trip count</th>
-                      <th className='hidden-xs'>Stop time count</th>
-                      <th>Valid from</th>
-                      <th>Expires</th>
+                      <th className='hidden-xs'>{messages.table.dateRetrieved}</th>
+                      <th className='hidden-xs'>{messages.table.loadStatus}</th>
+                      <th className='hidden-xs'>{messages.table.errorCount}</th>
+                      <th className='hidden-xs'>{messages.table.routeCount}</th>
+                      <th className='hidden-xs'>{messages.table.tripCount}</th>
+                      <th className='hidden-xs'>{messages.table.stopTimesCount}</th>
+                      <th>{messages.table.validFrom}</th>
+                      <th>{messages.table.expires}</th>
                       <th></th>
                     </tr>
                   </thead>

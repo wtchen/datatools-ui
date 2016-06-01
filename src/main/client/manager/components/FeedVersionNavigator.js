@@ -22,7 +22,7 @@ export default class FeedVersionNavigator extends React.Component {
       fontSize: '24px',
       fontWeight: 'bold'
     }
-
+    const messages = DT_CONFIG.messages.FeedVersionNavigator
     const hasVersions = this.props.versions && this.props.versions.length > 0
 
     let version = null
@@ -38,8 +38,8 @@ export default class FeedVersionNavigator extends React.Component {
         <Row>
           <Col xs={12} sm={2} style={versionTitleStyle}>
             {hasVersions
-              ? `Version ${version.version} of ${this.props.versions.length}`
-              : '(No Versions)'
+              ? `${messages.version} ${version.version} ${messages.of} ${this.props.versions.length}`
+              : messages.noVersions
             }
           </Col>
           <Col xs={12} sm={8}>
@@ -48,7 +48,7 @@ export default class FeedVersionNavigator extends React.Component {
                 disabled={!hasVersions || !version.previousVersionId}
                 onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex - 1}`)}
               >
-                <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> Previous</span><span className='hidden-xs hidden-sm'> Version</span>
+                <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> {messages.previous}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
               </Button>
               <Button href='#'
                 disabled={!hasVersions}
@@ -57,7 +57,7 @@ export default class FeedVersionNavigator extends React.Component {
                   this.props.downloadFeedClicked(version)
                 }}
               >
-                <Glyphicon glyph='download' /><span className='hidden-xs'> Download</span><span className='hidden-xs hidden-sm'> Feed</span>
+                <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
               </Button>
 
               <Button href='#'
@@ -68,13 +68,13 @@ export default class FeedVersionNavigator extends React.Component {
                   this.props.deleteVersionClicked(version)
                 }}
               >
-                <Glyphicon glyph='remove' /><span className='hidden-xs'> Delete</span><span className='hidden-xs hidden-sm'> Version</span>
+                <Glyphicon glyph='remove' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
               </Button>
               <Button href='#'
                 disabled={!hasVersions || !version.nextVersionId}
                 onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex + 1}`)}
               >
-                <span className='hidden-xs'>Next </span><span className='hidden-xs hidden-sm'>Version </span><Glyphicon glyph='arrow-right' />
+                <span className='hidden-xs'>{messages.next} </span><span className='hidden-xs hidden-sm'>{messages.version} </span><Glyphicon glyph='arrow-right' />
               </Button>
             </ButtonGroup>
           </Col>
@@ -101,7 +101,7 @@ export default class FeedVersionNavigator extends React.Component {
               notesRequested={() => { this.props.notesRequestedForVersion(version) }}
               newNotePosted={(note) => { this.props.newNotePostedForVersion(version, note) }}
             />
-          : <p>No versions exist for this feed source.</p>
+          : <p>{messages.noVersionsExist}</p>
         }
 
       </div>

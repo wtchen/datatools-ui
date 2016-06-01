@@ -23,6 +23,7 @@ export default class UserList extends React.Component {
       marginLeft: '12px'
     }
 
+    const messages = DT_CONFIG.messages.UserList
     const minUserIndex = this.props.page * this.props.perPage + 1
     const maxUserIndex = Math.min((this.props.page + 1) * this.props.perPage, this.props.userCount)
     const maxPage = Math.ceil(this.props.userCount / this.props.perPage) - 1
@@ -32,7 +33,7 @@ export default class UserList extends React.Component {
       <Grid>
         <Row style={{ marginBottom: '18px' }}>
           <Col xs={12}>
-            <h2>User Management</h2>
+            <h2>{messages.title}</h2>
           </Col>
         </Row>
 
@@ -55,7 +56,7 @@ export default class UserList extends React.Component {
               <Glyphicon glyph='arrow-right' />
             </Button>
             {this.props.userCount > 0
-              ? <span style={headerStyle}>Showing Users {minUserIndex } - {maxUserIndex} of {this.props.userCount}</span>
+              ? <span style={headerStyle}>{messages.showing} {minUserIndex } - {maxUserIndex} {messages.of} {this.props.userCount}</span>
               : <span style={headerStyle}>(No results to show)</span>
             }
           </Col>
@@ -64,7 +65,7 @@ export default class UserList extends React.Component {
               <InputGroup ref='foo'>
                 <FormControl type="text"
                   ref="searchInput"
-                  placeholder="Search by username"
+                  placeholder={messages.search}
                   onKeyUp={e => {
                     if(e.keyCode === 13) this.userSearch()
                   }}

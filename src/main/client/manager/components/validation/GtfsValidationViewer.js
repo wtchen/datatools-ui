@@ -18,13 +18,14 @@ export default class GtfsValidationViewer extends React.Component {
   render () {
 
     const result = this.props.validationResult
+    const messages = DT_CONFIG.messages.GtfsValidationViewer
 
     const header = (
       <h3 onClick={() => {
         if(!result) this.props.validationResultRequested()
         this.setState({ expanded: !this.state.expanded })
       }}>
-        <Glyphicon glyph='check' /> Validation Results
+        <Glyphicon glyph='check' /> {messages.title}
       </h3>
     )
 
@@ -40,28 +41,28 @@ export default class GtfsValidationViewer extends React.Component {
       report = (
         <div>
           <ResultTable
-            title='Route Issues'
+            title={messages.routeIssues}
             invalidValues={errors.routes}
           />
 
           <ResultTable
-            title='Stop Issues'
+            title={messages.stopIssues}
             invalidValues={errors.stops}
           />
 
           <ResultTable
-            title='Trip Issues'
+            title={messages.tripIssues}
             invalidValues={errors.trips}
           />
 
           <ResultTable
-            title='Shape Issues'
+            title={messages.shapeIssues}
             invalidValues={errors.shapes}
           />
         </div>
       )
     } else if (result) {
-      report = (<div>No validation results to show.</div>)
+      report = (<div>{messages.noResults}</div>)
     }
 
     return (
@@ -77,7 +78,7 @@ export default class GtfsValidationViewer extends React.Component {
               bsSize='large'
               bsStyle='primary'
             >
-              Validation Explorer
+              {messages.explorer}
             </Button>
           : null
         }
@@ -91,10 +92,11 @@ export default class GtfsValidationViewer extends React.Component {
 class ResultTable extends React.Component {
 
   render () {
-
     const tableStyle = {
       tableLayout: 'fixed'
     }
+    const messages = DT_CONFIG.messages.ResultTable
+    
     const breakWordStyle = {
       wordWrap: 'break-word',
       overflowWrap: 'break-word'
@@ -115,10 +117,10 @@ class ResultTable extends React.Component {
         <Table striped style={tableStyle}>
           <thead>
             <tr>
-              <th>Problem Type</th>
-              <th>Priority</th>
-              <th>Affected ID(s)</th>
-              <th className='col-md-6'>Description</th>
+              <th>{messages.problemType}</th>
+              <th>{messages.priority}</th>
+              <th>{messages.affectedIds}</th>
+              <th className='col-md-6'>{messages.description}</th>
             </tr>
           </thead>
           <tbody>

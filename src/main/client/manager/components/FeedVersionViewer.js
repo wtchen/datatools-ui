@@ -14,6 +14,7 @@ export default class FeedVersionViewer extends Component {
 
   render () {
     const version = this.props.version
+    const messages = DT_CONFIG.messages.FeedVersionViewer
 
     return (
       <div>
@@ -22,22 +23,22 @@ export default class FeedVersionViewer extends Component {
             <Table striped>
               <tbody>
                 <tr>
-                  <td className='col-md-4'><b>Status</b></td>
+                  <td className='col-md-4'><b>{messages.status}</b></td>
                   <td>{version.validationSummary.loadStatus}</td>
                 </tr>
                 <tr>
-                  <td className='col-md-4'><b>Valid Dates</b></td>
+                  <td className='col-md-4'><b>{messages.validDates}</b></td>
                   <td>
                     {moment(version.validationSummary.startDate).format(dateFormat)} to&nbsp;
                     {moment(version.validationSummary.endDate).format(dateFormat)}
                   </td>
                 </tr>
                 <tr>
-                  <td className='col-md-4'><b>File Timestamp</b></td>
+                  <td className='col-md-4'><b>{messages.timestamp}</b></td>
                   <td>{version.fileTimestamp ? moment(version.fileTimestamp).format(dateFormat + ', ' + timeFormat) : 'N/A' }</td>
                 </tr>
                 <tr>
-                  <td className='col-md-4'><b>File Size</b></td>
+                  <td className='col-md-4'><b>{messages.fileSize}</b></td>
                   <td>{version.fileSize ? Math.round(version.fileSize/10000) / 100 + ' MB' : 'N/A'}</td>
                 </tr>
               </tbody>
@@ -47,19 +48,19 @@ export default class FeedVersionViewer extends Component {
             <Table striped>
               <tbody>
                 <tr>
-                  <td className='col-md-4'><b>Agency Count</b></td>
+                  <td className='col-md-4'><b>{messages.agencyCount}</b></td>
                   <td>{version.validationSummary.agencyCount}</td>
                 </tr>
                 <tr>
-                  <td className='col-md-4'><b>Route Count</b></td>
+                  <td className='col-md-4'><b>{messages.routeCount}</b></td>
                   <td>{version.validationSummary.routeCount}</td>
                 </tr>
                 <tr>
-                  <td className='col-md-4'><b>Trip Count</b></td>
+                  <td className='col-md-4'><b>{messages.tripCount}</b></td>
                   <td>{version.validationSummary.tripCount}</td>
                 </tr>
                 <tr>
-                  <td className='col-md-4'><b>Stop time Count</b></td>
+                  <td className='col-md-4'><b>{messages.stopTimesCount}</b></td>
                   <td>{version.validationSummary.stopTimesCount}</td>
                 </tr>
               </tbody>
@@ -81,7 +82,8 @@ export default class FeedVersionViewer extends Component {
         }
 
         <NotesViewer
-          title='Comments for this Version'
+          type='feed-version'
+          version={this.props.version}
           notes={version.notes}
           noteCount={version.noteCount}
           notesRequested={() => { this.props.notesRequested() }}

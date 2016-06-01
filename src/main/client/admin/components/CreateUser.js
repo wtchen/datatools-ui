@@ -34,6 +34,7 @@ export default class CreateUser extends React.Component {
   }
 
   render () {
+    const messages = DT_CONFIG.messages.CreateUser
     return (
       <div>
         <Button
@@ -61,7 +62,7 @@ export default class CreateUser extends React.Component {
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.save.bind(this)}>Create User</Button>
+            <Button onClick={this.save.bind(this)}>{messages.new}</Button>
           </Modal.Footer>
         </Modal>
       </div>

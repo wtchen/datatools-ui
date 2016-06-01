@@ -14,9 +14,6 @@ export default class UserAdmin extends React.Component {
     this.state = {
       user: null
     }
-
-    // var login = this.auth0.checkExistingLogin()
-    // if (login) this.handleLogin(login)
   }
 
   componentWillMount () {
@@ -29,10 +26,11 @@ export default class UserAdmin extends React.Component {
   }
 
   render () {
+    const messages = DT_CONFIG.messages.UserAdmin
     return (
       <ManagerPage ref='page'>
       <Helmet
-        title='User Admin'
+        title={messages.title}
       />
         {
           this.isAdmin() &&

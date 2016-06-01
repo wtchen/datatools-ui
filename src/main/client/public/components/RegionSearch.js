@@ -35,6 +35,7 @@ export default class RegionSearch extends React.Component {
   }
   render() {
     // console.log('render search feeds', this.props.feeds)
+    const messages = DT_CONFIG.messages.RegionSearch
     const getRegions = (input) => {
       const limit = this.props.limit ? '&limit=' + this.props.limit : ''
       const nameQuery = input ? '&name=' + input : ''
@@ -97,7 +98,7 @@ export default class RegionSearch extends React.Component {
       this.refs.gtfsSelect.loadOptions('')
     }
 
-    const placeholder = 'Search for regions or agencies'
+    const placeholder = messages.placeholder
     return (
     <Select.Async
       ref='gtfsSelect'
