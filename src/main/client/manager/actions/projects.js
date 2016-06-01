@@ -175,20 +175,21 @@ export function saveProject (props) {
 
 export function downloadFeedForProject (project) {
   return function (dispatch, getState) {
-    const url = `/api/manager/secure/project/${project.id}/download`
-    secureFetch(url, getState())
-    .then(response => {
-      console.log(response.body)
-      return response.body
-    })
-    .then(result => {
-      // window.location.assign(`/api/manager/downloadfeed/${result.id}`)
-      console.log(result)
-      var zipName = 'download.zip';
-      var a = document.createElement('a');
-      a.href = "data:application/zip;base64," + result;
-      a.download = zipName;
-      a.click();
-    })
+    const url = `/api/manager/public/project/${project.id}/download`
+    window.location.assign(url)
+    // return secureFetch(url, getState())
+    // .then(response => {
+    //   console.log(response.body)
+    //   return response.body
+    // })
+    // .then(result => {
+    //   // window.location.assign(`/api/manager/downloadfeed/${result.id}`)
+    //   console.log(result)
+    //   var zipName = 'download.zip';
+    //   var a = document.createElement('a');
+    //   a.href = "data:application/zip;base64," + result;
+    //   a.download = zipName;
+    //   a.click();
+    // })
   }
 }

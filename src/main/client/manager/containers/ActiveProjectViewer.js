@@ -19,7 +19,6 @@ import {
   deleteFeedSource
 } from '../actions/feeds'
 
-import { updateTargetForSubscription } from '../../manager/actions/user'
 import { fetchProjectDeployments, createDeployment, saveDeployment, deleteDeployment } from '../actions/deployments'
 
 const mapStateToProps = (state, ownProps) => {
@@ -55,7 +54,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
       dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
     },
-    updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
     deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
     onNewDeploymentClick: () => { dispatch(createDeployment(projectId)) },
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },

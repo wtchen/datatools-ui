@@ -116,12 +116,13 @@ export function downloadDeployment (deployment) {
   return function (dispatch, getState) {
     // dispatch(downloadingDeployment())
     const url = '/api/manager/secure/deployments/' + deployment.id + '/download'
-    return secureFetch(url, getState())
-      .then(response => response.json())
-      .then(deployment => {
-        console.log(deployment)
-        // dispatch(receiveDeployment(deployment.project.id, deployment))
-      })
+    window.location.assign(url)
+    // return secureFetch(url, getState())
+    //   .then(response => response.json())
+    //   .then(deployment => {
+    //     console.log(deployment)
+    //     // dispatch(receiveDeployment(deployment.project.id, deployment))
+    //   })
   }
 }
 
