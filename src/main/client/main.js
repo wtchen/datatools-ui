@@ -15,6 +15,7 @@ if(config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
   config.modules.gtfsplus.spec = require('json!yaml!../../../gtfsplus.yml')
 }
 config.modules.editor.spec = require('json!yaml!../../../gtfs.yml')
+config.messages = require('json!yaml!../../../messages.yml')
 
 console.log('config', config)
 window.DT_CONFIG = config
