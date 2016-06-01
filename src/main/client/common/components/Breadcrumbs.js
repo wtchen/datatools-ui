@@ -20,7 +20,7 @@ export default class Breadcrumbs extends React.Component {
           ? <li className='active'>{this.props.project.name}</li>
           : <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
         }
-        {this.props.feedSource
+        {this.props.feedSource && !this.props.feedVersion
           ? <li className='active'>{this.props.feedSource.name}</li>
           : null
         }
@@ -30,6 +30,14 @@ export default class Breadcrumbs extends React.Component {
         }
         {this.props.deployment
           ? <li className='active'>{this.props.deployment.name}</li>
+          : null
+        }
+        {this.props.feedVersion
+          ? <li><Link to={`/feed/${this.props.feedVersion.feedSource.id}`}>{this.props.feedVersion.feedSource.name}</Link></li>
+          : null
+        }
+        {this.props.feedVersion
+          ? <li className='active'>Version {this.props.feedVersion.version} Validation Explorer</li>
           : null
         }
       </ol>

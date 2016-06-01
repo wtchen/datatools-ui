@@ -3,6 +3,7 @@ import { Grid, Row, Col, ButtonGroup, Button, Glyphicon, Tabs, Tab } from 'react
 import { Link, browserHistory } from 'react-router'
 
 import ManagerPage from '../../../common/components/ManagerPage'
+import Breadcrumbs from '../../../common/components/Breadcrumbs'
 import IssuesMap from './IssuesMap'
 import IsochroneMap from './IsochroneMap'
 import GtfsValidationSummary from './GtfsValidationSummary'
@@ -32,6 +33,7 @@ export default class GtfsValidationExplorer extends Component {
 
   render() {
     const version = this.props.version
+    const messages = DT_CONFIG.messages.GtfsValidationExplorer
 
     if (!version || !this.props.version.validationResult) {
       return (
@@ -53,13 +55,11 @@ export default class GtfsValidationExplorer extends Component {
         <Grid>
           <Row>
             <Col xs={8}>
-              <ul className='breadcrumb'>
-                <li><Link to='/'>Explore</Link></li>
-                <li><Link to='/project'>Projects</Link></li>
-                <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
-                <li><Link to={`/feed/${version.feedSource.id}`}>{version.feedSource.name}</Link></li>
-                <li className='active'>Version {version.version} Validation Explorer</li>
-              </ul>
+              <Breadcrumbs
+                project={this.props.project}
+                feedSource={version.feedSource}
+                feedVersion={version}
+              />
             </Col>
             <Col xs={4}>
               <ButtonGroup className='pull-right'>
