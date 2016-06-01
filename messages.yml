@@ -89,6 +89,16 @@ FeedVersionViewer:
   routeCount: Route Count
   tripCount: Trip Count
   stopTimesCount: Stop time Count
+GtfsValidationExplorer:
+  title: Validation Explorer
+  validationIssues: Validation Issues
+  accessibilityValidation: Accessibility Explorer
+  timeValidation: Time-based Validation
+  table:
+    file: File
+    issue: Issue
+    priority: Priority
+    count: Count
 GtfsValidationViewer:
   title: Validation Results
   routeIssues: Route Issues
