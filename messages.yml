@@ -139,6 +139,7 @@ FeedVersionNavigator:
   previous: Previous
   next: Next
   download: Download
+  edit: Edit
   feed: Feed
   delete: Delete
 NotesViewer:
