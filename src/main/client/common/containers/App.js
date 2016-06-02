@@ -100,7 +100,7 @@ class App extends React.Component {
         <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />
 
         <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
-        <Route path='/editor/:feedSourceId/:feedVersionId' component={ActiveGtfsEditor} onEnter={requireAuth} />
+        <Route path='/feed/:feedSourceId/edit/:feedVersionId' component={ActiveGtfsEditor} onEnter={requireAuth} />
 
         <Route path='*' component={PageNotFound} />
       </Router>

@@ -30,6 +30,14 @@ export function createAgency (agency) {
   }
 }
 
+export function receiveGtfsTable (tableId, entities) {
+  return {
+    type: 'RECEIVE_GTFSEDITOR_TABLE',
+    tableId,
+    entities
+  }
+}
+
 export function getGtfsTable (tableId) {
   return function (dispatch, getState) {
     const url = `/api/manager/secure/${tableId}`
@@ -37,7 +45,7 @@ export function getGtfsTable (tableId) {
       .then(res => res.json())
       .then(entities => {
         console.log('got editor result', entities)
-        // dispatch(receiveGtfsValidation(validationIssues))
+        dispatch(receiveGtfsTable(tableId, entities))
       })
   }
 }
@@ -50,21 +58,21 @@ export function saveGtfsRow (tableId, rowIndex) {
     // }
     const data = getState().editor.tableData[tableId][rowIndex]
     console.log(data)
-    const agency = {
-      defaultLat:"33.755",
-      defaultLon:"-84.39",
-      gtfsAgencyId:"CCT GTFS",
-      id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
-      lang:"en",
-      name:"CCT GTFS",
-      phone:null,
-      routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
-      sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
-      timezone:"America/New_York",
-      url:"http://test.com",
-    }
+    // const data = {
+    //   defaultLat:"33.755",
+    //   defaultLon:"-84.39",
+    //   gtfsAgencyId:"CCT GTFS",
+    //   id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
+    //   lang:"en",
+    //   name:"CCT GTFS",
+    //   phone:null,
+    //   routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
+    //   sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
+    //   timezone:"America/New_York",
+    //   url:"http://test.com",
+    // }
     const url = `/api/manager/secure/${tableId}`
-    return secureFetch(url, getState(), 'post', agency)
+    return secureFetch(url, getState(), 'post', data)
       .then(res => res.json())
       .then(entity => {
         console.log('got editor result', entity)
@@ -80,7 +88,8 @@ export function addGtfsRow (tableId) {
 
   let rowData = {}
   for(const field of table.fields) {
-    rowData[field.name] = null
+    const editorField = field.name.split(/_(.+)?/)[1]
+    rowData[editorField] = null
   }
 
   return {

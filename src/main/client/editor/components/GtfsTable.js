@@ -48,8 +48,10 @@ export default class GtfsTable extends Component {
   render () {
     const table = this.props.table
     const rowData = this.getActiveRowData(this.state.currentPage)
-
+    console.log('table data', table)
+    console.log('rows', rowData)
     const getInput = (row, field, currentValue, index) => {
+      const editorField = field.name.split(/_(.+)?/)[1]
       switch(field.inputType) {
         case 'TEXT':
         case 'TIMEZONE':
@@ -66,7 +68,7 @@ export default class GtfsTable extends Component {
               tabIndex={index}
               value={currentValue}
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -77,7 +79,7 @@ export default class GtfsTable extends Component {
               value={currentValue}
               placeholder='HH:MM:SS'
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -90,7 +92,7 @@ export default class GtfsTable extends Component {
               value={currentValue}
               type='number'
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -101,7 +103,7 @@ export default class GtfsTable extends Component {
               value={currentValue}
               placeholder='YYYYMMDD'
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -113,7 +115,7 @@ export default class GtfsTable extends Component {
               placeholder='00FF00'
               type='number'
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -126,7 +128,7 @@ export default class GtfsTable extends Component {
               min={0}
               step={1}
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -138,7 +140,7 @@ export default class GtfsTable extends Component {
               type='number'
               min={0}
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, field.name, value)
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
           )
@@ -148,7 +150,7 @@ export default class GtfsTable extends Component {
               tabIndex={index}
               value={currentValue}
               onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, field.name, evt.target.value)
+                this.props.fieldEdited(table.id, row, editorField, evt.target.value)
               }}
             >
               {field.options.map(option => {
@@ -178,7 +180,7 @@ export default class GtfsTable extends Component {
               minimumInput={1}
               clearable={false}
               onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, field.name, evt.route.route_id)
+                this.props.fieldEdited(table.id, row, editorField, evt.route.route_id)
                 this.props.gtfsEntitySelected('route', evt.route)
               }}
               value={routeValue}
@@ -197,7 +199,7 @@ export default class GtfsTable extends Component {
               clearable={false}
               minimumInput={1}
               onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, field.name, evt.stop.stop_id)
+                this.props.fieldEdited(table.id, row, editorField, evt.stop.stop_id)
                 this.props.gtfsEntitySelected('stop', evt.stop)
               }}
               value={stopValue}
@@ -336,6 +338,8 @@ export default class GtfsTable extends Component {
                 return (<tr key={rowIndex}>
                   {
                     table.fields.map((field, colIndex) => {
+                      // get editor field by splitting on first underscore
+                      const editorField = field.name.split(/_(.+)?/)[1]
                     const validationIssue = this.props.validation
                       ? this.props.validation.find(v =>
                           (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
@@ -355,7 +359,7 @@ export default class GtfsTable extends Component {
                         : null
                       }
                       <div style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
-                        {getInput(tableRowIndex, field, data[field.name], (rowIndex * table.fields.length) + colIndex + 1)}
+                        {getInput(tableRowIndex, field, data[editorField], (rowIndex * table.fields.length) + colIndex + 1)}
                       </div>
                     </td>)
                   })}

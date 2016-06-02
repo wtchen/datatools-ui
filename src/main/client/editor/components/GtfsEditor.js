@@ -122,7 +122,6 @@ export default class GtfsEditor extends Component {
                 feedSource={this.props.feedSource}
                 table={activeTable}
                 tableData={this.props.tableData ? this.props.tableData[activeTable.id] : []}
-                validation={this.props.validation[activeTable.id]}
                 newRowClicked={this.props.newRowClicked}
                 saveRowClicked={this.props.saveRowClicked}
                 deleteRowClicked={this.props.deleteRowClicked}

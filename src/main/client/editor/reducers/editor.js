@@ -18,31 +18,47 @@ const emptyTableData = { }
 const editor = (state = {
   feedVersionId: null,
   timestamp: null,
-  tableData: null,
+  tableData: {},
   validation: {},
   gtfsEntityLookup: {}
 }, action) => {
+  let newTableData, fields, rowData
   switch (action.type) {
     case 'CLEAR_GTFSEDITOR_CONTENT':
       return {
         feedVersionId: null,
         timestamp: null,
-        tableData: null,
+        tableData: {},
         validation: null,
         gtfsEntityLookup: {}
       }
-
+    case 'RECEIVE_GTFSEDITOR_TABLE':
+      newTableData = {}
+      fields = Object.keys(action.entities[0])
+      newTableData[action.tableId] = action.entities
+        // .map((line, rowIndex) => {
+        //   console.log(line, rowIndex)
+        //   const values = line.split(',')
+        //   rowData = { origRowIndex: rowIndex }
+        //   for(let f = 0; f < fields.length; f++) {
+        //     rowData[fields[f]] = values[f]
+        //   }
+        //   return rowData
+        // })
+      return update(state, {
+        tableData: {$set: newTableData}
+      })
     case 'RECEIVE_GTFSEDITOR_CONTENT':
-      let newTableData = {}
+      newTableData = {}
       for(let i = 0; i < action.filenames.length; i++) {
         const lines = action.fileContent[i].split('\n')
         if(lines.length < 2) continue
-        const fields = lines[0].split(',')
+        fields = lines[0].split(',')
         newTableData[action.filenames[i].split('.')[0]] = lines.slice(1)
           .filter(line => line.split(',').length === fields.length)
           .map((line, rowIndex) => {
             const values = line.split(',')
-            let rowData = { origRowIndex: rowIndex }
+            rowData = { origRowIndex: rowIndex }
             for(let f = 0; f < fields.length; f++) {
               rowData[fields[f]] = values[f]
             }

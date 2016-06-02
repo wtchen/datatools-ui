@@ -51,6 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       if(!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
       if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
+      if (initialProps.currentTable) dispatch(getGtfsTable(initialProps.currentTable))
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))
