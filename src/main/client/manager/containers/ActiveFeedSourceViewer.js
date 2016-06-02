@@ -48,8 +48,8 @@ const mapStateToProps = (state, ownProps) => {
   let routeVersionIndex = +ownProps.routeParams.feedVersionIndex
   let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
   if (feedSource) {
-    if ((hasVersionIndex && isNaN(routeVersionIndex)) || routeVersionIndex >= feedSource.feedVersionCount || routeVersionIndex < 0) {
-      console.log('version invalid')
+    if ((hasVersionIndex && isNaN(routeVersionIndex)) || routeVersionIndex > feedSource.feedVersionCount || routeVersionIndex < 0) {
+      console.log(`version index ${routeVersionIndex} is invalid`)
       // cannot use browserHistory.push in middle of state transition
       // browserHistory.push(`/feed/${feedSourceId}`)
       window.location.href = `/feed/${feedSourceId}`
@@ -58,8 +58,8 @@ const mapStateToProps = (state, ownProps) => {
       feedVersionIndex = hasVersionIndex
         ? routeVersionIndex
         : feedSource.feedVersionCount
-        ? feedSource.feedVersionCount - 1
-        : 0
+        ? feedSource.feedVersionCount
+        : 1
     }
   }
   console.log(feedVersionIndex)

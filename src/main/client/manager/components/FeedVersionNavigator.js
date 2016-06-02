@@ -4,6 +4,7 @@ import { Grid, Row, Col, ButtonGroup, Button, Table, Input, Panel, Glyphicon } f
 import { browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import { isModuleEnabled } from '../../common/util/config'
 import FeedVersionViewer from './FeedVersionViewer'
 
 export default class FeedVersionNavigator extends React.Component {
@@ -27,8 +28,11 @@ export default class FeedVersionNavigator extends React.Component {
 
     let version = null
 
-    if(hasVersions) {
-      version = this.props.versions[this.props.versionIndex]
+    if(hasVersions && this.props.versions.length >= this.props.versionIndex) {
+      version = this.props.versions[this.props.versionIndex - 1]
+    }
+    else {
+      console.log(`Error version ${this.props.versionIndex} does not exist`)
     }
 
     console.log(version)
@@ -59,7 +63,18 @@ export default class FeedVersionNavigator extends React.Component {
               >
                 <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
               </Button>
-
+              {isModuleEnabled('editor')
+                ? <Button href='#'
+                    disabled={!hasVersions}
+                    onClick={(evt) => {
+                      evt.preventDefault()
+                      browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}`)
+                    }}
+                  >
+                    <Glyphicon glyph='pencil' /><span className='hidden-xs'> {messages.edit}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
+                  </Button>
+                : null
+              }
               <Button href='#'
                 disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
                 onClick={(evt) => {
