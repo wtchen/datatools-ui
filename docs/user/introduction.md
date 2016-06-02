@@ -21,7 +21,8 @@ Feed sources define the locations or upstream sources of GTFS feeds. These can b
 3. **Produced In House** - Internally managed/created feeds produced by GTFS Editor
 
 ### Feed Versions
-Feed versions store specific instances of GTFS files for a given feed source as published over time.
+
+Feed Versions store specific instances of a GTFS feed for a given feed source as published over time. Each Feed Version has an associated GTFS file that is stored within the Data Manager, can be downloaded by users, and for which detailed information such as validation results is available. 
 
 ### Snapshots
 
