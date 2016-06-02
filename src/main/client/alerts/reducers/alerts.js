@@ -17,6 +17,10 @@ const alerts = (state = {
       return update(state, {filter: {searchText: {$set: action.text}}})
     case 'SET_ALERT_VISIBILITY_FILTER':
       return update(state, {filter: {filter: {$set: action.filter}}})
+    case 'SET_ALERT_SORT':
+      return update(state, {filter: {sort: {$set: action.sort}}})
+    case 'SET_ALERT_AGENCY_FILTER':
+      return update(state, {filter: {feedId: {$set: action.feedId}}})
     case 'DELETE_ALERT':
 
     case 'REQUEST_RTD_ALERTS':

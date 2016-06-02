@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { Row, Col, ButtonGroup, Button, Input } from 'react-bootstrap'
+import { Row, Col, ButtonGroup, Button, Input, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import AlertPreview from './AlertPreview'
+import { getFeedId } from '../../common/util/modules'
 
 export default class AlertsList extends React.Component {
 
@@ -9,13 +10,14 @@ export default class AlertsList extends React.Component {
     super(props)
   }
   render () {
-
-    let sortedAlerts = this.props.alerts.sort((a,b) => {
-      if(a.id < b.id) return -1
-      if(a.id > b.id) return 1
+    var compare = function (a, b) {
+      var aName = a.shortName || a.name
+      var bName = b.shortName || b.name
+      if(aName < bName) return -1
+      if(aName > bName) return 1
       return 0
-    })
-
+    }
+    let sortedFeeds = this.props.editableFeeds.sort(compare)
     return (
       <div>
         <Row>
@@ -27,8 +29,8 @@ export default class AlertsList extends React.Component {
           />
         </Row>
         <Row>
+          <FormGroup>
           <ButtonGroup justified>
-
             <Button
               bsStyle={this.props.visibilityFilter.filter === 'ACTIVE' ? 'primary' : 'default'}
               onClick={() => this.props.visibilityFilterChanged('ACTIVE')}
@@ -50,13 +52,51 @@ export default class AlertsList extends React.Component {
               onClick={() => this.props.visibilityFilterChanged('ALL')}
               href="#">All</Button>
           </ButtonGroup>
-          <div className="form-group">&nbsp;</div>
+          </FormGroup>
+          <FormGroup className='form-inline pull-right' controlId='formControlsSelectMultiple'>
+            <ControlLabel>Sort by</ControlLabel>
+            {'  '}
+            <FormControl
+              componentClass='select'
+              onChange={(evt) => {
+                let values = evt.target.value.split(':')
+                let sort = {
+                  type: values[0],
+                  direction: values[1]
+                }
+                this.props.sortChanged(sort)
+              }}
+            >
+              <option value='id:asc'>Oldest</option>
+              <option value='id:desc'>Newest</option>
+              <option value='title:asc'>Title</option>
+              <option value='title:desc'>Title (reverse)</option>
+              <option value='start:asc'>Starts earliest</option>
+              <option value='start:desc'>Starts latest</option>
+              <option value='end:asc'>Ends earliest</option>
+              <option value='end:desc'>Ends latest</option>
+            </FormControl>
+          </FormGroup>
+          <FormGroup className='form-inline' controlId='formControlsSelectMultiple'>
+            <ControlLabel>Agency</ControlLabel>
+            {'  '}
+            <FormControl
+              componentClass='select'
+              onChange={(evt) => this.props.agencyFilterChanged(evt.target.value)}
+            >
+              <option value='ALL'>All</option>
+              {sortedFeeds.map(fs => (
+                <option value={getFeedId(fs)}>{fs.name}</option>
+              ))}
+            </FormControl>
+          </FormGroup>
+
         </Row>
         <Row>
 
         {this.props.isFetching
           ? <p>Loading alerts...</p>
-          : sortedAlerts.map((alert) => {
+          : this.props.alerts.map((alert) => {
             return <AlertPreview
               alert={alert}
               key={alert.id}
