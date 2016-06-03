@@ -40,19 +40,19 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
     })
   }
 
-  // switch (visibilityFilter.filter) {
-  //   case 'ALL':
-  //     return visibleAlerts
-  //   case 'ACTIVE':
-  //     return visibleAlerts.filter(alert =>
-  //       moment(alert.start).isBefore(now) && moment(alert.end).isAfter(now))
-  //   case 'FUTURE':
-  //     return visibleAlerts.filter(alert => moment(alert.start).isAfter(now))
-  //   case 'ARCHIVED':
-  //     return visibleAlerts.filter(alert => moment(alert.end).isBefore(now))
-  //   case 'DRAFT':
-  //     return visibleAlerts.filter(alert => !alert.published)
-  // }
+  switch (visibilityFilter.filter) {
+    case 'ALL':
+      return visibleAlerts
+    case 'ACTIVE':
+      return visibleAlerts.filter(alert =>
+        moment(alert.start).isBefore(now) && moment(alert.end).isAfter(now))
+    case 'FUTURE':
+      return visibleAlerts.filter(alert => moment(alert.start).isAfter(now))
+    case 'ARCHIVED':
+      return visibleAlerts.filter(alert => moment(alert.end).isBefore(now))
+    case 'DRAFT':
+      return visibleAlerts.filter(alert => !alert.published)
+  }
   return visibleAlerts
 }
 
