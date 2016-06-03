@@ -56,7 +56,7 @@ const gtfsplus = (state = {
       })
 
     case 'ADD_GTFSPLUS_ROW':
-      // create this table if it doesn already exist
+      // create this table if it doesn't already exist
       if(!(action.tableId in state.tableData)) {
         return update(state,
           {tableData:

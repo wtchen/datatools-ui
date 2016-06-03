@@ -39,11 +39,16 @@ export default class UserSettings extends React.Component {
         permissions: [{
           type: 'administer-application'
         }],
-        projects: []
+        projects: [],
+        client_id: DT_CONFIG.auth0.client_id
       }
     }
 
-    let settings = { permissions: [], projects: [] }
+    let settings = {
+      permissions: [],
+      projects: [],
+      client_id: DT_CONFIG.auth0.client_id
+    }
 
     this.props.projects.forEach((project, i) => {
       let stateProjectSettings = this.state.projectSettings[project.id]
@@ -103,8 +108,17 @@ export default class UserSettings extends React.Component {
   }
 
   render () {
+    const messages = DT_CONFIG.messages.UserSettings
     let currentProject = this.props.projects[this.state.currentProjectIndex]
 
+    const getProjectLabel = (access) => {
+      switch(access) {
+        case 'none': return <Label>{messages.project.noAccess}</Label>
+        case 'admin': return <Label bsStyle='primary'>{messages.project.admin}</Label>
+        case 'custom': return <Label bsStyle='success'>{messages.project.custom}</Label>
+      }
+    }
+    
     let projectPanel = (
       <Panel header={
         <h3>
@@ -141,10 +155,10 @@ export default class UserSettings extends React.Component {
     return (
       <Row>
         <Col xs={4}>
-          <Panel header={<h3>Application Settings</h3>}>
+          <Panel header={<h3>{messages.application}</h3>}>
             <Input
               type='checkbox'
-              label='Application Administrator'
+              label={messages.admin.title}
               defaultChecked={this.state.appAdminChecked}
               onClick={this.appAdminClicked.bind(this)}
               ref='appAdminCheckbox'
@@ -153,20 +167,12 @@ export default class UserSettings extends React.Component {
         </Col>
         <Col xs={8}>
           {this.state.appAdminChecked
-            ? <i>Application administrators have full access to all projects.</i>
+            ? <i>{messages.admin.description}</i>
             : projectPanel
           }
         </Col>
       </Row>
     )
-  }
-}
-
-function getProjectLabel(access) {
-  switch(access) {
-    case 'none': return <Label>None</Label>
-    case 'admin': return <Label bsStyle="primary">Admin</Label>
-    case 'custom': return <Label bsStyle="success">Custom</Label>
   }
 }
 
@@ -212,6 +218,7 @@ class ProjectSettings extends React.Component {
 
   render () {
     let lookup = {}
+    const messages = DT_CONFIG.messages.UserSettings
 
     let feedSources = this.props.project.feedSources
     if (feedSources) {
@@ -231,40 +238,42 @@ class ProjectSettings extends React.Component {
                 <Button
                   active={this.props.settings.access === 'none'}
                   onClick={this.setAccess.bind(this, 'none')}
-                >No Access</Button>
+                >{messages.project.noAccess}</Button>
 
                 <Button
                   active={this.props.settings.access === 'admin'}
                   onClick={this.setAccess.bind(this, 'admin')}
-                >Admin</Button>
+                >{messages.project.admin}</Button>
 
                 <Button
                   active={this.props.settings.access === 'custom'}
                   onClick={this.setAccess.bind(this, 'custom')}
-                >Custom</Button>
+                >{messages.project.custom}</Button>
               </ButtonGroup>
             </Col>
           </Row>
           {this.props.settings.access === 'custom' ? (
             <Row>
               <Col xs={6}>
-                <h4>Feed Sources</h4>
-                {feedSources ? feedSources.map((feed, i) => {
-                  let name = (feed.name === '') ? '(unnamed feed)' : feed.name
-                  let ref = 'feed-' + feed.id
-                  let checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
-                  return <Input
-                    ref={ref}
-                    type='checkbox'
-                    defaultChecked={checked}
-                    label={name}
-                    onClick={this.feedsUpdated.bind(this)}
-                  />
-                }) : 'Cannot fetch feeds'
+                <h4>{messages.project.feeds}</h4>
+                {feedSources
+                  ? feedSources.map((feed, i) => {
+                    let name = (feed.name === '') ? '(unnamed feed)' : feed.name
+                    let ref = 'feed-' + feed.id
+                    let checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
+                    return <Input
+                      ref={ref}
+                      type='checkbox'
+                      defaultChecked={checked}
+                      label={name}
+                      onClick={this.feedsUpdated.bind(this)}
+                    />
+                  })
+                  : messages.project.cannotFetchFeeds
               }
               </Col>
               <Col xs={6}>
-                <h4>Permissions</h4>
+                <h4>{messages.project.permissions}</h4>
                 {allPermissions.map((permission, i) => {
                   let ref = 'permission-' + permission.type
                   let checked = this.props.settings.permissions.indexOf(permission.type) !== -1

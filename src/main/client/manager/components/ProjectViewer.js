@@ -5,6 +5,8 @@ import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonIn
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
+import Breadcrumbs from '../../common/components/Breadcrumbs'
+import WatchButton from '../../common/containers/WatchButton'
 import ProjectSettings from './ProjectSettings'
 import EditableTextField from '../../common/components/EditableTextField'
 import { defaultSorter, retrievalMethodString } from '../../common/util/util'
@@ -38,7 +40,8 @@ export default class ProjectViewer extends Component {
     if(!this.props.project) {
       return <ManagerPage />
     }
-
+    const messages = DT_CONFIG.messages.ProjectViewer
+    const isWatchingProject = this.props.user.subscriptions.hasProjectSubscription(this.props.project.id, 'project-updated')
     const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
     const filteredFeedSources = this.props.project.feedSources
       ? this.props.project.feedSources.filter(feedSource => {
@@ -55,16 +58,32 @@ export default class ProjectViewer extends Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <ul className='breadcrumb'>
-                <li><Link to='/'>Explore</Link></li>
-                <li><Link to='/project'>Projects</Link></li>
-                <li className='active'>{this.props.project.name}</li>
-              </ul>
+              <Breadcrumbs
+                project={this.props.project}
+              />
             </Col>
           </Row>
           <Row>
             <Col xs={12}>
-              <h2>{this.props.project.name}</h2>
+              <h2>
+                {this.props.project.name}
+                <ButtonToolbar
+                  className={`pull-right`}
+                >
+                  <WatchButton
+                    isWatching={isWatchingProject}
+                    user={this.props.user}
+                    target={this.props.project.id}
+                    subscriptionType='project-updated'
+                  />
+                  <Button
+                    bsStyle='primary'
+                    onClick={() => { this.props.downloadMergedFeed(this.props.project) }}
+                  >
+                    <Glyphicon glyph='download'/> {messages.mergeFeeds}
+                  </Button>
+                </ButtonToolbar>
+              </h2>
             </Col>
           </Row>
 
@@ -87,15 +106,15 @@ export default class ProjectViewer extends Component {
             : null
           }
           <Panel
-            header={(<h3><Glyphicon glyph='list' /> Feed Sources</h3>)}
+            header={(<h3><Glyphicon glyph='list' /> {messages.feeds.title}</h3>)}
             collapsible
             defaultExpanded={true}
           >
             <Row>
               <Col xs={4}>
                 <Input
-                  type="text"
-                  placeholder="Search by Feed Source Name"
+                  type='text'
+                  placeholder={messages.feeds.search}
                   onChange={evt => this.props.searchTextChanged(evt.target.value)}
                 />
               </Col>
@@ -106,7 +125,7 @@ export default class ProjectViewer extends Component {
                   className='pull-right'
                   onClick={() => this.props.onNewFeedSourceClick()}
                 >
-                  New Feed Source
+                  {messages.feeds.new}
                 </Button>
                 <ButtonToolbar>
                   {isExtensionEnabled('transitland')
@@ -156,7 +175,7 @@ export default class ProjectViewer extends Component {
                       this.props.updateAllFeeds(this.props.project)
                     }}
                   >
-                    <Glyphicon glyph='refresh' /> Update all
+                    <Glyphicon glyph='refresh' /> {messages.feeds.update}
                   </Button>
                 </ButtonToolbar>
               </Col>
@@ -167,12 +186,12 @@ export default class ProjectViewer extends Component {
                   <thead>
                     <tr>
                       <th className='col-md-4'>Name</th>
-                      <th>Public?</th>
-                      <th>Deployable?</th>
-                      <th>Retrieval Method</th>
-                      <th>GTFS Last Updated</th>
-                      <th>Error<br/>Count</th>
-                      <th>Valid Range</th>
+                      <th>{messages.feeds.table.public}</th>
+                      <th>{messages.feeds.table.deployable}</th>
+                      <th>{messages.feeds.table.retrievalMethod}</th>
+                      <th>{messages.feeds.table.lastUpdated}</th>
+                      <th>{messages.feeds.table.errorCount}</th>
+                      <th>{messages.feeds.table.validRange}</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -222,9 +241,9 @@ class DeploymentsPanel extends Component {
   //   })
   // }
   render () {
+    const messages = DT_CONFIG.messages.DeploymentsPanel
     const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
-    console.log(this.refs)
     return (
       <Panel
         header={(
@@ -232,7 +251,7 @@ class DeploymentsPanel extends Component {
             if(!this.state.expanded) this.props.deploymentsRequested()
             this.setState({ expanded: !this.state.expanded })
           }}>
-            <Glyphicon glyph='globe' /> Deployments
+            <Glyphicon glyph='globe' /> {messages.title}
           </h3>
         )}
         collapsible
@@ -246,14 +265,14 @@ class DeploymentsPanel extends Component {
             className='pull-right'
             onClick={() => this.props.onNewDeploymentClick()}
           >
-            <Glyphicon glyph='plus'/> New Deployment
+            <Glyphicon glyph='plus'/> {messages.new}
           </Button>
             <Table striped hover>
               <thead>
                 <tr>
-                  <th className='col-md-4'>Name</th>
-                  <th>Creation Date</th>
-                  <th>Number of feeds</th>
+                  <th className='col-md-4'>{messages.table.name}</th>
+                  <th>{messages.table.creationDate}</th>
+                  <th>{messages.table.feedCount}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -261,20 +280,20 @@ class DeploymentsPanel extends Component {
                 {this.props.deployments
                   ? this.props.deployments.map(dep => {
                     return (
-                      <tr>
+                      <tr
+                        key={dep.id || 'new-deployment-' + Math.random()}
+                      >
                         <td>
-                          <div>
-                            <EditableTextField
-                              isEditing={(dep.isCreating === true)}
-                              value={dep.name}
-                              /*disabled={disabled}*/
-                              onChange={(value) => {
-                                if(dep.isCreating) this.props.newDeploymentNamed(value)
-                                else this.props.feedSourcePropertyChanged(dep, 'name', value)
-                              }}
-                              link={`/deployment/${dep.id}`}
-                            />
-                          </div>
+                          <EditableTextField
+                            isEditing={(dep.isCreating === true)}
+                            value={dep.name}
+                            onChange={(value) => {
+                              console.log(dep.isCreating)
+                              if(dep.isCreating) this.props.newDeploymentNamed(value)
+                              else this.props.feedSourcePropertyChanged(dep, 'name', value)
+                            }}
+                            link={`/deployment/${dep.id}`}
+                          />
                         </td>
                         <td>{dep.dateCreated
                           ? (<span>{moment(dep.dateCreated).format('MMM Do YYYY')} ({moment(dep.dateCreated).fromNow()})</span>)

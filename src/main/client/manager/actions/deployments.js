@@ -112,6 +112,20 @@ export function fetchDeployment (id) {
   }
 }
 
+export function downloadDeployment (deployment) {
+  return function (dispatch, getState) {
+    // dispatch(downloadingDeployment())
+    const url = '/api/manager/secure/deployments/' + deployment.id + '/download'
+    window.location.assign(url)
+    // return secureFetch(url, getState())
+    //   .then(response => response.json())
+    //   .then(deployment => {
+    //     console.log(deployment)
+    //     // dispatch(receiveDeployment(deployment.project.id, deployment))
+    //   })
+  }
+}
+
 export function fetchDeploymentAndProject (id) {
   return function (dispatch, getState) {
     dispatch(requestingDeployment())
@@ -163,6 +177,9 @@ export function deletingDeployment (feedSource) {
 export function deleteDeployment (deployment) {
   return function (dispatch, getState) {
     dispatch(deletingDeployment(deployment))
+    if (deployment.isCreating) {
+      return dispatch(fetchProjectDeployments(deployment.project.id))
+    }
     const url = '/api/manager/secure/deployments/' + deployment.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
@@ -183,8 +200,21 @@ export function saveDeployment (props) {
     return secureFetch(url, getState(), 'post', props)
       .then(response => response.json())
       .then(deployment => {
-        console.log('received feeds for project', deployment)
+        console.log('created deployment', deployment)
         dispatch(fetchProjectDeployments(deployment.project.id))
+      })
+  }
+}
+
+export function createDeploymentFromFeedSource (feedSource) {
+  return function (dispatch, getState) {
+    dispatch(savingDeployment())
+    const url = '/api/manager/secure/deployments/fromfeedsource/' + feedSource.id
+    return secureFetch(url, getState(), 'post')
+      .then(response => response.json())
+      .then(deployment => {
+        console.log('created deployment', deployment)
+        return deployment
       })
   }
 }

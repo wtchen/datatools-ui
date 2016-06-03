@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProjects } from './projects'
+import update from 'react-addons-update'
 
 export const checkingExistingLogin = () => {
   return {
@@ -56,7 +57,7 @@ export function fetchUser (user) {
 
 export function removeUserSubscription (profile, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.subscriptions || [{type: subscriptionType, target: []}]
+    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions || [{type: subscriptionType, target: []}]
     let index = subscriptions.findIndex(sub => sub.type === subscriptionType)
     if (index > -1) {
       subscriptions.splice(index, 1)
@@ -69,7 +70,7 @@ export function removeUserSubscription (profile, subscriptionType) {
 
 export function updateTargetForSubscription (profile, target, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.subscriptions || [{type: subscriptionType, target: []}]
+    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions || [{type: subscriptionType, target: []}]
     if (subscriptions.findIndex(sub => sub.type === subscriptionType) === -1) {
       subscriptions.push({type: subscriptionType, target: []})
     }
@@ -92,10 +93,14 @@ export function updateTargetForSubscription (profile, target, subscriptionType) 
 // server call
 export function updateUserData (user, userData) {
   return function (dispatch, getState) {
+    var dtIndex = user.profile ? user.profile.app_metadata.datatools.findIndex(dt => dt.client_id === DT_CONFIG.auth0.client_id) : user.app_metadata.datatools.findIndex(dt => dt.client_id === DT_CONFIG.auth0.client_id)
+    console.log(dtIndex)
     var datatools = user.profile ? user.profile.app_metadata.datatools : user.app_metadata.datatools
     for (var type in userData) {
-      datatools[type] = userData[type]
+      datatools[dtIndex][type] = userData[type]
     }
+    console.log(userData)
+    console.log(datatools)
     var payload = {
       user_id: user.user_id,
       data: datatools
@@ -104,7 +109,6 @@ export function updateUserData (user, userData) {
     return secureFetch(url, getState(), 'put', payload)
       .then(response => response.json())
       .then(user => {
-        user = JSON.parse(user)
         console.log(user)
         if (user.user_id === getState().user.profile.user_id) {
           dispatch(checkExistingLogin())

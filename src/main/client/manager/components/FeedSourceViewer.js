@@ -1,15 +1,18 @@
 import fetch  from 'isomorphic-fetch'
 import React  from 'react'
 import Helmet from 'react-helmet'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, ButtonToolbar } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 
 import ManagerPage  from '../../common/components/ManagerPage'
+import Breadcrumbs from '../../common/components/Breadcrumbs'
 import EditableTextField from '../../common/components/EditableTextField'
+import WatchButton from '../../common/containers/WatchButton'
 import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable  from './ExternalPropertiesTable'
 import FeedVersionNavigator  from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
+import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -82,8 +85,10 @@ export default class FeedSourceViewer extends React.Component {
     if(!fs) {
       return <ManagerPage />
     }
+    const messages = DT_CONFIG.messages.FeedSourceViewer
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
+    const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
     return (
       <ManagerPage ref='page'>
       <Helmet
@@ -92,12 +97,10 @@ export default class FeedSourceViewer extends React.Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <ul className='breadcrumb'>
-                <li><Link to='/'>Explore</Link></li>
-                <li><Link to='/project'>Projects</Link></li>
-                <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
-                <li className='active'>{fs.name}</li>
-              </ul>
+              <Breadcrumbs
+                project={this.props.project}
+                feedSource={this.props.feedSource}
+              />
             </Col>
           </Row>
 
@@ -106,34 +109,41 @@ export default class FeedSourceViewer extends React.Component {
               <h2>
                 {fs.name} &nbsp;
                 {fs.isPublic
-                  ? <span><small>Private view (<Link to={`/public/feed/${fs.id}`}>View public page</Link>)</small> &nbsp;</span>
+                  ? <span><small>{messages.private} (<Link to={`/public/feed/${fs.id}`}>{messages.viewPublic}</Link>)</small> &nbsp;</span>
                   : null
                 }
-                {
-                  DT_CONFIG.application.notifications_enabled ?
-                  <Button
-                    className={`pull-right`}
-                    onClick={() => { this.props.updateUserSubscription(this.props.user.profile, fs.id, 'feed-updated') }}
-                  >
-                    {
-                      isWatchingFeed ? <span><Glyphicon glyph='eye-close'/> Unwatch</span>
-                      : <span><Glyphicon glyph='eye-open'/> Watch</span>
-                    }
-                  </Button>
-                  : null
-                }
+                <ButtonToolbar
+                  className={`pull-right`}
+                >
+                  {isModuleEnabled('deployment')
+                    ? <Button
+                        bsStyle='primary'
+                        disabled={disabled || (fs.feedVersionCount === 0)}
+                        onClick={() => { this.props.createDeployment(fs) }}
+                      >
+                        <Glyphicon glyph='globe'/> {messages.deploy}
+                      </Button>
+                    : null
+                  }
+                  <WatchButton
+                    isWatching={isWatchingFeed}
+                    user={this.props.user}
+                    target={fs.id}
+                    subscriptionType='feed-updated'
+                  />
+                </ButtonToolbar>
               </h2>
             </Col>
           </Row>
 
-          <Panel header={(<h3><Glyphicon glyph='cog' /> Feed Source Properties</h3>)}>
+          <Panel header={(<h3><Glyphicon glyph='cog' /> {messages.properties.title}</h3>)}>
             <Row>
               <Col xs={6}>
                 <Table striped style={{ tableLayout: 'fixed' }}>
                   <thead>
                     <tr>
-                      <th className='col-md-4'>Property</th>
-                      <th className='col-md-8'>Value</th>
+                      <th className='col-md-4'>{messages.properties.property}</th>
+                      <th className='col-md-8'>{messages.properties.value}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -149,7 +159,7 @@ export default class FeedSourceViewer extends React.Component {
                     </tr>
 
                     <tr>
-                      <td>Retrieval Method</td>
+                      <td>{messages.properties.retrievalMethod.title}</td>
                       <td>
                         <Row>
                           <Col xs={8}>
@@ -216,7 +226,7 @@ export default class FeedSourceViewer extends React.Component {
                                 this.props.feedSourcePropertyChanged(fs, 'snapshotVersion', evt.target.value)
                               }}
                             >
-                              <option>(None Selected)</option>
+                              <option>{messages.properties.noneSelected}</option>
                               {this.state.snapshotVersions.map(snapshot => {
                                 return <option value={snapshot.id} key={snapshot.id}>
                                   {snapshot.name}
@@ -228,7 +238,7 @@ export default class FeedSourceViewer extends React.Component {
                       : null
                     }
                     <tr>
-                      <td>Public?</td>
+                      <td>{messages.properties.public}</td>
                       <td>
                         <Input
                           type='checkbox'
@@ -237,6 +247,20 @@ export default class FeedSourceViewer extends React.Component {
                           defaultChecked={fs.isPublic}
                           onChange={(e) => {
                             this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
+                          }}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>{messages.properties.deployable}</td>
+                      <td>
+                        <Input
+                          type='checkbox'
+                          label='&nbsp;'
+                          disabled={disabled}
+                          defaultChecked={fs.deployable}
+                          onChange={(e) => {
+                            this.props.feedSourcePropertyChanged(fs, 'deployable', e.target.checked)
                           }}
                         />
                       </td>
@@ -262,7 +286,7 @@ export default class FeedSourceViewer extends React.Component {
           </Panel>
 
           <NotesViewer
-            title='Comments for this Feed Source'
+            type='feed-source'
             notes={fs.notes}
             feedSource={fs}
             user={this.props.user}
@@ -272,7 +296,7 @@ export default class FeedSourceViewer extends React.Component {
             newNotePosted={(note) => { this.props.newNotePostedForFeedSource(fs, note) }}
           />
 
-          <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
+          <Panel header={(<h3><Glyphicon glyph='list' /> {messages.versions}</h3>)}>
             <FeedVersionNavigator
               versions={fs.feedVersions}
               feedSource={fs}
@@ -280,6 +304,7 @@ export default class FeedSourceViewer extends React.Component {
               user={this.props.user}
               updateUserSubscription={this.props.updateUserSubscription}
               updateDisabled={disabled}
+              editGtfsDisabled={editGtfsDisabled}
               deleteDisabled={disabled}
               validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }
               downloadFeedClicked={(version) => this.props.downloadFeedClicked(version)}

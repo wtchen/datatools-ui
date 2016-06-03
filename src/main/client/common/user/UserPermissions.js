@@ -1,5 +1,9 @@
 export default class UserPermissions {
-  constructor (datatoolsJson) {
+  constructor (datatoolsApps) {
+    // check for map of datatools apps and get the right application
+    const datatoolsJson = datatoolsApps && datatoolsApps.constructor === Array
+      ? datatoolsApps.find(dt => dt.client_id === DT_CONFIG.auth0.client_id)
+      : datatoolsApps
     this.appPermissionLookup = {}
     if (datatoolsJson && datatoolsJson.permissions) {
       for (var appPermission of datatoolsJson.permissions) {

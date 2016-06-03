@@ -22,9 +22,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.projects){
         dispatch(fetchProjects())
         .then(() => {
-          if (initialProps.user.profile.app_metadata.datatools.subscriptions) {
+          let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions
+          if (subscriptions) {
             Promise.all(
-              initialProps.user.profile.app_metadata.datatools.subscriptions.map(sub => {
+              subscriptions.map(sub => {
                 console.log(sub)
                 sub.target.map(target => {
                   console.log('queuing feed source ', target)
@@ -38,9 +39,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
       else {
-        if (initialProps.user.profile.app_metadata.datatools.subscriptions) {
+        let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions
+        if (subscriptions) {
           Promise.all(
-            initialProps.user.profile.app_metadata.datatools.subscriptions.map(sub => {
+            subscriptions.map(sub => {
               console.log(sub)
               sub.target.map(target => {
                 console.log('queuing feed source ', target)

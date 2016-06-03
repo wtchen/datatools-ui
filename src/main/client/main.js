@@ -14,6 +14,9 @@ import config from 'json!yaml!../../../config.yml'
 if(config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
   config.modules.gtfsplus.spec = require('json!yaml!../../../gtfsplus.yml')
 }
+config.modules.editor.spec = require('json!yaml!../../../gtfs.yml')
+config.messages = require('json!yaml!../../../messages.yml')
+
 console.log('config', config)
 window.DT_CONFIG = config
 
@@ -25,6 +28,7 @@ import * as alertsReducers from './alerts/reducers'
 import * as signsReducers from './signs/reducers'
 
 import * as gtfsPlusReducers from './gtfsplus/reducers'
+import * as editorReducers from './editor/reducers'
 import * as gtfsReducers from './gtfs/reducers'
 
 const store = createStore(
@@ -34,6 +38,7 @@ const store = createStore(
     ...alertsReducers,
     ...signsReducers,
     ...gtfsPlusReducers,
+    ...editorReducers,
     ...gtfsReducers,
     routing: routerReducer
   }),

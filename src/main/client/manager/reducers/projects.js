@@ -47,17 +47,17 @@ const projects = (state = {
       console.log("adding fs to project", state.all[projectIndex]);
 
 
-      // if project's feedSources array is undefined, add it
-      if(!project.feedSources) {
+      // if project's deployment array is undefined, add it
+      if(!project.deployments) {
         console.log('adding new fs array');
-        newState = update(state, {all: {[projectIndex]: {$merge: {feedSources: []}}}})
+        newState = update(state, {all: {[projectIndex]: {$merge: {deployments: []}}}})
       }
 
       // add new empty feed source to feedSources array
       deployment = {
         isCreating: true,
         name: '',
-        projectId: project.id
+        project: project
       }
       return update(newState || state, {all: {[projectIndex]: {deployments: {$unshift: [deployment]}}}})
 

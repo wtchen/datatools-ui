@@ -23,7 +23,7 @@ export default class UserAccount extends React.Component {
       color: 'red',
       cursor: 'pointer'
     }
-    let subscriptions = this.props.user.profile.app_metadata.datatools.subscriptions
+    let subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions
     return (
       <PublicPage ref='publicPage'>
         <Grid>

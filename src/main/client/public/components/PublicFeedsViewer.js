@@ -23,24 +23,25 @@ export default class PublicFeedsViewer extends React.Component {
   }
 
   render () {
+    const messages = DT_CONFIG.messages.PublicFeedsViewer
     if (!this.props.projects) {
       return <PublicPage />
     }
     let position = this.state.position
-    let explore =
-      <Row>
-        <Col xs={12} sm={6} md={4}>
-          Explore Transit Data
-        </Col>
-        <Col xs={12} sm={6} md={4}>
-          <Input type='text' bsSize='large' placeholder='Search for regions or agencies' />
-        </Col>
-      </Row>
-    let exploreHeader =
-      <span>
-        Explore Transit Data
-        <Input style={{width: '300px'}} type='text' bsSize='large' placeholder='Search for regions or agencies' />
-      </span>
+    // let explore =
+    //   <Row>
+    //     <Col xs={12} sm={6} md={4}>
+    //       Explore Transit Data
+    //     </Col>
+    //     <Col xs={12} sm={6} md={4}>
+    //       <Input type='text' bsSize='large' placeholder='Search for regions or agencies' />
+    //     </Col>
+    //   </Row>
+    // let exploreHeader =
+    //   <span>
+    //     Explore Transit Data
+    //     <Input style={{width: '300px'}} type='text' bsSize='large' placeholder='Search for regions or agencies' />
+    //   </span>
     let feeds = []
     const feedArray = this.props.projects.map(p => {
       const regions = p.name.split(', ')
@@ -96,7 +97,7 @@ export default class PublicFeedsViewer extends React.Component {
             <Col xs={12}>
               {DT_CONFIG.extensions.mtc && DT_CONFIG.extensions.mtc.enabled
                 ? null
-                : <FeedTable projects={this.props.projects} />
+                : <PublicFeedsTable projects={this.props.projects} />
               }
 
             </Col>
@@ -107,7 +108,7 @@ export default class PublicFeedsViewer extends React.Component {
   }
 }
 
-class FeedTable extends React.Component {
+class PublicFeedsTable extends React.Component {
   feedFormat (cell, row) {
     return cell ? <Link to={'/public/feed/' + row.id}>{cell}</Link> : ''
   }
@@ -129,6 +130,7 @@ class FeedTable extends React.Component {
 
   render () {
     let feeds = []
+    const messages = DT_CONFIG.messages.PublicFeedsTable
     const feedArray = this.props.projects.map(p => {
       const regions = p.name.split(', ')
       if (p.feedSources) {
@@ -156,13 +158,13 @@ class FeedTable extends React.Component {
         search={true}
       >
         <TableHeaderColumn isKey={true} dataSort={true} hidden={true} dataField='id'>Feed ID</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='name' dataFormat={this.feedFormat}>Feed Name</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='region'>Region</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='state'>State or Province</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='country'>Country</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='lastUpdated' sortFunc={this.dateSort}>Last Updated</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='name' dataFormat={this.feedFormat}>{messages.name}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='region'>{messages.region}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='state'>{messages.stateProvince}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='country'>{messages.country}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='lastUpdated' sortFunc={this.dateSort}>{messages.lastUpdated}</TableHeaderColumn>
         <TableHeaderColumn dataSort={true} dataField='lastUpdated' hidden={true}>last_update</TableHeaderColumn>
-        <TableHeaderColumn dataField='url' dataFormat={this.urlFormat}>Link to GTFS</TableHeaderColumn>
+        <TableHeaderColumn dataField='url' dataFormat={this.urlFormat}>{messages.link}</TableHeaderColumn>
       </BootstrapTable>
     )
   }

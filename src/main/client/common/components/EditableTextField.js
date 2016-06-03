@@ -43,18 +43,13 @@ export default class EditableTextField extends React.Component {
 
   }
   cancel (e) {
-    console.log(e.target)
     this.setState({
       isEditing: false
     })
   }
   handleKeyDown (e) {
-    // if [Enter] is pressed
-    if (e.keyCode == 13) {
-      e.preventDefault()
-      this.setState({
-        isEditing: false
-      })
+    // if [Enter] or [Tab] is pressed
+    if ((e.keyCode == 9 || e.keyCode == 13) && this.state.isEditing) {
       this.save()
     }
     // if [Esc] is pressed
@@ -93,7 +88,11 @@ export default class EditableTextField extends React.Component {
               <InputGroup>
                 <FormControl
                   ref='input'
-                  type='text'
+                  type={this.props.type ? this.props.type.toLowerCase() : 'text'}
+                  min={this.props.min != null ? this.props.min : null}
+                  step={this.props.step != null ? this.props.step : null}
+                  placeholder={this.props.placeholder ? this.props.placeholder : ''}
+                  autoFocus='true'
                   autoFocus='true'
                   onKeyDown={(e) => this.handleKeyDown(e)}
                   onFocus={(e) => e.target.select()}
@@ -111,12 +110,11 @@ export default class EditableTextField extends React.Component {
                 ? <Link to={this.props.link}>{displayValue}</Link>
                 : displayValue || '(none)'
               }
-              &nbsp;&nbsp;
+              {'  '}
               <Button bsStyle='link'
-                onClick={(evt) => {
-                  evt.preventDefault()
-                  this.edit()
-                }}
+                ref='editButton'
+                tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
+                onClick={() => this.edit()}
                 disabled={this.props.disabled !== null ? this.props.disabled : false}
               >
                 <Glyphicon

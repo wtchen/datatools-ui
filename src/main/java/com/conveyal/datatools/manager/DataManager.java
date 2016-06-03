@@ -4,6 +4,7 @@ import com.conveyal.datatools.manager.auth.Auth0Connection;
 
 import com.conveyal.datatools.manager.controllers.DumpController;
 import com.conveyal.datatools.manager.controllers.api.*;
+import com.conveyal.datatools.editor.controllers.api.*;
 
 import com.conveyal.datatools.manager.extensions.ExternalFeedResource;
 import com.conveyal.datatools.manager.extensions.mtc.MtcFeedResource;
@@ -40,6 +41,7 @@ public class DataManager {
     public static JsonNode serverConfig;
 
     public static JsonNode gtfsPlusConfig;
+    public static JsonNode gtfsConfig;
 
     public static final Map<String, ExternalFeedResource> feedResources = new HashMap<>();
 
@@ -72,8 +74,21 @@ public class DataManager {
         RegionController.register(apiPrefix);
         NoteController.register(apiPrefix);
 
+        // Editor routes
+        if ("true".equals(getConfigPropertyAsText("modules.editor.enabled"))) {
+            gtfsConfig = mapper.readTree(new File("gtfs.yml"));
+            AgencyController.register(apiPrefix);
+            CalendarController.register(apiPrefix);
+            RouteController.register(apiPrefix);
+            RouteTypeController.register(apiPrefix);
+            ScheduleExceptionController.register(apiPrefix);
+            StopController.register(apiPrefix);
+            TripController.register(apiPrefix);
+            TripPatternController.register(apiPrefix);
+        }
+
         // module-specific controllers
-        if ("true".equals(getConfigPropertyAsText("modules.deployer.enabled"))) {
+        if ("true".equals(getConfigPropertyAsText("modules.deployment.enabled"))) {
             DeploymentController.register(apiPrefix);
         }
         if ("true".equals(getConfigPropertyAsText("modules.gtfsapi.enabled"))) {
@@ -123,6 +138,12 @@ public class DataManager {
                 return null;
                 // if the resource doesn't exist we just carry on.
             }
+        });
+
+        // return 404 for any api response that's not found
+        get(apiPrefix + "*", (request, response) -> {
+            halt(404);
+            return null;
         });
 
         // return index.html for any sub-directory

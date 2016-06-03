@@ -142,20 +142,20 @@ export default class GtfsSearch extends React.Component {
 
     const placeholder = 'Begin typing to search for ' + this.props.entities.join(' or ') + '...'
     return (
-      <Select.Async
-        ref='gtfsSelect'
-        cache={false}
-        onFocus={onFocus}
-        filterOptions={true}
-        multi={this.props.multi !== null ? this.props.multi : false}
-        minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
-        clearable={this.props.clearable}
-        placeholder={this.props.placeholder || placeholder}
-        loadOptions={getOptions}
-        value={this.state.value}
-        optionRenderer={this.renderOption}
-        onChange={handleChange}
-      />
+    <Select.Async
+      ref='gtfsSelect'
+      tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
+      cache={false}
+      onFocus={onFocus}
+      filterOptions={true}
+      multi={this.props.multi !== null ? this.props.multi : false}
+      minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
+      clearable={this.props.clearable}
+      placeholder={this.props.placeholder || placeholder}
+      loadOptions={getOptions}
+      value={this.state.value}
+      optionRenderer={this.renderOption}
+      onChange={handleChange} />
     )
   }
 }

@@ -1,5 +1,8 @@
 export default class UserSubscriptions {
-  constructor (datatoolsJson) {
+  constructor (datatoolsApps) {
+    const datatoolsJson = datatoolsApps && datatoolsApps.constructor === Array
+      ? datatoolsApps.find(dt => dt.client_id === DT_CONFIG.auth0.client_id)
+      : datatoolsApps
     this.subscriptionLookup = {}
     if (datatoolsJson && datatoolsJson.subscriptions) {
       for (var subscription of datatoolsJson.subscriptions) {

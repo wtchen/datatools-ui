@@ -7,7 +7,8 @@ import { fetchDeployment,
   fetchDeploymentTargets,
   deployToTarget,
   updateDeployment,
-  fetchDeploymentStatus
+  fetchDeploymentStatus,
+  downloadDeployment
 } from '../actions/deployments'
 
 const mapStateToProps = (state, ownProps) => {
@@ -45,12 +46,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onDeploymentTargetsClick: () => { dispatch(fetchDeploymentTargets()) },
     deployToTargetClicked: (deployment, target) => { dispatch(deployToTarget(deployment, target)) },
+    downloadDeployment: (deployment) => { dispatch(downloadDeployment(deployment)) },
     // updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))
     // thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
     // updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
-    // newFeedSourceNamed: (name) => {
-    //   dispatch(saveFeedSource({ projectId, name }))
-    // },
     // feedSourcePropertyChanged: (feedSource, propName, newValue) => {
     //   dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
     // },
