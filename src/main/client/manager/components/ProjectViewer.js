@@ -9,6 +9,7 @@ import ManagerPage from '../../common/components/ManagerPage'
 import EditableTextField from '../../common/components/EditableTextField'
 import { defaultSorter, retrievalMethodString } from '../../common/util/util'
 import languages from '../../common/util/languages'
+import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 export default class ProjectsList extends React.Component {
 
@@ -240,7 +241,10 @@ export default class ProjectsList extends React.Component {
                   <thead>
                     <tr>
                       <th className='col-md-4'>Name</th>
-                      <th>Public?</th>
+                      {!isExtensionEnabled('mtc')
+                        ? <th>Public?</th>
+                        : null
+                      }
                       <th>Retrieval Method</th>
                       <th>GTFS Last Updated</th>
                       <th>Error<br/>Count</th>
@@ -297,19 +301,22 @@ class FeedSourceTableRow extends React.Component {
             />
           </div>
         </td>
-        <td>
-          <Input
-            type='checkbox'
-            label='&nbsp;'
-            disabled={disabled}
-            defaultChecked={fs.isPublic}
-            onChange={(e) => {
-              console.log(e.target.checked)
+        {!isExtensionEnabled('mtc')
+          ? <td>
+              <Input
+                type='checkbox'
+                label='&nbsp;'
+                disabled={disabled}
+                defaultChecked={fs.isPublic}
+                onChange={(e) => {
+                  console.log(e.target.checked)
 
-              this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
-            }}
-          />
-        </td>
+                  this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
+                }}
+              />
+            </td>
+          : null
+        }
         <td>
           <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
         </td>

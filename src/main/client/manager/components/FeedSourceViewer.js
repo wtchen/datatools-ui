@@ -10,6 +10,7 @@ import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable  from './ExternalPropertiesTable'
 import FeedVersionNavigator  from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
+import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -227,20 +228,23 @@ export default class FeedSourceViewer extends React.Component {
                         </tr>
                       : null
                     }
-                    <tr>
-                      <td>Public?</td>
-                      <td>
-                        <Input
-                          type='checkbox'
-                          label='&nbsp;'
-                          disabled={disabled}
-                          defaultChecked={fs.isPublic}
-                          onChange={(e) => {
-                            this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
-                          }}
-                        />
-                      </td>
-                    </tr>
+                    {!isExtensionEnabled('mtc')
+                      ? <tr>
+                          <td>Public?</td>
+                          <td>
+                            <Input
+                              type='checkbox'
+                              label='&nbsp;'
+                              disabled={disabled}
+                              defaultChecked={fs.isPublic}
+                              onChange={(e) => {
+                                this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      : null
+                    }
                   </tbody>
                 </Table>
               </Col>
