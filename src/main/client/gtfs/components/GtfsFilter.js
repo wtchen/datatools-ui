@@ -26,15 +26,15 @@ export default class GtfsFilter extends React.Component {
       if(aName > bName) return 1
       return 0
     }
+    var feedLookup = {}
+    for(var f of this.props.allFeeds) feedLookup[f.id] = f
 
     var activeFeeds = this.props.activeFeeds.sort(compare)
-    var activeAndLoadedFeeds = this.props.activeFeeds.filter(f => this.props.loadedFeeds.findIndex(feed => feed.id === f.id) !== -1)
+    var activeAndLoadedFeeds = activeFeeds.filter(f => this.props.loadedFeeds.findIndex(feed => feed.id === f.id) !== -1)
     var nonActiveFeeds = this.props.allFeeds.filter((feed) => {
       return (activeFeeds.indexOf(feed) === -1)
     }).sort(compare)
 
-    var feedLookup = {}
-    for(var f of this.props.allFeeds) feedLookup[f.id] = f
     return (
         <div style={buttonMinimalStyle}>
           <DropdownButton
@@ -44,8 +44,8 @@ export default class GtfsFilter extends React.Component {
               : activeAndLoadedFeeds.length < 3 ? `Searching ${activeAndLoadedFeeds.map(feed => feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name).join(' and ')}`
               : `Searching ${activeAndLoadedFeeds.length} feeds`}
             alt={activeAndLoadedFeeds.join(', ')}
-            onSelect={(evt, eventKey) => {
-              let feed = feedLookup[eventKey]
+            onSelect={(evt) => {
+              let feed = feedLookup[evt]
               activeFeeds.indexOf(feed) === -1 ? this.props.onAddFeed(feed) : this.props.onRemoveFeed(feed)
             }}
           >
