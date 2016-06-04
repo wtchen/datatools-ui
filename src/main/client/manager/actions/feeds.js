@@ -207,12 +207,30 @@ export function runningFetchFeed () {
   }
 }
 
+export function receivedFetchFeed (feedSource) {
+  return {
+    type: 'RECEIVED_FETCH_FEED',
+    feedSource
+  }
+}
+
 export function runFetchFeed (feedSource) {
   return function (dispatch, getState) {
     dispatch(runningFetchFeed())
     const url = `/api/manager/secure/feedsource/${feedSource.id}/fetch`
     return secureFetch(url, getState(), 'post')
-      .then(response => response.json())
+      .then(res => {
+        if (res.status === 304) {
+          dispatch(feedNotModified(feedSource, 'Feed fetch cancelled because it matches latest feed version.'))
+        }
+        else if (res.status >= 400) {
+          dispatch(setErrorMessage('Error fetching feed source'))
+        }
+        else {
+          dispatch(receivedFetchFeed(feedSource))
+          return res.json()
+        }
+      })
       .then(result => {
         console.log('fetchFeed result', result)
         dispatch(fetchFeedVersions(feedSource))
@@ -280,6 +298,21 @@ export function uploadingFeed () {
   }
 }
 
+export function uploadedFeed (feedSource) {
+  return {
+    type: 'UPLOADED_FEED',
+    feedSource
+  }
+}
+
+export function feedNotModified (feedSource, message) {
+  return {
+    type: 'FEED_NOT_MODIFIED',
+    feedSource,
+    message
+  }
+}
+
 export function uploadFeed (feedSource, file) {
   return function (dispatch, getState) {
     dispatch(uploadingFeed())
@@ -287,14 +320,22 @@ export function uploadFeed (feedSource, file) {
 
     var data = new FormData()
     data.append('file', file)
-    //data.append('user', 'hubot')
 
     return fetch(url, {
       method: 'post',
       headers: { 'Authorization': 'Bearer ' + getState().user.token },
       body: data
-    }).then(result => {
-      console.log('uploadFeed result', result)
+    }).then(res => {
+      if (res.status === 304) {
+        dispatch(feedNotModified(feedSource, 'Feed upload cancelled because it matches latest feed version.'))
+      }
+      else if (res.status >= 400) {
+        dispatch(setErrorMessage('Error uploading feed source'))
+      }
+      else {
+        dispatch(uploadedFeed(feedSource))
+      }
+      console.log('uploadFeed result', res)
       dispatch(fetchFeedVersions(feedSource))
     })
   }
@@ -312,7 +353,8 @@ export function deleteFeedVersion (feedSource, feedVersion, changes) {
     const url = '/api/manager/secure/feedversion/' + feedVersion.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
-        return dispatch(fetchFeedVersions(feedSource))
+        // fetch feed source with versions
+        return dispatch(fetchFeedSource(feedSource.id, true))
       })
   }
 }

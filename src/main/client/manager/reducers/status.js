@@ -1,9 +1,14 @@
 import update from 'react-addons-update'
-
+import moment from 'moment'
 const config = (state = {
-  message: null
+  message: null,
+  modal: null,
+  popover: null
 }, action) => {
+  console.log(action)
   switch (action.type) {
+
+    // Status Messages
     case 'REQUESTING_PROJECTS':
       return update(state, { message: { $set: 'Loading projects...' }})
     case 'REQUESTING_PROJECT':
@@ -48,9 +53,24 @@ const config = (state = {
       return update(state, { message: { $set: 'Calculating access shed...' }})
     case 'REQUESTING_DEPLOYMENTS':
       return update(state, { message: { $set: 'Loading deployments...' }})
-    case 'SET_ERROR_MESSAGE':
-      return update(state, { message: { $set: action.message }})
+    case 'REQUESTING_DEPLOYMENT':
+      return update(state, { message: { $set: 'Loading deployment...' }})
+    case 'SAVING_DEPLOYMENT':
+      return update(state, { message: { $set: 'Saving deployment...' }})
 
+    // Status Modal
+    case 'SET_ERROR_MESSAGE':
+      return update(state, { modal: { $set: {title: 'Warning!', body: action.message} }})
+    case 'RECEIVED_FETCH_FEED':
+      return update(state, { modal: { $set: {title: 'Feed fetched successfully!', body: `New version for ${action.feedSource.name} fetched at ${moment().format('MMMM Do YYYY, h:mm:ss a')}`} }})
+    case 'UPLOADED_FEED':
+      return update(state, { modal: { $set: {title: 'Feed uploaded successfully!', body: `New version for ${action.feedSource.name} uploaded at ${moment().format('MMMM Do YYYY, h:mm:ss a')}`} }})
+    case 'FEED_NOT_MODIFIED':
+      return update(state, { modal: { $set: {title: `Warning: Feed version for ${action.feedSource.name} not processed`, body: action.message} }})
+    case 'CLEAR_STATUS_MODAL':
+      return update(state, { modal: { $set: null }})
+
+    // Blank out message
     case 'RECEIVE_PROJECTS':
     case 'RECEIVE_PROJECT':
     case 'RECEIVE_SYNC':
@@ -67,6 +87,7 @@ const config = (state = {
     case 'RECEIVE_GTFSPLUS_VALIDATION':
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
     case 'RECEIVE_DEPLOYMENTS':
+    case 'RECEIVE_DEPLOYMENT':
       return update(state, { message: { $set: null }})
     default:
       return state
