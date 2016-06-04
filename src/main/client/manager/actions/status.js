@@ -4,3 +4,9 @@ export function setErrorMessage (message) {
     message
   }
 }
+
+export function clearStatusModal () {
+  return {
+    type: 'CLEAR_STATUS_MODAL'
+  }
+}

@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
+import CurrentStatusModal from '../containers/CurrentStatusModal'
 import ConfirmModal from './ConfirmModal.js'
 import SelectFileModal from './SelectFileModal.js'
 import InfoModal from './InfoModal.js'
@@ -39,6 +40,7 @@ export default class ManagerPage extends React.Component {
         <ConfirmModal ref='confirmModal'/>
         <InfoModal ref='infoModal'/>
         <SelectFileModal ref='selectFileModal'/>
+        <CurrentStatusModal ref='statusModal'/>
       </div>
     )
   }
