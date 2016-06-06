@@ -3,6 +3,7 @@ import { browserHistory } from 'react-router'
 
 import { secureFetch } from '../../common/util/util'
 import { getAlertsUrl, getFeedId } from '../../common/util/modules'
+import { setErrorMessage } from '../../manager/actions/status'
 import moment from 'moment'
 
 // alerts management action
@@ -139,6 +140,10 @@ export function fetchRtdAlerts () {
   return function (dispatch, getState) {
     dispatch(requestRtdAlerts())
     return secureFetch(getAlertsUrl(), getState()).then((res) => {
+      if (res.status >= 400) {
+        dispatch(setErrorMessage('Error fetching alerts!'))
+        return []
+      }
       return res.json()
     }).then((alerts) => {
       return dispatch(receivedRtdAlerts(alerts, getState().projects.active))
