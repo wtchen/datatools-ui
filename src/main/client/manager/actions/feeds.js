@@ -74,6 +74,10 @@ export function updateFeedSource (feedSource, changes) {
     const url = '/api/manager/secure/feedsource/' + feedSource.id
     return secureFetch(url, getState(), 'put', changes)
       .then((res) => {
+        if (res.status >= 400) {
+          console.log(res.json())
+          dispatch(setErrorMessage('Error updating feed source.'))
+        }
         //return dispatch(fetchProjectFeeds(feedSource.projectId))
         return dispatch(fetchFeedSource(feedSource.id, true))
       })
@@ -214,7 +218,8 @@ export function runFetchFeed (feedSource) {
       })
       .then(result => {
         console.log('fetchFeed result', result)
-        dispatch(fetchFeedVersions(feedSource))
+        // fetch feed source with versions
+        return dispatch(fetchFeedSource(feedSource.id, true))
       })
   }
 }
@@ -310,7 +315,9 @@ export function uploadFeed (feedSource, file) {
         dispatch(uploadedFeed(feedSource))
       }
       console.log('uploadFeed result', res)
-      dispatch(fetchFeedVersions(feedSource))
+
+      // fetch feed source with versions
+      return dispatch(fetchFeedSource(feedSource.id, true))
     })
   }
 }
