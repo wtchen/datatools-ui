@@ -7,7 +7,7 @@ export class WatchButton extends React.Component {
   render () {
     console.log(this.props)
     const {dispatch, isWatching, user, target, subscriptionType} = this.props
-    const messages = DT_CONFIG.messages.WatchButton
+    const messages = DT_CONFIG.messages.active.WatchButton
 
     if (!DT_CONFIG.application.notifications_enabled)
       return null

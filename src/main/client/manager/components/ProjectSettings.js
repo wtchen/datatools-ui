@@ -27,7 +27,7 @@ export default class ProjectSettings extends Component {
 
   render () {
     console.log(this.state)
-    const messages = DT_CONFIG.messages.ProjectSettings
+    const messages = DT_CONFIG.messages.active.ProjectSettings
     const tabRowStyle = { marginTop: '20px' }
     const project = this.props.project
     const autoFetchChecked = typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds

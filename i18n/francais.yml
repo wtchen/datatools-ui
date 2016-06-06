@@ -1,12 +1,12 @@
-id: en-us
-name: English
+id: fr
+name: Français
 DatatoolsNavbar:
-  manager: Manager
+  manager: Gérante
   editor: Editor
-  alerts: Alerts
-  users: Users
+  alerts: Alertas
+  users: Usuarios
   signConfig: eTID Config
-  guide: Guide
+  guide: Guia
   account: My Account
   resetPassword: Reset Password
   logout: Log Out

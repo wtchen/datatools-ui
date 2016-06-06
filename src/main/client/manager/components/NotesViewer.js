@@ -22,7 +22,7 @@ export default class NotesViewer extends Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.NotesViewer
+    const messages = DT_CONFIG.messages.active.NotesViewer
     const type = this.props.type === 'feed-source'
       ? messages.feedSource
       : messages.feedVersion

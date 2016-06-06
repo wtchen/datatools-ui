@@ -24,7 +24,7 @@ export default class DatatoolsNavbar extends Component {
 
   render () {
     var userControl
-    const messages = DT_CONFIG.messages.DatatoolsNavbar
+    const messages = DT_CONFIG.messages.active.DatatoolsNavbar
 
     if (!this.props.username) {
       userControl = (<NavItem onClick={this.props.loginHandler} href='#'>{messages.login}</NavItem>)
@@ -65,6 +65,27 @@ export default class DatatoolsNavbar extends Component {
         </NavDropdown>
       )
     }
+    let languageControl
+    languageControl = (
+      <NavDropdown
+        title={<span><Glyphicon glyph='globe' /></span>}
+        id='basic-nav-dropdown'
+      >
+        {this.props.languages.all ? this.props.languages.all.map(lang => {
+          return (
+            <MenuItem
+              key={lang.id}
+              onClick={(evt) =>{
+                evt.preventDefault()
+                this.props.setActiveLanguage(lang.id)
+              }}
+            >{lang.name}</MenuItem>
+          )
+        })
+        : null
+      }
+      </NavDropdown>
+    )
     const navBarStyle = this.props.noMargin ? {marginBottom: 0} : {}
 
     return (
@@ -119,6 +140,7 @@ export default class DatatoolsNavbar extends Component {
               : null
             }
             {userControl}
+            {languageControl}
           </Nav>
         </Navbar.Collapse>
       </Navbar>

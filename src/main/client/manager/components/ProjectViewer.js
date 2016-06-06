@@ -40,7 +40,7 @@ export default class ProjectViewer extends Component {
     if(!this.props.project) {
       return <ManagerPage />
     }
-    const messages = DT_CONFIG.messages.ProjectViewer
+    const messages = DT_CONFIG.messages.active.ProjectViewer
     const isWatchingProject = this.props.user.subscriptions.hasProjectSubscription(this.props.project.id, 'project-updated')
     const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
     const filteredFeedSources = this.props.project.feedSources
@@ -241,7 +241,7 @@ class DeploymentsPanel extends Component {
   //   })
   // }
   render () {
-    const messages = DT_CONFIG.messages.DeploymentsPanel
+    const messages = DT_CONFIG.messages.active.DeploymentsPanel
     const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     return (

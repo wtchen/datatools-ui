@@ -83,9 +83,9 @@ export default class FeedSourceViewer extends React.Component {
     const fs = this.props.feedSource
 
     if(!fs) {
-      return <ManagerPage />
+      return <ManagerPage ref='page'/>
     }
-    const messages = DT_CONFIG.messages.FeedSourceViewer
+    const messages = DT_CONFIG.messages.active.FeedSourceViewer
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')

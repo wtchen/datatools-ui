@@ -34,7 +34,7 @@ export default class CreateUser extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.CreateUser
+    const messages = DT_CONFIG.messages.active.CreateUser
     return (
       <div>
         <Button

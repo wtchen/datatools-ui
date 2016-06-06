@@ -35,7 +35,7 @@ export default class RegionSearch extends React.Component {
   }
   render() {
     // console.log('render search feeds', this.props.feeds)
-    const messages = DT_CONFIG.messages.RegionSearch
+    const messages = DT_CONFIG.messages.active.RegionSearch
     const getRegions = (input) => {
       const limit = this.props.limit ? '&limit=' + this.props.limit : ''
       const nameQuery = input ? '&name=' + input : ''

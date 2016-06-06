@@ -34,7 +34,7 @@ export default class DeploymentViewer extends Component {
       fs.deployable &&
       fs.latestValidation
     )
-    const messages = DT_CONFIG.messages.DeploymentViewer
+    const messages = DT_CONFIG.messages.active.DeploymentViewer
     const versions = this.props.deployment.feedVersions.sort(versionsSorter)
 
     console.log(this.props.deployment)

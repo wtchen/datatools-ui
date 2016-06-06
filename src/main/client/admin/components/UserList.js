@@ -23,7 +23,7 @@ export default class UserList extends React.Component {
       marginLeft: '12px'
     }
 
-    const messages = DT_CONFIG.messages.UserList
+    const messages = DT_CONFIG.messages.active.UserList
     const minUserIndex = this.props.page * this.props.perPage + 1
     const maxUserIndex = Math.min((this.props.page + 1) * this.props.perPage, this.props.userCount)
     const maxPage = Math.ceil(this.props.userCount / this.props.perPage) - 1

@@ -15,7 +15,18 @@ if(config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
   config.modules.gtfsplus.spec = require('json!yaml!../../../gtfsplus.yml')
 }
 config.modules.editor.spec = require('json!yaml!../../../gtfs.yml')
-config.messages = require('json!yaml!../../../messages.yml')
+
+// function to require all lang files in i18n dir
+function requireAll(requireContext) {
+  return requireContext.keys().map(requireContext);
+}
+// requires and returns all modules that match
+var lang = requireAll(require.context('json!yaml!../../../i18n', true, /.yml/))
+// is an array containing all the matching modules
+config.messages = {}
+config.messages.all = lang
+const languageId = localStorage.getItem('lang') ? localStorage.getItem('lang') : 'en-us'
+config.messages.active = lang.find(l => l.id === languageId)
 
 console.log('config', config)
 window.DT_CONFIG = config
