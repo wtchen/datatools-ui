@@ -74,7 +74,7 @@ const alerts = (state = {
       }
       console.log('entityList', entityList)
 
-      const allAlerts = action.rtdAlerts.map((rtdAlert) => {
+      const allAlerts = action.rtdAlerts ? action.rtdAlerts.map((rtdAlert) => {
         //let activeIndex = action.projects.findIndex(p => p.id == config.activeProjectId)
         let project = action.activeProject // action.projects[activeIndex]
 
@@ -126,6 +126,7 @@ const alerts = (state = {
         }
         return alert
       })
+      : []
 
       return {
         isFetching: false,
