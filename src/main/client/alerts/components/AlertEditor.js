@@ -56,6 +56,11 @@ export default class AlertEditor extends React.Component {
     var compare = function (a, b) {
       var aName = a.shortName || a.name
       var bName = b.shortName || b.name
+
+      // return 511 Staff as first in list to avoid 511 Emergency being first in list
+      if(/511 Staff/.test(aName)) return -1
+      if(/511 Staff/.test(bName)) return 1
+      
       if(aName < bName) return -1
       if(aName > bName) return 1
       return 0
