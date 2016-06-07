@@ -5,6 +5,8 @@ import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
 
 import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import TimezoneSelect from '../../common/components/TimezoneSelect'
+import LanguageSelect from '../../common/components/LanguageSelect'
 import languages from '../../common/util/languages'
 import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
@@ -48,7 +50,7 @@ export default class ProjectSettings extends Component {
               <Col xs={12}>
                 <Form>
                   <Row>
-                    <Col xs={6}>
+                    <Col xs={12} sm={6}>
                       <h4>{messages.general.location.title}</h4>
                         <Row>
                           <Col xs={6}>
@@ -91,41 +93,28 @@ export default class ProjectSettings extends Component {
                         </Row>
                         <Row>
                           <Col xs={6}>
-                            <Input type='select'
-                              label={(<span><Glyphicon glyph='time' /> {messages.general.location.defaultTimeZone}</span>)}
+                            <ControlLabel><Glyphicon glyph='time' /> {messages.general.location.defaultTimeZone}</ControlLabel>
+                            <TimezoneSelect
                               value={this.state.general.defaultTimeZone || project.defaultTimeZone}
-                              onChange={(evt) => {
-                                let stateUpdate = { general: { $merge: { defaultTimeZone: evt.target.value } } }
+                              onChange={(option) => {
+                                let stateUpdate = { general: { $merge: { defaultTimeZone: option.value } } }
                                 this.setState(update(this.state, stateUpdate))
                               }}
-                            >
-                              {moment_tz.tz.names().map(tz => {
-                                return <option value={tz} key={tz}>
-                                  {tz}
-                                </option>
-                              })}
-                          </Input>
+                            />
                           </Col>
                           <Col xs={6}>
-                            <Input type='select'
-                              label={(<span><Glyphicon glyph='globe' /> {messages.general.location.defaultLanguage}</span>)}
+                            <ControlLabel><Glyphicon glyph='globe' /> {messages.general.location.defaultLanguage}</ControlLabel>
+                            <LanguageSelect
                               value={this.state.general.defaultLanguage || project.defaultLanguage}
-                              onChange={(evt) => {
-                                console.log(evt.target.value)
-                                let stateUpdate = { general: { $merge: { defaultLanguage: evt.target.value } } }
+                              onChange={(option) => {
+                                let stateUpdate = { general: { $merge: { defaultLanguage: option.value } } }
                                 this.setState(update(this.state, stateUpdate))
                               }}
-                            >
-                              {languages.map(language => {
-                                return <option value={language.code} key={language.code}>
-                                  {language.name}
-                                </option>
-                              })}
-                            </Input>
+                            />
                         </Col>
                       </Row>
                     </Col>
-                    <Col xs={6}>
+                    <Col xs={12} sm={6}>
                       <h4>{messages.general.updates.title}</h4>
                       <Checkbox
                         checked={autoFetchChecked}
