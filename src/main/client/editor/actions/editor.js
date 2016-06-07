@@ -5,7 +5,7 @@ import { fetchFeedVersions } from '../../manager/actions/feeds'
 
 
 
-export function createAgency (agency) {
+export function createAgency (agency, feedId) {
   return function (dispatch, getState) {
     const agency = {
       defaultLat:"33.755",
@@ -20,7 +20,7 @@ export function createAgency (agency) {
       timezone:"America/New_York",
       url:"http://test.com",
     }
-    const url = `/api/manager/secure/agency`
+    const url = `/api/manager/secure/agency?${feedId}`
     return secureFetch(url, getState(), 'post', agency)
       .then(res => res.json())
       .then(validationIssues => {
@@ -38,9 +38,9 @@ export function receiveGtfsTable (tableId, entities) {
   }
 }
 
-export function getGtfsTable (tableId) {
+export function getGtfsTable (tableId, feedId) {
   return function (dispatch, getState) {
-    const url = `/api/manager/secure/${tableId}`
+    const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
     return secureFetch(url, getState())
       .then(res => res.json())
       .then(entities => {
@@ -50,7 +50,7 @@ export function getGtfsTable (tableId) {
   }
 }
 
-export function saveGtfsRow (tableId, rowIndex) {
+export function saveGtfsRow (tableId, rowIndex, feedId) {
   return function (dispatch, getState) {
     // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
     // for(const field of table.fields) {
@@ -71,7 +71,7 @@ export function saveGtfsRow (tableId, rowIndex) {
     //   timezone:"America/New_York",
     //   url:"http://test.com",
     // }
-    const url = `/api/manager/secure/${tableId}`
+    const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
     return secureFetch(url, getState(), 'post', data)
       .then(res => res.json())
       .then(entity => {
