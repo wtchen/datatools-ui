@@ -1,0 +1,229 @@
+id: fr
+name: Français
+DatatoolsNavbar:
+  manager: Gérante
+  editor: Editor
+  alerts: Alertas
+  users: Usuarios
+  signConfig: eTID Config
+  guide: Guia
+  account: My Account
+  resetPassword: Reset Password
+  logout: Log Out
+  login: Log In
+Breadcrumbs:
+  root: Explore
+  projects: Projects
+  deployments: Deployments
+RegionSearch:
+  placeholder: Search for regions or agencies
+PublicFeedsTable:
+  search: Search
+  name: Feed Name
+  region: Region
+  stateProvince: State or Province
+  country: Country
+  lastUpdated: Last Updated
+  link: Link to GTFS
+PublicFeedsViewer:
+  title: Catalogue
+ProjectsList:
+  title: Projects
+  noProjects: You currently do not have any projects.
+  createFirst: Create my first project
+  search: Search by project name
+  table:
+    name: Project Name
+  new: New Project
+  help:
+    title: What's a project?
+    content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+DeploymentsPanel:
+  title: Deployments
+  new: New Deployment
+  delete: Remove deployment
+  table:
+    name: Name
+    creationDate: Creation date
+    feedCount: Number of feeds
+ProjectViewer:
+  mergeFeeds: Merge Feeds
+  feeds:
+    title: Feed Sources
+    search: Search by feed source name
+    table:
+      name: Name
+      public: Public?
+      deployable: Deployable?
+      retrievalMethod: Retrieval Method
+      lastUpdated: GTFS Last Updated
+      errorCount: Error Count
+      validRange: Valid Range
+    new: New Feed Source
+    update: Update all
+FeedSourceViewer:
+  deploy: Deploy
+  private: Private view
+  viewPublic: View public page
+  versions: Feed Versions
+  properties:
+    title: Feed Source Properties
+    property: Property
+    value: Value
+    name: Name
+    noneSelected: (None Selected)
+    retrievalMethod:
+      title: Retrieval Method
+      fetchedAutomatically: Fetched Automatically
+      manuallyUploaded: Manually Uploaded
+      producedInHouse: Produced In-house
+    public: Public?
+    deployable: Deployable?
+    snapshot: Editor Snapshot
+  upload: Upload
+  update: Update
+FeedVersionViewer:
+  status: Status
+  validDates: Valid Dates
+  timestamp: File Timestamp
+  size: File Size
+  agencyCount: Agency Count
+  routeCount: Route Count
+  tripCount: Trip Count
+  stopTimesCount: Stop time Count
+GtfsValidationExplorer:
+  title: Validation Explorer
+  validationIssues: Validation Issues
+  accessibilityValidation: Accessibility Explorer
+  timeValidation: Time-based Validation
+  table:
+    file: File
+    issue: Issue
+    priority: Priority
+    count: Count
+GtfsValidationViewer:
+  title: Validation Results
+  routeIssues: Route Issues
+  stopIssues: Stop Issues
+  tripIssues: Trip Issues
+  shapeIssues: Shape Issues
+  noResults: No validation results to show.
+  explorer: Validation Explorer
+ResultTable:
+  problemType: Problem Type
+  priority: Priority
+  affectedIds: Affected ID(s)
+  description: Description
+DeploymentViewer:
+  versions: Feed Versions
+  search: Search by feed source name
+  download: Download
+  noServers: No servers defined
+  addFeedSource: Add Feed Source
+  allFeedsAdded: All feeds added
+  deploy: Deploy
+  table:
+    name: Name
+    version: Version
+    dateRetrieved: Date Retrieved
+    loadStatus: Loaded Successfully
+    errorCount: Error Count
+    routeCount: Route Count
+    tripCount: Trip Count
+    stopTimesCount: Stop time count
+    validFrom: Valid from
+    expires: Expires
+FeedVersionNavigator:
+  version: Version
+  of: of
+  noVersions: (No Versions)
+  noVersionsExist: No versions exist for this feed source.
+  previous: Previous
+  next: Next
+  download: Download
+  edit: Edit
+  feed: Feed
+  delete: Delete
+NotesViewer:
+  title: Comments for this
+  feedSource: Feed Source
+  feedVersion: Version
+  all: All Comments
+  none: No comments.
+  refresh: Refresh
+  postComment: Post a New Comment
+  new: Post
+ProjectSettings:
+  title: Project Settings
+  save: Save
+  general:
+    title: General
+    location:
+      title: Location
+      defaultLocation: Default location (lat, lng)
+      defaultTimeZone: Default time zone
+      boundingBox: Bounding box (W,S,E,N)
+      defaultLanguage: Default language
+    updates:
+      title: Updates
+      autoFetchFeeds: Auto fetch feed sources?
+  deployment:
+    title: Deployment
+    buildConfig:
+      title: Build Config
+      fetchElevationUS: Fetch Elevation
+      stationTransfers: Sta. Transfers
+      subwayAccessTime: Subway Access Time
+      fares: Fares
+    routerConfig:
+      title: Router Config
+      numItineraries: "# of itineraries"
+      walkSpeed: Walk Speed
+      stairsReluctance: Stairs Reluctance
+      carDropoffTime: Car Dropoff Time
+      brandingUrlRoot: Branding URL Root
+    servers:
+      title: Servers
+      new: Add server
+      serverPlaceholder: Server name
+      name: Name
+      namePlaceholder: Production
+      delete: Remove
+      public: Public URL
+      internal: Internal URLs
+      admin: Admin access only?
+    osm:
+      title: OSM Extract
+      gtfs: Use GTFS-Derived Extract Bounds
+      custom: Use Custom Extract Bounds
+      bounds: Custom Extract Bounds
+
+UserAdmin:
+  title: User Management
+UserList:
+  title: User Management
+  showing: Showing Users
+  of: of
+  search: Search by username
+CreateUser:
+  new: Create User
+UserSettings:
+  edit: Edit
+  delete: Delete
+  cancel: Cancel
+  save: Save
+  application: Application Settings
+  admin:
+    title: Application Admininistrator
+    description: Application administrators have full access to all projects.
+  project:
+    title: Project Settings for
+    noAccess: No Access
+    admin: Admin
+    custom: Custom
+    feeds: Feed Sources
+    cannotFetchFeeds: Cannot fetch feeds
+    permissions: Permissions
+WatchButton:
+  watch: Watch
+  unwatch: Unwatch

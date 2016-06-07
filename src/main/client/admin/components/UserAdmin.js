@@ -26,7 +26,7 @@ export default class UserAdmin extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.UserAdmin
+    const messages = DT_CONFIG.messages.active.UserAdmin
     return (
       <ManagerPage ref='page'>
       <Helmet

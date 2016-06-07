@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import DatatoolsNavbar from '../components/DatatoolsNavbar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
 import { setActiveProject } from '../../manager/actions/projects'
+import { setActiveLanguage } from '../../manager/actions/languages'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -16,7 +17,8 @@ const mapStateToProps = (state, ownProps) => {
     docsUrl: DT_CONFIG.application.docs_url ? DT_CONFIG.application.docs_url : null,
     username: state.user.profile ? state.user.profile.email : null,
     userIsAdmin: state.user.profile && state.user.permissions.isApplicationAdmin(),
-    projects: state.projects ? state.projects : null
+    projects: state.projects ? state.projects : null,
+    languages: state.languages ? state.languages : ['English', 'Español', 'Français']
   }
 }
 
@@ -25,7 +27,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loginHandler: () => { dispatch(login()) },
     logoutHandler: () => { dispatch(logout()) },
     resetPasswordHandler: () => { dispatch(resetPassword()) },
-    setActiveProject: (project) => { dispatch(setActiveProject(project)) }
+    setActiveProject: (project) => { dispatch(setActiveProject(project)) },
+    setActiveLanguage: (language) => { dispatch(setActiveLanguage(language)) },
   }
 }
 

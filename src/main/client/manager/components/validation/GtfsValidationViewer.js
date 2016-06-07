@@ -18,7 +18,7 @@ export default class GtfsValidationViewer extends React.Component {
   render () {
 
     const result = this.props.validationResult
-    const messages = DT_CONFIG.messages.GtfsValidationViewer
+    const messages = DT_CONFIG.messages.active.GtfsValidationViewer
 
     const header = (
       <h3 onClick={() => {
@@ -95,7 +95,7 @@ class ResultTable extends React.Component {
     const tableStyle = {
       tableLayout: 'fixed'
     }
-    const messages = DT_CONFIG.messages.ResultTable
+    const messages = DT_CONFIG.messages.active.ResultTable
     
     const breakWordStyle = {
       wordWrap: 'break-word',

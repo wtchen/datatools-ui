@@ -7,7 +7,7 @@ export default class Breadcrumbs extends React.Component {
     super(props)
   }
   render () {
-    const messages = DT_CONFIG.messages.Breadcrumbs
+    const messages = DT_CONFIG.messages.active.Breadcrumbs
     return (
       <ol className='breadcrumb'>
         <li><Link to='/'>{messages.root}</Link></li>

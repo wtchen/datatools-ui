@@ -33,7 +33,7 @@ export default class GtfsValidationExplorer extends Component {
 
   render() {
     const version = this.props.version
-    const messages = DT_CONFIG.messages.GtfsValidationExplorer
+    const messages = DT_CONFIG.messages.active.GtfsValidationExplorer
 
     if (!version || !this.props.version.validationResult) {
       return (

@@ -11,7 +11,7 @@ export default class PageNotFound extends React.Component {
   render () {
     return (
       <div>
-        <ManagerPage>
+        <ManagerPage ref='page'>
           <Grid>
             <Row>
               <Col xs={12}>

@@ -108,7 +108,7 @@ export default class UserSettings extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.UserSettings
+    const messages = DT_CONFIG.messages.active.UserSettings
     let currentProject = this.props.projects[this.state.currentProjectIndex]
 
     const getProjectLabel = (access) => {
@@ -218,7 +218,7 @@ class ProjectSettings extends React.Component {
 
   render () {
     let lookup = {}
-    const messages = DT_CONFIG.messages.UserSettings
+    const messages = DT_CONFIG.messages.active.UserSettings
 
     let feedSources = this.props.project.feedSources
     if (feedSources) {

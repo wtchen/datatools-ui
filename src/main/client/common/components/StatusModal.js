@@ -1,7 +1,7 @@
 import React  from 'react'
 import { Modal, Button, Glyphicon } from 'react-bootstrap'
 
-export default class ConfirmModal extends React.Component {
+export default class StatusModal extends React.Component {
 
   constructor (props) {
     super(props)
@@ -9,11 +9,21 @@ export default class ConfirmModal extends React.Component {
       showModal: false
     }
   }
-
+  componentWillReceiveProps (newProps) {
+    console.log('status model new props', newProps)
+    if (newProps.title) {
+      this.setState({
+        showModal: true,
+        title: newProps.title,
+        body: newProps.body,
+      })
+    }
+  }
   close () {
     this.setState({
       showModal: false
     })
+    this.props.clearStatusModal()
   }
 
   open (props) {
@@ -42,8 +52,7 @@ export default class ConfirmModal extends React.Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button onClick={() => this.ok()}>OK</Button>
-          <Button onClick={() => this.close()}>Cancel</Button>
+          <Button onClick={() => this.close()}>Close</Button>
         </Modal.Footer>
       </Modal>
     )

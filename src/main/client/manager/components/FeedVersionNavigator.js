@@ -23,7 +23,7 @@ export default class FeedVersionNavigator extends React.Component {
       fontSize: '24px',
       fontWeight: 'bold'
     }
-    const messages = DT_CONFIG.messages.FeedVersionNavigator
+    const messages = DT_CONFIG.messages.active.FeedVersionNavigator
     const hasVersions = this.props.versions && this.props.versions.length > 0
 
     let version = null

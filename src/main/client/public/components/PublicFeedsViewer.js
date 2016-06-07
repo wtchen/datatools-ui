@@ -23,7 +23,7 @@ export default class PublicFeedsViewer extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.PublicFeedsViewer
+    const messages = DT_CONFIG.messages.active.PublicFeedsViewer
     if (!this.props.projects) {
       return <PublicPage />
     }
@@ -130,7 +130,7 @@ class PublicFeedsTable extends React.Component {
 
   render () {
     let feeds = []
-    const messages = DT_CONFIG.messages.PublicFeedsTable
+    const messages = DT_CONFIG.messages.active.PublicFeedsTable
     const feedArray = this.props.projects.map(p => {
       const regions = p.name.split(', ')
       if (p.feedSources) {

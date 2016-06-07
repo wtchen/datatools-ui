@@ -169,6 +169,8 @@
     required: false
     inputType: DROPDOWN
     options:
+    - value: ''
+      text: Unknown
     - value: 'NO'
       text: North
     - value: SO
@@ -191,6 +193,8 @@
     required: false
     inputType: DROPDOWN
     options:
+    - value: ''
+      text: Unknown
     - value: NS
       text: Near side of intersection
     - value: FS

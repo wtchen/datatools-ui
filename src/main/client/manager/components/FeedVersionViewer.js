@@ -14,7 +14,7 @@ export default class FeedVersionViewer extends Component {
 
   render () {
     const version = this.props.version
-    const messages = DT_CONFIG.messages.FeedVersionViewer
+    const messages = DT_CONFIG.messages.active.FeedVersionViewer
 
     return (
       <div>

@@ -22,7 +22,7 @@ export default class ProjectsList extends React.Component {
     if (!this.props.projects) {
       return <ManagerPage />
     }
-    const messages = DT_CONFIG.messages.ProjectsList
+    const messages = DT_CONFIG.messages.active.ProjectsList
     const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const visibleProjects = this.props.projects.filter((project) => {
       if(project.isCreating) return true // projects actively being created are always visible
