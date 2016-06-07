@@ -338,6 +338,7 @@ class FeedSourceTableRow extends Component {
     const fs = this.props.feedSource
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
+    const dateFormat = DT_CONFIG.application.date_format
     return (
       <tr key={fs.id}>
         <td className="col-md-4">
@@ -379,10 +380,10 @@ class FeedSourceTableRow extends Component {
         <td>
           <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
         </td>
-        <td>{fs.lastUpdated ? moment(fs.lastUpdated).format('MMM Do YYYY') : na}</td>
+        <td>{fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : na}</td>
         <td>{fs.latestValidation ? fs.latestValidation.errorCount : na}</td>
         <td>{fs.latestValidation
-          ? (<span>{moment(fs.latestValidation.startDate).format('MMM Do YYYY')} to {moment(fs.latestValidation.endDate).format('MMM Do YYYY')}</span>)
+          ? (<span>{moment(fs.latestValidation.startDate).format(dateFormat)} to {moment(fs.latestValidation.endDate).format(dateFormat)}</span>)
           : na
         }</td>
         <td>
