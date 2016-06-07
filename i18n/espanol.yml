@@ -6,11 +6,11 @@ DatatoolsNavbar:
   alerts: Alertas
   users: Usuarios
   signConfig: eTID Config
-  guide: Guia
+  guide: Manual del usuario
   account: My Account
   resetPassword: Reset Password
-  logout: Log Out
-  login: Log In
+  logout: Cerrar sesión
+  login: Iniciar sesión
 Breadcrumbs:
   root: Explore
   projects: Projects
@@ -227,3 +227,7 @@ UserSettings:
 WatchButton:
   watch: Watch
   unwatch: Unwatch
+TimezoneSelect:
+  placeholder: Select timezone...
+LanguageSelect:
+  placeholder: Select language...

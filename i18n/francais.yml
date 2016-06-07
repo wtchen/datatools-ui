@@ -1,16 +1,16 @@
 id: fr
 name: Français
 DatatoolsNavbar:
-  manager: Gérante
-  editor: Editor
-  alerts: Alertas
-  users: Usuarios
+  manager: Gestionnaire
+  editor: Editeur
+  alerts: Alertes
+  users: Utilisateurs
   signConfig: eTID Config
-  guide: Guia
+  guide: Guide de l'utilisateur
   account: My Account
   resetPassword: Reset Password
-  logout: Log Out
-  login: Log In
+  logout: Fermer une session
+  login: Se connecter
 Breadcrumbs:
   root: Explore
   projects: Projects
@@ -227,3 +227,7 @@ UserSettings:
 WatchButton:
   watch: Watch
   unwatch: Unwatch
+TimezoneSelect:
+  placeholder: Select timezone...
+LanguageSelect:
+  placeholder: Select language...

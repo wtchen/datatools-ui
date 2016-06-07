@@ -1,4 +1,4 @@
-id: en-us
+id: en-US
 name: English
 DatatoolsNavbar:
   manager: Manager
@@ -227,3 +227,7 @@ UserSettings:
 WatchButton:
   watch: Watch
   unwatch: Unwatch
+TimezoneSelect:
+  placeholder: Select timezone...
+LanguageSelect:
+  placeholder: Select language...
