@@ -75,6 +75,7 @@ export default class DatatoolsNavbar extends Component {
           return (
             <MenuItem
               key={lang.id}
+              active={this.props.languages.active.id === lang.id}
               onClick={(evt) =>{
                 evt.preventDefault()
                 this.props.setActiveLanguage(lang.id)

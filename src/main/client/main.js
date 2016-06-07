@@ -25,8 +25,8 @@ var lang = requireAll(require.context('json!yaml!../../../i18n', true, /.yml/))
 // is an array containing all the matching modules
 config.messages = {}
 config.messages.all = lang
-const languageId = localStorage.getItem('lang') ? localStorage.getItem('lang') : 'en-us'
-config.messages.active = lang.find(l => l.id === languageId)
+const languageId = localStorage.getItem('lang') ? localStorage.getItem('lang') : navigator.language || navigator.userLanguage
+config.messages.active = lang.find(l => l.id === languageId) || lang.find(l => l.id === 'en-US')
 
 console.log('config', config)
 window.DT_CONFIG = config
