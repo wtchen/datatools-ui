@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.conveyal.datatools.manager.models.Deployment.getOsmExtract;
 import static com.conveyal.datatools.manager.utils.StringUtils.getCleanName;
+import static spark.Spark.halt;
 
 /**
  * Represents a version of a feed.
@@ -79,13 +80,15 @@ public class FeedVersion extends Model implements Serializable {
         this.id = getCleanName(source.name) + "_" + df.format(this.updated) + "_" + source.id + ".zip";
 
         // infer the version
-        FeedVersion prev = source.getLatest();
-        if (prev != null) {
-            this.version = prev.version + 1;
-        }
-        else {
-            this.version = 1;
-        }
+//        FeedVersion prev = source.getLatest();
+//        if (prev != null) {
+//            this.version = prev.version + 1;
+//        }
+//        else {
+//            this.version = 1;
+//        }
+        int count = source.getFeedVersionCount();
+        this.version = count + 1;
     }
 
     /**
