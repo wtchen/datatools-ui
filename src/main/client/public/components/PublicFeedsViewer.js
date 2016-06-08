@@ -8,6 +8,7 @@ import RegionSearch from './RegionSearch'
 
 import PublicPage from './PublicPage'
 import FeedsMap from './FeedsMap'
+import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 export default class PublicFeedsViewer extends React.Component {
 
@@ -95,7 +96,7 @@ export default class PublicFeedsViewer extends React.Component {
           </Row>
           <Row>
             <Col xs={12}>
-              {DT_CONFIG.extensions.mtc && DT_CONFIG.extensions.mtc.enabled
+              {isExtensionEnabled('mtc')
                 ? null
                 : <PublicFeedsTable projects={this.props.projects} />
               }
