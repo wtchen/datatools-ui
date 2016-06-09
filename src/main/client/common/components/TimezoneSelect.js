@@ -25,8 +25,6 @@ export default class TimezoneSelect extends React.Component {
     if (!shallowEqual(nextProps.value, this.props.value)) {
       this.setState({value: nextProps.value})
       console.log('props received', this.state.value)
-      // console.log()
-      this.refs.gtfsSelect.onChange()
     }
   }
   renderOption (option) {
