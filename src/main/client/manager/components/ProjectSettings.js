@@ -1,14 +1,16 @@
 import React, {Component, PropTypes} from 'react'
+import ReactDOM from 'react-dom'
 import moment from 'moment'
 import moment_tz from 'moment-timezone'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
 
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, InputGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
 import languages from '../../common/util/languages'
 import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import MapModal from '../../common/components/MapModal.js'
 
 export default class ProjectSettings extends Component {
 
@@ -36,6 +38,7 @@ export default class ProjectSettings extends Component {
     const projectEditDisabled = this.props.projectEditDisabled
     const defaultFetchTime = moment().startOf('day').add(2, 'hours')
     return (
+      <div>
       <Panel
         header={(<h3><Glyphicon glyph='cog' /> {messages.title}</h3>)}
         collapsible
@@ -54,41 +57,104 @@ export default class ProjectSettings extends Component {
                       <h4>{messages.general.location.title}</h4>
                         <Row>
                           <Col xs={6}>
-                            <Input
-                              type='text'
-                              defaultValue={project.defaultLocationLat !== null &&  project.defaultLocationLon !== null ?
-                                `${project.defaultLocationLat},${project.defaultLocationLon}` :
-                                ''}
-                              placeholder='34.8977,-87.29987'
-                              label={(<span><Glyphicon glyph='map-marker' /> {messages.general.location.defaultLocation}</span>)}
-                              ref='defaultLocation'
-                              onChange={(evt) => {
-                                const latLng = evt.target.value.split(',')
-                                console.log(latLng)
-                                if (typeof latLng[0] !== 'undefined' && typeof latLng[1] !== 'undefined') {
-                                  let stateUpdate = { general: { $merge: {defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]} } }
-                                  this.setState(update(this.state, stateUpdate))
-                                }
-                                else
-                                  console.log('invalid value for latlng')
-                              }}
-                            />
+                            <FormGroup>
+                              <ControlLabel><Glyphicon glyph='map-marker' /> {messages.general.location.defaultLocation}</ControlLabel>
+                              <InputGroup ref='defaultLocationGroup'>
+                                <FormControl
+                                  type='text'
+                                  defaultValue={project.defaultLocationLat !== null &&  project.defaultLocationLon !== null ?
+                                    `${project.defaultLocationLat},${project.defaultLocationLon}` :
+                                    ''}
+                                  ref='defaultLocation'
+                                  placeholder='34.8977,-87.29987'
+                                  onChange={(evt) => {
+                                    const latLng = evt.target.value.split(',')
+                                    console.log(latLng)
+                                    if (typeof latLng[0] !== 'undefined' && typeof latLng[1] !== 'undefined') {
+                                      let stateUpdate = { general: { $merge: {defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]} } }
+                                      this.setState(update(this.state, stateUpdate))
+                                    }
+                                    else
+                                      console.log('invalid value for latlng')
+                                  }}
+                                />
+                                <InputGroup.Button>
+                                  <Button
+                                    onClick={() => {
+                                      const bounds = project.defaultLocationLat !== null &&  project.defaultLocationLon !== null ? [[project.defaultLocationLat + 1, project.defaultLocationLon + 1], [project.defaultLocationLat - 1, project.defaultLocationLon - 1]] : null
+                                      console.log(bounds)
+                                      this.refs.mapModal.open({
+                                        title: 'Select a default location',
+                                        body: `Pretend this is a map`,
+                                        markerSelect: true,
+                                        marker: project.defaultLocationLat !== null &&  project.defaultLocationLon !== null ? {lat: project.defaultLocationLat, lng: project.defaultLocationLon} : null,
+                                        bounds: bounds,
+                                        onConfirm: (marker) => {
+                                          console.log('OK, coordinates', marker)
+                                          if (marker) {
+                                            ReactDOM.findDOMNode(this.refs.defaultLocation).value = `${marker.lat.toFixed(6)},${marker.lng.toFixed(6)}`
+                                            let stateUpdate = { general: { $merge: {defaultLocationLat: marker.lat, defaultLocationLon: marker.lng} } }
+                                            this.setState(update(this.state, stateUpdate))
+                                          }
+                                        }
+                                      })
+                                    }}
+                                  >
+                                    <Glyphicon glyph='map-marker'/>
+                                  </Button>
+                                </InputGroup.Button>
+                              </InputGroup>
+                            </FormGroup>
                           </Col>
                           <Col xs={6}>
-                            <Input
-                              type='text'
-                              defaultValue={project.north !== null ? `${project.west},${project.south},${project.east},${project.north}` : ''}
-                              placeholder='-88.45,33.22,-87.12,34.89'
-                              label={(<span><Glyphicon glyph='fullscreen' /> {messages.general.location.boundingBox}</span>)}
-                              ref='boundingBox'
-                              onChange={(evt) => {
-                                const bBox = evt.target.value.split(',')
-                                if (bBox.length === 4) {
-                                  let stateUpdate = { general: { $merge: {west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]} } }
-                                  this.setState(update(this.state, stateUpdate))
-                                }
-                              }}
-                            />
+                            <FormGroup>
+                              <ControlLabel><Glyphicon glyph='fullscreen' /> {messages.general.location.boundingBox}</ControlLabel>
+                              <InputGroup ref='boundingBoxGroup'>
+                                <FormControl
+                                  type='text'
+                                  defaultValue={project.north !== null ? `${project.west},${project.south},${project.east},${project.north}` : ''}
+                                  ref='boundingBox'
+                                  placeholder='-88.45,33.22,-87.12,34.89'
+                                  onChange={(evt) => {
+                                    const bBox = evt.target.value.split(',')
+                                    if (bBox.length === 4) {
+                                      let stateUpdate = { general: { $merge: {west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]} } }
+                                      this.setState(update(this.state, stateUpdate))
+                                    }
+                                  }}
+                                />
+                                <InputGroup.Button>
+                                  <Button
+                                    onClick={() => {
+                                      const bounds = project.north !== null ? [[project.south, project.west], [project.north, project.east]] : null
+                                      console.log(bounds)
+                                      this.refs.mapModal.open({
+                                        title: 'Select project bounds',
+                                        body: `Pretend this is a map`,
+                                        bounds: bounds,
+                                        rectangleSelect: true,
+                                        onConfirm: (rectangle) => {
+                                          console.log('OK, rectangle', rectangle)
+                                          if (rectangle && rectangle.getBounds()) {
+                                            let bounds = rectangle.getBounds()
+                                            let west = bounds.getWest().toFixed(6)
+                                            let south = bounds.getSouth().toFixed(6)
+                                            let east = bounds.getEast().toFixed(6)
+                                            let north = bounds.getNorth().toFixed(6)
+                                            ReactDOM.findDOMNode(this.refs.boundingBox).value = `${west},${south},${east},${north}`
+                                            let stateUpdate = { general: { $merge: {west: west, south: south, east: east, north: north} } }
+                                            this.setState(update(this.state, stateUpdate))
+                                          }
+                                          return rectangle
+                                        }
+                                      })
+                                    }}
+                                  >
+                                    <Glyphicon glyph='fullscreen'/>
+                                  </Button>
+                                </InputGroup.Button>
+                              </InputGroup>
+                            </FormGroup>
                           </Col>
                         </Row>
                         <Row>
@@ -463,6 +529,8 @@ export default class ProjectSettings extends Component {
           */}
         </Tabs>
       </Panel>
+      <MapModal ref='mapModal'/>
+      </div>
     )
   }
 }
