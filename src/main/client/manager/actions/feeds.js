@@ -257,6 +257,32 @@ export function fetchFeedVersions (feedSource, unsecured) {
 }
 
 
+export function requestingFeedVersion () {
+  return {
+    type: 'REQUESTING_FEEDVERSION'
+  }
+}
+
+export function receiveFeedVersion (feedVersion) {
+  return {
+    type: 'RECEIVE_FEEDVERSION',
+    feedVersion
+  }
+}
+
+export function fetchFeedVersion (feedVersionId) {
+  return function (dispatch, getState) {
+    dispatch(requestingFeedVersion())
+    const url = `/api/manager/secure/feedversion/${feedVersionId}`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(version => {
+        return dispatch(receiveFeedVersion(version))
+      })
+  }
+}
+
+
 export function fetchPublicFeedVersions (feedSource) {
   return function (dispatch, getState) {
     dispatch(requestingFeedVersions())
