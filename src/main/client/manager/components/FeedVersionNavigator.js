@@ -14,7 +14,7 @@ export default class FeedVersionNavigator extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps)
+    console.log(nextProps.versionIndex)
   }
 
   render () {
@@ -26,9 +26,13 @@ export default class FeedVersionNavigator extends React.Component {
     const messages = DT_CONFIG.messages.active.FeedVersionNavigator
     const hasVersions = this.props.versions && this.props.versions.length > 0
 
-    let version = null
+    let version
 
-    if(hasVersions && this.props.versions.length >= this.props.versionIndex) {
+    if (typeof this.props.versionIndex === 'undefined') {
+      return null
+    }
+    else if(hasVersions && this.props.versions.length >= this.props.versionIndex) {
+      console.log(this.props.versionIndex)
       version = this.props.versions[this.props.versionIndex - 1]
     }
     else {
@@ -42,7 +46,7 @@ export default class FeedVersionNavigator extends React.Component {
         <Row>
           <Col xs={12} sm={2} style={versionTitleStyle}>
             {hasVersions
-              ? `${messages.version} ${version.version} ${messages.of} ${this.props.versions.length}`
+              ? `${messages.version} ${this.props.versionIndex} ${messages.of} ${this.props.versions.length}`
               : messages.noVersions
             }
           </Col>
