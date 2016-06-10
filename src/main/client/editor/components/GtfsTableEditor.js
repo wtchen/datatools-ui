@@ -6,7 +6,7 @@ import { browserHistory, Link } from 'react-router'
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsTable from './GtfsTable'
 
-export default class GtfsEditor extends Component {
+export default class GtfsTableEditor extends Component {
 
   constructor (props) {
     super(props)
@@ -103,7 +103,7 @@ export default class GtfsEditor extends Component {
                     key={table.id}
                     style={buttonStyle}
                     onClick={() => {
-                      this.props.getGtfsTable(table.id)
+                      this.props.getGtfsTable(table.id, this.props.feedSource.id)
                       this.setState({ activeTableId: table.id })
                     }}
                   >

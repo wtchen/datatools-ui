@@ -24,6 +24,8 @@ const editor = (state = {
 }, action) => {
   let newTableData, fields, rowData
   switch (action.type) {
+    case 'RECEIVE_AGENCIES':
+      console.log(action.agencies)
     case 'CLEAR_GTFSEDITOR_CONTENT':
       return {
         feedVersionId: null,
@@ -35,7 +37,25 @@ const editor = (state = {
     case 'RECEIVE_GTFSEDITOR_TABLE':
       newTableData = {}
       fields = Object.keys(action.entities[0])
-      newTableData[action.tableId] = action.entities
+      let mappedEntities
+      switch(action.tableId) {
+        case 'agency':
+          console.log('mapping agency to gtfs props')
+          // newTableData[action.tableId] = action.entities.map(ent => {
+          mappedEntities = action.entities.map(ent => {
+            return {
+              agency_id: ent.id,
+              agency_name: ent.name,
+              agency_url: ent.url,
+              agency_timezone: ent.timezone,
+              agency_lang: ent.lang,
+              agency_phone: ent.phone,
+              agency_fare_url: ent.fare_url,
+              agency_email: ent.email,
+            }
+          })
+      }
+      newTableData[action.tableId] = mappedEntities
         // .map((line, rowIndex) => {
         //   console.log(line, rowIndex)
         //   const values = line.split(',')
@@ -45,6 +65,7 @@ const editor = (state = {
         //   }
         //   return rowData
         // })
+
       return update(state, {
         tableData: {$set: newTableData}
       })

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
-import GtfsTableEditor  from '../components/GtfsTableEditor'
-import { fetchFeedSourceAndProject } from '../../manager/actions/feeds'
+import GtfsEditor  from '../components/GtfsEditor'
+import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
   addGtfsRow,
   updateGtfsField,
@@ -16,8 +16,12 @@ import {
 } from '../actions/editor'
 
 const mapStateToProps = (state, ownProps) => {
-
-  let feedSourceId = ownProps.routeParams.feedSourceId
+  console.log(ownProps)
+  const feedSourceId = ownProps.routeParams.feedSourceId
+  const feedVersionId = ownProps.routeParams.feedVersionId
+  const activeComponent = ownProps.routeParams.subpage
+  const activeEntity = ownProps.routeParams.entity
+  const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   let user = state.user
   // find the containing project
   let project = state.projects.all
@@ -31,27 +35,46 @@ const mapStateToProps = (state, ownProps) => {
   if (project) {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
+  let version
+  if (feedSource && feedSource.feedVersions) {
+    version = feedSource.feedVersions.find(v => v.id === feedVersionId)
+  }
 
   return {
     tableData: state.editor.tableData,
-    gtfsEntityLookup: state.editor.gtfsEntityLookup,
-    validation: state.editor.validation,
-    currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
+    // gtfsEntityLookup: state.editor.gtfsEntityLookup,
+    // validation: state.editor.validation,
+    // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
+    tableView,
+    version,
     project,
-    user
+    user,
+    activeComponent,
+    activeEntity
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
   const feedVersionId = ownProps.routeParams.feedVersionId
+  const activeComponent = ownProps.routeParams.subpage
 
   return {
     onComponentMount: (initialProps) => {
-      if(!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
-      if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
-      if (initialProps.currentTable) dispatch(getGtfsTable(initialProps.currentTable, feedSourceId))
+      if (!initialProps.feedSource) {
+        dispatch(fetchFeedSourceAndProject(feedSourceId))
+        .then((fs) => {
+          dispatch(fetchFeedVersion(feedVersionId))
+        })
+      }
+      if (activeComponent) {
+        console.log(activeComponent)
+        dispatch(getGtfsTable(activeComponent, feedSourceId))
+      }
+      // if(!initialProps.version) dispatch(fetchFeedVersion(feedVersionId))
+      // if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
+      // if (initialProps.currentTable) dispatch(getGtfsTable(initialProps.currentTable, feedSourceId))
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))
@@ -84,9 +107,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-const ActiveGtfsTableEditor = connect(
+const ActiveGtfsEditor = connect(
   mapStateToProps,
   mapDispatchToProps
-)(GtfsTableEditor)
+)(GtfsEditor)
 
-export default ActiveGtfsTableEditor
+export default ActiveGtfsEditor

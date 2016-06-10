@@ -3,7 +3,7 @@ import JSZip from 'jszip'
 import { secureFetch } from '../../common/util/util'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
 
-
+//// AGENCY
 
 export function createAgency (agency, feedId) {
   return function (dispatch, getState) {
@@ -20,7 +20,7 @@ export function createAgency (agency, feedId) {
       timezone:"America/New_York",
       url:"http://test.com",
     }
-    const url = `/api/manager/secure/agency?${feedId}`
+    const url = `/api/manager/secure/agency?feedId=${feedId}`
     return secureFetch(url, getState(), 'post', agency)
       .then(res => res.json())
       .then(validationIssues => {
@@ -29,6 +29,90 @@ export function createAgency (agency, feedId) {
       })
   }
 }
+
+export function requestingAgencies (feedId) {
+  return {
+    type: 'REQUESTING_AGENCIES',
+    feedId
+  }
+}
+
+export function receiveAgencies (feedId, agencies) {
+  return {
+    type: 'RECEIVE_AGENCIES',
+    feedId,
+    agencies
+  }
+}
+
+export function fetchAgencies (feedId) {
+  return function (dispatch, getState) {
+    dispatch(requestingAgencies(feedId))
+    const url = `/api/manager/secure/agency?feedId=${feedId}`
+    return secureFetch(url, getState())
+      .then(res => res.json())
+      .then(agencies => {
+        dispatch(receiveAgency(feedId, agencies))
+      })
+  }
+}
+
+
+//// ROUTES
+
+export function createRoute (agency, feedId) {
+  return function (dispatch, getState) {
+    const agency = {
+      defaultLat:"33.755",
+      defaultLon:"-84.39",
+      gtfsAgencyId:"CCT GTFS",
+      id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
+      lang:"en",
+      name:"CCT GTFS",
+      phone:null,
+      routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
+      sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
+      timezone:"America/New_York",
+      url:"http://test.com",
+    }
+    const url = `/api/manager/secure/agency?feedId=${feedId}`
+    return secureFetch(url, getState(), 'post', agency)
+      .then(res => res.json())
+      .then(validationIssues => {
+        //console.log('got GTFS+ val result', validationResult)
+        dispatch(receiveGtfsValidation(validationIssues))
+      })
+  }
+}
+
+export function requestingRoutes (feedId) {
+  return {
+    type: 'REQUESTING_ROUTES',
+    feedId
+  }
+}
+
+export function receiveRoutes (feedId, routes) {
+  return {
+    type: 'RECEIVE_ROUTES',
+    feedId,
+    routes
+  }
+}
+
+export function fetchRoutes (feedId) {
+  return function (dispatch, getState) {
+    dispatch(requestingRoutes(feedId))
+    const url = `/api/manager/secure/route?feedId=${feedId}`
+    return secureFetch(url, getState())
+      .then(res => res.json())
+      .then(routes => {
+        dispatch(receiveRoutes(routes))
+      })
+  }
+}
+
+/////// GENERIC TABLE ACTIONS + OLD GTFS+ ACTIONS PORTED OVER
 
 export function receiveGtfsTable (tableId, entities) {
   return {

@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table, Input, Button, Glyphicon, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Row, Col, Table, Input, Button, Glyphicon, Tooltip, OverlayTrigger, FormControl } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import EditableTextField from '../../common/components/EditableTextField'
+import TimezoneSelect from '../../common/components/TimezoneSelect'
 
 const recordsPerPage = 25
 
@@ -51,10 +52,9 @@ export default class GtfsTable extends Component {
     console.log('table data', table)
     console.log('rows', rowData)
     const getInput = (row, field, currentValue, index) => {
-      const editorField = field.name.split(/_(.+)?/)[1]
+      const editorField = field.name //.split(/_(.+)?/)[1]
       switch(field.inputType) {
         case 'TEXT':
-        case 'TIMEZONE':
         case 'URL':
         case 'GTFS_AGENCY':
         case 'GTFS_TRIP':
@@ -69,6 +69,16 @@ export default class GtfsTable extends Component {
               value={currentValue}
               onChange={(value) => {
                 this.props.fieldEdited(table.id, row, editorField, value)
+              }}
+            />
+          )
+        case 'TIMEZONE':
+          return (
+            <TimezoneSelect
+              tabIndex={index}
+              value={currentValue}
+              onChange={(option) => {
+                this.props.fieldEdited(table.id, row, editorField, option.value)
               }}
             />
           )
@@ -335,11 +345,12 @@ export default class GtfsTable extends Component {
           {rowData && rowData.length > 0
             ? rowData.map((data, rowIndex) => {
                 const tableRowIndex = (this.state.currentPage - 1) * recordsPerPage + rowIndex
-                return (<tr key={rowIndex}>
+                return (
+                  <tr key={rowIndex}>
                   {
                     table.fields.map((field, colIndex) => {
                       // get editor field by splitting on first underscore
-                      const editorField = field.name.split(/_(.+)?/)[1]
+                      const editorField = field.name // .split(/_(.+)?/)[1]
                     const validationIssue = this.props.validation
                       ? this.props.validation.find(v =>
                           (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
@@ -368,7 +379,7 @@ export default class GtfsTable extends Component {
                       bsStyle='primary'
                       bsSize='small'
                       className='pull-right'
-                      onClick={() => { this.props.saveRowClicked(table.id, rowIndex) }}
+                      onClick={() => { this.props.saveRowClicked(table.id, rowIndex, this.props.feedSource.id) }}
                     >
                       <Glyphicon glyph='floppy-disk' />
                     </Button>
