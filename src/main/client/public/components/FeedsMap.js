@@ -93,6 +93,9 @@ export default class FeedsMap extends React.Component {
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
         {markers.map(m => {
+          if (isNaN(m.position[0]) || isNaN(m.position[1])) {
+            return null
+          }
           return (
             <Marker position={m.position}>
               <Popup>
