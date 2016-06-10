@@ -149,12 +149,49 @@ const projects = (state = {
     case 'RECEIVE_FEEDVERSIONS':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
+      let versionSort = (a, b) => {
+        if(a.version < b.version) return -1
+        if(a.version > b.version) return 1
+        return 0
+      }
       return update(state,
         {all:
           {[projectIndex]:
             {feedSources:
               {[sourceIndex]:
-                {$merge: {feedVersions: action.feedVersions}}
+                {$merge: {feedVersions: action.feedVersions.sort(versionSort)}}
+              }
+            }
+          }
+        }
+      )
+
+    case 'RECEIVE_FEEDVERSION':
+      projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
+      console.log(sourceIndex)
+      versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions
+        ? state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
+        : -1
+      let existingVersions = state.all[projectIndex].feedSources[sourceIndex].feedVersions || [], updatedVersions
+      if (versionIndex === -1) { // version does not currently; add it
+        updatedVersions = [
+          ...existingVersions,
+          action.feedVersion
+        ]
+      } else { // existing feedversion array includes this one, replace it
+        updatedVersions = [
+          ...existingVersions.slice(0, versionIndex),
+          action.feedVersion,
+          ...existingVersions.slice(versionIndex + 1)
+        ]
+      }
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {feedSources:
+              {[sourceIndex]:
+                {$merge: {feedVersions: updatedVersions}}
               }
             }
           }
