@@ -20,6 +20,7 @@ import ActiveSignEditor from '../../signs/containers/ActiveSignEditor'
 import PageNotFound from '../components/PageNotFound'
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 import ActiveGtfsEditor from '../../editor/containers/ActiveGtfsEditor'
+import ActiveGtfsTableEditor from '../../editor/containers/ActiveGtfsTableEditor'
 
 import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
 import ActiveGtfsValidationExplorer from '../../manager/containers/validation/ActiveGtfsValidationExplorer'
@@ -100,7 +101,9 @@ class App extends React.Component {
         <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />
 
         <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
-        <Route path='/feed/:feedSourceId/edit/:feedVersionId' component={ActiveGtfsEditor} onEnter={requireAuth} />
+        <Route path='/feed/:feedSourceId/edit/:feedVersionId(/:subpage)(/:entity)(/:subsubpage)(/:subentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />
+
+        <Route path='/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)' component={ActiveGtfsTableEditor} onEnter={requireAuth} />
 
         <Route path='*' component={PageNotFound} />
       </Router>
