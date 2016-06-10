@@ -38,6 +38,8 @@ modules:
     enabled: true
   gtfsapi:
     enabled: true
+    load_on_fetch: false
+    load_on_startup: false
     use_extension: mtc
     update_frequency: 3600 # in seconds
 
