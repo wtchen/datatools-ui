@@ -62,6 +62,7 @@ ProjectViewer:
     new: New Feed Source
     update: Update all
 FeedSourceViewer:
+  edit: Edit GTFS
   deploy: Deploy
   private: Private view
   viewPublic: View public page

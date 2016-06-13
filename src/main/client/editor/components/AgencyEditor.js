@@ -17,7 +17,7 @@ export default class AgencyEditor extends Component {
   render () {
     // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
     console.log('table view', this.props.tableView)
-    const version = this.props.version
+    const feedSource = this.props.feedSource
     const sidePadding = '5px'
     const rowHeight = '37px'
     let panelWidth = !this.props.tableView ? '300px' : '100%'
@@ -48,8 +48,8 @@ export default class AgencyEditor extends Component {
               onMouseDown={(e) => console.log(e)}
               style={rowStyle}
               onClick={() => {
-                if (this.props.entity === agency.agency_id) browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/agency`)
-                else browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/agency/${agency.agency_id}`)
+                if (this.props.entity === agency.agency_id) browserHistory.push(`/feed/${feedSource.id}/edit/agency`)
+                else browserHistory.push(`/feed/${feedSource.id}/edit/agency/${agency.agency_id}`)
               }}
             >
               <td
@@ -143,8 +143,8 @@ export default class AgencyEditor extends Component {
           <Button
             bsSize='xsmall'
             onClick={() => {!this.props.tableView
-              ? browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/agency?table=true`)
-              : browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/agency`)
+              ? browserHistory.push(`/feed/${feedSource.id}/edit/agency?table=true`)
+              : browserHistory.push(`/feed/${feedSource.id}/edit/agency`)
             }}
           >
             {!this.props.tableView
@@ -158,7 +158,7 @@ export default class AgencyEditor extends Component {
           : agencyTable
         }
         {this.props.entity
-          ? <AgencyDetails offset={panelWidth} agency={activeAgency} version={version}/>
+          ? <AgencyDetails offset={panelWidth} agency={activeAgency} />
           : null
         }
       </div>

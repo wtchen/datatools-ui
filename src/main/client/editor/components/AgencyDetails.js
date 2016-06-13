@@ -17,7 +17,6 @@ export default class AgencyDetails extends Component {
 
   render () {
     // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
-    const version = this.props.version
 
     let agency = this.props.agency
 

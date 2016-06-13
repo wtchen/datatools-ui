@@ -64,10 +64,9 @@ export default class GtfsEditor extends Component {
   }
 
   render () {
-    if(!this.props.feedSource || !this.props.version) return null
-    const version = this.props.version
+    if(!this.props.feedSource) return null
+    const feedSource = this.props.feedSource
     const activeComponent = this.props.activeComponent
-    console.log(version, this.props.activeComponent, this.props.activeEntity)
     const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs')
 
     // const buttonStyle = {
@@ -99,7 +98,7 @@ export default class GtfsEditor extends Component {
                               style={navLinkStyle}
                               onClick={(e) => {
                                 e.preventDefault()
-                                browserHistory.push(`/feed/${version.feedSource.id}`)
+                                browserHistory.push(`/feed/${feedSource.id}`)
                               }}
                             ><Icon name='reply' size='lg' /></NavItem>
                             <NavItem
@@ -111,10 +110,10 @@ export default class GtfsEditor extends Component {
                               onClick={(e) => {
                                 e.preventDefault()
                                 if (this.props.activeComponent === 'agency') {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
                                 }
                                 else {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/agency`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/agency`)
                                 }
                               }}
                             ><Icon name='building' size='lg' /></NavItem>
@@ -127,10 +126,10 @@ export default class GtfsEditor extends Component {
                               onClick={(e) => {
                                 e.preventDefault()
                                 if (this.props.activeComponent === 'routes') {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
                                 }
                                 else {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/routes`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/routes`)
                                 }
                               }}
                             ><Icon name='bus' size='lg' /></NavItem>
@@ -143,10 +142,10 @@ export default class GtfsEditor extends Component {
                               onClick={(e) => {
                                 e.preventDefault()
                                 if (this.props.activeComponent === 'stops') {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
                                 }
                                 else {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/stops`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/stops`)
                                 }
                               }}
                             ><Icon name='map-marker' size='lg' /></NavItem>
@@ -159,10 +158,10 @@ export default class GtfsEditor extends Component {
                               onClick={(e) => {
                                 e.preventDefault()
                                 if (this.props.activeComponent === 'calendars') {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
                                 }
                                 else {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/calendars`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/calendars`)
                                 }
                               }}
                             ><Icon name='calendar' size='lg' /></NavItem>
@@ -175,15 +174,14 @@ export default class GtfsEditor extends Component {
                               onClick={(e) => {
                                 e.preventDefault()
                                 if (this.props.activeComponent === 'fares') {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
                                 }
                                 else {
-                                  browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}/fares`)
+                                  browserHistory.push(`/feed/${feedSource.id}/edit/fares`)
                                 }
                               }}
                             ><Icon name='usd' size='lg' /></NavItem>
                         </Nav>
-    let pageContent = version
     return (
       <div>
       <Sidebar
@@ -196,11 +194,11 @@ export default class GtfsEditor extends Component {
               tableView={this.props.tableView}
               entity={this.props.activeEntity}
               agencies={this.props.tableData.agency}
-              version={version}
+              feedSource={feedSource}
               newRowsDisplayed={this.props.newRowsDisplayed}
             />
           : this.props.activeComponent === 'routes'
-          ? <RouteEditor version={version}/>
+          ? <RouteEditor feedSource={feedSource}/>
           : this.props.activeComponent === 'stops'
           ? <div style={primaryPanelStyle}><h3>{this.props.activeComponent}</h3></div>
           : this.props.activeComponent === 'calendars'
@@ -210,7 +208,7 @@ export default class GtfsEditor extends Component {
           : null
         }
         <EditorMap
-          version={version}
+          feedSource={feedSource}
         />
       </Sidebar>
       </div>

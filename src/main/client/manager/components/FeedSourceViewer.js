@@ -116,6 +116,15 @@ export default class FeedSourceViewer extends React.Component {
                 <ButtonToolbar
                   className={`pull-right`}
                 >
+                  {isModuleEnabled('editor')
+                    ? <Button
+                        bsStyle='success'
+                        onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}
+                      >
+                        <Glyphicon glyph='pencil'/> {messages.edit}
+                      </Button>
+                    : null
+                  }
                   {isModuleEnabled('deployment')
                     ? <Button
                         bsStyle='primary'

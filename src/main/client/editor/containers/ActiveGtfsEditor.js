@@ -18,7 +18,6 @@ import {
 const mapStateToProps = (state, ownProps) => {
   console.log(ownProps)
   const feedSourceId = ownProps.routeParams.feedSourceId
-  const feedVersionId = ownProps.routeParams.feedVersionId
   const activeComponent = ownProps.routeParams.subpage
   const activeEntity = ownProps.routeParams.entity
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
@@ -35,10 +34,6 @@ const mapStateToProps = (state, ownProps) => {
   if (project) {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
-  let version
-  if (feedSource && feedSource.feedVersions) {
-    version = feedSource.feedVersions.find(v => v.id === feedVersionId)
-  }
 
   return {
     tableData: state.editor.tableData,
@@ -47,7 +42,6 @@ const mapStateToProps = (state, ownProps) => {
     // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
     tableView,
-    version,
     project,
     user,
     activeComponent,
