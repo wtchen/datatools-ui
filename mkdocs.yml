@@ -12,6 +12,7 @@ pages:
     - 'Managing Users': 'user/managing-users.md'
     - 'Service Alerts Manager': 'user/service-alerts.md'
     - 'eTID Configuration Manager': 'user/sign-config.md'
+    - 'GTFS+ Editor': 'user/gtfs-plus-editor.md'
     - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
 - Development Guide:
     - 'Deployment': 'dev/deployment.md'
