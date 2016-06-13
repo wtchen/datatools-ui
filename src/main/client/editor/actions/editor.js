@@ -412,3 +412,32 @@ export function publishGtfsFeed (feedVersion) {
       })
   }
 }
+
+// SNAPSHOT ACTIONS
+
+export function requestingSnapshots () {
+  return {
+    type: 'REQUESTING_GTFSEDITOR_SNAPSHOTS'
+  }
+}
+
+export function receiveSnapshots (feedSource, snapshots) {
+  return {
+    type: 'RECEIVE_GTFSEDITOR_SNAPSHOTS',
+    feedSource,
+    snapshots
+  }
+}
+
+export function fetchSnapshots (feedSource) {
+  return function (dispatch, getState) {
+    dispatch(requestingSnapshots())
+    const url = `/api/manager/secure/snapshot?feedSourceId=${feedSource.id}`
+    return secureFetch(url, getState(), 'get')
+      .then((response) => {
+        return response.json()
+      }).then((snapshots) => {
+        dispatch(receiveSnapshots(feedSource, snapshots))
+      })
+  }
+}

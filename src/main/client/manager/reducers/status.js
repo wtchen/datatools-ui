@@ -5,7 +5,6 @@ const config = (state = {
   modal: null,
   popover: null
 }, action) => {
-  console.log(action)
   switch (action.type) {
 
     // Status Messages
@@ -57,6 +56,8 @@ const config = (state = {
       return update(state, { message: { $set: 'Loading deployment...' }})
     case 'SAVING_DEPLOYMENT':
       return update(state, { message: { $set: 'Saving deployment...' }})
+    case 'REQUESTING_GTFSEDITOR_SNAPSHOTS':
+      return update(state, { message: { $set: 'Loading Snapshots...' } })
 
     // Status Modal
     case 'SET_ERROR_MESSAGE':
@@ -88,6 +89,7 @@ const config = (state = {
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
     case 'RECEIVE_DEPLOYMENTS':
     case 'RECEIVE_DEPLOYMENT':
+    case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
       return update(state, { message: { $set: null }})
     default:
       return state

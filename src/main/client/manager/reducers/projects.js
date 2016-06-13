@@ -323,6 +323,21 @@ const projects = (state = {
         }
       )
 
+    case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
+      projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {feedSources:
+              {[sourceIndex]:
+                {$merge: {editorSnapshots: action.snapshots}}
+              }
+            }
+          }
+        }
+      )
+
     default:
       return state
   }

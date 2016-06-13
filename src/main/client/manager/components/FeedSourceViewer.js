@@ -12,6 +12,7 @@ import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable  from './ExternalPropertiesTable'
 import FeedVersionNavigator  from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
+import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
 import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 const retrievalMethods = [
@@ -322,6 +323,14 @@ export default class FeedSourceViewer extends React.Component {
               }}
             />
           </Panel>
+
+          {isModuleEnabled('editor')
+            ? <ActiveEditorFeedSourcePanel
+                feedSource={fs}
+              />
+            : null
+          }
+
         </Grid>
       </ManagerPage>
     )
