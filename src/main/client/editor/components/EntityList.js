@@ -21,7 +21,7 @@ export default class EntityList extends Component {
     const feedSource = this.props.feedSource
     const sidePadding = '5px'
     const rowHeight = '37px'
-    let panelWidth = !this.props.tableView ? '300px' : '100%'
+    let panelWidth = !this.props.tableView ? '200px' : '100%'
     let panelStyle = {
       width: panelWidth,
       height: '100%',
@@ -76,6 +76,18 @@ export default class EntityList extends Component {
         <thead></thead>
         <tbody>
         {this.props.entities ? this.props.entities.map(entity => {
+          const entityName = getEntityName(this.props.activeComponent, entity)
+          const rowStyle = {
+            paddingTop: 2,
+            paddingBottom: 2,
+            cursor: 'pointer',
+          }
+          const activeRowStyle = {
+            backgroundColor: activeColor,
+            paddingTop: 2,
+            paddingBottom: 2,
+            cursor: 'pointer',
+          }
           return (
             <tr
               href='#'
@@ -89,9 +101,9 @@ export default class EntityList extends Component {
             >
               <td
                 /*className={activeEntity && entity[entId] === activeEntity[entId] ? 'success' : ''}*/
-                style={activeEntity && entity[entId] === activeEntity[entId] ? {backgroundColor: activeColor} : {}}
+                style={activeEntity && entity[entId] === activeEntity[entId] ? activeRowStyle : rowStyle}
               >
-              {`${getEntityName(this.props.activeComponent, entity)} (${entity[entId]})`}
+              <small title={entityName}>{`${entityName.length > 25 ? entityName.substr(0, 25) + '...' : entityName}`}</small>
               </td>
             </tr>
           )
@@ -174,19 +186,12 @@ export default class EntityList extends Component {
         style={panelStyle}
       >
         <div
-          style={{paddingRight: sidePadding, marginBottom: '5px', height: '10%'}}
+            style={{paddingRight: sidePadding, marginBottom: '5px', height: '80'}}
         >
           <h3>
             <ButtonToolbar
               className='pull-right'
             >
-              <Button
-                bsSize='small'
-                disabled={!activeEntity}
-                bsStyle='success'
-              >
-                <Icon name='plus'/>
-              </Button>
               <Button
                 bsSize='small'
                 disabled={!activeEntity}
@@ -201,7 +206,11 @@ export default class EntityList extends Component {
                 <Icon name='trash'/>
               </Button>
             </ButtonToolbar>
-            {this.props.activeComponent} editor
+            <Button
+              bsSize='small'
+            >
+              <Icon name='plus'/> New {this.props.activeComponent}
+            </Button>
           </h3>
           <Button
             bsSize='xsmall'

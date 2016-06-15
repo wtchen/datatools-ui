@@ -4,6 +4,7 @@ import GtfsEditor  from '../components/GtfsEditor'
 import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
   fetchFeedInfo,
+  clearGtfsContent,
   fetchStops,
   addGtfsRow,
   updateGtfsField,
@@ -45,6 +46,7 @@ const mapStateToProps = (state, ownProps) => {
     // validation: state.editor.validation,
     // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
+    feedSourceId,
     feedInfo,
     tableView,
     project,
@@ -64,7 +66,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.feedSource) {
         dispatch(fetchFeedSourceAndProject(feedSourceId))
       }
-      if (activeComponent && !initialProps.tableData[activeComponent]) {
+      // if (initialProps.feedInfo && feedSourceId !== initialProps.feedInfo.id) {
+      //   dispatch(clearGtfsContent())
+      // }
+      if (activeComponent) { // && !initialProps.tableData[activeComponent]) {
         console.log('getting table: ' + activeComponent)
         dispatch(getGtfsTable(activeComponent, feedSourceId))
       }
@@ -75,6 +80,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
       // if (initialProps.currentTable) dispatch(getGtfsTable(initialProps.currentTable, feedSourceId))
     },
+    // onComponentReceiveProps: (nextProps, initialProps) => {
+    //   if (nextProps.feedSource && initialProps.feedSource && nextProps.feedSource.id !== initialProps.feedSource.id) {
+    //     clearGtfsContent()
+    //   }
+    //   if (nextProps.activeComponent !== initialProps.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
+    //     console.log('getting table: ' + nextProps.activeComponent)
+    //     initialProps.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
+    //   }
+    // },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))
     },
@@ -102,7 +116,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
-    }
+    },
+    clearGtfsContent: () => {dispatch(clearGtfsContent())}
   }
 }
 

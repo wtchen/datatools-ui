@@ -11,7 +11,7 @@ import EditorMap from './EditorMap'
 import RouteEditor from './RouteEditor'
 import EntityList from './EntityList'
 // import StopEditor from './StopEditor'
-import CalendarEditor from './CalendarEditor'
+import CalendarList from './CalendarList'
 // import FareEditor from './FareEditor'
 
 import FeedInfoPanel from './FeedInfoPanel'
@@ -31,8 +31,14 @@ export default class GtfsEditor extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+
+    if (nextProps.feedSourceId !== this.props.feedSourceId) {
+      this.props.clearGtfsContent()
+      this.props.onComponentMount(nextProps)
+    }
     if (nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
       console.log('getting table: ' + nextProps.activeComponent)
+      console.log(nextProps.feedSource, this.props.feedSource)
       this.props.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
     }
   }
@@ -66,10 +72,10 @@ export default class GtfsEditor extends Component {
   }
 
   render () {
-    if(!this.props.feedSource) return null
+    // if(!this.props.feedSource) return null
     const feedSource = this.props.feedSource
     const activeComponent = this.props.activeComponent
-    const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs')
+    const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
 
     // const buttonStyle = {
     //   display: 'block',
@@ -97,29 +103,35 @@ export default class GtfsEditor extends Component {
     let sidebarItems = [
       {
         id: 'agency',
-        icon: 'building'
+        icon: 'building',
+        title: 'Edit agencies'
       },
       {
         id: 'route',
-        icon: 'bus'
+        icon: 'bus',
+        title: 'Edit routes'
       },
       {
         id: 'stop',
-        icon: 'map-marker'
+        icon: 'map-marker',
+        title: 'Edit stops'
       },
       {
         id: 'calendar',
-        icon: 'calendar'
+        icon: 'calendar',
+        title: 'Edit calendars'
       },
       {
         id: 'fare',
-        icon: 'usd'
+        icon: 'usd',
+        title: 'Edit fares'
       },
     ]
     let sidebarContent = <Nav stacked bsStyle='pills' activeKey={this.props.activeComponent}>
                             <NavItem
                               className='text-center'
                               style={navLinkStyle}
+                              title={`Back to feed source`}
                               onClick={(e) => {
                                 e.preventDefault()
                                 browserHistory.push(`/feed/${feedSource.id}`)
@@ -132,6 +144,7 @@ export default class GtfsEditor extends Component {
                                 key={item.id}
                                 className='text-center'
                                 style={navLinkStyle}
+                                title={item.title}
                                 onClick={(e) => {
                                   e.preventDefault()
                                   if (this.props.activeComponent === item.id) {
@@ -179,7 +192,7 @@ export default class GtfsEditor extends Component {
               newRowsDisplayed={this.props.newRowsDisplayed}
             />
           : this.props.activeComponent === 'calendar'
-          ? <CalendarEditor
+          ? <CalendarList
               tableView={this.props.tableView}
               activeComponent={this.props.activeComponent}
               entity={this.props.activeEntity}

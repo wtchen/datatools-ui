@@ -8,7 +8,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import EntityDetails from './EntityDetails'
 import GtfsTable from './GtfsTable'
 
-export default class CalendarEditor extends Component {
+export default class CalendarList extends Component {
 
   constructor (props) {
     super(props)
@@ -77,7 +77,7 @@ export default class CalendarEditor extends Component {
                 /*className={activeEntity && entity[entId] === activeEntity[entId] ? 'success' : ''}*/
                 style={activeEntity && entity[entId] === activeEntity[entId] ? {backgroundColor: activeColor} : {}}
               >
-              {this.props.activeComponent !== 'route'
+              <small>{this.props.activeComponent !== 'route'
                 ? entity[entName]
                 : entity.route_short_name && entity.route_long_name
                 ? `${entity.route_short_name} - ${entity.route_long_name}`
@@ -86,12 +86,8 @@ export default class CalendarEditor extends Component {
                 : entity.route_long_name
                 ? entity.route_long_name
                 : entity.route_id
-              }
+              }</small>
               </td>
-              {/*activeEntity && entity[entId] === activeEntity[entId]
-                ? <div style={{position: 'absolute', width: sidePadding, height: rowHeight, backgroundColor: activeColor}}></div>
-                : null
-              */}
             </tr>
           )
         })

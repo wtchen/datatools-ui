@@ -16,13 +16,13 @@ import update from 'react-addons-update'
 const emptyTableData = { }
 
 const editor = (state = {
-  feedVersionId: null,
+  feedSourceId: null,
   timestamp: null,
   tableData: {},
   validation: {},
   gtfsEntityLookup: {}
 }, action) => {
-  let newTableData, fields, rowData, mappedEntities
+  let newTableData, fields, rowData, mappedEntities, feedTableData
   console.log(action)
   switch (action.type) {
     case 'RECEIVE_AGENCIES':
@@ -35,6 +35,9 @@ const editor = (state = {
         tableData: {feedInfo: {$set: action.feedInfo}}
       })
     case 'RECEIVE_ROUTES':
+      // feedTableData = state.tableData[action.feedId]
+      // if (!feedTableData)
+      //   feedTableData = {}
       const routes = action.routes ? action.routes.map(r => {
         return {
           id: r.id,
@@ -49,7 +52,7 @@ const editor = (state = {
           route_id: r.gtfsRouteId
         }
       }) : []
-
+      // feedTableData.route = routes
       return update(state, {
         tableData: {route: {$set: routes}}
       })
@@ -100,7 +103,7 @@ const editor = (state = {
       })
     case 'CLEAR_GTFSEDITOR_CONTENT':
       return {
-        feedVersionId: null,
+        feedSourceId: null,
         timestamp: null,
         tableData: {},
         validation: null,
@@ -232,7 +235,7 @@ const editor = (state = {
           })
       }
       return update(state, {
-        feedVersionId: {$set: action.feedVersionId},
+        feedSourceId: {$set: action.feedSourceId},
         timestamp: {$set: action.timestamp},
         tableData: {$set: newTableData}
       })

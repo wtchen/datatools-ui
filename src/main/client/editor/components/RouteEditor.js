@@ -4,6 +4,8 @@ import {Icon} from 'react-fa'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import EntityDetails from './EntityDetails'
+
 export default class RouteEditor extends Component {
 
   constructor (props) {
@@ -74,7 +76,7 @@ export default class RouteEditor extends Component {
         </h3>
         {routeTable}
         {this.props.entity
-          ? <RouteDetails/>
+          ? <EntityDetails/>
           : null
         }
       </div>
