@@ -22,10 +22,82 @@ const editor = (state = {
   validation: {},
   gtfsEntityLookup: {}
 }, action) => {
-  let newTableData, fields, rowData
+  let newTableData, fields, rowData, mappedEntities
+  console.log(action)
   switch (action.type) {
     case 'RECEIVE_AGENCIES':
-      console.log(action.agencies)
+      return state
+    case 'RECEIVE_FEED_INFO':
+      newTableData = {}
+      newTableData.feedInfo = action.feedInfo
+
+      return update(state, {
+        tableData: {feedInfo: {$set: action.feedInfo}}
+      })
+    case 'RECEIVE_ROUTES':
+      const routes = action.routes ? action.routes.map(r => {
+        return {
+          id: r.id,
+          agency_id: r.agencyId,
+          route_short_name: r.routeShortName,
+          route_long_name: r.routeLongName,
+          route_desc: r.routeDesc,
+          route_type: r.routeTypeId,
+          route_url: r.routeUrl,
+          route_color: r.routeColor,
+          route_text_color: r.routeTextColor,
+          route_id: r.gtfsRouteId
+        }
+      }) : []
+
+      return update(state, {
+        tableData: {route: {$set: routes}}
+      })
+    case 'RECEIVE_STOPS':
+      const stops = action.stops ? action.stops.map(s => {
+        // let newStop = {}
+        // newStop.id = s.id
+        // newStop.stop_id = s.gtfsStopId
+        // newStop.stop_code = s.stopCode
+        // newStop.stop_name = s.stopName
+        // newStop.stop_desc = s.stopDesc
+        // newStop.stop_lat = s.lat
+        // newStop.stop_lon = s.lon
+        // newStop.zone_id = s.zoneId
+        // newStop.stop_url = s.stopUrl
+        // newStop.location_type = s.locationType
+        // newStop.parent_station = s.parentStation
+        // newStop.stop_timezone = s.stopTimezone
+        // newStop.wheelchair_boarding = s.wheelchairBoarding
+        // newStop.bikeParking = s.bikeParking
+        // newStop.carParking = s.carParking
+        // newStop.pickupType = s.pickupType
+        // newStop.dropOffType = s.dropOffType
+        // return newStop
+        return {
+          id: s.id,
+          stop_code: s.stopCode,
+          stop_name: s.stopName,
+          stop_desc: s.stopDesc,
+          stop_lat: s.lat,
+          stop_lon: s.lon,
+          zone_id: s.zoneId,
+          stop_url: s.stopUrl,
+          location_type: s.locationType,
+          parent_station: s.parentStation,
+          stop_timezone: s.stopTimezone,
+          wheelchair_boarding: s.wheelchairBoarding,
+          bikeParking: s.bikeParking,
+          carParking: s.carParking,
+          pickupType: s.pickupType,
+          dropOffType: s.dropOffType,
+          stop_id: s.gtfsStopId
+        }
+      }) : []
+
+      return update(state, {
+        tableData: {stop: {$set: stops}}
+      })
     case 'CLEAR_GTFSEDITOR_CONTENT':
       return {
         feedVersionId: null,
@@ -36,38 +108,111 @@ const editor = (state = {
       }
     case 'RECEIVE_GTFSEDITOR_TABLE':
       newTableData = {}
-      fields = Object.keys(action.entities[0])
-      let mappedEntities
-      switch(action.tableId) {
-        case 'agency':
-          console.log('mapping agency to gtfs props')
-          // newTableData[action.tableId] = action.entities.map(ent => {
-          mappedEntities = action.entities.map(ent => {
-            return {
-              agency_id: ent.id,
-              agency_name: ent.name,
-              agency_url: ent.url,
-              agency_timezone: ent.timezone,
-              agency_lang: ent.lang,
-              agency_phone: ent.phone,
-              agency_fare_url: ent.fare_url,
-              agency_email: ent.email,
-            }
-          })
+      const getMappedEntities = (entities) => {
+        switch (action.tableId) {
+          case 'agency':
+            return action.entities.map(ent => {
+              return {
+                id: ent.id,
+                agency_id: ent.gtfsAgencyId,
+                agency_name: ent.name,
+                agency_url: ent.url,
+                agency_timezone: ent.timezone,
+                agency_lang: ent.lang,
+                agency_phone: ent.phone,
+                agency_fare_url: ent.fare_url,
+                agency_email: ent.email,
+              }
+            })
+          case 'route':
+            mappedEntities = action.entities.map(ent => {
+              return {
+                id: ent.id,
+                agency_id: ent.agencyId,
+                route_short_name: ent.routeShortName,
+                route_long_name: ent.routeLongName,
+                route_desc: ent.routeDesc,
+                route_type: ent.routeTypeId,
+                route_url: ent.routeUrl,
+                route_color: ent.routeColor,
+                route_text_color: ent.routeTextColor,
+                route_id: ent.gtfsRouteId
+              }
+            })
+            return mappedEntities
+          case 'stop':
+            return action.entities.map(ent => {
+              return {
+                id: ent.id,
+                stop_id: ent.gtfsStopId,
+                stop_code: ent.stopCode,
+                stop_name: ent.stopName,
+                stop_desc: ent.stopDesc,
+                stop_lat: ent.lat,
+                stop_lon: ent.lon,
+                zone_id: ent.zoneId,
+                stop_url: ent.stopUrl,
+                location_type: ent.locationType,
+                parent_station: ent.parentStation,
+                stop_timezone: ent.stopTimezone,
+                wheelchair_boarding: ent.wheelchairBoarding,
+                bikeParking: ent.bikeParking,
+                carParking: ent.carParking,
+                pickupType: ent.pickupType,
+                dropOffType: ent.dropOffType
+              }
+            })
+          case 'calendar':
+            return action.entities.map(ent => {
+              return {
+                service_id: ent.gtfsServiceId,
+                monday: ent.monday,
+                tuesday: ent.tuesday,
+                wednesday: ent.wednesday,
+                thursday: ent.thursday,
+                friday: ent.friday,
+                saturday: ent.saturday,
+                sunday: ent.sunday,
+                start_date: ent.startDate,
+                end_date: ent.endDate,
+                description: ent.description,
+                routes: ent.routes,
+                id: ent.id,
+                numberOfTrips: ent.numberOfTrips
+              }
+            })
+          case 'fare':
+            return action.entities.map(ent => {
+              return ent
+              // return {
+              //   id: ent.id,
+              //   stop_id: ent.gtfsStopId,
+              //   stop_code: ent.stopCode,
+              //   stop_name: ent.stopName,
+              //   stop_desc: ent.stopDesc,
+              //   stop_lat: ent.lat,
+              //   stop_lon: ent.lon,
+              //   zone_id: ent.zoneId,
+              //   stop_url: ent.stopUrl,
+              //   location_type: ent.locationType,
+              //   parent_station: ent.parentStation,
+              //   stop_timezone: ent.stopTimezone,
+              //   wheelchair_boarding: ent.wheelchairBoarding,
+              //   bikeParking: ent.bikeParking,
+              //   carParking: ent.carParking,
+              //   pickupType: ent.pickupType,
+              //   dropOffType: ent.dropOffType,
+              // }
+            })
+          default:
+            return []
+        }
       }
-      newTableData[action.tableId] = mappedEntities
-        // .map((line, rowIndex) => {
-        //   console.log(line, rowIndex)
-        //   const values = line.split(',')
-        //   rowData = { origRowIndex: rowIndex }
-        //   for(let f = 0; f < fields.length; f++) {
-        //     rowData[fields[f]] = values[f]
-        //   }
-        //   return rowData
-        // })
+
+      newTableData[action.tableId] = getMappedEntities(action.entities)
 
       return update(state, {
-        tableData: {$set: newTableData}
+        tableData: {$merge: newTableData}
       })
     case 'RECEIVE_GTFSEDITOR_CONTENT':
       newTableData = {}

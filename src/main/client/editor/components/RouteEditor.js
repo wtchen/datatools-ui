@@ -22,7 +22,7 @@ export default class RouteEditor extends Component {
       paddingRight: '5px',
       paddingLeft: '5px'
     }
-    const version = this.props.version
+    const feedSource = this.props.feedSource
     const rowStyle = {
       cursor: 'pointer'
     }
@@ -37,7 +37,7 @@ export default class RouteEditor extends Component {
               onMouseDown={(e) => console.log(e)}
               style={rowStyle}
             >
-              <LinkContainer to={`/feed/${version.feedSource.id}/edit/${version.id}/routes/${r}`}><td>{r}</td></LinkContainer>
+              <LinkContainer to={`/feed/${feedSource.id}/edit/routes/${r}`}><td>{r}</td></LinkContainer>
             </tr>
           )
         })}

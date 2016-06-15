@@ -9,10 +9,12 @@ import ManagerPage from '../../common/components/ManagerPage'
 import GtfsTable from './GtfsTable'
 import EditorMap from './EditorMap'
 import RouteEditor from './RouteEditor'
-import AgencyEditor from './AgencyEditor'
+import EntityList from './EntityList'
 // import StopEditor from './StopEditor'
-// import CalendarEditor from './CalendarEditor'
+import CalendarEditor from './CalendarEditor'
 // import FareEditor from './FareEditor'
+
+import FeedInfoPanel from './FeedInfoPanel'
 
 export default class GtfsEditor extends Component {
 
@@ -29,9 +31,9 @@ export default class GtfsEditor extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps.activeComponent)
-    if (nextProps.activeComponent !== this.props.activeComponent) {
-      this.props.getGtfsTable(nextProps.activeComponent, this.props.feedSource.id)
+    if (nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
+      console.log('getting table: ' + nextProps.activeComponent)
+      this.props.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
     }
   }
 
@@ -92,6 +94,28 @@ export default class GtfsEditor extends Component {
       paddingRight: '5px',
       paddingLeft: '5px'
     }
+    let sidebarItems = [
+      {
+        id: 'agency',
+        icon: 'building'
+      },
+      {
+        id: 'route',
+        icon: 'bus'
+      },
+      {
+        id: 'stop',
+        icon: 'map-marker'
+      },
+      {
+        id: 'calendar',
+        icon: 'calendar'
+      },
+      {
+        id: 'fare',
+        icon: 'usd'
+      },
+    ]
     let sidebarContent = <Nav stacked bsStyle='pills' activeKey={this.props.activeComponent}>
                             <NavItem
                               className='text-center'
@@ -101,86 +125,24 @@ export default class GtfsEditor extends Component {
                                 browserHistory.push(`/feed/${feedSource.id}`)
                               }}
                             ><Icon name='reply' size='lg' /></NavItem>
-                            <NavItem
-                              active={this.props.activeComponent === 'agency'}
-                              href='agency'
-                              key='agency'
-                              className='text-center'
-                              style={navLinkStyle}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                if (this.props.activeComponent === 'agency') {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                }
-                                else {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/agency`)
-                                }
-                              }}
-                            ><Icon name='building' size='lg' /></NavItem>
-                            <NavItem
-                              active={this.props.activeComponent === 'routes'}
-                              href='routes'
-                              key='routes'
-                              className='text-center'
-                              style={navLinkStyle}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                if (this.props.activeComponent === 'routes') {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                }
-                                else {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/routes`)
-                                }
-                              }}
-                            ><Icon name='bus' size='lg' /></NavItem>
-                            <NavItem
-                              active={this.props.activeComponent === 'stops'}
-                              href='stops'
-                              key='stops'
-                              className='text-center'
-                              style={navLinkStyle}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                if (this.props.activeComponent === 'stops') {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                }
-                                else {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/stops`)
-                                }
-                              }}
-                            ><Icon name='map-marker' size='lg' /></NavItem>
-                            <NavItem
-                              active={this.props.activeComponent === 'calendars'}
-                              href='calendars'
-                              key='calendars'
-                              className='text-center'
-                              style={navLinkStyle}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                if (this.props.activeComponent === 'calendars') {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                }
-                                else {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/calendars`)
-                                }
-                              }}
-                            ><Icon name='calendar' size='lg' /></NavItem>
-                            <NavItem
-                              active={this.props.activeComponent === 'fares'}
-                              href='fares'
-                              key='fares'
-                              className='text-center'
-                              style={navLinkStyle}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                if (this.props.activeComponent === 'fares') {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                }
-                                else {
-                                  browserHistory.push(`/feed/${feedSource.id}/edit/fares`)
-                                }
-                              }}
-                            ><Icon name='usd' size='lg' /></NavItem>
+                            {sidebarItems.map(item => (
+                              <NavItem
+                                active={this.props.activeComponent === item.id}
+                                href={item.id}
+                                key={item.id}
+                                className='text-center'
+                                style={navLinkStyle}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  if (this.props.activeComponent === item.id) {
+                                    browserHistory.push(`/feed/${feedSource.id}/edit/`)
+                                  }
+                                  else {
+                                    browserHistory.push(`/feed/${feedSource.id}/edit/${item.id}`)
+                                  }
+                                }}
+                              ><Icon name={item.icon} size='lg' /></NavItem>
+                            ))}
                         </Nav>
     return (
       <div>
@@ -190,25 +152,55 @@ export default class GtfsEditor extends Component {
         shadow={false}
       >
         {this.props.activeComponent === 'agency'
-          ? <AgencyEditor
+          ? <EntityList
               tableView={this.props.tableView}
+              activeComponent={this.props.activeComponent}
               entity={this.props.activeEntity}
-              agencies={this.props.tableData.agency}
+              entities={this.props.tableData[this.props.activeComponent]}
               feedSource={feedSource}
               newRowsDisplayed={this.props.newRowsDisplayed}
             />
-          : this.props.activeComponent === 'routes'
-          ? <RouteEditor feedSource={feedSource}/>
-          : this.props.activeComponent === 'stops'
-          ? <div style={primaryPanelStyle}><h3>{this.props.activeComponent}</h3></div>
-          : this.props.activeComponent === 'calendars'
-          ? <div style={primaryPanelStyle}><h3>{this.props.activeComponent}</h3></div>
-          : this.props.activeComponent === 'fares'
+          : this.props.activeComponent === 'route'
+          ? <EntityList
+              tableView={this.props.tableView}
+              activeComponent={this.props.activeComponent}
+              entity={this.props.activeEntity}
+              entities={this.props.tableData[this.props.activeComponent]}
+              feedSource={feedSource}
+              newRowsDisplayed={this.props.newRowsDisplayed}
+            />
+          : this.props.activeComponent === 'stop'
+          ? <EntityList
+              tableView={this.props.tableView}
+              activeComponent={this.props.activeComponent}
+              entity={this.props.activeEntity}
+              entities={this.props.tableData[this.props.activeComponent]}
+              feedSource={feedSource}
+              newRowsDisplayed={this.props.newRowsDisplayed}
+            />
+          : this.props.activeComponent === 'calendar'
+          ? <CalendarEditor
+              tableView={this.props.tableView}
+              activeComponent={this.props.activeComponent}
+              entity={this.props.activeEntity}
+              entities={this.props.tableData[this.props.activeComponent]}
+              feedSource={feedSource}
+              newRowsDisplayed={this.props.newRowsDisplayed}
+            />
+          : this.props.activeComponent === 'fare'
           ? <div style={primaryPanelStyle}><h3>{this.props.activeComponent}</h3></div>
           : null
         }
         <EditorMap
           feedSource={feedSource}
+          feedInfo={this.props.feedInfo}
+          activeComponent={this.props.activeComponent}
+          entity={this.props.activeEntity}
+          entities={this.props.tableData[this.props.activeComponent]}
+        />
+        <FeedInfoPanel
+          feedSource={this.props.feedSource}
+          feedInfo={this.props.feedInfo}
         />
       </Sidebar>
       </div>

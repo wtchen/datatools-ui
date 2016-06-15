@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, Form, Glyphicon, FormControl, FormGroup, ControlLabel } from 'react-bootstrap'
+import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, Form, Glyphicon, FormControl, FormGroup, ControlLabel, Input } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 
 import { LinkContainer } from 'react-router-bootstrap'
@@ -9,7 +9,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
 
-export default class AgencyDetails extends Component {
+export default class EntityDetails extends Component {
 
   constructor (props) {
     super(props)
@@ -18,14 +18,27 @@ export default class AgencyDetails extends Component {
   render () {
     // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
 
-    let agency = this.props.agency
-
-    console.log(agency)
+    let entity = this.props.entity
+    let entId = this.props.activeComponent === 'agency'
+      ? 'agency_id'
+      : this.props.activeComponent === 'route'
+      ? 'route_id'
+      : this.props.activeComponent === 'stop'
+      ? 'stop_id'
+      : null
+    let entName = this.props.activeComponent === 'agency'
+      ? 'agency_name'
+      : this.props.activeComponent === 'route'
+      ? 'route_short_name'
+      : this.props.activeComponent === 'stop'
+      ? 'stop_name'
+      : null
 
     let panelStyle = {
       width: '300px',
       height: '100%',
       position: 'absolute',
+      overflowY: 'scroll',
       top: '0px',
       left: this.props.offset || '300px',
       zIndex: 99,
@@ -41,9 +54,9 @@ export default class AgencyDetails extends Component {
       switch(field.inputType) {
         case 'TEXT':
         case 'URL':
-        case 'GTFS_AGENCY':
         case 'GTFS_TRIP':
         case 'GTFS_SHAPE':
+        case 'GTFS_AGENCY':
         case 'GTFS_BLOCK':
         case 'GTFS_FARE':
         case 'GTFS_SERVICE':
@@ -205,19 +218,25 @@ export default class AgencyDetails extends Component {
           )
         case 'DROPDOWN':
           return (
-            <Input type='select'
-              tabIndex={index}
-              value={currentValue}
-              onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, editorField, evt.target.value)
-              }}
+            <FormGroup
+              controlId="formBasicText"
+              /*validationState={this.getValidationState()}*/
             >
-              {field.options.map(option => {
-                return <option value={option.value} key={option.value}>
-                  {option.text || option.value}
-                </option>
-              })}
-            </Input>
+              <ControlLabel>{editorField}</ControlLabel>
+              <FormControl componentClass='select'
+                tabIndex={index}
+                value={currentValue}
+                onChange={(evt) => {
+                  this.props.fieldEdited(table.id, row, editorField, evt.target.value)
+                }}
+              >
+                {field.options.map(option => {
+                  return <option value={option.value} key={option.value}>
+                    {option.text || option.value}
+                  </option>
+                })}
+              </FormControl>
+            </FormGroup>
           )
         case 'GTFS_ROUTE':
           const routeEntity = this.props.getGtfsEntity('route', currentValue)
@@ -229,7 +248,21 @@ export default class AgencyDetails extends Component {
                   : routeEntity.route_long_name
               }
             : ''
-
+          // return (
+          //   <FormGroup
+          //     controlId="formBasicText"
+          //     /*validationState={this.getValidationState()}*/
+          //   >
+          //   <ControlLabel>{editorField}</ControlLabel>
+          //   <FormControl
+          //     tabIndex={index}
+          //     value={currentValue}
+          //     onChange={(value) => {
+          //       this.props.fieldEdited(table.id, row, editorField, value)
+          //     }}
+          //   />
+          //   </FormGroup>
+          // )
           return (
             <GtfsSearch
               tabIndex={index}
@@ -245,10 +278,42 @@ export default class AgencyDetails extends Component {
               value={routeValue}
             />
           )
+        // case 'GTFS_AGENCY':
+        //   const agencyEntity = this.props.getGtfsEntity('agency', currentValue)
+        //   const stopValue = agencyEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
+        //   return (
+        //     <Input type='select'
+        //       tabIndex={index}
+        //       value={currentValue}
+        //       onChange={(evt) => {
+        //         this.props.fieldEdited(table.id, row, editorField, evt.target.value)
+        //       }}
+        //     >
+        //       {field.options.map(option => {
+        //         return <option value={option.value} key={option.value}>
+        //           {option.text || option.value}
+        //         </option>
+        //       })}
+        //     </Input>
+        //   )
         case 'GTFS_STOP':
           const stopEntity = this.props.getGtfsEntity('stop', currentValue)
           const stopValue = stopEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
-
+          // return (
+          //   <FormGroup
+          //     controlId="formBasicText"
+          //     /*validationState={this.getValidationState()}*/
+          //   >
+          //   <ControlLabel>{editorField}</ControlLabel>
+          //   <FormControl
+          //     tabIndex={index}
+          //     value={currentValue}
+          //     onChange={(value) => {
+          //       this.props.fieldEdited(table.id, row, editorField, value)
+          //     }}
+          //   />
+          //   </FormGroup>
+          // )
           return (
             <GtfsSearch
               tabIndex={index}
@@ -267,10 +332,10 @@ export default class AgencyDetails extends Component {
 
       }
     }
-    if (!agency) return null
-    const data = agency
+    if (!entity) return null
+    const data = entity
     const rowIndex = 0
-    const table = DT_CONFIG.modules.editor.spec.find(t => t.id === 'agency')
+    const table = DT_CONFIG.modules.editor.spec.find(t => t.id === this.props.activeComponent)
     const agencyForm = (
             <Form>
             {
@@ -287,7 +352,7 @@ export default class AgencyDetails extends Component {
               ) : null
 
               return (
-                  <div style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
+                  <div key={`row-${rowIndex}-${editorField}`} style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
                     {getInput(rowIndex, field, data[editorField], (rowIndex * table.fields.length) + colIndex + 1)}
                   </div>
               )
@@ -332,13 +397,15 @@ export default class AgencyDetails extends Component {
             </Button>
           </ButtonToolbar>
           <EditableTextField
-            value={agency.agency_name}
+            value={entity[entName]}
             onChange={(value) => {
               // this.props.fieldEdited(table.id, row, editorField, value)
             }}
           />
         </h3>
+          <div style={{}}>
           {agencyForm}
+          </div>
       </div>
     )
   }

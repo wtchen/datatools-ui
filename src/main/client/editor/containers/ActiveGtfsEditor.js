@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import GtfsEditor  from '../components/GtfsEditor'
 import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
+  fetchFeedInfo,
+  fetchStops,
   addGtfsRow,
   updateGtfsField,
   deleteGtfsRow,
@@ -16,7 +18,7 @@ import {
 } from '../actions/editor'
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps)
+  // console.log(ownProps)
   const feedSourceId = ownProps.routeParams.feedSourceId
   const activeComponent = ownProps.routeParams.subpage
   const activeEntity = ownProps.routeParams.entity
@@ -35,12 +37,15 @@ const mapStateToProps = (state, ownProps) => {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
 
+  let feedInfo = state.editor.tableData.feedInfo
+
   return {
     tableData: state.editor.tableData,
     // gtfsEntityLookup: state.editor.gtfsEntityLookup,
     // validation: state.editor.validation,
     // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
+    feedInfo,
     tableView,
     project,
     user,
@@ -58,13 +63,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       if (!initialProps.feedSource) {
         dispatch(fetchFeedSourceAndProject(feedSourceId))
-        .then((fs) => {
-          dispatch(fetchFeedVersion(feedVersionId))
-        })
       }
-      if (activeComponent) {
-        console.log(activeComponent)
+      if (activeComponent && !initialProps.tableData[activeComponent]) {
+        console.log('getting table: ' + activeComponent)
         dispatch(getGtfsTable(activeComponent, feedSourceId))
+      }
+      if (!initialProps.feedInfo) {
+        dispatch(fetchFeedInfo(feedSourceId))
       }
       // if(!initialProps.version) dispatch(fetchFeedVersion(feedVersionId))
       // if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
