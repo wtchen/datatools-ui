@@ -14,7 +14,6 @@ export default class FeedVersionNavigator extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps.versionIndex)
   }
 
   render () {
@@ -32,14 +31,11 @@ export default class FeedVersionNavigator extends React.Component {
       return null
     }
     else if(hasVersions && this.props.versions.length >= this.props.versionIndex) {
-      console.log(this.props.versionIndex)
       version = this.props.versions[this.props.versionIndex - 1]
     }
     else {
       console.log(`Error version ${this.props.versionIndex} does not exist`)
     }
-
-    console.log(version)
 
     return (
       <div>

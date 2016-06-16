@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId
   let user = state.user
   // find the containing project
-  console.log(ownProps.routeParams)
+
   let project = state.projects.all
     ? state.projects.all.find(p => {
         if (!p.feedSources) return false
@@ -79,7 +79,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.project) {
         dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
         .then((feedSource) => {
-          console.log(feedSource)
           return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
       }
