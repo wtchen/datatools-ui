@@ -63,7 +63,7 @@ function requestingProject () {
   }
 }
 
-function receiveProject (project) {
+export function receiveProject (project) {
   return {
     type: 'RECEIVE_PROJECT',
     project
@@ -78,9 +78,25 @@ export function fetchProject (projectId, unsecure) {
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(project => {
-        return dispatch(receiveProject(project))
+        dispatch(receiveProject(project))
+        return project
         // if (!unsecure)
         //   return dispatch(fetchProjectFeeds(project.id))
+      })
+  }
+}
+
+export function fetchProjectWithFeeds (projectId, unsecure) {
+  return function (dispatch, getState) {
+    dispatch(requestingProject())
+    const apiRoot = unsecure ? 'public' : 'secure'
+    const url = `/api/manager/${apiRoot}/project/${projectId}`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(project => {
+        dispatch(receiveProject(project))
+        if (!unsecure)
+          return dispatch(fetchProjectFeeds(project.id))
       })
   }
 }

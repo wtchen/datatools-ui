@@ -6,6 +6,7 @@ import ProjectViewer from '../components/ProjectViewer'
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 import {
   fetchProject,
+  fetchProjectWithFeeds,
   thirdPartySync,
   fetchFeedsForProject,
   updateProject,
@@ -43,6 +44,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       console.log(initialProps)
       if (!initialProps.project) {
         dispatch(fetchProject(projectId))
+        .then(project => {
+          dispatch(fetchProjectFeeds(projectId))
+        })
       }
       else if (!initialProps.project.feedSources || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) dispatch(fetchProjectFeeds(projectId))
     },

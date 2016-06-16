@@ -29,11 +29,11 @@ export default class DeploymentViewer extends Component {
     if(!this.props.deployment) {
       return <ManagerPage />
     }
-    const deployableFeeds = this.props.project.feedSources.filter(fs =>
+    const deployableFeeds = this.props.project.feedSources ? this.props.project.feedSources.filter(fs =>
       this.props.deployment.feedVersions.findIndex(v => v.feedSource.id === fs.id) === -1 &&
       fs.deployable &&
       fs.latestValidation
-    )
+    ) : []
     const messages = DT_CONFIG.messages.active.DeploymentViewer
     const versions = this.props.deployment.feedVersions.sort(versionsSorter)
 

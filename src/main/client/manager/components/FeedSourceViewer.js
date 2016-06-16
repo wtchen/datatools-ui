@@ -119,6 +119,7 @@ export default class FeedSourceViewer extends React.Component {
                   {isModuleEnabled('editor')
                     ? <Button
                         bsStyle='success'
+                        disabled={disabled || (fs.feedVersionCount === 0)}
                         onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}
                       >
                         <Glyphicon glyph='pencil'/> {messages.edit}

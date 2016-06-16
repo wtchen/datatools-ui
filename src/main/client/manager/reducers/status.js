@@ -3,7 +3,10 @@ import moment from 'moment'
 const config = (state = {
   message: null,
   modal: null,
-  popover: null
+  popover: {
+    active: false,
+    jobs: []
+  }
 }, action) => {
   switch (action.type) {
 
@@ -70,6 +73,13 @@ const config = (state = {
       return update(state, { modal: { $set: {title: `Warning: Feed version for ${action.feedSource.name} not processed`, body: action.message} }})
     case 'CLEAR_STATUS_MODAL':
       return update(state, { modal: { $set: null }})
+
+    // Status Popover
+    case 'WATCH_STATUS':
+      return update(state, { popover: { $set: {active: true} }})
+    case 'DEPLOYING_TO_TARGET':
+
+      return update(state, { popover: { jobs: { $push: [{name: `Processing deployment`, percent_complete: 5, status: 'processing'}] } } })
 
     // Blank out message
     case 'RECEIVE_PROJECTS':

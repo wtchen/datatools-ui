@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { fetchProject } from './projects'
+import { fetchProject, receiveProject } from './projects'
 import { setErrorMessage } from './status'
 
 // Deployment Actions
@@ -54,6 +54,7 @@ export function deployToTarget (deployment, target) {
       .then(response => response.json())
       .then(() => {
         dispatch(deployedToTarget(deployment, target))
+        dispatch(watchStatus('deployment'))
       })
   }
 }
@@ -133,10 +134,14 @@ export function fetchDeploymentAndProject (id) {
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(deployment => {
-        dispatch(fetchProject(deployment.project.id))
-          .then(proj => {
-            return dispatch(receiveDeployment(deployment.project.id, deployment))
-          })
+        dispatch(receiveProject(deployment.project))
+        dispatch(receiveDeployment(deployment.project.id, deployment))
+        return deployment
+        // dispatch(fetchProject(deployment.project.id))
+        //   .then(proj => {
+        //
+        //     return proj
+        //   })
       })
   }
 }

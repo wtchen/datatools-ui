@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { fetchProject } from './projects'
+import { fetchProject, fetchProjectWithFeeds } from './projects'
 import { setErrorMessage } from './status'
 
 // Feed Source Actions
@@ -63,7 +63,7 @@ export function saveFeedSource (props) {
     const url = '/api/manager/secure/feedsource'
     return secureFetch(url, getState(), 'post', props)
       .then((res) => {
-        return dispatch(fetchProject(props.projectId))
+        return dispatch(fetchProjectWithFeeds(props.projectId))
       })
   }
 }

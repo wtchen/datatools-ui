@@ -11,6 +11,8 @@ import { fetchDeployment,
   downloadDeployment
 } from '../actions/deployments'
 
+import { fetchProjectFeeds } from '../actions/feeds'
+
 const mapStateToProps = (state, ownProps) => {
   let deploymentId = ownProps.routeParams.deploymentId
   let user = state.user
@@ -42,6 +44,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
       if (!initialProps.deployment) {
         dispatch(fetchDeploymentAndProject(deploymentId))
+        .then((deployment) => {
+          console.log(deployment)
+          dispatch(fetchProjectFeeds(deployment.project.id))
+        })
       }
     },
     onDeploymentTargetsClick: () => { dispatch(fetchDeploymentTargets()) },
