@@ -432,7 +432,7 @@ export default class ProjectSettings extends Component {
                               <FormControl
                                 type='text'
                                 placeholder='http://127.0.0.1/otp,http://0.0.0.0/otp'
-                                defaultValue={server.internalUrl.join(',')}
+                                defaultValue={server.internalUrl && server.internalUrl.join(',')}
                                 onChange={(evt) => {
                                   let stateUpdate = { deployment: {otpServers: {[i]: {$merge: { internalUrl: evt.target.value.split(',')} } } } }
                                   this.setState(update(this.state, stateUpdate))
