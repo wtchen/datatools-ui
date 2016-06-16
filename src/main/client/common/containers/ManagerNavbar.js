@@ -18,7 +18,8 @@ const mapStateToProps = (state, ownProps) => {
     username: state.user.profile ? state.user.profile.email : null,
     userIsAdmin: state.user.profile && state.user.permissions.isApplicationAdmin(),
     projects: state.projects ? state.projects : null,
-    languages: state.languages ? state.languages : ['English', 'Español', 'Français']
+    languages: state.languages ? state.languages : ['English', 'Español', 'Français'],
+    popover: state.status.popover
   }
 }
 

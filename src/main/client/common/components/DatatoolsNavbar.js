@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
 
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap'
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon, OverlayTrigger, Popover, ProgressBar, Button, Badge } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { browserHistory, Link } from 'react-router'
+import {Icon} from 'react-fa'
 
 import { isModuleEnabled } from '../util/config'
 
@@ -87,6 +88,38 @@ export default class DatatoolsNavbar extends Component {
       }
       </NavDropdown>
     )
+    console.log(this.props.popover)
+    let hasJobs = this.props.popover.jobs.length > 0
+    let statusOverlay = (
+      <Popover ref='statusPopover' show={hasJobs} style={{ width: 300 }} id='status-popover' title='Job status'>
+        {this.props.popover.jobs.map(job => {
+          return (
+            <div>
+              <div>
+              <strong>{job.name}</strong><Button bsStyle='link'><Icon className='pull-right' name='times-circle'/></Button>
+              </div>
+              <ProgressBar label={`${job.percent_complete}%`} active={job.status !== 'done'} now={job.percent_complete} />
+            </div>
+          )
+        })}
+      </Popover>
+    )
+    let statusControl = (
+      <OverlayTrigger trigger="click" placement='bottom' overlay={statusOverlay}>
+        <NavItem
+          disabled={!hasJobs}
+          onClick={() => {
+            console.log('clicked status bell')
+          }}
+        >
+          <Icon name='bell'/>
+          {this.props.popover.jobs.length > 0
+            ? <Badge>{this.props.popover.jobs.length}</Badge>
+            : null
+          }
+        </NavItem>
+      </OverlayTrigger>
+    )
     const navBarStyle = this.props.noMargin ? {marginBottom: 0} : {}
 
     return (
@@ -133,6 +166,7 @@ export default class DatatoolsNavbar extends Component {
             }
           </Nav>
           <Nav pullRight>
+            {statusControl}
             {projectControl}
             {this.props.docsUrl
               ? <NavItem href={this.props.docsUrl} active={this.props.docsUrl === '#'}>
