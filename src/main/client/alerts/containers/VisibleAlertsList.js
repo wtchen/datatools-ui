@@ -19,7 +19,10 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
       return visibleAlerts
     case 'ACTIVE':
       return visibleAlerts.filter(alert =>
-        moment(alert.start).isBefore(now) && moment(alert.end).isAfter(now))
+        moment(alert.start).isBefore(now) &&
+        moment(alert.end).isAfter(now) &&
+        alert.published
+      )
     case 'FUTURE':
       return visibleAlerts.filter(alert => moment(alert.start).isAfter(now))
     case 'ARCHIVED':
