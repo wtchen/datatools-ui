@@ -140,8 +140,8 @@ export default class DatatoolsNavbar extends Component {
                 </LinkContainer>
               : null
             }
-            {isModuleEnabled('editor') && this.props.editorUrl && this.props.username
-              ? <NavItem href={this.props.editorUrl} active={this.props.editorUrl === '#'}>
+            {isModuleEnabled('legacy_editor') && this.props.username
+              ? <NavItem href={DT_CONFIG.modules.legacy_editor.url}>
                   {messages.editor}
                 </NavItem>
               : null
