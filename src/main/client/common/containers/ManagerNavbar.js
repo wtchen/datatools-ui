@@ -5,6 +5,7 @@ import DatatoolsNavbar from '../components/DatatoolsNavbar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
 import { setActiveProject } from '../../manager/actions/projects'
 import { setActiveLanguage } from '../../manager/actions/languages'
+import { setJobMonitorVisible } from '../../manager/actions/status'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -19,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
     userIsAdmin: state.user.profile && state.user.permissions.isApplicationAdmin(),
     projects: state.projects ? state.projects : null,
     languages: state.languages ? state.languages : ['English', 'Español', 'Français'],
-    popover: state.status.popover
+    jobMonitor: state.status.jobMonitor
   }
 }
 
@@ -30,6 +31,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     resetPasswordHandler: () => { dispatch(resetPassword()) },
     setActiveProject: (project) => { dispatch(setActiveProject(project)) },
     setActiveLanguage: (language) => { dispatch(setActiveLanguage(language)) },
+    setJobMonitorVisible: (visible) => { dispatch(setJobMonitorVisible(visible)) }
   }
 }
 

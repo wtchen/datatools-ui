@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 
 import { checkExistingLogin, userLoggedIn, login } from '../../manager/actions/user'
+import { checkJobStatus } from '../../manager/actions/status'
+
 // import NoAccessScreen from '../components/NoAccessScreen'
 import ActiveFeedSourceViewer from '../../manager/containers/ActiveFeedSourceViewer'
 import ActiveProjectViewer from '../../manager/containers/ActiveProjectViewer'
@@ -34,24 +36,14 @@ class App extends React.Component {
   }
 
   componentDidMount () {
-    this.props.checkExistingLogin()
-    .then((action) => {
-      console.log('got config + login')
-    })
+    // set up status checkLogin
+    /*setInterval(() => {
+      console.log('status check!', this.props.user);
+      this.props.checkJobStatus()
+    }, 5000)*/
   }
 
   render () {
-    const checkLogin = (callback) => {
-      return this.props.fetchConfig()
-      .then(() => {
-        this.props.checkExistingLogin()
-        .then((action) => {
-          console.log(action)
-          callback()
-        })
-      })
-    }
-
     const requireAuth = (nextState, replace, callback) => {
       this.props.checkExistingLogin()
       .then((action) => {
@@ -119,6 +111,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    checkJobStatus: () => dispatch(checkJobStatus()),
     checkExistingLogin: (callback) => dispatch(checkExistingLogin()),
     login: (options) => dispatch(login(null, null, options))
   }
