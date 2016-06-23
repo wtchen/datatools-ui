@@ -446,6 +446,7 @@ export default class EntityDetails extends Component {
                 </NavItem>
                 <NavItem
                   eventKey={'trippattern'}
+                  disabled={entity.id === 'new'}
                   active={this.props.subComponent === 'trippattern'}
                   onClick={() => {
                     this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')

@@ -239,48 +239,6 @@ export default class GtfsEditor extends Component {
               setActiveEntity={this.props.setActiveEntity}
               tableData={this.props.tableData}
             />
-          // : this.props.activeComponent === 'calendar' || this.props.activeComponent === 'scheduleexception'
-          // ? <CalendarList
-          //     tableView={this.props.tableView}
-          //     activeComponent={this.props.activeComponent}
-          //     subComponent={this.props.subComponent}
-          //     subSubComponent={this.props.subSubComponent}
-          //     activeSubEntity={this.props.activeSubEntity}
-          //     activeSubSubEntity={this.props.activeSubSubEntity}
-          //     entity={this.props.activeEntity}
-          //     entities={this.props.tableData[this.props.activeComponent]}
-          //     setActiveEntity={this.props.setActiveEntity}
-          //     newEntityClicked={this.props.newEntityClicked}
-          //     deleteEntity={this.props.deleteEntity}
-          //     updateActiveEntity={this.props.updateActiveEntity}
-          //     saveActiveEntity={this.props.saveActiveEntity}
-          //     entityEdited={this.props.entityEdited}
-          //     feedSource={feedSource}
-          //     newRowsDisplayed={this.props.newRowsDisplayed}
-          //     stops={this.props.tableData.stop || []}
-          //     tableData={this.props.tableData}
-          //   />
-          // : this.props.activeComponent === 'timetable'
-          // ? <TimetableEditor
-          //     tableView={this.props.tableView}
-          //     activeComponent={this.props.activeComponent}
-          //     subComponent={this.props.subComponent}
-          //     subSubComponent={this.props.subSubComponent}
-          //     activeSubEntity={this.props.activeSubEntity}
-          //     activeSubSubEntity={this.props.activeSubSubEntity}
-          //     entity={this.props.activeEntity}
-          //     entities={this.props.tableData[this.props.activeComponent]}
-          //     setActiveEntity={this.props.setActiveEntity}
-          //     newEntityClicked={this.props.newEntityClicked}
-          //     deleteEntity={this.props.deleteEntity}
-          //     updateActiveEntity={this.props.updateActiveEntity}
-          //     saveActiveEntity={this.props.saveActiveEntity}
-          //     entityEdited={this.props.entityEdited}
-          //     feedSource={feedSource}
-          //     newRowsDisplayed={this.props.newRowsDisplayed}
-          //     stops={this.props.tableData.stop || []}
-          //     tableData={this.props.tableData}
-          //   />
           : this.props.activeComponent
           ? <EntityList
               tableView={this.props.tableView}

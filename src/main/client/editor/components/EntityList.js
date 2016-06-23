@@ -211,9 +211,9 @@ export default class EntityList extends Component {
         style={panelStyle}
       >
         <div
-            style={{paddingRight: sidePadding, marginBottom: '5px', height: '80px'}}
+            style={{paddingRight: sidePadding, marginBottom: '5px', height: '80px', paddingTop: sidePadding}}
         >
-          <h3>
+          <p>
             <ButtonToolbar
               className='pull-right'
             >
@@ -247,7 +247,7 @@ export default class EntityList extends Component {
                 <Icon name='plus'/> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
               </Button>
             }
-          </h3>
+          </p>
           <Button
             bsSize='xsmall'
             onClick={() => {!this.props.tableView
