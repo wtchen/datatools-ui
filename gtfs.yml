@@ -123,7 +123,7 @@
   fields:
   - name: route_id
     required: true
-    inputType: GTFS_ROUTE
+    inputType: TEXT
     columnWidth: 4
     helpContent: The route_id field contains an ID that uniquely identifies a route. The route_id is dataset unique.
   - name: agency_id
@@ -272,7 +272,7 @@
     helpContent: "The departure_time specifies the departure time from a specific stop for a specific trip on a route. The time is measured from "
   - name: "stop_id"
     required: true
-    inputType: GTFS_STOP
+    inputType: TEXT
     columnWidth: 2
     helpContent: "The stop_id field contains an ID that uniquely identifies a stop. Multiple routes may use the same stop. The stop_id is referenced from the stops.txt file. If location_type is used in stops.txt, all stops referenced in stop_times.txt must have location_type of 0."
   - name: "stop_sequence"
