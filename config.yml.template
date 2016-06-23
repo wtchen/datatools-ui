@@ -21,6 +21,8 @@ auth0:
 modules:
   editor:
     enabled: true
+  legacy_editor:
+    enabled: true
     url: http://localhost:9001
   alerts:
     enabled: true
