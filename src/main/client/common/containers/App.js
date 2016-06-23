@@ -87,7 +87,7 @@ class App extends React.Component {
         <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />
         <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
         <Route path='/project/:projectId(/:subpage)' component={ActiveProjectViewer} onEnter={requireAuth} />
-        <Route path='/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />
+        <Route path='/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)(/:subsubcomponent)(/:subsubentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />
         <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />
