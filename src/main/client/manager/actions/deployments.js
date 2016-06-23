@@ -1,6 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, receiveProject } from './projects'
-import { setErrorMessage } from './status'
+import { startJobMonitor } from './status'
 
 // Deployment Actions
 
@@ -50,11 +50,16 @@ export function deployToTarget (deployment, target) {
   return function (dispatch, getState) {
     dispatch(deployingToTarget(deployment, target))
     const url = `/api/manager/secure/deployments/${deployment.id}/deploy/${target}`
+    console.log('*** deploying...');
     return secureFetch(url, getState(), 'post')
-      .then(response => response.json())
-      .then(() => {
-        dispatch(deployedToTarget(deployment, target))
-        dispatch(watchStatus('deployment'))
+      .then(response => {
+        console.log(response);
+        if (response.status >= 300) {
+          alert('Deployment error: ' + response.statusText)
+        } else {
+          dispatch(deployedToTarget(deployment, target))
+          dispatch(startJobMonitor())
+        }
       })
   }
 }

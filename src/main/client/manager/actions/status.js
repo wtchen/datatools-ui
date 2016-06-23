@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { fetchFeedVersion } from './feeds'
 
 export function setErrorMessage (message) {
   return {
@@ -13,7 +14,7 @@ export function clearStatusModal () {
   }
 }
 
-function watchingStatus (job) {
+/*function watchingStatus (job) {
   return {
     type: 'WATCHING_STATUS',
     job
@@ -40,5 +41,85 @@ export function watchStatus (job) {
         clearInterval(intervalId);
       }
     }, 1000);
+  }
+}*/
+
+export function receiveJobs (jobs) {
+  return {
+    type: 'RECEIVE_JOBS',
+    jobs
+  }
+}
+
+export function checkJobStatus () {
+  return function (dispatch, getState) {
+    return secureFetch(`/api/manager/secure/status/jobs`, getState())
+      .then(response => response.json())
+      .then(jobs => {
+        // check for any just-finished jobs
+        const previousJobs = getState().status.jobMonitor.jobs
+        previousJobs.filter(j1 => jobs.findIndex(j2 => j1.jobId === j2.jobId) === -1).map(job => {
+          dispatch(handleFinishedJob(job))
+        })
+
+        // if all jobs have finished, stop the timer
+        if (previousJobs.length > 0 && jobs.length === 0) {
+          dispatch(stopJobMonitor())
+        }
+
+        dispatch(receiveJobs(jobs))
+      })
+  }
+}
+
+export function setJobMonitorTimer (timer) {
+  return {
+    type: 'SET_JOBMONITOR_TIMER',
+    timer
+  }
+}
+
+function stopCurrentTimer (state) {
+  const timer = state.status.jobMonitor.timer
+  if (timer) clearInterval(timer)
+}
+
+export function startJobMonitor () {
+  return function (dispatch, getState) {
+    stopCurrentTimer(getState())
+
+    const timerFunction = () => {
+      dispatch(checkJobStatus())
+    }
+
+    timerFunction() // make an initial call right now
+    const timer = setInterval(timerFunction, 2000)
+
+    dispatch(setJobMonitorTimer(timer))
+  }
+}
+
+export function stopJobMonitor () {
+  return function (dispatch, getState) {
+    stopCurrentTimer(getState())
+    dispatch(setJobMonitorTimer(null))
+  }
+}
+
+export function setJobMonitorVisible (visible) {
+  return {
+    type: 'SET_JOBMONITOR_VISIBLE',
+    visible
+  }
+}
+
+export function handleFinishedJob (job) {
+  return function (dispatch, getState) {
+    switch (job.type) {
+      case 'VALIDATE_FEED':
+        console.log('** Val FV job finished', job);
+        dispatch(fetchFeedVersion(job.feedVersionId))
+        break
+    }
   }
 }

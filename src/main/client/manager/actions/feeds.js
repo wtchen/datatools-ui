@@ -1,6 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, fetchProjectWithFeeds } from './projects'
-import { setErrorMessage } from './status'
+import { setErrorMessage, startJobMonitor } from './status'
 
 // Feed Source Actions
 
@@ -339,6 +339,7 @@ export function uploadFeed (feedSource, file) {
       }
       else {
         dispatch(uploadedFeed(feedSource))
+        dispatch(startJobMonitor())
       }
       console.log('uploadFeed result', res)
 

@@ -72,7 +72,7 @@ export default class DeploymentViewer extends Component {
                     onSelect={(evt) => {
                       console.log(evt)
                       this.props.deployToTargetClicked(this.props.deployment, evt)
-                      setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
+                      //setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
                     }}
                   >
                     {this.props.project.otpServers

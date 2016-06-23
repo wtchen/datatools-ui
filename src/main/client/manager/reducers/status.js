@@ -3,8 +3,9 @@ import moment from 'moment'
 const config = (state = {
   message: null,
   modal: null,
-  popover: {
-    active: false,
+  jobMonitor: {
+    timer: null,
+    visible: false,
     jobs: []
   }
 }, action) => {
@@ -67,19 +68,29 @@ const config = (state = {
       return update(state, { modal: { $set: {title: 'Warning!', body: action.message} }})
     case 'RECEIVED_FETCH_FEED':
       return update(state, { modal: { $set: {title: 'Feed fetched successfully!', body: `New version for ${action.feedSource.name} fetched at ${moment().format('MMMM Do YYYY, h:mm:ss a')}`} }})
-    case 'UPLOADED_FEED':
-      return update(state, { modal: { $set: {title: 'Feed uploaded successfully!', body: `New version for ${action.feedSource.name} uploaded at ${moment().format('MMMM Do YYYY, h:mm:ss a')}`} }})
+    //case 'UPLOADED_FEED':
+    //  return update(state, { modal: { $set: {title: 'Feed uploaded successfully!', body: `New version for ${action.feedSource.name} uploaded at ${moment().format('MMMM Do YYYY, h:mm:ss a')}`} }})
     case 'FEED_NOT_MODIFIED':
       return update(state, { modal: { $set: {title: `Warning: Feed version for ${action.feedSource.name} not processed`, body: action.message} }})
     case 'CLEAR_STATUS_MODAL':
       return update(state, { modal: { $set: null }})
 
-    // Status Popover
-    case 'WATCH_STATUS':
-      return update(state, { popover: { $set: {active: true} }})
-    case 'DEPLOYING_TO_TARGET':
+    // Job Monitor
+    case 'SET_JOBMONITOR_TIMER':
+      return update(state, { jobMonitor: { $merge: { timer: action.timer } } })
+    case 'SET_JOBMONITOR_VISIBLE':
+      return update(state, { jobMonitor: { $merge: { visible: action.visible } } })
+    case 'RECEIVE_JOBS':
+      let visible = state.jobMonitor.visible
+      let jobs = action.jobs || []
 
-      return update(state, { popover: { jobs: { $push: [{name: `Processing deployment`, percent_complete: 5, status: 'processing'}] } } })
+      // make monitor visible if jobs are being received for the first time
+      if (state.jobMonitor.jobs.length === 0 && jobs.length > 0) visible = true
+
+      return update(state, { jobMonitor: { $merge: { jobs, visible } } })
+
+    // case 'DEPLOYING_TO_TARGET':
+    //  return update(state, { popover: { jobs: { $push: [{name: `Processing deployment`, percent_complete: 5, status: 'processing'}] } } })
 
     // Blank out message
     case 'RECEIVE_PROJECTS':
