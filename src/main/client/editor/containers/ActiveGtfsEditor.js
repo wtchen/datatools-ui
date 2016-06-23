@@ -4,9 +4,21 @@ import GtfsEditor  from '../components/GtfsEditor'
 import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
   fetchFeedInfo,
-  fetchTripPatternsForRoute,
+} from '../actions/feedInfo'
+import {
+  fetchStops,
   fetchStopsForTripPattern,
+} from '../actions/stop'
+import {
+  fetchRoutes,
+} from '../actions/route'
+import {
+  fetchTripPatternsForRoute,
+} from '../actions/tripPattern'
+import {
   fetchTripsForCalendar,
+} from '../actions/trip'
+import {
   setActiveGtfsEntity,
   newGtfsEntity,
   saveActiveGtfsEntity,
@@ -14,7 +26,6 @@ import {
   settingActiveGtfsEntity,
   updateActiveGtfsEntity,
   clearGtfsContent,
-  fetchStops,
   addGtfsRow,
   updateGtfsField,
   deleteGtfsRow,
