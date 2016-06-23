@@ -62,6 +62,18 @@ const config = (state = {
       return update(state, { message: { $set: 'Saving deployment...' }})
     case 'REQUESTING_GTFSEDITOR_SNAPSHOTS':
       return update(state, { message: { $set: 'Loading Snapshots...' } })
+    case 'SAVING_AGENCY':
+      return update(state, { message: { $set: 'Saving agency...' }})
+    case 'SAVING_STOP':
+      return update(state, { message: { $set: 'Saving stop...' }})
+    case 'SAVING_ROUTE':
+      return update(state, { message: { $set: 'Saving route...' }})
+    case 'REQUESTING_AGENCIES':
+      return update(state, { message: { $set: 'Loading agencies...' }})
+    case 'REQUESTING_STOPS':
+      return update(state, { message: { $set: 'Loading stops...' }})
+    case 'REQUESTING_ROUTES':
+      return update(state, { message: { $set: 'Loading routes...' }})
 
     // Status Modal
     case 'SET_ERROR_MESSAGE':
@@ -110,6 +122,12 @@ const config = (state = {
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
     case 'RECEIVE_DEPLOYMENTS':
     case 'RECEIVE_DEPLOYMENT':
+    case 'RECEIVE_AGENCY':
+    case 'RECEIVE_AGENCIES':
+    case 'RECEIVE_STOP':
+    case 'RECEIVE_STOPS':
+    case 'RECEIVE_ROUTE':
+    case 'RECEIVE_ROUTES':
     case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
       return update(state, { message: { $set: null }})
     default:
