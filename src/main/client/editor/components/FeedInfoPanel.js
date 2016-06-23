@@ -25,7 +25,7 @@ export default class FeedInfoPanel extends Component {
       paddingLeft: 5,
       height: 200,
       width: 400,
-      zIndex: 99
+      // zIndex: 99
     }
     if (!feedInfo || !feedSource) {
       return null

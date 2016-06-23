@@ -1,31 +1,35 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, Form, Glyphicon, FormControl, FormGroup, ControlLabel, Input } from 'react-bootstrap'
+import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, Form, Glyphicon, FormControl, FormGroup, ControlLabel, Input, Nav, NavItem } from 'react-bootstrap'
 import {Icon} from 'react-fa'
-
+import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
+import { PureComponent, shallowEqual } from 'react-pure-render'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 import EditableTextField from '../../common/components/EditableTextField'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
+import TripPatternList from './TripPatternList'
 
 export default class EntityDetails extends Component {
 
   constructor (props) {
     super(props)
+    this.state = {}
   }
 
+  // componentWillReceiveProps (nextProps) {
+  //   // forceUpdate()
+  // }
+  shouldComponentUpdate (nextProps) {
+    // component is updating!!!
+    return  true // !shallowEqual(nextProps.entity, this.props.entity) || nextProps.entityEdited !== this.props.entityEdited || nextProps.activeEntityId !== this.props.activeEntityId
+  }
   render () {
     // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
 
     let entity = this.props.entity
-    let entId = this.props.activeComponent === 'agency'
-      ? 'agency_id'
-      : this.props.activeComponent === 'route'
-      ? 'route_id'
-      : this.props.activeComponent === 'stop'
-      ? 'stop_id'
-      : null
+
     let entName = this.props.activeComponent === 'agency'
       ? 'agency_name'
       : this.props.activeComponent === 'route'
@@ -38,7 +42,7 @@ export default class EntityDetails extends Component {
       width: '300px',
       height: '100%',
       position: 'absolute',
-      overflowY: 'scroll',
+      // overflowY: 'scroll',
       top: '0px',
       left: this.props.offset || '300px',
       zIndex: 99,
@@ -68,10 +72,13 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
-              onChange={(value) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+              // tabIndex={index}
+              defaultValue={currentValue}
+              onChange={(evt) => {
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(props)
               }}
             />
             </FormGroup>
@@ -84,8 +91,8 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <TimezoneSelect
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               onChange={(option) => {
                 this.props.fieldEdited(table.id, row, editorField, option.value)
               }}
@@ -100,8 +107,8 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <LanguageSelect
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               onChange={(option) => {
                 this.props.fieldEdited(table.id, row, editorField, option.value)
               }}
@@ -116,10 +123,10 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               placeholder='HH:MM:SS'
-              onChange={(value) => {
+              onChange={(evt) => {
                 this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
@@ -135,10 +142,10 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               type='number'
-              onChange={(value) => {
+              onChange={(evt) => {
                 this.props.fieldEdited(table.id, row, editorField, value)
               }}
             />
@@ -152,11 +159,14 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               placeholder='YYYYMMDD'
-              onChange={(value) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+              onChange={(evt) => {
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(props)
               }}
             />
             </FormGroup>
@@ -169,8 +179,8 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               placeholder='00FF00'
               type='number'
               onChange={(value) => {
@@ -187,8 +197,8 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               type='number'
               min={0}
               step={1}
@@ -206,8 +216,8 @@ export default class EntityDetails extends Component {
             >
             <ControlLabel>{editorField}</ControlLabel>
             <FormControl
-              tabIndex={index}
-              value={currentValue}
+              // tabIndex={index}
+              defaultValue={currentValue}
               type='number'
               min={0}
               onChange={(value) => {
@@ -224,8 +234,8 @@ export default class EntityDetails extends Component {
             >
               <ControlLabel>{editorField}</ControlLabel>
               <FormControl componentClass='select'
-                tabIndex={index}
-                value={currentValue}
+                // tabIndex={index}
+                defaultValue={currentValue}
                 onChange={(evt) => {
                   this.props.fieldEdited(table.id, row, editorField, evt.target.value)
                 }}
@@ -265,7 +275,7 @@ export default class EntityDetails extends Component {
           // )
           return (
             <GtfsSearch
-              tabIndex={index}
+              // tabIndex={index}
               feeds={[this.props.feedSource]}
               limit={100}
               entities={['routes']}
@@ -283,7 +293,7 @@ export default class EntityDetails extends Component {
         //   const stopValue = agencyEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
         //   return (
         //     <Input type='select'
-        //       tabIndex={index}
+        //      tabIndex={index}
         //       value={currentValue}
         //       onChange={(evt) => {
         //         this.props.fieldEdited(table.id, row, editorField, evt.target.value)
@@ -306,7 +316,7 @@ export default class EntityDetails extends Component {
           //   >
           //   <ControlLabel>{editorField}</ControlLabel>
           //   <FormControl
-          //     tabIndex={index}
+          //    tabIndex={index}
           //     value={currentValue}
           //     onChange={(value) => {
           //       this.props.fieldEdited(table.id, row, editorField, value)
@@ -316,7 +326,7 @@ export default class EntityDetails extends Component {
           // )
           return (
             <GtfsSearch
-              tabIndex={index}
+              // tabIndex={index}
               feeds={[this.props.feedSource]}
               limit={100}
               entities={['stops']}
@@ -333,12 +343,13 @@ export default class EntityDetails extends Component {
       }
     }
     if (!entity) return null
-    const data = entity
     const rowIndex = 0
-    const table = DT_CONFIG.modules.editor.spec.find(t => t.id === this.props.activeComponent)
+    const table = DT_CONFIG.modules.editor.spec.find(t => this.props.activeComponent === 'scheduleexception' ? t.id === 'calendar_dates' : t.id === this.props.activeComponent)
+    console.log(entity.id)
     const agencyForm = (
             <Form>
             {
+
               table.fields.map((field, colIndex) => {
                 // get editor field by splitting on first underscore
                 const editorField = field.name // .split(/_(.+)?/)[1]
@@ -352,8 +363,8 @@ export default class EntityDetails extends Component {
               ) : null
 
               return (
-                  <div key={`row-${rowIndex}-${editorField}`} style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
-                    {getInput(rowIndex, field, data[editorField], (rowIndex * table.fields.length) + colIndex + 1)}
+                  <div key={`row-${entity.id}-${editorField}`} style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
+                    {getInput(rowIndex, field, entity[editorField], (rowIndex * table.fields.length) + colIndex + 1)}
                   </div>
               )
             })}
@@ -385,27 +396,85 @@ export default class EntityDetails extends Component {
       <div
         style={panelStyle}
       >
-        <h3>
-          <ButtonToolbar
-            className='pull-right'
-          >
-            <Button
-              bsSize='small'
-              bsStyle='primary'
+        <div
+          style={{height: '85px'}}
+        >
+          <h3>
+            <ButtonToolbar
+              className='pull-right'
             >
-              Save
-            </Button>
-          </ButtonToolbar>
-          <EditableTextField
-            value={entity[entName]}
-            onChange={(value) => {
-              // this.props.fieldEdited(table.id, row, editorField, value)
-            }}
-          />
-        </h3>
-          <div style={{}}>
-          {agencyForm}
-          </div>
+              <Button
+                bsSize='small'
+                disabled={!this.props.entityEdited}
+                onClick={(e) => {
+                  // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, null)
+                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity)
+                }}
+              >
+                Reset
+              </Button>
+              <Button
+                bsSize='small'
+                bsStyle='primary'
+                disabled={!this.props.entityEdited}
+                onClick={(e) => {
+                  this.props.saveActiveEntity()
+                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+                }}
+              >
+                Save
+              </Button>
+            </ButtonToolbar>
+            <EditableTextField
+              value={entity[entName]}
+              onChange={(value) => {
+                // this.props.fieldEdited(table.id, row, editorField, value)
+              }}
+            />
+          </h3>
+          {this.props.activeComponent === 'route'
+            ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified onSelect={this.handleSelect}>
+                <NavItem
+                  eventKey={'route'}
+                  active={this.props.subComponent !== 'trippattern'}
+                  onClick={() => {
+                    this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity)
+                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}`)
+                  }}
+                >
+                  Route details
+                </NavItem>
+                <NavItem
+                  eventKey={'trippattern'}
+                  active={this.props.subComponent === 'trippattern'}
+                  onClick={() => {
+                    this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
+                    browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}/trippattern`)
+                  }}
+                >
+                  Trip patterns
+                </NavItem>
+              </Nav>
+            : null
+          }
+        </div>
+        <div style={{height: '80%', overflowY: 'scroll'}}>
+          {this.props.subComponent === 'trippattern'
+            ? <TripPatternList
+                feedSource={this.props.feedSource}
+                setActiveEntity={this.props.setActiveEntity}
+                activePatternId={this.props.activeSubEntity}
+                activeScheduleId={this.props.activeSubSubEntity}
+                deleteEntity={this.props.deleteEntity}
+                newEntityClicked={this.props.newEntityClicked}
+                subSubComponent={this.props.subSubComponent}
+                route={entity}
+                stops={this.props.stops}
+                tableData={this.props.tableData}
+              />
+            : agencyForm
+          }
+        </div>
       </div>
     )
   }

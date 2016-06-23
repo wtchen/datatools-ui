@@ -2,7 +2,106 @@ import JSZip from 'jszip'
 
 import { secureFetch } from '../../common/util/util'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
+import { browserHistory } from 'react-router'
 
+export function settingActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
+  return {
+    type: 'SETTING_ACTIVE_GTFS_ENTITY',
+    feedSourceId,
+    component,
+    entityId,
+    subComponent,
+    subEntityId,
+    subSubComponent,
+    subSubEntityId
+  }
+}
+
+export function setActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
+  return function (dispatch, getState) {
+    let previousFeedSourceId = getState().editor.feedSourceId
+    if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
+      dispatch(clearGtfsContent())
+    }
+    dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
+    const url = entityId && subEntityId && subSubComponent && subSubEntityId
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}/${subSubEntityId}`
+      : entityId && subEntityId && subSubComponent
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}`
+      : entityId && subEntityId
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}`
+      : entityId && subComponent
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}`
+      : entityId
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}`
+      : `/feed/${feedSourceId}/edit/${component}`
+    if (getState().routing.locationBeforeTransitions.path !== url) {
+      browserHistory.push(url)
+    }
+  }
+}
+
+export function saveActiveGtfsEntity () {
+  return function (dispatch, getState) {
+    let feedSourceId = getState().editor.feedSourceId
+    let entity = getState().editor.activeEntity
+    let component = getState().editor.activeComponent
+    // dispatch(savingActiveGtfsEntity(feedSourceId, component, entity))
+    switch (component) {
+      case 'stop':
+        return dispatch(saveStop(feedSourceId, entity))
+      case 'route':
+        return dispatch(saveRoute(feedSourceId, entity))
+      case 'agency':
+        return dispatch(saveAgency(feedSourceId, entity))
+    }
+  }
+}
+
+export function deleteGtfsEntity (feedId, component, entity) {
+  return function (dispatch, getState) {
+    switch (component) {
+      case 'stop':
+        return dispatch(deleteStop(feedId, entity))
+      case 'route':
+        return dispatch(deleteRoute(feedId, entity))
+      case 'agency':
+        return dispatch(deleteAgency(feedId, entity))
+      case 'trippattern':
+        return dispatch(deleteTripPattern(feedId, entity))
+    }
+  }
+}
+
+export function updateActiveGtfsEntity (props) {
+  return {
+    type: 'UPDATE_ACTIVE_GTFS_ENTITY',
+    props
+  }
+}
+
+export function createGtfsEntity (feedSourceId, component, props) {
+  return {
+    type: 'CREATE_GTFS_ENTITY',
+    feedSourceId,
+    component,
+    props
+  }
+}
+
+export function newGtfsEntity (feedSourceId, component, props) {
+  return function (dispatch, getState) {
+    dispatch(createGtfsEntity(feedSourceId, component, props))
+    if ('routeId' in props) {
+      dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, 'new'))
+    }
+    else {
+      dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
+    }
+  }
+}
+
+// export function
 
 //// FEED_INFO
 
@@ -66,14 +165,30 @@ export function updateFeedInfo (feedInfo, changes) {
 
 //// AGENCY
 
-export function saveAgency (agency, feedId) {
+export function savingAgency (feedId, agency) {
+  return {
+    type: 'SAVING_AGENCY',
+    feedId,
+    agency
+  }
+}
+
+export function receiveAgency (feedId, agency) {
+  return {
+    type: 'RECEIVE_AGENCY',
+    feedId,
+    agency
+  }
+}
+
+export function saveAgency (feedId, agency) {
   return function (dispatch, getState) {
     const data = {
       // defaultLat:"33.755",
       // defaultLon:"-84.39",
       gtfsAgencyId: agency.agency_id,
-      id: agency.id !== -1 ? agency.id : "test_UUID", // generate UUID client side? http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
       lang: agency.agency_lang,
+      feedId: agency.feedId,
       name: agency.agency_name,
       phone: agency.agency_phone,
       // routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
@@ -82,15 +197,15 @@ export function saveAgency (agency, feedId) {
       url: agency.agency_url,
       // fare_url: agency.agency_fare_url,
     }
-    const method = agency.id !== -1 ? 'put' : 'post'
-    const url = agency.id !== -1
+    const method = agency.id !== 'new' ? 'put' : 'post'
+    const url = agency.id !== 'new'
       ? `/api/manager/secure/agency/${agency.id}?feedId=${feedId}`
       : `/api/manager/secure/agency?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(validationIssues => {
-        //console.log('got GTFS+ val result', validationResult)
-        dispatch(receiveGtfsValidation(validationIssues))
+      .then(agency => {
+        // dispatch(receiveAgency(feedId, agency))
+        dispatch(fetchAgencies(feedId))
       })
   }
 }
@@ -117,19 +232,59 @@ export function fetchAgencies (feedId) {
     return secureFetch(url, getState())
       .then(res => res.json())
       .then(agencies => {
-        dispatch(receiveAgency(feedId, agencies))
+        dispatch(receiveAgencies(feedId, agencies))
+        return agencies
       })
   }
 }
 
+export function deletingAgency (feedId, agency) {
+  return {
+    type: 'DELETING_AGENCY',
+    feedId,
+    agency
+  }
+}
+
+export function deleteAgency (feedId, agency) {
+  return function (dispatch, getState) {
+    dispatch(deletingAgency(feedId, agency))
+    if (agency.id === 'new') {
+      return dispatch(fetchAgencies(feedId))
+    }
+    const url = `/api/manager/secure/agency/${agency.id}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
+      .then(res => res.json())
+      .then(agency => {
+        dispatch(fetchAgencies(feedId))
+      })
+  }
+}
 
 //// ROUTES
 
-export function saveRoute (route, feedId) {
+export function savingRoute (feedId, route) {
+  return {
+    type: 'SAVING_ROUTE',
+    feedId,
+    route
+  }
+}
+
+export function receiveRoute (feedId, route) {
+  return {
+    type: 'RECEIVE_ROUTE',
+    feedId,
+    route
+  }
+}
+
+export function saveRoute (feedId, route) {
   return function (dispatch, getState) {
     const data = {
       gtfsRouteId: route.route_id,
       agencyId: route.agency_id,
+      feedId: route.feedId,
       routeShortName: route.route_short_name,
       routeLongName: route.route_long_name,
       routeDesc: route.route_desc,
@@ -137,17 +292,39 @@ export function saveRoute (route, feedId) {
       routeUrl: route.route_url,
       routeColor: route.route_color,
       routeTextColor: route.route_text_color,
-      gtfsAgencyId: route.route_id,
     }
-    const method = route.id !== -1 ? 'put' : 'post'
-    const url = route.id !== -1
+    const method = route.id !== 'new' ? 'put' : 'post'
+    const url = route.id !== 'new'
       ? `/api/manager/secure/route/${route.id}?feedId=${feedId}`
       : `/api/manager/secure/route?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(validationIssues => {
-        //console.log('got GTFS+ val result', validationResult)
-        dispatch(receiveGtfsValidation(validationIssues))
+      .then(route => {
+        // dispatch(receiveRoute(feedId, route))
+        dispatch(fetchRoutes(feedId))
+      })
+  }
+}
+
+export function deletingRoute (feedId, route) {
+  return {
+    type: 'DELETING_ROUTE',
+    feedId,
+    route
+  }
+}
+
+export function deleteRoute (feedId, route) {
+  return function (dispatch, getState) {
+    dispatch(deletingRoute(feedId, route))
+    if (route.id === 'new') {
+      return dispatch(fetchRoutes(feedId))
+    }
+    const url = `/api/manager/secure/route/${route.id}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
+      .then(res => res.json())
+      .then(route => {
+        dispatch(fetchRoutes(feedId))
       })
   }
 }
@@ -175,16 +352,138 @@ export function fetchRoutes (feedId) {
       .then(res => res.json())
       .then(routes => {
         dispatch(receiveRoutes(feedId, routes))
+        return routes
       })
   }
 }
 
+//// TRIP PATTERNS
+
+export function requestingTripPatternsForRoute (feedId, routeId) {
+  return {
+    type: 'REQUESTING_TRIP_PATTERNS_FOR_ROUTE',
+    feedId,
+    routeId
+  }
+}
+
+export function receiveTripPatternsForRoute (feedId, routeId, tripPatterns) {
+  return {
+    type: 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE',
+    feedId,
+    routeId,
+    tripPatterns
+  }
+}
+
+export function fetchTripPatternsForRoute (feedId, routeId) {
+  return function (dispatch, getState) {
+    dispatch(requestingTripPatternsForRoute(feedId))
+    const url = `/api/manager/secure/trippattern?feedId=${feedId}&routeId=${routeId}`
+    return secureFetch(url, getState())
+      .then(res => {
+        if (res.status >= 400) {
+          // dispatch(setErrorMessage('Error getting stops for trip pattern'))
+          return []
+        }
+        return res.json()
+      })
+      .then(tripPatterns => {
+        dispatch(receiveTripPatternsForRoute(feedId, routeId, tripPatterns))
+        return tripPatterns
+      })
+  }
+}
+
+export function deletingTripPattern (feedId, tripPattern) {
+  return {
+    type: 'DELETING_TRIP_PATTERN',
+    feedId,
+    tripPattern
+  }
+}
+
+export function deleteTripPattern (feedId, tripPattern) {
+  return function (dispatch, getState) {
+    dispatch(deletingTripPattern(feedId, tripPattern))
+    const routeId = tripPattern.routeId
+    if (tripPattern.id === 'new') {
+      return dispatch(fetchTripPatternsForRoute(feedId, routeId))
+    }
+    const url = `/api/manager/secure/trippattern/${tripPattern.id}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
+      .then(res => res.json())
+      .then(tripPattern => {
+        dispatch(fetchTripPatternsForRoute(feedId, routeId))
+      })
+  }
+}
+
+export function requestingTripsForCalendar (feedId, pattern, calendarId) {
+  return {
+    type: 'REQUESTING_TRIPS_FOR_CALENDAR',
+    feedId,
+    pattern,
+    calendarId
+  }
+}
+
+export function receiveTripsForCalendar (feedId, pattern, calendarId, trips) {
+  return {
+    type: 'RECEIVE_TRIPS_FOR_CALENDAR',
+    feedId,
+    pattern,
+    calendarId,
+    trips
+  }
+}
+
+export function fetchTripsForCalendar (feedId, pattern, calendarId) {
+  return function (dispatch, getState) {
+    dispatch(requestingTripsForCalendar(feedId, pattern, calendarId))
+    const url = `/api/manager/secure/trip?feedId=${feedId}&patternId=${pattern.id}&calendarId=${calendarId}`
+    return secureFetch(url, getState())
+      .then(res => res.json())
+      .then(trips => {
+        dispatch(receiveTripsForCalendar(feedId, pattern, calendarId, trips))
+      })
+  }
+}
+
+// export function fetchTripsForCalendar (feedId, patternId, calendarId) {
+//   return function (dispatch, getState) {
+//     dispatch(requestingTripsForCalendar(feedId, patternId, calendarId))
+//     const url = `/api/manager/secure/trip?feedId=${feedId}&patternId=${patternId}&calendarId=${calendarId}`
+//     return secureFetch(url, getState())
+//       .then(res => res.json())
+//       .then(trips => {
+//         dispatch(receiveTripsForCalendar(feedId, patternId, calendarId, trips))
+//       })
+//   }
+// }
 
 
 //// STOPS
 
-export function saveStop (stop, feedId) {
+export function savingStop (feedId, stop) {
+  return {
+    type: 'SAVING_STOP',
+    feedId,
+    stop
+  }
+}
+
+export function receiveStop (feedId, stop) {
+  return {
+    type: 'RECEIVE_STOP',
+    feedId,
+    stop
+  }
+}
+
+export function saveStop (feedId, stop) {
   return function (dispatch, getState) {
+    dispatch(savingStop(feedId, stop))
     const data = {
       gtfsStopId: stop.stop_id,
       stopCode: stop.stop_code,
@@ -202,17 +501,17 @@ export function saveStop (stop, feedId) {
       carParking: stop.carParking,
       pickupType: stop.pickupType,
       dropOffType: stop.dropOffType,
-
+      feedId: stop.feedId,
     }
-    const method = stop.id !== -1 ? 'put' : 'post'
-    const url = stop.id !== -1
+    const method = stop.id !== 'new' ? 'put' : 'post'
+    const url = stop.id !== 'new'
       ? `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
       : `/api/manager/secure/stop?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
       .then(stop => {
-        //console.log('got GTFS+ val result', validationResult)
-        dispatch(receiveGtfsValidation(stop))
+        // dispatch(receiveStop(feedId, stop))
+        dispatch(fetchStops(feedId))
       })
   }
 }
@@ -240,11 +539,52 @@ export function fetchStops (feedId) {
       .then(res => res.json())
       .then(stops => {
         dispatch(receiveStops(feedId, stops))
+        return stops
       })
   }
 }
 
+export function fetchStopsForTripPattern (feedId, tripPatternId) {
+  return function (dispatch, getState) {
+    dispatch(requestingStops(feedId))
+    const url = `/api/manager/secure/stop?feedId=${feedId}&patternId=${tripPatternId}`
+    return secureFetch(url, getState())
+      .then(res => {
+        if (res.status >= 400) {
+          // dispatch(setErrorMessage('Error getting stops for trip pattern'))
+          return []
+        }
+        return res.json()
+      })
+      .then(stops => {
+        dispatch(receiveStops(feedId, stops))
+        return stops
+      })
+  }
+}
 
+export function deletingStop (feedId, stop) {
+  return {
+    type: 'DELETING_STOP',
+    feedId,
+    stop
+  }
+}
+
+export function deleteStop (feedId, stop) {
+  return function (dispatch, getState) {
+    dispatch(deletingStop(feedId, stop))
+    if (stop.id === 'new') {
+      return dispatch(fetchStops(feedId))
+    }
+    const url = `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
+      .then(res => res.json())
+      .then(route => {
+        dispatch(fetchStops(feedId))
+      })
+  }
+}
 
 
 /////// GENERIC TABLE ACTIONS + OLD GTFS+ ACTIONS PORTED OVER
@@ -264,6 +604,10 @@ export function getGtfsTable (tableId, feedId) {
         return dispatch(fetchStops(feedId))
       case 'route':
         return dispatch(fetchRoutes(feedId))
+      case 'agency':
+        return dispatch(fetchAgencies(feedId))
+      // case 'timetable':
+      //   return dispatch(fetchRoutes(feedId))
       default:
         const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
         return secureFetch(url, getState())
@@ -271,6 +615,7 @@ export function getGtfsTable (tableId, feedId) {
           .then(entities => {
             console.log('got editor result', entities)
             dispatch(receiveGtfsTable(tableId, entities))
+            return entities
           })
     }
   }

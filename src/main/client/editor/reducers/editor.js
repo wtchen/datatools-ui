@@ -1,32 +1,130 @@
 import update from 'react-addons-update'
 
-/*const emptyTableData = {
-  'realtime_routes': [],
-  'realtime_stops': [],
-  'directions': [],
-  'realtime_trips': [],
-  'stop_attributes': [],
-  'timepoints': [],
-  'rider_categories': [],
-  'fare_rider_categories': [],
-  'calendar_attributes': [],
-  'farezone_attributes': []
-}*/
+const mapStop = (s) => {
+  return {
+    id: s.id,
+    feedId: s.feedId,
+    stop_code: s.stopCode,
+    stop_name: s.stopName,
+    stop_desc: s.stopDesc,
+    stop_lat: s.lat,
+    stop_lon: s.lon,
+    zone_id: s.zoneId,
+    stop_url: s.stopUrl,
+    location_type: s.locationType,
+    parent_station: s.parentStation,
+    stop_timezone: s.stopTimezone,
+    wheelchair_boarding: s.wheelchairBoarding,
+    bikeParking: s.bikeParking,
+    carParking: s.carParking,
+    pickupType: s.pickupType,
+    dropOffType: s.dropOffType,
+    stop_id: s.gtfsStopId
+  }
+}
 
 const emptyTableData = { }
-
+// let newId = 0
 const editor = (state = {
   feedSourceId: null,
-  timestamp: null,
+  activeEntityId: null,
+  activeEntity: null,
+  activeComponent: null,
+  edited: false,
   tableData: {},
   validation: {},
   gtfsEntityLookup: {}
 }, action) => {
-  let newTableData, fields, rowData, mappedEntities, feedTableData
+  let newTableData, fields, rowData, mappedEntities, feedTableData, activeEntity, activeSubEntity, newState, routeIndex
   console.log(action)
   switch (action.type) {
+    case 'CREATE_GTFS_ENTITY':
+      if (action.component === 'trippattern') {
+        activeEntity = {
+          isCreating: true,
+          name: '',
+          id: 'new',
+          feedId: action.feedSourceId,
+          ...action.props
+        }
+        routeIndex = state.tableData.route.findIndex(r => r.id === action.props.routeId)
+        // if tripPatterns is undefined, create array
+        // console.log(state.tableData.route[routeIndex])
+        // if(typeof state.tableData.route[routeIndex].tripPatterns === 'undefined') {
+        //   console.log('creating trip patterns array for index' + routeIndex)
+        //   newState = update(state, {
+        //     tableData: {route: {[routeIndex]: {tripPatterns: {$set: []}}}},
+        //     activeEntity: {tripPatterns: {$set: []}}
+        //   })
+        // }
+        return update(newState || state, {
+          tableData: {route: {[routeIndex]: {tripPatterns: {$unshift: [activeEntity]}}}},
+          activeEntity: {tripPatterns: {$unshift: [activeEntity]}}
+        })
+      }
+      else {
+        activeEntity = {
+          isCreating: true,
+          name: '',
+          id: 'new',
+          feedId: action.feedSourceId,
+          ...action.props
+        }
+        // if tableData's component array is undefined, add it
+        if(!state.tableData[action.component]) {
+          console.log('adding new '+action.component+' array');
+          newState = update(state, {
+            tableData: {[action.component]: {$set: []}}
+          })
+        }
+        return update(newState || state, {
+          tableData: {[action.component]: {$unshift: [activeEntity]}},
+          // activeEntity: {$set: activeEntity}
+        })
+      }
+    case 'SETTING_ACTIVE_GTFS_ENTITY':
+      activeEntity = state.tableData[action.component] ? state.tableData[action.component].find(e => e.id === action.entityId) : null
+      switch (action.subComponent) {
+        case 'trippattern':
+          activeSubEntity = activeEntity && activeEntity.tripPatterns ? activeEntity.tripPatterns.find(p => p.id === action.subEntityId) : null
+      }
+
+      return update(state, {
+        feedSourceId: {$set: action.feedSourceId},
+        activeEntity: {$set: activeEntity},
+        activeEntityId: {$set: action.entityId},
+        activeSubEntity: {$set: activeSubEntity},
+        activeSubEntityId: {$set: action.subEntityId},
+        activeComponent: {$set: action.component},
+        edited: {$set: false},
+      })
+    case 'UPDATE_ACTIVE_GTFS_ENTITY':
+      activeEntity = Object.assign({}, state.activeEntity)
+      for (var key in action.props) {
+        activeEntity[key] = action.props[key]
+      }
+      return update(state, {
+        activeEntity: {$set: activeEntity},
+        edited: {$set: true}
+      })
     case 'RECEIVE_AGENCIES':
-      return state
+      const agencies = action.agencies.map(ent => {
+        return {
+          id: ent.id,
+          feedId: ent.feedId,
+          agency_id: ent.gtfsAgencyId,
+          agency_name: ent.name,
+          agency_url: ent.url,
+          agency_timezone: ent.timezone,
+          agency_lang: ent.lang,
+          agency_phone: ent.phone,
+          agency_fare_url: ent.fare_url,
+          agency_email: ent.email,
+        }
+      })
+      return update(state, {
+        tableData: {agency: {$set: agencies}}
+      })
     case 'RECEIVE_FEED_INFO':
       newTableData = {}
       newTableData.feedInfo = action.feedInfo
@@ -41,6 +139,7 @@ const editor = (state = {
       const routes = action.routes ? action.routes.map(r => {
         return {
           id: r.id,
+          feedId: r.feedId,
           agency_id: r.agencyId,
           route_short_name: r.routeShortName,
           route_long_name: r.routeLongName,
@@ -56,55 +155,67 @@ const editor = (state = {
       return update(state, {
         tableData: {route: {$set: routes}}
       })
+    case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
+      routeIndex = state.tableData.route.findIndex(r => r.id === action.routeId)
+      if (state.activeEntity.id === action.routeId) {
+        return update(state, {
+          tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}},
+          activeEntity: {$merge: {tripPatterns: action.tripPatterns}}
+        })
+      }
+      else {
+        return update(state, {
+          tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}}
+        })
+      }
+    case 'RECEIVE_TRIPS_FOR_CALENDAR':
+      routeIndex = state.tableData.route.findIndex(r => r.id === action.pattern.routeId)
+      let patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.pattern.id)
+      return update(state, {
+        tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}}
+      })
     case 'RECEIVE_STOPS':
-      const stops = action.stops ? action.stops.map(s => {
-        // let newStop = {}
-        // newStop.id = s.id
-        // newStop.stop_id = s.gtfsStopId
-        // newStop.stop_code = s.stopCode
-        // newStop.stop_name = s.stopName
-        // newStop.stop_desc = s.stopDesc
-        // newStop.stop_lat = s.lat
-        // newStop.stop_lon = s.lon
-        // newStop.zone_id = s.zoneId
-        // newStop.stop_url = s.stopUrl
-        // newStop.location_type = s.locationType
-        // newStop.parent_station = s.parentStation
-        // newStop.stop_timezone = s.stopTimezone
-        // newStop.wheelchair_boarding = s.wheelchairBoarding
-        // newStop.bikeParking = s.bikeParking
-        // newStop.carParking = s.carParking
-        // newStop.pickupType = s.pickupType
-        // newStop.dropOffType = s.dropOffType
-        // return newStop
-        return {
-          id: s.id,
-          stop_code: s.stopCode,
-          stop_name: s.stopName,
-          stop_desc: s.stopDesc,
-          stop_lat: s.lat,
-          stop_lon: s.lon,
-          zone_id: s.zoneId,
-          stop_url: s.stopUrl,
-          location_type: s.locationType,
-          parent_station: s.parentStation,
-          stop_timezone: s.stopTimezone,
-          wheelchair_boarding: s.wheelchairBoarding,
-          bikeParking: s.bikeParking,
-          carParking: s.carParking,
-          pickupType: s.pickupType,
-          dropOffType: s.dropOffType,
-          stop_id: s.gtfsStopId
-        }
-      }) : []
+      const stops = action.stops ? action.stops.map(mapStop) : []
 
       return update(state, {
         tableData: {stop: {$set: stops}}
       })
+    case 'RECEIVE_STOP':
+      const stop = mapStop(action.stop)
+      console.log(stop)
+      let stopIndex = state.tableData.stop.findIndex(s => s.id === stop.id)
+      let stateUpdate
+
+      // if stop is active, update active entity
+      if (stop.id === state.activeEntityId && stopIndex !== -1) {
+        stateUpdate = {
+          tableData: {stop: {[stopIndex]: {$merge: stop}}},
+          activeEntity: {$set: stop},
+          edited: {$set: false},
+        }
+      }
+      else if (stopIndex === -1) {
+        stateUpdate = {
+          tableData: {stop: {$unshift: [stop]}},
+          edited: {$set: false},
+        }
+      }
+      else {
+        stateUpdate = {
+          tableData: {stop: {[stopIndex]: {$merge: stop}}},
+          edited: {$set: false},
+        }
+      }
+      return update(state, stateUpdate)
     case 'CLEAR_GTFSEDITOR_CONTENT':
       return {
         feedSourceId: null,
-        timestamp: null,
+        activeEntityId: null,
+        activeEntity: null,
+        activeSubEntity: null,
+        activeSubEntityId: null,
+        activeComponent: null,
+        edited: false,
         tableData: {},
         validation: null,
         gtfsEntityLookup: {}
@@ -117,6 +228,7 @@ const editor = (state = {
             return action.entities.map(ent => {
               return {
                 id: ent.id,
+                feedId: ent.feedId,
                 agency_id: ent.gtfsAgencyId,
                 agency_name: ent.name,
                 agency_url: ent.url,
@@ -131,6 +243,7 @@ const editor = (state = {
             mappedEntities = action.entities.map(ent => {
               return {
                 id: ent.id,
+                feedId: ent.feedId,
                 agency_id: ent.agencyId,
                 route_short_name: ent.routeShortName,
                 route_long_name: ent.routeLongName,
@@ -144,27 +257,7 @@ const editor = (state = {
             })
             return mappedEntities
           case 'stop':
-            return action.entities.map(ent => {
-              return {
-                id: ent.id,
-                stop_id: ent.gtfsStopId,
-                stop_code: ent.stopCode,
-                stop_name: ent.stopName,
-                stop_desc: ent.stopDesc,
-                stop_lat: ent.lat,
-                stop_lon: ent.lon,
-                zone_id: ent.zoneId,
-                stop_url: ent.stopUrl,
-                location_type: ent.locationType,
-                parent_station: ent.parentStation,
-                stop_timezone: ent.stopTimezone,
-                wheelchair_boarding: ent.wheelchairBoarding,
-                bikeParking: ent.bikeParking,
-                carParking: ent.carParking,
-                pickupType: ent.pickupType,
-                dropOffType: ent.dropOffType
-              }
-            })
+            return action.entities.map(mapStop)
           case 'calendar':
             return action.entities.map(ent => {
               return {
@@ -181,6 +274,7 @@ const editor = (state = {
                 description: ent.description,
                 routes: ent.routes,
                 id: ent.id,
+                feedId: ent.feedId,
                 numberOfTrips: ent.numberOfTrips
               }
             })
@@ -208,7 +302,7 @@ const editor = (state = {
               // }
             })
           default:
-            return []
+            return action.entities
         }
       }
 
@@ -236,7 +330,6 @@ const editor = (state = {
       }
       return update(state, {
         feedSourceId: {$set: action.feedSourceId},
-        timestamp: {$set: action.timestamp},
         tableData: {$set: newTableData}
       })
 

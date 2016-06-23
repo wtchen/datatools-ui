@@ -4,6 +4,15 @@ import GtfsEditor  from '../components/GtfsEditor'
 import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
   fetchFeedInfo,
+  fetchTripPatternsForRoute,
+  fetchStopsForTripPattern,
+  fetchTripsForCalendar,
+  setActiveGtfsEntity,
+  newGtfsEntity,
+  saveActiveGtfsEntity,
+  deleteGtfsEntity,
+  settingActiveGtfsEntity,
+  updateActiveGtfsEntity,
   clearGtfsContent,
   fetchStops,
   addGtfsRow,
@@ -19,10 +28,16 @@ import {
 } from '../actions/editor'
 
 const mapStateToProps = (state, ownProps) => {
-  // console.log(ownProps)
   const feedSourceId = ownProps.routeParams.feedSourceId
   const activeComponent = ownProps.routeParams.subpage
-  const activeEntity = ownProps.routeParams.entity
+  const subComponent = ownProps.routeParams.subsubpage
+  const subSubComponent = ownProps.routeParams.subsubcomponent
+  const activeEntity = ownProps.routeParams.entity && state.editor.tableData[activeComponent]
+    ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
+    : null
+  const activeSubEntity = ownProps.routeParams.subentity
+  const activeSubSubEntity = ownProps.routeParams.subsubentity
+  const entityEdited = state.editor.edited
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   let user = state.user
   // find the containing project
@@ -48,47 +63,65 @@ const mapStateToProps = (state, ownProps) => {
     feedSource,
     feedSourceId,
     feedInfo,
+    entityEdited,
     tableView,
     project,
     user,
     activeComponent,
-    activeEntity
+    subSubComponent,
+    subComponent,
+    activeEntity,
+    activeSubEntity,
+    activeSubSubEntity,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
-  const feedVersionId = ownProps.routeParams.feedVersionId
   const activeComponent = ownProps.routeParams.subpage
+  const subComponent = ownProps.routeParams.subsubpage
+  const subSubComponent = ownProps.routeParams.subsubcomponent
+  const activeEntity = ownProps.routeParams.entity
+  const activeSubEntity = ownProps.routeParams.subentity
+  const activeSubSubEntity = ownProps.routeParams.subsubentity
 
   return {
     onComponentMount: (initialProps) => {
       if (!initialProps.feedSource) {
         dispatch(fetchFeedSourceAndProject(feedSourceId))
       }
-      // if (initialProps.feedInfo && feedSourceId !== initialProps.feedInfo.id) {
-      //   dispatch(clearGtfsContent())
-      // }
-      if (activeComponent) { // && !initialProps.tableData[activeComponent]) {
+      if (activeComponent) {
         console.log('getting table: ' + activeComponent)
         dispatch(getGtfsTable(activeComponent, feedSourceId))
+        //// FETCH trip patterns if route selected
+        .then((entities) => {
+          dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntity, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
+          if (activeComponent === 'route' && activeEntity) {
+            dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntity))
+            .then((tripPatterns) => {
+              console.log(tripPatterns)
+              let pattern = tripPatterns && tripPatterns.find(p => p.id === activeSubEntity)
+              console.log(pattern)
+              if (subSubComponent === 'timetable' && activeSubSubEntity) {
+                dispatch(fetchTripsForCalendar(feedSourceId, pattern, activeSubSubEntity))
+              }
+            })
+            .then((tripPatterns) => {
+              if (subComponent === 'trippattern' && activeSubEntity) {
+                dispatch(fetchStopsForTripPattern(feedSourceId, activeSubEntity))
+              }
+            })
+          }
+        })
       }
+      // if (initialProps.activeEntity) {
+      //   dispatch(settingActiveGtfsEntity(feedSourceId, activeComponent, initialProps.activeEntity))
+      // }
       if (!initialProps.feedInfo) {
         dispatch(fetchFeedInfo(feedSourceId))
+        dispatch(getGtfsTable('calendar', feedSourceId))
       }
-      // if(!initialProps.version) dispatch(fetchFeedVersion(feedVersionId))
-      // if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
-      // if (initialProps.currentTable) dispatch(getGtfsTable(initialProps.currentTable, feedSourceId))
     },
-    // onComponentReceiveProps: (nextProps, initialProps) => {
-    //   if (nextProps.feedSource && initialProps.feedSource && nextProps.feedSource.id !== initialProps.feedSource.id) {
-    //     clearGtfsContent()
-    //   }
-    //   if (nextProps.activeComponent !== initialProps.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
-    //     console.log('getting table: ' + nextProps.activeComponent)
-    //     initialProps.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
-    //   }
-    // },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))
     },
@@ -104,20 +137,40 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fieldEdited: (tableId, rowIndex, fieldName, newValue) => {
       dispatch(updateGtfsField(tableId, rowIndex, fieldName, newValue))
     },
-    feedSaved: (file) => {
-      dispatch(uploadGtfsFeed(feedVersionId, file))
-      .then(() => {
-        console.log('re-downloading');
-        dispatch(downloadGtfsFeed(feedVersionId))
-      })
-    },
     newRowsDisplayed: (tableId, rows, feedSource) => {
       if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
     },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
     },
-    clearGtfsContent: () => {dispatch(clearGtfsContent())}
+    setActiveEntity: (feedSourceId, component, entity, subComponent, subEntity, subSubComponent, subSubEntity) => {
+      let entityId = entity && entity.id
+      let subEntityId = subEntity && subEntity.id
+      let subSubEntityId = subSubEntity && subSubEntity.id
+      dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
+    },
+    updateActiveEntity: (props) => {
+      dispatch(updateActiveGtfsEntity(props))
+    },
+    deleteEntity: (feedSourceId, component, entity) => {
+      dispatch(deleteGtfsEntity(feedSourceId, component, entity))
+    },
+    saveActiveEntity: (props) => {
+      dispatch(saveActiveGtfsEntity())
+    },
+    newEntityClicked: (feedSourceId, component, props) => {
+      dispatch(newGtfsEntity(feedSourceId, component, props))
+    },
+    clearGtfsContent: () => {dispatch(clearGtfsContent())},
+    fetchTripPatternsForRoute: (feedSourceId, routeId) => {
+      dispatch(fetchTripPatternsForRoute(feedSourceId, routeId))
+    },
+    fetchStopsForTripPattern: (feedSourceId, tripPatternId) => {
+      dispatch(fetchStopsForTripPattern(feedSourceId, tripPatternId))
+    },
+    fetchTripsForCalendar: (feedSourceId, pattern, calendarId) => {
+      dispatch(fetchTripsForCalendar(feedSourceId, pattern, calendarId))
+    },
   }
 }
 
