@@ -11,6 +11,9 @@ import createLogger from 'redux-logger'
 import { checkExistingLogin } from './manager/actions/user'
 import App from './common/containers/App'
 
+
+import 'react-virtualized/styles.css'
+
 import config from 'json!yaml!../../../config.yml'
 
 if(config.modules.gtfsplus && config.modules.gtfsplus.enabled) {

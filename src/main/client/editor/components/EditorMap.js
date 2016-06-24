@@ -7,6 +7,7 @@ import {Icon} from 'react-fa'
 import polyUtil from 'polyline-encoded'
 
 import CircleMarkerWithLabel from './CircleMarkerWithLabel'
+import StopLayer from './StopLayer'
 
 export default class EditorMap extends React.Component {
 
@@ -58,6 +59,21 @@ export default class EditorMap extends React.Component {
       else {
         this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
       }
+    }
+  }
+
+  mapClicked (e) {
+    console.log(e.latlng)
+    if (this.props.activeComponent === 'stop') {
+      // find stop based on latlng
+      let selectedStop = this.props.entities.find(stop => stop.stop_lat === e.latlng.lat && stop.stop_lon === e.latlng.lng)
+      console.log(selectedStop)
+      // if (this.props.entity && this.props.entity.id === 'new') {
+      //   this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
+      // }
+      // else {
+      //   this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
+      // }
     }
 
   }
@@ -140,7 +156,8 @@ export default class EditorMap extends React.Component {
         )
       case 'stop':
         return entities ? entities.map(stop => {
-          if (isNaN(stop.stop_lat) || isNaN(stop.stop_lon))
+          const isActive = this.props.entity && this.props.entity.id === stop.id
+          if (isNaN(stop.stop_lat) || isNaN(stop.stop_lon) || !isActive)
             return null
           const stopLatLng = [stop.stop_lat, stop.stop_lon]
           const editingStop = this.state.editStop === stop.id
@@ -197,11 +214,11 @@ export default class EditorMap extends React.Component {
             </Popup>
           )
 
-          const isActive = this.props.entity && this.props.entity.id === stop.id
           const marker = (
             <CircleMarker
               center={this.state.editFinished === stop.id || (this.state.editStop === stop.id && this.state.editStopLatLng) ? this.state.editStopLatLng : stopLatLng}
               style={{cursor: 'move'}}
+              fillOpacity={1.0}
               radius={4}
               ref={stop.id}
               key={`${stop.id}`}
@@ -339,6 +356,7 @@ export default class EditorMap extends React.Component {
         style={mapStyle}
         bounds={bounds}
         onContextMenu={(e) => this.mapRightClicked(e)}
+        onClick={(e) => this.mapClicked(e)}
         scrollWheelZoom={true}
       >
         <ZoomControl position='topright' />
@@ -347,9 +365,16 @@ export default class EditorMap extends React.Component {
           retina='@2x'
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
-          {
-            this.getMapComponents(this.props.activeComponent, this.props.entities, this.props.entity, this.props.activeSubEntity)
-          }
+        {
+          this.getMapComponents(this.props.activeComponent, this.props.entities, this.props.entity, this.props.activeSubEntity)
+        }
+        {this.props.activeComponent === 'stop' && this.props.entities
+          ?
+            <StopLayer
+              stops={this.props.entities}
+            />
+          : null
+        }
       </Map>
     )
   }

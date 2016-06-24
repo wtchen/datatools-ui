@@ -264,7 +264,7 @@ export default class GtfsEditor extends Component {
               stops={this.props.tableData.stop}
               tableData={this.props.tableData}
             />
-          : this.props.activeComponent !== 'stop'
+          : this.props.activeComponent
           ? <EntityList
               tableView={this.props.tableView}
               activeComponent={this.props.activeComponent}
