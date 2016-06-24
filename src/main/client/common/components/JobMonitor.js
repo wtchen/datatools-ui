@@ -1,26 +1,21 @@
 import React, { PropTypes } from 'react'
-import { Popover, ProgressBar, Glyphicon } from 'react-bootstrap'
+import { ProgressBar } from 'react-bootstrap'
 import { Icon } from 'react-fa'
+
+import SidebarPopover from './SidebarPopover'
 
 export default class JobMonitor extends React.Component {
 
   static propTypes = {
     jobMonitor: PropTypes.object,
-    setJobMonitorVisible: PropTypes.func
+    target: PropTypes.element,
+    visible: PropTypes.func,
+    close: PropTypes.func
   }
 
   render () {
-    if (!this.props.jobMonitor.visible || !this.props.jobMonitor.timer) return null
-
-    const popoverWidth = 276 // max from bootstrap
-    const popoverStyle = {
-      width: popoverWidth,
-      marginTop: 60,
-      marginLeft: -popoverWidth / 2 + 22
-    }
-
     const jobContainerStyle = {
-      marginBottom: 15
+      marginBottom: 20
     }
 
     const progressBarStyle = {
@@ -32,22 +27,13 @@ export default class JobMonitor extends React.Component {
       color: 'darkGray'
     }
 
-    const title = (<div>
-      <span>Job Status</span>
-      <Glyphicon glyph='remove'
-        className='pull-right'
-        style={{ cursor: 'pointer' }}
-        onClick={() => this.props.setJobMonitorVisible(false) }
-      />
-    </div>)
-
     return (
-      <Popover
+      <SidebarPopover
         ref='statusPopover'
-        style={popoverStyle}
-        id='status-popover'
-        title={title}
-        placement='bottom'
+        title='Server Jobs'
+        target={this.props.target}
+        visible={this.props.visible}
+        close={this.props.close}
       >
         {this.props.jobMonitor.jobs.map(job => {
           return (
@@ -65,7 +51,7 @@ export default class JobMonitor extends React.Component {
             </div>
           )
         })}
-      </Popover>
+      </SidebarPopover>
     )
   }
 }

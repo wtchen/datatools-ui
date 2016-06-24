@@ -92,29 +92,6 @@ export default class DatatoolsNavbar extends Component {
       </NavDropdown>
     )
 
-    let hasJobs = this.props.jobMonitor.jobs.length > 0
-    let statusControl = (
-      <NavItem
-        disabled={!hasJobs}
-        onClick={() => {
-          this.props.setJobMonitorVisible(!this.props.jobMonitor.visible)
-          console.log('clicked status bell')
-        }}
-        id='job-status-bell'
-      >
-        <JobMonitor
-          jobMonitor={this.props.jobMonitor}
-          setJobMonitorVisible={this.props.setJobMonitorVisible}
-        />
-
-        <Icon name='bell' />
-        {hasJobs
-          ? <Badge>{this.props.jobMonitor.jobs.length}</Badge>
-          : null
-        }
-      </NavItem>
-    )
-
     const navBarStyle = this.props.noMargin ? {marginBottom: 0} : {}
 
     return (<div>
@@ -162,7 +139,6 @@ export default class DatatoolsNavbar extends Component {
             }
           </Nav>
           <Nav pullRight>
-            {statusControl}
             {projectControl}
             {this.props.docsUrl
               ? <NavItem href={this.props.docsUrl} active={this.props.docsUrl === '#'}>

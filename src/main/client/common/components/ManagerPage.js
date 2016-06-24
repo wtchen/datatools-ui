@@ -8,6 +8,7 @@ import CurrentStatusModal from '../containers/CurrentStatusModal'
 import ConfirmModal from './ConfirmModal.js'
 import SelectFileModal from './SelectFileModal.js'
 import InfoModal from './InfoModal.js'
+import ManagerSidebar from '../containers/ManagerSidebar'
 
 export default class ManagerPage extends React.Component {
 
@@ -34,8 +35,11 @@ export default class ManagerPage extends React.Component {
           defaultTitle={DT_CONFIG.application.title}
           titleTemplate={`${DT_CONFIG.application.title} - %s`}
         />
-        <ManagerNavbar noMargin={this.props.noMargin}/>
+        <ManagerSidebar />
+        {/*<ManagerNavbar noMargin={this.props.noMargin}/>*/}
+        <div style={{ paddingTop: 20, paddingLeft: 50 }}>
           {this.props.children}
+        </div>
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>
         <InfoModal ref='infoModal'/>
