@@ -4,6 +4,7 @@ import {Icon} from 'react-fa'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import { PureComponent, shallowEqual } from 'react-pure-render'
+import Select from 'react-select'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 import EditableTextField from '../../common/components/EditableTextField'
@@ -60,7 +61,7 @@ export default class EntityDetails extends Component {
         case 'URL':
         case 'GTFS_TRIP':
         case 'GTFS_SHAPE':
-        case 'GTFS_AGENCY':
+        // case 'GTFS_AGENCY':
         case 'GTFS_BLOCK':
         case 'GTFS_FARE':
         case 'GTFS_SERVICE':
@@ -78,7 +79,7 @@ export default class EntityDetails extends Component {
                 let props = {}
                 props[editorField] = evt.target.value
                 this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(props)
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -166,7 +167,7 @@ export default class EntityDetails extends Component {
                 let props = {}
                 props[editorField] = evt.target.value
                 this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(props)
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -288,63 +289,98 @@ export default class EntityDetails extends Component {
               value={routeValue}
             />
           )
-        // case 'GTFS_AGENCY':
-        //   const agencyEntity = this.props.getGtfsEntity('agency', currentValue)
-        //   const stopValue = agencyEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
-        //   return (
-        //     <Input type='select'
-        //      tabIndex={index}
-        //       value={currentValue}
-        //       onChange={(evt) => {
-        //         this.props.fieldEdited(table.id, row, editorField, evt.target.value)
-        //       }}
-        //     >
-        //       {field.options.map(option => {
-        //         return <option value={option.value} key={option.value}>
-        //           {option.text || option.value}
-        //         </option>
-        //       })}
-        //     </Input>
-        //   )
+        case 'GTFS_AGENCY':
+          // const agency = this.props.tableData.agency && this.props.tableData.agency.find(a => a.id === currentValue || this.state[editorField])
+          return (
+            <FormGroup
+              controlId="formBasicText"
+              /*validationState={this.getValidationState()}*/
+            >
+              <ControlLabel>{editorField}</ControlLabel>
+              <Select
+                placeholder='Select agency...'
+                value={currentValue || this.state[editorField]}
+                onChange={(input) => {
+                  console.log(input)
+                  let props = {}
+                  props[editorField] = input.value
+                  this.setState({[editorField]: input.value})
+                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+
+                }}
+                options={
+                  // () => {
+                  this.props.tableData.agency ? this.props.tableData.agency.map(agency => {
+                    return {
+                      value: agency.id,
+                      label: agency.agency_name,
+                      agency
+                    }
+                  })
+                // }
+                : []
+              }
+              />
+            </FormGroup>
+            // <Input type='select'
+            //  tabIndex={index}
+            //   value={currentValue}
+            //   onChange={(evt) => {
+            //     this.props.fieldEdited(table.id, row, editorField, evt.target.value)
+            //   }}
+            // >
+            //   {field.options.map(option => {
+            //     return <option value={option.value} key={option.value}>
+            //       {option.text || option.value}
+            //     </option>
+            //   })}
+            // </Input>
+          )
         case 'GTFS_STOP':
           const stopEntity = this.props.getGtfsEntity('stop', currentValue)
           const stopValue = stopEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
-          // return (
-          //   <FormGroup
-          //     controlId="formBasicText"
-          //     /*validationState={this.getValidationState()}*/
-          //   >
-          //   <ControlLabel>{editorField}</ControlLabel>
-          //   <FormControl
-          //    tabIndex={index}
-          //     value={currentValue}
-          //     onChange={(value) => {
-          //       this.props.fieldEdited(table.id, row, editorField, value)
-          //     }}
-          //   />
-          //   </FormGroup>
-          // )
           return (
-            <GtfsSearch
-              // tabIndex={index}
-              feeds={[this.props.feedSource]}
-              limit={100}
-              entities={['stops']}
-              clearable={false}
-              minimumInput={1}
-              onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, editorField, evt.stop.stop_id)
-                this.props.gtfsEntitySelected('stop', evt.stop)
+            <FormGroup
+              controlId="formBasicText"
+              /*validationState={this.getValidationState()}*/
+            >
+            <ControlLabel>{editorField}</ControlLabel>
+            <FormControl
+             tabIndex={index}
+              value={currentValue}
+              onChange={(value) => {
+                this.props.fieldEdited(table.id, row, editorField, value)
               }}
-              value={stopValue}
             />
+            </FormGroup>
           )
+          // return (
+          //   <GtfsSearch
+          //     // tabIndex={index}
+          //     feeds={[this.props.feedSource]}
+          //     limit={100}
+          //     entities={['stops']}
+          //     clearable={false}
+          //     minimumInput={1}
+          //     onChange={(evt) => {
+          //       this.props.fieldEdited(table.id, row, editorField, evt.stop.stop_id)
+          //       this.props.gtfsEntitySelected('stop', evt.stop)
+          //     }}
+          //     value={stopValue}
+          //   />
+          // )
 
       }
     }
     if (!entity) return null
     const rowIndex = 0
-    const table = DT_CONFIG.modules.editor.spec.find(t => this.props.activeComponent === 'scheduleexception' ? t.id === 'calendar_dates' : t.id === this.props.activeComponent)
+    const table = DT_CONFIG.modules.editor.spec.find(
+      t => this.props.activeComponent === 'scheduleexception'
+        ? t.id === 'calendar_dates'
+        : this.props.activeComponent === 'fare'
+        ? t.id === 'fare_attributes'
+        : t.id === this.props.activeComponent
+    )
     console.log(entity.id)
     const agencyForm = (
             <Form>
@@ -418,8 +454,14 @@ export default class EntityDetails extends Component {
                 bsStyle='primary'
                 disabled={!this.props.entityEdited}
                 onClick={(e) => {
-                  this.props.saveActiveEntity()
-                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+                  if (this.props.subComponent === 'trippattern') {
+                    this.props.saveActiveEntity('trippattern')
+                    this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
+                  }
+                  else {
+                    this.props.saveActiveEntity(this.props.activeComponent)
+                    this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+                  }
                 }}
               >
                 Save
@@ -450,7 +492,7 @@ export default class EntityDetails extends Component {
                   active={this.props.subComponent === 'trippattern'}
                   onClick={() => {
                     this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
-                    browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}/trippattern`)
+                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}/trippattern`)
                   }}
                 >
                   Trip patterns
@@ -468,6 +510,8 @@ export default class EntityDetails extends Component {
                 activeScheduleId={this.props.activeSubSubEntity}
                 deleteEntity={this.props.deleteEntity}
                 newEntityClicked={this.props.newEntityClicked}
+                updateActiveEntity={this.props.updateActiveEntity}
+                saveActiveEntity={this.props.saveActiveEntity}
                 subSubComponent={this.props.subSubComponent}
                 route={entity}
                 stops={this.props.stops}

@@ -10,6 +10,13 @@ import {
   updateFeedInfo,
 } from '../actions/feedInfo'
 import {
+  fetchAgencies,
+  fetchAgency,
+  saveAgency,
+  deleteAgency,
+  updateAgency,
+} from '../actions/agency'
+import {
   fetchStops,
   fetchStop,
   saveStop,
@@ -38,6 +45,19 @@ import {
   deleteTrip,
   updateTrip,
 } from '../actions/trip'
+import {
+  fetchCalendars,
+  fetchCalendar,
+  saveCalendar,
+  deleteCalendar,
+  updateCalendar,
+  fetchScheduleExceptions,
+  fetchScheduleException,
+  saveScheduleException,
+  deleteScheduleException,
+  updateScheduleException,
+} from '../actions/calendar'
+//// SINGLE ENTITY ACTIONS
 
 export function settingActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
   return {
@@ -70,27 +90,34 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       : entityId
       ? `/feed/${feedSourceId}/edit/${component}/${entityId}`
       : `/feed/${feedSourceId}/edit/${component}`
-    if (getState().routing.locationBeforeTransitions.path !== url) {
+    if (getState().routing.locationBeforeTransitions.pathname && getState().routing.locationBeforeTransitions.pathname !== url) {
+      console.log('changing url')
       browserHistory.push(url)
     }
   }
 }
 
-export function saveActiveGtfsEntity () {
+export function saveActiveGtfsEntity (component) {
   return function (dispatch, getState) {
-    let feedSourceId = getState().editor.feedSourceId
-    let entity = getState().editor.activeEntity
-    let component = getState().editor.activeComponent
-    // dispatch(savingActiveGtfsEntity(feedSourceId, component, entity))
+    let entity
     switch (component) {
       case 'stop':
-        return dispatch(saveStop(feedSourceId, entity))
+        entity = getState().editor.activeEntity
+        return dispatch(saveStop(entity.feedId, entity))
       case 'route':
-        return dispatch(saveRoute(feedSourceId, entity))
+        entity = getState().editor.activeEntity
+        return dispatch(saveRoute(entity.feedId, entity))
       case 'agency':
-        return dispatch(saveAgency(feedSourceId, entity))
+        entity = getState().editor.activeEntity
+        return dispatch(saveAgency(entity.feedId, entity))
+      case 'trippattern':
+        let route = getState().editor.activeEntity
+        let patternId = getState().editor.activeSubEntityId
+        entity = route.tripPatterns.find(p => p.id === patternId)
+        return dispatch(saveTripPattern(entity.feedId, entity))
       case 'scheduleexception':
-        return dispatch(saveScheduleException(feedSourceId, entity))
+        entity = getState().editor.activeEntity
+        return dispatch(saveScheduleException(entity.feedId, entity))
     }
   }
 }
@@ -110,9 +137,11 @@ export function deleteGtfsEntity (feedId, component, entity) {
   }
 }
 
-export function updateActiveGtfsEntity (props) {
+export function updateActiveGtfsEntity (entity, component, props) {
   return {
     type: 'UPDATE_ACTIVE_GTFS_ENTITY',
+    entity,
+    component,
     props
   }
 }
@@ -157,6 +186,8 @@ export function getGtfsTable (tableId, feedId) {
         return dispatch(fetchRoutes(feedId))
       case 'agency':
         return dispatch(fetchAgencies(feedId))
+      case 'calendar':
+        return dispatch(fetchCalendars(feedId))
       // case 'timetable':
       //   return dispatch(fetchRoutes(feedId))
       default:

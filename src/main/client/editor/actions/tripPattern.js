@@ -61,3 +61,20 @@ export function deleteTripPattern (feedId, tripPattern) {
       })
   }
 }
+
+export function saveTripPattern (feedId, tripPattern) {
+  return function (dispatch, getState) {
+    const method = tripPattern.id !== 'new' ? 'put' : 'post'
+    const routeId = tripPattern.routeId
+    const url = tripPattern.id !== 'new'
+      ? `/api/manager/secure/trippattern/${tripPattern.id}?feedId=${feedId}`
+      : `/api/manager/secure/trippattern?feedId=${feedId}`
+    tripPattern.id = tripPattern.id === 'new' ? null : tripPattern.id
+    return secureFetch(url, getState(), method, tripPattern)
+      .then(res => res.json())
+      .then(tripPattern => {
+        // dispatch(receiveTripPattern(feedId, tripPattern))
+        dispatch(fetchTripPatternsForRoute(feedId, routeId))
+      })
+  }
+}

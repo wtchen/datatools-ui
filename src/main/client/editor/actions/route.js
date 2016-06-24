@@ -31,6 +31,7 @@ export function saveRoute (feedId, route) {
       routeUrl: route.route_url,
       routeColor: route.route_color,
       routeTextColor: route.route_text_color,
+      id: route.id === 'new' ? null : route.id,
     }
     const method = route.id !== 'new' ? 'put' : 'post'
     const url = route.id !== 'new'

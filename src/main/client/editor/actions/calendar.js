@@ -2,6 +2,38 @@ import { secureFetch } from '../../common/util/util'
 
 //// CALENDAR + SCHEDULE_EXCEPTION
 
+export function requestingCalendars (feedId) {
+  return {
+    type: 'REQUESTING_CALENDARS',
+    feedId
+  }
+}
+
+export function receiveCalendars (feedId, calendars) {
+  return {
+    type: 'RECEIVE_CALENDARS',
+    feedId,
+    calendars
+  }
+}
+
+export function fetchCalendars (feedId) {
+  return function (dispatch, getState) {
+    dispatch(requestingCalendars(feedId))
+    const url = `/api/manager/secure/calendar?feedId=${feedId}`
+    return secureFetch(url, getState())
+      .then(res => res.json())
+      .then(calendars => {
+        dispatch(receiveCalendars(feedId, calendars))
+        return calendars
+      })
+  }
+}
+
+
+
+
+
 export function savingScheduleException (feedId, scheduleException) {
   return {
     type: 'SAVING_SCHEDULE_EXCEPTION',

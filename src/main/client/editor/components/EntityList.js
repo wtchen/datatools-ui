@@ -52,6 +52,8 @@ export default class EntityList extends Component {
       ? 'stop_name'
       : this.props.activeComponent === 'calendar'
       ? 'description'
+      : this.props.activeComponent === 'fare'
+      ? 'gtfsFareId'
       : null
     const getEntityName = (component, entity) => {
       switch (component) {
@@ -102,7 +104,7 @@ export default class EntityList extends Component {
           return (
             <tr
               href='#'
-              //key={entity.id ? `${this.props.activeComponent}-list-${entity.id}`}
+              key={entity.id}
               onMouseDown={(e) => console.log(e)}
               style={rowStyle}
               onClick={() => {
@@ -229,6 +231,7 @@ export default class EntityList extends Component {
                 bsStyle='danger'
                 onClick={() => {
                   this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity)
+                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
                 }}
               >
                 <Icon name='trash'/>
@@ -288,7 +291,7 @@ export default class EntityList extends Component {
         }
         {!this.props.tableView
           ? entityList
-          : entityTable
+          : null // entityTable
         }
 
         {this.props.entity

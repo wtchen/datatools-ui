@@ -40,14 +40,14 @@ import {
 
 const mapStateToProps = (state, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
-  const activeComponent = ownProps.routeParams.subpage
-  const subComponent = ownProps.routeParams.subsubpage
-  const subSubComponent = ownProps.routeParams.subsubcomponent
-  const activeEntity = ownProps.routeParams.entity && state.editor.tableData[activeComponent]
+  const activeComponent = ownProps.routeParams.subpage // state.activeComponent ||
+  const subComponent = ownProps.routeParams.subsubpage // state.activeSubComponent ||
+  const subSubComponent = ownProps.routeParams.subsubcomponent // state.activeSubSubComponent ||
+  const activeEntity = ownProps.routeParams.entity && state.editor.tableData[activeComponent] // state.activeEntity ||
     ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
     : null
-  const activeSubEntity = ownProps.routeParams.subentity
-  const activeSubSubEntity = ownProps.routeParams.subsubentity
+  const activeSubEntity = ownProps.routeParams.subentity // state.activeSubEntityId ||
+  const activeSubSubEntity = ownProps.routeParams.subsubentity // state.activeSubSubEntityId ||
   const entityEdited = state.editor.edited
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   let user = state.user
@@ -64,7 +64,7 @@ const mapStateToProps = (state, ownProps) => {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
 
-  let feedInfo = state.editor.tableData.feedInfo
+  let feedInfo = state.editor.tableData.feedinfo
 
   return {
     tableData: state.editor.tableData,
@@ -98,11 +98,21 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     onComponentMount: (initialProps) => {
-      if (!initialProps.feedSource) {
+
+      if (!initialProps.feedSource || feedSourceId !== initialProps.feedSource.id) {
         dispatch(fetchFeedSourceAndProject(feedSourceId))
+        .then(() => {
+          dispatch(fetchFeedInfo(feedSourceId))
+          dispatch(getGtfsTable('calendar', feedSourceId))
+          dispatch(getGtfsTable('agency', feedSourceId))
+        })
+      }
+      else {
+        dispatch(fetchFeedInfo(feedSourceId))
+        dispatch(getGtfsTable('calendar', feedSourceId))
+        dispatch(getGtfsTable('agency', feedSourceId))
       }
       if (activeComponent) {
-        console.log('getting table: ' + activeComponent)
         dispatch(getGtfsTable(activeComponent, feedSourceId))
         //// FETCH trip patterns if route selected
         .then((entities) => {
@@ -128,10 +138,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // if (initialProps.activeEntity) {
       //   dispatch(settingActiveGtfsEntity(feedSourceId, activeComponent, initialProps.activeEntity))
       // }
-      if (!initialProps.feedInfo) {
-        dispatch(fetchFeedInfo(feedSourceId))
-        dispatch(getGtfsTable('calendar', feedSourceId))
-      }
+      // if (!initialProps.feedInfo) {
+      //   dispatch(fetchFeedInfo(feedSourceId))
+      //   dispatch(getGtfsTable('calendar', feedSourceId))
+      // }
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))
@@ -160,14 +170,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       let subSubEntityId = subSubEntity && subSubEntity.id
       dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
     },
-    updateActiveEntity: (props) => {
-      dispatch(updateActiveGtfsEntity(props))
+    updateActiveEntity: (entity, component, props) => {
+      dispatch(updateActiveGtfsEntity(entity, component, props))
     },
     deleteEntity: (feedSourceId, component, entity) => {
       dispatch(deleteGtfsEntity(feedSourceId, component, entity))
     },
-    saveActiveEntity: (props) => {
-      dispatch(saveActiveGtfsEntity())
+    saveActiveEntity: (component) => {
+      dispatch(saveActiveGtfsEntity(component))
+      .then(entity => {
+        // dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
+      })
     },
     newEntityClicked: (feedSourceId, component, props) => {
       dispatch(newGtfsEntity(feedSourceId, component, props))

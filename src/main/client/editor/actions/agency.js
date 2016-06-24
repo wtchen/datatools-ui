@@ -20,6 +20,7 @@ export function receiveAgency (feedId, agency) {
 
 export function saveAgency (feedId, agency) {
   return function (dispatch, getState) {
+    dispatch(savingAgency(feedId, agency))
     const data = {
       // defaultLat:"33.755",
       // defaultLon:"-84.39",
@@ -32,6 +33,7 @@ export function saveAgency (feedId, agency) {
       sourceId: "277a268e-5b38-4aff-949c-b70517fb8224",
       timezone: agency.agency_timezone,
       url: agency.agency_url,
+      id: agency.id === 'new' ? null : agency.id,
       // fare_url: agency.agency_fare_url,
     }
     const method = agency.id !== 'new' ? 'put' : 'post'

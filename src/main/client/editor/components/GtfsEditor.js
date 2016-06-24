@@ -12,6 +12,7 @@ import GtfsTable from './GtfsTable'
 import EditorMap from './EditorMap'
 import RouteEditor from './RouteEditor'
 import EntityList from './EntityList'
+import EntityDetails from './EntityDetails'
 // import StopEditor from './StopEditor'
 import CalendarList from './CalendarList'
 // import FareEditor from './FareEditor'
@@ -34,8 +35,6 @@ export default class GtfsEditor extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    console.log(this.props)
-    console.log(nextProps)
     // clear GTFS content if feedSource changes (i.e., user switches feed sources)
     if (nextProps.feedSourceId !== this.props.feedSourceId) {
       this.props.clearGtfsContent()
@@ -50,8 +49,8 @@ export default class GtfsEditor extends Component {
     }
     // fetch sub components of active entity on active entity switch (e.g., fetch trip patterns when route changed)
     if (nextProps.feedSource && nextProps.activeEntity && (!this.props.activeEntity || nextProps.activeEntity.id !== this.props.activeEntity.id)) {
-      console.log('getting trip patterns')
       if (nextProps.activeComponent === 'route') {
+        console.log('getting trip patterns')
         this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
       }
     }
@@ -162,6 +161,11 @@ export default class GtfsEditor extends Component {
     }
     let sidebarItems = [
       {
+        id: 'feedinfo',
+        icon: 'info',
+        title: 'Edit feed info'
+      },
+      {
         id: 'agency',
         icon: 'building',
         title: 'Edit agencies'
@@ -239,7 +243,28 @@ export default class GtfsEditor extends Component {
               setActiveEntity={this.props.setActiveEntity}
               tableData={this.props.tableData}
             />
-          : this.props.activeComponent
+          : this.props.activeComponent === 'feedinfo'
+          ? <EntityDetails
+              tableView={this.props.tableView}
+              activeComponent={this.props.activeComponent}
+              subComponent={this.props.subComponent}
+              subSubComponent={this.props.subSubComponent}
+              activeSubEntity={this.props.activeSubEntity}
+              activeSubSubEntity={this.props.activeSubSubEntity}
+              entity={this.props.activeEntity}
+              entities={this.props.tableData[this.props.activeComponent]}
+              setActiveEntity={this.props.setActiveEntity}
+              newEntityClicked={this.props.newEntityClicked}
+              deleteEntity={this.props.deleteEntity}
+              updateActiveEntity={this.props.updateActiveEntity}
+              saveActiveEntity={this.props.saveActiveEntity}
+              entityEdited={this.props.entityEdited}
+              feedSource={feedSource}
+              newRowsDisplayed={this.props.newRowsDisplayed}
+              stops={this.props.tableData.stop}
+              tableData={this.props.tableData}
+            />
+          : this.props.activeComponent !== 'stop'
           ? <EntityList
               tableView={this.props.tableView}
               activeComponent={this.props.activeComponent}
@@ -257,7 +282,7 @@ export default class GtfsEditor extends Component {
               entityEdited={this.props.entityEdited}
               feedSource={feedSource}
               newRowsDisplayed={this.props.newRowsDisplayed}
-              stops={this.props.tableData.stop || []}
+              stops={this.props.tableData.stop}
               tableData={this.props.tableData}
             />
           : null

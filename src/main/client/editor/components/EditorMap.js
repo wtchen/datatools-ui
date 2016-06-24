@@ -30,9 +30,6 @@ export default class EditorMap extends React.Component {
     if (!nextProps.entityEdited && this.props.entityEdited) {
       this.resetMap()
     }
-    // if (nextProps.activeSubEntity !== this.props.activeSubEntity) {
-    //   this.setState({patternStops: nextProps.activeSubEntity ? nextProps.stops : []})
-    // }
   }
   shouldComponentUpdate (nextProps) {
     return true
@@ -56,7 +53,7 @@ export default class EditorMap extends React.Component {
     if (this.props.activeComponent === 'stop') {
       // if newly created stop is selected
       if (this.props.entity && this.props.entity.id === 'new') {
-        this.props.updateActiveEntity({stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
+        this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
       }
       else {
         this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
@@ -255,7 +252,7 @@ export default class EditorMap extends React.Component {
                   this.setState({editStop: null, editFinished: stop.id, editStopLatLng: e.latlng})
                   this.refs.map.getLeafletElement().removeEventListener('mousemove')
                   document.removeEventListener('keydown', escapeListener, false)
-                  this.props.updateActiveEntity({stop_lat: e.latlng.lat, stop_lon: e.latlng.lng})
+                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng})
                 }
                 // if active stop, begin editing
                 else if (isActive) {
@@ -316,7 +313,7 @@ export default class EditorMap extends React.Component {
     //const summary = version.validationSummary
     // const bounds = this.getBounds(this.props.activeComponent, this.props.entities) || [[34, -87], [33, -86]]
     const offset = 0.005
-    let bounds = feedSource
+    let bounds = feedSource && feedSource.latestValidation && feedSource.latestValidation.bounds
       ? [[feedSource.latestValidation.bounds.north + offset, feedSource.latestValidation.bounds.west - offset], [feedSource.latestValidation.bounds.south - offset, feedSource.latestValidation.bounds.east + offset]]
       : [[90, -90], [-90, 90]]
     let stop = activeComponent === 'stop' && entity
@@ -350,7 +347,9 @@ export default class EditorMap extends React.Component {
           retina='@2x'
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
-          {this.getMapComponents(this.props.activeComponent, this.props.entities, this.props.entity, this.props.activeSubEntity)}
+          {
+            this.getMapComponents(this.props.activeComponent, this.props.entities, this.props.entity, this.props.activeSubEntity)
+          }
       </Map>
     )
   }

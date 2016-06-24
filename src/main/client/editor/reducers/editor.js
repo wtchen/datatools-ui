@@ -36,7 +36,6 @@ const editor = (state = {
   gtfsEntityLookup: {}
 }, action) => {
   let newTableData, fields, rowData, mappedEntities, feedTableData, activeEntity, activeSubEntity, newState, routeIndex
-  console.log(action)
   switch (action.type) {
     case 'CREATE_GTFS_ENTITY':
       if (action.component === 'trippattern') {
@@ -83,7 +82,11 @@ const editor = (state = {
         })
       }
     case 'SETTING_ACTIVE_GTFS_ENTITY':
-      activeEntity = state.tableData[action.component] ? state.tableData[action.component].find(e => e.id === action.entityId) : null
+      activeEntity = action.component === 'feedinfo'
+        ? state.tableData[action.component]
+        : state.tableData[action.component]
+        ? state.tableData[action.component].find(e => e.id === action.entityId)
+        : null
       switch (action.subComponent) {
         case 'trippattern':
           activeSubEntity = activeEntity && activeEntity.tripPatterns ? activeEntity.tripPatterns.find(p => p.id === action.subEntityId) : null
@@ -96,17 +99,32 @@ const editor = (state = {
         activeSubEntity: {$set: activeSubEntity},
         activeSubEntityId: {$set: action.subEntityId},
         activeComponent: {$set: action.component},
+        activeSubComponent: {$set: action.subComponent},
+        activeSubSubComponent: {$set: action.subSubComponent},
         edited: {$set: false},
       })
     case 'UPDATE_ACTIVE_GTFS_ENTITY':
-      activeEntity = Object.assign({}, state.activeEntity)
-      for (var key in action.props) {
-        activeEntity[key] = action.props[key]
+      switch (action.component) {
+        case 'trippattern':
+          activeEntity = Object.assign({}, state.activeEntity)
+          patternIndex = activeEntity.tripPatterns.findIndex(p => p.id === action.entity.id)
+          for (var key in action.props) {
+            activeEntity.tripPatterns[patternIndex][key] = action.props[key]
+          }
+          return update(state, {
+            activeEntity: {$set: activeEntity},
+            edited: {$set: true}
+          })
+        default:
+          activeEntity = Object.assign({}, state.activeEntity)
+          for (var key in action.props) {
+            activeEntity[key] = action.props[key]
+          }
+          return update(state, {
+            activeEntity: {$set: activeEntity},
+            edited: {$set: true}
+          })
       }
-      return update(state, {
-        activeEntity: {$set: activeEntity},
-        edited: {$set: true}
-      })
     case 'RECEIVE_AGENCIES':
       const agencies = action.agencies.map(ent => {
         return {
@@ -126,11 +144,16 @@ const editor = (state = {
         tableData: {agency: {$set: agencies}}
       })
     case 'RECEIVE_FEED_INFO':
-      newTableData = {}
-      newTableData.feedInfo = action.feedInfo
+      // newTableData = {}
+      // newTableData.feedInfo = action.feedInfo
 
       return update(state, {
-        tableData: {feedInfo: {$set: action.feedInfo}}
+        tableData: {feedinfo: {$set: action.feedInfo}}
+      })
+    case 'RECEIVE_CALENDARS':
+
+      return update(state, {
+        tableData: {calendar: {$set: action.calendars}}
       })
     case 'RECEIVE_ROUTES':
       // feedTableData = state.tableData[action.feedId]
@@ -215,6 +238,9 @@ const editor = (state = {
         activeSubEntity: null,
         activeSubEntityId: null,
         activeComponent: null,
+        activeComponent: null,
+        activeSubComponent: null,
+        activeSubSubComponent: null,
         edited: false,
         tableData: {},
         validation: null,

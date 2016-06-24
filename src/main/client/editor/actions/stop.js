@@ -39,6 +39,7 @@ export function saveStop (feedId, stop) {
       pickupType: stop.pickupType,
       dropOffType: stop.dropOffType,
       feedId: stop.feedId,
+      id: stop.id === 'new' ? null : stop.id,
     }
     const method = stop.id !== 'new' ? 'put' : 'post'
     const url = stop.id !== 'new'

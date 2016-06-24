@@ -4,6 +4,7 @@ import {Icon} from 'react-fa'
 import moment from 'moment'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
+import Select from 'react-select'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import EntityDetails from './EntityDetails'
@@ -117,6 +118,12 @@ export default class TripPatternList extends Component {
                 <div>
                   <EditableTextField
                     value={pattern.name}
+                    onChange={(value) => {
+                      let props = {}
+                      props.name = value
+                      this.setState({name: value})
+                      this.props.updateActiveEntity(activePattern, 'trippattern', props)
+                    }}
                   />
                   <Button style={{marginBottom: '5px'}} bsStyle='warning'><Icon name='pencil'/> Edit route geometry</Button>
                   <ButtonGroup>
@@ -124,6 +131,7 @@ export default class TripPatternList extends Component {
                       <MenuItem eventKey="2">Use frequencies</MenuItem>
                     </DropdownButton>
                     <Button
+                      disabled={activePatternId === 'new' || (activePattern && activePattern.patternStops.length === 0)}
                       onClick={() => {
                         if (showTimetable) this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', pattern)
                         else this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', pattern, 'timetable')
@@ -144,7 +152,7 @@ export default class TripPatternList extends Component {
                       Stop sequence
                     </thead>
                     <tbody>
-                      {this.props.stops.length && pattern.patternStops
+                      {this.props.stops && pattern.patternStops && pattern.patternStops.length
                         ? pattern.patternStops.map((s, index) => {
                           totalTravelTime += s.defaultTravelTime + s.defaultDwellTime
                           // console.log(totalTravelTime, moment().seconds(totalTravelTime))
@@ -192,13 +200,51 @@ export default class TripPatternList extends Component {
                             </tr>
                           )
                         })
-                        : <tr><td className='text-center'><Icon spin name='refresh' /></td></tr>
+                        : !this.props.stops
+                        ? <tr><td className='text-center'><Icon spin name='refresh' /></td></tr>
+                        : <tr><td className='text-center'>No stops</td></tr>
                       }
                       <tr
                         style={stopRowStyle}
                       >
                         <td>
-                          <small><Icon name='plus'/> Add stop</small>
+                          {this.state.isAddingStop
+                            ? <span>
+                                <Select
+                                  placeholder='Select stop...'
+                                  onChange={(input) => {
+                                    console.log(input)
+                                  }}
+                                  options={
+                                    // () => {
+                                    this.props.stops.map(stop => {
+                                      return {
+                                        value: stop.id,
+                                        label: stop.stop_name,
+                                        stop
+                                      }
+                                    })
+                                  // }
+                                }
+                                />
+                                <Button
+                                  bsStyle='danger'
+                                  onClick={() => {
+                                    this.setState({isAddingStop: false})
+                                  }}
+                                >
+                                  <Icon name='times'/>
+                                </Button>
+                              </span>
+                            : <p
+                                onClick={() => {
+                                  this.setState({isAddingStop: true})
+                                }}
+                                className='small'
+                              >
+                                <Icon name='plus'/> Add stop
+                              </p>
+                          }
                         </td>
                       </tr>
                     </tbody>
@@ -243,6 +289,7 @@ export default class TripPatternList extends Component {
                 bsStyle='danger'
                 onClick={() => {
                   this.props.deleteEntity(feedSource.id, 'trippattern', activePattern)
+                  this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern')
                 }}
               >
                 <Icon name='trash'/>
