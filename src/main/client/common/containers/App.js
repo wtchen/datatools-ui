@@ -27,6 +27,8 @@ import ActiveGtfsTableEditor from '../../editor/containers/ActiveGtfsTableEditor
 import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
 import ActiveGtfsValidationExplorer from '../../manager/containers/validation/ActiveGtfsValidationExplorer'
 
+require('../style.css')
+
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
 class App extends React.Component {
