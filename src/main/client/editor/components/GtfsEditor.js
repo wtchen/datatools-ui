@@ -305,6 +305,7 @@ export default class GtfsEditor extends Component {
           entities={this.props.tableData[this.props.activeComponent]}
           stops={this.props.tableData.stop || []}
           tableData={this.props.tableData}
+          tripPatterns={this.props.tripPatterns}
         />
         <FeedInfoPanel
           feedSource={this.props.feedSource}

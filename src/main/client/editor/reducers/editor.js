@@ -1,4 +1,5 @@
 import update from 'react-addons-update'
+import polyUtil from 'polyline-encoded'
 
 const mapStop = (s) => {
   return {
@@ -178,6 +179,17 @@ const editor = (state = {
       return update(state, {
         tableData: {route: {$set: routes}}
       })
+    case 'RECEIVE_TRIP_PATTERNS':
+      return update(state, {
+        tripPatterns: {$set:
+          Object.keys(action.tripPatterns).map(key => {
+            return {
+              id: key,
+              latLngs: action.tripPatterns[key].shape ? polyUtil.decode(action.tripPatterns[key].shape) : null
+            }
+          })
+        }
+      })
     case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.routeId)
       if (state.activeEntity.id === action.routeId) {
@@ -185,8 +197,7 @@ const editor = (state = {
           tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}},
           activeEntity: {$merge: {tripPatterns: action.tripPatterns}}
         })
-      }
-      else {
+      } else {
         return update(state, {
           tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}}
         })

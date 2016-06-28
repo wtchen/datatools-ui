@@ -1,5 +1,5 @@
 import React from 'react'
-import { Map, Marker, CircleMarker, Popup, Polyline, TileLayer, Rectangle, GeoJson, FeatureGroup, ZoomControl } from 'react-leaflet'
+import { Map, Marker, CircleMarker, Popup, Polyline, TileLayer, Rectangle, GeoJson, FeatureGroup, ZoomControl, LayersControl } from 'react-leaflet'
 import { browserHistory, Link } from 'react-router'
 import { Button, ButtonToolbar } from 'react-bootstrap'
 import { PureComponent, shallowEqual } from 'react-pure-render'
@@ -375,6 +375,16 @@ export default class EditorMap extends React.Component {
             />
           : null
         }
+        <LayersControl position='topleft'>
+          <LayersControl.Overlay name='Route Alignments'>
+            <FeatureGroup>
+              {this.props.tripPatterns ? this.props.tripPatterns.map((tp) => {
+                if(!tp.latLngs) return null;
+                return <Polyline positions={tp.latLngs} weight={2} color='#888' />
+              }) : null}
+            </FeatureGroup>
+          </LayersControl.Overlay>
+        </LayersControl>
       </Map>
     )
   }

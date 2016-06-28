@@ -13,7 +13,8 @@ import {
   fetchRoutes,
 } from '../actions/route'
 import {
-  fetchTripPatternsForRoute,
+  fetchTripPatterns,
+  fetchTripPatternsForRoute
 } from '../actions/tripPattern'
 import {
   fetchTripsForCalendar,
@@ -68,6 +69,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     tableData: state.editor.tableData,
+    tripPatterns: state.editor.tripPatterns,
     // gtfsEntityLookup: state.editor.gtfsEntityLookup,
     // validation: state.editor.validation,
     // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
@@ -106,8 +108,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(getGtfsTable('calendar', feedSourceId))
           dispatch(getGtfsTable('agency', feedSourceId))
         })
-      }
-      else {
+      } else {
         dispatch(fetchFeedInfo(feedSourceId))
         dispatch(getGtfsTable('calendar', feedSourceId))
         dispatch(getGtfsTable('agency', feedSourceId))
@@ -142,6 +143,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       //   dispatch(fetchFeedInfo(feedSourceId))
       //   dispatch(getGtfsTable('calendar', feedSourceId))
       // }
+      dispatch(fetchTripPatterns(feedSourceId))
+
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))

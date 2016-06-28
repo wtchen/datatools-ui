@@ -2,6 +2,39 @@ import { secureFetch } from '../../common/util/util'
 
 //// TRIP PATTERNS
 
+export function requestingTripPatterns (feedId) {
+  return {
+    type: 'REQUESTING_TRIP_PATTERNS',
+    feedId
+  }
+}
+
+export function receiveTripPatterns (feedId, tripPatterns) {
+  return {
+    type: 'RECEIVE_TRIP_PATTERNS',
+    feedId,
+    tripPatterns
+  }
+}
+
+export function fetchTripPatterns (feedId) {
+  return function (dispatch, getState) {
+    dispatch(requestingTripPatternsForRoute(feedId))
+    const url = `/api/manager/secure/trippattern?feedId=${feedId}`
+    return secureFetch(url, getState())
+      .then(res => {
+        if (res.status >= 400) return []
+        return res.json()
+      })
+      .then(tripPatterns => {
+        dispatch(receiveTripPatterns(feedId, tripPatterns))
+        return tripPatterns
+      })
+  }
+}
+
+// TODO: merge the following with the above?
+
 export function requestingTripPatternsForRoute (feedId, routeId) {
   return {
     type: 'REQUESTING_TRIP_PATTERNS_FOR_ROUTE',
