@@ -117,7 +117,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(getGtfsTable('calendar', feedSourceId))
         dispatch(getGtfsTable('agency', feedSourceId))
       }
-      if (activeComponent) {
+      if (!activeComponent) {
+        dispatch(clearGtfsContent())
+      }
+      else {
         dispatch(getGtfsTable(activeComponent, feedSourceId))
         //// FETCH trip patterns if route selected
         .then((entities) => {

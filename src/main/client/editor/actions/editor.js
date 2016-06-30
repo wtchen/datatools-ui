@@ -108,6 +108,8 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       : entityId
       ? `/feed/${feedSourceId}/edit/${component}/${entityId}`
       : `/feed/${feedSourceId}/edit/${component}`
+      ? component
+      : `/feed/${feedSourceId}/edit/`
     if (getState().routing.locationBeforeTransitions.pathname && getState().routing.locationBeforeTransitions.pathname !== url) {
       console.log('changing url')
       browserHistory.push(url)
