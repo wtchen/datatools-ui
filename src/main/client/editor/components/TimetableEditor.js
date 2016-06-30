@@ -6,7 +6,6 @@ import moment from 'moment'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import EditableCell from '../../common/components/EditableCell'
-import TripRow from './TripRow'
 
 export default class TimetableEditor extends Component {
 
