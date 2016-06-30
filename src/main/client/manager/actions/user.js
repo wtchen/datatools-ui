@@ -25,19 +25,17 @@ export const userLoggedIn = (token, profile) => {
 export function checkExistingLogin() {
   return function (dispatch, getState) {
     dispatch(checkingExistingLogin())
-    console.log('checkExistingLogin');
     var login = getState().user.auth0.checkExistingLogin()
     if(login) {
       return login.then((userTokenAndProfile) => {
-        console.log(userTokenAndProfile)
         dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
       })
     }
     else {
-      console.log('no login found');
+      console.log('no login found')
       dispatch(noExistingLogin())
       // return empty promise
-      return new Promise((resolve) => { resolve(null); })
+      return new Promise((resolve) => { resolve(null) })
     }
   }
 }

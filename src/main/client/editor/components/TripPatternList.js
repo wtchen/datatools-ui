@@ -125,7 +125,51 @@ export default class TripPatternList extends Component {
                       this.props.updateActiveEntity(activePattern, 'trippattern', props)
                     }}
                   />
-                  <Button style={{marginBottom: '5px'}} bsStyle='warning'><Icon name='pencil'/> Edit route geometry</Button>
+                  <ButtonToolbar>
+                  <Button
+                    style={{marginBottom: '5px'}}
+                    bsStyle={this.props.isEditingGeometry ? 'primary' : 'warning'}
+                    onClick={() => {
+                      if (this.props.isEditingGeometry) {
+                        this.props.saveActiveEntity('trippattern')
+                        .then(() => {
+                          this.props.toggleEditGeometry()
+                        })
+                      }
+                      else {
+                        this.props.toggleEditGeometry()
+                      }
+                    }}
+                  >
+                    {this.props.isEditingGeometry
+                      ? <span><Icon name='check'/> Save</span>
+                      : <span><Icon name='pencil'/> Edit route geometry</span>
+                    }
+                  </Button>
+                  {this.props.isEditingGeometry
+                    ? [
+                        <Button
+                          style={{marginBottom: '5px'}}
+                          bsStyle='danger'
+                          onClick={() => {
+                            this.props.resetActiveEntity(pattern, 'trippattern')
+                            this.props.toggleEditGeometry()
+                          }}
+                        >
+                          <span><Icon name='times'/> Discard</span>
+                        </Button>
+                        // ,
+                        // <Button
+                        //   style={{marginBottom: '5px'}}
+                        //   bsStyle='danger'
+                        //   onClick={() => this.props.toggleFollowRoads()}
+                        // >
+                        //   <span><Icon name='times'/> Discard</span>
+                        // </Button>
+                      ]
+                    : null
+                  }
+                  </ButtonToolbar>
                   <ButtonGroup>
                     <DropdownButton title="Use timetables" id="bg-nested-dropdown">
                       <MenuItem eventKey="2">Use frequencies</MenuItem>

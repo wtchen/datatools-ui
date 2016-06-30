@@ -90,7 +90,7 @@ export function fetchStopsForTripPattern (feedId, tripPatternId) {
       .then(res => {
         if (res.status >= 400) {
           // dispatch(setErrorMessage('Error getting stops for trip pattern'))
-          return []
+          return null
         }
         return res.json()
       })

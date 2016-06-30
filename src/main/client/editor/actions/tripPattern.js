@@ -107,7 +107,8 @@ export function saveTripPattern (feedId, tripPattern) {
       .then(res => res.json())
       .then(tripPattern => {
         // dispatch(receiveTripPattern(feedId, tripPattern))
-        dispatch(fetchTripPatternsForRoute(feedId, routeId))
+        return dispatch(fetchTripPatternsForRoute(feedId, routeId))
+        // return tripPattern
       })
   }
 }

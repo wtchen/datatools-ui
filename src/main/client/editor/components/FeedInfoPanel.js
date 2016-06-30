@@ -23,7 +23,7 @@ export default class FeedInfoPanel extends Component {
       bottom: 20,
       paddingRight: 5,
       paddingLeft: 5,
-      height: 200,
+      height: 100,
       width: 400,
       // zIndex: 99
     }

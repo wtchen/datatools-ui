@@ -3,8 +3,15 @@ import polyUtil from 'polyline-encoded'
 
 const mapStop = (s) => {
   return {
+    // datatools props
     id: s.id,
     feedId: s.feedId,
+    bikeParking: s.bikeParking,
+    carParking: s.carParking,
+    pickupType: s.pickupType,
+    dropOffType: s.dropOffType,
+
+    // gtfs spec props
     stop_code: s.stopCode,
     stop_name: s.stopName,
     stop_desc: s.stopDesc,
@@ -16,28 +23,38 @@ const mapStop = (s) => {
     parent_station: s.parentStation,
     stop_timezone: s.stopTimezone,
     wheelchair_boarding: s.wheelchairBoarding,
-    bikeParking: s.bikeParking,
-    carParking: s.carParking,
-    pickupType: s.pickupType,
-    dropOffType: s.dropOffType,
     stop_id: s.gtfsStopId
   }
 }
-
+const defaultState = {
+  feedSourceId: null,
+  // activeEntityId: null,
+  // active: {entity: null,}
+  // activeSubEntity: null,
+  // activeSubEntityId: null,
+  // activeComponent: null,
+  // activeSubComponent: null,
+  // activeSubSubComponent: null,
+  active: {},
+  // edited: false,
+  editGeometry: false,
+  tableData: {},
+  validation: null,
+  gtfsEntityLookup: {}
+}
 const emptyTableData = { }
 // let newId = 0
-const editor = (state = {
-  feedSourceId: null,
-  activeEntityId: null,
-  activeEntity: null,
-  activeComponent: null,
-  edited: false,
-  tableData: {},
-  validation: {},
-  gtfsEntityLookup: {}
-}, action) => {
+const editor = (state = defaultState, action) => {
   let newTableData, fields, rowData, mappedEntities, feedTableData, activeEntity, activeSubEntity, newState, routeIndex
   switch (action.type) {
+    case 'REQUESTING_FEED_INFO':
+      if (state.feedSourceId && action.feedId !== state.feedSourceId) {
+        return defaultState
+      }
+    case 'TOGGLE_EDIT_GEOMETRY':
+      return update(state, {
+        editGeometry: {$set: !state.editGeometry},
+      })
     case 'CREATE_GTFS_ENTITY':
       if (action.component === 'trippattern') {
         activeEntity = {
@@ -54,12 +71,12 @@ const editor = (state = {
         //   console.log('creating trip patterns array for index' + routeIndex)
         //   newState = update(state, {
         //     tableData: {route: {[routeIndex]: {tripPatterns: {$set: []}}}},
-        //     activeEntity: {tripPatterns: {$set: []}}
+        //     active: {entity: {tripPatterns: {$set: []}}}
         //   })
         // }
         return update(newState || state, {
           tableData: {route: {[routeIndex]: {tripPatterns: {$unshift: [activeEntity]}}}},
-          activeEntity: {tripPatterns: {$unshift: [activeEntity]}}
+          active: {entity: {tripPatterns: {$unshift: [activeEntity]}}}
         })
       }
       else {
@@ -79,58 +96,106 @@ const editor = (state = {
         }
         return update(newState || state, {
           tableData: {[action.component]: {$unshift: [activeEntity]}},
-          // activeEntity: {$set: activeEntity}
+          // active: {entity: {$set: activeEntity}}
         })
       }
     case 'SETTING_ACTIVE_GTFS_ENTITY':
       activeEntity = action.component === 'feedinfo'
-        ? state.tableData[action.component]
+        ? Object.assign({}, state.tableData[action.component])
         : state.tableData[action.component]
-        ? state.tableData[action.component].find(e => e.id === action.entityId)
+        ? Object.assign({}, state.tableData[action.component].find(e => e.id === action.entityId))
         : null
       switch (action.subComponent) {
         case 'trippattern':
-          activeSubEntity = activeEntity && activeEntity.tripPatterns ? activeEntity.tripPatterns.find(p => p.id === action.subEntityId) : null
+          activeSubEntity = activeEntity && activeEntity.tripPatterns ? Object.assign({}, activeEntity.tripPatterns.find(p => p.id === action.subEntityId)) : null
       }
-
+      let active = {
+        feedSourceId: action.feedSourceId,
+        entity: activeEntity,
+        entityId: action.entityId,
+        subEntity: activeSubEntity,
+        subEntityId: action.subEntityId,
+        component: action.component,
+        subComponent: action.subComponent,
+        subSubComponent: action.subSubComponent,
+        edited: false,
+      }
       return update(state, {
-        feedSourceId: {$set: action.feedSourceId},
-        activeEntity: {$set: activeEntity},
-        activeEntityId: {$set: action.entityId},
-        activeSubEntity: {$set: activeSubEntity},
-        activeSubEntityId: {$set: action.subEntityId},
-        activeComponent: {$set: action.component},
-        activeSubComponent: {$set: action.subComponent},
-        activeSubSubComponent: {$set: action.subSubComponent},
-        edited: {$set: false},
+        // feedSourceId: {$set: action.feedSourceId},
+        // active: {entity: {$set: activeEntity}},
+        // activeEntityId: {$set: action.entityId},
+        // activeSubEntity: {$set: activeSubEntity},
+        // activeSubEntityId: {$set: action.subEntityId},
+        // activeComponent: {$set: action.component},
+        // activeSubComponent: {$set: action.subComponent},
+        // activeSubSubComponent: {$set: action.subSubComponent},
+        // edited: {$set: false},
+        active: {$set: active},
       })
+    case 'RESET_ACTIVE_GTFS_ENTITY':
+      switch (action.component) {
+        case 'trippattern':
+          routeIndex = state.tableData.route.findIndex(r => r.id === action.entity.routeId)
+          // activeEntity = Object.assign({}, state.tableData.route[routeIndex])
+          patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.entity.id)
+          activeEntity = Object.assign({}, state.tableData.route[routeIndex].tripPatterns[patternIndex])
+          return update(state, {
+            active: {
+              entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
+              edited: {$set: false}
+            },
+          })
+        default:
+          activeEntity = state.tableData[action.component].find(e => e.id === action.entity.id)
+          return update(state, {
+            active: {
+              entity: {$set: activeEntity},
+              edited: {$set: false}
+            },
+          })
+      }
     case 'UPDATE_ACTIVE_GTFS_ENTITY':
       switch (action.component) {
         case 'trippattern':
-          activeEntity = Object.assign({}, state.activeEntity)
-          patternIndex = activeEntity.tripPatterns.findIndex(p => p.id === action.entity.id)
-          for (var key in action.props) {
-            activeEntity.tripPatterns[patternIndex][key] = action.props[key]
-          }
-          return update(state, {
-            activeEntity: {$set: activeEntity},
-            edited: {$set: true}
-          })
-        default:
-          activeEntity = Object.assign({}, state.activeEntity)
+          patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
+          activeEntity = Object.assign({}, state.active.entity.tripPatterns[patternIndex])
           for (var key in action.props) {
             activeEntity[key] = action.props[key]
           }
           return update(state, {
-            activeEntity: {$set: activeEntity},
+            active: {
+              entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
+              edited: {$set: true}
+            },
+          })
+        // case 'timetable':
+        //   activeEntity = Object.assign({}, state.active.entity)
+        //   patternIndex = activeEntity.tripPatterns.findIndex(p => p.id === action.entity.id)
+        //   for (var key in action.props) {
+        //     activeEntity.tripPatterns[patternIndex][key] = action.props[key]
+        //   }
+        //   return update(state, {
+        //     active: {entity: {$set: activeEntity}},
+        //     edited: {$set: true}
+        //   })
+        default:
+          activeEntity = Object.assign({}, state.active.entity)
+          for (var key in action.props) {
+            activeEntity[key] = action.props[key]
+          }
+          return update(state, {
+            active: {entity: {$set: activeEntity}},
             edited: {$set: true}
           })
       }
     case 'RECEIVE_AGENCIES':
       const agencies = action.agencies.map(ent => {
         return {
+          // datatools props
           id: ent.id,
           feedId: ent.feedId,
+
+          // gtfs spec props
           agency_id: ent.gtfsAgencyId,
           agency_name: ent.name,
           agency_url: ent.url,
@@ -144,17 +209,87 @@ const editor = (state = {
       return update(state, {
         tableData: {agency: {$set: agencies}}
       })
-    case 'RECEIVE_FEED_INFO':
-      // newTableData = {}
-      // newTableData.feedInfo = action.feedInfo
+    case 'RECEIVE_FARES':
+      const fares = action.fares.map(fare => {
+        return {
+          // datatools props
+          id: fare.id,
+          feedId: fare.feedId,
+          description: fare.description,
+          fareRules: fare.fareRules,
 
+          // gtfs spec props
+          fare_id: fare.gtfsFareId,
+          price: fare.price,
+          currency_type: fare.currencyType,
+          payment_method: fare.paymentMethod,
+          transfers: fare.transfers,
+          transfer_duration: fare.transferDuration,
+        }
+      })
       return update(state, {
-        tableData: {feedinfo: {$set: action.feedInfo}}
+        tableData: {fare: {$set: fares}}
+      })
+    case 'RECEIVE_FEED_INFO':
+      const feedInfo = {
+        // datatools props
+        id: action.feedInfo.id,
+        color: action.feedInfo.color,
+        defaultLat: action.feedInfo.defaultLat,
+        defaultLon: action.feedInfo.defaultLon,
+        routeTypeId: action.feedInfo.routeTypeId,
+
+        // gtfs spec props
+        feed_end_date: action.feedInfo.feedEndDate,
+        feed_start_date: action.feedInfo.feedStartDate,
+        feed_lang: action.feedInfo.feedLang,
+        feed_publisher_name: action.feedInfo.feedPublisherName,
+        feed_publisher_url: action.feedInfo.feedPublisherUrl,
+        feed_version: action.feedInfo.feedVersion,
+      }
+      return update(state, {
+        tableData: {feedinfo: {$set: feedInfo}}
       })
     case 'RECEIVE_CALENDARS':
+      const calendars = action.calendars ? action.calendars.map(c => {
+        return {
+          // datatools props
+          id: c.id,
+          feedId: c.feedId,
+          description: c.description,
 
+          // gtfs spec props
+          service_id: c.gtfsServiceId,
+          monday: c.monday ? 1 : 0,
+          tuesday: c.tuesday ? 1 : 0,
+          wednesday: c.wednesday ? 1 : 0,
+          thursday: c.thursday ? 1 : 0,
+          friday: c.friday ? 1 : 0,
+          saturday: c.saturday ? 1 : 0,
+          sunday: c.sunday ? 1 : 0,
+          start_date: c.startDate,
+          end_date: c.endDate,
+        }
+      }) : null
       return update(state, {
-        tableData: {calendar: {$set: action.calendars}}
+        tableData: {calendar: {$set: calendars}}
+      })
+    case 'RECEIVE_SCHEDULE_EXCEPTIONS':
+      const scheduleExceptions = action.scheduleExceptions ? action.scheduleExceptions.map(se => {
+        return {
+          // datatools props
+          id: se.id,
+          name: se.name,
+          feedId: se.feedId,
+          dates: se.dates,
+          customSchedule: se.customSchedule,
+
+          // gtfs spec props
+          // gtfs_prop: se.gtfs_prop
+        }
+      }) : []
+      return update(state, {
+        tableData: {scheduleexception: {$set: scheduleExceptions}}
       })
     case 'RECEIVE_ROUTES':
       // feedTableData = state.tableData[action.feedId]
@@ -162,8 +297,11 @@ const editor = (state = {
       //   feedTableData = {}
       const routes = action.routes ? action.routes.map(r => {
         return {
+          // datatools props
           id: r.id,
           feedId: r.feedId,
+
+          // gtfs spec props
           agency_id: r.agencyId,
           route_short_name: r.routeShortName,
           route_long_name: r.routeLongName,
@@ -192,10 +330,10 @@ const editor = (state = {
       })
     case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.routeId)
-      if (state.activeEntity.id === action.routeId) {
+      if (state.active.entity.id === action.routeId) {
         return update(state, {
           tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}},
-          activeEntity: {$merge: {tripPatterns: action.tripPatterns}}
+          active: {entity: {$merge: {tripPatterns: action.tripPatterns}}}
         })
       } else {
         return update(state, {
@@ -221,10 +359,10 @@ const editor = (state = {
       let stateUpdate
 
       // if stop is active, update active entity
-      if (stop.id === state.activeEntityId && stopIndex !== -1) {
+      if (stop.id === state.active.entityId && stopIndex !== -1) {
         stateUpdate = {
           tableData: {stop: {[stopIndex]: {$merge: stop}}},
-          activeEntity: {$set: stop},
+          active: {entity: {$set: stop}},
           edited: {$set: false},
         }
       }
@@ -242,21 +380,7 @@ const editor = (state = {
       }
       return update(state, stateUpdate)
     case 'CLEAR_GTFSEDITOR_CONTENT':
-      return {
-        feedSourceId: null,
-        activeEntityId: null,
-        activeEntity: null,
-        activeSubEntity: null,
-        activeSubEntityId: null,
-        activeComponent: null,
-        activeComponent: null,
-        activeSubComponent: null,
-        activeSubSubComponent: null,
-        edited: false,
-        tableData: {},
-        validation: null,
-        gtfsEntityLookup: {}
-      }
+      return defaultState
     case 'RECEIVE_GTFSEDITOR_TABLE':
       newTableData = {}
       const getMappedEntities = (entities) => {

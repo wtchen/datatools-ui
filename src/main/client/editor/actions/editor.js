@@ -32,6 +32,13 @@ import {
   updateRoute,
 } from '../actions/route'
 import {
+  fetchFares,
+  fetchFare,
+  saveFare,
+  deleteFare,
+  updateFare,
+} from '../actions/fare'
+import {
   fetchTripPatternsForRoute,
   fetchTripPattern,
   saveTripPattern,
@@ -57,6 +64,14 @@ import {
   deleteScheduleException,
   updateScheduleException,
 } from '../actions/calendar'
+
+export function toggleEditGeometry () {
+  return {
+    type: 'TOGGLE_EDIT_GEOMETRY',
+  }
+}
+
+
 //// SINGLE ENTITY ACTIONS
 
 export function settingActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
@@ -77,6 +92,9 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     let previousFeedSourceId = getState().editor.feedSourceId
     if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
       dispatch(clearGtfsContent())
+    }
+    if (getState().editor.editGeometry) {
+      dispatch(toggleEditGeometry())
     }
     dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
     const url = entityId && subEntityId && subSubComponent && subSubEntityId
@@ -102,22 +120,28 @@ export function saveActiveGtfsEntity (component) {
     let entity
     switch (component) {
       case 'stop':
-        entity = getState().editor.activeEntity
+        entity = getState().editor.active.entity
         return dispatch(saveStop(entity.feedId, entity))
       case 'route':
-        entity = getState().editor.activeEntity
+        entity = getState().editor.active.entity
         return dispatch(saveRoute(entity.feedId, entity))
       case 'agency':
-        entity = getState().editor.activeEntity
+        entity = getState().editor.active.entity
         return dispatch(saveAgency(entity.feedId, entity))
       case 'trippattern':
-        let route = getState().editor.activeEntity
-        let patternId = getState().editor.activeSubEntityId
+        let route = getState().editor.active.entity
+        let patternId = getState().editor.active.subEntityId
         entity = route.tripPatterns.find(p => p.id === patternId)
         return dispatch(saveTripPattern(entity.feedId, entity))
+      case 'calendar':
+        entity = getState().editor.active.entity
+        return dispatch(saveCalendar(entity.feedId, entity))
       case 'scheduleexception':
-        entity = getState().editor.activeEntity
+        entity = getState().editor.active.entity
         return dispatch(saveScheduleException(entity.feedId, entity))
+      case 'fare':
+        entity = getState().editor.active.entity
+        return dispatch(saveFare(entity.feedId, entity))
     }
   }
 }
@@ -133,6 +157,12 @@ export function deleteGtfsEntity (feedId, component, entity) {
         return dispatch(deleteAgency(feedId, entity))
       case 'trippattern':
         return dispatch(deleteTripPattern(feedId, entity))
+      case 'fare':
+        return dispatch(deleteFare(feedId, entity))
+      case 'calendar':
+        return dispatch(deleteCalendar(feedId, entity))
+      case 'scheduleexception':
+        return dispatch(deleteScheduleException(feedId, entity))
     }
   }
 }
@@ -143,6 +173,14 @@ export function updateActiveGtfsEntity (entity, component, props) {
     entity,
     component,
     props
+  }
+}
+
+export function resetActiveGtfsEntity (entity, component) {
+  return {
+    type: 'RESET_ACTIVE_GTFS_ENTITY',
+    entity,
+    component
   }
 }
 
@@ -188,8 +226,12 @@ export function getGtfsTable (tableId, feedId) {
         return dispatch(fetchAgencies(feedId))
       case 'calendar':
         return dispatch(fetchCalendars(feedId))
-      // case 'timetable':
-      //   return dispatch(fetchRoutes(feedId))
+      case 'fare':
+        return dispatch(fetchFares(feedId))
+      case 'scheduleexception':
+        return dispatch(fetchScheduleExceptions(feedId))
+      case 'feedinfo':
+        return dispatch(fetchFeedInfo(feedId))
       default:
         const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
         return secureFetch(url, getState())

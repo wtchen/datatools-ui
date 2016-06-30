@@ -365,7 +365,7 @@
     helpContent: "The service_id contains an ID that uniquely identifies a set of dates when service is available for one or more routes. Each service_id value can appear at most once in a calendar.txt file. This value is dataset unique. It is referenced by the trips.txt file."
   - name: "monday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'
@@ -373,7 +373,7 @@
     helpContent: "The monday field contains a binary value that indicates whether the service is valid for all Mondays."
   - name: "tuesday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'
@@ -381,7 +381,7 @@
     helpContent: "The tuesday field contains a binary value that indicates whether the service is valid for all Tuesdays."
   - name: "wednesday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'
@@ -389,7 +389,7 @@
     helpContent: "The wednesday field contains a binary value that indicates whether the service is valid for all Wednesdays."
   - name: "thursday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'
@@ -397,7 +397,7 @@
     helpContent: "The thursday field contains a binary value that indicates whether the service is valid for all Thursdays."
   - name: "friday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'
@@ -405,7 +405,7 @@
     helpContent: "The friday field contains a binary value that indicates whether the service is valid for all Fridays."
   - name: "saturday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'
@@ -413,7 +413,7 @@
     helpContent: "The saturday field contains a binary value that indicates whether the service is valid for all Saturdays."
   - name: "sunday"
     required: true
-    inputType: DROPDOWN
+    inputType: DAY_OF_WEEK_BOOLEAN
     options:
     - value: '0'
     - value: '1'

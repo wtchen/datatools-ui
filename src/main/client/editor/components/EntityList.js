@@ -29,6 +29,9 @@ export default class EntityList extends Component {
       }
     }
   }
+  // shouldComponentUpdate (nextProps) {
+  //   return true // nextProps.activeComponent !== this.props.activeComponent
+  // }
   _getEntityName = (component, entity) => {
     let entName = this.props.activeComponent === 'agency'
       ? 'agency_name'
@@ -39,17 +42,17 @@ export default class EntityList extends Component {
       : this.props.activeComponent === 'calendar'
       ? 'description'
       : this.props.activeComponent === 'fare'
-      ? 'gtfsFareId'
+      ? 'fare_id'
       : null
     switch (component) {
       case 'route':
         return entity.route_short_name && entity.route_long_name
-        ? `${entity.route_short_name} - ${entity.route_long_name}`
-        : entity.route_short_name
-        ? entity.route_short_name
-        : entity.route_long_name
-        ? entity.route_long_name
-        : entity.route_id
+          ? `${entity.route_short_name} - ${entity.route_long_name}`
+          : entity.route_short_name
+          ? entity.route_short_name
+          : entity.route_long_name
+          ? entity.route_long_name
+          : entity.route_id
       default:
         return entity[entName]
     }
@@ -58,7 +61,7 @@ export default class EntityList extends Component {
     const feedSource = this.props.feedSource
     const sidePadding = '5px'
     const rowHeight = '37px'
-    let panelWidth = !this.props.tableView ? '200px' : '100%'
+    let panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
     let panelStyle = {
       width: panelWidth,
       height: '100%',
@@ -71,41 +74,10 @@ export default class EntityList extends Component {
       paddingLeft: sidePadding
     }
     const activeColor = '#F2F2F2'
-    let entId = 'id' // this.props.activeComponent === 'agency'
-      // ? 'agency_id'
-      // : this.props.activeComponent === 'route'
-      // ? 'route_id'
-      // : this.props.activeComponent === 'stop'
-      // ? 'stop_id'// 'stop_id'
-      // : null
-    let entName = this.props.activeComponent === 'agency'
-      ? 'agency_name'
-      : this.props.activeComponent === 'route'
-      ? 'route_short_name'
-      : this.props.activeComponent === 'stop'
-      ? 'stop_name'
-      : this.props.activeComponent === 'calendar'
-      ? 'description'
-      : this.props.activeComponent === 'fare'
-      ? 'gtfsFareId'
-      : null
-    const getEntityName = (component, entity) => {
-      switch (component) {
-        case 'route':
-          return entity.route_short_name && entity.route_long_name
-          ? `${entity.route_short_name} - ${entity.route_long_name}`
-          : entity.route_short_name
-          ? entity.route_short_name
-          : entity.route_long_name
-          ? entity.route_long_name
-          : entity.route_id
-        default:
-          return entity[entName]
-      }
-    }
+
     const sortedEntities = this.props.entities && this.props.entities.sort((a, b) => {
-      var aName = getEntityName(this.props.activeComponent, a)
-      var bName = getEntityName(this.props.activeComponent, b)
+      var aName = this._getEntityName(this.props.activeComponent, a)
+      var bName = this._getEntityName(this.props.activeComponent, b)
       if(a.isCreating && !b.isCreating) return -1
       if(!a.isCreating && b.isCreating) return 1
       if(aName < bName) return -1
@@ -126,39 +98,14 @@ export default class EntityList extends Component {
       paddingBottom: 2,
       cursor: 'pointer',
     }
-    const list = sortedEntities ? sortedEntities.map(entity =>
+    const list = sortedEntities && sortedEntities.length ? sortedEntities.map(entity =>
       {
-        const entityName = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
+        const entityName = this._getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
         return [entityName]
       }
     )
     : [[]]
 
-    // const list = [
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   ['Brian Vaughn', 'Software Engineer', 'San Jose', 'CA', 95125 ],
-    //   // And so on...
-    // ]
     const entityList =  this.props.activeComponent === 'stop'
     ? (
         <Grid
@@ -173,7 +120,7 @@ export default class EntityList extends Component {
       )
     : (
         <div
-          style={{height: '85%', overflowY: 'scroll',}}
+          style={{height: '80%', overflowY: 'scroll',}}
         >
         <Table
           hover
@@ -182,7 +129,7 @@ export default class EntityList extends Component {
           <tbody>
             {sortedEntities
               ? sortedEntities.map(entity => {
-                  const entityName = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
+                  const entityName = this._getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
                   return (
                     <tr
                       href='#'
@@ -215,7 +162,8 @@ export default class EntityList extends Component {
         </Table>
         </div>
       )
-
+    let detailsWidth = 300
+    
     const activeTable = DT_CONFIG.modules.editor.spec
       .find(t => t.id === this.props.activeComponent)
     const entityTable = this.props.tableView
@@ -233,7 +181,7 @@ export default class EntityList extends Component {
             this.props.gtfsEntitySelected(type, entity)
           }}
           getGtfsEntity={(type, id) => {
-            return sortedEntities.find(ent => ent[entId] === id)
+            return sortedEntities.find(ent => ent.id === id)
             // return this.props.gtfsEntityLookup[`${type}_${id}`]
           }}
           showHelpClicked={(tableId, fieldName) => {
@@ -257,6 +205,7 @@ export default class EntityList extends Component {
     let entityDetails = this.props.entity
       ? (
           <EntityDetails
+            width={detailsWidth}
             offset={panelWidth}
             entity={activeEntity}
             activeSubEntity={this.props.activeSubEntity}
@@ -267,9 +216,12 @@ export default class EntityList extends Component {
             subSubComponent={this.props.subSubComponent}
             setActiveEntity={this.props.setActiveEntity}
             updateActiveEntity={this.props.updateActiveEntity}
+            resetActiveEntity={this.props.resetActiveEntity}
             newEntityClicked={this.props.newEntityClicked}
             entityEdited={this.props.entityEdited}
             saveActiveEntity={this.props.saveActiveEntity}
+            toggleEditGeometry={this.props.toggleEditGeometry}
+            isEditingGeometry={this.props.isEditingGeometry}
             deleteEntity={this.props.deleteEntity}
             stops={this.props.stops}
             tableData={this.props.tableData}
@@ -282,7 +234,7 @@ export default class EntityList extends Component {
             //   this.props.gtfsEntitySelected(type, entity)
             // }}
             getGtfsEntity={(type, id) => {
-              return sortedEntities.find(ent => ent[entId] === id)
+              return sortedEntities.find(ent => ent.id === id)
               // return this.props.gtfsEntityLookup[`${type}_${id}`]
             }}
             // showHelpClicked={(tableId, fieldName) => {
@@ -362,7 +314,8 @@ export default class EntityList extends Component {
                 eventKey={'calendar'}
                 onClick={() => {
                   if (this.props.activeComponent !== 'calendar') {
-                    browserHistory.push(`/feed/${this.props.feedSource.id}/edit/calendar`)
+                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/calendar`)
+                    this.props.setActiveEntity(feedSource.id, 'calendar')
                   }
                 }}
               >
@@ -372,7 +325,8 @@ export default class EntityList extends Component {
                 eventKey={'scheduleexception'}
                 onClick={() => {
                   if (this.props.activeComponent !== 'scheduleexception') {
-                    browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
+                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
+                    this.props.setActiveEntity(feedSource.id, 'scheduleexception')
                   }
                 }}
               >
@@ -383,7 +337,7 @@ export default class EntityList extends Component {
           ? <VirtualizedSelect
               // maxHeight={500}
               placeholder={`Select ${this.props.activeComponent}...`}
-              options={sortedEntities ? sortedEntities.map(entity => ({value: entity.id, label: getEntityName(this.props.activeComponent, entity) || '[Unnamed]', entity})) : []}
+              options={sortedEntities ? sortedEntities.map(entity => ({value: entity.id, label: this._getEntityName(this.props.activeComponent, entity) || '[Unnamed]', entity})) : []}
               searchable
               onChange={(selectValue) => {
                 this.setState({ selectValue })

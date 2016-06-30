@@ -38,9 +38,10 @@ export default class EntityDetails extends Component {
       : this.props.activeComponent === 'stop'
       ? 'stop_name'
       : null
-
+    let panelWidth = `${this.props.width}px`
+    console.log(panelWidth)
     let panelStyle = {
-      width: '300px',
+      width: panelWidth,
       height: '100%',
       position: 'absolute',
       // overflowY: 'scroll',
@@ -128,7 +129,10 @@ export default class EntityDetails extends Component {
               defaultValue={currentValue}
               placeholder='HH:MM:SS'
               onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -147,7 +151,10 @@ export default class EntityDetails extends Component {
               defaultValue={currentValue}
               type='number'
               onChange={(evt) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -185,7 +192,10 @@ export default class EntityDetails extends Component {
               placeholder='00FF00'
               type='number'
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -204,7 +214,10 @@ export default class EntityDetails extends Component {
               min={0}
               step={1}
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -222,11 +235,15 @@ export default class EntityDetails extends Component {
               type='number'
               min={0}
               onChange={(value) => {
-                this.props.fieldEdited(table.id, row, editorField, value)
+                let props = {}
+                props[editorField] = evt.target.value
+                this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
           )
+        case 'DAY_OF_WEEK_BOOLEAN':
         case 'DROPDOWN':
           return (
             <FormGroup
@@ -238,7 +255,10 @@ export default class EntityDetails extends Component {
                 // tabIndex={index}
                 defaultValue={currentValue}
                 onChange={(evt) => {
-                  this.props.fieldEdited(table.id, row, editorField, evt.target.value)
+                  let props = {}
+                  props[editorField] = evt.target.value
+                  this.setState({[editorField]: evt.target.value})
+                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
                 }}
               >
                 {field.options.map(option => {
@@ -381,11 +401,10 @@ export default class EntityDetails extends Component {
         ? t.id === 'fare_attributes'
         : t.id === this.props.activeComponent
     )
-    console.log(entity.id)
-    const agencyForm = (
-            <Form>
+    const entityForm = (
+        <div>
+          <Form>
             {
-
               table.fields.map((field, colIndex) => {
                 // get editor field by splitting on first underscore
                 const editorField = field.name // .split(/_(.+)?/)[1]
@@ -404,30 +423,62 @@ export default class EntityDetails extends Component {
                   </div>
               )
             })}
-            {/*
-            <td>
-
-              <Button
-                bsStyle='primary'
-                bsSize='small'
-                className='pull-right'
-                onClick={() => { this.props.saveRowClicked(table.id, rowIndex, this.props.feedSource.id) }}
-              >
-                <Glyphicon glyph='floppy-disk' />
-              </Button>
-              <Button
-                bsStyle='danger'
-                bsSize='small'
-                className='pull-right'
-                onClick={() => { this.props.deleteRowClicked(table.id, rowIndex) }}
-              >
-                <Glyphicon glyph='remove' />
-              </Button>
-
-            </td>*/}
           </Form>
-        )
-
+          {
+            // this.props.activeComponent === 'fare'
+            // ? <h4>Fare rules</h4>
+            // : null
+          }
+      </div>
+    )
+    const subNav = this.props.activeComponent === 'route'
+      ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified>
+          <NavItem
+            eventKey={'route'}
+            active={this.props.subComponent !== 'trippattern'}
+            onClick={() => {
+              this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity)
+              // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}`)
+            }}
+          >
+            Route details
+          </NavItem>
+          <NavItem
+            eventKey={'trippattern'}
+            disabled={entity.id === 'new'}
+            active={this.props.subComponent === 'trippattern'}
+            onClick={() => {
+              if (this.props.subComponent !== 'trippattern') {
+                this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
+              }
+            }}
+          >
+            Trip patterns
+          </NavItem>
+        </Nav>
+      : this.props.activeComponent === 'fare'
+      ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified>
+          <NavItem
+            eventKey={'fare'}
+            active={!this.state.editFareRules}
+            onClick={() => {
+              this.setState({editFareRules: false})
+            }}
+          >
+            Attributes
+          </NavItem>
+          <NavItem
+            eventKey={'rules'}
+            disabled={entity.id === 'new'}
+            active={this.state.editFareRules}
+            onClick={() => {
+              this.setState({editFareRules: true})
+            }}
+          >
+            Rules
+          </NavItem>
+        </Nav>
+      : null
     return (
       <div
         style={panelStyle}
@@ -474,32 +525,7 @@ export default class EntityDetails extends Component {
               }}
             />
           </h3>
-          {this.props.activeComponent === 'route'
-            ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified onSelect={this.handleSelect}>
-                <NavItem
-                  eventKey={'route'}
-                  active={this.props.subComponent !== 'trippattern'}
-                  onClick={() => {
-                    this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity)
-                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}`)
-                  }}
-                >
-                  Route details
-                </NavItem>
-                <NavItem
-                  eventKey={'trippattern'}
-                  disabled={entity.id === 'new'}
-                  active={this.props.subComponent === 'trippattern'}
-                  onClick={() => {
-                    this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
-                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/${this.props.activeComponent}/${entity.id}/trippattern`)
-                  }}
-                >
-                  Trip patterns
-                </NavItem>
-              </Nav>
-            : null
-          }
+          {subNav}
         </div>
         <div style={{height: '80%', overflowY: 'scroll'}}>
           {this.props.subComponent === 'trippattern'
@@ -511,13 +537,27 @@ export default class EntityDetails extends Component {
                 deleteEntity={this.props.deleteEntity}
                 newEntityClicked={this.props.newEntityClicked}
                 updateActiveEntity={this.props.updateActiveEntity}
+                resetActiveEntity={this.props.resetActiveEntity}
                 saveActiveEntity={this.props.saveActiveEntity}
                 subSubComponent={this.props.subSubComponent}
                 route={entity}
+                toggleEditGeometry={this.props.toggleEditGeometry}
+                isEditingGeometry={this.props.isEditingGeometry}
                 stops={this.props.stops}
                 tableData={this.props.tableData}
               />
-            : agencyForm
+            : this.state.editFareRules
+            ? <div>
+                <p>Fare rules for {entity.fare_id}</p>
+                <ul>
+                  {entity.fareRules.map(rule => {
+                    return (
+                      <li>Route: {rule.route_id}</li>
+                    )
+                  })}
+                </ul>
+              </div>
+            : entityForm
           }
         </div>
       </div>

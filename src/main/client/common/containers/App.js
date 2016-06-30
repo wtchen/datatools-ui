@@ -49,7 +49,6 @@ class App extends React.Component {
     const requireAuth = (nextState, replace, callback) => {
       this.props.checkExistingLogin()
       .then((action) => {
-        console.log('requiring auth')
         if (this.props.user.profile === null) {
           // replace(null, '/')
           this.props.login({closable: false}, callback)

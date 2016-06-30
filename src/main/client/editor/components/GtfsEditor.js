@@ -187,7 +187,7 @@ export default class GtfsEditor extends Component {
       },
       {
         id: 'fare',
-        icon: 'usd',
+        icon: 'ticket',
         title: 'Edit fares'
       },
       // {
@@ -196,6 +196,8 @@ export default class GtfsEditor extends Component {
       //   title: 'Edit timetables'
       // },
     ]
+    let listWidth = 200
+    let detailsWidth = 300
     let sidebarContent = <Nav stacked bsStyle='pills' activeKey={this.props.activeComponent}>
                             <NavItem
                               className='text-center'
@@ -245,6 +247,7 @@ export default class GtfsEditor extends Component {
             />
           : this.props.activeComponent === 'feedinfo'
           ? <EntityDetails
+              width={detailsWidth}
               tableView={this.props.tableView}
               activeComponent={this.props.activeComponent}
               subComponent={this.props.subComponent}
@@ -257,6 +260,7 @@ export default class GtfsEditor extends Component {
               newEntityClicked={this.props.newEntityClicked}
               deleteEntity={this.props.deleteEntity}
               updateActiveEntity={this.props.updateActiveEntity}
+              resetActiveEntity={this.props.resetActiveEntity}
               saveActiveEntity={this.props.saveActiveEntity}
               entityEdited={this.props.entityEdited}
               feedSource={feedSource}
@@ -266,6 +270,7 @@ export default class GtfsEditor extends Component {
             />
           : this.props.activeComponent
           ? <EntityList
+              width={listWidth}
               tableView={this.props.tableView}
               activeComponent={this.props.activeComponent}
               subComponent={this.props.subComponent}
@@ -278,9 +283,12 @@ export default class GtfsEditor extends Component {
               newEntityClicked={this.props.newEntityClicked}
               deleteEntity={this.props.deleteEntity}
               updateActiveEntity={this.props.updateActiveEntity}
+              resetActiveEntity={this.props.resetActiveEntity}
               saveActiveEntity={this.props.saveActiveEntity}
               entityEdited={this.props.entityEdited}
               feedSource={feedSource}
+              toggleEditGeometry={this.props.toggleEditGeometry}
+              isEditingGeometry={this.props.isEditingGeometry}
               newRowsDisplayed={this.props.newRowsDisplayed}
               stops={this.props.tableData.stop}
               tableData={this.props.tableData}
@@ -288,6 +296,12 @@ export default class GtfsEditor extends Component {
           : null
         }
         <EditorMap
+          offset={this.props.activeEntity
+            ? listWidth + detailsWidth
+            : this.props.activeComponent
+            ? listWidth
+            : 0
+          }
           feedSource={feedSource}
           feedInfo={this.props.feedInfo}
           activeComponent={this.props.activeComponent}
@@ -299,8 +313,11 @@ export default class GtfsEditor extends Component {
           newEntityClicked={this.props.newEntityClicked}
           deleteEntity={this.props.deleteEntity}
           updateActiveEntity={this.props.updateActiveEntity}
+          resetActiveEntity={this.props.resetActiveEntity}
           saveActiveEntity={this.props.saveActiveEntity}
           entityEdited={this.props.entityEdited}
+          toggleEditGeometry={this.props.toggleEditGeometry}
+          isEditingGeometry={this.props.isEditingGeometry}
           entity={this.props.activeEntity}
           entities={this.props.tableData[this.props.activeComponent]}
           stops={this.props.tableData.stop || []}

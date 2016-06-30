@@ -22,7 +22,9 @@ import {
 import {
   setActiveGtfsEntity,
   newGtfsEntity,
+  toggleEditGeometry,
   saveActiveGtfsEntity,
+  resetActiveGtfsEntity,
   deleteGtfsEntity,
   settingActiveGtfsEntity,
   updateActiveGtfsEntity,
@@ -49,7 +51,8 @@ const mapStateToProps = (state, ownProps) => {
     : null
   const activeSubEntity = ownProps.routeParams.subentity // state.activeSubEntityId ||
   const activeSubSubEntity = ownProps.routeParams.subsubentity // state.activeSubSubEntityId ||
-  const entityEdited = state.editor.edited
+  const entityEdited = state.editor.active.edited
+  const isEditingGeometry = state.editor.editGeometry
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   let user = state.user
   // find the containing project
@@ -86,6 +89,7 @@ const mapStateToProps = (state, ownProps) => {
     activeEntity,
     activeSubEntity,
     activeSubSubEntity,
+    isEditingGeometry,
   }
 }
 
@@ -164,6 +168,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newRowsDisplayed: (tableId, rows, feedSource) => {
       if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
     },
+    toggleEditGeometry: () => {
+      dispatch(toggleEditGeometry())
+    },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
     },
@@ -176,14 +183,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateActiveEntity: (entity, component, props) => {
       dispatch(updateActiveGtfsEntity(entity, component, props))
     },
+    resetActiveEntity: (entity, component) => {
+      dispatch(resetActiveGtfsEntity(entity, component))
+    },
     deleteEntity: (feedSourceId, component, entity) => {
       dispatch(deleteGtfsEntity(feedSourceId, component, entity))
     },
     saveActiveEntity: (component) => {
-      dispatch(saveActiveGtfsEntity(component))
-      .then(entity => {
-        // dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
-      })
+      return dispatch(saveActiveGtfsEntity(component))
+      // .then(entity => {
+      //   // dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
+      // })
     },
     newEntityClicked: (feedSourceId, component, props) => {
       dispatch(newGtfsEntity(feedSourceId, component, props))
