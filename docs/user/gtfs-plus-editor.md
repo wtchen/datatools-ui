@@ -1,7 +1,6 @@
 # GTFS+ Editor
 
 ## Overview
-
 The GTFS+ Editor provides an interface for viewing and editing the additional data tables defined by the GTFS+ extension to the GTFS format.
 
 Any GTFS feed managed in the Data Manager may optionally include GTFS+ data. GTFS+ tables, when present, are included in the same Zip file as the primary GTFS tables; the Data Manager will automatically recognize and process GTFS+ data for any feed where such data is included. The application also allows users to create new GTFS+ tables from scratch for any feed in the system.
@@ -32,4 +31,4 @@ After making changes to the data, the "Save and Revalidate" button can be used t
 
 ## Exporting GTFS+ to a New Version
 
-Once the GTFS+ data for a given Feed Version is to a point where it is complete and ready for external use, it may be exported as a new Feed Version in the main Data Manager using the "Export as New Version" button within the GTFS+ summary panel (note that this button does not appear until the GTFS+ for a given Feed Version has been edited and saved at least once). In addition to the updated GTFS+ data, any standard GTFS data from the original Feed Version will be retained and included in the newly created version.
+Once the GTFS+ data for a given Feed Version is to a point where it is complete and ready for external use, it may be exported as a new Feed Version in the main Data Manager using the "Publish as New Version" button within the GTFS+ summary panel (note that this button does not appear until the GTFS+ for a given Feed Version has been edited and saved at least once). In addition to the updated GTFS+ data, any standard GTFS data from the original Feed Version will be retained and included in the newly created version.
