@@ -184,8 +184,10 @@ const editor = (state = defaultState, action) => {
             activeEntity[key] = action.props[key]
           }
           return update(state, {
-            active: {entity: {$set: activeEntity}},
-            edited: {$set: true}
+            active: {
+              entity: {$set: activeEntity},
+              edited: {$set: true}
+            },
           })
       }
     case 'RECEIVE_AGENCIES':

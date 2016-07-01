@@ -1,6 +1,6 @@
 import JSZip from 'jszip'
 
-import { secureFetch } from '../../common/util/util'
+import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
 import { browserHistory } from 'react-router'
 import {
@@ -197,6 +197,25 @@ export function createGtfsEntity (feedSourceId, component, props) {
 
 export function newGtfsEntity (feedSourceId, component, props) {
   return function (dispatch, getState) {
+    if (!props) {
+      const generateProps = (component) => {
+        let agency = getState().editor.tableData.agency ? getState().editor.tableData.agency[0] : null
+        let color = generateRandomColor()
+        switch (component) {
+          case 'route':
+            return {
+              route_id: generateUID(),
+              agency_id: agency ? agency.agency_id : null,
+              route_short_name: generateRandomInt(1, 300),
+              route_color: color,
+              route_text_color: idealTextColor(color),
+              route_type: getState().editor.tableData.feedinfo.routeTypeId,
+              
+            }
+        }
+      }
+      props = generateProps(component)
+    }
     dispatch(createGtfsEntity(feedSourceId, component, props))
     if (props && 'routeId' in props) {
       dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, 'new'))
