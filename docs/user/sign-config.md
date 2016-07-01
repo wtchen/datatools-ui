@@ -39,6 +39,8 @@ On the main Configurations Viewer page, a user may create a new configuration a 
 
 ![Search for routes/stops by name or on the map](/img/gtfs-map-search-config.png "Search for routes/stops by name or on the map")  
 
+For more info on route/stop search, see [Searching for Routes and Stops](user/searching-routes-stops/).
+
 ## Configuration Editor
 
 Upon creating a new or editing an existing eTID Configuration, a user will see the Configuration Editor view. Here you can specify all of the eTID Configuration properties.

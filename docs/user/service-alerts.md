@@ -39,6 +39,8 @@ On the main Alerts Viewer page, a user may create a new alert a few different wa
 
 ![Search for routes/stops by name or on the map](/img/gtfs-map-search-alert.png "Search for routes/stops by name or on the map")  
 
+For more info on route/stop search, see [Searching for Routes and Stops](user/searching-routes-stops/).
+
 ## Alert Editor
 
 Upon creating a new or editing an existing Service Alert, a user will see the Alert Editor view. Here you can specify all of the Service Alert properties.
