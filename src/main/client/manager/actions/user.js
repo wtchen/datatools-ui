@@ -28,7 +28,12 @@ export function checkExistingLogin() {
     var login = getState().user.auth0.checkExistingLogin()
     if(login) {
       return login.then((userTokenAndProfile) => {
-        dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
+        if (userTokenAndProfile) {
+          dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
+        }
+        else {
+          console.log('error checking token')
+        }
       })
     }
     else {
