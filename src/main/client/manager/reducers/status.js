@@ -74,6 +74,12 @@ const config = (state = {
       return update(state, { message: { $set: 'Loading stops...' }})
     case 'REQUESTING_ROUTES':
       return update(state, { message: { $set: 'Loading routes...' }})
+    case 'CREATING_SNAPSHOT':
+      return update(state, { message: { $set: 'Creating snapshot...' }})
+    case 'DELETING_SNAPSHOT':
+      return update(state, { message: { $set: 'Deleting snapshot...' }})
+    case 'RESTORING_SNAPSHOT':
+      return update(state, { message: { $set: 'Restoring snapshot...' }})
 
     // Status Modal
     case 'SET_ERROR_MESSAGE':
@@ -86,6 +92,16 @@ const config = (state = {
       return update(state, { modal: { $set: {title: `Warning: Feed version for ${action.feedSource.name} not processed`, body: action.message} }})
     case 'CLEAR_STATUS_MODAL':
       return update(state, { modal: { $set: null }})
+    case 'CREATED_SNAPSHOT':
+      return update(state, { 
+        modal: { $set: {title: 'Snapshot Created', body: `New Snapshot "${action.name}" created. It will be accessible from the "Editor Snapshots" tab in the main Feed Source page.`} },
+        message: { $set: null }
+      })
+    case 'RESTORED_SNAPSHOT':
+      return update(state, {
+        modal: { $set: {title: 'Snapshot Restored', body: `Snapshot "${action.name}" is now active in the GTFS Editor for this feed.`} },
+        message: { $set: null }
+      })
 
     // Job Monitor
     case 'SET_JOBMONITOR_TIMER':
@@ -129,7 +145,7 @@ const config = (state = {
     case 'RECEIVE_ROUTE':
     case 'RECEIVE_ROUTES':
     case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
-      return update(state, { message: { $set: null }})
+      return update(state, { message: { $set: null } })
     default:
       return state
   }

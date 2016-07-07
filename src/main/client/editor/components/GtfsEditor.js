@@ -18,7 +18,7 @@ import CalendarList from './CalendarList'
 // import FareEditor from './FareEditor'
 import TimetableEditor from './TimetableEditor'
 
-import FeedInfoPanel from './FeedInfoPanel'
+import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
 
 export default class GtfsEditor extends Component {
 
@@ -324,7 +324,7 @@ export default class GtfsEditor extends Component {
           tableData={this.props.tableData}
           tripPatterns={this.props.tripPatterns}
         />
-        <FeedInfoPanel
+        <ActiveFeedInfoPanel
           feedSource={this.props.feedSource}
           feedInfo={this.props.feedInfo}
         />

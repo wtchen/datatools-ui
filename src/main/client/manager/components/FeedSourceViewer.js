@@ -263,7 +263,10 @@ export default class FeedSourceViewer extends Component {
             </Tab>
 
             {isModuleEnabled('editor')
-              ? <Tab eventKey='snapshots' title={<span><Glyphicon glyph='camera' /> Editor Snapshots</span>}>
+              ? <Tab eventKey='snapshots'
+                  title={<span><Glyphicon glyph='camera' /> Editor Snapshots</span>}
+                  onEnter={() => this.props.notesRequestedForFeedSource(fs)}
+                >
                   <ActiveEditorFeedSourcePanel feedSource={fs} />
                 </Tab>
               : null
