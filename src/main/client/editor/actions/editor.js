@@ -71,6 +71,11 @@ export function toggleEditGeometry () {
   }
 }
 
+export function toggleAddStops () {
+  return {
+    type: 'TOGGLE_ADD_STOPS',
+  }
+}
 
 //// SINGLE ENTITY ACTIONS
 
@@ -96,7 +101,6 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     if (getState().editor.editGeometry) {
       dispatch(toggleEditGeometry())
     }
-    dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
     const url = entityId && subEntityId && subSubComponent && subSubEntityId
       ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}/${subSubEntityId}`
       : entityId && subEntityId && subSubComponent
@@ -110,10 +114,12 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       : component
       ? `/feed/${feedSourceId}/edit/${component}`
       : `/feed/${feedSourceId}/edit/`
+
     if (getState().routing.locationBeforeTransitions.pathname && getState().routing.locationBeforeTransitions.pathname !== url) {
       console.log('changing url')
       browserHistory.push(url)
     }
+    dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
   }
 }
 
@@ -144,6 +150,12 @@ export function saveActiveGtfsEntity (component) {
       case 'fare':
         entity = getState().editor.active.entity
         return dispatch(saveFare(entity.feedId, entity))
+      case 'feedinfo':
+        entity = getState().editor.active.entity
+        return dispatch(saveFeedInfo(entity.id, entity))
+      default:
+        console.log('no action specified!')
+        return
     }
   }
 }
@@ -205,12 +217,20 @@ export function newGtfsEntity (feedSourceId, component, props) {
           case 'route':
             return {
               route_id: generateUID(),
-              agency_id: agency ? agency.agency_id : null,
+              agency_id: agency ? agency.id : null,
               route_short_name: generateRandomInt(1, 300),
               route_color: color,
               route_text_color: idealTextColor(color),
               route_type: getState().editor.tableData.feedinfo.routeTypeId,
-              
+            }
+          case 'scheduleexception':
+            return {
+              dates: [],
+              // agency_id: agency ? agency.agency_id : null,
+              // route_short_name: generateRandomInt(1, 300),
+              // route_color: color,
+              // route_text_color: idealTextColor(color),
+              // route_type: getState().editor.tableData.feedinfo.routeTypeId,
             }
         }
       }

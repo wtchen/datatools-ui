@@ -16,10 +16,11 @@ export function receiveFeedInfo (feedInfo) {
   }
 }
 
-export function savingFeedInfo (feedId) {
+export function savingFeedInfo (feedId, feedInfo) {
   return {
     type: 'SAVING_FEED_INFO',
-    feedId
+    feedId,
+    feedInfo
   }
 }
 
@@ -37,13 +38,29 @@ export function fetchFeedInfo (feedId) {
 
 ////// Create new feed info
 
-export function saveFeedInfo (props) {
+export function saveFeedInfo (feedId, feedInfo) {
   return function (dispatch, getState) {
-    dispatch(savingFeedInfo())
-    const url = '/api/manager/secure/feedinfo'
-    return secureFetch(url, getState(), 'post', props)
+    dispatch(savingFeedInfo(feedId, feedInfo))
+    const data = {
+      // datatools props
+      id: feedInfo.id,
+      color: feedInfo.color,
+      defaultLat: feedInfo.defaultLat,
+      defaultLon: feedInfo.defaultLon,
+      routeTypeId: feedInfo.routeTypeId,
+
+      // gtfs spec props
+      feedEndDate: feedInfo.feed_end_date,
+      feedStartDate: feedInfo.feed_start_date,
+      feedLang: feedInfo.feed_lang,
+      feedPublisherName: feedInfo.feed_publisher_name,
+      feedPublisherUrl: feedInfo.feed_publisher_url,
+      feedVersion: feedInfo.feed_version,
+    }
+    const url = `/api/manager/secure/feedinfo/${feedId}`
+    return secureFetch(url, getState(), 'put', data)
       .then((res) => {
-        return dispatch(fetchProjectWithFeeds(props.projectId))
+        return dispatch(fetchFeedInfo(feedId))
       })
   }
 }

@@ -9,7 +9,9 @@ import Select from 'react-select'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import EntityDetails from './EntityDetails'
+import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import GtfsTable from './GtfsTable'
+import { getEntityName } from '../util/gtfs'
 
 export default class EntityList extends Component {
 
@@ -22,7 +24,7 @@ export default class EntityList extends Component {
     if (nextProps.activeComponent){
       if (nextProps.entity) {
         let entity = nextProps.entity
-        this.setState({selectValue: {value: entity.id, label: this._getEntityName(nextProps.activeComponent, entity), entity}})
+        this.setState({selectValue: {value: entity.id, label: getEntityName(nextProps.activeComponent, entity), entity}})
       }
       else {
         this.setState({selectValue: null})
@@ -32,31 +34,7 @@ export default class EntityList extends Component {
   // shouldComponentUpdate (nextProps) {
   //   return true // nextProps.activeComponent !== this.props.activeComponent
   // }
-  _getEntityName = (component, entity) => {
-    let entName = this.props.activeComponent === 'agency'
-      ? 'agency_name'
-      : this.props.activeComponent === 'route'
-      ? 'route_short_name'
-      : this.props.activeComponent === 'stop'
-      ? 'stop_name'
-      : this.props.activeComponent === 'calendar'
-      ? 'description'
-      : this.props.activeComponent === 'fare'
-      ? 'fare_id'
-      : null
-    switch (component) {
-      case 'route':
-        return entity.route_short_name && entity.route_long_name
-          ? `${entity.route_short_name} - ${entity.route_long_name}`
-          : entity.route_short_name
-          ? entity.route_short_name
-          : entity.route_long_name
-          ? entity.route_long_name
-          : entity.route_id
-      default:
-        return entity[entName]
-    }
-  }
+
   render () {
     const feedSource = this.props.feedSource
     const sidePadding = '5px'
@@ -76,8 +54,8 @@ export default class EntityList extends Component {
     const activeColor = '#F2F2F2'
 
     const sortedEntities = this.props.entities && this.props.entities.sort((a, b) => {
-      var aName = this._getEntityName(this.props.activeComponent, a)
-      var bName = this._getEntityName(this.props.activeComponent, b)
+      var aName = getEntityName(this.props.activeComponent, a)
+      var bName = getEntityName(this.props.activeComponent, b)
       if(a.isCreating && !b.isCreating) return -1
       if(!a.isCreating && b.isCreating) return 1
       if(aName < bName) return -1
@@ -100,24 +78,26 @@ export default class EntityList extends Component {
     }
     const list = sortedEntities && sortedEntities.length ? sortedEntities.map(entity =>
       {
-        const entityName = this._getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
+        const entityName = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
         return [entityName]
       }
     )
     : [[]]
 
     const entityList =  this.props.activeComponent === 'stop'
-    ? (
-        <Grid
-          width={200}
-          height={530}
-          columnWidth={100}
-          rowHeight={30}
-          columnCount={list[0].length}
-          rowCount={list.length}
-          cellRenderer={({ columnIndex, isScrolling, rowIndex }) => list[rowIndex][columnIndex]}
-        />
-      )
+    ? null
+    // TODO: determine how to better style stop list
+      // (
+      //   <Grid
+      //     width={200}
+      //     height={530}
+      //     columnWidth={100}
+      //     rowHeight={30}
+      //     columnCount={list[0].length}
+      //     rowCount={list.length}
+      //     cellRenderer={({ columnIndex, isScrolling, rowIndex }) => list[rowIndex][columnIndex]}
+      //   />
+      // )
     : (
         <div
           style={{height: '80%', overflowY: 'scroll',}}
@@ -129,7 +109,7 @@ export default class EntityList extends Component {
           <tbody>
             {sortedEntities
               ? sortedEntities.map(entity => {
-                  const entityName = this._getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
+                  const entityName = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
                   return (
                     <tr
                       href='#'
@@ -163,7 +143,7 @@ export default class EntityList extends Component {
         </div>
       )
     let detailsWidth = 300
-    
+
     const activeTable = DT_CONFIG.modules.editor.spec
       .find(t => t.id === this.props.activeComponent)
     const entityTable = this.props.tableView
@@ -221,10 +201,13 @@ export default class EntityList extends Component {
             entityEdited={this.props.entityEdited}
             saveActiveEntity={this.props.saveActiveEntity}
             toggleEditGeometry={this.props.toggleEditGeometry}
+            toggleAddStops={this.props.toggleAddStops}
             isEditingGeometry={this.props.isEditingGeometry}
+            isAddingStops={this.props.isAddingStops}
             deleteEntity={this.props.deleteEntity}
             stops={this.props.stops}
             tableData={this.props.tableData}
+            fetchStops={this.props.fetchStops}
             // newRowClicked={this.props.newRowClicked}
             // setActiveEntity={this.props.setActiveEntity}
             // saveRowClicked={this.props.saveRowClicked}
@@ -334,21 +317,18 @@ export default class EntityList extends Component {
               </NavItem>
             </Nav>
           : this.props.activeComponent === 'stop' || this.props.activeComponent === 'route'
-          ? <VirtualizedSelect
-              // maxHeight={500}
-              placeholder={`Select ${this.props.activeComponent}...`}
-              options={sortedEntities ? sortedEntities.map(entity => ({value: entity.id, label: this._getEntityName(this.props.activeComponent, entity) || '[Unnamed]', entity})) : []}
-              searchable
-              onChange={(selectValue) => {
-                this.setState({ selectValue })
-                if (!selectValue) {
+          ? <VirtualizedEntitySelect
+              value={this.props.entity ? {value: this.props.entity.id, label: getEntityName(this.props.activeComponent, this.props.entity), entity: this.props.entity} : null}
+              component={this.props.activeComponent}
+              entities={sortedEntities}
+              onChange={(value) => {
+                if (!value) {
                   this.props.setActiveEntity(feedSource.id, this.props.activeComponent)
                 }
                 else {
-                  this.props.setActiveEntity(feedSource.id, this.props.activeComponent, selectValue.entity)
+                  this.props.setActiveEntity(feedSource.id, this.props.activeComponent, value.entity)
                 }
               }}
-              value={this.state.selectValue}
             />
           : null
         }

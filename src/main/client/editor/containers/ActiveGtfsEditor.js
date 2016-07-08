@@ -18,11 +18,14 @@ import {
 } from '../actions/tripPattern'
 import {
   fetchTripsForCalendar,
+  saveTripsForCalendar,
+  deleteTripsForCalendar,
 } from '../actions/trip'
 import {
   setActiveGtfsEntity,
   newGtfsEntity,
   toggleEditGeometry,
+  toggleAddStops,
   saveActiveGtfsEntity,
   resetActiveGtfsEntity,
   deleteGtfsEntity,
@@ -42,17 +45,23 @@ import {
 } from '../actions/editor'
 
 const mapStateToProps = (state, ownProps) => {
-  const feedSourceId = ownProps.routeParams.feedSourceId
-  const activeComponent = ownProps.routeParams.subpage // state.activeComponent ||
-  const subComponent = ownProps.routeParams.subsubpage // state.activeSubComponent ||
-  const subSubComponent = ownProps.routeParams.subsubcomponent // state.activeSubSubComponent ||
-  const activeEntity = ownProps.routeParams.entity && state.editor.tableData[activeComponent] // state.activeEntity ||
-    ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
+  const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
+  const activeComponent = ownProps.routeParams.subpage // location.pathname.split('/')[4]
+  const subComponent = ownProps.routeParams.subsubpage // location.pathname.split('/')[5]
+  const subSubComponent = ownProps.routeParams.subsubcomponent // location.pathname.split('/')[6]
+  const activeEntityId = ownProps.routeParams.entity // location.pathname.split('/')[7]
+  const activeSubEntity = ownProps.routeParams.subentity // location.pathname.split('/')[8]
+  const activeSubSubEntity = ownProps.routeParams.subsubentity // location.pathname.split('/')[9]
+  const activeEntity =
+    state.editor.active && state.editor.active.entity && state.editor.active.entity.id === activeEntityId
+    ? state.editor.active.entity
     : null
-  const activeSubEntity = ownProps.routeParams.subentity // state.activeSubEntityId ||
-  const activeSubSubEntity = ownProps.routeParams.subsubentity // state.activeSubSubEntityId ||
+    // ownProps.routeParams.entity && state.editor.tableData[activeComponent]
+    // ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
+    // : null
   const entityEdited = state.editor.active.edited
   const isEditingGeometry = state.editor.editGeometry
+  const isAddingStops = state.editor.addStops
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   let user = state.user
   // find the containing project
@@ -87,35 +96,80 @@ const mapStateToProps = (state, ownProps) => {
     subSubComponent,
     subComponent,
     activeEntity,
+    activeEntityId,
     activeSubEntity,
     activeSubSubEntity,
+    isAddingStops,
     isEditingGeometry,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const feedSourceId = ownProps.routeParams.feedSourceId
-  const activeComponent = ownProps.routeParams.subpage
-  const subComponent = ownProps.routeParams.subsubpage
-  const subSubComponent = ownProps.routeParams.subsubcomponent
-  const activeEntity = ownProps.routeParams.entity
-  const activeSubEntity = ownProps.routeParams.subentity
-  const activeSubSubEntity = ownProps.routeParams.subsubentity
+  console.log(ownProps)
+  console.log(ownProps.location.pathname.split('/'))
+  const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
+  const activeComponent = ownProps.routeParams.subpage // location.pathname.split('/')[4]
+  const subComponent = ownProps.routeParams.subsubpage // location.pathname.split('/')[5]
+  const subSubComponent = ownProps.routeParams.subsubcomponent // location.pathname.split('/')[6]
+  const activeEntityId = ownProps.routeParams.entity // location.pathname.split('/')[7]
+  const activeSubEntity = ownProps.routeParams.subentity // location.pathname.split('/')[8]
+  const activeSubSubEntity = ownProps.routeParams.subsubentity // location.pathname.split('/')[9]
 
   return {
     onComponentMount: (initialProps) => {
-
+      const tablesToFetch = ['calendar', 'agency', 'route', 'stop']
       if (!initialProps.feedSource || feedSourceId !== initialProps.feedSource.id) {
         dispatch(fetchFeedSourceAndProject(feedSourceId))
         .then(() => {
           dispatch(fetchFeedInfo(feedSourceId))
-          dispatch(getGtfsTable('calendar', feedSourceId))
-          dispatch(getGtfsTable('agency', feedSourceId))
+        //   .then(() => {
+        //     dispatch(getGtfsTable('calendar', feedSourceId))
+        //     .then(() => {
+        //       dispatch(getGtfsTable('agency', feedSourceId))
+        //       .then(() => {
+        //         dispatch(getGtfsTable('route', feedSourceId))
+        //         .then(() => {
+        //           dispatch(getGtfsTable('stop', feedSourceId))
+        //         })
+        //       })
+        //     })
+        //   })
+        //
+          dispatch(fetchFeedInfo(feedSourceId))
+          for (var i = 0; i < tablesToFetch.length; i++) {
+            if (tablesToFetch[i] !== activeComponent) {
+              dispatch(getGtfsTable(tablesToFetch[i], feedSourceId))
+            }
+          }
+          // dispatch(getGtfsTable('calendar', feedSourceId))
+          // dispatch(getGtfsTable('agency', feedSourceId))
+          // dispatch(getGtfsTable('route', feedSourceId))
+          // dispatch(getGtfsTable('stop', feedSourceId))
         })
       } else {
         dispatch(fetchFeedInfo(feedSourceId))
-        dispatch(getGtfsTable('calendar', feedSourceId))
-        dispatch(getGtfsTable('agency', feedSourceId))
+        // .then(() => {
+        //   dispatch(getGtfsTable('calendar', feedSourceId))
+        //   .then(() => {
+        //     dispatch(getGtfsTable('agency', feedSourceId))
+        //     .then(() => {
+        //       dispatch(getGtfsTable('route', feedSourceId))
+        //       .then(() => {
+        //         dispatch(getGtfsTable('stop', feedSourceId))
+        //       })
+        //     })
+        //   })
+        // })
+        dispatch(fetchFeedInfo(feedSourceId))
+        for (var i = 0; i < tablesToFetch.length; i++) {
+          if (tablesToFetch[i] !== activeComponent) {
+            dispatch(getGtfsTable(tablesToFetch[i], feedSourceId))
+          }
+        }
+        // dispatch(getGtfsTable('calendar', feedSourceId))
+        // dispatch(getGtfsTable('agency', feedSourceId))
+        // dispatch(getGtfsTable('route', feedSourceId))
+        // dispatch(getGtfsTable('stop', feedSourceId))
       }
       if (!activeComponent) {
         dispatch(clearGtfsContent())
@@ -124,9 +178,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(getGtfsTable(activeComponent, feedSourceId))
         //// FETCH trip patterns if route selected
         .then((entities) => {
-          dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntity, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
-          if (activeComponent === 'route' && activeEntity) {
-            dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntity))
+          dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
+          if (activeComponent === 'route' && activeEntityId) {
+            dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntityId))
             .then((tripPatterns) => {
               console.log(tripPatterns)
               let pattern = tripPatterns && tripPatterns.find(p => p.id === activeSubEntity)
@@ -151,7 +205,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       //   dispatch(getGtfsTable('calendar', feedSourceId))
       // }
       dispatch(fetchTripPatterns(feedSourceId))
-
+    },
+    onComponentUpdate: (prevProps, newProps) => {
+      if (prevProps.activeComponent !== newProps.activeComponent)
+        dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))
@@ -173,6 +230,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     toggleEditGeometry: () => {
       dispatch(toggleEditGeometry())
+    },
+    toggleAddStops: () => {
+      dispatch(toggleAddStops())
     },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
@@ -198,6 +258,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       //   // dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
       // })
     },
+    saveTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
+      return dispatch(saveTripsForCalendar(feedSourceId, pattern, calendarId, trips))
+    },
+    deleteTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
+      return dispatch(deleteTripsForCalendar(feedSourceId, pattern, calendarId, trips))
+    },
     newEntityClicked: (feedSourceId, component, props) => {
       dispatch(newGtfsEntity(feedSourceId, component, props))
     },
@@ -207,6 +273,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     fetchStopsForTripPattern: (feedSourceId, tripPatternId) => {
       dispatch(fetchStopsForTripPattern(feedSourceId, tripPatternId))
+    },
+    fetchStops: (feedSourceId) => {
+      dispatch(fetchStops(feedSourceId))
     },
     fetchTripsForCalendar: (feedSourceId, pattern, calendarId) => {
       dispatch(fetchTripsForCalendar(feedSourceId, pattern, calendarId))

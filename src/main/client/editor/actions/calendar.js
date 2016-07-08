@@ -30,7 +30,47 @@ export function fetchCalendars (feedId) {
   }
 }
 
+export function savingCalendar (feedId, calendar) {
+  return {
+    type: 'SAVING_CALENDAR',
+    feedId,
+    calendar
+  }
+}
 
+export function saveCalendar (feedId, calendar) {
+  return function (dispatch, getState) {
+    dispatch(savingCalendar(feedId, calendar))
+    const method = calendar.id !== 'new' ? 'put' : 'post'
+    const url = calendar.id !== 'new'
+      ? `/api/manager/secure/calendar/${calendar.id}?feedId=${feedId}`
+      : `/api/manager/secure/calendar?feedId=${feedId}`
+    const data = {
+      // datatools props
+      feedId: calendar.feedId,
+      description: calendar.description,
+
+      // gtfs spec props
+      gtfsServiceId: calendar.service_id,
+      monday: calendar.monday === 1,
+      tuesday: calendar.tuesday === 1,
+      wednesday: calendar.wednesday === 1,
+      thursday: calendar.thursday === 1,
+      friday: calendar.friday === 1,
+      saturday: calendar.saturday === 1,
+      sunday: calendar.sunday === 1,
+      startDate: calendar.start_date,
+      endDate: calendar.end_date,
+      id: calendar.id === 'new' ? null : calendar.id,
+    }
+    return secureFetch(url, getState(), method, data)
+      .then(res => res.json())
+      .then(calendar => {
+        // dispatch(receiveCalendar(feedId, calendar))
+        dispatch(fetchCalendars(feedId))
+      })
+  }
+}
 
 
 
@@ -53,29 +93,22 @@ export function receiveScheduleException (feedId, scheduleException) {
 export function saveScheduleException (feedId, scheduleException) {
   return function (dispatch, getState) {
     dispatch(savingScheduleException(feedId, scheduleException))
-    const data = {
-      gtfsScheduleExceptionId: scheduleException.scheduleException_id,
-      scheduleExceptionCode: scheduleException.scheduleException_code,
-      scheduleExceptionName: scheduleException.scheduleException_name,
-      scheduleExceptionDesc: scheduleException.scheduleException_desc,
-      lat: scheduleException.scheduleException_lat,
-      lon: scheduleException.scheduleException_lon,
-      zoneId: scheduleException.zone_id,
-      scheduleExceptionUrl: scheduleException.scheduleException_url,
-      locationType: scheduleException.location_type,
-      parentStation: scheduleException.parent_station,
-      scheduleExceptionTimezone: scheduleException.scheduleException_timezone,
-      wheelchairBoarding: scheduleException.wheelchair_boarding,
-      bikeParking: scheduleException.bikeParking,
-      carParking: scheduleException.carParking,
-      pickupType: scheduleException.pickupType,
-      dropOffType: scheduleException.dropOffType,
-      feedId: scheduleException.feedId,
-    }
     const method = scheduleException.id !== 'new' ? 'put' : 'post'
     const url = scheduleException.id !== 'new'
       ? `/api/manager/secure/scheduleexception/${scheduleException.id}?feedId=${feedId}`
       : `/api/manager/secure/scheduleexception?feedId=${feedId}`
+    const data = {
+      // datatools props
+      id: scheduleException.id === 'new' ? null : scheduleException.id,
+      name: scheduleException.name,
+      feedId: scheduleException.feedId,
+      exemplar: scheduleException.exemplar,
+      dates: scheduleException.dates,
+      customSchedule: scheduleException.customSchedule,
+
+      // gtfs spec props
+      // gtfs_prop: scheduleException.gtfs_prop
+    }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
       .then(scheduleException => {

@@ -20,23 +20,24 @@ export function receiveRoute (feedId, route) {
 
 export function saveRoute (feedId, route) {
   return function (dispatch, getState) {
+    const method = route.id !== 'new' ? 'put' : 'post'
+    const url = route.id !== 'new'
+      ? `/api/manager/secure/route/${route.id}?feedId=${feedId}`
+      : `/api/manager/secure/route?feedId=${feedId}`
     const data = {
       gtfsRouteId: route.route_id,
       agencyId: route.agency_id,
       feedId: route.feedId,
+      routeBrandingUrl: route.routeBrandingUrl,
       routeShortName: route.route_short_name,
       routeLongName: route.route_long_name,
       routeDesc: route.route_desc,
-      routeTypeId: route.route_type,
+      gtfsRouteType: route.route_type,
       routeUrl: route.route_url,
       routeColor: route.route_color,
       routeTextColor: route.route_text_color,
       id: route.id === 'new' ? null : route.id,
     }
-    const method = route.id !== 'new' ? 'put' : 'post'
-    const url = route.id !== 'new'
-      ? `/api/manager/secure/route/${route.id}?feedId=${feedId}`
-      : `/api/manager/secure/route?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
       .then(route => {

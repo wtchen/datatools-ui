@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import Sidebar from 'react-sidebar'
-import { Grid, Row, Col, Button, Glyphicon, PageHeader, Nav, NavItem } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Glyphicon, PageHeader, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import { browserHistory, Link } from 'react-router'
 import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import { shallowEqual } from 'react-pure-render'
@@ -17,6 +17,7 @@ import EntityDetails from './EntityDetails'
 import CalendarList from './CalendarList'
 // import FareEditor from './FareEditor'
 import TimetableEditor from './TimetableEditor'
+import { gtfsIcons } from '../util/gtfs'
 
 import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
 
@@ -33,7 +34,13 @@ export default class GtfsEditor extends Component {
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
+  // shouldComponentUpdate (nextProps) {
+  //   return true
+  // }
+  componentDidUpdate (prevProps) {
+    console.log(prevProps, this.props)
+    this.props.onComponentUpdate(prevProps, this.props)
+  }
   componentWillReceiveProps (nextProps) {
     // clear GTFS content if feedSource changes (i.e., user switches feed sources)
     if (nextProps.feedSourceId !== this.props.feedSourceId) {
@@ -49,6 +56,8 @@ export default class GtfsEditor extends Component {
     }
     // fetch sub components of active entity on active entity switch (e.g., fetch trip patterns when route changed)
     if (nextProps.feedSource && nextProps.activeEntity && (!this.props.activeEntity || nextProps.activeEntity.id !== this.props.activeEntity.id)) {
+      // console.log(nextProps.activeComponent)
+      // console.log(nextProps.activeEntity, nextProps.activeEntityId)
       if (nextProps.activeComponent === 'route') {
         console.log('getting trip patterns')
         this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
@@ -56,11 +65,12 @@ export default class GtfsEditor extends Component {
     }
     // fetch sub component if sub component changes
     if (nextProps.subComponent && nextProps.subComponent !== this.props.subComponent) {
-      console.log('getting subComponent: ' + nextProps.subComponent)
-      console.log(nextProps.feedSource, this.props.feedSource)
+      // console.log('getting subComponent: ' + nextProps.subComponent)
+      // console.log(nextProps.feedSource, this.props.feedSource)
       switch (nextProps.subComponent) {
         case 'trippattern':
-          this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
+          if (nextProps.activeEntity)
+            this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
           // .then((tripPatterns) => {
           //   if
           // })
@@ -96,7 +106,10 @@ export default class GtfsEditor extends Component {
           console.log(nextProps.activeSubEntity)
           console.log(nextProps.activeSubSubEntity)
           let pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.activeSubEntity)
-          this.props.fetchTripsForCalendar(nextProps.feedSource.id, pattern, nextProps.activeSubSubEntity)
+          // fetch trips if they haven't been fetched
+          if (!pattern[nextProps.activeSubSubEntity]) {
+            this.props.fetchTripsForCalendar(nextProps.feedSource.id, pattern, nextProps.activeSubSubEntity)
+          }
           break
       }
     }
@@ -144,9 +157,8 @@ export default class GtfsEditor extends Component {
     let navItemStyle = {
 
     }
-    let navWidth = '49px'
+    let navWidth = 54
     let navLinkStyle = {
-      width: navWidth,
       color: 'black'
     }
     let primaryPanelStyle = {
@@ -161,72 +173,41 @@ export default class GtfsEditor extends Component {
     }
     let sidebarItems = [
       {
-        id: 'feedinfo',
-        icon: 'info',
-        title: 'Edit feed info'
+        id: 'back',
+        icon: 'reply',
+        title: 'Back to feed source'
       },
-      {
-        id: 'agency',
-        icon: 'building',
-        title: 'Edit agencies'
-      },
-      {
-        id: 'route',
-        icon: 'bus',
-        title: 'Edit routes'
-      },
-      {
-        id: 'stop',
-        icon: 'map-marker',
-        title: 'Edit stops'
-      },
-      {
-        id: 'calendar',
-        icon: 'calendar',
-        title: 'Edit calendars'
-      },
-      {
-        id: 'fare',
-        icon: 'ticket',
-        title: 'Edit fares'
-      },
-      // {
-      //   id: 'timetable',
-      //   icon: 'table',
-      //   title: 'Edit timetables'
-      // },
+      ...gtfsIcons
     ]
     let listWidth = 200
     let detailsWidth = 300
     let sidebarContent = <Nav stacked bsStyle='pills' activeKey={this.props.activeComponent}>
-                            <NavItem
-                              className='text-center'
-                              style={navLinkStyle}
-                              title={`Back to feed source`}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                browserHistory.push(`/feed/${feedSource.id}`)
-                              }}
-                            ><Icon name='reply' size='lg' /></NavItem>
                             {sidebarItems.map(item => (
-                              <NavItem
-                                active={this.props.activeComponent === item.id || this.props.activeComponent === 'scheduleexception' && item.id === 'calendar'}
-                                href={item.id}
-                                key={item.id}
-                                className='text-center'
-                                style={navLinkStyle}
-                                title={item.title}
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  if (this.props.activeComponent === item.id) {
-                                    browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                  }
-                                  else {
-                                    this.props.setActiveEntity(feedSource.id, item.id)
-                                    // browserHistory.push(`/feed/${feedSource.id}/edit/${item.id}`)
-                                  }
-                                }}
-                              ><Icon name={item.icon} size='lg' /></NavItem>
+                              <OverlayTrigger placement='right' overlay={<Tooltip id={`${item.id}-tooltip`}>{item.title}</Tooltip>}>
+                                <NavItem
+                                  active={this.props.activeComponent === item.id || this.props.activeComponent === 'scheduleexception' && item.id === 'calendar'}
+                                  href={item.id}
+                                  key={item.id}
+                                  className='text-center'
+                                  style={navLinkStyle}
+                                  title={item.title}
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    if (item.id === 'back') {
+                                      browserHistory.push(`/feed/${feedSource.id}`)
+                                    }
+                                    else if (this.props.activeComponent === item.id) {
+                                      browserHistory.push(`/feed/${feedSource.id}/edit/`)
+                                    }
+                                    else {
+                                      this.props.setActiveEntity(feedSource.id, item.id)
+                                      // browserHistory.push(`/feed/${feedSource.id}/edit/${item.id}`)
+                                    }
+                                  }}
+                                >
+                                  <Icon name={item.icon} fixedWidth={true} size='lg' />
+                                </NavItem>
+                              </OverlayTrigger>
                             ))}
                         </Nav>
     return (
@@ -244,6 +225,12 @@ export default class GtfsEditor extends Component {
               activeScheduleId={this.props.activeSubSubEntity}
               setActiveEntity={this.props.setActiveEntity}
               tableData={this.props.tableData}
+              deleteEntity={this.props.deleteEntity}
+              updateActiveEntity={this.props.updateActiveEntity}
+              resetActiveEntity={this.props.resetActiveEntity}
+              saveActiveEntity={this.props.saveActiveEntity}
+              saveTripsForCalendar={this.props.saveTripsForCalendar}
+              deleteTripsForCalendar={this.props.deleteTripsForCalendar}
             />
           : this.props.activeComponent === 'feedinfo'
           ? <EntityDetails
@@ -288,20 +275,26 @@ export default class GtfsEditor extends Component {
               entityEdited={this.props.entityEdited}
               feedSource={feedSource}
               toggleEditGeometry={this.props.toggleEditGeometry}
+              toggleAddStops={this.props.toggleAddStops}
               isEditingGeometry={this.props.isEditingGeometry}
+              isAddingStops={this.props.isAddingStops}
               newRowsDisplayed={this.props.newRowsDisplayed}
               stops={this.props.tableData.stop}
               tableData={this.props.tableData}
+              fetchStops={this.props.fetchStops}
             />
           : null
         }
         <EditorMap
-          offset={this.props.activeEntity
+          offset={this.props.activeComponent === 'feedinfo'
+            ? detailsWidth
+            : this.props.activeEntity
             ? listWidth + detailsWidth
             : this.props.activeComponent
             ? listWidth
             : 0
           }
+          hidden={this.props.subSubComponent === 'timetable'}
           feedSource={feedSource}
           feedInfo={this.props.feedInfo}
           activeComponent={this.props.activeComponent}
@@ -318,6 +311,7 @@ export default class GtfsEditor extends Component {
           entityEdited={this.props.entityEdited}
           toggleEditGeometry={this.props.toggleEditGeometry}
           isEditingGeometry={this.props.isEditingGeometry}
+          isAddingStops={this.props.isAddingStops}
           entity={this.props.activeEntity}
           entities={this.props.tableData[this.props.activeComponent]}
           stops={this.props.tableData.stop || []}

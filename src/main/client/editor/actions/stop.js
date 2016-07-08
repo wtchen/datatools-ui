@@ -21,6 +21,10 @@ export function receiveStop (feedId, stop) {
 export function saveStop (feedId, stop) {
   return function (dispatch, getState) {
     dispatch(savingStop(feedId, stop))
+    const method = stop.id !== 'new' ? 'put' : 'post'
+    const url = stop.id !== 'new'
+      ? `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
+      : `/api/manager/secure/stop?feedId=${feedId}`
     const data = {
       gtfsStopId: stop.stop_id,
       stopCode: stop.stop_code,
@@ -41,10 +45,6 @@ export function saveStop (feedId, stop) {
       feedId: stop.feedId,
       id: stop.id === 'new' ? null : stop.id,
     }
-    const method = stop.id !== 'new' ? 'put' : 'post'
-    const url = stop.id !== 'new'
-      ? `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
-      : `/api/manager/secure/stop?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
       .then(stop => {

@@ -1,8 +1,11 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, ListGroup, Nav, NavItem, ListGroupItem, Button, ButtonGroup, DropdownButton, MenuItem, ButtonToolbar, Collapse, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
+import { Table, Checkbox, ListGroup, Nav, NavItem, ListGroupItem, Button, ButtonGroup, DropdownButton, MenuItem, ButtonToolbar, Collapse, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 import moment from 'moment'
-// import update from 'react-addons-update'
+// import ReactDataGrid from 'react-data-grid'
+// require('react-data-grid/addons')
+import update from 'react-addons-update'
+import objectPath from 'object-path'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import EditableCell from '../../common/components/EditableCell'
@@ -12,10 +15,65 @@ export default class TimetableEditor extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      activeCell: null // 'rowNum-colNum', e.g. 0-1
+      activeCell: null, // 'rowNum-colNum', e.g. 0-1
+      // rows: [{block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}],
+      edited: [],
+      selected: []
     }
   }
+  updateDimensions () {
+    this.setState({width: window.innerWidth, height: window.innerHeight})
+  }
+  componentWillMount () {
+    this.updateDimensions()
+  }
+  componentDidMount () {
+    window.addEventListener("resize", () => this.updateDimensions())
+  }
+  componentWillUnmount () {
+    window.removeEventListener("resize", () => this.updateDimensions())
+  }
 
+  setCellValue (value, rowIndex, key) {
+    let newRows = [...this.state.data]
+    objectPath.set(newRows, key, value)
+    // newRows[rowIndex][col.key] = value
+    let stateUpdate = { edited: { $push: [rowIndex] }, data: {$set: newRows} }
+    this.setState(update(this.state, stateUpdate))
+  }
+  addNewRow () {
+    let newRow = Object.assign({}, this.state.data[this.state.data.length - 1])
+    for (var i = 0; i < columns.length; i++) {
+      let col = columns[i]
+      if (/TIME/.test(col.type)) {
+        objectPath.set(newRow, col.key, 0)
+      }
+      else {
+        objectPath.set(newRow, col.key, null)
+      }
+    }
+    objectPath.set(newRow, 'id', 'new')
+    let newRows = [...this.state.data, newRow]
+    // newRows.push(newRow)
+    this.setState({data: newRows, activeCell: `${newRows.length - 1}-${0}` })
+  }
+  removeSelectedRows (feedSourceId, pattern, scheduleId) {
+    let splice = []
+    let removed = []
+    let trips = []
+    for (var i = 0; i < this.state.selected.length; i++) {
+      // this.state.selected[i]
+      // splice.push([this.state.selected[i], 1])
+      // removed.push([this.state.selected[i], 1])
+      trips.push(this.state.data[this.state.selected[i]])
+    }
+    this.props.deleteTripsForCalendar(feedSourceId, pattern, scheduleId, trips)
+    let stateUpdate = {
+      // data: {$splice: splice},
+      selected: {$set: []}
+    }
+    this.setState(update(this.state, stateUpdate))
+  }
   componentWillReceiveProps (nextProps) {
     console.log('receiving props')
     const activePattern = nextProps.route && nextProps.route.tripPatterns ? nextProps.route.tripPatterns.find(p => p.id === nextProps.activePatternId) : null
@@ -30,25 +88,24 @@ export default class TimetableEditor extends Component {
     }) : []
     // console.log(activeSchedule)
     const calendars = nextProps.tableData.calendar
-    const tripRows = sortedTrips.map(trip => {
-      let tripRow = [
-        trip.blockId,
-        trip.gtfsTripId,
-        trip.tripHeadsign
-      ]
-      trip.stopTimes.map(st => {
-        tripRow.push(st.arrivalTime)
-        tripRow.push(st.departureTime)
-      })
-      return tripRow
-    })
     this.setState({
-      data: tripRows
+      data: sortedTrips, // tripRows
+      edited: [],
+
     })
   }
   shouldComponentUpdate (nextProps) {
     return true
   }
+  // rowGetter (rowIdx) {
+  //   return this.state ? this.state.rows[rowIdx] : {block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}
+  // }
+  // handleRowUpdated (e) {
+  //   //merge updated row with current row and rerender by setting state
+  //   var rows = this.state.rows;
+  //   Object.assign(rows[e.rowIdx], e.updated);
+  //   this.setState({rows:rows});
+  // }
   render () {
     console.log(this.state)
     const { feedSource, route, activePatternId, tableData, activeScheduleId } = this.props
@@ -67,198 +124,341 @@ export default class TimetableEditor extends Component {
     }) : []
     // console.log(activeSchedule)
     const calendars = tableData.calendar
-    const tripRows = sortedTrips.map(trip => {
-      let tripRow = [
-        trip.blockId,
-        trip.gtfsTripId,
-        trip.tripHeadsign
-      ]
-      trip.stopTimes.map(st => {
-        tripRow.push(st.arrivalTime)
-        tripRow.push(st.departureTime)
-      })
-      return tripRow
-    })
-
     const panelStyle = {
       width: '100%',
       height: '100%',
       backgroundColor: 'white',
       overflowX: 'scroll',
-      position: 'absolute',
-      // marginLeft: '500px',
-      top: '0px',
-      left: '0px',
-      // overflowY: 'scroll',
-      zIndex: 200,
-      // backgroundColor: 'white',
       paddingRight: '5px',
       paddingLeft: '5px',
+    }
+    if (activePattern) {
+      // for (var i = 0; i < activePattern..length; i++) {
+        // activePattern.[i]
+      // }
+    }
+    // activePattern && activePattern.patternStops.map((ps, index) => {
+    //   return {
+    //
+    //   }
+    // })
+    let columns = [
+      {
+        name: 'Block ID',
+        width: 30,
+        key: 'blockId',
+        type: 'TEXT'
+      },
+      {
+        name: 'Trip ID',
+        width: 300,
+        key: 'gtfsTripId',
+        type: 'TEXT'
+      },
+      {
+        name: 'Trip Headsign',
+        width: 300,
+        key: 'tripHeadsign',
+        type: 'TEXT'
+      },
+    ]
+    if (activePattern && activePattern.patternStops) {
+      activePattern.patternStops.map((ps, index) => {
+        let stop = tableData.stop ? tableData.stop.find(st => st.id === ps.stopId) : null
+        let stopName = stop ? stop.stop_name : ps.stopId
+        columns.push({
+          name: stopName && stopName.length > 15 ? stopName.substr(0, 15) + '...' : stopName,
+          title: stopName,
+          width: 100,
+          key: `stopTimes.${index}.arrivalTime`,
+          colSpan: '2',
+          hidden: false,
+          type: 'ARRIVAL_TIME'
+        })
+        columns.push({
+          key: `stopTimes.${index}.departureTime`,
+          hidden: true,
+          type: 'DEPARTURE_TIME'
+        })
+      })
     }
     return (
       <div
         style={panelStyle}
         className='timetable-editor'
       >
-      <h3>
-      <ButtonToolbar
-        className='pull-right'
+      <div
+        style={{position: 'fixed', zIndex: 1000, backgroundColor: 'white', width: `${this.state.width - 54}px`, paddingRight: '10px'}}
       >
-        <Button
-          onClick={() => {
-            let newRow = []
-            newRow.push([])
-            newRow.push([])
-            newRow.push([])
-            for (var i = 0; i < activePattern.patternStops.length * 2 - 1; i++) {
-              newRow.push([])
-            }
-            let newRows = [...this.state.data, newRow]
-            // newRows.push(newRow)
-            this.setState({data: newRows})
-          }}
-          bsStyle='default'
+        <h3>
+        <ButtonToolbar
+          className='pull-right'
         >
-          <Icon name='plus'/> New trip
-        </Button>
-        <Button
-          onClick={() => {
-
-          }}
-          bsStyle='primary'
-        >
-          Save
-        </Button>
-      </ButtonToolbar>
-        <Button
-          onClick={() => {
-            this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern)
-          }}
-        ><Icon name='reply'/> Back to route</Button>
-        {' '}
-        Editing timetables for {activePattern ? activePattern.name : <Icon spin name='refresh' />}
-      </h3>
-      <Nav style={{marginBottom: '5px'}} bsStyle='tabs' activeKey={activeScheduleId} onSelect={this.handleSelect}>
-        {calendars
-          ? calendars.map(c => {
-            return (
-              <NavItem
-                eventKey={c.id}
-                onClick={() => {
-                  if (activeScheduleId === c.id) {
-                    // this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern, 'timetable')
-                  }
-                  else {
-                    this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern, 'timetable', c)
-                  }
-                }}
-              >
-                {c.description}
-              </NavItem>
-            )
-          })
-          : null
-        }
-        <NavItem
-          eventKey={'scheduleexception'}
-          onClick={() => {
-            if (this.props.activeComponent !== 'scheduleexception') {
-              this.props.setActiveEntity(feedSource.id, 'calendar')
-              // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
-            }
-          }}
-        >
-          <Icon name='plus'/> Add calendar
-        </NavItem>
-      </Nav>
+          <Button
+            onClick={() => {
+              let newRow = {} // Object.assign({}, this.state.data[this.state.data.length - 1])
+              for (var i = 0; i < columns.length; i++) {
+                let col = columns[i]
+                if (/TIME/.test(col.type)) {
+                  // TODO: add default travel/dwell times to new rows
+                  objectPath.ensureExists(newRow, col.key, 0)
+                }
+                else {
+                  objectPath.ensureExists(newRow, col.key, null)
+                }
+              }
+              for (var i = 0; i < activePattern.patternStops.length; i++) {
+                let stop = activePattern.patternStops[i]
+                console.log(stop)
+                objectPath.ensureExists(newRow, `stopTimes.${i}.stopId`, stop.stopId)
+              }
+              objectPath.ensureExists(newRow, 'id', 'new')
+              objectPath.ensureExists(newRow, 'feedId', feedSource.id)
+              objectPath.ensureExists(newRow, 'patternId', activePattern.id)
+              objectPath.ensureExists(newRow, 'calendarId', activeScheduleId)
+              let newRows = [...this.state.data, newRow]
+              // newRows.push(newRow)
+              this.setState({data: newRows, activeCell: `${newRows.length - 1}-${0}` })
+            }}
+            bsStyle='default'
+          >
+            <Icon name='plus'/> New trip
+          </Button>
+          <Button
+            disabled={this.state.selected.length === 0}
+          >
+            <Icon name='clone'/>
+          </Button>
+          <Button
+            disabled={this.state.selected.length === 0}
+            onClick={() => {
+              this.removeSelectedRows(feedSource.id, activePattern, activeScheduleId)
+            }}
+            bsStyle='danger'
+          >
+            <Icon name='trash'/>
+          </Button>
+          <Button
+            disabled={this.state.edited.length === 0}
+            onClick={(e) => {
+              // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, null)
+              this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern, 'timetable', activeScheduleId)
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            disabled={this.state.edited.length === 0}
+            onClick={() => {
+              let trips = []
+              let tripIndexes = []
+              for (var i = 0; i < this.state.edited.length; i++) {
+                let rowIndex = this.state.edited[i]
+                if (tripIndexes.indexOf(rowIndex) === -1) {
+                  trips.push(this.state.data[rowIndex])
+                  tripIndexes.push(rowIndex)
+                }
+              }
+              this.props.saveTripsForCalendar(feedSource.id, activePattern, activeScheduleId, trips)
+            }}
+            bsStyle='primary'
+          >
+            Save
+          </Button>
+        </ButtonToolbar>
+          <Button
+            onClick={() => {
+              this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern)
+            }}
+          ><Icon name='reply'/> Back to route</Button>
+          {' '}
+          Editing timetables for {activePattern ? activePattern.name : <Icon spin name='refresh' />}
+        </h3>
+        <Nav style={{marginBottom: '5px'}} bsStyle='tabs' activeKey={activeScheduleId} onSelect={this.handleSelect}>
+          {calendars
+            ? calendars.map(c => {
+              return (
+                <NavItem
+                  eventKey={c.id}
+                  onClick={() => {
+                    if (activeScheduleId === c.id) {
+                      // this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern, 'timetable')
+                    }
+                    else {
+                      this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern, 'timetable', c)
+                    }
+                  }}
+                >
+                  {c.description}
+                </NavItem>
+              )
+            })
+            : null
+          }
+          <NavItem
+            eventKey={'scheduleexception'}
+            onClick={() => {
+              if (this.props.activeComponent !== 'scheduleexception') {
+                this.props.setActiveEntity(feedSource.id, 'calendar')
+                // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
+              }
+            }}
+          >
+            <Icon name='plus'/> Add calendar
+          </NavItem>
+        </Nav>
+      </div>
       {activeSchedule
         ?
           // <Table striped hover>
-          <table className='handsontable'>
+          <table style={{marginTop: '125px',}} className='handsontable'>
             <thead
-              // style={{position: 'fixed'}}
             >
               <tr>
-                <th
-                  style={{width: '60px'}}
-                >
-                  Block ID
+                <th>
+                  <input
+                    ref='check-all'
+                    type='checkbox'
+                    checked={this.state.selected[0] === '*'}
+                    // onChange={(e) => {
+                    //   console.log(e.checked)
+                    // }}
+                    onClick={(e) => {
+                      console.log(e.checked)
+                      if (this.state.selected[0] === '*') {
+                        this.setState({selected: []})
+                      }
+                      else {
+                        this.setState({selected: ['*']})
+                      }
+                    }}
+                  />
                 </th>
-                <th
-                  style={{width: '300px'}}
-                >
-                  Trip ID
-                </th>
-                <th
-                  style={{width: '300px'}}
-                >
-                  Trip Headsign
-                </th>
-                {activePattern
-                  ? activePattern.patternStops.map(ps => {
-                    let stop = tableData.stop ? tableData.stop.find(st => st.id === ps.stopId) : null
-                    let stopName = stop ? stop.stop_name : ps.stopId
-                    // return null
-                    return (
-                      <th
-                        title={stopName}
-                        style={{width: '100px'}}
-                        colSpan='2'
-                      >
-                        {stopName.length > 18 ? stopName.substr(0, 18) + '...' : stopName}
-                      </th>
-                    )
-                  })
-                  : <th className='text-center'><Icon spin name='refresh' /></th>
-                }
+                {columns.map(c => {
+                  if (c.hidden) return null
+                  return (
+                    <th
+                      style={{width: `${c.width}px`}}
+                      title={c.title ? c.title : c.name}
+                      colSpan={c.colSpan ? c.colSpan : '1'}
+                    >
+                      {c.name}
+                    </th>
+                  )
+                })}
               </tr>
             </thead>
             <tbody>
               {this.state.data
                 ? this.state.data.map((row, rowIndex) => {
+                  let rowValues = []
+                  let rowCheckedColor = '#F3FAF6'
+                  let rowIsChecked = this.state.selected[0] === '*' && this.state.selected.indexOf(rowIndex) === -1 || this.state.selected[0] !== '*' && this.state.selected.indexOf(rowIndex) !== -1
                   return (
                     <tr style={{margin: 0, padding: 0}}>
-                    {row.map((col, colIndex) => {
+                    <td ref={`check-${rowIndex}`}>
+                      <input
+                        type='checkbox'
+                        checked={rowIsChecked}
+                        onClick={(e) => {
+                          let selectIndex = this.state.selected.indexOf(rowIndex)
+                          console.log(selectIndex)
+                          if (selectIndex === -1) {
+                            let stateUpdate = { selected: { $push: [rowIndex] }}
+                            this.setState(update(this.state, stateUpdate))
+                          }
+                          else {
+                            let stateUpdate = {selected: { $splice: [[selectIndex, 1]] }}
+                            this.setState(update(this.state, stateUpdate))
+                          }
+                        }}
+                      />
+                    </td>
+                    {columns.map((col, colIndex) => {
+                      let values = []
+                      let val = objectPath.get(row, col.key)
+                      rowValues.push(val)
                       let cellStyle = {
                         width: '60px',
-                        color: colIndex > 2 && colIndex % 2 === 0 ? '#aaa' : '#000',
+                        color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000',
                       }
+                      if (rowIsChecked) {
+                        cellStyle.backgroundColor = rowCheckedColor
+                      }
+                      let previousValue = rowValues[colIndex - 1]
                       return (
                         <EditableCell
                           ref={`cell-${rowIndex}-${colIndex}`}
                           onChange={(value) => {
-                            let newRows = [...this.state.data]
-                            console.log(value)
-                            newRows[rowIndex][colIndex] = value
-                            this.setState({data: newRows})
+                            this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
                           }}
                           key={`cell-${rowIndex}-${colIndex}`}
                           // onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${colIndex}`}) }}
-                          onLeft={(evt) => { colIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex}-${colIndex - 1}`}) }}
-                          onRight={(evt) => { colIndex + 1 <= row.length && this.setState({activeCell: `${rowIndex}-${colIndex + 1}`}) }}
-                          onUp={(evt) => { rowIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex - 1}-${colIndex}`}) }}
-                          onDown={(evt) => { rowIndex + 1 <= sortedTrips.length - 1 && this.setState({activeCell: `${rowIndex + 1}-${colIndex}`}) }}
+                          onLeft={(evt) => {
+                            if (colIndex - 1 >= 0) {
+                              this.setState({activeCell: `${rowIndex}-${colIndex - 1}`})
+                              return true
+                            }
+                            else {
+                              return false
+                            }
+                          }}
+                          onRight={(evt) => {
+                            if (colIndex + 1 <= columns.length - 1) {
+                              this.setState({activeCell: `${rowIndex}-${colIndex + 1}`})
+                              return true
+                            }
+                            else {
+                              return false
+                            }
+                          }}
+                          onUp={(evt) => {
+                            if (rowIndex - 1 >= 0) {
+                              this.setState({activeCell: `${rowIndex - 1}-${colIndex}`})
+                              return true
+                            }
+                            else {
+                              return false
+                            }
+                          }}
+                          onDown={(evt) => {
+                            if (rowIndex + 1 <= sortedTrips.length - 1) {
+                              this.setState({activeCell: `${rowIndex + 1}-${colIndex}`})
+                              return true
+                            }
+                            else {
+                              return false
+                            }
+                          }}
+                          duplicateLeft={(evt) => {
+                            console.log(previousValue)
+                            this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)
+                          }}
                           handlePastedRows={(rows) => {
                             console.log(rows)
                             let newRows = [...this.state.data]
-                            console.log(rows.length)
-                            console.log(rows[0].length)
                             let date = moment().startOf('day').format('YYYY-MM-DD')
+                            let editedRows = []
                             for (var i = 0; i < rows.length; i++) {
+                              editedRows.push(i)
+                              // TODO: fix handlePaste to accommodate new rows objects
                               for (var j = 0; j < rows[0].length; j++) {
-                                console.log('row ' + rowIndex + i + ' col ' + colIndex + j)
-                                if (typeof newRows[i + rowIndex] !== 'undefined' && typeof newRows[i + rowIndex][j + colIndex] !== 'undefined')
-                                  newRows[i + rowIndex][j + colIndex] = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
+                                let path = `${rowIndex + i}.${columns[colIndex + j].key}`
+                                console.log(path)
+                                if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
+                                  let newValue = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
+                                  objectPath.set(newRows, path, newValue)
+                                }
                               }
                             }
-                            console.log(newRows)
-                            this.setState({activeCell: `${rowIndex}-${colIndex}`, data: newRows})
+                            let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
+                            this.setState(update(this.state, stateUpdate))
                           }}
-                          invalidData={colIndex > 2 && col >= 0 && col < this.state.data[rowIndex][colIndex - 1]}
+                          invalidData={/TIME/.test(col.type) && val >= 0 && val < previousValue}
                           isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
                           isFocused={false}
                           renderTime={colIndex >= 3}
-                          cellRenderer={colIndex < 3
+                          cellRenderer={!/TIME/.test(col.type)
                             ? (value) => value
                             : (value) => {
                               if (value >= 0)
@@ -272,7 +472,7 @@ export default class TimetableEditor extends Component {
                           //   let date = moment().startOf('day').format('YYYY-MM-DD')
                           //   return moment(date + 'T' + value, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
                           // }}
-                          data={col}//colIndex < 3 || isNaN(col) ? col : moment().startOf('day').seconds(col).format('HH:mm:ss')}
+                          data={val}//colIndex < 3 || isNaN(col) ? col : moment().startOf('day').seconds(col).format('HH:mm:ss')}
                           style={cellStyle}
                         />
                       )
@@ -281,101 +481,6 @@ export default class TimetableEditor extends Component {
                   )
                 })
                 : null
-              }
-              {sortedTrips && false
-                ? sortedTrips.map((t, rowIndex) => {
-                  // let move = (row, col) => {
-                  //   this.setState({activeCell: `${row}-${col}`})
-                  // }
-                  return (
-                    <tr style={{margin: 0, padding: 0}}>
-                      <EditableCell
-                        ref={`cell-${rowIndex}-0`}
-                        onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${0}`}) }}
-                        onLeft={(evt) => { return false }}
-                        onRight={(evt) => { this.setState({activeCell: `${rowIndex}-${0 + 1}`}) }}
-                        onUp={(evt) => { rowIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex - 1}-${0}`}) }}
-                        onDown={(evt) => { this.setState({activeCell: `${rowIndex + 1}-${0}`}) }}
-                        handlePastedRows={(rows) => {
-                          console.log(rows)
-                        }}
-                        isEditing={this.state.activeCell === `${rowIndex}-${0}` }
-                        isFocused={false}
-                        data={t.blockId}
-                      />
-                      <EditableCell
-                        ref={`cell-${rowIndex}-1`}
-                        onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${1}`}) }}
-                        onLeft={(evt) => { this.setState({activeCell: `${rowIndex}-${1 - 1}`}) }}
-                        onRight={(evt) => { this.setState({activeCell: `${rowIndex}-${1 + 1}`}) }}
-                        onUp={(evt) => { rowIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex - 1}-${1}`}) }}
-                        onDown={(evt) => { this.setState({activeCell: `${rowIndex + 1}-${1}`}) }}
-                        handlePastedRows={(rows) => {
-                          console.log(rows)
-                        }}
-                        isEditing={this.state.activeCell === `${rowIndex}-${1}` }
-                        isFocused={false}
-                        data={t.gtfsTripId}
-                      />
-                      <EditableCell
-                        ref={`cell-${rowIndex}-2`}
-                        onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${2}`}) }}
-                        onLeft={(evt) => { this.setState({activeCell: `${rowIndex}-${2 - 1}`}) }}
-                        onRight={(evt) => { this.setState({activeCell: `${rowIndex}-${2 + 1}`}) }}
-                        onUp={(evt) => { rowIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex - 1}-${2}`}) }}
-                        onDown={(evt) => { this.setState({activeCell: `${rowIndex + 1}-${2}`}) }}
-                        handlePastedRows={(rows) => {
-                          console.log(rows)
-                        }}
-                        isEditing={this.state.activeCell === `${rowIndex}-${2}` }
-                        isFocused={false}
-                        data={t.tripHeadsign}
-                      />
-                      {
-                        t.stopTimes.map((st, index) => {
-                          let colOffset = 3 // number of standard columns to right (e.g., block id, trip id, headsign)
-                          let colIndex = 2 * index + colOffset
-                          let maxRight = (2 * t.stopTimes.length) + colOffset - 1
-                          let departureColIndex = colIndex + 1
-                          return ([
-                            <EditableCell
-                              ref={`cell-${rowIndex}-${colIndex}`}
-                              onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${colIndex}`}) }}
-                              onLeft={(evt) => { colIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex}-${colIndex - 1}`}) }}
-                              onRight={(evt) => { colIndex + 1 <= maxRight && this.setState({activeCell: `${rowIndex}-${colIndex + 1}`}) }}
-                              onUp={(evt) => { rowIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex - 1}-${colIndex}`}) }}
-                              onDown={(evt) => { rowIndex + 1 <= sortedTrips.length - 1 && this.setState({activeCell: `${rowIndex + 1}-${colIndex}`}) }}
-                              handlePastedRows={(rows) => {
-                                console.log(rows)
-                              }}
-                              isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
-                              isFocused={false}
-                              data={moment().startOf('day').seconds(st.arrivalTime).format('HH:mm:ss')}
-                              style={{width: '60px'}}
-                            />
-                            ,
-                            <EditableCell
-                              ref={`cell-${rowIndex}-${departureColIndex}`}
-                              onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${departureColIndex}`}) }}
-                              onLeft={(evt) => { departureColIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex}-${departureColIndex - 1}`}) }}
-                              onRight={(evt) => { departureColIndex + 1 <= maxRight && this.setState({activeCell: `${rowIndex}-${departureColIndex + 1}`}) }}
-                              onUp={(evt) => { rowIndex - 1 >= 0 && this.setState({activeCell: `${rowIndex - 1}-${departureColIndex}`}) }}
-                              onDown={(evt) => { rowIndex + 1 <= sortedTrips.length - 1 && this.setState({activeCell: `${rowIndex + 1}-${departureColIndex}`}) }}
-                              handlePastedRows={(rows) => {
-                                console.log(rows)
-                              }}
-                              isEditing={this.state.activeCell === `${rowIndex}-${departureColIndex}` }
-                              isFocused={false}
-                              data={moment().startOf('day').seconds(st.departureTime).format('HH:mm:ss')}
-                              style={{width: '60px', color: '#aaa'}}
-                            />
-                          ])
-                        })
-                      }
-                    </tr>
-                  )
-                })
-                : null // <tr><td colSpan={sortedTrips ? sortedTrips[0].stopTimes.length + 2 : 3} className='text-center'><Icon spin name='refresh' /></td></tr>
               }
             </tbody>
           </table>

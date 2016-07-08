@@ -1,5 +1,6 @@
 import update from 'react-addons-update'
 import polyUtil from 'polyline-encoded'
+import setActiveGtfsEntity from '../actions/editor'
 
 const mapStop = (s) => {
   return {
@@ -28,25 +29,20 @@ const mapStop = (s) => {
 }
 const defaultState = {
   feedSourceId: null,
-  // activeEntityId: null,
-  // active: {entity: null,}
-  // activeSubEntity: null,
-  // activeSubEntityId: null,
-  // activeComponent: null,
-  // activeSubComponent: null,
-  // activeSubSubComponent: null,
   active: {},
-  // edited: false,
   editGeometry: false,
+  addStops: false,
   tableData: {},
   validation: null,
-  gtfsEntityLookup: {}
 }
 const emptyTableData = { }
 // let newId = 0
 const editor = (state = defaultState, action) => {
-  let newTableData, fields, rowData, mappedEntities, feedTableData, activeEntity, activeSubEntity, newState, routeIndex
+  let newTableData, fields, rowData, mappedEntities, feedTableData, activeEntity, activeSubEntity, newState, routeIndex, stopIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex
   switch (action.type) {
+    // case '@@router/LOCATION_CHANGE':
+    //
+    //   setActiveGtfsEntity
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
         return defaultState
@@ -54,6 +50,10 @@ const editor = (state = defaultState, action) => {
     case 'TOGGLE_EDIT_GEOMETRY':
       return update(state, {
         editGeometry: {$set: !state.editGeometry},
+      })
+    case 'TOGGLE_ADD_STOPS':
+      return update(state, {
+        addStops: {$set: !state.addStops},
       })
     case 'CREATE_GTFS_ENTITY':
       if (action.component === 'trippattern') {
@@ -102,7 +102,7 @@ const editor = (state = defaultState, action) => {
     case 'SETTING_ACTIVE_GTFS_ENTITY':
       activeEntity = action.component === 'feedinfo'
         ? Object.assign({}, state.tableData[action.component])
-        : state.tableData[action.component]
+        : state.tableData[action.component] && action.entityId
         ? Object.assign({}, state.tableData[action.component].find(e => e.id === action.entityId))
         : null
       switch (action.subComponent) {
@@ -160,8 +160,10 @@ const editor = (state = defaultState, action) => {
           patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
           activeEntity = Object.assign({}, state.active.entity.tripPatterns[patternIndex])
           for (var key in action.props) {
+            console.log(key, action.props[key])
             activeEntity[key] = action.props[key]
           }
+          console.log(activeEntity)
           return update(state, {
             active: {
               entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
@@ -208,9 +210,20 @@ const editor = (state = defaultState, action) => {
           agency_email: ent.email,
         }
       })
-      return update(state, {
-        tableData: {agency: {$set: agencies}}
-      })
+      agencyIndex = state.active.entity && action.agencies.findIndex(a => a.id === state.active.entity.id)
+      if (agencyIndex !== -1) {
+        return update(state, {
+          tableData: {agency: {$set: agencies}},
+          active: {
+            entity: {$set: agencies[agencyIndex]},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {agency: {$set: agencies}}
+        })
+      }
     case 'RECEIVE_FARES':
       const fares = action.fares.map(fare => {
         return {
@@ -229,9 +242,20 @@ const editor = (state = defaultState, action) => {
           transfer_duration: fare.transferDuration,
         }
       })
-      return update(state, {
-        tableData: {fare: {$set: fares}}
-      })
+      fareIndex = state.active.entity && action.fares.findIndex(f => f.id === state.active.entity.id)
+      if (fareIndex !== -1) {
+        return update(state, {
+          tableData: {fare: {$set: fares}},
+          active: {
+            entity: {$set: fares[fareIndex]},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {fare: {$set: fares}}
+        })
+      }
     case 'RECEIVE_FEED_INFO':
       const feedInfo = {
         // datatools props
@@ -249,9 +273,19 @@ const editor = (state = defaultState, action) => {
         feed_publisher_url: action.feedInfo.feedPublisherUrl,
         feed_version: action.feedInfo.feedVersion,
       }
-      return update(state, {
-        tableData: {feedinfo: {$set: feedInfo}}
-      })
+      if (state.active.component === 'feedinfo') {
+        return update(state, {
+          tableData: {feedinfo: {$set: feedInfo}},
+          active: {
+            entity: {$set: feedInfo},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {feedinfo: {$set: feedInfo}}
+        })
+      }
     case 'RECEIVE_CALENDARS':
       const calendars = action.calendars ? action.calendars.map(c => {
         return {
@@ -273,9 +307,20 @@ const editor = (state = defaultState, action) => {
           end_date: c.endDate,
         }
       }) : null
-      return update(state, {
-        tableData: {calendar: {$set: calendars}}
-      })
+      calendarIndex = state.active.entity && action.calendars.findIndex(c => c.id === state.active.entity.id)
+      if (calendarIndex !== -1) {
+        return update(state, {
+          tableData: {calendar: {$set: calendars}},
+          active: {
+            entity: {$set: calendars[calendarIndex]},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {calendar: {$set: calendars}}
+        })
+      }
     case 'RECEIVE_SCHEDULE_EXCEPTIONS':
       const scheduleExceptions = action.scheduleExceptions ? action.scheduleExceptions.map(se => {
         return {
@@ -283,6 +328,7 @@ const editor = (state = defaultState, action) => {
           id: se.id,
           name: se.name,
           feedId: se.feedId,
+          exemplar: se.exemplar,
           dates: se.dates,
           customSchedule: se.customSchedule,
 
@@ -290,9 +336,20 @@ const editor = (state = defaultState, action) => {
           // gtfs_prop: se.gtfs_prop
         }
       }) : []
-      return update(state, {
-        tableData: {scheduleexception: {$set: scheduleExceptions}}
-      })
+      scheduleExceptionIndex = state.active.entity && action.scheduleExceptions.findIndex(se => se.id === state.active.entity.id)
+      if (scheduleExceptionIndex !== -1) {
+        return update(state, {
+          tableData: {scheduleexception: {$set: scheduleExceptions}},
+          active: {
+            entity: {$set: scheduleExceptions[scheduleExceptionIndex]},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {scheduleexception: {$set: scheduleExceptions}}
+        })
+      }
     case 'RECEIVE_ROUTES':
       // feedTableData = state.tableData[action.feedId]
       // if (!feedTableData)
@@ -302,13 +359,14 @@ const editor = (state = defaultState, action) => {
           // datatools props
           id: r.id,
           feedId: r.feedId,
+          routeBrandingUrl: r.routeBrandingUrl,
 
           // gtfs spec props
           agency_id: r.agencyId,
           route_short_name: r.routeShortName,
           route_long_name: r.routeLongName,
           route_desc: r.routeDesc,
-          route_type: r.routeTypeId,
+          route_type: r.gtfsRouteType,
           route_url: r.routeUrl,
           route_color: r.routeColor,
           route_text_color: r.routeTextColor,
@@ -316,9 +374,20 @@ const editor = (state = defaultState, action) => {
         }
       }) : []
       // feedTableData.route = routes
-      return update(state, {
-        tableData: {route: {$set: routes}}
-      })
+      routeIndex = state.active.entity && action.routes.findIndex(r => r.id === state.active.entity.id)
+      if (routeIndex !== -1) {
+        return update(state, {
+          tableData: {route: {$set: routes}},
+          active: {
+            entity: {$set: routes[routeIndex]},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {route: {$set: routes}}
+        })
+      }
     case 'RECEIVE_TRIP_PATTERNS':
       return update(state, {
         tripPatterns: {$set:
@@ -345,15 +414,34 @@ const editor = (state = defaultState, action) => {
     case 'RECEIVE_TRIPS_FOR_CALENDAR':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.pattern.routeId)
       let patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.pattern.id)
-      return update(state, {
-        tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}}
-      })
+      if (state.active.entity.id === action.pattern.routeId) {
+        return update(state, {
+          tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
+          active: {entity: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}
+        })
+      }
+      else {
+        return update(state, {
+          tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
+        })
+      }
     case 'RECEIVE_STOPS':
       const stops = action.stops ? action.stops.map(mapStop) : []
 
-      return update(state, {
-        tableData: {stop: {$set: stops}}
-      })
+      stopIndex = state.active.entity && action.stops.findIndex(s => s.id === state.active.entity.id)
+      if (stopIndex !== -1) {
+        return update(state, {
+          tableData: {stop: {$set: stops}},
+          active: {
+            entity: {$set: stops[stopIndex]},
+            edited: {$set: false}
+          }
+        })
+      } else {
+        return update(state, {
+          tableData: {stop: {$set: stops}}
+        })
+      }
     case 'RECEIVE_STOP':
       const stop = mapStop(action.stop)
       console.log(stop)
