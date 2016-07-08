@@ -1,13 +1,8 @@
 import React, { PropTypes } from 'react'
-
 import fetch from 'isomorphic-fetch'
-
 import { Panel, Grid, Row, Col, Button, Glyphicon, Label } from 'react-bootstrap'
-
 import { PureComponent, shallowEqual } from 'react-pure-render'
-
 import { Map, Marker, Popup, TileLayer, Polyline, MapControl } from 'react-leaflet'
-
 import Select from 'react-select'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
