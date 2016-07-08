@@ -123,9 +123,9 @@ export default class MapModal extends React.Component {
                   ref='drawnItems'
                 >
                   <EditControl
-                  onEdited={(e) => this._onEditPath(e)}
-                  onCreated={(e) => this._onCreate(e)}
-                  onDeleted={(e) => this._onDeleted(e)}
+                    onEdited={(e) => this._onEditPath(e)}
+                    onCreated={(e) => this._onCreate(e)}
+                    onDeleted={(e) => this._onDeleted(e)}
                     position='topright'
                     draw={this.state.draw
                       ? {
