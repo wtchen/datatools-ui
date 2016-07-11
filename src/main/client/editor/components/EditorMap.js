@@ -866,11 +866,30 @@ export default class EditorMap extends React.Component {
         scrollWheelZoom={true}
       >
         <ZoomControl position='topright' />
-        <TileLayer
-          url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}{retina}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
-          retina='@2x'
-          attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
-        />
+        <LayersControl position='topleft'>
+          <LayersControl.Overlay name='Route Alignments'>
+            <FeatureGroup>
+              {this.props.tripPatterns ? this.props.tripPatterns.map((tp) => {
+                if(!tp.latLngs) return null;
+                return <Polyline positions={tp.latLngs} weight={2} color='#888' />
+              }) : null}
+            </FeatureGroup>
+          </LayersControl.Overlay>
+          <LayersControl.BaseLayer name='Streets' checked>
+            <TileLayer
+              url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}{retina}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+              retina='@2x'
+              attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
+            />
+          </LayersControl.BaseLayer>
+          <LayersControl.BaseLayer name='Satellite'>
+            <TileLayer
+              url='https://api.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}{retina}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+              retina='@2x'
+              attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
+            />
+          </LayersControl.BaseLayer>
+        </LayersControl>
         {
           this.getMapComponents(this.props.activeComponent, this.props.entities, this.props.entity, this.props.activeSubEntity)
         }
@@ -881,16 +900,6 @@ export default class EditorMap extends React.Component {
             />
           : null
         }
-        <LayersControl position='topleft'>
-          <LayersControl.Overlay name='Route Alignments'>
-            <FeatureGroup>
-              {this.props.tripPatterns ? this.props.tripPatterns.map((tp) => {
-                if(!tp.latLngs) return null;
-                return <Polyline positions={tp.latLngs} weight={2} color='#888' />
-              }) : null}
-            </FeatureGroup>
-          </LayersControl.Overlay>
-        </LayersControl>
       </Map>
     )
   }
