@@ -46,15 +46,17 @@ module.exports = {
       },
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+        // test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        // loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=./assets/fonts/[hash].[ext]'
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=./assets/fonts/[hash].[ext]'
       },
       {
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'file-loader'
+        loader: 'file-loader?name=./assets/img/[hash].[ext]'
       },
       // css-loader
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=10000'},
+      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=10000&name=./assets/img/[hash].[ext]'},
     ]
   }
 }
