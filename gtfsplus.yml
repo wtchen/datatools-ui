@@ -238,6 +238,8 @@
     required: true
     inputType: DROPDOWN
     options:
+    - value: '1'
+      text: Adult
     - value: '2'
       text: Senior
     - value: '3'
