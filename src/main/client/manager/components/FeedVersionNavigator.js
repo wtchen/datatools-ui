@@ -29,10 +29,16 @@ export default class FeedVersionNavigator extends React.Component {
 
     const hasVersions = this.props.versions && this.props.versions.length > 0
 
+    const sortedVersions = hasVersions && this.props.versions.sort((a, b) => {
+      if (a.updated < b.updated) return -1
+      if (a.updated > b.updated) return 1
+      return 0
+    })
+
     let version = null
 
     if(hasVersions) {
-      version = this.props.versions[this.state.versionIndex]
+      version = sortedVersions[this.state.versionIndex]
     }
 
     return (
@@ -40,7 +46,7 @@ export default class FeedVersionNavigator extends React.Component {
         <Row>
           <Col xs={12} sm={2} style={versionTitleStyle}>
             {hasVersions
-              ? `Version ${version.version} of ${this.props.versions.length}`
+              ? `Version ${this.state.versionIndex + 1} of ${sortedVersions.length}`
               : '(No Versions)'
             }
           </Col>
