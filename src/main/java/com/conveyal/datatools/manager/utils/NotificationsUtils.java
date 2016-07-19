@@ -47,14 +47,16 @@ public class NotificationsUtils {
             e.printStackTrace();
         }
         for (JsonNode user : subscribedUsers) {
-            String email = user.get("email").asText();
-            Boolean emailVerified = user.get("email_verified").asBoolean();
-            System.out.println(email);
-            String subject = subscriptionType + " notification for " + target;
+            if (user.has("email")) {
+                String email = user.get("email").asText();
+                Boolean emailVerified = user.get("email_verified").asBoolean();
+                System.out.println(email);
+                String subject = subscriptionType + " notification for " + target;
 
-            // only send email if address has been verified
-            if (emailVerified)
-                sendNotification(email, subject, "Body", "<p>html</p>");
+                // only send email if address has been verified
+                if (emailVerified)
+                    sendNotification(email, subject, "Body", "<p>html</p>");
+            }
         }
     }
 }
