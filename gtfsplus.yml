@@ -91,7 +91,7 @@
     columnWidth: 3
     helpContent: Binary direction_id from GTFS trips.txt file. Each (route_id,
       direction_id) pair can only appear once in directions.txt.
-  - name: Direction
+  - name: direction
     required: true
     inputType: DROPDOWN
     options:
