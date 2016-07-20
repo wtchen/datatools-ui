@@ -39,7 +39,7 @@ export default class GtfsMap extends React.Component {
 
     // handle stop: panning to
     if (nextProps && nextProps.position !== this.props.position) {
-      this.refs.map.getLeafletElement().panTo(nextProps.position)
+      this.refs.map.leafletElement.panTo(nextProps.position)
     }
   }
 
@@ -59,7 +59,7 @@ export default class GtfsMap extends React.Component {
     const layerAddHandler = (e) => {
       // handle pattern: opening popup and fitting bounds
       if (e.layer.feature && e.layer.feature.properties.patternId) {
-        this.refs.map.getLeafletElement().fitBounds(e.layer.getBounds())
+        this.refs.map.leafletElement.fitBounds(e.layer.getBounds())
         e.layer.openPopup()
       }
     }
@@ -211,13 +211,13 @@ export default class GtfsMap extends React.Component {
   refreshGtfsElements (feeds, entities) {
     const feedIds = (feeds || this.props.feeds).map(getFeedId)
     const ents = (entities || this.props.entities || ['routes', 'stops'])
-    const zoomLevel = this.refs.map.getLeafletElement().getZoom()
+    const zoomLevel = this.refs.map.leafletElement.getZoom()
     if (feedIds.length === 0 || zoomLevel <= 13) {
       this.setState({ stops: [], patterns: [], routes: [] })
       return
     }
     console.log('refresh GTFS', feedIds)
-    const bounds = this.refs['map'].getLeafletElement().getBounds()
+    const bounds = this.refs['map'].leafletElement.getBounds()
     const maxLat = bounds.getNorth()
     const maxLng = bounds.getEast()
     const minLat = bounds.getSouth()
