@@ -25,13 +25,19 @@ export default class FeedVersionNavigator extends React.Component {
     const messages = DT_CONFIG.messages.active.FeedVersionNavigator
     const hasVersions = this.props.versions && this.props.versions.length > 0
 
+    const sortedVersions = hasVersions && this.props.versions.sort((a, b) => {
+      if (a.updated < b.updated) return -1
+      if (a.updated > b.updated) return 1
+      return 0
+    })
+
     let version
 
     if (typeof this.props.versionIndex === 'undefined') {
       return null
     }
     else if(hasVersions && this.props.versions.length >= this.props.versionIndex) {
-      version = this.props.versions[this.props.versionIndex - 1]
+      version = sortedVersions[this.props.versionIndex - 1]
     }
     else {
       console.log(`Error version ${this.props.versionIndex} does not exist`)
@@ -49,7 +55,7 @@ export default class FeedVersionNavigator extends React.Component {
           <Col xs={12} sm={8}>
             <ButtonGroup justified>
               <Button href='#'
-                disabled={!hasVersions || !version.previousVersionId}
+                disabled={!hasVersions || !sortedVersions[this.props.versionIndex - 2]}
                 onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex - 1}`)}
               >
                 <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> {messages.previous}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
@@ -86,7 +92,7 @@ export default class FeedVersionNavigator extends React.Component {
                 <Glyphicon glyph='remove' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
               </Button>
               <Button href='#'
-                disabled={!hasVersions || !version.nextVersionId}
+                disabled={!hasVersions || !sortedVersions[this.props.versionIndex]}
                 onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex + 1}`)}
               >
                 <span className='hidden-xs'>{messages.next} </span><span className='hidden-xs hidden-sm'>{messages.version} </span><Glyphicon glyph='arrow-right' />
