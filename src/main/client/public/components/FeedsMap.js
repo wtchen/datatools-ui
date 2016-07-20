@@ -13,7 +13,7 @@ export default class FeedsMap extends React.Component {
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.bounds && this.props.bounds !== nextProps.bounds) {
-      this.refs.feedsMap.getLeafletElement().fitBounds(nextProps.bounds)
+      this.refs.feedsMap.leafletElement.fitBounds(nextProps.bounds)
     }
   }
   render () {

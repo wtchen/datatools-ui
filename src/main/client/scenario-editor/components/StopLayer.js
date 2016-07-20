@@ -28,24 +28,27 @@ export default class StopLayer extends BaseTileLayer {
   // }
   drawTile = (cvs, tilePt, z) => {
     let tileLength = 256
-    if (z < this.props.minZoom) return // don't draw every transit stop in a country
+    const {map} = this.context
+    const {minZoom, stops} = this.props
+
+    if (z < minZoom) return // don't draw every transit stop in a country
 
     let ctx = cvs.getContext('2d')
     ctx.strokeStyle = '#888'
 
     // get the bounds
-    let topLeft = this.props.map.unproject([tilePt.x * tileLength, tilePt.y * tileLength], z)
+    let topLeft = map.unproject([tilePt.x * tileLength, tilePt.y * tileLength], z)
     let brPoint = point([tilePt.x + 1, tilePt.y + 1])
-    let botRight = this.props.map.unproject([brPoint.x * tileLength, brPoint.y * tileLength], z)
+    let botRight = map.unproject([brPoint.x * tileLength, brPoint.y * tileLength], z)
 
     // find relevant stops
-    this.props.stops
+    stops
       .filter((s) => s.stop_lat < topLeft.lat && s.stop_lat > botRight.lat && s.stop_lon > topLeft.lng && s.stop_lon < botRight.lng)
       .forEach((s) => {
         // get coordinates
         // lat first for leaflet, every so often Lineland seems like a good idea
         // http://www.gutenberg.org/ebooks/97
-        let { x, y } = this.props.map.project([s.stop_lat, s.stop_lon], z)
+        let { x, y } = map.project([s.stop_lat, s.stop_lon], z)
 
         // we know they're in the current tile so we can be lazy and just modulo
         x %= tileLength

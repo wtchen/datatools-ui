@@ -68,7 +68,7 @@ export default class MapModal extends React.Component {
   }
   initializeMap() {
     if(this.mapInitialized || this.props.initialized) return
-    const leafletMap = this.getMap().getLeafletElement()
+    const leafletMap = this.getMap().leafletElement
     leafletMap.invalidateSize()
     this.mapInitialized = true
   }
@@ -97,7 +97,7 @@ export default class MapModal extends React.Component {
     const clickHandler = (e) => {
       console.log(e.latlng)
       if (this.state.markerSelect) {
-        this.refs.map.getLeafletElement().panTo(e.latlng)
+        this.refs.map.leafletElement.panTo(e.latlng)
         this.setState({marker: e.latlng})
       }
     }
