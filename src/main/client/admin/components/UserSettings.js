@@ -92,19 +92,19 @@ export default class UserSettings extends React.Component {
     })
   }
 
-  projectAccessUpdated(projectId, newAccess) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } };
-    this.setState(update(this.state, stateUpdate));
+  projectAccessUpdated (projectId, newAccess) {
+    var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } }
+    this.setState(update(this.state, stateUpdate))
   }
 
-  projectFeedsUpdated(projectId, newFeeds) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { defaultFeeds : newFeeds } } } };
-    this.setState(update(this.state, stateUpdate));
+  projectFeedsUpdated (projectId, newFeeds) {
+    var stateUpdate = { projectSettings: { [projectId]: { $merge : { defaultFeeds : newFeeds } } } }
+    this.setState(update(this.state, stateUpdate))
   }
 
-  projectPermissionsUpdated(projectId, newPermissions) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { permissions : newPermissions } } } };
-    this.setState(update(this.state, stateUpdate));
+  projectPermissionsUpdated (projectId, newPermissions) {
+    var stateUpdate = { projectSettings: { [projectId]: { $merge : { permissions : newPermissions } } } }
+    this.setState(update(this.state, stateUpdate))
   }
 
   render () {
@@ -118,7 +118,7 @@ export default class UserSettings extends React.Component {
         case 'custom': return <Label bsStyle='success'>{messages.project.custom}</Label>
       }
     }
-    
+
     let projectPanel = (
       <Panel header={
         <h3>
