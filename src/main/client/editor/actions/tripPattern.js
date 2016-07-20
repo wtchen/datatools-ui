@@ -33,6 +33,36 @@ export function fetchTripPatterns (feedId) {
   }
 }
 
+export function undoActiveTripPatternEdits () {
+  return {
+    type: 'UNDO_TRIP_PATTERN_EDITS'
+  }
+}
+
+export function addControlPoint (controlPoint, index) {
+  return {
+    type: 'ADD_CONTROL_POINT',
+    controlPoint,
+    index
+  }
+}
+
+export function removeControlPoint (index) {
+  return {
+    type: 'REMOVE_CONTROL_POINT',
+    index
+  }
+}
+
+export function updateControlPoint (index, point, distance) {
+  return {
+    type: 'UPDATE_CONTROL_POINT',
+    index,
+    point,
+    distance
+  }
+}
+
 // TODO: merge the following with the above?
 
 export function requestingTripPatternsForRoute (feedId, routeId) {

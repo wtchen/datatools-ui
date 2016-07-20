@@ -38,7 +38,7 @@ export default class GtfsEditor extends Component {
   //   return true
   // }
   componentDidUpdate (prevProps) {
-    console.log(prevProps, this.props)
+    // console.log(prevProps, this.props)
     this.props.onComponentUpdate(prevProps, this.props)
   }
   componentWillReceiveProps (nextProps) {
@@ -50,8 +50,8 @@ export default class GtfsEditor extends Component {
     }
     // fetch table if it doesn't exist already and user changes tabs
     if (nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
-      console.log('getting table: ' + nextProps.activeComponent)
-      console.log(nextProps.feedSource, this.props.feedSource)
+      // console.log('getting table: ' + nextProps.activeComponent)
+      // console.log(nextProps.feedSource, this.props.feedSource)
       this.props.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
     }
     // fetch sub components of active entity on active entity switch (e.g., fetch trip patterns when route changed)
@@ -113,34 +113,6 @@ export default class GtfsEditor extends Component {
           break
       }
     }
-  }
-
-  save () {
-    const zip = new JSZip()
-
-    for(const table of DT_CONFIG.modules.editor.spec) {
-      if(!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
-
-      let fileContent = ''
-      // white the header line
-      const fieldNameArr = table.fields.map(field => field['name'])
-      fileContent += fieldNameArr.join(',') + '\n'
-
-      // write the data rows
-      var dataRows = this.props.tableData[table.id].map(rowData => {
-        const rowText = fieldNameArr.map(fieldName => {
-          return rowData[fieldName] || ''
-        }).join(',')
-        fileContent += rowText + '\n'
-      })
-
-      // add to the zip archive
-      zip.file(table.name, fileContent)
-    }
-
-    zip.generateAsync({type:"blob"}).then((content) => {
-      this.props.feedSaved(content)
-    })
   }
 
   render () {
@@ -234,54 +206,14 @@ export default class GtfsEditor extends Component {
             />
           : this.props.activeComponent === 'feedinfo'
           ? <EntityDetails
-              width={detailsWidth}
-              tableView={this.props.tableView}
-              activeComponent={this.props.activeComponent}
-              subComponent={this.props.subComponent}
-              subSubComponent={this.props.subSubComponent}
-              activeSubEntity={this.props.activeSubEntity}
-              activeSubSubEntity={this.props.activeSubSubEntity}
-              entity={this.props.activeEntity}
-              entities={this.props.tableData[this.props.activeComponent]}
-              setActiveEntity={this.props.setActiveEntity}
-              newEntityClicked={this.props.newEntityClicked}
-              deleteEntity={this.props.deleteEntity}
-              updateActiveEntity={this.props.updateActiveEntity}
-              resetActiveEntity={this.props.resetActiveEntity}
-              saveActiveEntity={this.props.saveActiveEntity}
-              entityEdited={this.props.entityEdited}
-              feedSource={feedSource}
-              newRowsDisplayed={this.props.newRowsDisplayed}
-              stops={this.props.tableData.stop}
-              tableData={this.props.tableData}
+              detailsWidth={detailsWidth}
+              {...this.props}
             />
           : this.props.activeComponent
           ? <EntityList
-              width={listWidth}
-              tableView={this.props.tableView}
-              activeComponent={this.props.activeComponent}
-              subComponent={this.props.subComponent}
-              subSubComponent={this.props.subSubComponent}
-              activeSubEntity={this.props.activeSubEntity}
-              activeSubSubEntity={this.props.activeSubSubEntity}
-              entity={this.props.activeEntity}
-              entities={this.props.tableData[this.props.activeComponent]}
-              setActiveEntity={this.props.setActiveEntity}
-              newEntityClicked={this.props.newEntityClicked}
-              deleteEntity={this.props.deleteEntity}
-              updateActiveEntity={this.props.updateActiveEntity}
-              resetActiveEntity={this.props.resetActiveEntity}
-              saveActiveEntity={this.props.saveActiveEntity}
-              entityEdited={this.props.entityEdited}
-              feedSource={feedSource}
-              toggleEditGeometry={this.props.toggleEditGeometry}
-              toggleAddStops={this.props.toggleAddStops}
-              isEditingGeometry={this.props.isEditingGeometry}
-              isAddingStops={this.props.isAddingStops}
-              newRowsDisplayed={this.props.newRowsDisplayed}
+              listWidth={listWidth}
               stops={this.props.tableData.stop}
-              tableData={this.props.tableData}
-              fetchStops={this.props.fetchStops}
+              {...this.props}
             />
           : null
         }
@@ -295,28 +227,8 @@ export default class GtfsEditor extends Component {
             : 0
           }
           hidden={this.props.subSubComponent === 'timetable'}
-          feedSource={feedSource}
-          feedInfo={this.props.feedInfo}
-          activeComponent={this.props.activeComponent}
-          subComponent={this.props.subComponent}
-          subSubComponent={this.props.subSubComponent}
-          activeSubEntity={this.props.activeSubEntity}
-          activeSubSubEntity={this.props.activeSubSubEntity}
-          setActiveEntity={this.props.setActiveEntity}
-          newEntityClicked={this.props.newEntityClicked}
-          deleteEntity={this.props.deleteEntity}
-          updateActiveEntity={this.props.updateActiveEntity}
-          resetActiveEntity={this.props.resetActiveEntity}
-          saveActiveEntity={this.props.saveActiveEntity}
-          entityEdited={this.props.entityEdited}
-          toggleEditGeometry={this.props.toggleEditGeometry}
-          isEditingGeometry={this.props.isEditingGeometry}
-          isAddingStops={this.props.isAddingStops}
-          entity={this.props.activeEntity}
-          entities={this.props.tableData[this.props.activeComponent]}
           stops={this.props.tableData.stop || []}
-          tableData={this.props.tableData}
-          tripPatterns={this.props.tripPatterns}
+          {...this.props}
         />
         <ActiveFeedInfoPanel
           feedSource={this.props.feedSource}

@@ -84,6 +84,8 @@ export function fetchStops (feedId) {
 
 export function fetchStopsForTripPattern (feedId, tripPatternId) {
   return function (dispatch, getState) {
+    if (tripPatternId === 'new' || tripPatternId === null)
+      return []
     dispatch(requestingStops(feedId))
     const url = `/api/manager/secure/stop?feedId=${feedId}&patternId=${tripPatternId}`
     return secureFetch(url, getState())

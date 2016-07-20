@@ -11,6 +11,7 @@ import DateTimeField from 'react-bootstrap-datetimepicker'
 import moment from 'moment'
 import { SketchPicker } from 'react-color'
 import Dropzone from 'react-dropzone'
+import update from 'react-addons-update'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 import EditableTextField from '../../common/components/EditableTextField'
@@ -38,10 +39,10 @@ export default class EntityDetails extends Component {
   // componentWillReceiveProps (nextProps) {
   //   // forceUpdate()
   // }
-  shouldComponentUpdate (nextProps) {
-    // component is updating!!!
-    return  true // !shallowEqual(nextProps.entity, this.props.entity) || nextProps.entityEdited !== this.props.entityEdited || nextProps.activeEntityId !== this.props.activeEntityId
-  }
+  // shouldComponentUpdate (nextProps) {
+  //   // component is updating!!!
+  //   return !shallowEqual(nextProps.activeEntity, this.props.activeEntity) || nextProps.entityEdited !== this.props.entityEdited || nextProps.activeEntityId !== this.props.activeEntityId
+  // }
   classes () {
     return {
       'default': {
@@ -75,10 +76,10 @@ export default class EntityDetails extends Component {
   }
   render () {
     // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
-    console.log(this.state)
-    let entity = this.props.activeComponent === 'feedinfo' ? this.props.tableData.feedinfo : this.props.entity
+    // console.log(this.state)
+    let entity = this.props.activeComponent === 'feedinfo' ? this.props.tableData.feedinfo : this.props.activeEntity
 
-    let panelWidth = `${this.props.width}px`
+    let panelWidth = `${this.props.detailsWidth}px`
 
     let panelStyle = {
       width: panelWidth,
@@ -116,16 +117,16 @@ export default class EntityDetails extends Component {
         label: `${key} zone (${zones[key] ? zones[key].length : 0} stops)`
       }
     })
-
+    let validationErrors = []
     const getInput = (row, field, currentValue, index) => {
       const editorField = field.name //.split(/_(.+)?/)[1]
-      let value
+      let value, isNotValid
       const standardLabel = <ControlLabel>{toSentenceCase(editorField.split(/_(.+)?/)[1])} <span style={{fontWeight: 'normal'}}>({editorField})</span></ControlLabel>
       const basicLabel = field.helpContent
           ? <OverlayTrigger placement='right' overlay={<Tooltip id='tooltip'>{field.helpContent}</Tooltip>}>
-              <ControlLabel>{editorField}{field.required ? ' *' : ''}</ControlLabel>
+              <ControlLabel><small>{editorField}{field.required ? ' *' : ''}</small></ControlLabel>
             </OverlayTrigger>
-          : <ControlLabel>{editorField}{field.required ? ' *' : ''}</ControlLabel>
+          : <ControlLabel><small>{editorField}{field.required ? ' *' : ''}</small></ControlLabel>
       switch(field.inputType) {
         case 'TEXT':
         case 'URL':
@@ -134,12 +135,16 @@ export default class EntityDetails extends Component {
         case 'GTFS_BLOCK':
         case 'GTFS_FARE':
         case 'GTFS_SERVICE':
-          value = this.state[editorField] || currentValue
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          isNotValid = field.required && !value
+          if (isNotValid) {
+            validationErrors.push({field: field.name, invalid: isNotValid})
+          }
           return (
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              validationState={field.required && !value
+              validationState={isNotValid
                 ? 'error'
                 : field.required
                 ? 'success'
@@ -149,13 +154,13 @@ export default class EntityDetails extends Component {
             {basicLabel}
             <FormControl
               // tabIndex={index}
-              defaultValue={currentValue ? currentValue : ''}
+              value={value}
               placeholder={field.placeholder ? field.placeholder : ''}
               onChange={(evt) => {
                 let props = {}
                 props[editorField] = evt.target.value
-                this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                // this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             {
@@ -164,11 +169,21 @@ export default class EntityDetails extends Component {
             </FormGroup>
           )
         case 'GTFS_ZONE':
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          isNotValid = field.required && (value === null || typeof value === 'undefined')
+          if (isNotValid) {
+            validationErrors.push({field: field.name, invalid: isNotValid})
+          }
           return (
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              validationState={isNotValid
+                ? 'error'
+                : field.required
+                ? 'success'
+                : ''
+              }
             >
               {basicLabel}
               <Select
@@ -176,14 +191,14 @@ export default class EntityDetails extends Component {
                 clearable={true}
                 noResultsText={`No zones found. Specify zones in stop.`}
                 key={Math.random()}
-                value={currentValue ? {value: currentValue, label: `${currentValue} zone (${zones[currentValue] ? zones[currentValue].length : 0} stops)`}  : null}
+                value={value}// ? {value: currentValue, label: `${currentValue} zone (${zones[currentValue] ? zones[currentValue].length : 0} stops)`}  : null}
                 onChange={(input) => {
                   console.log(input)
                   let props = {}
                   value = input ? input.value : null
                   props[editorField] = value
                   this.setState({[editorField]: value})
-                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
 
                 }}
                 filterOptions={(options, filter, values) => {
@@ -216,43 +231,63 @@ export default class EntityDetails extends Component {
             </FormGroup>
           )
         case 'TIMEZONE':
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          isNotValid = field.required && (value === null || typeof value === 'undefined')
+          if (isNotValid) {
+            validationErrors.push({field: field.name, invalid: isNotValid})
+          }
           return (
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              validationState={isNotValid
+                ? 'error'
+                : field.required
+                ? 'success'
+                : ''
+              }
             >
             {basicLabel}
             <TimezoneSelect
               // tabIndex={index}
-              value={this.state[editorField] || currentValue}
+              value={value}
               clearable={!field.required}
               onChange={(option) => {
                 let props = {}
                 props[editorField] = option.value
                 this.setState({[editorField]: option.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
           )
         case 'LANGUAGE':
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          isNotValid = field.required && (value === null || typeof value === 'undefined')
+          if (isNotValid) {
+            validationErrors.push({field: field.name, invalid: isNotValid})
+          }
           return (
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              validationState={isNotValid
+                ? 'error'
+                : field.required
+                ? 'success'
+                : ''
+              }
             >
             {basicLabel}
             <LanguageSelect
               // tabIndex={index}
-              value={this.state[editorField] || currentValue}
+              value={value}
               clearable={false}
               onChange={(option) => {
                 let props = {}
                 props[editorField] = option.value
                 this.setState({[editorField]: option.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -267,26 +302,29 @@ export default class EntityDetails extends Component {
             {basicLabel}
             <FormControl
               // tabIndex={index}
-              defaultValue={currentValue}
+              value={currentValue}
               placeholder='HH:MM:SS'
               onChange={(evt) => {
                 let props = {}
                 props[editorField] = evt.target.value
-                this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                // this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
           )
         case 'LATITUDE':
         case 'LONGITUDE':
-
-          value = this.state[editorField] || currentValue
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          isNotValid = field.required && (value === null || typeof value === 'undefined')
+          if (isNotValid) {
+            validationErrors.push({field: field.name, invalid: isNotValid})
+          }
           return (
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              validationState={field.required && !value
+              validationState={isNotValid
                 ? 'error'
                 : field.required
                 ? 'success'
@@ -298,12 +336,13 @@ export default class EntityDetails extends Component {
               // tabIndex={index}
               value={value}
               type='number'
-              // onChange={(evt) => {
-              //   let props = {}
-              //   props[editorField] = evt.target.value
-              // //   this.setState({[editorField]: evt.target.value})
-              //   this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
-              // }}
+              // readOnly={true}
+              onChange={(evt) => {
+                let props = {}
+                props[editorField] = evt.target.value
+              //   this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
+              }}
             />
             </FormGroup>
           )
@@ -317,13 +356,13 @@ export default class EntityDetails extends Component {
             {basicLabel}
             <FormControl
               // tabIndex={index}
-              defaultValue={currentValue}
+              value={currentValue}
               type='number'
               onChange={(evt) => {
                 let props = {}
                 props[editorField] = evt.target.value
-                this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                // this.setState({[editorField]: evt.target.value})
+                // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -340,7 +379,7 @@ export default class EntityDetails extends Component {
               let props = {}
               props[editorField] = +millis
               this.setState({[editorField]: +millis})
-              this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+              this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
             }
           }
           if (!currentValue) {
@@ -381,14 +420,14 @@ export default class EntityDetails extends Component {
             {basicLabel}
             <FormControl
               // tabIndex={index}
-              defaultValue={currentValue}
+              value={currentValue}
               placeholder={field.placeholder}
               type='text'
               onChange={(evt) => {
                 let props = {}
                 props[editorField] = evt.target.value
-                this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                // this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             {
@@ -406,7 +445,7 @@ export default class EntityDetails extends Component {
               //       let props = {}
               //       props[editorField] = evt.target.value
               // //       this.setState({[editorField]: evt.target.value})
-              //       this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+              //       this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               //     }}
               //   />
               // </div> : null
@@ -434,15 +473,15 @@ export default class EntityDetails extends Component {
             {basicLabel}
             <FormControl
               // tabIndex={index}
-              defaultValue={currentValue}
+              value={currentValue}
               type='number'
               min={0}
               step={1}
               onChange={(value) => {
                 let props = {}
                 props[editorField] = evt.target.value
-                this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                // this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -457,14 +496,14 @@ export default class EntityDetails extends Component {
             {basicLabel}
             <FormControl
               // tabIndex={index}
-              defaultValue={currentValue}
+              value={currentValue}
               type='number'
               min={0}
               onChange={(value) => {
                 let props = {}
                 props[editorField] = evt.target.value
-                this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                // this.setState({[editorField]: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
@@ -487,7 +526,7 @@ export default class EntityDetails extends Component {
                 value = evt.target.checked ? 1 : 0
                 props[editorField] = value
                 this.setState({[editorField]: value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             >
               {toSentenceCase(editorField.substr(0, 3))}
@@ -496,12 +535,16 @@ export default class EntityDetails extends Component {
             </span>]
           )
         case 'DROPDOWN':
-          value = this.state[editorField] || currentValue
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          isNotValid = field.required && (value === null || typeof value === 'undefined')
+          if (isNotValid) {
+            validationErrors.push({field: field.name, invalid: isNotValid})
+          }
           return (
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              validationState={field.required && !value
+              validationState={isNotValid
                 ? 'error'
                 : field.required
                 ? 'success'
@@ -515,8 +558,8 @@ export default class EntityDetails extends Component {
                 onChange={(evt) => {
                   let props = {}
                   props[editorField] = evt.target.value
-                  this.setState({[editorField]: evt.target.value})
-                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                  // this.setState({[editorField]: evt.target.value})
+                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
                 }}
               >
                 {field.options.map(option => {
@@ -553,7 +596,7 @@ export default class EntityDetails extends Component {
             />
           )
         case 'GTFS_AGENCY':
-          value = this.state[editorField] || currentValue
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
           const agency = this.props.tableData.agency && this.props.tableData.agency.find(a => a.id === value)
           return (
             <FormGroup
@@ -572,7 +615,7 @@ export default class EntityDetails extends Component {
                   let val = input ? input.value : null
                   props[editorField] = val
                   this.setState({[editorField]: val})
-                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
 
                 }}
                 options={
@@ -591,8 +634,8 @@ export default class EntityDetails extends Component {
             </FormGroup>
           )
         case 'GTFS_STOP':
-          value = this.state[editorField] || currentValue
-          const stopIndex = this.props.tableData.stop && this.props.tableData.stop.findIndex(s => s.id === this.props.entity.id)
+          value = typeof this.state[editorField] !== 'undefined' ? this.state[editorField] : currentValue
+          const stopIndex = this.props.tableData.stop && this.props.tableData.stop.findIndex(s => s.id === this.props.activeEntity.id)
           const stop = this.props.tableData.stop.find(s => s.id === value)
 
           let stops = [...this.props.tableData.stop]
@@ -618,14 +661,14 @@ export default class EntityDetails extends Component {
                 let val = input ? input.value : null
                 props[editorField] = val
                 this.setState({[editorField]: val})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
               }}
             />
             </FormGroup>
           )
       }
     }
-    if (!entity) return null
+    // if (!entity && !this.props.activeEntityId) return null
     const rowIndex = 0
     const table = DT_CONFIG.modules.editor.spec.find(
       t => this.props.activeComponent === 'scheduleexception'
@@ -646,19 +689,19 @@ export default class EntityDetails extends Component {
       'CUSTOM',
     ]
 
-    const fareRulesForm = this.state.editFareRules
+    const fareRulesForm = this.state.editFareRules && this.props.activeEntity
       ? <div>
-          <p>Specify which routes or zones <strong>{this.props.entity.fare_id}</strong> fare applies to.</p>
-          <span className='pull-right'>{this.props.entity.fareRules.length} rules apply to this fare</span>
+          <p>Specify which routes or zones <strong>{this.props.activeEntity.fare_id}</strong> fare applies to.</p>
+          <span className='pull-right'>{this.props.activeEntity.fareRules.length} rules apply to this fare</span>
           <Button
             style={{marginBottom: '15px'}}
             onClick={() => {
-              let rules = [...this.props.entity.fareRules]
-              rules.unshift({fare_id: this.props.entity.fare_id})
-              this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+              let rules = [...this.props.activeEntity.fareRules]
+              rules.unshift({fare_id: this.props.activeEntity.fare_id})
+              this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
             }}
           ><Icon name='plus'/> Add rule</Button>
-            {this.props.entity.fareRules.map((rule, index) => {
+            {this.props.activeEntity.fareRules.map((rule, index) => {
 
               let ruleEntity
               if (rule.route_id) {
@@ -675,9 +718,9 @@ export default class EntityDetails extends Component {
                     style={{marginLeft: '5px'}}
                     key={Math.random()}
                     onClick={() => {
-                      let rules = [...this.props.entity.fareRules]
+                      let rules = [...this.props.activeEntity.fareRules]
                       rules.splice(index, 1)
-                      this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                      this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                     }}
                   ><Icon name='times'/></Button>
                   <FormGroup>
@@ -686,10 +729,10 @@ export default class EntityDetails extends Component {
                       key={Math.random()}
                       checked={rule.route_id}
                       onChange={(evt) => {
-                        let rules = [...this.props.entity.fareRules]
-                        rules[index] = {fare_id: this.props.entity.fare_id}
+                        let rules = [...this.props.activeEntity.fareRules]
+                        rules[index] = {fare_id: this.props.activeEntity.fare_id}
                         rules[index].route_id = true
-                        this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                        this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                       }}
                     >
                       <small>Route</small>
@@ -700,13 +743,13 @@ export default class EntityDetails extends Component {
                       key={Math.random()}
                       checked={rule.origin_id || rule.destination_id}
                       onChange={(evt) => {
-                        let rules = [...this.props.entity.fareRules]
-                        rules[index] = {fare_id: this.props.entity.fare_id}
+                        let rules = [...this.props.activeEntity.fareRules]
+                        rules[index] = {fare_id: this.props.activeEntity.fare_id}
                         rules[index].origin_id = true
-                        this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                        this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                       }}
                     >
-                      <small>Origin/Dest.</small>
+                      <small>To/From</small>
                     </Radio>
                     {' '}
                     <Radio
@@ -714,10 +757,10 @@ export default class EntityDetails extends Component {
                       key={Math.random()}
                       checked={rule.contains_id}
                       onChange={(evt) => {
-                        let rules = [...this.props.entity.fareRules]
-                        rules[index] = {fare_id: this.props.entity.fare_id}
+                        let rules = [...this.props.activeEntity.fareRules]
+                        rules[index] = {fare_id: this.props.activeEntity.fare_id}
                         rules[index].contains_id = true
-                        this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                        this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                       }}
                     >
                       <small>Contains</small>
@@ -731,27 +774,27 @@ export default class EntityDetails extends Component {
                         entities={this.props.tableData.route}
                         onChange={(input) => {
                           console.log(input)
-                          let rules = [...this.props.entity.fareRules]
+                          let rules = [...this.props.activeEntity.fareRules]
                           rules[index].route_id = input ? input.value : null
-                          this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                          this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                         }}
                       />
                     : rule.contains_id
                     ? <Select
-                        placeholder='Select zone...'
+                        placeholder='Select zone which the itinerary passes through...'
                         clearable={true}
                         noResultsText={`No zones found. Specify zones in stop.`}
                         key={Math.random()}
                         value={typeof rule.contains_id === 'string' ? {value: rule.contains_id, label: `${rule.contains_id} zone (${zones[rule.contains_id] ? zones[rule.contains_id].length : 0} stops)`}  : null}
                         onChange={(input) => {
                           console.log(input)
-                          let rules = [...this.props.entity.fareRules]
+                          let rules = [...this.props.activeEntity.fareRules]
                           rules[index].zone_id = input ? input.value : null
-                          this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                          this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                           // let props = {}
                           // props[editorField] = input.value
                           // this.setState({[editorField]: input.value})
-                          // this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                          // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
 
                         }}
                         options={zoneOptions}
@@ -765,13 +808,13 @@ export default class EntityDetails extends Component {
                         value={typeof rule.origin_id === 'string' ? {value: rule.origin_id, label: `${rule.origin_id} zone (${zones[rule.origin_id] ? zones[rule.origin_id].length : 0} stops)`}  : null}
                         onChange={(input) => {
                           console.log(input)
-                          let rules = [...this.props.entity.fareRules]
+                          let rules = [...this.props.activeEntity.fareRules]
                           rules[index].origin_id = input ? input.value : null
-                          this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                          this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                           // let props = {}
                           // props[editorField] = input.value
                           // this.setState({[editorField]: input.value})
-                          // this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                          // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
 
                         }}
                         options={zoneOptions}
@@ -785,13 +828,13 @@ export default class EntityDetails extends Component {
                           value={typeof rule.destination_id === 'string' ? {value: rule.destination_id, label: `${rule.destination_id} zone (${zones[rule.destination_id] ? zones[rule.destination_id].length : 0} stops)`}  : null}
                           onChange={(input) => {
                             console.log(input)
-                            let rules = [...this.props.entity.fareRules]
+                            let rules = [...this.props.activeEntity.fareRules]
                             rules[index].destination_id = input ? input.value : null
-                            this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {fareRules: rules})
+                            this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                             // let props = {}
                             // props[editorField] = input.value
                             // this.setState({[editorField]: input.value})
-                            // this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, props)
+                            // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
 
                           }}
                           options={zoneOptions}
@@ -815,12 +858,9 @@ export default class EntityDetails extends Component {
             <ControlLabel>Exception name</ControlLabel>
             <FormControl
               // tabIndex={index}
-              defaultValue={this.props.entity.name}
+              value={this.props.activeEntity.name}
               onChange={(evt) => {
-                // let props = {}
-                // props[editorField] = evt.target.value
-                // // this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {name: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {name: evt.target.value})
               }}
             />
           </FormGroup>
@@ -831,12 +871,12 @@ export default class EntityDetails extends Component {
             <ControlLabel>Run the following schedule:</ControlLabel>
             <FormControl componentClass='select'
               // tabIndex={index}
-              defaultValue={this.props.entity.exemplar}
+              value={this.props.activeEntity.exemplar}
               onChange={(evt) => {
                 // let props = {}
                 // props[editorField] = evt.target.value
                 // // this.setState({[editorField]: evt.target.value})
-                this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {exemplar: evt.target.value})
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {exemplar: evt.target.value})
               }}
             >
               {
@@ -862,8 +902,8 @@ export default class EntityDetails extends Component {
             /*validationState={this.getValidationState()}*/
           >
           <ControlLabel>On these dates</ControlLabel>
-          {this.props.entity.dates.length
-            ? this.props.entity.dates.map((date, index) => (
+          {this.props.activeEntity.dates.length
+            ? this.props.activeEntity.dates.map((date, index) => (
             <div style={{position: 'relative', width: '100%', marginBottom: '5px'}}>
               <Button
                 bsStyle='danger'
@@ -871,9 +911,9 @@ export default class EntityDetails extends Component {
                 style={{marginLeft: '5px'}}
                 key={`date-remove-${index}`}
                 onClick={() => {
-                  let dates = [...this.props.entity.dates]
+                  let dates = [...this.props.activeEntity.dates]
                   dates.splice(index, 1)
-                  this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {dates: dates})
+                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {dates: dates})
                 }}
               ><Icon name='times'/></Button>
               <DateTimeField key={`date-${index}`} mode='date'/>
@@ -885,16 +925,18 @@ export default class EntityDetails extends Component {
           </FormGroup>
           <Button
             onClick={() => {
-              let dates = [...this.props.entity.dates]
+              let dates = [...this.props.activeEntity.dates]
               dates.push(+moment())
-              this.props.updateActiveEntity(this.props.entity, this.props.activeComponent, {dates: dates})
+              this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {dates: dates})
             }}
           ><Icon name='plus'/> Add date</Button>
 
         </Form>
       </div>
       : null
-    const entityForm = (
+    const entityForm = this.props.activeComponent === 'scheduleexception'
+      ? null
+      : (
         <div>
           <Form>
             {
@@ -912,7 +954,10 @@ export default class EntityDetails extends Component {
 
               return (
                   <span>
-                    {getInput(rowIndex, field, entity[editorField], (rowIndex * table.fields.length) + colIndex + 1)}
+                    {entity
+                      ? getInput(rowIndex, field, entity[editorField], (rowIndex * table.fields.length) + colIndex + 1)
+                      : null
+                    }
                   </span>
               )
             })}
@@ -944,6 +989,7 @@ export default class EntityDetails extends Component {
     let icon = gtfsIcons.find(i => i.id === this.props.activeComponent)
     let iconName = icon ? icon.icon : 'circle'
     // .icon || 'circle'
+    // console.log(validationErrors)
     const subNav = this.props.activeComponent === 'route'
       ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified>
           <NavItem
@@ -959,7 +1005,7 @@ export default class EntityDetails extends Component {
           <OverlayTrigger placement='bottom' overlay={<Tooltip id="tooltip">A route&rsquo;s trip patterns show where it goes.</Tooltip>}>
           <NavItem
             eventKey={'trippattern'}
-            disabled={entity.id === 'new'}
+            disabled={!entity || entity.id === 'new'}
             active={this.props.subComponent === 'trippattern'}
             onClick={() => {
               if (this.props.subComponent !== 'trippattern') {
@@ -984,7 +1030,7 @@ export default class EntityDetails extends Component {
           </NavItem>
           <NavItem
             eventKey={'rules'}
-            disabled={entity.id === 'new'}
+            disabled={!entity || entity.id === 'new'}
             active={this.state.editFareRules}
             onClick={() => {
               this.setState({editFareRules: true})
@@ -994,94 +1040,104 @@ export default class EntityDetails extends Component {
           </NavItem>
         </Nav>
       : null
+    const header = (
+    <h5 style={{width: '100%'}}>
+      <ButtonToolbar
+        className='pull-right'
+      >
+        <Button
+          bsSize='small'
+          disabled={!this.props.entityEdited}
+          onClick={(e) => {
+            // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, null)
+            // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity)
+            this.props.resetActiveEntity(entity, this.props.activeComponent)
+            let stateUpdate = {}
+            for (var key in this.state) {
+              stateUpdate[key] = {$set: null}
+            }
+            this.setState(update(this.state, stateUpdate))
+          }}
+        >
+          Reset
+        </Button>
+        <Button
+          bsSize='small'
+          bsStyle='primary'
+          disabled={!this.props.entityEdited || validationErrors.length > 0}
+          onClick={(e) => {
+            if (this.props.subComponent === 'trippattern') {
+              this.props.saveActiveEntity('trippattern')
+              // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
+            }
+            else {
+              this.props.saveActiveEntity(this.props.activeComponent)
+              // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+            }
+          }}
+        >
+          Save
+        </Button>
+      </ButtonToolbar>
+      {this.props.activeComponent === 'route' && entity
+        ? <IconStack>
+            <Icon name='square' style={{color: `#${entity.route_color}`}} stack="2x" />
+            <Icon name='bus' style={{color: `#${entity.route_text_color}`}} stack="1x" />
+          </IconStack>
+        : <Icon
+            name={iconName}
+          />
+      }
+      {'  '}
+      <span title={entityName}>
+        {
+          `${entityName && entityName.length > 18 ? entityName.substr(0, 18) + '...' : entityName}`
+        }
+      </span>
+    </h5>
+    )
+
     return (
       <div
         style={panelStyle}
       >
-        <div
-          style={{height: '85px'}}
-        >
-          <h5 style={{width: '100%'}}>
-            <ButtonToolbar
-              className='pull-right'
+        {!entity
+          ? <div style={{height: '100%'}}>
+              <h1
+                className='text-center'
+                style={{
+                  marginTop: '150px'
+                }}
+              >
+                <Icon size='5x' spin name='refresh' />
+              </h1>
+            </div>
+          : [
+          <div
+              style={{height: '100px'}}
             >
-              <Button
-                bsSize='small'
-                disabled={!this.props.entityEdited}
-                onClick={(e) => {
-                  // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, null)
-                  // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity)
-                  this.props.resetActiveEntity(entity, this.props.activeComponent)
-                  // this.setState({})
-                }}
-              >
-                Reset
-              </Button>
-              <Button
-                bsSize='small'
-                bsStyle='primary'
-                disabled={!this.props.entityEdited}
-                onClick={(e) => {
-                  if (this.props.subComponent === 'trippattern') {
-                    this.props.saveActiveEntity('trippattern')
-                    // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
-                  }
-                  else {
-                    this.props.saveActiveEntity(this.props.activeComponent)
-                    // this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
-                  }
-                }}
-              >
-                Save
-              </Button>
-            </ButtonToolbar>
-            {this.props.activeComponent === 'route'
-              ? <IconStack>
-                  <Icon name='square' style={{color: `#${entity.route_color}`}} stack="2x" />
-                  <Icon name='bus' style={{color: `#${entity.route_text_color}`}} stack="1x" />
-                </IconStack>
-              : <Icon
-                  name={iconName}
-                />
-            }
-            {'  '}
-            <span title={entityName}>
-              {
-                `${entityName && entityName.length > 18 ? entityName.substr(0, 18) + '...' : entityName}`
+              {header}
+              {validationErrors.length > 0
+                ? <small bsStyle='danger' className='pull-right'>Fix validation issues before saving</small>
+                : null
               }
-            </span>
-          </h5>
-          {subNav}
-        </div>
-        <div style={{height: '80%', overflowY: 'scroll'}}>
-          {this.props.subComponent === 'trippattern'
-            ? <TripPatternList
-                feedSource={this.props.feedSource}
-                setActiveEntity={this.props.setActiveEntity}
-                activePatternId={this.props.activeSubEntity}
-                activeScheduleId={this.props.activeSubSubEntity}
-                deleteEntity={this.props.deleteEntity}
-                newEntityClicked={this.props.newEntityClicked}
-                updateActiveEntity={this.props.updateActiveEntity}
-                resetActiveEntity={this.props.resetActiveEntity}
-                saveActiveEntity={this.props.saveActiveEntity}
-                subSubComponent={this.props.subSubComponent}
-                route={entity}
-                toggleEditGeometry={this.props.toggleEditGeometry}
-                toggleAddStops={this.props.toggleAddStops}
-                isEditingGeometry={this.props.isEditingGeometry}
-                isAddingStops={this.props.isAddingStops}
-                stops={this.props.stops}
-                tableData={this.props.tableData}
-                fetchStops={this.props.fetchStops}
-              />
-            : this.state.editFareRules
-            ? fareRulesForm
-            : this.props.activeComponent === 'scheduleexception'
-            ? scheduleExceptionForm
-            : entityForm
-          }
-        </div>
+              {subNav}
+            </div>
+            ,
+            <div style={{height: '80%', overflowY: 'scroll'}}>
+              {this.props.subComponent === 'trippattern'
+                ? <TripPatternList
+                    {...this.props}
+                  />
+                : this.state.editFareRules
+                ? fareRulesForm
+                : this.props.activeComponent === 'scheduleexception'
+                ? scheduleExceptionForm
+                : entityForm
+              }
+            </div>
+          ]
+        }
       </div>
     )
   }

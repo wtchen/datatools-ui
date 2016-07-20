@@ -1,6 +1,6 @@
 import update from 'react-addons-update'
 import polyUtil from 'polyline-encoded'
-import setActiveGtfsEntity from '../actions/editor'
+import { getControlPoints } from '../util/gtfs'
 
 const mapStop = (s) => {
   return {
@@ -30,30 +30,128 @@ const mapStop = (s) => {
 const defaultState = {
   feedSourceId: null,
   active: {},
-  editGeometry: false,
-  addStops: false,
+  editSettings: {
+    editGeometry: false,
+    followStreets: true,
+    snapToStops: true,
+    addStops: false,
+    hideStops: false,
+    controlPoints: [],
+    coordinatesHistory: [],
+    actions: []
+  },
+  mapSettings: {
+    zoom: null,
+    bounds: null
+  },
   tableData: {},
-  validation: null,
+  validation: null
 }
-const emptyTableData = { }
-// let newId = 0
 const editor = (state = defaultState, action) => {
-  let newTableData, fields, rowData, mappedEntities, feedTableData, activeEntity, activeSubEntity, newState, routeIndex, stopIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex
+  let stateUpdate, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, stopIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates
   switch (action.type) {
-    // case '@@router/LOCATION_CHANGE':
-    //
-    //   setActiveGtfsEntity
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
         return defaultState
       }
-    case 'TOGGLE_EDIT_GEOMETRY':
+    case 'UPDATE_MAP_SETTING':
       return update(state, {
-        editGeometry: {$set: !state.editGeometry},
+        mapSettings: {
+          [action.setting]: {$set: action.value},
+          // controlPoints: {$set: [controlPoints]},
+          // coordinatesHistory: {$set: [coordinates]}
+        },
       })
-    case 'TOGGLE_ADD_STOPS':
+    case 'TOGGLE_EDIT_SETTING':
+      if (action.setting === 'editGeometry' && !state.editSettings.editGeometry) {
+        controlPoints = getControlPoints(state.active.subEntity, state.editSettings.snapToStops)
+        coordinates = state.active.subEntity && state.active.subEntity.shape.coordinates
+        return update(state, {
+          editSettings: {
+            [action.setting]: {$set: !state.editSettings[action.setting]},
+            controlPoints: {$set: [controlPoints]},
+            // coordinatesHistory: {$set: [coordinates]}
+          },
+        })
+      }
+      else {
+        return update(state, {
+          editSettings: {
+            [action.setting]: {$set: !state.editSettings[action.setting]},
+          },
+        })
+      }
+    case 'UNDO_TRIP_PATTERN_EDITS':
+      patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === state.active.subEntityId)
+      let lastActionIndex = state.editSettings.actions.length - 1
+      let lastActionType = state.editSettings.actions[lastActionIndex]
+      let lastCoordinatesIndex = state.editSettings.coordinatesHistory.length - 1
+      let lastControlPointsIndex = state.editSettings.controlPoints.length - 1
+      stateUpdate = {
+        editSettings: {
+          // coordinatesHistory: {$splice: [[lastEditIndex, 1]]},
+          // controlPoints: {$splice: [[lastEditIndex, 1]]},
+          actions: {$splice: [[lastActionIndex, 1]]}
+        }
+      }
+      switch (lastActionType) {
+        case 'ADD_CONTROL_POINT':
+          stateUpdate.editSettings.controlPoints = {$splice: [[lastControlPointsIndex, 1]]}
+          break
+        case 'UPDATE_CONTROL_POINT':
+          stateUpdate.editSettings.controlPoints = {$splice: [[lastControlPointsIndex, 1]]}
+          stateUpdate.editSettings.coordinatesHistory = {$splice: [[lastCoordinatesIndex, 1]]}
+          coordinates = state.editSettings.coordinatesHistory[lastCoordinatesIndex]
+          if (coordinates) {
+            stateUpdate.active = {
+              entity: {tripPatterns: {[patternIndex]: {shape: {coordinates: {$set: coordinates}}}}}
+            }
+          }
+          break
+        case 'REMOVE_CONTROL_POINT':
+          stateUpdate.editSettings.controlPoints = {$splice: [[lastControlPointsIndex, 1]]}
+          stateUpdate.editSettings.coordinatesHistory = {$splice: [[lastCoordinatesIndex, 1]]}
+          coordinates = state.editSettings.coordinatesHistory[lastCoordinatesIndex]
+          if (coordinates) {
+            stateUpdate.active = {
+              entity: {tripPatterns: {[patternIndex]: {shape: {coordinates: {$set: coordinates}}}}}
+            }
+          }
+          break
+      }
+      return update(state, stateUpdate)
+    case 'ADD_CONTROL_POINT':
+      controlPoints = [...state.editSettings.controlPoints[state.editSettings.controlPoints.length - 1]]
+      controlPoints.splice(action.index, 0, action.controlPoint)
       return update(state, {
-        addStops: {$set: !state.addStops},
+        editSettings: {
+          controlPoints: {$push: [controlPoints]},
+          actions: {$push: [action.type]}
+        }
+      })
+    case 'REMOVE_CONTROL_POINT':
+      controlPoints = [...state.editSettings.controlPoints[state.editSettings.controlPoints.length - 1]]
+      controlPoints.splice(action.index, 1)
+      return update(state, {
+        editSettings: {
+          controlPoints: {$push: [controlPoints]},
+          actions: {$push: [action.type]}
+        }
+      })
+    case 'UPDATE_CONTROL_POINT':
+      let newControlPoints = []
+      controlPoints = state.editSettings.controlPoints[state.editSettings.controlPoints.length - 1]
+      for (var i = 0; i < controlPoints.length; i++) {
+        newControlPoints.push(Object.assign({}, controlPoints[i]))
+      }
+      console.log(newControlPoints[action.index].distance)
+      let newest = update(newControlPoints, {[action.index]: {point: {$set: action.point}, distance: {$set: action.distance}}})
+      console.log(newest[action.index].distance)
+      return update(state, {
+        editSettings: {
+          controlPoints: {$push: [newest]},
+          actions: {$push: [action.type]}
+        }
       })
     case 'CREATE_GTFS_ENTITY':
       if (action.component === 'trippattern') {
@@ -108,6 +206,9 @@ const editor = (state = defaultState, action) => {
       switch (action.subComponent) {
         case 'trippattern':
           activeSubEntity = activeEntity && activeEntity.tripPatterns ? Object.assign({}, activeEntity.tripPatterns.find(p => p.id === action.subEntityId)) : null
+          controlPoints = getControlPoints(activeSubEntity, state.editSettings.snapToStops)
+          coordinates = activeSubEntity && activeSubEntity.shape && activeSubEntity.shape.coordinates
+          break
       }
       let active = {
         feedSourceId: action.feedSourceId,
@@ -120,18 +221,17 @@ const editor = (state = defaultState, action) => {
         subSubComponent: action.subSubComponent,
         edited: false,
       }
-      return update(state, {
-        // feedSourceId: {$set: action.feedSourceId},
-        // active: {entity: {$set: activeEntity}},
-        // activeEntityId: {$set: action.entityId},
-        // activeSubEntity: {$set: activeSubEntity},
-        // activeSubEntityId: {$set: action.subEntityId},
-        // activeComponent: {$set: action.component},
-        // activeSubComponent: {$set: action.subComponent},
-        // activeSubSubComponent: {$set: action.subSubComponent},
-        // edited: {$set: false},
+      stateUpdate = {
+        editSettings: {
+          controlPoints: {$set: controlPoints},
+        },
         active: {$set: active},
-      })
+      }
+      if (coordinates) {
+        stateUpdate.coordinatesHistory = {$set: [coordinates]}
+      }
+      console.log(stateUpdate)
+      return update(state, stateUpdate)
     case 'RESET_ACTIVE_GTFS_ENTITY':
       switch (action.component) {
         case 'trippattern':
@@ -142,6 +242,14 @@ const editor = (state = defaultState, action) => {
           return update(state, {
             active: {
               entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
+              edited: {$set: false}
+            },
+          })
+        case 'feedinfo':
+          activeEntity = Object.assign({}, state.tableData[action.component])
+          return update(state, {
+            active: {
+              entity: {$set: activeEntity},
               edited: {$set: false}
             },
           })
@@ -162,14 +270,25 @@ const editor = (state = defaultState, action) => {
           for (var key in action.props) {
             console.log(key, action.props[key])
             activeEntity[key] = action.props[key]
+
           }
           console.log(activeEntity)
-          return update(state, {
+          stateUpdate = {
             active: {
               entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
               edited: {$set: true}
             },
-          })
+          }
+          if (action.props && 'shape' in action.props) {
+            // add previous coordinates to history
+            // stateUpdate.editSettings = {coordinatesHistory: {$push: [action.props.shape.coordinates]}}
+            coordinates = state.active.entity.tripPatterns[patternIndex].shape && state.active.entity.tripPatterns[patternIndex].shape.coordinates
+            if (coordinates)
+              stateUpdate.editSettings = {coordinatesHistory: {$push: [state.active.entity.tripPatterns[patternIndex].shape.coordinates]}}
+          }
+          return update(state, stateUpdate)
+        // case 'feedinfo':
+          // activeEntity = Object.assign({}, state.active.entity)
         // case 'timetable':
         //   activeEntity = Object.assign({}, state.active.entity)
         //   patternIndex = activeEntity.tripPatterns.findIndex(p => p.id === action.entity.id)
@@ -376,11 +495,15 @@ const editor = (state = defaultState, action) => {
       // feedTableData.route = routes
       routeIndex = state.active.entity && action.routes.findIndex(r => r.id === state.active.entity.id)
       if (routeIndex !== -1) {
+        let followStreets = routes[routeIndex] ? routes[routeIndex].route_type === 3 || routes[routeIndex].route_type === 0 : true
         return update(state, {
           tableData: {route: {$set: routes}},
           active: {
             entity: {$set: routes[routeIndex]},
             edited: {$set: false}
+          },
+          editSettings: {
+            followStreets: {$set: followStreets}
           }
         })
       } else {
@@ -401,10 +524,20 @@ const editor = (state = defaultState, action) => {
       })
     case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.routeId)
+      let activePattern = state.active.subEntityId && action.tripPatterns.find(p => p.id === state.active.subEntityId)
+
+      // set controlPoints initially and then whenever isSnappingToStops changes
+      // if (activePattern) {
+      //   controlPoints = getControlPoints(activePattern, state.editSettings.snapToStops)
+      // }
       if (state.active.entity.id === action.routeId) {
         return update(state, {
           tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}},
-          active: {entity: {$merge: {tripPatterns: action.tripPatterns}}}
+          active: {
+            entity: {$merge: {tripPatterns: action.tripPatterns}},
+            subEntity: {$set: Object.assign({}, activePattern)}
+          },
+          // editSettings: {controlPoints: {$set: controlPoints}}
         })
       } else {
         return update(state, {
@@ -446,7 +579,6 @@ const editor = (state = defaultState, action) => {
       const stop = mapStop(action.stop)
       console.log(stop)
       let stopIndex = state.tableData.stop.findIndex(s => s.id === stop.id)
-      let stateUpdate
 
       // if stop is active, update active entity
       if (stop.id === state.active.entityId && stopIndex !== -1) {
@@ -631,8 +763,8 @@ const editor = (state = defaultState, action) => {
 
     case 'RECEIVE_GTFS_ENTITIES':
       const getType = function (entity) {
-        if(entity.hasOwnProperty('route_id')) return 'route'
-        if(entity.hasOwnProperty('stop_id')) return 'stop'
+        if (entity.hasOwnProperty('route_id')) return 'route'
+        if (entity.hasOwnProperty('stop_id')) return 'stop'
       }
 
       const newLookupEntries = {}

@@ -65,15 +65,18 @@ import {
   updateScheduleException,
 } from '../actions/calendar'
 
-export function toggleEditGeometry () {
+export function toggleEditSetting (setting) {
   return {
-    type: 'TOGGLE_EDIT_GEOMETRY',
+    type: 'TOGGLE_EDIT_SETTING',
+    setting
   }
 }
 
-export function toggleAddStops () {
+export function updateMapSetting (setting, value) {
   return {
-    type: 'TOGGLE_ADD_STOPS',
+    type: 'UPDATE_MAP_SETTING',
+    setting,
+    value
   }
 }
 
@@ -116,7 +119,6 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       : `/feed/${feedSourceId}/edit/`
 
     if (getState().routing.locationBeforeTransitions.pathname && getState().routing.locationBeforeTransitions.pathname !== url) {
-      console.log('changing url')
       browserHistory.push(url)
     }
     dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
@@ -207,7 +209,7 @@ export function createGtfsEntity (feedSourceId, component, props) {
   }
 }
 
-export function newGtfsEntity (feedSourceId, component, props) {
+export function newGtfsEntity (feedSourceId, component, props, save) {
   return function (dispatch, getState) {
     if (!props) {
       const generateProps = (component) => {
@@ -232,6 +234,10 @@ export function newGtfsEntity (feedSourceId, component, props) {
               // route_text_color: idealTextColor(color),
               // route_type: getState().editor.tableData.feedinfo.routeTypeId,
             }
+          case 'trippattern':
+            return {
+              // patternStops: [],
+            }
         }
       }
       props = generateProps(component)
@@ -242,6 +248,9 @@ export function newGtfsEntity (feedSourceId, component, props) {
     }
     else {
       dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
+    }
+    if (save) {
+      dispatch(saveActiveGtfsEntity(component))
     }
   }
 }

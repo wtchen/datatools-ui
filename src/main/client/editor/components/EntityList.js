@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, Nav, NavItem } from 'react-bootstrap'
 import {Icon} from 'react-fa'
+import { shallowEqual } from 'react-pure-render'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import { Grid } from 'react-virtualized'
@@ -31,15 +32,15 @@ export default class EntityList extends Component {
       }
     }
   }
-  // shouldComponentUpdate (nextProps) {
-  //   return true // nextProps.activeComponent !== this.props.activeComponent
-  // }
+  shouldComponentUpdate (nextProps) {
+    return !shallowEqual(nextProps.feedSource, this.props.feedSource) || !shallowEqual(nextProps.activeEntity, this.props.activeEntity) || !shallowEqual(nextProps.entities, this.props.entities) || nextProps.activeComponent !== this.props.activeComponent || nextProps.activeEntityId !== this.props.activeEntityId || nextProps.entityEdited !== this.props.entityEdited
+  }
 
   render () {
     const feedSource = this.props.feedSource
     const sidePadding = '5px'
     const rowHeight = '37px'
-    let panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
+    let panelWidth = !this.props.tableView ? `${this.props.listWidth}px` : '100%'
     let panelStyle = {
       width: panelWidth,
       height: '100%',
@@ -56,13 +57,23 @@ export default class EntityList extends Component {
     const sortedEntities = this.props.entities && this.props.entities.sort((a, b) => {
       var aName = getEntityName(this.props.activeComponent, a)
       var bName = getEntityName(this.props.activeComponent, b)
-      if(a.isCreating && !b.isCreating) return -1
-      if(!a.isCreating && b.isCreating) return 1
-      if(aName < bName) return -1
-      if(aName > bName) return 1
+      if (a.isCreating && !b.isCreating) return -1
+      if (!a.isCreating && b.isCreating) return 1
+      if (!isNaN(a.route_short_name) && !isNaN(b.route_short_name)) {
+        if(+a.route_short_name < +b.route_short_name) return -1
+        if(+a.route_short_name > +b.route_short_name) return 1
+        return 0
+      }
+      if (!isNaN(aName) && !isNaN(bName)) {
+        if(+aName < +bName) return -1
+        if(+aName > +bName) return 1
+        return 0
+      }
+      if (aName < bName) return -1
+      if (aName > bName) return 1
       return 0
     })
-    const activeEntity = this.props.entity // sortedEntities ? sortedEntities.find(entity => entity.id === this.props.entity) : null
+    const activeEntity = this.props.activeEntity // sortedEntities ? sortedEntities.find(entity => entity.id === this.props.activeEntity) : null
     const rowStyle = {
       paddingTop: 2,
       height: '20px',
@@ -114,7 +125,7 @@ export default class EntityList extends Component {
                     <tr
                       href='#'
                       key={entity.id}
-                      onMouseDown={(e) => console.log(e)}
+                      // onMouseDown={(e) => console.log(e)}
                       style={rowStyle}
                       onClick={() => {
                         if (activeEntity && entity.id === activeEntity.id) this.props.setActiveEntity(feedSource.id, this.props.activeComponent)
@@ -182,32 +193,12 @@ export default class EntityList extends Component {
         />
       )
       : null
-    let entityDetails = this.props.entity
+    let entityDetails = this.props.activeEntityId
       ? (
           <EntityDetails
-            width={detailsWidth}
+            detailsWidth={detailsWidth}
             offset={panelWidth}
-            entity={activeEntity}
-            activeSubEntity={this.props.activeSubEntity}
-            activeSubSubEntity={this.props.activeSubSubEntity}
-            feedSource={this.props.feedSource}
-            activeComponent={this.props.activeComponent}
-            subComponent={this.props.subComponent}
-            subSubComponent={this.props.subSubComponent}
-            setActiveEntity={this.props.setActiveEntity}
-            updateActiveEntity={this.props.updateActiveEntity}
-            resetActiveEntity={this.props.resetActiveEntity}
-            newEntityClicked={this.props.newEntityClicked}
-            entityEdited={this.props.entityEdited}
-            saveActiveEntity={this.props.saveActiveEntity}
-            toggleEditGeometry={this.props.toggleEditGeometry}
-            toggleAddStops={this.props.toggleAddStops}
-            isEditingGeometry={this.props.isEditingGeometry}
-            isAddingStops={this.props.isAddingStops}
-            deleteEntity={this.props.deleteEntity}
-            stops={this.props.stops}
-            tableData={this.props.tableData}
-            fetchStops={this.props.fetchStops}
+            {...this.props}
             // newRowClicked={this.props.newRowClicked}
             // setActiveEntity={this.props.setActiveEntity}
             // saveRowClicked={this.props.saveRowClicked}
@@ -318,7 +309,7 @@ export default class EntityList extends Component {
             </Nav>
           : this.props.activeComponent === 'stop' || this.props.activeComponent === 'route'
           ? <VirtualizedEntitySelect
-              value={this.props.entity ? {value: this.props.entity.id, label: getEntityName(this.props.activeComponent, this.props.entity), entity: this.props.entity} : null}
+              value={this.props.activeEntity ? {value: this.props.activeEntity.id, label: getEntityName(this.props.activeComponent, this.props.activeEntity), entity: this.props.activeEntity} : null}
               component={this.props.activeComponent}
               entities={sortedEntities}
               onChange={(value) => {

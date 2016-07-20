@@ -14,7 +14,11 @@ import {
 } from '../actions/route'
 import {
   fetchTripPatterns,
-  fetchTripPatternsForRoute
+  fetchTripPatternsForRoute,
+  undoActiveTripPatternEdits,
+  updateControlPoint,
+  addControlPoint,
+  removeControlPoint,
 } from '../actions/tripPattern'
 import {
   fetchTripsForCalendar,
@@ -24,8 +28,8 @@ import {
 import {
   setActiveGtfsEntity,
   newGtfsEntity,
-  toggleEditGeometry,
-  toggleAddStops,
+  toggleEditSetting,
+  updateMapSetting,
   saveActiveGtfsEntity,
   resetActiveGtfsEntity,
   deleteGtfsEntity,
@@ -55,14 +59,29 @@ const mapStateToProps = (state, ownProps) => {
   const activeEntity =
     state.editor.active && state.editor.active.entity && state.editor.active.entity.id === activeEntityId
     ? state.editor.active.entity
+    : state.editor.active && state.editor.active.entity && activeComponent === 'feedinfo'
+    ? state.editor.active.entity
     : null
     // ownProps.routeParams.entity && state.editor.tableData[activeComponent]
     // ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
     // : null
   const entityEdited = state.editor.active.edited
-  const isEditingGeometry = state.editor.editGeometry
-  const isAddingStops = state.editor.addStops
+
+  const isEditingGeometry = state.editor.editSettings.editGeometry
+  const isAddingStops = state.editor.editSettings.addStops
+  const isFollowingStreets = state.editor.editSettings.followStreets
+  const isSnappingToStops = state.editor.editSettings.snapToStops
+  const isHidingStops = state.editor.editSettings.hideStops
+  const controlPoints = state.editor.editSettings.controlPoints && state.editor.editSettings.controlPoints.length
+    ? state.editor.editSettings.controlPoints[state.editor.editSettings.controlPoints.length - 1]
+    : []
+  const editActions = state.editor.editSettings.actions
+  const mapZoom = state.editor.mapSettings.zoom
+  const mapBounds = state.editor.mapSettings.bounds
+  const coordinatesHistory = state.editor.editSettings.coordinatesHistory
+
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
+  const entities = state.editor.tableData[activeComponent]
   let user = state.user
   // find the containing project
   let project = state.projects.all
@@ -86,6 +105,7 @@ const mapStateToProps = (state, ownProps) => {
     // validation: state.editor.validation,
     // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
+    entities,
     feedSourceId,
     feedInfo,
     entityEdited,
@@ -101,12 +121,20 @@ const mapStateToProps = (state, ownProps) => {
     activeSubSubEntity,
     isAddingStops,
     isEditingGeometry,
+    isFollowingStreets,
+    isSnappingToStops,
+    isHidingStops,
+    controlPoints,
+    coordinatesHistory,
+    editActions,
+    mapZoom,
+    mapBounds
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  console.log(ownProps)
-  console.log(ownProps.location.pathname.split('/'))
+  // console.log(ownProps)
+  // console.log(ownProps.location.pathname.split('/'))
   const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
   const activeComponent = ownProps.routeParams.subpage // location.pathname.split('/')[4]
   const subComponent = ownProps.routeParams.subsubpage // location.pathname.split('/')[5]
@@ -207,7 +235,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchTripPatterns(feedSourceId))
     },
     onComponentUpdate: (prevProps, newProps) => {
-      if (prevProps.activeComponent !== newProps.activeComponent)
+      // handle back button presses by re-setting active gtfs entity
+      if (
+        prevProps.activeComponent !== newProps.activeComponent ||
+        prevProps.activeEntityId !== newProps.activeEntityId ||
+        prevProps.subComponent !== newProps.subComponent ||
+        prevProps.activeSubEntity !== newProps.activeSubEntity ||
+        prevProps.subSubComponent !== newProps.subSubComponent ||
+        prevProps.activeSubSubEntity !== newProps.activeSubSubEntity
+      )
         dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
     },
     newRowClicked: (tableId) => {
@@ -228,11 +264,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newRowsDisplayed: (tableId, rows, feedSource) => {
       if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
     },
-    toggleEditGeometry: () => {
-      dispatch(toggleEditGeometry())
+    toggleEditSetting: (setting) => {
+      dispatch(toggleEditSetting(setting))
     },
-    toggleAddStops: () => {
-      dispatch(toggleAddStops())
+    updateMapSetting: (setting, value) => {
+      dispatch(updateMapSetting(setting, value))
     },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
@@ -264,10 +300,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     deleteTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
       return dispatch(deleteTripsForCalendar(feedSourceId, pattern, calendarId, trips))
     },
-    newEntityClicked: (feedSourceId, component, props) => {
-      dispatch(newGtfsEntity(feedSourceId, component, props))
+    newEntityClicked: (feedSourceId, component, props, save) => {
+      dispatch(newGtfsEntity(feedSourceId, component, props, save))
     },
-    clearGtfsContent: () => {dispatch(clearGtfsContent())},
+    clearGtfsContent: () => { dispatch(clearGtfsContent()) },
+    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
+    addControlPoint: (controlPoint, index) => { dispatch(addControlPoint(controlPoint, index)) },
+    removeControlPoint: (index) => { dispatch(removeControlPoint(index)) },
+    updateControlPoint: (index, point, distance) => { dispatch(updateControlPoint(index, point, distance)) },
     fetchTripPatternsForRoute: (feedSourceId, routeId) => {
       dispatch(fetchTripPatternsForRoute(feedSourceId, routeId))
     },
