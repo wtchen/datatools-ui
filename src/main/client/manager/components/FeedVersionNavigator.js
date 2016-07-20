@@ -53,7 +53,7 @@ export default class FeedVersionNavigator extends React.Component {
           <Col xs={12} sm={8}>
             <ButtonGroup justified>
               <Button href='#'
-                disabled={!hasVersions || !version.previousVersionId}
+                disabled={!hasVersions || !sortedVersions[this.state.versionIndex - 1]}
                 onClick={(evt) => {
                   evt.preventDefault()
                   this.setState({ versionIndex: this.state.versionIndex - 1 })
@@ -84,7 +84,7 @@ export default class FeedVersionNavigator extends React.Component {
               </Button>
 
               <Button href='#'
-                disabled={!hasVersions || !version.nextVersionId}
+                disabled={!hasVersions || !sortedVersions[this.state.versionIndex + 1]}
                 onClick={(evt) => {
                   evt.preventDefault()
                   this.setState({ versionIndex: this.state.versionIndex + 1 })
