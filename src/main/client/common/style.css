@@ -18,3 +18,7 @@ body {
 .nav-tabs > .active > a, .nav-tabs > .active > a:hover {
   outline: 0;
 }
+
+.bus-stop-icon:hover {
+  color: yellow;
+}
