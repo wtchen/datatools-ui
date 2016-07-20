@@ -139,14 +139,16 @@ export function fetchFeedSource(feedSourceId, fetchVersions) {
     return secureFetch(url, getState())
       .then(res => {
         if (res.status >= 400) {
-          dispatch(setErrorMessage('Error getting feed source'))
+          // dispatch(setErrorMessage('Error getting feed source'))
+          console.log('error getting feed source')
           return null
         }
         return res.json()
       })
       .then(feedSource => {
         if (!feedSource) {
-          return null
+          dispatch(receiveFeedSource(feedSource))
+          return feedSource
         }
         console.log('got feedSource', feedSource)
         dispatch(receiveFeedSource(feedSource))
@@ -162,8 +164,19 @@ export function fetchFeedSourceAndProject (feedSourceId, unsecured) {
     const apiRoot = unsecured ? 'public' : 'secure'
     const url = `/api/manager/${apiRoot}/feedsource/${feedSourceId}`
     return secureFetch(url, getState())
-      .then(response => response.json())
+      .then(res => {
+        if (res.status >= 400) {
+          // dispatch(setErrorMessage('Error getting feed source'))
+          console.log('error getting feed source')
+          return null
+        }
+        return res.json()
+      })
       .then(feedSource => {
+        if (!feedSource) {
+          dispatch(receiveFeedSource(feedSource))
+          return feedSource
+        }
         return dispatch(fetchProject(feedSource.projectId, unsecured))
           .then(proj => {
             dispatch(receiveFeedSource(feedSource))
