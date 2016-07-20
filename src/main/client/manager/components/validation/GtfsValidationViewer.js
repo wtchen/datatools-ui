@@ -59,6 +59,11 @@ export default class GtfsValidationViewer extends React.Component {
             title={messages.shapeIssues}
             invalidValues={errors.shapes}
           />
+
+          <ResultTable
+            title={'Other issues'}
+            invalidValues={errors.null}
+          />
         </div>
       )
     } else if (result) {
@@ -96,7 +101,7 @@ class ResultTable extends React.Component {
       tableLayout: 'fixed'
     }
     const messages = DT_CONFIG.messages.active.ResultTable
-    
+
     const breakWordStyle = {
       wordWrap: 'break-word',
       overflowWrap: 'break-word'

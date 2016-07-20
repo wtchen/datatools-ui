@@ -13,7 +13,7 @@ export default class ValidationMap extends React.Component {
 
   initializeMap() {
     if(this.mapInitialized || this.props.initialized) return
-    const leafletMap = this.getMap().getLeafletElement()
+    const leafletMap = this.getMap().leafletElement
     leafletMap.invalidateSize()
     const summary = this.props.version.validationSummary
     const bounds = [[summary.bounds.north, summary.bounds.east], [summary.bounds.south, summary.bounds.west]]

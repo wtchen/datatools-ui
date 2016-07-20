@@ -126,7 +126,7 @@ class ValidationMap extends React.Component {
 
     const getIsochrones = (e) => {
       console.log(e)
-      const center = this.refs.validationMap.getLeafletElement().getCenter()
+      const center = this.refs.validationMap.leafletElement.getCenter()
       console.log(center)
       this.props.fetchIsochrones(this.props.version, e.latlng.lat, e.latlng.lng, center.lat, center.lng)
     }
