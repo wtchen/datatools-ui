@@ -371,6 +371,10 @@ public class FeedSource extends Model implements Cloneable {
         return ret;
     }
 
+    public int getFeedVersionCount() {
+        return getFeedVersions().size();
+    }
+
     @JsonView(JsonViews.UserInterface.class)
     public int getNoteCount() {
         return this.noteIds != null ? this.noteIds.size() : 0;
