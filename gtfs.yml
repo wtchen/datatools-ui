@@ -10,7 +10,7 @@
     helpContent: "The feed_publisher_name field contains the full name of the organization that publishes the feed. (This may be the same as one of the agency_name values in agency.txt.) GTFS-consuming applications can display this name when giving attribution for a particular feed's data."
   - name: "feed_publisher_url"
     required: true
-    inputType: TEXT
+    inputType: URL
     columnWidth: 12
     helpContent: "The feed_publisher_url field contains the URL of the feed publishing organization's website. (This may be the same as one of the agency_url values in agency.txt.) The value must be a fully qualified URL that includes http:// or https://, and any special characters in the URL must be correctly escaped. See http://www.w3.org/Addressing/URL/4_URI_Recommentations.html for a description of how to create fully qualified URL values."
   - name: "feed_lang"
@@ -76,7 +76,7 @@
     helpContent: "The agency_fare_url specifies the URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online. The value must be a fully qualified URL that includes http:// or https://, and any special characters in the URL must be correctly escaped. Seehttp://www.w3.org/Addressing/URL/4_URI_Recommentations.html for a description of how to create fully qualified URL values."
   - name: "agency_email"
     required: false
-    inputType: TEXT
+    inputType: EMAIL
     placeholder: contact@agency.org
     columnWidth: 12
     helpContent: "The agency_email field contains a single valid email address actively monitored by the agency’s customer service department. This email address will be considered a direct contact point where transit riders can reach a customer service representative at the agency."
