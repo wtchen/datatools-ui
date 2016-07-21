@@ -44,7 +44,11 @@ const mapStateToProps = (state, ownProps) => {
   if (project) {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
+  else if (!project && !state.projects.isFetching) {
+    feedSource = null
+  }
   let feedVersionIndex
+  let isFetching = state.projects.isFetching
   let routeVersionIndex = +ownProps.routeParams.feedVersionIndex
   let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
   if (feedSource && typeof feedSource.feedVersions !== 'undefined') {
@@ -62,9 +66,11 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     feedSource,
+    feedSourceId,
     feedVersionIndex,
     project,
-    user
+    user,
+    isFetching
   }
 }
 
@@ -79,6 +85,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.project) {
         dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
         .then((feedSource) => {
+          // go back to projects list if no feed source found
+          if (!feedSource) {
+            // browserHistory.push('/project')
+            return null
+          }
           return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
       }

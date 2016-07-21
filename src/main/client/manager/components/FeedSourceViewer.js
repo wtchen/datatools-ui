@@ -1,8 +1,10 @@
 import React, {Component, PropTypes} from 'react'
 import fetch from 'isomorphic-fetch'
+import Icon from 'react-fa'
 import Helmet from 'react-helmet'
-import { Grid, Row, Col, Panel, Well, Button, DropdownButton, MenuItem, Table, Input, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, Form, FormControl, ControlLabel } from 'react-bootstrap'
+import { Grid, Row, Col, Panel, Well, Button, DropdownButton, MenuItem, Table, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, Form, FormControl, ControlLabel, Checkbox } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -105,9 +107,40 @@ export default class FeedSourceViewer extends Component {
 
   render () {
     const fs = this.props.feedSource
-
-    if (!fs) {
-      return <ManagerPage ref='page'/>
+    console.log(this.props)
+    if (this.props.isFetching) {
+      return (
+        <ManagerPage ref='page'>
+          <Grid>
+            <h1
+              className='text-center'
+              style={{
+                marginTop: '150px'
+                // minHeight: '100%',
+                // minHeight: '100vh',
+                // display: 'flex',
+                // alignItems: 'center',
+              }}
+            >
+              <Icon size='5x' spin name='refresh' />
+            </h1>
+          </Grid>
+        </ManagerPage>
+      )
+    }
+    else if (!fs) {
+      return (
+        <ManagerPage ref='page'>
+          <Grid>
+            <Row>
+              <Col xs={12}>
+                <p>No feed source found for <strong>{this.props.feedSourceId}</strong></p>
+                <p><Link to='/project'>Return to list of projects</Link></p>
+              </Col>
+            </Row>
+          </Grid>
+        </ManagerPage>
+      )
     }
 
     const messages = DT_CONFIG.messages.active.FeedSourceViewer
@@ -299,7 +332,7 @@ export default class FeedSourceViewer extends Component {
                         <td>
                           <Row>
                             <Col xs={8}>
-                              <Input type='select'
+                              <FormControl componentClass='select'
                                 value={fs.retrievalMethod}
                                 disabled={disabled}
                                 onChange={(evt) => {
@@ -311,7 +344,7 @@ export default class FeedSourceViewer extends Component {
                                     {retrievalMethodString(method)}
                                   </option>
                                 })}
-                              </Input>
+                              </FormControl>
                             </Col>
                             <Col xs={4}>
                               {this.props.feedSource.retrievalMethod === 'MANUALLY_UPLOADED'
@@ -354,7 +387,7 @@ export default class FeedSourceViewer extends Component {
                         ? <tr>
                             <td>Editor Snapshot</td>
                             <td>
-                              <Input type='select'
+                              <FormControl componentClass='select'
                                 value={fs.snapshotVersion}
                                 onChange={(evt) => {
                                   this.props.feedSourcePropertyChanged(fs, 'snapshotVersion', evt.target.value)
@@ -366,7 +399,7 @@ export default class FeedSourceViewer extends Component {
                                     {snapshot.name}
                                   </option>
                                 })}
-                              </Input>
+                              </FormControl>
                             </td>
                           </tr>
                         : null
@@ -374,9 +407,7 @@ export default class FeedSourceViewer extends Component {
                       <tr>
                         <td>{messages.properties.public}</td>
                         <td>
-                          <Input
-                            type='checkbox'
-                            label='&nbsp;'
+                          <Checkbox
                             disabled={disabled}
                             defaultChecked={fs.isPublic}
                             onChange={(e) => {
@@ -388,9 +419,7 @@ export default class FeedSourceViewer extends Component {
                       <tr>
                         <td>{messages.properties.deployable}</td>
                         <td>
-                          <Input
-                            type='checkbox'
-                            label='&nbsp;'
+                          <Checkbox
                             disabled={disabled}
                             defaultChecked={fs.deployable}
                             onChange={(e) => {
