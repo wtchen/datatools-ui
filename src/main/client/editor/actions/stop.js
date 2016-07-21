@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setActiveGtfsEntity } from './editor'
 
 //// STOPS
 
@@ -47,9 +48,14 @@ export function saveStop (feedId, stop) {
     }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(stop => {
-        // dispatch(receiveStop(feedId, stop))
-        dispatch(fetchStops(feedId))
+      .then(s => {
+        return dispatch(fetchStops(feedId))
+        .then(() => {
+          if (stop.id === 'new') {
+            dispatch(setActiveGtfsEntity(feedId, 'stop', s.id))
+          }
+          return s
+        })
       })
   }
 }

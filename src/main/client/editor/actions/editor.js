@@ -1,6 +1,8 @@
 import JSZip from 'jszip'
+import faker from 'faker'
 
 import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
+import { componentList, subComponentList, subSubComponentList } from '../util/gtfs'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
 import { browserHistory } from 'react-router'
 import {
@@ -104,7 +106,7 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     if (getState().editor.editGeometry) {
       dispatch(toggleEditGeometry())
     }
-    const url = entityId && subEntityId && subSubComponent && subSubEntityId
+    let url = entityId && subEntityId && subSubComponent && subSubEntityId
       ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}/${subSubEntityId}`
       : entityId && subEntityId && subSubComponent
       ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}`
@@ -117,7 +119,15 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       : component
       ? `/feed/${feedSourceId}/edit/${component}`
       : `/feed/${feedSourceId}/edit/`
-
+    if (component && componentList.indexOf(component) === -1) {
+      url = `/feed/${feedSourceId}/edit/`
+    }
+    else if (subComponent && subComponentList.indexOf(subComponent) === -1) {
+      url = `/feed/${feedSourceId}/edit/${component}/${entityId}/`
+    }
+    else if (subSubComponent && subSubComponentList.indexOf(subSubComponent) === -1) {
+      url = `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/`
+    }
     if (getState().routing.locationBeforeTransitions.pathname && getState().routing.locationBeforeTransitions.pathname !== url) {
       browserHistory.push(url)
     }
@@ -125,35 +135,51 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
   }
 }
 
-export function saveActiveGtfsEntity (component) {
+export function savingActiveGtfsEntity (component, entity) {
+  return {
+    type: 'SAVING_ACTIVE_GTFS_ENTITY',
+    component,
+    entity
+  }
+}
+
+export function saveActiveGtfsEntity (component, optionalEntity) {
   return function (dispatch, getState) {
     let entity
     switch (component) {
       case 'stop':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveStop(entity.feedId, entity))
       case 'route':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveRoute(entity.feedId, entity))
       case 'agency':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveAgency(entity.feedId, entity))
       case 'trippattern':
         let route = getState().editor.active.entity
         let patternId = getState().editor.active.subEntityId
-        entity = route.tripPatterns.find(p => p.id === patternId)
+        entity = optionalEntity || route.tripPatterns.find(p => p.id === patternId)
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveTripPattern(entity.feedId, entity))
       case 'calendar':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveCalendar(entity.feedId, entity))
       case 'scheduleexception':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveScheduleException(entity.feedId, entity))
       case 'fare':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveFare(entity.feedId, entity))
       case 'feedinfo':
-        entity = getState().editor.active.entity
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveFeedInfo(entity.id, entity))
       default:
         console.log('no action specified!')
@@ -221,18 +247,14 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
               route_id: generateUID(),
               agency_id: agency ? agency.id : null,
               route_short_name: generateRandomInt(1, 300),
+              route_long_name: faker.address.streetName(),
               route_color: color,
               route_text_color: idealTextColor(color),
-              route_type: getState().editor.tableData.feedinfo.routeTypeId,
+              route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.routeTypeId !== null ? getState().editor.tableData.feedinfo.routeTypeId : 3,
             }
           case 'scheduleexception':
             return {
-              dates: [],
-              // agency_id: agency ? agency.agency_id : null,
-              // route_short_name: generateRandomInt(1, 300),
-              // route_color: color,
-              // route_text_color: idealTextColor(color),
-              // route_type: getState().editor.tableData.feedinfo.routeTypeId,
+              dates: []
             }
           case 'trippattern':
             return {
@@ -242,16 +264,29 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
       }
       props = generateProps(component)
     }
-    dispatch(createGtfsEntity(feedSourceId, component, props))
-    if (props && 'routeId' in props) {
-      dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, 'new'))
-    }
-    else {
-      dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
-    }
     if (save) {
-      dispatch(saveActiveGtfsEntity(component))
+      dispatch(saveActiveGtfsEntity(component, props))
+      // .then((entity) => {
+      //   if (props && 'routeId' in props) {
+      //     dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, entity.id))
+      //   }
+      //   else {
+      //     console.log('setting after save')
+      //     dispatch(setActiveGtfsEntity(feedSourceId, component, entity.id))
+      //   }
+      // })
+    } else {
+      dispatch(createGtfsEntity(feedSourceId, component, props))
+      if (props && 'routeId' in props) {
+        // console.log('setting after create')
+        dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, 'new'))
+      }
+      else {
+        console.log('setting after create')
+        dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
+      }
     }
+
   }
 }
 
@@ -295,36 +330,36 @@ export function getGtfsTable (tableId, feedId) {
   }
 }
 
-export function saveGtfsRow (tableId, rowIndex, feedId) {
-  return function (dispatch, getState) {
-    // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
-    // for(const field of table.fields) {
-    //   rowData[field.name] = null
-    // }
-    const data = getState().editor.tableData[tableId][rowIndex]
-    console.log(data)
-    // const data = {
-    //   defaultLat:"33.755",
-    //   defaultLon:"-84.39",
-    //   gtfsAgencyId:"CCT GTFS",
-    //   id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
-    //   lang:"en",
-    //   name:"CCT GTFS",
-    //   phone:null,
-    //   routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
-    //   sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
-    //   timezone:"America/New_York",
-    //   url:"http://test.com",
-    // }
-    const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
-    return secureFetch(url, getState(), 'post', data)
-      .then(res => res.json())
-      .then(entity => {
-        console.log('got editor result', entity)
-        // dispatch(receiveGtfsValidation(validationIssues))
-      })
-  }
-}
+// export function saveGtfsRow (tableId, rowIndex, feedId) {
+//   return function (dispatch, getState) {
+//     // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
+//     // for(const field of table.fields) {
+//     //   rowData[field.name] = null
+//     // }
+//     const data = getState().editor.tableData[tableId][rowIndex]
+//     console.log(data)
+//     // const data = {
+//     //   defaultLat:"33.755",
+//     //   defaultLon:"-84.39",
+//     //   gtfsAgencyId:"CCT GTFS",
+//     //   id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
+//     //   lang:"en",
+//     //   name:"CCT GTFS",
+//     //   phone:null,
+//     //   routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
+//     //   sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
+//     //   timezone:"America/New_York",
+//     //   url:"http://test.com",
+//     // }
+//     const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
+//     return secureFetch(url, getState(), 'post', data)
+//       .then(res => res.json())
+//       .then(entity => {
+//         console.log('got editor result', entity)
+//         // dispatch(receiveGtfsValidation(validationIssues))
+//       })
+//   }
+// }
 
 // EDIT ACTIVE GTFS+ ACTIONS
 

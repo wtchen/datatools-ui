@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setActiveGtfsEntity } from './editor'
 
 //// AGENCY
 
@@ -42,9 +43,15 @@ export function saveAgency (feedId, agency) {
       : `/api/manager/secure/agency?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(agency => {
+      .then(a => {
         // dispatch(receiveAgency(feedId, agency))
         dispatch(fetchAgencies(feedId))
+        .then(() => {
+          if (agency.id === 'new') {
+            dispatch(setActiveGtfsEntity(feedId, 'agency', a.id))
+          }
+          return a
+        })
       })
   }
 }

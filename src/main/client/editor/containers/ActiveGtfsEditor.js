@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 
 import GtfsEditor  from '../components/GtfsEditor'
+import { componentList } from '../util/gtfs'
 import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
   fetchFeedInfo,
@@ -62,23 +63,30 @@ const mapStateToProps = (state, ownProps) => {
     : state.editor.active && state.editor.active.entity && activeComponent === 'feedinfo'
     ? state.editor.active.entity
     : null
+  // const activeSubEntity = state.editor.active && state.editor.active.subEntity && state.editor.active.subEntity.id === activeEntityId
+  // ? state.editor.active.subEntity
+  // : state.editor.active && state.editor.active.subEntity && activeComponent === 'feedinfo'
+  // ? state.editor.active.subEntity
+  // : null
     // ownProps.routeParams.entity && state.editor.tableData[activeComponent]
     // ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
     // : null
   const entityEdited = state.editor.active.edited
 
-  const isEditingGeometry = state.editor.editSettings.editGeometry
-  const isAddingStops = state.editor.editSettings.addStops
-  const isFollowingStreets = state.editor.editSettings.followStreets
-  const isSnappingToStops = state.editor.editSettings.snapToStops
-  const isHidingStops = state.editor.editSettings.hideStops
+  // const isEditingGeometry = state.editor.editSettings.editGeometry
+  // const isAddingStops = state.editor.editSettings.addStops
+  // const isFollowingStreets = state.editor.editSettings.followStreets
+  // const isSnappingToStops = state.editor.editSettings.snapToStops
+  // const isHidingStops = state.editor.editSettings.hideStops
   const controlPoints = state.editor.editSettings.controlPoints && state.editor.editSettings.controlPoints.length
     ? state.editor.editSettings.controlPoints[state.editor.editSettings.controlPoints.length - 1]
     : []
-  const editActions = state.editor.editSettings.actions
-  const mapZoom = state.editor.mapSettings.zoom
-  const mapBounds = state.editor.mapSettings.bounds
-  const coordinatesHistory = state.editor.editSettings.coordinatesHistory
+  // const editActions = state.editor.editSettings.actions
+  // const coordinatesHistory = state.editor.editSettings.coordinatesHistory
+  const editSettings = state.editor.editSettings
+  // const mapZoom = state.editor.mapState.zoom
+  // const mapBounds = state.editor.mapState.bounds
+  const mapState = state.editor.mapState
 
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   const entities = state.editor.tableData[activeComponent]
@@ -118,17 +126,20 @@ const mapStateToProps = (state, ownProps) => {
     activeEntity,
     activeEntityId,
     activeSubEntity,
+    // activeSubEntityId,
     activeSubSubEntity,
-    isAddingStops,
-    isEditingGeometry,
-    isFollowingStreets,
-    isSnappingToStops,
-    isHidingStops,
+    editSettings,
+    mapState,
+    // isAddingStops,
+    // isEditingGeometry,
+    // isFollowingStreets,
+    // isSnappingToStops,
+    // isHidingStops,
     controlPoints,
-    coordinatesHistory,
-    editActions,
-    mapZoom,
-    mapBounds
+    // coordinatesHistory,
+    // editActions,
+    // mapZoom,
+    // mapBounds
   }
 }
 
@@ -146,105 +157,81 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       const tablesToFetch = ['calendar', 'agency', 'route', 'stop']
+
+      // Get all GTFS tables except for the active table (activeComponent)
       if (!initialProps.feedSource || feedSourceId !== initialProps.feedSource.id) {
         dispatch(fetchFeedSourceAndProject(feedSourceId))
         .then(() => {
-          dispatch(fetchFeedInfo(feedSourceId))
-        //   .then(() => {
-        //     dispatch(getGtfsTable('calendar', feedSourceId))
-        //     .then(() => {
-        //       dispatch(getGtfsTable('agency', feedSourceId))
-        //       .then(() => {
-        //         dispatch(getGtfsTable('route', feedSourceId))
-        //         .then(() => {
-        //           dispatch(getGtfsTable('stop', feedSourceId))
-        //         })
-        //       })
-        //     })
-        //   })
-        //
           dispatch(fetchFeedInfo(feedSourceId))
           for (var i = 0; i < tablesToFetch.length; i++) {
             if (tablesToFetch[i] !== activeComponent) {
               dispatch(getGtfsTable(tablesToFetch[i], feedSourceId))
             }
           }
-          // dispatch(getGtfsTable('calendar', feedSourceId))
-          // dispatch(getGtfsTable('agency', feedSourceId))
-          // dispatch(getGtfsTable('route', feedSourceId))
-          // dispatch(getGtfsTable('stop', feedSourceId))
+        })
+        .then(() => {
+          if (componentList.indexOf(activeComponent) !== -1) {
+            dispatch(getGtfsTable(activeComponent, feedSourceId))
+            //// FETCH trip patterns if route selected
+            .then((entities) => {
+              if (activeEntityId === 'new') {
+                dispatch(newGtfsEntity(feedSourceId, activeComponent))
+              }
+              else if (activeEntityId && entities.findIndex(e => e.id === activeEntityId) === -1) {
+                console.log('bad entity id, going back to ' + activeComponent)
+                return dispatch(setActiveGtfsEntity(feedSourceId, activeComponent))
+              }
+              dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
+              if (activeComponent === 'route' && activeEntityId) {
+                dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntityId))
+                .then((tripPatterns) => {
+                  console.log(tripPatterns)
+                  let pattern = tripPatterns && tripPatterns.find(p => p.id === activeSubEntity)
+                  console.log(pattern)
+                  if (subSubComponent === 'timetable' && activeSubSubEntity) {
+                    dispatch(fetchTripsForCalendar(feedSourceId, pattern, activeSubSubEntity))
+                  }
+                })
+              }
+            })
+          }
+          else {
+            dispatch(setActiveGtfsEntity(feedSourceId))
+          }
         })
       } else {
-        dispatch(fetchFeedInfo(feedSourceId))
-        // .then(() => {
-        //   dispatch(getGtfsTable('calendar', feedSourceId))
-        //   .then(() => {
-        //     dispatch(getGtfsTable('agency', feedSourceId))
-        //     .then(() => {
-        //       dispatch(getGtfsTable('route', feedSourceId))
-        //       .then(() => {
-        //         dispatch(getGtfsTable('stop', feedSourceId))
-        //       })
-        //     })
-        //   })
-        // })
         dispatch(fetchFeedInfo(feedSourceId))
         for (var i = 0; i < tablesToFetch.length; i++) {
           if (tablesToFetch[i] !== activeComponent) {
             dispatch(getGtfsTable(tablesToFetch[i], feedSourceId))
           }
         }
-        // dispatch(getGtfsTable('calendar', feedSourceId))
-        // dispatch(getGtfsTable('agency', feedSourceId))
-        // dispatch(getGtfsTable('route', feedSourceId))
-        // dispatch(getGtfsTable('stop', feedSourceId))
       }
-      if (!activeComponent) {
-        dispatch(clearGtfsContent())
-      }
-      else {
-        dispatch(getGtfsTable(activeComponent, feedSourceId))
-        //// FETCH trip patterns if route selected
-        .then((entities) => {
-          dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
-          if (activeComponent === 'route' && activeEntityId) {
-            dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntityId))
-            .then((tripPatterns) => {
-              console.log(tripPatterns)
-              let pattern = tripPatterns && tripPatterns.find(p => p.id === activeSubEntity)
-              console.log(pattern)
-              if (subSubComponent === 'timetable' && activeSubSubEntity) {
-                dispatch(fetchTripsForCalendar(feedSourceId, pattern, activeSubSubEntity))
-              }
-            })
-            .then((tripPatterns) => {
-              if (subComponent === 'trippattern' && activeSubEntity) {
-                dispatch(fetchStopsForTripPattern(feedSourceId, activeSubEntity))
-              }
-            })
-          }
-        })
-      }
-      // if (initialProps.activeEntity) {
-      //   dispatch(settingActiveGtfsEntity(feedSourceId, activeComponent, initialProps.activeEntity))
+
+      // Clear gtfs content if no active component
+      // if (!activeComponent) {
+      //   dispatch(clearGtfsContent())
       // }
-      // if (!initialProps.feedInfo) {
-      //   dispatch(fetchFeedInfo(feedSourceId))
-      //   dispatch(getGtfsTable('calendar', feedSourceId))
+
+      // otherwise, get active table
+      // else {
+      //
       // }
       dispatch(fetchTripPatterns(feedSourceId))
     },
     onComponentUpdate: (prevProps, newProps) => {
       // handle back button presses by re-setting active gtfs entity
-      if (
-        prevProps.activeComponent !== newProps.activeComponent ||
+      if (prevProps.activeEntityId !== 'new' &&
+        (prevProps.activeComponent !== newProps.activeComponent ||
         prevProps.activeEntityId !== newProps.activeEntityId ||
         prevProps.subComponent !== newProps.subComponent ||
         prevProps.activeSubEntity !== newProps.activeSubEntity ||
         prevProps.subSubComponent !== newProps.subSubComponent ||
-        prevProps.activeSubSubEntity !== newProps.activeSubSubEntity
-      )
+        prevProps.activeSubSubEntity !== newProps.activeSubSubEntity)
+      ) {
+        console.log('handling back button')
         dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, activeSubEntity, subSubComponent, activeSubSubEntity))
+      }
     },
     newRowClicked: (tableId) => {
       dispatch(addGtfsRow(tableId))

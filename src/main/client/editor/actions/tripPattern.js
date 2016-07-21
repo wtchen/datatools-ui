@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setActiveGtfsEntity } from './editor'
 
 //// TRIP PATTERNS
 
@@ -129,15 +130,22 @@ export function saveTripPattern (feedId, tripPattern) {
   return function (dispatch, getState) {
     const method = tripPattern.id !== 'new' ? 'put' : 'post'
     const routeId = tripPattern.routeId
+    let data = {...tripPattern}
     const url = tripPattern.id !== 'new'
       ? `/api/manager/secure/trippattern/${tripPattern.id}?feedId=${feedId}`
       : `/api/manager/secure/trippattern?feedId=${feedId}`
-    tripPattern.id = tripPattern.id === 'new' ? null : tripPattern.id
-    return secureFetch(url, getState(), method, tripPattern)
+    data.id = tripPattern.id === 'new' ? null : tripPattern.id
+    return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(tripPattern => {
+      .then(tp => {
         // dispatch(receiveTripPattern(feedId, tripPattern))
         return dispatch(fetchTripPatternsForRoute(feedId, routeId))
+          .then((tripPatterns) => {
+            if (tripPattern.id === 'new') {
+              dispatch(setActiveGtfsEntity(feedId, 'route', routeId, 'trippattern', tp.id))
+            }
+            return tp
+          })
         // return tripPattern
       })
   }

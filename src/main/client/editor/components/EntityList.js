@@ -33,7 +33,22 @@ export default class EntityList extends Component {
     }
   }
   shouldComponentUpdate (nextProps) {
-    return !shallowEqual(nextProps.feedSource, this.props.feedSource) || !shallowEqual(nextProps.activeEntity, this.props.activeEntity) || !shallowEqual(nextProps.entities, this.props.entities) || nextProps.activeComponent !== this.props.activeComponent || nextProps.activeEntityId !== this.props.activeEntityId || nextProps.entityEdited !== this.props.entityEdited
+    const shouldUpdate = nextProps.entities && !this.props.entities ||
+            nextProps.entities && this.props.entities && nextProps.entities.length !== this.props.entities.length ||
+            nextProps.activeComponent !== this.props.activeComponent ||
+            // nextProps.activeEntity && !this.props.activeEntity || !nextProps.activeEntity && this.props.activeEntity ||
+            // getEntityName(this.props.activeComponent, this.props.activeEntity) !== getEntityName(nextProps.activeComponent, nextProps.activeEntity) ||
+            nextProps.activeEntityId !== this.props.activeEntityId ||
+            nextProps.activeEntity && !this.props.activeEntity ||
+            // nextProps.entityEdited !== this.props.entityEdited ||
+            // !shallowEqual(nextProps.activeEntity, this.props.activeEntity) ||
+            !shallowEqual(nextProps.feedSource, this.props.feedSource)
+
+            // !shallowEqual(nextProps.entities, this.props.entities) ||
+    if (shouldUpdate) {
+      console.log(shouldUpdate)
+    }
+    return shouldUpdate
   }
 
   render () {
@@ -269,18 +284,21 @@ export default class EntityList extends Component {
               </Button>
             }
           </div>
-          <Button
-            bsSize='xsmall'
-            onClick={() => {!this.props.tableView
-              ? browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}?table=true`)
-              : browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
-            }}
-          >
-            {!this.props.tableView
-              ? <span><Icon name='table'/> Table view</span>
-              : <span><Icon name='list'/> List view</span>
-            }
-          </Button>
+          {
+            // <Button
+            //   bsSize='xsmall'
+            //   onClick={() => {!this.props.tableView
+            //     ? browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}?table=true`)
+            //     : browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
+            //   }}
+            // >
+            //   {!this.props.tableView
+            //     ? <span><Icon name='table'/> Table view</span>
+            //     : <span><Icon name='list'/> List view</span>
+            //   }
+            // </Button>
+          }
+
         </div>
         {this.props.activeComponent === 'calendar' || this.props.activeComponent === 'scheduleexception'
           ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified activeKey={this.props.activeComponent} onSelect={this.handleSelect}>
@@ -309,7 +327,7 @@ export default class EntityList extends Component {
             </Nav>
           : this.props.activeComponent === 'stop' || this.props.activeComponent === 'route'
           ? <VirtualizedEntitySelect
-              value={this.props.activeEntity ? {value: this.props.activeEntity.id, label: getEntityName(this.props.activeComponent, this.props.activeEntity), entity: this.props.activeEntity} : null}
+              value={this.props.activeEntity && this.props.activeEntity.id}
               component={this.props.activeComponent}
               entities={sortedEntities}
               onChange={(value) => {
@@ -328,7 +346,9 @@ export default class EntityList extends Component {
           : entityTable
         }
 
-        {entityDetails}
+        {
+          // entityDetails
+        }
       </div>
     )
   }

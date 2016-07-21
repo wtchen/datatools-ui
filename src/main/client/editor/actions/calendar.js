@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setActiveGtfsEntity } from './editor'
 
 //// CALENDAR + SCHEDULE_EXCEPTION
 
@@ -65,9 +66,15 @@ export function saveCalendar (feedId, calendar) {
     }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(calendar => {
+      .then(c => {
         // dispatch(receiveCalendar(feedId, calendar))
         dispatch(fetchCalendars(feedId))
+        .then(() => {
+          if (calendar.id === 'new') {
+            dispatch(setActiveGtfsEntity(feedId, 'calendar', c.id))
+          }
+          return c
+        })
       })
   }
 }
@@ -111,9 +118,15 @@ export function saveScheduleException (feedId, scheduleException) {
     }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(scheduleException => {
+      .then(s => {
         // dispatch(receiveScheduleException(feedId, scheduleException))
         dispatch(fetchScheduleExceptions(feedId))
+        .then(() => {
+          if (scheduleexception.id === 'new') {
+            dispatch(setActiveGtfsEntity(feedId, 'scheduleexception', s.id))
+          }
+          return s
+        })
       })
   }
 }

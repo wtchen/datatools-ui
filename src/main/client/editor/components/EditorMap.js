@@ -22,19 +22,14 @@ import { EditControl } from 'react-leaflet-draw'
 // import MarkerWithLabel from './MarkerWithLabel'
 import StopLayer from '../../scenario-editor/components/StopLayer'
 import DirectionIcon from '../../scenario-editor/components/direction-icon'
-import {polyline as getPolyline} from '../../scenario-editor/utils/valhalla'
+import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
 
 export default class EditorMap extends React.Component {
 
   constructor (props) {
     super(props)
-
     this.state = {
-      // activeEntity: this.props.activeEntity,
-      // activeSubEntity: this.props.activeSubEntity,
-      controlPoints: this.props.controlPoints,
-      previousCoordinates: [],
-      bounds: this.props.mapBounds
+      controlPoints: this.props.editSettings.controlPoints && this.props.editSettings.controlPoints.length ? this.props.editSettings.controlPoints[this.props.editSettings.controlPoints.length - 1] : []
     }
   }
   updateDimensions () {
@@ -51,43 +46,42 @@ export default class EditorMap extends React.Component {
     window.removeEventListener("resize", () => this.updateDimensions())
   }
   componentWillReceiveProps (nextProps) {
-    let activePattern = this.props.activeEntity && this.props.activeEntity.tripPatterns && this.props.activeSubEntity
-      ? this.props.activeEntity.tripPatterns.find(p => p.id === this.props.activeSubEntity)
-      : null
-    // TODO: figure out where/when controlPoints get set.
-    // if (activePattern && ((this.props.controlPoints.length === 0 && !this.props.isEditingGeometry) || nextProps.isSnappingToStops !== this.props.isSnappingToStops)) {
-    //   getControlPoints(activePattern, nextProps.isSnappingToStops)
-    // }
-    if (!shallowEqual(nextProps.controlPoints, this.props.controlPoints)) {
-      this.setState({controlPoints: nextProps.controlPoints})
+    if (nextProps.editSettings.controlPoints && nextProps.editSettings.controlPoints.length && !shallowEqual(nextProps.editSettings.controlPoints, this.props.editSettings.controlPoints)) {
+      this.setState({controlPoints: nextProps.editSettings.controlPoints[nextProps.editSettings.controlPoints.length - 1]})
     }
-    if (nextProps.activeEntity && this.props.activeEntity && nextProps.activeEntity.id === this.props.activeEntity.id) {
-      // this.setState({keepMapBounds: true})
-    }
-    if (!shallowEqual(nextProps.activeEntity, this.props.activeEntity)) {
-      // this.zoomToEntity(nextProps.activeEntity)
-      // this.updateDimensions()
-      // console.log('map active entity has changed')
-      // this.setState({activeEntity: nextProps.activeEntity})
-    }
-    if (!shallowEqual(nextProps.entities, this.props.entities)) {
-      // console.log('entities have changed')
-    }
-    // if (!nextProps.entityEdited && this.props.entityEdited) {
-    //   console.log('resetting map')
-    //   this.resetMap()
-    // }
   }
   shouldComponentUpdate (nextProps) {
-    const shouldUpdate = !shallowEqual(nextProps.feedSource, this.props.feedSource) ||
+    // return true
+    const shouldUpdate =
+            this.props.hidden !== nextProps.hidden ||
+            (nextProps.activeComponent === 'stop' || nextProps.activeComponent === 'route') && nextProps.activeEntityId !== this.props.activeEntityId ||
+            nextProps.activeEntity && this.props.activeEntity && nextProps.activeEntity.tripPatterns && !this.props.activeEntity.tripPatterns ||
+            !shallowEqual(nextProps.feedSource, this.props.feedSource) ||
             nextProps.activeComponent !== this.props.activeComponent ||
             !this.props.activeEntity && nextProps.activeEntity ||
             // TODO: add bounds to shouldComponentUpdate and move mapZoom/bounds to mapState reducer
-            nextProps.activeComponent === 'stop' && this.props.mapZoom !== nextProps.mapZoom ||
-            nextProps.activeComponent === 'stop' && this.props.activeEntity && nextProps.activeEntity && (this.props.activeEntity.stop_lon !== nextProps.activeEntity.stop_lon || this.props.activeEntity.stop_lat !== nextProps.activeEntity.stop_lat)
+            !shallowEqual(nextProps.mapState, this.props.mapState) ||
+            !shallowEqual(nextProps.editSettings, this.props.editSettings) ||
+            !shallowEqual(nextProps.activeSubEntity, this.props.activeSubEntity) ||
+            nextProps.activeComponent === 'stop' && this.props.mapState.zoom !== nextProps.mapZoom ||
+            nextProps.activeComponent === 'stop' && this.props.activeEntity && nextProps.activeEntity && (this.props.activeEntity.stop_lon !== nextProps.activeEntity.stop_lon || this.props.activeEntity.stop_lat !== nextProps.activeEntity.stop_lat) ||
             nextProps.activeEntityId !== this.props.activeEntityId
-    if (shouldUpdate)
-      console.log('map updating')
+
+    // return at this point
+    if (shouldUpdate) {
+      return shouldUpdate
+    }
+    else {
+      let nextActivePattern = nextProps.activeEntity && nextProps.activeEntity.tripPatterns && nextProps.activeSubEntity
+        ? nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.activeSubEntity)
+        : null
+      let prevActivePattern = this.props.activeEntity && this.props.activeEntity.tripPatterns && this.props.activeSubEntity
+        ? this.props.activeEntity.tripPatterns.find(p => p.id === this.props.activeSubEntity)
+        : null
+      if (!shallowEqual(nextActivePattern, prevActivePattern)) {
+        return true
+      }
+    }
     return shouldUpdate
   }
   zoomToEntity (entity) {
@@ -115,6 +109,7 @@ export default class EditorMap extends React.Component {
     let newStop = {stopId: stop.id, defaultDwellTime: 0, defaultTravelTime: 0}
     // if adding stop to end
     if (typeof index === 'undefined') {
+      // if shape coordinates already exist, just extend them
       if (coordinates) {
         let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
         this.extendPatternToStop(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
@@ -124,16 +119,19 @@ export default class EditorMap extends React.Component {
           this.props.saveActiveEntity('trippattern')
         })
       }
+      // if shape coordinates do not exist, add pattern stop and get shape between stops (if multiple stops exist)
       else {
         patternStops.push(newStop)
-        if (pattern.patternStops.length > 1) {
-          let previousStop = this.props.stops.find(s => s.id === pattern.patternStops[pattern.patternStops.length - 2].stopId)
+        if (patternStops.length > 1) {
+          let previousStop = this.props.stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
           console.log(previousStop)
-          coordinates = [[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]]
-          this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}})
+          let geojson = await getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], this.props.editSettings.followStreets)
+          this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
+          this.props.saveActiveEntity('trippattern')
         }
         else {
           this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+          this.props.saveActiveEntity('trippattern')
         }
       }
 
@@ -144,19 +142,20 @@ export default class EditorMap extends React.Component {
     else {
       patternStops.splice(index, 0, newStop)
       this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+      this.props.saveActiveEntity('trippattern')
     }
     // TODO: add strategy for stop at beginning
 
-    this.props.saveActiveEntity('trippattern')
+
   }
   async removeStopFromPattern (pattern, stop, index) {
     let patternGeojson = this.refs[pattern.id].leafletElement.toGeoJSON()
     console.log(patternGeojson.geometry.coordinates.length)
 
-    let controlPointIndex = this.props.controlPoints.findIndex(cp => cp.stopId === stop.id)
+    let controlPointIndex = this.state.controlPoints.findIndex(cp => cp.stopId === stop.id)
     console.log('stop is controlPoint #' + controlPointIndex)
-    let begin = this.props.controlPoints[controlPointIndex - 2] ? this.props.controlPoints[controlPointIndex - 1].point : null
-    let end = this.props.controlPoints[controlPointIndex + 2] ? this.props.controlPoints[controlPointIndex + 1].point : null
+    let begin = this.state.controlPoints[controlPointIndex - 2] ? this.state.controlPoints[controlPointIndex - 1].point : null
+    let end = this.state.controlPoints[controlPointIndex + 2] ? this.state.controlPoints[controlPointIndex + 1].point : null
 
     let coordinates = await this.handlePatternEdit(null, begin, end)
     console.log(coordinates.length)
@@ -222,8 +221,8 @@ export default class EditorMap extends React.Component {
 
     // find splice index based on shape dist traveled
     let index = 0
-    for (var i = 0; i < this.props.controlPoints.length; i++) {
-      if (distTraveled > this.props.controlPoints[i].distance) {
+    for (var i = 0; i < this.state.controlPoints.length; i++) {
+      if (distTraveled > this.state.controlPoints[i].distance) {
         index = i + 1
       }
       else {
@@ -266,16 +265,16 @@ export default class EditorMap extends React.Component {
   mapBoundsChanged (e) {
     const zoom = e.target.getZoom()
     const bounds = e.target.getBounds()
-    if (this.props.mapZoom !== zoom) {
+    if (this.props.mapState.zoom !== zoom) {
       this.props.updateMapSetting('zoom', zoom)
     }
-    if (!bounds.equals(this.props.mapBounds)) {
+    if (!bounds.equals(this.props.mapState.bounds)) {
       this.props.updateMapSetting('bounds', e.target.getBounds())
     }
   }
   async handlePatternEdit (controlPointRef, begin, end) {
-    let followRoad = this.props.isFollowingStreets // !e.originalEvent.shiftKey
-    // if (this.props.isEditingGeometry) {
+    let followRoad = this.props.editSettings.followStreets // !e.originalEvent.shiftKey
+    // if (this.props.editSettings.editGeometry) {
       // console.log(this.state)
       let activePattern = this.props.activeEntity && this.props.activeEntity.tripPatterns && this.props.activeSubEntity
         ? this.props.activeEntity.tripPatterns.find(p => p.id === this.props.activeSubEntity)
@@ -333,7 +332,7 @@ export default class EditorMap extends React.Component {
           points.push(end.geometry.coordinates)
         }
         let newCoordinates
-        let newSegment = await this.getSegment(points, followRoad)
+        let newSegment = await getSegment(points, followRoad)
         let originalSegment = lineString(latLngs)
 
         // slice line if middle control point
@@ -375,34 +374,6 @@ export default class EditorMap extends React.Component {
         return newCoordinates
       }
     // }
-  }
-  async getSegment (points, followRoad) {
-    let geometry
-    if (followRoad) { // if followRoad
-        const coordinates = await getPolyline(points.map(p => ({lng: p[0], lat: p[1]}))) // [{lng: from[0], lat: from[1]}, {lng: to[0], lat: to[1]}])
-        if (!coordinates) {
-          geometry = await lineString(points).geometry
-        }
-        else {
-          const c0 = coordinates[0]
-          const cy = coordinates[coordinates.length - 1]
-          const epsilon = 1e-6
-          if (!coordinatesAreEqual(c0, points[0], epsilon)) {
-            coordinates.unshift(points[0])
-          }
-          // if (!coordinatesAreEqual(cy, to, epsilon)) {
-          //   coordinates.push(to)
-          // }
-
-          geometry = {
-            type: 'LineString',
-            coordinates
-          }
-        }
-      } else {
-        geometry = await lineString(points).geometry
-      }
-      return geometry
   }
   getMapComponents (component, entities, entity, subEntity) {
     // console.log(component, entities, entity, subEntity)
@@ -484,14 +455,14 @@ export default class EditorMap extends React.Component {
                     beginPoint = latLngs[0]
                     endPoint = latLngs[latLngs.length - 1]
                     // console.log(this.state.newLatLngs)
-                    let lineColor = route.route_color && this.props.isEditingGeometry
+                    let lineColor = route.route_color && this.props.editSettings.editGeometry
                       ? `#${(0xffffff ^ parseInt(route.route_color)).toString(16)}`
                       : route.route_color
                       ? `#${route.route_color}`
-                      : this.props.isEditingGeometry
+                      : this.props.editSettings.editGeometry
                       ? 'red'
                       : 'blue'
-                      // this.props.isEditingGeometry && isActive
+                      // this.props.editSettings.editGeometry && isActive
                       // ? 'yellow'
                       // : isActive
                       // ? 'red'
@@ -501,7 +472,7 @@ export default class EditorMap extends React.Component {
                         positions={this.state.newLatLngs || latLngs}
                         ref={pattern.id}
                         key={pattern.id}
-                        // draggable={this.props.isEditingGeometry && isActive}
+                        // draggable={this.props.editSettings.editGeometry && isActive}
                         // onMouseOver={(e) => {
                         //   if (isActive) {
                         //     console.log(e)
@@ -519,7 +490,7 @@ export default class EditorMap extends React.Component {
                         }}
                         dashArray={
                           null
-                          // this.props.isEditingGeometry && isActive
+                          // this.props.editSettings.editGeometry && isActive
                           // ? '12,12'
                           // : null
                         }
@@ -581,21 +552,21 @@ export default class EditorMap extends React.Component {
             ,
             <FeatureGroup ref='controlPoints'>
               {
-                this.props.stops.length && activePattern && activePattern.shape && this.props.isEditingGeometry
+                this.props.stops.length && activePattern && activePattern.shape && this.props.editSettings.editGeometry
               ?
-              this.props.controlPoints.map((s, index) => {
+              this.state.controlPoints.map((s, index) => {
                 // don't include controlPoint on end of segment (for now) or hidden controlPoints
-                if (s.stopId && this.props.isSnappingToStops)
+                if (s.stopId && this.props.editSettings.snapToStops)
                   return null
                 let nextStop
-                let prevControlPoint = this.props.controlPoints[index - 1]
-                let nextControlPoint = this.props.controlPoints[index + 1]
-                if (index === this.props.controlPoints.length - 1) {
+                let prevControlPoint = this.state.controlPoints[index - 1]
+                let nextControlPoint = this.state.controlPoints[index + 1]
+                if (index === this.state.controlPoints.length - 1) {
 
                 }
-                for (var i = index + 1; i < this.props.controlPoints.length; i++) {
-                  if (this.props.controlPoints[i].stopId) {
-                    nextStop = this.props.controlPoints[i]
+                for (var i = index + 1; i < this.state.controlPoints.length; i++) {
+                  if (this.state.controlPoints[i].stopId) {
+                    nextStop = this.state.controlPoints[i]
                   }
                 }
                 let nextPatternCoord
@@ -608,7 +579,7 @@ export default class EditorMap extends React.Component {
                   end = nextControlPoint.point
                 }
                 let position = s.point
-                if (index === this.props.controlPoints.length - 1)
+                if (index === this.state.controlPoints.length - 1)
                   console.log([position.geometry.coordinates[1], position.geometry.coordinates[0]])
 
                 const color = s.permanent ? '#000' : '#888'
@@ -656,7 +627,7 @@ export default class EditorMap extends React.Component {
               })
               : null
               }
-              {beginPoint && this.props.isEditingGeometry && activePattern
+              {beginPoint && this.props.editSettings.editGeometry && activePattern
               ? <Marker
                   position={beginPoint}
                   icon={circleIcon}
@@ -690,7 +661,7 @@ export default class EditorMap extends React.Component {
             <FeatureGroup
               ref='patternStops'
             >
-              {this.props.stops.length && activePattern && !this.props.isHidingStops
+              {this.props.stops.length && activePattern && !this.props.editSettings.hideStops
                 ?
                 activePattern.patternStops && activePattern.patternStops.map((s, index) => {
                   const stop = this.props.stops.find(ps => ps.id === s.stopId)
@@ -760,7 +731,7 @@ export default class EditorMap extends React.Component {
               ref='addableStops'
             >
               {
-                this.props.stops.length && activePattern && this.props.isAddingStops && this.props.mapZoom > 14
+                this.props.stops.length && activePattern && this.props.editSettings.addStops && this.props.mapState.zoom > 14
                 ?
                 this.props.stops
                 .filter(stop => {
@@ -839,10 +810,10 @@ export default class EditorMap extends React.Component {
           const isActive = this.props.activeEntity && this.props.activeEntity.id === stop.id
 
           if (!isActive) {
-            if (!this.props.mapZoom || this.props.mapZoom < 14) {
+            if (!this.props.mapState.zoom || this.props.mapState.zoom < 14) {
               return null
             }
-            if (stop.stop_lat > this.props.mapBounds.getNorth() || stop.stop_lat < this.props.mapBounds.getSouth() || stop.stop_lon > this.props.mapBounds.getEast() || stop.stop_lon < this.props.mapBounds.getWest()) {
+            if (stop.stop_lat > this.props.mapState.bounds.getNorth() || stop.stop_lat < this.props.mapState.bounds.getSouth() || stop.stop_lon > this.props.mapState.bounds.getEast() || stop.stop_lon < this.props.mapState.bounds.getWest()) {
               return null
             }
           }
@@ -1047,7 +1018,7 @@ export default class EditorMap extends React.Component {
 
   render () {
     // console.log(this.state)
-    // console.log(this.props.controlPoints)
+    // console.log(this.state.controlPoints)
     // console.log(this.refs.map)
     const { feedSource, feedInfo, activeComponent, entities, activeEntity, subComponent } = this.props
     // if (!feedSource) return null
@@ -1062,7 +1033,7 @@ export default class EditorMap extends React.Component {
     let stop = activeComponent === 'stop' && activeEntity
     let route = activeComponent === 'route' && activeEntity
     // don't adjust bounds if state tells us not to or editing is in progress because that's really annoying
-    // if (this.props.isEditingGeometry || this.props.isAddingStops || this.props.entityEdited) {
+    // if (this.props.editSettings.editGeometry || this.props.editSettings.addStops || this.props.entityEdited) {
     //   let mapBounds = this.refs.map.leafletElement.getBounds()
     //   bounds = mapBounds
     // }

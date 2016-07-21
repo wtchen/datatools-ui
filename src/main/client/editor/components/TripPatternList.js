@@ -19,7 +19,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import EntityDetails from './EntityDetails'
 import GtfsTable from './GtfsTable'
 import TimetableEditor from './TimetableEditor'
-import {polyline as getPolyline} from '../../scenario-editor/utils/valhalla'
+import {polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import { getEntityName } from '../util/gtfs'
 
@@ -31,6 +31,9 @@ export default class TripPatternList extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+  }
+  shouldComponentUpdate (nextProps) {
+    return true
   }
   async drawPatternFromStops (pattern, stops) {
     let newShape = await getPolyline(stops)
@@ -155,18 +158,18 @@ export default class TripPatternList extends Component {
                         onChange={(value) => {
                           let props = {}
                           props.name = value
-                          this.setState({name: value})
                           this.props.updateActiveEntity(pattern, 'trippattern', props)
+                          this.props.saveActiveEntity('trippattern')
                         }}
                       />
                       <hr/>
                       <h4>Pattern Geometry</h4>
                       <ButtonToolbar>
-                      {this.props.isEditingGeometry
+                      {this.props.editSettings.editGeometry
                         ? [
                             <Button
                               style={{marginBottom: '5px'}}
-                              disabled={this.props.coordinatesHistory.length === 0}
+                              disabled={this.props.editSettings.coordinatesHistory.length === 0}
                               bsStyle='primary'
                               onClick={() => {
                                 this.props.saveActiveEntity('trippattern')
@@ -180,7 +183,7 @@ export default class TripPatternList extends Component {
                             ,
                             <Button
                               style={{marginBottom: '5px'}}
-                              disabled={this.props.editActions.length === 0}
+                              disabled={this.props.editSettings.actions.length === 0}
                               bsStyle='default'
                               onClick={() => {
                                 this.props.undoActiveTripPatternEdits()
@@ -246,15 +249,15 @@ export default class TripPatternList extends Component {
                             </Button>
                           ]
                       }
-                      {this.props.isEditingGeometry
+                      {this.props.editSettings.editGeometry
                         ? <FormGroup className='col-xs-12'>
-                            <Checkbox checked={this.props.isFollowingStreets} onChange={() => this.props.toggleEditSetting('followStreets')}>
+                            <Checkbox checked={this.props.editSettings.followStreets} onChange={() => this.props.toggleEditSetting('followStreets')}>
                               Snap to streets
                             </Checkbox>
-                            <Checkbox checked={this.props.isSnappingToStops} onChange={() => this.props.toggleEditSetting('snapToStops')}>
+                            <Checkbox checked={this.props.editSettings.snapToStops} onChange={() => this.props.toggleEditSetting('snapToStops')}>
                               Snap to stops
                             </Checkbox>
-                            <Checkbox checked={!this.props.isHidingStops} onChange={() => this.props.toggleEditSetting('hideStops')}>
+                            <Checkbox checked={!this.props.editSettings.hideStops} onChange={() => this.props.toggleEditSetting('hideStops')}>
                               Show stops
                             </Checkbox>
                           </FormGroup>
@@ -332,57 +335,60 @@ export default class TripPatternList extends Component {
 
                                     </p>
                                     <Collapse in={stopIsActive}>
-                                      <div>
-                                        <Button
-                                          bsStyle='danger'
-                                          bsSize='xsmall'
-                                          className='pull-right'
-                                          onClick={() => {
-                                            let patternStops = [...activePattern.patternStops]
-                                            patternStops.splice(index, 1)
-                                            this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-                                            this.props.saveActiveEntity('trippattern')
-                                          }}
-                                        >
-                                          <Icon name='times'/> Remove
-                                        </Button>
-                                        <FormGroup
-                                          controlId="formBasicText"
-                                          /*validationState={this.getValidationState()}*/
-                                        >
-                                        <ControlLabel>Default travel time</ControlLabel>
-                                        <FormControl
-                                          // tabIndex={index}
-                                          type='number'
-                                          min={0}
-                                          step={1}
-                                          defaultValue={s.defaultTravelTime}
-                                          onChange={(evt) => {
-                                            let patternStops = [...activePattern.patternStops]
-                                            patternStops[index].defaultTravelTime = +evt.target.value
-                                            this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-                                          }}
-                                        />
-                                        </FormGroup>
-                                        <FormGroup
-                                          controlId="formBasicText"
-                                          /*validationState={this.getValidationState()}*/
-                                        >
-                                        <ControlLabel>Default dwell time</ControlLabel>
-                                        <FormControl
-                                          // tabIndex={index}
-                                          type='number'
-                                          min={0}
-                                          step={1}
-                                          defaultValue={s.defaultDwellTime}
-                                          onChange={(evt) => {
-                                            let patternStops = [...activePattern.patternStops]
-                                            patternStops[index].defaultDwellTime = +evt.target.value
-                                            this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-                                          }}
-                                        />
-                                        </FormGroup>
-                                      </div>
+                                      {stopIsActive
+                                        ? <div>
+                                            <Button
+                                              bsStyle='danger'
+                                              bsSize='xsmall'
+                                              className='pull-right'
+                                              onClick={() => {
+                                                let patternStops = [...activePattern.patternStops]
+                                                patternStops.splice(index, 1)
+                                                this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                                this.props.saveActiveEntity('trippattern')
+                                              }}
+                                            >
+                                              <Icon name='times'/> Remove
+                                            </Button>
+                                            <FormGroup
+                                              controlId="formBasicText"
+                                              /*validationState={this.getValidationState()}*/
+                                            >
+                                            <ControlLabel>Default travel time</ControlLabel>
+                                            <FormControl
+                                              // tabIndex={index}
+                                              type='number'
+                                              min={0}
+                                              step={1}
+                                              defaultValue={s.defaultTravelTime}
+                                              onChange={(evt) => {
+                                                let patternStops = [...activePattern.patternStops]
+                                                patternStops[index].defaultTravelTime = +evt.target.value
+                                                this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                              }}
+                                            />
+                                            </FormGroup>
+                                            <FormGroup
+                                              controlId="formBasicText"
+                                              /*validationState={this.getValidationState()}*/
+                                            >
+                                            <ControlLabel>Default dwell time</ControlLabel>
+                                            <FormControl
+                                              // tabIndex={index}
+                                              type='number'
+                                              min={0}
+                                              step={1}
+                                              defaultValue={s.defaultDwellTime}
+                                              onChange={(evt) => {
+                                                let patternStops = [...activePattern.patternStops]
+                                                patternStops[index].defaultDwellTime = +evt.target.value
+                                                this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                              }}
+                                            />
+                                            </FormGroup>
+                                          </div>
+                                        : <div></div>
+                                      }
                                     </Collapse>
                                   </td>
                                 </tr>
@@ -395,51 +401,86 @@ export default class TripPatternList extends Component {
                           <tr
                             style={stopRowStyle}
                           >
-                            <td colSpan='2'>
-                              {this.props.isAddingStops
-                                ? <div>
-                                  <Button
-                                    bsStyle='danger'
-                                    // className='pull-right'
-                                    style={{marginLeft: '5px'}}
+                              {this.props.editSettings.addStops
+                                ? [
+                                    <td>
+                                      <VirtualizedEntitySelect
+                                        value={this.props.entity ? {value: this.props.entity.id, label: getEntityName(this.props.activeComponent, this.props.entity), entity: this.props.entity} : null}
+                                        component={'stop'}
+                                        entities={this.props.stops}
+                                        onChange={(input) => {
+                                          console.log(input)
+                                          let patternStops = [...pattern.patternStops]
+                                          let stop = input.entity
+                                          let coordinates = pattern.shape && pattern.shape.coordinates
+                                          let newStop = {stopId: stop.id, defaultDwellTime: 0, defaultTravelTime: 0}
+                                          // if adding stop to end
+                                          if (typeof index === 'undefined') {
+                                            // if shape coordinates already exist, just extend them
+                                            if (coordinates) {
+                                              let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
+                                              this.extendPatternToStop(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
+                                              .then(() => {
+                                                patternStops.push(newStop)
+                                                this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+                                                this.props.saveActiveEntity('trippattern')
+                                              })
+                                            }
+                                            // if shape coordinates do not exist, add pattern stop and get shape between stops (if multiple stops exist)
+                                            else {
+                                              patternStops.push(newStop)
+                                              if (patternStops.length > 1) {
+                                                let previousStop = this.props.stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
+                                                console.log(previousStop)
+                                                getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], this.props.editSettings.followStreets)
+                                                .then(geojson => {
+                                                  this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
+                                                  this.props.saveActiveEntity('trippattern')
+                                                })
+                                              }
+                                              else {
+                                                this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+                                                this.props.saveActiveEntity('trippattern')
+                                              }
+                                            }
+
+                                            // if not following roads
+                                            // this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}})
+                                          }
+                                          // if adding stop in middle
+                                          else {
+                                            patternStops.splice(index, 0, newStop)
+                                            this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+                                            this.props.saveActiveEntity('trippattern')
+                                          }
+                                          // TODO: add strategy for stop at beginning
+                                        }}
+                                      />
+                                    </td>
+                                    ,
+                                    <td className='col-xs-2'>
+                                      <Button
+                                        bsStyle='danger'
+                                        // className='pull-right'
+                                        style={{marginLeft: '5px'}}
+                                        onClick={() => {
+                                          this.props.toggleEditSetting('addStops')
+                                        }}
+                                      >
+                                        <Icon name='times'/>
+                                      </Button>
+                                    </td>
+                                  ]
+                                : <td colSpan='2'
                                     onClick={() => {
-                                      this.props.toggleEditSetting('addStops')
-                                    }}
-                                  >
-                                    <Icon name='times'/>
-                                  </Button>
-                                    <VirtualizedEntitySelect
-                                      value={this.props.entity ? {value: this.props.entity.id, label: getEntityName(this.props.activeComponent, this.props.entity), entity: this.props.entity} : null}
-                                      component={'stop'}
-                                      entities={this.props.stops}
-                                      onChange={(input) => {
-                                        console.log(input)
-                                        let patternStops = [...pattern.patternStops]
-                                        let stop = input.entity
-                                        // let stopPoint = point([stop.stop_lon, stop.stop_lat])
-                                        let coordinates = pattern.shape && pattern.shape.coordinates
-                                        let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
-                                        // let distance =
-                                        this.extendPatternToStop(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
-                                        .then(() => {
-                                          patternStops.push({stopId: input.value, defaultDwellTime: 0, defaultTravelTime: 0})
-                                          this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
-                                          this.props.saveActiveEntity('trippattern')
-                                        })
-                                      }}
-                                    />
-                                  </div>
-                                : <p
-                                    onClick={() => {
-                                      this.props.fetchStops(this.props.feedSource.id)
+                                      // this.props.fetchStops(this.props.feedSource.id)
                                       this.props.toggleEditSetting('addStops')
                                     }}
                                     className='small'
                                   >
                                     <Icon name='plus'/> Add stop
-                                  </p>
+                                  </td>
                               }
-                            </td>
                           </tr>
                         </tbody>
                       </Table>
@@ -521,7 +562,7 @@ export default class TripPatternList extends Component {
               bsSize='small'
               disabled={activeEntity.tripPatterns && activeEntity.tripPatterns.findIndex(e => e.id === 'new') !== -1}
               onClick={() => {
-                this.props.newEntityClicked(this.props.feedSource.id, 'trippattern', {routeId: activeEntity.id, patternStops: [], name: 'New Pattern'}, true)
+                this.props.newEntityClicked(this.props.feedSource.id, 'trippattern', {routeId: activeEntity.id, patternStops: [], name: 'New Pattern', feedId: this.props.feedSource.id, id: 'new'}, true)
               }}
             >
               <Icon name='plus'/> New pattern

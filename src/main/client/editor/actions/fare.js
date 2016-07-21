@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setActiveGtfsEntity } from './editor'
 
 //// FARES
 
@@ -41,9 +42,16 @@ export function saveFare (feedId, fare) {
       : `/api/manager/secure/fare?feedId=${feedId}`
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(fare => {
+      .then(f => {
+
         // dispatch(receiveFare(feedId, fare))
         dispatch(fetchFares(feedId))
+        .then(() => {
+          if (fare.id === 'new') {
+            dispatch(setActiveGtfsEntity(feedId, 'fare', f.id))
+          }
+          return f
+        })
       })
   }
 }

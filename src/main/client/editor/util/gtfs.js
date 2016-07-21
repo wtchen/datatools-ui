@@ -1,6 +1,10 @@
 import along from 'turf-along'
 import lineDistance from 'turf-line-distance'
 
+export const componentList = ['route', 'stop', 'fare', 'feedinfo', 'calendar', 'scheduleexception', 'agency']
+export const subComponentList = ['trippattern']
+export const subSubComponentList = ['timetable']
+
 export const getEntityName = (component, entity) => {
   if (!entity) {
     return '[Unnamed]'
@@ -19,6 +23,12 @@ export const getEntityName = (component, entity) => {
     ? 'name'
     : null
   switch (component) {
+    case 'stop':
+      return entity.stop_name && entity.stop_code
+        ? `${entity.stop_name} (${entity.stop_code})`
+        : entity.stop_name && entity.stop_id
+        ? `${entity.stop_name} (${entity.stop_id})`
+        : entity.stop_name
     case 'route':
       return entity.route_short_name && entity.route_long_name
         ? `${entity.route_short_name} - ${entity.route_long_name}`

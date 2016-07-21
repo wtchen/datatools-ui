@@ -40,7 +40,7 @@ const defaultState = {
     coordinatesHistory: [],
     actions: []
   },
-  mapSettings: {
+  mapState: {
     zoom: null,
     bounds: null
   },
@@ -56,7 +56,7 @@ const editor = (state = defaultState, action) => {
       }
     case 'UPDATE_MAP_SETTING':
       return update(state, {
-        mapSettings: {
+        mapState: {
           [action.setting]: {$set: action.value},
           // controlPoints: {$set: [controlPoints]},
           // coordinatesHistory: {$set: [coordinates]}
@@ -163,18 +163,12 @@ const editor = (state = defaultState, action) => {
           ...action.props
         }
         routeIndex = state.tableData.route.findIndex(r => r.id === action.props.routeId)
-        // if tripPatterns is undefined, create array
-        // console.log(state.tableData.route[routeIndex])
-        // if(typeof state.tableData.route[routeIndex].tripPatterns === 'undefined') {
-        //   console.log('creating trip patterns array for index' + routeIndex)
-        //   newState = update(state, {
-        //     tableData: {route: {[routeIndex]: {tripPatterns: {$set: []}}}},
-        //     active: {entity: {tripPatterns: {$set: []}}}
-        //   })
-        // }
         return update(newState || state, {
           tableData: {route: {[routeIndex]: {tripPatterns: {$unshift: [activeEntity]}}}},
-          active: {entity: {tripPatterns: {$unshift: [activeEntity]}}}
+          active: {
+            entity: {tripPatterns: {$unshift: [activeEntity]}},
+            // edited: {$set: typeof action.props !== 'undefined'}
+          }
         })
       }
       else {
@@ -194,7 +188,10 @@ const editor = (state = defaultState, action) => {
         }
         return update(newState || state, {
           tableData: {[action.component]: {$unshift: [activeEntity]}},
-          // active: {entity: {$set: activeEntity}}
+          // active: {
+          //   entity: {$set: activeEntity},
+          //   edited: {$set: typeof action.props !== 'undefined'}
+          // }
         })
       }
     case 'SETTING_ACTIVE_GTFS_ENTITY':
@@ -219,7 +216,7 @@ const editor = (state = defaultState, action) => {
         component: action.component,
         subComponent: action.subComponent,
         subSubComponent: action.subSubComponent,
-        edited: false,
+        edited: activeEntity && activeEntity.id === 'new',
       }
       stateUpdate = {
         editSettings: {
@@ -230,7 +227,6 @@ const editor = (state = defaultState, action) => {
       if (coordinates) {
         stateUpdate.coordinatesHistory = {$set: [coordinates]}
       }
-      console.log(stateUpdate)
       return update(state, stateUpdate)
     case 'RESET_ACTIVE_GTFS_ENTITY':
       switch (action.component) {
@@ -525,7 +521,9 @@ const editor = (state = defaultState, action) => {
     case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.routeId)
       let activePattern = state.active.subEntityId && action.tripPatterns.find(p => p.id === state.active.subEntityId)
-
+      if (routeIndex === -1) {
+        return state
+      }
       // set controlPoints initially and then whenever isSnappingToStops changes
       // if (activePattern) {
       //   controlPoints = getControlPoints(activePattern, state.editSettings.snapToStops)

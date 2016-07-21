@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setActiveGtfsEntity } from './editor'
 
 //// ROUTES
 
@@ -40,9 +41,14 @@ export function saveRoute (feedId, route) {
     }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(route => {
-        // dispatch(receiveRoute(feedId, route))
-        dispatch(fetchRoutes(feedId))
+      .then(r => {
+        return dispatch(fetchRoutes(feedId))
+          .then((routes) => {
+            if (route.id === 'new') {
+              dispatch(setActiveGtfsEntity(feedId, 'route', r.id))
+            }
+            return r
+          })
       })
   }
 }
