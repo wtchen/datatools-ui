@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import {decode as decodePolyline} from 'polyline'
+import ll, {isEqual as coordinatesAreEqual} from 'lonlng'
 
 export async function route (points) {
   if (points.length < 2) {
@@ -42,4 +43,33 @@ export async function polyline (points) {
   else {
     return null
   }
+}
+
+export async function getSegment (points, followRoad) {
+  let geometry
+  if (followRoad) { // if followRoad
+      const coordinates = await polyline(points.map(p => ({lng: p[0], lat: p[1]}))) // [{lng: from[0], lat: from[1]}, {lng: to[0], lat: to[1]}])
+      if (!coordinates) {
+        geometry = await lineString(points).geometry
+      }
+      else {
+        const c0 = coordinates[0]
+        const cy = coordinates[coordinates.length - 1]
+        const epsilon = 1e-6
+        if (!coordinatesAreEqual(c0, points[0], epsilon)) {
+          coordinates.unshift(points[0])
+        }
+        // if (!coordinatesAreEqual(cy, to, epsilon)) {
+        //   coordinates.push(to)
+        // }
+
+        geometry = {
+          type: 'LineString',
+          coordinates
+        }
+      }
+    } else {
+      geometry = await lineString(points).geometry
+    }
+    return geometry
 }
