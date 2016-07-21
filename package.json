@@ -22,6 +22,7 @@
     "css-loader": "^0.23.1",
     "express": "^4.13.3",
     "express-jwt": "^3.3.0",
+    "faker": "^3.1.0",
     "file-loader": "^0.8.5",
     "history": "^2.0.1",
     "isomorphic-fetch": "^2.2.1",
@@ -40,7 +41,7 @@
     "react": "^15.2.0",
     "react-addons-shallow-compare": "^15.1.0",
     "react-addons-update": "^0.14.7",
-    "react-bootstrap": "^0.29.4",
+    "react-bootstrap": "^0.30.0-rc.1",
     "react-bootstrap-datetimepicker": "^0.0.22",
     "react-bootstrap-table": "^2.1.0",
     "react-color": "^2.2.0",
@@ -78,6 +79,7 @@
     "turf-point": "^2.0.1",
     "turf-point-on-line": "^3.0.11",
     "url-loader": "^0.5.7",
+    "validator": "^5.5.0",
     "yaml-loader": "^0.1.0"
   },
   "devDependencies": {
@@ -102,6 +104,7 @@
     "mocha": "^2.3.3",
     "mocha-jsdom": "^1.0.0",
     "postcss-loader": "^0.6.0",
+    "react-addons-perf": "^15.2.1",
     "react-addons-test-utils": "^0.14.3",
     "react-transform-hmr": "^1.0.0",
     "rimraf": "^2.4.3",
