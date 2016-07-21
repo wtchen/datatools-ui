@@ -39,11 +39,6 @@ export default class ProjectSettings extends Component {
     const defaultFetchTime = moment().startOf('day').add(2, 'hours')
     return (
       <div>
-      <Panel
-        header={(<h3><Glyphicon glyph='cog' /> {messages.title}</h3>)}
-        collapsible
-        defaultExpanded={this.props.expanded}
-      >
         <Tabs id='project-settings-tabs'
           animation={false}
           bsStyle='pills'
@@ -526,7 +521,6 @@ export default class ProjectSettings extends Component {
           </Tab>
           */}
         </Tabs>
-      </Panel>
       <MapModal ref='mapModal'/>
       </div>
     )

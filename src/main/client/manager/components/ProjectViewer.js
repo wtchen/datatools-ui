@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form } from 'react-bootstrap'
-import { Link } from 'react-router'
+import { Tabs, Tab, Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form } from 'react-bootstrap'
+import { Link, browserHistory } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
@@ -65,7 +65,7 @@ export default class ProjectViewer extends Component {
           </Row>
           <Row>
             <Col xs={12}>
-              <h2>
+              <h2 style={{ borderBottom: '1px solid #ddd', paddingBottom: 12, marginBottom: 24 }}>
                 {this.props.project.name}
                 <ButtonToolbar
                   className={`pull-right`}
@@ -86,131 +86,150 @@ export default class ProjectViewer extends Component {
               </h2>
             </Col>
           </Row>
-
-          <ProjectSettings
-            project={this.props.project}
-            expanded={this.props.activeComponent === 'settings'}
-            updateProjectSettings={this.props.updateProjectSettings}
-            projectEditDisabled={projectEditDisabled}
-          />
-
-          {isModuleEnabled('deployment')
-            ? <DeploymentsPanel
-                deployments={this.props.project.deployments}
-                expanded={this.props.activeComponent === 'deployments'}
-                deleteDeploymentConfirmed={this.props.deleteDeploymentConfirmed}
-                deploymentsRequested={this.props.deploymentsRequested}
-                onNewDeploymentClick={this.props.onNewDeploymentClick}
-                newDeploymentNamed={this.props.newDeploymentNamed}
-              />
-            : null
-          }
-          <Panel
-            header={(<h3><Glyphicon glyph='list' /> {messages.feeds.title}</h3>)}
-            collapsible
-            defaultExpanded={true}
+          <Tabs
+            activeKey={this.props.activeComponent ? this.props.activeComponent : 'sources'}
+            onSelect={(key) => {
+              if (key === 'sources') {
+                browserHistory.push(`/project/${this.props.project.id}/`)
+              }
+              else {
+                browserHistory.push(`/project/${this.props.project.id}/${key}`)
+              }
+              if (key === 'deployments') {
+                this.props.deploymentsRequested()
+              }
+            }}
           >
-            <Row>
-              <Col xs={4}>
-                <FormControl
-                  placeholder={messages.feeds.search}
-                  onChange={evt => this.props.searchTextChanged(evt.target.value)}
-                />
-              </Col>
-              <Col xs={8}>
-                <Button
-                  bsStyle='primary'
-                  disabled={projectEditDisabled}
-                  className='pull-right'
-                  onClick={() => this.props.onNewFeedSourceClick()}
+            <Tab
+              eventKey='sources' title={<span><Glyphicon glyph='list' /> {messages.feeds.title}</span>}
+            >
+                <Row>
+                  <Col xs={4}>
+                    <FormControl
+                      placeholder={messages.feeds.search}
+                      onChange={evt => this.props.searchTextChanged(evt.target.value)}
+                    />
+                  </Col>
+                  <Col xs={8}>
+                    <Button
+                      bsStyle='primary'
+                      disabled={projectEditDisabled}
+                      className='pull-right'
+                      onClick={() => this.props.onNewFeedSourceClick()}
+                    >
+                      {messages.feeds.new}
+                    </Button>
+                    <ButtonToolbar>
+                      {isExtensionEnabled('transitland')
+                        ? <Button
+                            bsStyle='primary'
+                            disabled={projectEditDisabled}
+                            id='TRANSITLAND'
+                            onClick={(evt) => {
+                              this.props.thirdPartySync('TRANSITLAND')
+                            }}
+                          >
+                            <Glyphicon glyph='refresh' /> transit.land
+                          </Button>
+                        : null
+                      }
+                      {isExtensionEnabled('transitfeeds')
+                        ? <Button
+                            bsStyle='primary'
+                            disabled={projectEditDisabled}
+                            id='TRANSITFEEDS'
+                            onClick={(evt) => {
+                              this.props.thirdPartySync('TRANSITFEEDS')
+                            }}
+                          >
+                            <Glyphicon glyph='refresh' /> transitfeeds.com
+                          </Button>
+                        : null
+                      }
+                      {isExtensionEnabled('mtc')
+                        ? <Button
+                            bsStyle='primary'
+                            disabled={projectEditDisabled}
+                            id='MTC'
+                            onClick={(evt) => {
+                              this.props.thirdPartySync('MTC')
+                            }}
+                          >
+                            <Glyphicon glyph='refresh' /> MTC
+                          </Button>
+                        : null
+                      }
+                      <Button
+                        bsStyle='default'
+                        disabled={projectEditDisabled}
+                        onClick={() => {
+                          console.log(this.props.project)
+                          this.props.updateAllFeeds(this.props.project)
+                        }}
+                      >
+                        <Glyphicon glyph='refresh' /> {messages.feeds.update}
+                      </Button>
+                    </ButtonToolbar>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    <Table striped hover>
+                      <thead>
+                        <tr>
+                          <th className='col-md-4'>Name</th>
+                          <th>{messages.feeds.table.public}</th>
+                          <th>{messages.feeds.table.deployable}</th>
+                          <th>{messages.feeds.table.retrievalMethod}</th>
+                          <th>{messages.feeds.table.lastUpdated}</th>
+                          <th>{messages.feeds.table.errorCount}</th>
+                          <th>{messages.feeds.table.validRange}</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredFeedSources.map((feedSource) => {
+                          return <FeedSourceTableRow
+                            feedSource={feedSource}
+                            project={this.props.project}
+                            key={feedSource.id}
+                            user={this.props.user}
+                            newFeedSourceNamed={this.props.newFeedSourceNamed}
+                            feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
+                            deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
+                          />
+                        })}
+                      </tbody>
+                    </Table>
+                  </Col>
+                </Row>
+            </Tab>
+            <Tab
+              eventKey='settings' title={<span><Glyphicon glyph='cog'/> {messages.settings}</span>}
+            >
+              <ProjectSettings
+                project={this.props.project}
+                expanded={this.props.activeComponent === 'settings'}
+                updateProjectSettings={this.props.updateProjectSettings}
+                projectEditDisabled={projectEditDisabled}
+              />
+            </Tab>
+            {isModuleEnabled('deployment')
+              ? <Tab
+                  eventKey='deployments' title={<span><Glyphicon glyph='globe' /> {messages.deployments}</span>}
                 >
-                  {messages.feeds.new}
-                </Button>
-                <ButtonToolbar>
-                  {isExtensionEnabled('transitland')
-                    ? <Button
-                        bsStyle='primary'
-                        disabled={projectEditDisabled}
-                        id='TRANSITLAND'
-                        onClick={(evt) => {
-                          this.props.thirdPartySync('TRANSITLAND')
-                        }}
-                      >
-                        <Glyphicon glyph='refresh' /> transit.land
-                      </Button>
-                    : null
-                  }
-                  {isExtensionEnabled('transitfeeds')
-                    ? <Button
-                        bsStyle='primary'
-                        disabled={projectEditDisabled}
-                        id='TRANSITFEEDS'
-                        onClick={(evt) => {
-                          this.props.thirdPartySync('TRANSITFEEDS')
-                        }}
-                      >
-                        <Glyphicon glyph='refresh' /> transitfeeds.com
-                      </Button>
-                    : null
-                  }
-                  {isExtensionEnabled('mtc')
-                    ? <Button
-                        bsStyle='primary'
-                        disabled={projectEditDisabled}
-                        id='MTC'
-                        onClick={(evt) => {
-                          this.props.thirdPartySync('MTC')
-                        }}
-                      >
-                        <Glyphicon glyph='refresh' /> MTC
-                      </Button>
-                    : null
-                  }
-                  <Button
-                    bsStyle='default'
-                    disabled={projectEditDisabled}
-                    onClick={() => {
-                      console.log(this.props.project)
-                      this.props.updateAllFeeds(this.props.project)
-                    }}
-                  >
-                    <Glyphicon glyph='refresh' /> {messages.feeds.update}
-                  </Button>
-                </ButtonToolbar>
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={12}>
-                <Table striped hover>
-                  <thead>
-                    <tr>
-                      <th className='col-md-4'>Name</th>
-                      <th>{messages.feeds.table.public}</th>
-                      <th>{messages.feeds.table.deployable}</th>
-                      <th>{messages.feeds.table.retrievalMethod}</th>
-                      <th>{messages.feeds.table.lastUpdated}</th>
-                      <th>{messages.feeds.table.errorCount}</th>
-                      <th>{messages.feeds.table.validRange}</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredFeedSources.map((feedSource) => {
-                      return <FeedSourceTableRow
-                        feedSource={feedSource}
-                        project={this.props.project}
-                        key={feedSource.id}
-                        user={this.props.user}
-                        newFeedSourceNamed={this.props.newFeedSourceNamed}
-                        feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
-                        deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
-                      />
-                    })}
-                  </tbody>
-                </Table>
-              </Col>
-            </Row>
-          </Panel>
+                  <DeploymentsPanel
+                    deployments={this.props.project.deployments}
+                    expanded={this.props.activeComponent === 'deployments'}
+                    deleteDeploymentConfirmed={this.props.deleteDeploymentConfirmed}
+                    deploymentsRequested={this.props.deploymentsRequested}
+                    onNewDeploymentClick={this.props.onNewDeploymentClick}
+                    newDeploymentNamed={this.props.newDeploymentNamed}
+                  />
+                </Tab>
+              : null
+            }
+          </Tabs>
         </Grid>
       </ManagerPage>
     )
@@ -244,18 +263,6 @@ class DeploymentsPanel extends Component {
     const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     return (
-      <Panel
-        header={(
-          <h3 onClick={() => {
-            if(!this.state.expanded) this.props.deploymentsRequested()
-            this.setState({ expanded: !this.state.expanded })
-          }}>
-            <Glyphicon glyph='globe' /> {messages.title}
-          </h3>
-        )}
-        collapsible
-        expanded={this.state.expanded}
-      >
         <Row>
           <Col xs={12}>
           <Button
@@ -322,7 +329,6 @@ class DeploymentsPanel extends Component {
             </Table>
           </Col>
         </Row>
-      </Panel>
     )
   }
 }
