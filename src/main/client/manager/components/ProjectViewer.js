@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -112,8 +112,7 @@ export default class ProjectViewer extends Component {
           >
             <Row>
               <Col xs={4}>
-                <Input
-                  type='text'
+                <FormControl
                   placeholder={messages.feeds.search}
                   onChange={evt => this.props.searchTextChanged(evt.target.value)}
                 />
@@ -356,9 +355,7 @@ class FeedSourceTableRow extends Component {
           </div>
         </td>
         <td>
-          <Input
-            type='checkbox'
-            label='&nbsp;'
+          <Checkbox
             disabled={disabled}
             defaultChecked={fs.isPublic}
             onChange={(e) => {
@@ -367,9 +364,7 @@ class FeedSourceTableRow extends Component {
           />
         </td>
         <td>
-          <Input
-            type='checkbox'
-            label='&nbsp;'
+          <Checkbox
             disabled={disabled}
             defaultChecked={fs.deployable}
             onChange={(e) => {

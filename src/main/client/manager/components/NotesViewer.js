@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
-import { Panel, Row, Col, Glyphicon, Input, Button, ButtonToolbar } from 'react-bootstrap'
+import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar } from 'react-bootstrap'
 
 import WatchButton from '../../common/containers/WatchButton'
 
@@ -61,7 +61,7 @@ export default class NotesViewer extends Component {
         </Col>
         <Col xs={12} sm={4} md={6}>
           <h3>{messages.postComment}</h3>
-          <Input
+          <FormControl
             ref='newNoteBody'
             type='textarea'
           />

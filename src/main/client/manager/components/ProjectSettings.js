@@ -5,7 +5,7 @@ import moment_tz from 'moment-timezone'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
 
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, InputGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, InputGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
 import languages from '../../common/util/languages'
@@ -241,8 +241,8 @@ export default class ProjectSettings extends Component {
                     <h4>{messages.deployment.buildConfig.title}</h4>
                     <Row>
                     <Col xs={6}>
-                    <Input
-                      type='select'
+                    <FormControl
+                      componentClass='select'
                       defaultValue={project.buildConfig && project.buildConfig.fetchElevationUS ? project.buildConfig.fetchElevationUS : ''}
                       label={messages.deployment.buildConfig.fetchElevationUS}
                       ref='fetchElevationUS'
@@ -253,11 +253,11 @@ export default class ProjectSettings extends Component {
                     >
                       <option value="false">false</option>
                       <option value="true">true</option>
-                    </Input>
+                    </FormControl>
                     </Col>
                     <Col xs={6}>
-                    <Input
-                      type='select'
+                    <FormControl
+                      componentClass='select'
                       defaultValue={project.buildConfig && project.buildConfig.stationTransfers ? project.buildConfig.stationTransfers : ''}
                       label={messages.deployment.buildConfig.stationTransfers}
                       ref='stationTransfers'
@@ -268,11 +268,10 @@ export default class ProjectSettings extends Component {
                     >
                       <option value="false">false</option>
                       <option value="true">true</option>
-                    </Input>
+                    </FormControl>
                     </Col>
                     </Row>
-                    <Input
-                      type='text'
+                    <FormControl
                       defaultValue={project.buildConfig && project.buildConfig.subwayAccessTime ? project.buildConfig.subwayAccessTime : ''}
                       placeholder='2.5 (min)'
                       label={messages.deployment.buildConfig.subwayAccessTime}
@@ -282,8 +281,7 @@ export default class ProjectSettings extends Component {
                         this.setState(update(this.state, stateUpdate))
                       }}
                     />
-                    <Input
-                      type='text'
+                    <FormControl
                       defaultValue={project.buildConfig && project.buildConfig.fares ? project.buildConfig.fares : ''}
                       placeholder='fares'
                       label={messages.deployment.buildConfig.fares}
@@ -298,7 +296,7 @@ export default class ProjectSettings extends Component {
                     <h4>Router Config</h4>
                     <Row>
                     <Col xs={6}>
-                    <Input
+                    <FormControl
                       type='integer'
                       defaultValue={project.routerConfig && project.routerConfig.numItineraries ? project.routerConfig.numItineraries : ''}
                       placeholder='6'
@@ -311,7 +309,7 @@ export default class ProjectSettings extends Component {
                     />
                     </Col>
                     <Col xs={6}>
-                    <Input
+                    <FormControl
                       type='number'
                       defaultValue={project.routerConfig && project.routerConfig.walkSpeed ? project.routerConfig.walkSpeed : ''}
                       placeholder='3.0'
@@ -326,7 +324,7 @@ export default class ProjectSettings extends Component {
                     </Row>
                     <Row>
                     <Col xs={6}>
-                    <Input
+                    <FormControl
                       type='number'
                       defaultValue={project.routerConfig && project.routerConfig.stairsReluctance ? project.routerConfig.stairsReluctance : ''}
                       placeholder='2.0'
@@ -339,7 +337,7 @@ export default class ProjectSettings extends Component {
                     />
                     </Col>
                     <Col xs={6}>
-                    <Input
+                    <FormControl
                       type='number'
                       defaultValue={project.routerConfig && project.routerConfig.carDropoffTime ? project.routerConfig.carDropoffTime : ''}
                       placeholder='240 (sec)'
@@ -352,7 +350,7 @@ export default class ProjectSettings extends Component {
                     />
                     </Col>
                     </Row>
-                    <Input
+                    <FormControl
                       type='text'
                       defaultValue={project.routerConfig && project.routerConfig.brandingUrlRoot ? project.routerConfig.brandingUrlRoot : ''}
                       placeholder='http://gtfs.example.com/branding'
@@ -480,7 +478,7 @@ export default class ProjectSettings extends Component {
                       </Radio>
                     </FormGroup>
                     {project.useCustomOsmBounds || this.state.deployment.useCustomOsmBounds
-                      ? <Input
+                      ? <FormControl
                           type='text'
                           defaultValue={project.osmNorth !== null ? `${project.osmWest},${project.osmSouth},${project.osmEast},${project.osmNorth}` : ''}
                           placeholder='-88.45,33.22,-87.12,34.89'
