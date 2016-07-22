@@ -118,8 +118,10 @@ export default class ProjectSettings extends Component {
                                     }
                                   }}
                                 />
-                                <InputGroup.Button>
+                                {
+                                  <InputGroup.Button>
                                   <Button
+                                    disabled={true} // TODO: wait for react-leaflet-draw to update library to  re-enable bounds select
                                     onClick={() => {
                                       const bounds = project.north !== null ? [[project.south, project.west], [project.north, project.east]] : null
                                       console.log(bounds)
@@ -148,6 +150,7 @@ export default class ProjectSettings extends Component {
                                     <Glyphicon glyph='fullscreen'/>
                                   </Button>
                                 </InputGroup.Button>
+                              }
                               </InputGroup>
                             </FormGroup>
                           </Col>
