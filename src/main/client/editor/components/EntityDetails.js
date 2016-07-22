@@ -468,8 +468,6 @@ export default class EntityDetails extends Component {
             dateTime: currentValue ? +moment(currentValue) : defaultValue,
             onChange: (millis) => {
               let date = moment(+millis)
-              console.log(date, millis)
-              let seconds = +millis / 1000
               let props = {}
               props[editorField] = +millis
               // this.setState({[editorField]: +millis})

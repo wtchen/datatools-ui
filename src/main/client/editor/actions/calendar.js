@@ -79,7 +79,28 @@ export function saveCalendar (feedId, calendar) {
   }
 }
 
+export function deletingCalendar (feedId, calendar) {
+  return {
+    type: 'DELETING_CALENDAR',
+    feedId,
+    calendar
+  }
+}
 
+export function deleteCalendar (feedId, calendar) {
+  return function (dispatch, getState) {
+    dispatch(deletingCalendar(feedId, calendar))
+    if (calendar.id === 'new') {
+      return dispatch(fetchCalendars(feedId))
+    }
+    const url = `/api/manager/secure/calendar/${calendar.id}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
+      .then(res => res.json())
+      .then(calendar => {
+        dispatch(fetchCalendars(feedId))
+      })
+  }
+}
 
 export function savingScheduleException (feedId, scheduleException) {
   return {
@@ -176,7 +197,7 @@ export function deleteScheduleException (feedId, scheduleException) {
     const url = `/api/manager/secure/scheduleexception/${scheduleException.id}?feedId=${feedId}`
     return secureFetch(url, getState(), 'delete')
       .then(res => res.json())
-      .then(route => {
+      .then(scheduleException => {
         dispatch(fetchScheduleExceptions(feedId))
       })
   }
