@@ -1,6 +1,6 @@
 import React from 'react'
 import fetch from 'isomorphic-fetch'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, Table, FormControl, Panel, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -125,7 +125,7 @@ export default class PublicFeedSourceViewer extends React.Component {
                       ? <tr>
                           <td>Editor Snapshot</td>
                           <td>
-                            <Input type='select'
+                            <FormControl componentClass='select'
                               value={fs.snapshotVersion}
                               onChange={(evt) => {
                                 console.log(evt.target.value);
@@ -137,7 +137,7 @@ export default class PublicFeedSourceViewer extends React.Component {
                                   {snapshot.name}
                                 </option>
                               })}
-                            </Input>
+                            </FormControl>
                           </td>
                         </tr>
                       : null
