@@ -73,7 +73,7 @@ export default class MapModal extends React.Component {
     this.mapInitialized = true
   }
   ok () {
-    if(this.state.markerSelect) this.state.onConfirm(this.state.marker[0])
+    if(this.state.markerSelect) this.state.onConfirm(this.state.marker)
     if(this.state.rectangleSelect) this.state.onConfirm(this.state.rectangle)
     else this.state.onConfirm()
     this.close()
