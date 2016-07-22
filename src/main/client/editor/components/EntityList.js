@@ -36,15 +36,9 @@ export default class EntityList extends Component {
     const shouldUpdate = nextProps.entities && !this.props.entities ||
             nextProps.entities && this.props.entities && nextProps.entities.length !== this.props.entities.length ||
             nextProps.activeComponent !== this.props.activeComponent ||
-            // nextProps.activeEntity && !this.props.activeEntity || !nextProps.activeEntity && this.props.activeEntity ||
-            // getEntityName(this.props.activeComponent, this.props.activeEntity) !== getEntityName(nextProps.activeComponent, nextProps.activeEntity) ||
             nextProps.activeEntityId !== this.props.activeEntityId ||
             nextProps.activeEntity && !this.props.activeEntity ||
-            // nextProps.entityEdited !== this.props.entityEdited ||
-            // !shallowEqual(nextProps.activeEntity, this.props.activeEntity) ||
             !shallowEqual(nextProps.feedSource, this.props.feedSource)
-
-            // !shallowEqual(nextProps.entities, this.props.entities) ||
     if (shouldUpdate) {
       console.log(shouldUpdate)
     }

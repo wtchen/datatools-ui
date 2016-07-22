@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Input, Label } from 'react-bootstrap'
+import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, FormControl, Label } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
@@ -203,8 +203,8 @@ class AgencySelector extends React.Component {
     }
     return (
       <div>
-        <Input
-          type='select'
+        <FormControl
+          componentClass='select'
           value={this.props.entity.agency && getFeedId(this.props.entity.agency)}
           onChange={(evt) => {
             this.props.entityUpdated(this.props.entity, 'AGENCY', getFeed(this.props.feeds, evt.target.value))
@@ -214,7 +214,7 @@ class AgencySelector extends React.Component {
           {this.props.feeds.map((feed) => {
             return <option key={getFeedId(feed)} value={getFeedId(feed)}>{feed.name}</option>
           })}
-        </Input>
+        </FormControl>
       </div>
     )
   }
@@ -228,8 +228,8 @@ class ModeSelector extends React.Component {
     }
     return (
       <div>
-        <Input
-          type='select'
+        <FormControl
+          componentClass='select'
           value={this.props.entity.mode.gtfsType}
           onChange={(evt) => {
             this.props.entityUpdated(this.props.entity, 'MODE', getMode(evt.target.value))
@@ -239,7 +239,7 @@ class ModeSelector extends React.Component {
           {modes.map((mode) => {
             return <option value={mode.gtfsType}>{mode.name}</option>
           })}
-        </Input>
+        </FormControl>
       </div>
     )
   }

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table, Input, Button, Glyphicon, Tooltip, OverlayTrigger, FormControl } from 'react-bootstrap'
+import { Row, Col, Table, Button, Glyphicon, Tooltip, OverlayTrigger, FormControl } from 'react-bootstrap'
 
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
@@ -156,7 +156,7 @@ export default class GtfsTable extends Component {
           )
         case 'DROPDOWN':
           return (
-            <Input type='select'
+            <FormControl componentClass='select'
               tabIndex={index}
               value={currentValue}
               onChange={(evt) => {
@@ -168,7 +168,7 @@ export default class GtfsTable extends Component {
                   {option.text || option.value}
                 </option>
               })}
-            </Input>
+            </FormControl>
           )
         case 'GTFS_ROUTE':
           const routeEntity = this.props.getGtfsEntity('route', currentValue)
@@ -280,7 +280,7 @@ export default class GtfsTable extends Component {
                   ><Glyphicon glyph='arrow-right' /></Button>
 
                   <span style={{ fontSize: '18px', marginLeft: '15px'}}>
-                    Go to <Input
+                    Go to <FormControl
                       type='text'
                       size={5}
                       style={{ width: '50px', display: 'inline', textAlign: 'center' }}
@@ -301,7 +301,7 @@ export default class GtfsTable extends Component {
             }
             <span style={{ fontSize: '18px' }}>
               Show&nbsp;
-              <Input type="select"
+              <FormControl componentClass="select"
                 onChange={(evt) => {
                   console.log('evt', evt.target.value);
                   this.setState({
@@ -312,7 +312,7 @@ export default class GtfsTable extends Component {
               >
                 <option value='all'>All Records</option>
                 <option value='validation'>Validation Issues Only</option>
-              </Input>
+              </FormControl>
             </span>
           </div>
         </Col>

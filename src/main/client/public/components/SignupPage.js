@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, FormControl, FormGroup, ControlLabel, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
 import { Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
@@ -15,33 +15,42 @@ export default class SignupPage extends React.Component {
   }
 
   render () {
-    const email = <Input
-      type='email'
-      placeholder='user@example.com'
-      label='Email'
-      onChange={(evt) => {
-        const email = evt.target.value
-        this.setState({email: email})
-      }}
-    />
-    const username = <Input
-      type='text'
-      placeholder='user123'
-      label='Username'
-      onChange={(evt) => {
-        const username = evt.target.value
-        this.setState({username: username})
-      }}
-    />
-    const password = <Input
-      type='password'
-      placeholder='password'
-      label='Password'
-      onChange={(evt) => {
-        const password = evt.target.value
-        this.setState({password: password})
-      }}
-    />
+    const email =
+    <FormGroup controlId='formControlsEmail'>
+      <ControlLabel>Email</ControlLabel>
+      <FormControl
+        type='email'
+        placeholder='user@example.com'
+        onChange={(evt) => {
+          const email = evt.target.value
+          this.setState({email: email})
+        }}
+      />
+    </FormGroup>
+    const username =
+    <FormGroup controlId='formControlsUsername'>
+      <ControlLabel>Username</ControlLabel>
+      <FormControl
+        type='text'
+        placeholder='user123'
+        onChange={(evt) => {
+          const username = evt.target.value
+          this.setState({username: username})
+        }}
+      />
+    </FormGroup>
+    const password =
+    <FormGroup controlId='formControlsPassword'>
+      <ControlLabel>Password</ControlLabel>
+      <FormControl
+        type='password'
+        placeholder='password'
+        onChange={(evt) => {
+          const password = evt.target.value
+          this.setState({password: password})
+        }}
+      />
+    </FormGroup>
     return (
       <PublicPage ref='publicPage'>
         <Grid>

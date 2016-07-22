@@ -134,16 +134,18 @@ export default class SignEditor extends React.Component {
           </Row>
           <Row>
             <Col xs={12} sm={6} style={{marginTop: '10px'}}>
-              <Input
-                type='text'
-                label='Configuration Name'
-                bsSize='large'
-                placeholder='E.g., Civic Center surface bus services'
-                defaultValue={this.props.sign.title || ''}
-                onChange={evt => {
-                  this.props.titleChanged(evt.target.value)
-                }}
-              />
+              <FormGroup controlId='formControlsName'>
+                <ControlLabel>Configuration Name</ControlLabel>
+                <FormControl
+                  type='text'
+                  bsSize='large'
+                  placeholder='E.g., Civic Center surface bus services'
+                  defaultValue={this.props.sign.title || ''}
+                  onChange={evt => {
+                    this.props.titleChanged(evt.target.value)
+                  }}
+                />
+              </FormGroup>
               <Panel header={<b><Glyphicon glyph='modal-window'/> Associated Displays for Sign Configuration</b>}>
                 <Row>
                   <Col xs={12}>

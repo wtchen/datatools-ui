@@ -1,7 +1,7 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 
-import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, ButtonGroup, Button, FormControl, ControlLabel, FormGroup, Panel, Glyphicon } from 'react-bootstrap'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -60,7 +60,7 @@ export default class AlertEditor extends React.Component {
       // return 511 Staff as first in list to avoid 511 Emergency being first in list
       if(/511 Staff/.test(aName)) return -1
       if(/511 Staff/.test(bName)) return 1
-      
+
       if(aName < bName) return -1
       if(aName > bName) return 1
       return 0
@@ -160,14 +160,15 @@ export default class AlertEditor extends React.Component {
               <Col xs={12} sm={6}>
                 <Row>
                   <Col xs={12} style={{marginTop: '10px'}}>
-                    <Input
-                      type='text'
+                  <FormGroup controlId='formControlsTitle'>
+                    <ControlLabel>Alert Title</ControlLabel>
+                    <FormControl
                       bsSize='large'
-                      label='Alert Title'
                       placeholder='E.g., Sig. Delays due to Golden Gate Bridge Closure'
                       defaultValue={this.props.alert.title || ''}
                       onChange={evt => this.props.titleChanged(evt.target.value)}
                     />
+                  </FormGroup>
                   </Col>
                   <Col xs={6}>
                     <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
@@ -198,49 +199,57 @@ export default class AlertEditor extends React.Component {
                 </Row>
                 <Row>
                   <Col xs={6}>
-                    <Input
-                      type="select"
-                      label="Cause"
-                      onChange={(evt) => this.props.causeChanged(evt.target.value)}
-                      value={this.props.alert.cause}
-                    >
-                      {causes.map((cause) => {
-                        return <option value={cause}>{cause}</option>
-                      })}
-                    </Input>
+                    <FormGroup controlId='formControlsCause'>
+                      <ControlLabel>Cause</ControlLabel>
+                      <FormControl
+                        componentClass='select'
+                        onChange={(evt) => this.props.causeChanged(evt.target.value)}
+                        value={this.props.alert.cause}
+                      >
+                        {causes.map((cause) => {
+                          return <option value={cause}>{cause}</option>
+                        })}
+                      </FormControl>
+                    </FormGroup>
                   </Col>
                   <Col xs={6}>
-                    <Input
-                      type="select"
-                      label="Effect"
-                      onChange={(evt) => this.props.effectChanged(evt.target.value)}
-                      value={this.props.alert.effect}
-                    >
-                      {effects.map((effect) => {
-                        return <option value={effect}>{effect}</option>
-                      })}
-                    </Input>
+                    <FormGroup controlId='formControlsEffect'>
+                      <ControlLabel>Effect</ControlLabel>
+                      <FormControl
+                        componentClass='select'
+                        onChange={(evt) => this.props.effectChanged(evt.target.value)}
+                        value={this.props.alert.effect}
+                      >
+                        {effects.map((effect) => {
+                          return <option value={effect}>{effect}</option>
+                        })}
+                      </FormControl>
+                    </FormGroup>
                   </Col>
                 </Row>
 
                 <Row>
                   <Col xs={12} sm={6}>
-                    <Input
-                      type="textarea"
-                      label="Description"
-                      placeholder="Detailed description of alert..."
-                      defaultValue={this.props.alert.description}
-                      onChange={(evt) => this.props.descriptionChanged(evt.target.value)}
-                    />
+                    <FormGroup controlId="formControlsDescription">
+                      <ControlLabel>Description</ControlLabel>
+                      <FormControl
+                        type='textarea'
+                        placeholder='Detailed description of alert...'
+                        defaultValue={this.props.alert.description}
+                        onChange={(evt) => this.props.descriptionChanged(evt.target.value)}
+                      />
+                    </FormGroup>
                   </Col>
                   <Col xs={12} sm={6}>
-                    <Input
-                      type="text"
-                      label="URL"
-                      placeholder="http://511.org/alerts/transit/123"
-                      defaultValue={this.props.alert.url}
-                      onChange={(evt) => this.props.urlChanged(evt.target.value)}
-                    />
+                    <FormGroup controlId="formControlsURL">
+                      <ControlLabel>URL</ControlLabel>
+                      <FormControl
+                        type='text'
+                        placeholder='http://511.org/alerts/transit/123'
+                        defaultValue={this.props.alert.url}
+                        onChange={(evt) => this.props.urlChanged(evt.target.value)}
+                      />
+                    </FormGroup>
                   </Col>
                 </Row>
                 <Row>

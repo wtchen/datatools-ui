@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Row, Col, ButtonGroup, Button, Input } from 'react-bootstrap'
+import { Row, Col, ButtonGroup, Button, FormControl } from 'react-bootstrap'
 import SignPreview from './SignPreview'
 
 export default class SignsList extends React.Component {
@@ -19,7 +19,7 @@ export default class SignsList extends React.Component {
     return (
       <div>
         <Row>
-          <Input
+          <FormControl
             type="text"
             placeholder="Search Signs"
             onChange={evt => this.props.searchTextChanged(evt.target.value)}
