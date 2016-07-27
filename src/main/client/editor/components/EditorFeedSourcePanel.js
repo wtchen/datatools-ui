@@ -7,6 +7,7 @@ export default class EditorFeedSourcePanel extends Component {
   static propTypes = {
     feedSource: PropTypes.object.isRequired,
 
+    exportSnapshotAsVersion: PropTypes.func.isRequired,
     getSnapshots: PropTypes.func.isRequired,
     restoreSnapshot: PropTypes.func.isRequired,
     deleteSnapshot: PropTypes.func.isRequired
@@ -50,7 +51,9 @@ export default class EditorFeedSourcePanel extends Component {
                             <Button bsStyle='success'>
                               <Glyphicon glyph='download' /> Download
                             </Button>
-                            <Button bsStyle='info'>
+                            <Button bsStyle='info'
+                              onClick={() => this.props.exportSnapshotAsVersion(this.props.feedSource, snapshot)}
+                            >
                               <Glyphicon glyph='export' /> Version
                             </Button>
                             <Button bsStyle='danger'

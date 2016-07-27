@@ -1,7 +1,7 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, fetchProjectWithFeeds } from './projects'
 import { setErrorMessage, startJobMonitor } from './status'
-
+import { fetchSnapshots } from '../../editor/actions/snapshots'
 // Feed Source Actions
 
 export function requestingFeedSources () {
@@ -452,6 +452,25 @@ export function downloadFeedViaToken (feedVersion) {
     .then(result => {
       window.location.assign(`/api/manager/downloadfeed/${result.id}`)
     })
+  }
+}
+
+// Create a Feed Version from an editor snapshot
+
+export function creatingFeedVersionFromSnapshot () {
+  return {
+    type: 'CREATING_FEEDVERSION_FROM_SNAPSHOT'
+  }
+}
+
+export function createFeedVersionFromSnapshot (feedSource, snapshotId) {
+  return function (dispatch, getState) {
+    dispatch(creatingFeedVersionFromSnapshot())
+    const url = `/api/manager/secure/feedversion/fromsnapshot?feedSourceId=${feedSource.id}&snapshotId=${snapshotId}`
+    return secureFetch(url, getState(), 'post')
+      .then((res) => {
+        dispatch(fetchSnapshots(feedSource))
+      })
   }
 }
 

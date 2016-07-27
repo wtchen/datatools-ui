@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { fetchSnapshots, restoreSnapshot, deleteSnapshot } from '../actions/snapshots.js'
+import { createFeedVersionFromSnapshot } from '../../manager/actions/feeds'
 
 import EditorFeedSourcePanel from '../components/EditorFeedSourcePanel'
 
@@ -12,7 +13,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     getSnapshots: (feedSource) => { dispatch(fetchSnapshots(feedSource)) },
     restoreSnapshot: (feedSource, snapshot) => { dispatch(restoreSnapshot(feedSource, snapshot)) },
-    deleteSnapshot: (feedSource, snapshot) => { dispatch(deleteSnapshot(feedSource, snapshot)) }
+    deleteSnapshot: (feedSource, snapshot) => { dispatch(deleteSnapshot(feedSource, snapshot)) },
+    exportSnapshotAsVersion: (feedSource, snapshot) => { dispatch(createFeedVersionFromSnapshot(feedSource, snapshot.id)) }
   }
 }
 
