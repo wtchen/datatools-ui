@@ -2,9 +2,8 @@ import React, {Component, PropTypes} from 'react'
 import fetch from 'isomorphic-fetch'
 import Icon from 'react-fa'
 import Helmet from 'react-helmet'
-import { Grid, Row, Col, Panel, Well, Button, DropdownButton, MenuItem, Table, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, Form, FormControl, ControlLabel, Checkbox } from 'react-bootstrap'
+import { Grid, Row, Col, Well, Button, Table, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, FormControl, Checkbox } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
-import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -16,7 +15,7 @@ import ExternalPropertiesTable from './ExternalPropertiesTable'
 import FeedVersionNavigator from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
-import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { isModuleEnabled } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -28,7 +27,9 @@ export default class FeedSourceViewer extends Component {
 
   static propTypes = {
     feedSource: PropTypes.object,
+    feedSourceId: PropTypes.string,
     feedVersionIndex: PropTypes.number,
+    isFetching: PropTypes.bool,
     project: PropTypes.object,
     user: PropTypes.object,
 
@@ -37,6 +38,7 @@ export default class FeedSourceViewer extends Component {
     downloadFeedClicked: PropTypes.func,
     externalPropertyChanged: PropTypes.func,
     feedSourcePropertyChanged: PropTypes.func,
+    feedVersionRenamed: PropTypes.func,
     gtfsPlusDataRequested: PropTypes.func,
     newNotePostedForFeedSource: PropTypes.func,
     newNotePostedForVersion: PropTypes.func,
@@ -107,7 +109,6 @@ export default class FeedSourceViewer extends Component {
 
   render () {
     const fs = this.props.feedSource
-    console.log(this.props)
     if (this.props.isFetching) {
       return (
         <ManagerPage ref='page'>
@@ -127,8 +128,7 @@ export default class FeedSourceViewer extends Component {
           </Grid>
         </ManagerPage>
       )
-    }
-    else if (!fs) {
+    } else if (!fs) {
       return (
         <ManagerPage ref='page'>
           <Grid>
@@ -191,8 +191,7 @@ export default class FeedSourceViewer extends Component {
               </Well>
             </Col>
 
-            <Col xs={1}>
-            </Col>
+            <Col xs={1} />
 
             <Col xs={4}>
               <ButtonToolbar>
@@ -248,13 +247,13 @@ export default class FeedSourceViewer extends Component {
                   </ButtonGroup>
                 </Col>
               </Row>
-              <Row style={{ marginTop: 10}}>
+              <Row style={{marginTop: 10}}>
                 <Col xs={12}>
                   <ButtonGroup className='pull-right'>
                     <Button onClick={() => {
                       this.props.feedSourcePropertyChanged(fs, 'isPublic', !fs.isPublic)
                     }}>
-                      <Glyphicon glyph={fs.isPublic ? 'check' : 'unchecked'}  /> Public
+                      <Glyphicon glyph={fs.isPublic ? 'check' : 'unchecked'} /> Public
                     </Button>
                     <Button bsStyle='primary' disabled={!fs.isPublic}
                       onClick={() => { browserHistory.push(`/public/feed/${fs.id}`) }}
@@ -292,6 +291,7 @@ export default class FeedSourceViewer extends Component {
                 gtfsPlusDataRequested={(version) => {
                   this.props.gtfsPlusDataRequested(version)
                 }}
+                feedVersionRenamed={(version, name) => this.props.feedVersionRenamed(fs, version, name)}
               />
             </Tab>
 

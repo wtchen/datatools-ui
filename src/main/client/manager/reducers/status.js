@@ -82,6 +82,8 @@ const config = (state = {
       return update(state, {message: {$set: 'Deleting agency...'}})
     case 'RESTORING_SNAPSHOT':
       return update(state, {message: {$set: 'Restoring snapshot...'}})
+    case 'RENAMING_FEEDVERSION':
+      return update(state, {message: {$set: 'Renaming feed version...'}})
 
     // Status Modal
     case 'SET_ERROR_MESSAGE':

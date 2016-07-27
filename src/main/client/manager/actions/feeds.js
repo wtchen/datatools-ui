@@ -474,6 +474,24 @@ export function createFeedVersionFromSnapshot (feedSource, snapshotId) {
   }
 }
 
+// Create a Feed Version from an editor snapshot
+
+export function renamingFeedVersion () {
+  return {
+    type: 'RENAMING_FEEDVERSION'
+  }
+}
+
+export function renameFeedVersion (feedSource, feedVersion, name) {
+  return function (dispatch, getState) {
+    dispatch(renamingFeedVersion())
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/rename?name=${name}`
+    return secureFetch(url, getState(), 'put')
+      .then((res) => {
+        dispatch(fetchFeedVersions(feedSource))
+      })
+  }
+}
 
 //** NOTES ACTIONS **//
 
