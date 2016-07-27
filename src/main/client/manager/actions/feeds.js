@@ -469,7 +469,7 @@ export function createFeedVersionFromSnapshot (feedSource, snapshotId) {
     const url = `/api/manager/secure/feedversion/fromsnapshot?feedSourceId=${feedSource.id}&snapshotId=${snapshotId}`
     return secureFetch(url, getState(), 'post')
       .then((res) => {
-        dispatch(fetchSnapshots(feedSource))
+        dispatch(startJobMonitor())
       })
   }
 }
