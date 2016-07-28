@@ -11,6 +11,8 @@ application:
   active_project: project-id
   notifications_enabled: false
   docs_url: http://docs.example.com
+  changelog_url: https://changelog.example.com
+  support_email: support@example.com
   osm_vex: http://localhost:1000
   date_format: MMM Do YYYY
 
