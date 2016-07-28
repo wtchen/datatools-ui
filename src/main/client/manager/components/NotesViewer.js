@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
+import ReactDOM from 'react-dom'
 import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar } from 'react-bootstrap'
 
 import WatchButton from '../../common/containers/WatchButton'
@@ -69,7 +70,7 @@ export default class NotesViewer extends Component {
             className='pull-right'
             onClick={() => {
               this.props.newNotePosted({
-                body: this.refs.newNoteBody.getValue()
+                body: ReactDOM.findDOMNode(this.refs.newNoteBody).value
               })
             }}
           >{messages.new}</Button>
