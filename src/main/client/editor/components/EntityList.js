@@ -17,7 +17,7 @@ export default class EntityList extends Component {
     entities: PropTypes.array.isRequired,
     activeEntity: PropTypes.object.isRequired,
     activeEntityId: PropTypes.string.isRequired,
-    listWidth: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
     setActiveEntity: PropTypes.func.isRequired,
     updateActiveEntity: PropTypes.func.isRequired,
     deleteEntity: PropTypes.func.isRequired,
@@ -80,7 +80,7 @@ export default class EntityList extends Component {
   }
   render () {
     const sidePadding = '5px'
-    let panelWidth = !this.props.tableView ? `${this.props.listWidth}px` : '100%'
+    let panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
     let panelStyle = {
       width: panelWidth,
       height: '100%',
@@ -127,7 +127,7 @@ export default class EntityList extends Component {
         }}
       >
         <FlexTable
-          width={this.props.listWidth - 5}
+          width={this.props.width - 5}
           height={560}
           disableHeader={true}
           headerHeight={20}
@@ -148,7 +148,7 @@ export default class EntityList extends Component {
             label='Name'
             dataKey='name'
             className='small entity-list-row'
-            width={this.props.listWidth - 5}
+            width={this.props.width - 5}
           />
         </FlexTable>
         </div>
