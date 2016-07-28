@@ -9,7 +9,7 @@ import GtfsTable from './GtfsTable'
 import EditorMap from './EditorMap'
 import EditorSidebar from './EditorSidebar'
 import RouteEditor from './RouteEditor'
-import EntityList from './EntityList'
+import ActiveEntityList from '../containers/ActiveEntityList'
 import EntityDetails from './EntityDetails'
 // import StopEditor from './StopEditor'
 import CalendarList from './CalendarList'
@@ -90,39 +90,22 @@ export default class GtfsEditor extends Component {
       paddingLeft: '5px'
     }
 
-    let listWidth = 200
+    let listWidth = 220
     let detailsWidth = 300
     let entityDetails = this.props.activeEntityId
       ? (
           <EntityDetails
-            detailsWidth={detailsWidth}
+            width={detailsWidth}
+            key='entity-details'
             offset={listWidth}
             stops={this.props.tableData.stop}
             {...this.props}
-            // newRowClicked={this.props.newRowClicked}
-            // setActiveEntity={this.props.setActiveEntity}
-            // saveRowClicked={this.props.saveRowClicked}
-            // deleteRowClicked={this.props.deleteRowClicked}
-            // fieldEdited={this.props.fieldEdited}
-            // gtfsEntitySelected={(type, entity) => {
-            //   this.props.gtfsEntitySelected(type, entity)
-            // }}
             getGtfsEntity={(type, id) => {
-              return sortedEntities.find(ent => ent.id === id)
-              // return this.props.gtfsEntityLookup[`${type}_${id}`]
+              return this.props.entities.find(ent => ent.id === id)
             }}
-            // showHelpClicked={(tableId, fieldName) => {
-            //   const helpContent = fieldName
-            //     ? DT_CONFIG.modules.editor.spec
-            //         .find(t => t.id === tableId).fields
-            //           .find(f => f.name === fieldName).helpContent
-            //     : DT_CONFIG.modules.editor.spec
-            //         .find(t => t.id === tableId).helpContent
-            //   this.refs.page.showInfoModal({
-            //     title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),
-            //     body: helpContent || '(No help content found for this field)'
-            //   })
-            // }}
+            getGtfsEntityIndex={(type, id) => {
+              return this.props.entities.findIndex(ent => ent.id === id)
+            }}
           />
         )
       : null
@@ -136,6 +119,7 @@ export default class GtfsEditor extends Component {
             setActiveEntity={this.props.setActiveEntity}
           />
         }
+        styles={{content: {overflow: 'hidden'}}}
         docked={true}
         shadow={false}
       >
@@ -156,15 +140,23 @@ export default class GtfsEditor extends Component {
             />
           : this.props.activeComponent === 'feedinfo'
           ? <EntityDetails
-              detailsWidth={detailsWidth}
+              width={detailsWidth}
               {...this.props}
             />
           : this.props.activeComponent
           ? [
-              <EntityList
-                listWidth={listWidth}
-                stops={this.props.tableData.stop}
-                {...this.props}
+              <ActiveEntityList
+                width={listWidth}
+                setActiveEntity={this.props.setActiveEntity}
+                cloneEntity={this.props.cloneEntity}
+                updateActiveEntity={this.props.updateActiveEntity}
+                deleteEntity={this.props.deleteEntity}
+                newEntityClicked={this.props.newEntityClicked}
+                entities={this.props.entities}
+                activeEntityId={this.props.activeEntityId}
+                activeComponent={this.props.activeComponent}
+                feedSource={this.props.feedSource}
+                key='entity-list'
               />
               ,
               entityDetails
