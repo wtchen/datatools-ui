@@ -53,21 +53,21 @@ export function saveRoute (feedId, route) {
   }
 }
 
-export function deletingRoute (feedId, route) {
+export function deletingRoute (feedId, routeId) {
   return {
     type: 'DELETING_ROUTE',
     feedId,
-    route
+    routeId
   }
 }
 
-export function deleteRoute (feedId, route) {
+export function deleteRoute (feedId, routeId) {
   return function (dispatch, getState) {
-    dispatch(deletingRoute(feedId, route))
-    if (route.id === 'new') {
+    dispatch(deletingRoute(feedId, routeId))
+    if (routeId === 'new') {
       return dispatch(fetchRoutes(feedId))
     }
-    const url = `/api/manager/secure/route/${route.id}?feedId=${feedId}`
+    const url = `/api/manager/secure/route/${routeId}?feedId=${feedId}`
     return secureFetch(url, getState(), 'delete')
       .then(res => res.json())
       .then(route => {

@@ -10,6 +10,7 @@ import {
   saveFeedInfo,
   deleteFeedInfo,
   updateFeedInfo,
+  createFeedInfo,
 } from '../actions/feedInfo'
 import {
   fetchAgencies,
@@ -128,7 +129,10 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     else if (subSubComponent && subSubComponentList.indexOf(subSubComponent) === -1) {
       url = `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/`
     }
-    if (getState().routing.locationBeforeTransitions.pathname && getState().routing.locationBeforeTransitions.pathname !== url) {
+    if (entityId === 'new' && getState().editor.tableData[component].findIndex(e => e.id === 'new') === -1) {
+      dispatch(createGtfsEntity(feedSourceId, component))
+    }
+    if (!getState().routing.locationBeforeTransitions || !getState().routing.locationBeforeTransitions.pathname || getState().routing.locationBeforeTransitions.pathname !== url) {
       browserHistory.push(url)
     }
     dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
@@ -187,25 +191,32 @@ export function saveActiveGtfsEntity (component, optionalEntity) {
     }
   }
 }
+export function deletingEntity (feedId, component, entityId) {
+  return {
+    type: 'DELETING_ENTITY',
+    feedId,
+    component,
+    entityId
+  }
+}
 
-export function deleteGtfsEntity (feedId, component, entity) {
+export function deleteGtfsEntity (feedId, component, entityId, routeId) {
   return function (dispatch, getState) {
-    switch (component) {
-      case 'stop':
-        return dispatch(deleteStop(feedId, entity))
-      case 'route':
-        return dispatch(deleteRoute(feedId, entity))
-      case 'agency':
-        return dispatch(deleteAgency(feedId, entity))
-      case 'trippattern':
-        return dispatch(deleteTripPattern(feedId, entity))
-      case 'fare':
-        return dispatch(deleteFare(feedId, entity))
-      case 'calendar':
-        return dispatch(deleteCalendar(feedId, entity))
-      case 'scheduleexception':
-        return dispatch(deleteScheduleException(feedId, entity))
+    dispatch(deletingEntity(feedId, component, entityId))
+    if (entityId === 'new') {
+      return dispatch(getGtfsTable(component, feedId))
     }
+    const url = `/api/manager/secure/${component}/${entityId}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
+      .then(res => res.json())
+      .then(entity => {
+        if (component === 'trippattern' && routeId) {
+          dispatch(fetchTripPatternsForRoute(feedId, routeId))
+        }
+        else {
+          dispatch(getGtfsTable(component, feedId))
+        }
+      })
   }
 }
 
@@ -235,6 +246,22 @@ export function createGtfsEntity (feedSourceId, component, props) {
   }
 }
 
+export function cloneGtfsEntity (feedSourceId, component, entityId, save) {
+  return function (dispatch, getState) {
+    if (entityId === 'new') {
+      return null
+    }
+    let props = {...getState().editor.tableData[component].find(e => e.id === entityId)}
+    props.id = 'new'
+    switch (component) {
+      case 'trippattern':
+        props.name = props.name + ' copy'
+        break
+    }
+    dispatch(newGtfsEntity(feedSourceId, component, props, save))
+  }
+}
+
 export function newGtfsEntity (feedSourceId, component, props, save) {
   return function (dispatch, getState) {
     if (!props) {
@@ -250,7 +277,18 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
               route_long_name: faker.address.streetName(),
               route_color: color,
               route_text_color: idealTextColor(color),
-              route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.routeTypeId !== null ? getState().editor.tableData.feedinfo.routeTypeId : 3,
+              route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.defaultRouteType !== null ? getState().editor.tableData.feedinfo.defaultRouteType : 3,
+            }
+          case 'stop':
+            let stopId = generateUID()
+            return {
+              stop_id: stopId,
+              stop_name: faker.address.streetName(),
+              stop_lat: 0,
+              stop_lon: 0,
+              // route_color: color,
+              // route_text_color: idealTextColor(color),
+              // route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.routeTypeId !== null ? getState().editor.tableData.feedinfo.routeTypeId : 3,
             }
           case 'scheduleexception':
             return {

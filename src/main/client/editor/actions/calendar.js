@@ -143,7 +143,7 @@ export function saveScheduleException (feedId, scheduleException) {
         // dispatch(receiveScheduleException(feedId, scheduleException))
         dispatch(fetchScheduleExceptions(feedId))
         .then(() => {
-          if (scheduleexception.id === 'new') {
+          if (scheduleException.id === 'new') {
             dispatch(setActiveGtfsEntity(feedId, 'scheduleexception', s.id))
           }
           return s

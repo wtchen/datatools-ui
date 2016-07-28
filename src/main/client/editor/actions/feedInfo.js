@@ -38,6 +38,34 @@ export function fetchFeedInfo (feedId) {
 
 ////// Create new feed info
 
+
+export function createFeedInfo (feedId) {
+  return function (dispatch, getState) {
+    dispatch(savingFeedInfo(feedId))
+    const data = {
+      // datatools props
+      id: feedId,
+      // color: feedInfo.color,
+      // defaultLat: feedInfo.defaultLat,
+      // defaultLon: feedInfo.defaultLon,
+      // routeTypeId: feedInfo.routeTypeId,
+      //
+      // // gtfs spec props
+      // feedEndDate: feedInfo.feed_end_date,
+      // feedStartDate: feedInfo.feed_start_date,
+      // feedLang: feedInfo.feed_lang,
+      // feedPublisherName: feedInfo.feed_publisher_name,
+      // feedPublisherUrl: feedInfo.feed_publisher_url,
+      // feedVersion: feedInfo.feed_version,
+    }
+    const url = `/api/manager/secure/feedinfo/${feedId}`
+    return secureFetch(url, getState(), 'post', data)
+      .then((res) => {
+        return dispatch(fetchFeedInfo(feedId))
+      })
+  }
+}
+
 export function saveFeedInfo (feedId, feedInfo) {
   return function (dispatch, getState) {
     dispatch(savingFeedInfo(feedId, feedInfo))
@@ -47,7 +75,7 @@ export function saveFeedInfo (feedId, feedInfo) {
       color: feedInfo.color,
       defaultLat: feedInfo.defaultLat,
       defaultLon: feedInfo.defaultLon,
-      routeTypeId: feedInfo.routeTypeId,
+      defaultRouteType: feedInfo.defaultRouteType,
 
       // gtfs spec props
       feedEndDate: feedInfo.feed_end_date,

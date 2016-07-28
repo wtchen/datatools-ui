@@ -85,6 +85,9 @@ export function receiveTripPatternsForRoute (feedId, routeId, tripPatterns) {
 
 export function fetchTripPatternsForRoute (feedId, routeId) {
   return function (dispatch, getState) {
+    if (routeId === 'new') {
+      return []
+    }
     dispatch(requestingTripPatternsForRoute(feedId))
     const url = `/api/manager/secure/trippattern?feedId=${feedId}&routeId=${routeId}`
     return secureFetch(url, getState())
