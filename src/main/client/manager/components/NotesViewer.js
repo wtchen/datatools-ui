@@ -69,7 +69,7 @@ export default class NotesViewer extends Component {
           <h3>{messages.postComment}</h3>
           <FormControl
             ref='newNoteBody'
-            type='textarea'
+            componentClass='textarea'
             value={this.state.value}
             onChange={(evt) => {
               this.setState({value: evt.target.value})

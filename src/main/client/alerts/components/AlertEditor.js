@@ -233,7 +233,7 @@ export default class AlertEditor extends React.Component {
                     <FormGroup controlId="formControlsDescription">
                       <ControlLabel>Description</ControlLabel>
                       <FormControl
-                        type='textarea'
+                        componentClass='textarea'
                         placeholder='Detailed description of alert...'
                         defaultValue={this.props.alert.description}
                         onChange={(evt) => this.props.descriptionChanged(evt.target.value)}
