@@ -48,37 +48,33 @@ const defaultState = {
   validation: null
 }
 const editor = (state = defaultState, action) => {
-  let stateUpdate, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, stopIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates
+  let stateUpdate, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates
   switch (action.type) {
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
         return defaultState
       }
+      return state
     case 'UPDATE_MAP_SETTING':
       return update(state, {
         mapState: {
-          [action.setting]: {$set: action.value},
-          // controlPoints: {$set: [controlPoints]},
-          // coordinatesHistory: {$set: [coordinates]}
-        },
+          [action.setting]: {$set: action.value}
+        }
       })
     case 'TOGGLE_EDIT_SETTING':
       if (action.setting === 'editGeometry' && !state.editSettings.editGeometry) {
         controlPoints = getControlPoints(state.active.subEntity, state.editSettings.snapToStops)
-        coordinates = state.active.subEntity && state.active.subEntity.shape.coordinates
         return update(state, {
           editSettings: {
             [action.setting]: {$set: !state.editSettings[action.setting]},
-            controlPoints: {$set: [controlPoints]},
-            // coordinatesHistory: {$set: [coordinates]}
-          },
+            controlPoints: {$set: [controlPoints]}
+          }
         })
-      }
-      else {
+      } else {
         return update(state, {
           editSettings: {
-            [action.setting]: {$set: !state.editSettings[action.setting]},
-          },
+            [action.setting]: {$set: !state.editSettings[action.setting]}
+          }
         })
       }
     case 'UNDO_TRIP_PATTERN_EDITS':
@@ -372,13 +368,14 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_FEED_INFO':
+      if (!action.feedInfo) return state
       const feedInfo = {
         // datatools props
         id: action.feedInfo.id,
         color: action.feedInfo.color,
         defaultLat: action.feedInfo.defaultLat,
         defaultLon: action.feedInfo.defaultLon,
-        routeTypeId: action.feedInfo.routeTypeId,
+        defaultRouteType: action.feedInfo.defaultRouteType,
 
         // gtfs spec props
         feed_end_date: action.feedInfo.feedEndDate,
@@ -525,9 +522,12 @@ const editor = (state = defaultState, action) => {
         return state
       }
       // set controlPoints initially and then whenever isSnappingToStops changes
-      // if (activePattern) {
-      //   controlPoints = getControlPoints(activePattern, state.editSettings.snapToStops)
-      // }
+      if (activePattern) {
+        controlPoints = getControlPoints(activePattern, state.editSettings.snapToStops)
+      }
+      else {
+        controlPoints = []
+      }
       if (state.active.entity.id === action.routeId) {
         return update(state, {
           tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}},
@@ -535,7 +535,7 @@ const editor = (state = defaultState, action) => {
             entity: {$merge: {tripPatterns: action.tripPatterns}},
             subEntity: {$set: Object.assign({}, activePattern)}
           },
-          // editSettings: {controlPoints: {$set: controlPoints}}
+          editSettings: {controlPoints: {$set: [controlPoints]}}
         })
       } else {
         return update(state, {
