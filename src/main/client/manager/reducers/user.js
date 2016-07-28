@@ -35,7 +35,11 @@ const user = (state = {
         subscriptions: { $set: null}
       })
     case 'CREATED_PUBLIC_USER':
-      return update(state, { profile: { $set: action.profile }})
+      return update(state, {
+        profile: { $set: action.profile },
+        permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools)},
+        subscriptions: { $set: new UserSubscriptions(action.profile.app_metadata.datatools)},
+      })
     default:
       return state
   }
