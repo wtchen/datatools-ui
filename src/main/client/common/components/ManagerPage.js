@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Row, Col } from 'react-bootstrap'
+import { Grid } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 
 import ManagerNavbar from '../containers/ManagerNavbar'
@@ -41,6 +41,16 @@ export default class ManagerPage extends React.Component {
         <InfoModal ref='infoModal'/>
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
+        <footer className='footer'>
+          <div className='container'>
+            <ul className='list-inline text-center text-muted'>
+              <li>Changelog</li>
+              <li>Guide</li>
+              <li>Contact</li>
+            </ul>
+            <p className='text-center text-muted'>&copy; Conveyal</p>
+          </div>
+        </footer>
       </div>
     )
   }
