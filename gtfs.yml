@@ -33,13 +33,36 @@
     inputType: TEXT
     columnWidth: 12
     helpContent: "The feed publisher can specify a string here that indicates the current version of their GTFS feed. GTFS-consuming applications can display this value to help feed publishers determine whether the latest version of their feed has been incorporated."
+  - name: defaultRouteType
+    datatools: true
+    columnWidth: 12
+    required: false
+    inputType: DROPDOWN
+    options:
+    - value: 0
+      text: Tram
+    - value: 1
+      text: Subway
+    - value: 2
+      text: Rail
+    - value: 3
+      text: Bus
+    - value: 4
+      text: Ferry
+    - value: 5
+      text: Cable car
+    - value: 6
+      text: Gondola
+    - value: 7
+      text: Funicular
+
 - id: agency
   name: agency.txt
   helpContent: One or more transit agencies that provide the data in this feed.
   fields:
   - name: "agency_id"
     required: false
-    inputType: TEXT
+    inputType: ID
     columnWidth: 12
     helpContent: "The agency_id field is an ID that uniquely identifies a transit agency. A transit feed may represent data from more than one agency. The agency_id is dataset unique. This field is optional for transit feeds that only contain data for a single agency."
   - name: "agency_name"
@@ -70,7 +93,7 @@
     helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's "
   - name: "agency_fare_url"
     required: false
-    inputType: TEXT
+    inputType: URL
     placeholder: https://agency.org/fares
     columnWidth: 12
     helpContent: "The agency_fare_url specifies the URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online. The value must be a fully qualified URL that includes http:// or https://, and any special characters in the URL must be correctly escaped. Seehttp://www.w3.org/Addressing/URL/4_URI_Recommentations.html for a description of how to create fully qualified URL values."
@@ -87,12 +110,12 @@
   fields:
   - name: "stop_id"
     required: true
-    inputType: TEXT
+    inputType: ID
     columnWidth: 6
     helpContent: "The stop_id field contains an ID that uniquely identifies a stop or station. Multiple routes may use the same stop. The stop_id is dataset unique."
   - name: "stop_code"
     required: false
-    inputType: TEXT
+    inputType: ID
     columnWidth: 6
     helpContent: "The stop_code field contains short text or a number that uniquely identifies the stop for passengers. Stop codes are often used in phone-based transit information systems or printed on stop signage to make it easier for riders to get a stop schedule or real-time arrival information for a particular stop."
   - name: "stop_name"
@@ -160,7 +183,7 @@
   fields:
   - name: route_id
     required: true
-    inputType: TEXT
+    inputType: ID
     columnWidth: 5
     helpContent: The route_id field contains an ID that uniquely identifies a route. The route_id is dataset unique.
   - name: route_short_name
@@ -247,7 +270,7 @@
     helpContent: "The service_id contains an ID that uniquely identifies a set of dates when service is available for one or more routes. This value is referenced from thecalendar.txt or calendar_dates.txt file."
   - name: "trip_id"
     required: true
-    inputType: GTFS_TRIP
+    inputType: ID
     columnWidth: 6
     helpContent: "The trip_id field contains an ID that identifies a trip. The trip_id is dataset unique."
   - name: "trip_headsign"
@@ -319,7 +342,7 @@
     helpContent: "The departure_time specifies the departure time from a specific stop for a specific trip on a route. The time is measured from "
   - name: "stop_id"
     required: true
-    inputType: TEXT
+    inputType: GTFS_STOP
     columnWidth: 6
     helpContent: "The stop_id field contains an ID that uniquely identifies a stop. Multiple routes may use the same stop. The stop_id is referenced from the stops.txt file. If location_type is used in stops.txt, all stops referenced in stop_times.txt must have location_type of 0."
   - name: "stop_sequence"
@@ -373,7 +396,7 @@
   fields:
   - name: "service_id"
     required: true
-    inputType: TEXT
+    inputType: ID
     columnWidth: 6
     helpContent: "The service_id contains an ID that uniquely identifies a set of dates when service is available for one or more routes. Each service_id value can appear at most once in a calendar.txt file. This value is dataset unique. It is referenced by the trips.txt file."
   - name: "description"
@@ -480,7 +503,7 @@
   fields:
   - name: "fare_id"
     required: true
-    inputType: GTFS_FARE
+    inputType: ID
     columnWidth: 6
     helpContent: "The fare_id field contains an ID that uniquely identifies a fare class. The fare_id is dataset unique."
   - name: "price"
