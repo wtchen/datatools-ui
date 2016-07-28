@@ -22,14 +22,23 @@ export default class SelectFileModal extends React.Component {
       showModal: true,
       title: props.title,
       body: props.body,
-      onConfirm: props.onConfirm
+      onConfirm: props.onConfirm,
+      errorMessage: props.errorMessage
     })
   }
 
   ok () {
-    this.close()
+
     if(this.state.onConfirm) {
-      this.state.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)
+      if (this.state.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
+        this.close()
+      }
+      else {
+        this.setState({error: this.state.errorMessage})
+      }
+    }
+    else {
+      this.close()
     }
   }
 
@@ -42,6 +51,10 @@ export default class SelectFileModal extends React.Component {
 
         <Modal.Body>
           <p>{this.state.body}</p>
+          {this.state.error
+            ? <p>{this.state.error}</p>
+            : null
+          }
           <FormControl ref='fileInput' type='file' />
         </Modal.Body>
 
