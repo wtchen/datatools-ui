@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Tabs, Tab, Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form } from 'react-bootstrap'
+import { Tabs, Tab, Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, SplitButton, MenuItem } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
+import Icon from 'react-fa'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
@@ -30,7 +31,23 @@ export default class ProjectViewer extends Component {
       }
     })
   }
-
+  showUploadFeedModal (feedSource) {
+    this.refs.page.showSelectFileModal({
+      title: 'Upload Feed',
+      body: 'Select a GTFS feed to upload:',
+      onConfirm: (files) => {
+        let nameArray = files[0].name.split('.')
+        if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
+          return false
+        }
+        else {
+          this.props.uploadFeedClicked(feedSource, files[0])
+          return true
+        }
+      },
+      errorMessage: 'Uploaded file must be a valid zip file (.zip).'
+    })
+  }
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
@@ -197,6 +214,7 @@ export default class ProjectViewer extends Component {
                             newFeedSourceNamed={this.props.newFeedSourceNamed}
                             feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
                             deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
+                            uploadFeedSourceClicked={() => this.showUploadFeedModal(feedSource)}
                           />
                         })}
                       </tbody>
@@ -343,6 +361,8 @@ class FeedSourceTableRow extends Component {
     const fs = this.props.feedSource
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
+    const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
+    const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
     const dateFormat = DT_CONFIG.application.date_format
     return (
       <tr key={fs.id}>
@@ -387,16 +407,42 @@ class FeedSourceTableRow extends Component {
           ? (<span>{moment(fs.latestValidation.startDate).format(dateFormat)} to {moment(fs.latestValidation.endDate).format(dateFormat)}</span>)
           : na
         }</td>
-        <td>
-          <Button
-            bsStyle='danger'
-            bsSize='small'
-            disabled={disabled}
-            className='pull-right'
-            onClick={this.props.deleteFeedSourceClicked}
-          >
-            <Glyphicon glyph='remove' />
-          </Button>
+        <td className='col-xs-2'>
+        <SplitButton
+          bsStyle='default'
+          title={<span><Glyphicon glyph='refresh' /> Update</span>}
+          onClick={this.props.updateFeedSource}
+          onSelect={key => {
+            console.log(key)
+            switch (key) {
+              case 'delete':
+                return this.props.deleteFeedSourceClicked()
+              case 'edit':
+                return browserHistory.push(`/feed/${fs.id}/edit`)
+              case 'upload':
+                return this.props.uploadFeedSourceClicked()
+              case 'deploy':
+                return this.props.createDeployment(fs)
+            }
+          }}
+          id={`feed-source-action-button`}
+          pullRight
+        >
+          <MenuItem disabled={editGtfsDisabled} eventKey='edit'><Icon name='pencil'/> Edit</MenuItem>
+          <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
+          <MenuItem divider />
+          <MenuItem eventKey='3'><Glyphicon glyph='globe'/> Deploy</MenuItem>
+          {isWatchingFeed
+            ? <MenuItem eventKey='unwatch'><Glyphicon glyph='eye-close'/> Unwatch</MenuItem>
+            : <MenuItem eventKey='watch'><Glyphicon glyph='eye-open'/> Watch</MenuItem>
+          }
+          {fs.isPublic
+            ? <MenuItem eventKey='public'><Glyphicon glyph='eye-open'/> View public page</MenuItem>
+            : null
+          }
+          <MenuItem divider />
+          <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
+        </SplitButton>
         </td>
       </tr>
     )

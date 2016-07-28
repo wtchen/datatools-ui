@@ -3,6 +3,8 @@ import { browserHistory } from 'react-router'
 
 import FeedSourceViewer from '../components/FeedSourceViewer'
 
+import { createFeedInfo } from '../../editor/actions/feedInfo'
+
 import {
   deleteFeedVersion,
   downloadFeedViaToken,
@@ -136,6 +138,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     validationResultRequested: (feedSource, feedVersion) => {
       dispatch(fetchValidationResult(feedSource, feedVersion))
+    },
+    createFeedInfo: (feedSourceId) => {
+      dispatch(createFeedInfo(feedSourceId))
     }
   }
 }

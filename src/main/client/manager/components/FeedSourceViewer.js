@@ -86,7 +86,13 @@ export default class FeedSourceViewer extends Component {
         console.log('Error fetching snapshots', err)
       })
   }
-
+  getAverageFileSize (feedVersions) {
+    let sum = 0
+    for( var i = 0; i < feedVersions.length; i++ ){
+        sum += feedVersions[i].fileSize
+    }
+    return Math.floor(sum / feedVersions.length / 10000) / 100
+  }
   deleteFeedVersion (feedSource, feedVersion) {
     this.refs['page'].showConfirmModal({
       title: 'Delete Feed Version?',
@@ -100,10 +106,18 @@ export default class FeedSourceViewer extends Component {
   showUploadFeedModal () {
     this.refs.page.showSelectFileModal({
       title: 'Upload Feed',
-      body: 'Select a GTFS feed to upload:',
+      body: 'Select a GTFS feed (.zip) to upload:',
       onConfirm: (files) => {
-        this.props.uploadFeedClicked(this.props.feedSource, files[0])
-      }
+        let nameArray = files[0].name.split('.')
+        if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
+          return false
+        }
+        else {
+          this.props.uploadFeedClicked(this.props.feedSource, files[0])
+          return true
+        }
+      },
+      errorMessage: 'Uploaded file must be a valid zip file (.zip).'
     })
   }
 
@@ -167,7 +181,7 @@ export default class FeedSourceViewer extends Component {
           <Row> {/*  Title + Shortcut Buttons Row */}
             <Col xs={12}>
               <h2 style={{ borderBottom: '1px solid #ddd', paddingBottom: 12, marginBottom: 24 }}>
-                {fs.name} <Glyphicon glyph='pencil' style={{ fontSize: 20 }} />&nbsp;
+                {fs.name}
 
                 <ButtonToolbar
                   className={`pull-right`}
@@ -187,7 +201,11 @@ export default class FeedSourceViewer extends Component {
             <Col xs={3}>
               <Well bsSize='small'>
                 <h4>Feed Summary</h4>
-                <b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}
+                <ul className="list-unstyled">
+                  <li><b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
+                  <li><b>Number of versions:</b> {fs.feedVersionCount}</li>
+                  <li><b>Average file size:</b> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>
+                </ul>
               </Well>
             </Col>
 
@@ -201,7 +219,10 @@ export default class FeedSourceViewer extends Component {
                   <Glyphicon glyph='upload' /> Upload
                 </Button>
                 {isModuleEnabled('editor')
-                  ? <Button bsStyle='success' bsSize='large' onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
+                  ? <Button
+                      disabled={editGtfsDisabled} // || !fs.latestValidation}
+                      bsStyle='success' bsSize='large'
+                      onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
                       <Glyphicon glyph='pencil' /> Edit
                     </Button>
                   : null
