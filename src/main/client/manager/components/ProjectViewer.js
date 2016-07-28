@@ -87,12 +87,16 @@ export default class ProjectViewer extends Component {
                 <ButtonToolbar
                   className={`pull-right`}
                 >
-                  <WatchButton
-                    isWatching={isWatchingProject}
-                    user={this.props.user}
-                    target={this.props.project.id}
-                    subscriptionType='project-updated'
-                  />
+                {DT_CONFIG.application.notifications_enabled
+                  ? <WatchButton
+                      isWatching={isWatchingProject}
+                      user={this.props.user}
+                      target={this.props.project.id}
+                      subscriptionType='project-updated'
+                    />
+                  : null
+                }
+
                   <Button
                     bsStyle='primary'
                     onClick={() => { this.props.downloadMergedFeed(this.props.project) }}
@@ -207,15 +211,16 @@ export default class ProjectViewer extends Component {
                       <tbody>
                         {filteredFeedSources.map((feedSource) => {
                           return <FeedSourceTableRow
-                            feedSource={feedSource}
-                            project={this.props.project}
-                            key={feedSource.id}
-                            user={this.props.user}
-                            newFeedSourceNamed={this.props.newFeedSourceNamed}
-                            feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
-                            deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
-                            uploadFeedSourceClicked={() => this.showUploadFeedModal(feedSource)}
-                          />
+                                  feedSource={feedSource}
+                                  project={this.props.project}
+                                  key={feedSource.id}
+                                  user={this.props.user}
+                                  newFeedSourceNamed={this.props.newFeedSourceNamed}
+                                  feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
+                                  deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
+                                  uploadFeedSourceClicked={() => this.showUploadFeedModal(feedSource)}
+                                  updateFeedClicked={() => this.props.updateFeedClicked(feedSource)}
+                                />
                         })}
                       </tbody>
                     </Table>
@@ -411,7 +416,7 @@ class FeedSourceTableRow extends Component {
         <SplitButton
           bsStyle='default'
           title={<span><Glyphicon glyph='refresh' /> Update</span>}
-          onClick={this.props.updateFeedSource}
+          onClick={() => this.props.updateFeedClicked() }
           onSelect={key => {
             console.log(key)
             switch (key) {
@@ -423,6 +428,8 @@ class FeedSourceTableRow extends Component {
                 return this.props.uploadFeedSourceClicked()
               case 'deploy':
                 return this.props.createDeployment(fs)
+              case 'public':
+                return browserHistory.push(`/public/feed/${fs.id}`)
             }
           }}
           id={`feed-source-action-button`}
@@ -430,16 +437,25 @@ class FeedSourceTableRow extends Component {
         >
           <MenuItem disabled={editGtfsDisabled} eventKey='edit'><Icon name='pencil'/> Edit</MenuItem>
           <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-          <MenuItem divider />
-          <MenuItem eventKey='3'><Glyphicon glyph='globe'/> Deploy</MenuItem>
-          {isWatchingFeed
-            ? <MenuItem eventKey='unwatch'><Glyphicon glyph='eye-close'/> Unwatch</MenuItem>
-            : <MenuItem eventKey='watch'><Glyphicon glyph='eye-open'/> Watch</MenuItem>
-          }
-          {fs.isPublic
-            ? <MenuItem eventKey='public'><Glyphicon glyph='eye-open'/> View public page</MenuItem>
+          {isModuleEnabled('deployment') || DT_CONFIG.application.notifications_enabled
+            ? <MenuItem divider />
             : null
           }
+          {isModuleEnabled('deployment')
+            ? <MenuItem disabled={!fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
+            : null
+          }
+          {DT_CONFIG.application.notifications_enabled
+            ? <WatchButton
+                isWatching={isWatchingFeed}
+                user={this.props.user}
+                target={fs.id}
+                subscriptionType='feed-updated'
+                componentClass='menuItem'
+              />
+            : null
+          }
+          <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
           <MenuItem divider />
           <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
         </SplitButton>

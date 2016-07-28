@@ -17,6 +17,7 @@ import {
   createFeedSource,
   saveFeedSource,
   updateFeedSource,
+  runFetchFeed,
   deleteFeedSource,
   uploadFeed
 } from '../actions/feeds'
@@ -76,6 +77,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
+    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     deleteFeedSourceConfirmed: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
     deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) },
     downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) },
