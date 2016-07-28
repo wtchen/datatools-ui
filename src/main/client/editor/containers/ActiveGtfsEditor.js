@@ -29,6 +29,7 @@ import {
 import {
   setActiveGtfsEntity,
   newGtfsEntity,
+  cloneGtfsEntity,
   toggleEditSetting,
   updateMapSetting,
   saveActiveGtfsEntity,
@@ -272,8 +273,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     resetActiveEntity: (entity, component) => {
       dispatch(resetActiveGtfsEntity(entity, component))
     },
-    deleteEntity: (feedSourceId, component, entity) => {
-      dispatch(deleteGtfsEntity(feedSourceId, component, entity))
+    deleteEntity: (feedSourceId, component, entityId, routeId) => {
+      dispatch(deleteGtfsEntity(feedSourceId, component, entityId, routeId))
     },
     saveActiveEntity: (component) => {
       return dispatch(saveActiveGtfsEntity(component))
@@ -286,6 +287,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     deleteTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
       return dispatch(deleteTripsForCalendar(feedSourceId, pattern, calendarId, trips))
+    },
+    cloneEntity: (feedSourceId, component, entityId, save) => {
+      dispatch(cloneGtfsEntity(feedSourceId, component, entityId, save))
     },
     newEntityClicked: (feedSourceId, component, props, save) => {
       dispatch(newGtfsEntity(feedSourceId, component, props, save))
