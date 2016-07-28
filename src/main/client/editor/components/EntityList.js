@@ -1,20 +1,29 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, ListGroup, ListGroupItem, Button, ButtonToolbar, Nav, NavItem } from 'react-bootstrap'
+import { Table, Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import {Icon} from 'react-fa'
-import { shallowEqual } from 'react-pure-render'
-import { browserHistory, Link } from 'react-router'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Grid } from 'react-virtualized'
-import VirtualizedSelect from 'react-virtualized-select'
-import Select from 'react-select'
+import { FlexTable, FlexColumn } from 'react-virtualized'
+import { PureComponent, shallowEqual } from 'react-pure-render'
+import 'react-virtualized/styles.css'
 
-import EditableTextField from '../../common/components/EditableTextField'
 import EntityDetails from './EntityDetails'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import GtfsTable from './GtfsTable'
 import { getEntityName } from '../util/gtfs'
 
 export default class EntityList extends Component {
+
+  static propTypes = {
+    feedSource: PropTypes.object.isRequired,
+    entities: PropTypes.array.isRequired,
+    activeEntity: PropTypes.object.isRequired,
+    activeEntityId: PropTypes.string.isRequired,
+    listWidth: PropTypes.number.isRequired,
+    setActiveEntity: PropTypes.func.isRequired,
+    updateActiveEntity: PropTypes.func.isRequired,
+    deleteEntity: PropTypes.func.isRequired,
+    newEntityClicked: PropTypes.func.isRequired,
+    activeComponent: PropTypes.string.isRequired
+  }
 
   constructor (props) {
     super(props)
@@ -33,136 +42,117 @@ export default class EntityList extends Component {
     }
   }
   shouldComponentUpdate (nextProps) {
-    const shouldUpdate = nextProps.entities && !this.props.entities ||
-            nextProps.entities && this.props.entities && nextProps.entities.length !== this.props.entities.length ||
-            nextProps.activeComponent !== this.props.activeComponent ||
-            nextProps.activeEntityId !== this.props.activeEntityId ||
-            nextProps.activeEntity && !this.props.activeEntity ||
-            !shallowEqual(nextProps.feedSource, this.props.feedSource)
-    if (shouldUpdate) {
-      console.log(shouldUpdate)
-    }
-    return shouldUpdate
+    return !shallowEqual(nextProps, this.props)
   }
-
+  _getRowStyle (index, list) {
+    const activeColor = '#F2F2F2'
+    const rowStyle = {
+      borderBottom: 'solid 1px #ddd',
+      cursor: 'pointer',
+    }
+    const activeRowStyle = {
+      backgroundColor: activeColor,
+      borderBottom: 'solid 1px #ddd',
+      cursor: 'pointer',
+    }
+    if (list[index] && (list[index].isActive || list[index].isSelected)) {
+      return activeRowStyle
+    }
+    else {
+      return rowStyle
+    }
+  }
+  _onRowClick (index, list, shiftKey) {
+    let fromIndex, toIndex
+    if (shiftKey && this.props.activeEntity && !list[index].isActive) {
+      let selectedIndex = list.findIndex(e => e.id === this.props.activeEntity.id)
+      fromIndex = selectedIndex > index ? index : selectedIndex
+      toIndex = selectedIndex < index ? index : selectedIndex
+      console.log(`select multiple from ${fromIndex} to ${toIndex}`)
+      this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+    } else
+    if (list[index].isActive) {
+      this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+    } else {
+      this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, list[index])
+    }
+    this.setState({fromIndex, toIndex})
+  }
   render () {
-    const feedSource = this.props.feedSource
     const sidePadding = '5px'
-    const rowHeight = '37px'
     let panelWidth = !this.props.tableView ? `${this.props.listWidth}px` : '100%'
     let panelStyle = {
       width: panelWidth,
       height: '100%',
       position: 'absolute',
       left: '0px',
-      // overflowY: 'scroll',
-      zIndex: 99,
       backgroundColor: 'white',
       paddingRight: '0px',
       paddingLeft: sidePadding
     }
-    const activeColor = '#F2F2F2'
-
     const sortedEntities = this.props.entities && this.props.entities.sort((a, b) => {
       var aName = getEntityName(this.props.activeComponent, a)
       var bName = getEntityName(this.props.activeComponent, b)
       if (a.isCreating && !b.isCreating) return -1
       if (!a.isCreating && b.isCreating) return 1
-      if (!isNaN(a.route_short_name) && !isNaN(b.route_short_name)) {
-        if(+a.route_short_name < +b.route_short_name) return -1
-        if(+a.route_short_name > +b.route_short_name) return 1
+      if (!isNaN(parseInt(aName)) && !isNaN(parseInt(bName))) {
+        if (parseInt(aName) < parseInt(bName)) return -1
+        if (parseInt(aName) > parseInt(bName)) return 1
         return 0
       }
-      if (!isNaN(aName) && !isNaN(bName)) {
-        if(+aName < +bName) return -1
-        if(+aName > +bName) return 1
-        return 0
-      }
-      if (aName < bName) return -1
-      if (aName > bName) return 1
+      if (aName.toLowerCase() < bName.toLowerCase()) return -1
+      if (aName.toLowerCase() > bName.toLowerCase()) return 1
       return 0
     })
-    const activeEntity = this.props.activeEntity // sortedEntities ? sortedEntities.find(entity => entity.id === this.props.activeEntity) : null
-    const rowStyle = {
-      paddingTop: 2,
-      height: '20px',
-      paddingBottom: 2,
-      cursor: 'pointer',
-    }
-    const activeRowStyle = {
-      backgroundColor: activeColor,
-      paddingTop: 2,
-      height: '20px',
-      paddingBottom: 2,
-      cursor: 'pointer',
-    }
-    const list = sortedEntities && sortedEntities.length ? sortedEntities.map(entity =>
+    const activeEntity = this.props.activeEntity
+    let activeIndex
+    const list = sortedEntities && sortedEntities.length ? sortedEntities.map((entity, index) =>
       {
-        const entityName = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
-        return [entityName]
+        if (activeEntity && entity.id === activeEntity.id) {
+          activeIndex = index
+        }
+        const isActive = activeEntity && entity.id === activeEntity.id
+        const isSelected = index >= this.state.fromIndex && index <= this.state.toIndex
+        const name = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
+        return {name, id: entity.id, isActive, isSelected}
       }
     )
-    : [[]]
-
-    const entityList =  this.props.activeComponent === 'stop'
-    ? null
-    // TODO: determine how to better style stop list
-      // (
-      //   <Grid
-      //     width={200}
-      //     height={530}
-      //     columnWidth={100}
-      //     rowHeight={30}
-      //     columnCount={list[0].length}
-      //     rowCount={list.length}
-      //     cellRenderer={({ columnIndex, isScrolling, rowIndex }) => list[rowIndex][columnIndex]}
-      //   />
-      // )
-    : (
-        <div
-          style={{height: '80%', overflowY: 'scroll',}}
+    : []
+    let shiftKey
+    const entityList = (
+      <div
+        onClick={(e) => {
+          console.log(e)
+          shiftKey = e.shiftKey
+        }}
+      >
+        <FlexTable
+          width={this.props.listWidth - 5}
+          height={560}
+          disableHeader={true}
+          headerHeight={20}
+          rowHeight={25}
+          scrollToIndex={activeIndex}
+          rowClassName='entity-list-row noselect'
+          rowStyle={({ index }) => this._getRowStyle(index, list)}
+          rowCount={list.length}
+          onRowClick={({ index }) => {
+            // timeout set in order to get shiftkey from div event listener
+            setTimeout(() => {
+              this._onRowClick(index, list, shiftKey)
+            }, 15)
+          }}
+          rowGetter={({ index }) => list[index]}
         >
-        <Table
-          hover
-        >
-          <thead></thead>
-          <tbody>
-            {sortedEntities
-              ? sortedEntities.map(entity => {
-                  const entityName = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
-                  return (
-                    <tr
-                      href='#'
-                      key={entity.id}
-                      // onMouseDown={(e) => console.log(e)}
-                      style={rowStyle}
-                      onClick={() => {
-                        if (activeEntity && entity.id === activeEntity.id) this.props.setActiveEntity(feedSource.id, this.props.activeComponent)
-                        else this.props.setActiveEntity(feedSource.id, this.props.activeComponent, entity)
-                      }}
-                    >
-                      <td
-                        /*className={activeEntity && entity.id === activeEntity.id ? 'success' : ''}*/
-                        style={activeEntity && entity.id === activeEntity.id ? activeRowStyle : rowStyle}
-                      >
-                      <small title={entityName}>
-                        {
-                          // entityName
-                          `${entityName && entityName.length > 23 ? entityName.substr(0, 23) + '...' : entityName}`
-                        }
-                      </small>
-                      </td>
-                    </tr>
-                  )
-                }
-              )
-            : <tr><td className='text-center'><Icon spin name='refresh' /></td></tr>
-          }
-          </tbody>
-        </Table>
+          <FlexColumn
+            label='Name'
+            dataKey='name'
+            className='small entity-list-row'
+            width={this.props.listWidth - 5}
+          />
+        </FlexTable>
         </div>
       )
-    let detailsWidth = 300
 
     const activeTable = DT_CONFIG.modules.editor.spec
       .find(t => t.id === this.props.activeComponent)
@@ -202,39 +192,7 @@ export default class EntityList extends Component {
         />
       )
       : null
-    let entityDetails = this.props.activeEntityId
-      ? (
-          <EntityDetails
-            detailsWidth={detailsWidth}
-            offset={panelWidth}
-            {...this.props}
-            // newRowClicked={this.props.newRowClicked}
-            // setActiveEntity={this.props.setActiveEntity}
-            // saveRowClicked={this.props.saveRowClicked}
-            // deleteRowClicked={this.props.deleteRowClicked}
-            // fieldEdited={this.props.fieldEdited}
-            // gtfsEntitySelected={(type, entity) => {
-            //   this.props.gtfsEntitySelected(type, entity)
-            // }}
-            getGtfsEntity={(type, id) => {
-              return sortedEntities.find(ent => ent.id === id)
-              // return this.props.gtfsEntityLookup[`${type}_${id}`]
-            }}
-            // showHelpClicked={(tableId, fieldName) => {
-            //   const helpContent = fieldName
-            //     ? DT_CONFIG.modules.editor.spec
-            //         .find(t => t.id === tableId).fields
-            //           .find(f => f.name === fieldName).helpContent
-            //     : DT_CONFIG.modules.editor.spec
-            //         .find(t => t.id === tableId).helpContent
-            //   this.refs.page.showInfoModal({
-            //     title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),
-            //     body: helpContent || '(No help content found for this field)'
-            //   })
-            // }}
-          />
-        )
-      : null
+
     return (
       <div
         style={panelStyle}
@@ -246,23 +204,53 @@ export default class EntityList extends Component {
             <ButtonToolbar
               className='pull-right'
             >
+              {this.props.activeComponent === 'route'
+                ? <OverlayTrigger placement='bottom' overlay={<Tooltip id={`merge-route`}>Merge routes</Tooltip>}>
+                  <Button
+                    bsSize='small'
+                    disabled={this.state.toIndex - this.state.fromIndex !== 1}
+                    onClick={() => {
+                      // this.props.cloneEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
+                    }}
+                  >
+                    <Icon name='compress'/>
+                  </Button>
+                  </OverlayTrigger>
+                : null
+              }
+              <OverlayTrigger placement='bottom' overlay={<Tooltip id={`duplicate-${this.props.activeComponent}`}>Duplicate {this.props.activeComponent}</Tooltip>}>
               <Button
                 bsSize='small'
                 disabled={!activeEntity}
+                onClick={() => {
+                  this.props.cloneEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
+                }}
               >
                 <Icon name='clone'/>
               </Button>
+              </OverlayTrigger>
+              <OverlayTrigger placement='bottom' overlay={<Tooltip id={`delete-${this.props.activeComponent}`}>Delete {this.props.activeComponent}</Tooltip>}>
               <Button
                 bsSize='small'
-                disabled={!activeEntity}
+                disabled={!activeEntity && typeof this.state.fromIndex === 'undefined'}
                 bsStyle='danger'
                 onClick={() => {
-                  this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity)
+                  let fromIndex, toIndex
+                  if (activeEntity) {
+                    this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
+                  }
+                  else {
+                    for (var i = this.state.fromIndex; i <= this.state.toIndex; i++) {
+                      this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, sortedEntities[i].id)
+                    }
+                  }
+                  this.setState({fromIndex, toIndex})
                   this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
                 }}
               >
                 <Icon name='trash'/>
               </Button>
+              </OverlayTrigger>
             </ButtonToolbar>
             {// Create new entity
               this.props.activeComponent === 'stop'
@@ -278,6 +266,7 @@ export default class EntityList extends Component {
               </Button>
             }
           </div>
+          {/* Table view button */}
           {
             // <Button
             //   bsSize='xsmall'
@@ -301,7 +290,7 @@ export default class EntityList extends Component {
                 onClick={() => {
                   if (this.props.activeComponent !== 'calendar') {
                     // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/calendar`)
-                    this.props.setActiveEntity(feedSource.id, 'calendar')
+                    this.props.setActiveEntity(this.props.feedSource.id, 'calendar')
                   }
                 }}
               >
@@ -312,7 +301,7 @@ export default class EntityList extends Component {
                 onClick={() => {
                   if (this.props.activeComponent !== 'scheduleexception') {
                     // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
-                    this.props.setActiveEntity(feedSource.id, 'scheduleexception')
+                    this.props.setActiveEntity(this.props.feedSource.id, 'scheduleexception')
                   }
                 }}
               >
@@ -326,10 +315,10 @@ export default class EntityList extends Component {
               entities={sortedEntities}
               onChange={(value) => {
                 if (!value) {
-                  this.props.setActiveEntity(feedSource.id, this.props.activeComponent)
+                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
                 }
                 else {
-                  this.props.setActiveEntity(feedSource.id, this.props.activeComponent, value.entity)
+                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, value.entity)
                 }
               }}
             />
@@ -340,9 +329,6 @@ export default class EntityList extends Component {
           : entityTable
         }
 
-        {
-          // entityDetails
-        }
       </div>
     )
   }
