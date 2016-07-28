@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import {decode as decodePolyline} from 'polyline'
 import ll, {isEqual as coordinatesAreEqual} from 'lonlng'
+import lineString from 'turf-linestring'
 
 export async function route (points) {
   if (points.length < 2) {
