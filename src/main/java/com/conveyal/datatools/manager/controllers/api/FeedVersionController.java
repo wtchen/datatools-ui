@@ -9,9 +9,11 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
+import com.conveyal.datatools.editor.controllers.api.SnapshotController;
 import com.conveyal.datatools.manager.DataManager;
 import com.conveyal.datatools.manager.auth.Auth0UserProfile;
 import com.conveyal.datatools.manager.jobs.BuildTransportNetworkJob;
+import com.conveyal.datatools.manager.jobs.CreateFeedVersionFromSnapshotJob;
 import com.conveyal.datatools.manager.jobs.ProcessSingleFeedJob;
 import com.conveyal.datatools.manager.models.FeedDownloadToken;
 import com.conveyal.datatools.manager.models.FeedSource;
@@ -196,6 +198,19 @@ public class FeedVersionController  {
         return true;
     }
 
+    public static Boolean createFeedVersionFromSnapshot (Request req, Response res) throws IOException, ServletException {
+
+        Auth0UserProfile userProfile = req.attribute("user");
+        FeedSource s = FeedSource.get(req.queryParams("feedSourceId"));
+
+        CreateFeedVersionFromSnapshotJob createFromSnapshotJob =
+                new CreateFeedVersionFromSnapshotJob(s, req.queryParams("snapshotId"), userProfile.getUser_id());
+
+        new Thread(createFromSnapshotJob).start();
+
+        return true;
+    }
+
     public static FeedVersion deleteFeedVersion(Request req, Response res) {
         String id = req.params("id");
         FeedVersion version = FeedVersion.get(id);
@@ -357,6 +372,27 @@ public class FeedVersionController  {
         return res.raw();
     }
 
+    public static Boolean renameFeedVersion (Request req, Response res) throws JsonProcessingException {
+        String id = req.params("id");
+        if (id == null) {
+            halt(404, "Must specify feed version ID");
+        }
+        FeedVersion v = FeedVersion.get(id);
+
+        if (v == null) {
+            halt(404, "Version ID does not exist");
+        }
+
+        String name = req.queryParams("name");
+        if (name == null) {
+            halt(400, "Name parameter not specified");
+        }
+
+        v.name = name;
+        v.save();
+        return true;
+    }
+
     private static Object downloadFeedVersionDirectly(Request req, Response res) {
         FeedVersion version = FeedVersion.get(req.params("id"));
         return downloadFeedVersion(version, res);
@@ -391,6 +427,8 @@ public class FeedVersionController  {
         get(apiPrefix + "secure/feedversion/:id/isochrones", FeedVersionController::getIsochrones, json::write);
         get(apiPrefix + "secure/feedversion", FeedVersionController::getAllFeedVersions, json::write);
         post(apiPrefix + "secure/feedversion", FeedVersionController::createFeedVersion, json::write);
+        post(apiPrefix + "secure/feedversion/fromsnapshot", FeedVersionController::createFeedVersionFromSnapshot, json::write);
+        put(apiPrefix + "secure/feedversion/:id/rename", FeedVersionController::renameFeedVersion, json::write);
         delete(apiPrefix + "secure/feedversion/:id", FeedVersionController::deleteFeedVersion, json::write);
 
         get(apiPrefix + "public/feedversion", FeedVersionController::getAllFeedVersions, json::write);

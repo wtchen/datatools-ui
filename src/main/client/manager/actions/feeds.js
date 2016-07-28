@@ -1,7 +1,7 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, fetchProjectWithFeeds } from './projects'
 import { setErrorMessage, startJobMonitor } from './status'
-
+import { fetchSnapshots } from '../../editor/actions/snapshots'
 // Feed Source Actions
 
 export function requestingFeedSources () {
@@ -455,6 +455,43 @@ export function downloadFeedViaToken (feedVersion) {
   }
 }
 
+// Create a Feed Version from an editor snapshot
+
+export function creatingFeedVersionFromSnapshot () {
+  return {
+    type: 'CREATING_FEEDVERSION_FROM_SNAPSHOT'
+  }
+}
+
+export function createFeedVersionFromSnapshot (feedSource, snapshotId) {
+  return function (dispatch, getState) {
+    dispatch(creatingFeedVersionFromSnapshot())
+    const url = `/api/manager/secure/feedversion/fromsnapshot?feedSourceId=${feedSource.id}&snapshotId=${snapshotId}`
+    return secureFetch(url, getState(), 'post')
+      .then((res) => {
+        dispatch(startJobMonitor())
+      })
+  }
+}
+
+// Create a Feed Version from an editor snapshot
+
+export function renamingFeedVersion () {
+  return {
+    type: 'RENAMING_FEEDVERSION'
+  }
+}
+
+export function renameFeedVersion (feedSource, feedVersion, name) {
+  return function (dispatch, getState) {
+    dispatch(renamingFeedVersion())
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/rename?name=${name}`
+    return secureFetch(url, getState(), 'put')
+      .then((res) => {
+        dispatch(fetchFeedVersions(feedSource))
+      })
+  }
+}
 
 //** NOTES ACTIONS **//
 

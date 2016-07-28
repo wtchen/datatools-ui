@@ -1,13 +1,26 @@
-import React from 'react'
-import moment from 'moment'
-import { Grid, Row, Col, ButtonGroup, Button, Table, Input, Panel, Glyphicon } from 'react-bootstrap'
+import React, {Component, PropTypes} from 'react'
+import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
-import { LinkContainer } from 'react-router-bootstrap'
 
 import { isModuleEnabled } from '../../common/util/config'
 import FeedVersionViewer from './FeedVersionViewer'
+import EditableTextField from '../../common/components/EditableTextField'
 
-export default class FeedVersionNavigator extends React.Component {
+export default class FeedVersionNavigator extends Component {
+
+  static propTypes = {
+    deleteDisabled: PropTypes.bool,
+    versions: PropTypes.array,
+    versionIndex: PropTypes.number,
+
+    deleteVersionClicked: PropTypes.func,
+    downloadFeedClicked: PropTypes.func,
+    feedVersionRenamed: PropTypes.func,
+    gtfsPlusDataRequested: PropTypes.func,
+    newNotePostedForVersion: PropTypes.func,
+    notesRequestedForVersion: PropTypes.func,
+    validationResultRequested: PropTypes.func
+  }
 
   constructor (props) {
     super(props)
@@ -17,7 +30,6 @@ export default class FeedVersionNavigator extends React.Component {
   }
 
   render () {
-
     const versionTitleStyle = {
       fontSize: '24px',
       fontWeight: 'bold'
@@ -35,32 +47,52 @@ export default class FeedVersionNavigator extends React.Component {
 
     if (typeof this.props.versionIndex === 'undefined') {
       return null
-    }
-    else if(hasVersions && this.props.versions.length >= this.props.versionIndex) {
+    } else if (hasVersions && this.props.versions.length >= this.props.versionIndex) {
       version = sortedVersions[this.props.versionIndex - 1]
-    }
-    else {
+    } else {
       console.log(`Error version ${this.props.versionIndex} does not exist`)
     }
 
     return (
       <div>
         <Row>
-          <Col xs={12} sm={2} style={versionTitleStyle}>
+          <Col xs={12} sm={6} style={versionTitleStyle}>
             {hasVersions
-              ? `${messages.version} ${this.props.versionIndex} ${messages.of} ${this.props.versions.length}`
+              ? <div>
+                  <ButtonGroup>
+                    <Button href='#'
+                      disabled={!hasVersions || !sortedVersions[this.props.versionIndex - 2]}
+                      onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex - 1}`)}
+                    >
+                      <Glyphicon glyph='arrow-left' />
+                    </Button>
+                    <DropdownButton href='#' id='versionSelector'
+                      title={`${this.props.versionIndex} ${messages.of} ${this.props.versions.length}`}
+                      onSelect={(key) => browserHistory.push(`/feed/${version.feedSource.id}/version/${key}`)}
+                    >
+                      {this.props.versions.map((version, k) => {
+                        k = k + 1
+                        return <MenuItem key={k} eventKey={k}>{k}. {version.name}</MenuItem>
+                      })}
+                    </DropdownButton>
+                    <Button href='#'
+                      disabled={!hasVersions || !sortedVersions[this.props.versionIndex]}
+                      onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex + 1}`)}
+                    >
+                      <Glyphicon glyph='arrow-right' />
+                    </Button>
+                  </ButtonGroup>
+                  <span>&nbsp;&nbsp;</span>
+                  <EditableTextField inline value={version.name}
+                    onChange={(value) => this.props.feedVersionRenamed(version, value)}
+                  />
+                </div>
               : messages.noVersions
             }
           </Col>
-          <Col xs={12} sm={8}>
-            <ButtonGroup justified>
-              <Button href='#'
-                disabled={!hasVersions || !sortedVersions[this.props.versionIndex - 2]}
-                onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex - 1}`)}
-              >
-                <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> {messages.previous}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
-              </Button>
-              <Button href='#'
+          <Col xs={12} sm={6}>
+            <ButtonToolbar className='pull-right'>
+              <Button bsStyle='primary'
                 disabled={!hasVersions}
                 onClick={(evt) => {
                   evt.preventDefault()
@@ -70,7 +102,7 @@ export default class FeedVersionNavigator extends React.Component {
                 <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
               </Button>
               {isModuleEnabled('editor')
-                ? <Button href='#'
+                ? <Button bsStyle='success'
                     disabled={!hasVersions}
                     onClick={(evt) => {
                       evt.preventDefault()
@@ -81,34 +113,20 @@ export default class FeedVersionNavigator extends React.Component {
                   </Button>
                 : null
               }
-              <Button href='#'
+              <Button bsStyle='danger'
                 disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
                 onClick={(evt) => {
                   evt.preventDefault()
-                  console.log('deleting version');
                   this.props.deleteVersionClicked(version)
                 }}
               >
                 <Glyphicon glyph='remove' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
               </Button>
-              <Button href='#'
-                disabled={!hasVersions || !sortedVersions[this.props.versionIndex]}
-                onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex + 1}`)}
-              >
-                <span className='hidden-xs'>{messages.next} </span><span className='hidden-xs hidden-sm'>{messages.version} </span><Glyphicon glyph='arrow-right' />
-              </Button>
-            </ButtonGroup>
-          </Col>
-          <Col xs={2}>
-            {/*
-            <Button className='pull-right' disabled={!hasVersions}>
-              <Glyphicon glyph='list' /> All Versions
-            </Button>
-            */}
+            </ButtonToolbar>
           </Col>
         </Row>
 
-        <Row><Col xs={12}>&nbsp;</Col></Row>
+        <Row><Col xs={12}><span>&nbsp;</span></Col></Row>
 
         {version
           ? <FeedVersionViewer
