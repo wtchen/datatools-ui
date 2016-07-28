@@ -1,13 +1,10 @@
 import React from 'react'
-import { Map, Marker, CircleMarker, Popup, Polyline, TileLayer, Rectangle, GeoJson, FeatureGroup, ZoomControl, LayersControl } from 'react-leaflet'
+import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, LayersControl } from 'react-leaflet'
 import { divIcon } from 'leaflet'
-import { Button, ButtonToolbar, ButtonGroup, MenuItem, SplitButton } from 'react-bootstrap'
+import { Button, Dropdown, ButtonToolbar, Row, Col, ButtonGroup, Form, MenuItem, SplitButton, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
-import {Icon, IconStack} from 'react-fa'
-import polyUtil from 'polyline-encoded'
-import ll, {isEqual as coordinatesAreEqual} from 'lonlng'
-import moment from 'moment'
-import update from 'react-addons-update'
+import {Icon} from 'react-fa'
+import ll from 'lonlng'
 import lineString from 'turf-linestring'
 import bearing from 'turf-bearing'
 import point from 'turf-point'
@@ -16,12 +13,13 @@ import lineDistance from 'turf-line-distance'
 import lineSlice from 'turf-line-slice'
 import pointOnLine from 'turf-point-on-line'
 
+import { generateUID } from '../../common/util/util'
 import { EditControl } from 'react-leaflet-draw'
 
 // import CircleMarkerWithLabel from './CircleMarkerWithLabel'
 // import MarkerWithLabel from './MarkerWithLabel'
+import MinuteSecondInput from './MinuteSecondInput'
 import StopLayer from '../../scenario-editor/components/StopLayer'
-import DirectionIcon from '../../scenario-editor/components/direction-icon'
 import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
 
 export default class EditorMap extends React.Component {
@@ -29,7 +27,9 @@ export default class EditorMap extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      controlPoints: this.props.editSettings.controlPoints && this.props.editSettings.controlPoints.length ? this.props.editSettings.controlPoints[this.props.editSettings.controlPoints.length - 1] : []
+      controlPoints: this.props.editSettings.controlPoints && this.props.editSettings.controlPoints.length
+        ? this.props.editSettings.controlPoints[this.props.editSettings.controlPoints.length - 1]
+        : []
     }
   }
   updateDimensions () {
@@ -88,6 +88,10 @@ export default class EditorMap extends React.Component {
     if (entity && entity.id) {
       this.refs.map.leafletElement.panTo([entity.stop_lat, entity.stop_lon])
     }
+  }
+  getStopLatLng (latlng) {
+    const precision = 100000000 // eight decimal places is accurate up to 1.1 meters
+    return {stop_lat: Math.round(latlng.lat * precision) / precision, stop_lon: Math.round(latlng.lng % 180 * precision) / precision}
   }
   async extendPatternToStop (pattern, endPoint, stop) {
     let newShape = await getPolyline([endPoint, stop])
@@ -196,14 +200,20 @@ export default class EditorMap extends React.Component {
     // this.setState({coordinates})
   }
   mapRightClicked (e) {
-    console.log(e.latlng)
     if (this.props.activeComponent === 'stop') {
       // if newly created stop is selected
+      let stopLatLng = this.getStopLatLng(e.latlng)
       if (this.props.activeEntity && this.props.activeEntity.id === 'new') {
-        this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
+        this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, stopLatLng)
+        this.refs[this.props.activeEntity.id].leafletElement.setLatLng(e.latlng)
       }
-      else {
-        this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent, {stop_lat: e.latlng.lat, stop_lon: e.latlng.lng,})
+      else if (this.props.entities && this.props.entities.findIndex(e => e.id === 'new') === -1) {
+        this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent,
+          {
+            stop_id: generateUID(),
+            ...stopLatLng
+          }
+        )
       }
     }
   }
@@ -699,25 +709,111 @@ export default class EditorMap extends React.Component {
                       key={`${activePattern.id}-${s.stopId}-${index}`}
                     >
                       <Popup>
-                        <div>
+                        <div
+                          style={{minWidth: '200px'}}
+                        >
                           <h5>{index + 1}. {stop.stop_name}</h5>
-                          <ButtonGroup>
-                          <Button
-                            onClick={() => {
-                              this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-                            }}
-                          >
-                            <Icon name='pencil'/>
-                          </Button>
-                          <Button
-                            bsStyle='danger'
-                            onClick={() => {
-                              this.removeStopFromPattern(activePattern, stop, index)
-                            }}
-                          >
-                            <Icon name='trash'/>
-                          </Button>
-                          </ButtonGroup>
+                          <Row>
+                            <Col xs={12}>
+                              <ButtonGroup className='pull-right'>
+                                <Button
+                                  bsStyle='primary'
+                                  disabled={!this.props.entityEdited}
+                                  onClick={() => {
+                                    this.props.saveActiveEntity('trippattern')
+                                  }}
+                                >
+                                  <Icon name='floppy-o'/>
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
+                                  }}
+                                >
+                                  <Icon name='pencil'/>
+                                </Button>
+                                <Button
+                                  bsStyle='danger'
+                                  onClick={() => {
+                                    this.removeStopFromPattern(activePattern, stop, index)
+                                  }}
+                                >
+                                  <Icon name='trash'/>
+                                </Button>
+                                <Dropdown
+                                  id={`split-button-basic-${i}`}
+                                  onSelect={(key) => {
+                                    this.addStopToPattern(activePattern, stop, key)
+                                  }}
+                                >
+                                  <Button
+                                    bsStyle='success'
+                                    disabled={index >= activePattern.patternStops.length - 2}
+                                    onClick={(e) => {
+                                      this.addStopToPattern(activePattern, stop)
+                                    }}
+                                  >
+                                    <Icon name='plus'/>
+                                  </Button>
+                                  <Dropdown.Toggle bsStyle='success'/>
+                                  <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
+                                    <MenuItem disabled={index >= activePattern.patternStops.length - 2} value={activePattern.patternStops.length} eventKey={activePattern.patternStops.length}>
+                                      Add to end (default)
+                                    </MenuItem>
+                                    {activePattern.patternStops && activePattern.patternStops.map((stop, i) => {
+                                      let addIndex = activePattern.patternStops.length - i
+                                      if (index === activePattern.patternStops.length - 1 && index === addIndex - 1) {
+                                        return null
+                                      }
+                                      // disable adding stop to current position or directly before/after current position
+                                      return (
+                                        <MenuItem disabled={index >= addIndex - 2 && index <= addIndex} value={addIndex - 1} eventKey={addIndex - 1}>
+                                          {addIndex === 1 ? 'Add to beginning' : `Insert as stop #${addIndex}`}
+                                        </MenuItem>
+                                      )
+                                    })}
+                                  </Dropdown.Menu>
+                                </Dropdown>
+                              </ButtonGroup>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col xs={6}>
+                              <FormGroup
+                                controlId="formBasicText"
+                                // style={{width: '40%'}}
+                                /*validationState={this.getValidationState()}*/
+                              >
+                              <ControlLabel>Travel time</ControlLabel>
+                              <MinuteSecondInput
+                                seconds={s.defaultTravelTime}
+                                onChange={(value) => {
+                                  let patternStops = [...activePattern.patternStops]
+                                  patternStops[index].defaultTravelTime = value
+                                  this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                }}
+                              />
+                              </FormGroup>
+                              </Col>
+                              <Col xs={6}>
+                              <FormGroup
+                                controlId="formBasicText"
+                                xs={6}
+                                // style={{width: '40%'}}
+                                /*validationState={this.getValidationState()}*/
+                              >
+                              <ControlLabel>Dwell time</ControlLabel>
+                              <MinuteSecondInput
+                                seconds={s.defaultDwellTime}
+                                onChange={(evt) => {
+                                  let patternStops = [...activePattern.patternStops]
+                                  patternStops[index].defaultDwellTime = +evt.target.value
+                                  this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                }}
+                              />
+                              </FormGroup>
+                            </Col>
+                          </Row>
                         </div>
                       </Popup>
                     </Marker>
@@ -806,133 +902,45 @@ export default class EditorMap extends React.Component {
         )
       case 'stop':
         // console.log(entities)
-        return entities ? entities.map(stop => {
-          const isActive = this.props.activeEntity && this.props.activeEntity.id === stop.id
-
-          if (!isActive) {
-            if (!this.props.mapState.zoom || this.props.mapState.zoom < 14) {
+        const busIcon = divIcon({
+          html: `<span class="fa-stack bus-stop-icon">
+                  <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: blue"></i>
+                  <i class="fa fa-stack-1x fa-bus bus-stop-icon-fg"></i>
+                </span>`,
+          className: '',
+          iconSize: [24, 24],
+        })
+        const activeBusIcon = divIcon({
+          html: `<span class="fa-stack bus-stop-icon">
+                  <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: green"></i>
+                  <i class="fa fa-stack-1x fa-bus bus-stop-icon-fg"></i>
+                </span>`,
+          className: '',
+          iconSize: [24, 24],
+        })
+        return [
+          entities ? entities.map(stop => {
+            const isActive = this.props.activeEntity && this.props.activeEntity.id === stop.id
+            if (isActive) return null
+            if (!isActive) {
+              if (!this.props.mapState.zoom || this.props.mapState.zoom < 14) {
+                return null
+              }
+              if (stop.stop_lat > this.props.mapState.bounds.getNorth() || stop.stop_lat < this.props.mapState.bounds.getSouth() || stop.stop_lon > this.props.mapState.bounds.getEast() || stop.stop_lon < this.props.mapState.bounds.getWest()) {
+                return null
+              }
+            }
+            if (isNaN(stop.stop_lat) || isNaN(stop.stop_lon)) {
               return null
             }
-            if (stop.stop_lat > this.props.mapState.bounds.getNorth() || stop.stop_lat < this.props.mapState.bounds.getSouth() || stop.stop_lon > this.props.mapState.bounds.getEast() || stop.stop_lon < this.props.mapState.bounds.getWest()) {
-              return null
-            }
-          }
-          if (isNaN(stop.stop_lat) || isNaN(stop.stop_lon)) {
-            return null
-          }
-          const stopLatLng = [stop.stop_lat, stop.stop_lon]
-          const editingStop = this.state.editStop === stop.id
-          const escapeListener = (e) => {
-            console.log(e)
-            // [Esc] is pressed
-            if (e.keyCode === 27 && this.props.entityEdited) {
-              console.log('escape pressed')
+            const stopLatLng = [stop.stop_lat, stop.stop_lon]
+            const editingStop = this.state.editStop === stop.id
+            const escapeListener = (e) => {
+              console.log(e)
+              // [Esc] is pressed
+              if (e.keyCode === 27 && this.props.entityEdited) {
+                console.log('escape pressed')
 
-              this.setState({editStop: null, editFinished: null, editStopLatLng: null})
-
-              // reset latlng
-              this.refs[stop.id].leafletElement.setLatLng(stopLatLng)
-
-              // set active entity
-              this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-
-              // remove listeners
-              this.refs.map.leafletElement.removeEventListener('mousemove')
-              document.removeEventListener('keydown', escapeListener, false)
-            }
-          }
-          const popup = (
-            <Popup
-              closeButton={false}
-              closeOnClick={false}
-            >
-              <div>
-              <h4>Keep edits?</h4>
-              <ButtonToolbar>
-                <Button
-                  bsStyle='primary'
-                  bsSize='xsmall'
-                  onClick={(e) => {
-                    this.refs[stop.id].leafletElement.closePopup()
-                    this.setState({editAccepted: stop.id, editFinished: null})
-                    // TODO: UPDATE ACTIVE ENTITY WITH LATLNG VALUE
-                  }}
-                >
-                  <Icon name='check'/>
-                </Button>
-                <Button
-                  bsStyle='danger'
-                  bsSize='xsmall'
-                  onClick={(e) => {
-                    this.refs[stop.id].leafletElement.closePopup()
-                    this.setState({editFinished: null, editStopLatLng: null, editAccepted: null})
-                  }}
-                >
-                  <Icon name='times'/>
-                </Button>
-                </ButtonToolbar>
-              </div>
-            </Popup>
-          )
-          const color = editingStop
-            // yellow means actively changing position
-            ? 'yellow'
-            : this.state.editFinished === stop.id && isActive
-            // red means position has been edited
-            ? 'red'
-            : this.props.activeEntity && isActive
-            // green means stop is active
-            ? 'green'
-            // blue is default
-            : 'blue'
-          const busIcon = divIcon({
-            html: `<span class="fa-stack bus-stop-icon">
-                    <i class="fa fa-circle fa-stack-2x" style="color: ${color}"></i>
-                    <i class="fa fa-stack-1x fa-bus"></i>
-                  </span>`,
-            // html: `<span class="fa-stack fa-3x">
-            //         <i class="fa fa-bus fa-stack-2x" style="background-color: white"></i>
-            //         <strong class="fa-stack-1x fa-inverse calendar-text">27</strong>
-            //       </span>`,
-            // html: `<i class="fa fa-bus" style="color: ${color} border: 10px solid white"></i>`,
-            className: '',
-            iconSize: [24, 24],
-          })
-          const marker = (
-            <Marker
-              position={stopLatLng}
-              icon={busIcon}
-              // zIndexOffset={1000}
-              ref={`${stop.id}`}
-              draggable={isActive}
-              onDragEnd={(e) => {
-                console.log(e)
-                let latlng = e.target.getLatLng()
-
-                const precision = 100000000 // eight decimal places is accurate up to 1.1 meters
-                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {stop_lat: Math.round(latlng.lat * precision) / precision, stop_lon: Math.round(latlng.lng * precision) / precision})
-                this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
-              }}
-              onClick={(e) => {
-                console.log('stop clicked', e)
-                // this.resetMap()
-
-                // set active entity
-                if (!isActive)
-                  this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-              }}
-            >
-            </Marker>
-          )
-          const circleMarker = (
-            <CircleMarker
-              center={this.state.editFinished === stop.id || (this.state.editStop === stop.id && this.state.editStopLatLng) ? this.state.editStopLatLng : stopLatLng}
-              fillOpacity={1.0}
-              radius={4}
-              ref={stop.id}
-              key={`${stop.id}`}
-              color={color}
-              onDblClick={(e) => {
                 this.setState({editStop: null, editFinished: null, editStopLatLng: null})
 
                 // reset latlng
@@ -940,58 +948,62 @@ export default class EditorMap extends React.Component {
 
                 // set active entity
                 this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-              }}
-              onClick={(e) => {
+
+                // remove listeners
+                this.refs.map.leafletElement.removeEventListener('mousemove')
                 document.removeEventListener('keydown', escapeListener, false)
-                // if editing of this stop just finished, open popup
-                if (this.state.editFinished === stop.id) {
-                  console.log('begin editing again?')
-                  // set current location
-                  this.refs[stop.id].leafletElement.setLatLng(e.latlng)
-                  this.setState({editStop: stop.id, editFinished: null, editStopLatLng: e.latlng})
-                  this.refs.map.leafletElement
-                    .on('mousemove', (e) => {
-                      this.refs[stop.id].leafletElement.setLatLng(e.latlng)
-                    })
-                  document.addEventListener('keydown', escapeListener, false)
-                }
-                // click while actively editing: stop editing and fire update action
-                else if (editingStop) {
-                  console.log('stop editing')
-                  this.setState({editStop: null, editFinished: stop.id, editStopLatLng: e.latlng})
-                  this.refs.map.leafletElement.removeEventListener('mousemove')
-                  document.removeEventListener('keydown', escapeListener, false)
-                  const precision = 100000000 // eight decimal places is accurate up to 1.1 meters
-                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {stop_lat: Math.round(e.latlng.lat * precision) / precision, stop_lon: Math.round(e.latlng.lng * precision) / precision})
-                }
-                // if active stop, begin editing
-                else if (isActive) {
-                  this.setState({editStop: stop.id})
-                  this.refs.map.leafletElement
-                    .on('mousemove', (e) => {
-                      this.refs[stop.id].leafletElement.setLatLng(e.latlng)
-                    })
-                  document.addEventListener('keydown', escapeListener, false)
-                }
-                // else, set as active stop
-                else {
-                  console.log('resetting active stop')
-                  this.resetMap()
+              }
+            }
+            const marker = (
+              <Marker
+                position={stopLatLng}
+                icon={busIcon}
+                // zIndexOffset={1000}
+                key={`${stop.id}`}
+                ref={`${stop.id}`}
+                draggable={isActive}
+                onDragEnd={(e) => {
+                  console.log(e)
+                  let latlng = e.target.getLatLng()
+                  let stopLatLng = this.getStopLatLng(latlng)
+                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, stopLatLng)
+                  this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
+                }}
+                onClick={(e) => {
+                  console.log('stop clicked', e)
+                  // this.resetMap()
 
                   // set active entity
-                  this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-                }
+                  if (!isActive)
+                    this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
+                }}
+              >
+              </Marker>
+            )
+            return marker
+          })
+          : null
+          ,
+          this.props.activeEntity
+          ? <Marker
+              position={[this.props.activeEntity.stop_lat, this.props.activeEntity.stop_lon]}
+              icon={activeBusIcon}
+              ref={`${this.props.activeEntity.id}`}
+              key={`${this.props.activeEntity.id}`}
+              draggable={true}
+              onDragEnd={(e) => {
+                console.log(e)
+                let latlng = e.target.getLatLng()
+                let stopLatLng = this.getStopLatLng(latlng)
+                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, stopLatLng)
+                this.refs[`${this.props.activeEntity.id}`].leafletElement.setLatLng(latlng)
               }}
-            >
-              {this.state.editFinished === stop.id
-                ? null
-                : null
-              }
-            </CircleMarker>
-          )
-          return marker
-        })
-        : null
+              onClick={(e) => {
+                this.refs.map.leafletElement.setView(e.latlng, 15)
+              }}
+            />
+          : null
+        ]
       default:
         return null
     }
@@ -1017,7 +1029,7 @@ export default class EditorMap extends React.Component {
   }
 
   render () {
-    // console.log(this.state)
+    console.log(this.state)
     // console.log(this.state.controlPoints)
     // console.log(this.refs.map)
     const { feedSource, feedInfo, activeComponent, entities, activeEntity, subComponent } = this.props
@@ -1028,7 +1040,7 @@ export default class EditorMap extends React.Component {
     const offset = 0.005
     let feedSourceBounds = feedSource && feedSource.latestValidation && feedSource.latestValidation.bounds
       ? [[feedSource.latestValidation.bounds.north + offset, feedSource.latestValidation.bounds.west - offset], [feedSource.latestValidation.bounds.south - offset, feedSource.latestValidation.bounds.east + offset]]
-      : [[90, -90], [-90, 90]]
+      : [[60, 60], [-60, -20]]
     let bounds = feedSourceBounds
     let stop = activeComponent === 'stop' && activeEntity
     let route = activeComponent === 'route' && activeEntity
@@ -1072,6 +1084,7 @@ export default class EditorMap extends React.Component {
         zoomControl={false}
         style={mapStyle}
         bounds={bounds}
+        maxBounds={[[200, 180], [-200, -180]]}
         onContextMenu={(e) => this.mapRightClicked(e)}
         onClick={(e) => this.mapClicked(e)}
         onZoomEnd={(e) => this.mapBoundsChanged(e)}
