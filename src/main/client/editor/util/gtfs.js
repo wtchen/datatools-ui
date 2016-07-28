@@ -30,11 +30,11 @@ export const getEntityName = (component, entity) => {
         ? `${entity.stop_name} (${entity.stop_id})`
         : entity.stop_name
     case 'route':
-      return entity.route_short_name && entity.route_long_name
+      return entity.route_short_name && entity.route_long_name && entity.route_short_name !== '""' && entity.route_long_name !== '""'
         ? `${entity.route_short_name} - ${entity.route_long_name}`
-        : entity.route_short_name
+        : entity.route_short_name && entity.route_short_name !== '""'
         ? entity.route_short_name
-        : entity.route_long_name
+        : entity.route_long_name && entity.route_long_name !== '""'
         ? entity.route_long_name
         : entity.route_id
     default:
@@ -103,7 +103,6 @@ export const getControlPoints = (pattern, snapToStops) => {
     }
     controlPoints.push(stopControl)
     controlPoints.push(controlPoint)
-    return
   })
   return controlPoints
 }
