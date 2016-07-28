@@ -17,7 +17,12 @@ export default class NotesViewer extends Component {
     newNotePosted: PropTypes.func,
     notesRequested: PropTypes.func
   }
-
+  constructor (props) {
+    super(props)
+    this.state = {
+      value: ''
+    }
+  }
   render () {
     const messages = window.DT_CONFIG.messages.active.NotesViewer
 
@@ -65,13 +70,19 @@ export default class NotesViewer extends Component {
           <FormControl
             ref='newNoteBody'
             type='textarea'
+            value={this.state.value}
+            onChange={(evt) => {
+              this.setState({value: evt.target.value})
+            }}
           />
           <Button
             className='pull-right'
+            disabled={this.state.value === ''}
             onClick={() => {
               this.props.newNotePosted({
-                body: ReactDOM.findDOMNode(this.refs.newNoteBody).value
+                body: this.state.value
               })
+              this.setState({value: ''})
             }}
           >{messages.new}</Button>
         </Col>
