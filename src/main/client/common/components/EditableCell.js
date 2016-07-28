@@ -62,6 +62,24 @@ export default class EditableCell extends Component {
     //   return false
     // }
     switch (evt.keyCode) {
+      case 88: // x
+        if (this.props.renderTime) {
+          evt.preventDefault()
+          this.props.onRowSelect(evt)
+          break
+        }
+        else {
+          return true
+        }
+      case 79: // o
+        if (this.props.renderTime) {
+          evt.preventDefault()
+          this.props.onRowSelect(evt)
+          break
+        }
+        else {
+          return true
+        }
       case 222: // single quote
         if (evt.shiftKey){
           console.log('dupe left')

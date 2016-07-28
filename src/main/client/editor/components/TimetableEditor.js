@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, Checkbox, ListGroup, Nav, NavItem, ListGroupItem, Button, ButtonGroup, DropdownButton, MenuItem, ButtonToolbar, Collapse, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
+import { InputGroup, Table, Checkbox, ListGroup, Nav, NavItem, ListGroupItem, Button, ButtonGroup, DropdownButton, MenuItem, ButtonToolbar, Collapse, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 import moment from 'moment'
 // import ReactDataGrid from 'react-data-grid'
@@ -33,7 +33,18 @@ export default class TimetableEditor extends Component {
   componentWillUnmount () {
     window.removeEventListener("resize", () => this.updateDimensions())
   }
-
+  toggleRowSelection (rowIndex) {
+    let selectIndex = this.state.selected.indexOf(rowIndex)
+    console.log(selectIndex)
+    if (selectIndex === -1) {
+      let stateUpdate = { selected: { $push: [rowIndex] }}
+      this.setState(update(this.state, stateUpdate))
+    }
+    else {
+      let stateUpdate = {selected: { $splice: [[selectIndex, 1]] }}
+      this.setState(update(this.state, stateUpdate))
+    }
+  }
   setCellValue (value, rowIndex, key) {
     let newRows = [...this.state.data]
     objectPath.set(newRows, key, value)
@@ -142,7 +153,7 @@ export default class TimetableEditor extends Component {
     //
     //   }
     // })
-    let columns = [
+    const columns = [
       {
         name: 'Block ID',
         width: 30,
@@ -191,26 +202,43 @@ export default class TimetableEditor extends Component {
         style={{position: 'fixed', zIndex: 1000, backgroundColor: 'white', width: `${this.state.width - 54}px`, paddingRight: '10px'}}
       >
         <h3>
-        <ButtonToolbar
+        <Form
           className='pull-right'
+          inline
         >
+          <InputGroup>
+            <FormControl style={{width: '40px'}} type='text' />
+            <InputGroup.Button>
+              <Button>
+                Offset
+              </Button>
+            </InputGroup.Button>
+          </InputGroup>
+          {'  '}
           <Button
             onClick={() => {
               let newRow = {} // Object.assign({}, this.state.data[this.state.data.length - 1])
+              let cumulativeTravelTime = 0
+              for (var i = 0; i < activePattern.patternStops.length; i++) {
+                let stop = activePattern.patternStops[i]
+                console.log(stop)
+
+                objectPath.ensureExists(newRow, `stopTimes.${i}.stopId`, stop.stopId)
+
+                cumulativeTravelTime += stop.defaultTravelTime
+                objectPath.ensureExists(newRow, `stopTimes.${i}.arrivalTime`, cumulativeTravelTime)
+                cumulativeTravelTime += stop.defaultDwellTime
+                objectPath.ensureExists(newRow, `stopTimes.${i}.departureTime`, cumulativeTravelTime)
+              }
               for (var i = 0; i < columns.length; i++) {
                 let col = columns[i]
                 if (/TIME/.test(col.type)) {
                   // TODO: add default travel/dwell times to new rows
-                  objectPath.ensureExists(newRow, col.key, 0)
+                  // objectPath.ensureExists(newRow, col.key, 0)
                 }
                 else {
                   objectPath.ensureExists(newRow, col.key, null)
                 }
-              }
-              for (var i = 0; i < activePattern.patternStops.length; i++) {
-                let stop = activePattern.patternStops[i]
-                console.log(stop)
-                objectPath.ensureExists(newRow, `stopTimes.${i}.stopId`, stop.stopId)
               }
               objectPath.ensureExists(newRow, 'id', 'new')
               objectPath.ensureExists(newRow, 'feedId', feedSource.id)
@@ -224,11 +252,13 @@ export default class TimetableEditor extends Component {
           >
             <Icon name='plus'/> New trip
           </Button>
+          {'  '}
           <Button
             disabled={this.state.selected.length === 0}
           >
             <Icon name='clone'/>
           </Button>
+          {'  '}
           <Button
             disabled={this.state.selected.length === 0}
             onClick={() => {
@@ -238,6 +268,7 @@ export default class TimetableEditor extends Component {
           >
             <Icon name='trash'/>
           </Button>
+          {'  '}
           <Button
             disabled={this.state.edited.length === 0}
             onClick={(e) => {
@@ -247,6 +278,7 @@ export default class TimetableEditor extends Component {
           >
             Reset
           </Button>
+          {'  '}
           <Button
             disabled={this.state.edited.length === 0}
             onClick={() => {
@@ -265,7 +297,7 @@ export default class TimetableEditor extends Component {
           >
             Save
           </Button>
-        </ButtonToolbar>
+        </Form>
           <Button
             onClick={() => {
               this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern)
@@ -299,7 +331,7 @@ export default class TimetableEditor extends Component {
             eventKey={'scheduleexception'}
             onClick={() => {
               if (this.props.activeComponent !== 'scheduleexception') {
-                this.props.setActiveEntity(feedSource.id, 'calendar')
+                this.props.setActiveEntity(feedSource.id, 'calendar', {id: 'new'})
                 // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
               }
             }}
@@ -361,16 +393,7 @@ export default class TimetableEditor extends Component {
                         type='checkbox'
                         checked={rowIsChecked}
                         onClick={(e) => {
-                          let selectIndex = this.state.selected.indexOf(rowIndex)
-                          console.log(selectIndex)
-                          if (selectIndex === -1) {
-                            let stateUpdate = { selected: { $push: [rowIndex] }}
-                            this.setState(update(this.state, stateUpdate))
-                          }
-                          else {
-                            let stateUpdate = {selected: { $splice: [[selectIndex, 1]] }}
-                            this.setState(update(this.state, stateUpdate))
-                          }
+                          this.toggleRowSelection(rowIndex)
                         }}
                       />
                     </td>
@@ -394,6 +417,9 @@ export default class TimetableEditor extends Component {
                           }}
                           key={`cell-${rowIndex}-${colIndex}`}
                           // onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${colIndex}`}) }}
+                          onRowSelect={(evt) => {
+                            this.toggleRowSelection(rowIndex)
+                          }}
                           onLeft={(evt) => {
                             if (colIndex - 1 >= 0) {
                               this.setState({activeCell: `${rowIndex}-${colIndex - 1}`})
