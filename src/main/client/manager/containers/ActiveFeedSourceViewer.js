@@ -25,7 +25,7 @@ import {
 
 import { updateTargetForSubscription } from '../../manager/actions/user'
 import { createDeploymentFromFeedSource } from '../../manager/actions/deployments'
-
+import { importSnapshotFromFeedVersion } from '../../editor/actions/snapshots'
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
@@ -80,6 +80,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       .then((deployment) => {
         browserHistory.push(`/deployment/${deployment.id}`)
       })
+    },
+    importSnapshotFromFeedVersion : (feedVersion) => {
+      dispatch(importSnapshotFromFeedVersion(feedVersion))
     },
     deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
       dispatch(deleteFeedVersion(feedSource, feedVersion))

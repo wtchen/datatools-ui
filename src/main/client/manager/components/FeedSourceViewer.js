@@ -39,6 +39,7 @@ export default class FeedSourceViewer extends Component {
     externalPropertyChanged: PropTypes.func,
     feedSourcePropertyChanged: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
+    importSnapshotFromFeedVersion: PropTypes.func,
     gtfsPlusDataRequested: PropTypes.func,
     newNotePostedForFeedSource: PropTypes.func,
     newNotePostedForVersion: PropTypes.func,
@@ -313,6 +314,7 @@ export default class FeedSourceViewer extends Component {
                   this.props.gtfsPlusDataRequested(version)
                 }}
                 feedVersionRenamed={(version, name) => this.props.feedVersionRenamed(fs, version, name)}
+                importSnapshotFromFeedVersion={(version) => this.props.importSnapshotFromFeedVersion(version)}
               />
             </Tab>
 

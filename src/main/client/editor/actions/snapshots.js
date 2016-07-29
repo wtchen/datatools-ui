@@ -105,3 +105,22 @@ export function deleteSnapshot (feedSource, snapshot) {
       })
   }
 }
+
+export function importingSnapshotFromFeedVersion () {
+  return {
+    type: 'IMPORTING_SNAPSHOT_FROM_FEEDVERSION'
+  }
+}
+
+export function importSnapshotFromFeedVersion (feedVersion, snapshot) {
+  return function (dispatch, getState) {
+    dispatch(importingSnapshotFromFeedVersion())
+    const url = `/api/manager/secure/snapshot/import?feedVersionId=${feedVersion.id}`
+    return secureFetch(url, getState(), 'post')
+      .then((response) => {
+        return response.json()
+      }).then(() => {
+        dispatch(fetchSnapshots(feedVersion.feedSource))
+      })
+  }
+}

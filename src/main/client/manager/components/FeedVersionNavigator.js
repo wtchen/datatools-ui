@@ -16,6 +16,7 @@ export default class FeedVersionNavigator extends Component {
     deleteVersionClicked: PropTypes.func,
     downloadFeedClicked: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
+    importSnapshotFromFeedVersion: PropTypes.func,
     gtfsPlusDataRequested: PropTypes.func,
     newNotePostedForVersion: PropTypes.func,
     notesRequestedForVersion: PropTypes.func,
@@ -94,10 +95,7 @@ export default class FeedVersionNavigator extends Component {
             <ButtonToolbar className='pull-right'>
               <Button bsStyle='primary'
                 disabled={!hasVersions}
-                onClick={(evt) => {
-                  evt.preventDefault()
-                  this.props.downloadFeedClicked(version)
-                }}
+                onClick={(evt) => this.props.downloadFeedClicked(version)}
               >
                 <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
               </Button>
@@ -105,18 +103,16 @@ export default class FeedVersionNavigator extends Component {
                 ? <Button bsStyle='success'
                     disabled={!hasVersions}
                     onClick={(evt) => {
-                      evt.preventDefault()
-                      browserHistory.push(`/feed/${version.feedSource.id}/edit/${version.id}`)
+                      this.props.importSnapshotFromFeedVersion(version)
                     }}
                   >
-                    <Glyphicon glyph='pencil' /><span className='hidden-xs'> {messages.edit}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
+                    <Glyphicon glyph='camera' /><span className='hidden-xs'> {messages.edit}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
                   </Button>
                 : null
               }
               <Button bsStyle='danger'
                 disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
                 onClick={(evt) => {
-                  evt.preventDefault()
                   this.props.deleteVersionClicked(version)
                 }}
               >
