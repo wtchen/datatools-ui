@@ -2,6 +2,7 @@ application:
   data:
     mapdb: /path/to/mapdb
     gtfs: /path/to/gtfs
+    editor_mapdb: /path/to/editor
     regions: /path/to/regions/geojson
     use_s3_storage: false
     gtfs_s3_bucket: bucket-name
