@@ -45,7 +45,7 @@ Create your first Auth0 user through Auth0 web console. You'll need to supply th
 
 ```json
 {
-  "datatools": {
+  "datatools": [{
     "permissions": [
       {
         "type": "administer-application"
@@ -54,7 +54,7 @@ Create your first Auth0 user through Auth0 web console. You'll need to supply th
     "subscriptions": [],
     "projects": [],
     "client_id": your-auth0-client-id
-  }
+  }]
 }
 ```
 
