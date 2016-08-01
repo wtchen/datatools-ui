@@ -1,6 +1,7 @@
 import React from 'react'
-import { Row, Col, Input, Panel, SplitButton, MenuItem, Label, ButtonGroup, Button } from 'react-bootstrap'
+import { Row, Col, Checkbox, Panel, SplitButton, MenuItem, Label, ButtonGroup, Button } from 'react-bootstrap'
 import update from 'react-addons-update'
+import ReactDOM from 'react-dom'
 
 import allPermissions from './permissions'
 
@@ -86,25 +87,26 @@ export default class UserSettings extends React.Component {
     })
   }
 
-  appAdminClicked () {
+  appAdminClicked (value) {
+    console.log(ReactDOM.findDOMNode(this.refs.appAdminCheckbox))
     this.setState({
-      appAdminChecked: this.refs['appAdminCheckbox'].getChecked()
+      appAdminChecked: value
     })
   }
 
-  projectAccessUpdated(projectId, newAccess) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } };
-    this.setState(update(this.state, stateUpdate));
+  projectAccessUpdated (projectId, newAccess) {
+    var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } }
+    this.setState(update(this.state, stateUpdate))
   }
 
-  projectFeedsUpdated(projectId, newFeeds) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { defaultFeeds : newFeeds } } } };
-    this.setState(update(this.state, stateUpdate));
+  projectFeedsUpdated (projectId, newFeeds) {
+    var stateUpdate = { projectSettings: { [projectId]: { $merge : { defaultFeeds : newFeeds } } } }
+    this.setState(update(this.state, stateUpdate))
   }
 
-  projectPermissionsUpdated(projectId, newPermissions) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { permissions : newPermissions } } } };
-    this.setState(update(this.state, stateUpdate));
+  projectPermissionsUpdated (projectId, newPermissions) {
+    var stateUpdate = { projectSettings: { [projectId]: { $merge : { permissions : newPermissions } } } }
+    this.setState(update(this.state, stateUpdate))
   }
 
   render () {
@@ -118,20 +120,21 @@ export default class UserSettings extends React.Component {
         case 'custom': return <Label bsStyle='success'>{messages.project.custom}</Label>
       }
     }
-    
+
     let projectPanel = (
       <Panel header={
         <h3>
           Project Settings for&nbsp;
           <SplitButton
             title={currentProject.name}
+            id={currentProject.name}
             onSelect={(key) => this.projectSelected(key)}
-            pullRight
+
           >
             {this.props.projects.map((project, i) => {
               let settings = this.state.projectSettings[project.id]
               if (typeof settings !== 'undefined')
-                return <MenuItem eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
+                return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
             })}
           </SplitButton>
         </h3>
@@ -142,6 +145,7 @@ export default class UserSettings extends React.Component {
         let settings = this.state.projectSettings[project.id]
         return <ProjectSettings
           project={project}
+          key={project.id}
           settings={settings}
           fetchProjectFeeds={this.props.fetchProjectFeeds}
           visible={(i === this.state.currentProjectIndex)}
@@ -156,13 +160,13 @@ export default class UserSettings extends React.Component {
       <Row>
         <Col xs={4}>
           <Panel header={<h3>{messages.application}</h3>}>
-            <Input
-              type='checkbox'
-              label={messages.admin.title}
-              defaultChecked={this.state.appAdminChecked}
-              onClick={this.appAdminClicked.bind(this)}
+            <Checkbox
+              checked={this.state.appAdminChecked}
+              onChange={(evt) => this.appAdminClicked(evt.target.checked)}
               ref='appAdminCheckbox'
-            />
+            >
+              {messages.admin.title}
+            </Checkbox>
           </Panel>
         </Col>
         <Col xs={8}>
@@ -197,12 +201,14 @@ class ProjectSettings extends React.Component {
     console.log(access)
     this.props.projectAccessUpdated(this.props.project.id, access)
   }
-
+  refCallback (ref) {
+    this.inputRef = ref
+  }
   feedsUpdated () {
     let selectedFeeds = []
     this.props.project.feedSources.forEach((feed) => {
-      var checkbox = this.refs['feed-' + feed.id]
-      if(checkbox.getChecked()) selectedFeeds.push(feed.id)
+      var checkbox = this['feed-' + feed.id]
+      if(checkbox.checked) selectedFeeds.push(feed.id)
     })
     this.props.projectFeedsUpdated(this.props.project.id, selectedFeeds)
   }
@@ -210,8 +216,8 @@ class ProjectSettings extends React.Component {
   permissionsUpdated () {
     let selectedPermissions = []
     allPermissions.forEach((permission) => {
-      var checkbox = this.refs['permission-' + permission.type]
-      if(checkbox.getChecked()) selectedPermissions.push(permission.type)
+      var checkbox = this['permission-' + permission.type]
+      if(checkbox.checked) selectedPermissions.push(permission.type)
     })
     this.props.projectPermissionsUpdated(this.props.project.id, selectedPermissions)
   }
@@ -234,7 +240,7 @@ class ProjectSettings extends React.Component {
         <Col xs={12}>
           <Row>
             <Col xs={12}>
-              <ButtonGroup pullRight>
+              <ButtonGroup>
                 <Button
                   active={this.props.settings.access === 'none'}
                   onClick={this.setAccess.bind(this, 'none')}
@@ -259,15 +265,16 @@ class ProjectSettings extends React.Component {
                 {feedSources
                   ? feedSources.map((feed, i) => {
                     let name = (feed.name === '') ? '(unnamed feed)' : feed.name
-                    let ref = 'feed-' + feed.id
+                    let refName = 'feed-' + feed.id
                     let checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
-                    return <Input
-                      ref={ref}
-                      type='checkbox'
-                      defaultChecked={checked}
-                      label={name}
-                      onClick={this.feedsUpdated.bind(this)}
-                    />
+                    return <Checkbox
+                      inputRef={ref => { this[refName] = ref }}
+                      key={feed.id}
+                      checked={checked}
+                      onChange={() => this.feedsUpdated()}
+                    >
+                      {name}
+                    </Checkbox>
                   })
                   : messages.project.cannotFetchFeeds
               }
@@ -275,15 +282,16 @@ class ProjectSettings extends React.Component {
               <Col xs={6}>
                 <h4>{messages.project.permissions}</h4>
                 {allPermissions.map((permission, i) => {
-                  let ref = 'permission-' + permission.type
+                  let refName = 'permission-' + permission.type
                   let checked = this.props.settings.permissions.indexOf(permission.type) !== -1
-                  return <Input
-                    ref={ref}
-                    type='checkbox'
-                    defaultChecked={checked}
-                    label={permission.name}
-                    onClick={this.permissionsUpdated.bind(this)}
-                  />
+                  return <Checkbox
+                    inputRef={ref => { this[refName] = ref }}
+                    key={permission.type}
+                    checked={checked}
+                    onChange={() => this.permissionsUpdated()}
+                  >
+                    {permission.name}
+                  </Checkbox>
                 })}
               </Col>
             </Row>

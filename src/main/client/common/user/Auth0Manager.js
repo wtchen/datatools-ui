@@ -54,7 +54,7 @@ export default class Auth0Manager {
     }).then((res) => {
       if(res.status >= 400) { // check for bad response, generally an expired token
         // TODO: better handling of expired tokens
-        this.logout()
+        return this.loginViaLock({closable: false})
       }
       return res.json()
     }).then((profile) => {

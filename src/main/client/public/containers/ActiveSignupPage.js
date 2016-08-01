@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import SignupPage from '../components/SignupPage'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
@@ -22,15 +23,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     loginHandler: () => { dispatch(login()) },
     signupHandler: (credentials) => {
-      console.log('creating user', credentials)
       dispatch(createPublicUser(credentials))
       .then((user) => {
-        console.log('logging in', user)
         dispatch(login(credentials, user))
-      }).then((something) => {
-        console.log(something)
-        // TODO: fix this
-        //dispatch(routerPush())
+        .then(() => {
+          browserHistory.push('/project')
+        })
       })
     }
   }

@@ -20,7 +20,6 @@ public class AgencyController {
         String feedId = req.queryParams("feedId");
         Object json = null;
         try {
-//            GlobalTx tx = VersionedDataStore.getGlobalTx();
             final FeedTx tx = VersionedDataStore.getFeedTx(feedId);
             if(id != null) {
                 if (!tx.agencies.containsKey(id)) {
@@ -51,14 +50,7 @@ public class AgencyController {
         try {
             agency = Base.mapper.readValue(req.body(), Agency.class);
             
-            // check if gtfsAgencyId is specified, if not create from DB id
-            if(agency.gtfsAgencyId == null) {
-                agency.gtfsAgencyId = "AGENCY_" + agency.id;
-            }
-            
-//            GlobalTx tx = VersionedDataStore.getGlobalTx();
             final FeedTx tx = VersionedDataStore.getFeedTx(feedId);
-            // if agency id already exists
             if (tx.agencies.containsKey(agency.id)) {
                 tx.rollback();
                 halt(400, "Agency " + agency.id + " already exists");
@@ -78,22 +70,18 @@ public class AgencyController {
 
     public static Object updateAgency(Request req, Response res) {
         Agency agency;
+        String id = req.params("id");
         String feedId = req.queryParams("feedId");
 
         try {
             agency = Base.mapper.readValue(req.body(), Agency.class);
             
-//            GlobalTx tx = VersionedDataStore.getGlobalTx();
             final FeedTx tx = VersionedDataStore.getFeedTx(feedId);
             if(!tx.agencies.containsKey(agency.id)) {
                 tx.rollback();
                 halt(400);
             }
             
-            // check if gtfsAgencyId is specified, if not create from DB id
-            if(agency.gtfsAgencyId == null)
-                agency.gtfsAgencyId = "AGENCY_" + agency.id.toString();
-
             tx.agencies.put(agency.id, agency);
             tx.commit();
 
@@ -106,18 +94,19 @@ public class AgencyController {
     }
 
     public static Object deleteAgency(Request req, Response res) {
-        GlobalTx tx = VersionedDataStore.getGlobalTx();
+//        GlobalTx tx = VersionedDataStore.getGlobalTx();
         String id = req.params("id");
         String feedId = req.queryParams("feedId");
         if(id == null) {
             halt(400);
         }
-        
-        if (!tx.feeds.containsKey(id)) {
-            halt(404);
+        final FeedTx tx = VersionedDataStore.getFeedTx(feedId);
+        if(!tx.agencies.containsKey(id)) {
+            tx.rollback();
+            halt(400);
         }
 
-        tx.feeds.remove(id);
+        tx.agencies.remove(id);
         tx.commit();
         
         return true; // ok();

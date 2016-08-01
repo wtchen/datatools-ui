@@ -1,251 +1,332 @@
 import JSZip from 'jszip'
+import faker from 'faker'
 
-import { secureFetch } from '../../common/util/util'
+import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
+import { componentList, subComponentList, subSubComponentList } from '../util/gtfs'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
+import { browserHistory } from 'react-router'
+import {
+  fetchFeedInfo,
+  saveFeedInfo,
+  deleteFeedInfo,
+  updateFeedInfo,
+  createFeedInfo,
+} from '../actions/feedInfo'
+import {
+  fetchAgencies,
+  fetchAgency,
+  saveAgency,
+  deleteAgency,
+  updateAgency,
+} from '../actions/agency'
+import {
+  fetchStops,
+  fetchStop,
+  saveStop,
+  deleteStop,
+  updateStop,
+  fetchStopsForTripPattern,
+} from '../actions/stop'
+import {
+  fetchRoutes,
+  fetchRoute,
+  saveRoute,
+  deleteRoute,
+  updateRoute,
+} from '../actions/route'
+import {
+  fetchFares,
+  fetchFare,
+  saveFare,
+  deleteFare,
+  updateFare,
+} from '../actions/fare'
+import {
+  fetchTripPatternsForRoute,
+  fetchTripPattern,
+  saveTripPattern,
+  deleteTripPattern,
+  updateTripPattern,
+} from '../actions/tripPattern'
+import {
+  fetchTripsForCalendar,
+  fetchTrip,
+  saveTrip,
+  deleteTrip,
+  updateTrip,
+} from '../actions/trip'
+import {
+  fetchCalendars,
+  fetchCalendar,
+  saveCalendar,
+  deleteCalendar,
+  updateCalendar,
+  fetchScheduleExceptions,
+  fetchScheduleException,
+  saveScheduleException,
+  deleteScheduleException,
+  updateScheduleException,
+} from '../actions/calendar'
 
-
-//// FEED_INFO
-
-export function requestingFeedInfo (feedId) {
+export function toggleEditSetting (setting) {
   return {
-    type: 'REQUESTING_FEED_INFO',
-    feedId
+    type: 'TOGGLE_EDIT_SETTING',
+    setting
   }
 }
 
-export function receiveFeedInfo (feedInfo) {
+export function updateMapSetting (setting, value) {
   return {
-    type: 'RECEIVE_FEED_INFO',
-    feedInfo
+    type: 'UPDATE_MAP_SETTING',
+    setting,
+    value
   }
 }
 
-export function savingFeedInfo (feedId) {
+//// SINGLE ENTITY ACTIONS
+
+export function settingActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
   return {
-    type: 'SAVING_FEED_INFO',
-    feedId
+    type: 'SETTING_ACTIVE_GTFS_ENTITY',
+    feedSourceId,
+    component,
+    entityId,
+    subComponent,
+    subEntityId,
+    subSubComponent,
+    subSubEntityId
   }
 }
 
-export function fetchFeedInfo (feedId) {
+export function setActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
   return function (dispatch, getState) {
-    dispatch(requestingFeedInfo(feedId))
-    const url = `/api/manager/secure/feedinfo/${feedId}`
-    return secureFetch(url, getState())
-      .then(res => res.json())
-      .then(feedInfo => {
-        dispatch(receiveFeedInfo(feedInfo))
-      })
-  }
-}
-
-////// Create new feed info
-
-// export function saveFeedInfo (props) {
-//   return function (dispatch, getState) {
-//     dispatch(savingFeedInfo())
-//     const url = '/api/manager/secure/feedsource'
-//     return secureFetch(url, getState(), 'post', props)
-//       .then((res) => {
-//         return dispatch(fetchProjectWithFeeds(props.projectId))
-//       })
-//   }
-// }
-
-export function updateFeedInfo (feedInfo, changes) {
-  return function (dispatch, getState) {
-    dispatch(savingFeedInfo(feedInfo.id))
-    const url = `/api/manager/secure/feedinfo/${feedInfo.id}`
-    return secureFetch(url, getState(), 'put', changes)
-      .then(res => res.json())
-      .then(feedInfo => {
-        dispatch(receiveFeedInfo(feedInfo))
-      })
-  }
-}
-
-//// AGENCY
-
-export function saveAgency (agency, feedId) {
-  return function (dispatch, getState) {
-    const data = {
-      // defaultLat:"33.755",
-      // defaultLon:"-84.39",
-      gtfsAgencyId: agency.agency_id,
-      id: agency.id !== -1 ? agency.id : "test_UUID", // generate UUID client side? http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-      lang: agency.agency_lang,
-      name: agency.agency_name,
-      phone: agency.agency_phone,
-      // routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
-      sourceId: "277a268e-5b38-4aff-949c-b70517fb8224",
-      timezone: agency.agency_timezone,
-      url: agency.agency_url,
-      // fare_url: agency.agency_fare_url,
+    let previousFeedSourceId = getState().editor.feedSourceId
+    if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
+      dispatch(clearGtfsContent())
     }
-    const method = agency.id !== -1 ? 'put' : 'post'
-    const url = agency.id !== -1
-      ? `/api/manager/secure/agency/${agency.id}?feedId=${feedId}`
-      : `/api/manager/secure/agency?feedId=${feedId}`
-    return secureFetch(url, getState(), method, data)
-      .then(res => res.json())
-      .then(validationIssues => {
-        //console.log('got GTFS+ val result', validationResult)
-        dispatch(receiveGtfsValidation(validationIssues))
-      })
-  }
-}
-
-export function requestingAgencies (feedId) {
-  return {
-    type: 'REQUESTING_AGENCIES',
-    feedId
-  }
-}
-
-export function receiveAgencies (feedId, agencies) {
-  return {
-    type: 'RECEIVE_AGENCIES',
-    feedId,
-    agencies
-  }
-}
-
-export function fetchAgencies (feedId) {
-  return function (dispatch, getState) {
-    dispatch(requestingAgencies(feedId))
-    const url = `/api/manager/secure/agency?feedId=${feedId}`
-    return secureFetch(url, getState())
-      .then(res => res.json())
-      .then(agencies => {
-        dispatch(receiveAgency(feedId, agencies))
-      })
-  }
-}
-
-
-//// ROUTES
-
-export function saveRoute (route, feedId) {
-  return function (dispatch, getState) {
-    const data = {
-      gtfsRouteId: route.route_id,
-      agencyId: route.agency_id,
-      routeShortName: route.route_short_name,
-      routeLongName: route.route_long_name,
-      routeDesc: route.route_desc,
-      routeTypeId: route.route_type,
-      routeUrl: route.route_url,
-      routeColor: route.route_color,
-      routeTextColor: route.route_text_color,
-      gtfsAgencyId: route.route_id,
+    if (getState().editor.editGeometry) {
+      dispatch(toggleEditGeometry())
     }
-    const method = route.id !== -1 ? 'put' : 'post'
-    const url = route.id !== -1
-      ? `/api/manager/secure/route/${route.id}?feedId=${feedId}`
-      : `/api/manager/secure/route?feedId=${feedId}`
-    return secureFetch(url, getState(), method, data)
-      .then(res => res.json())
-      .then(validationIssues => {
-        //console.log('got GTFS+ val result', validationResult)
-        dispatch(receiveGtfsValidation(validationIssues))
-      })
-  }
-}
-
-export function requestingRoutes (feedId) {
-  return {
-    type: 'REQUESTING_ROUTES',
-    feedId
-  }
-}
-
-export function receiveRoutes (feedId, routes) {
-  return {
-    type: 'RECEIVE_ROUTES',
-    feedId,
-    routes
-  }
-}
-
-export function fetchRoutes (feedId) {
-  return function (dispatch, getState) {
-    dispatch(requestingRoutes(feedId))
-    const url = `/api/manager/secure/route?feedId=${feedId}`
-    return secureFetch(url, getState())
-      .then(res => res.json())
-      .then(routes => {
-        dispatch(receiveRoutes(feedId, routes))
-      })
-  }
-}
-
-
-
-//// STOPS
-
-export function saveStop (stop, feedId) {
-  return function (dispatch, getState) {
-    const data = {
-      gtfsStopId: stop.stop_id,
-      stopCode: stop.stop_code,
-      stopName: stop.stop_name,
-      stopDesc: stop.stop_desc,
-      lat: stop.stop_lat,
-      lon: stop.stop_lon,
-      zoneId: stop.zone_id,
-      stopUrl: stop.stop_url,
-      locationType: stop.location_type,
-      parentStation: stop.parent_station,
-      stopTimezone: stop.stop_timezone,
-      wheelchairBoarding: stop.wheelchair_boarding,
-      bikeParking: stop.bikeParking,
-      carParking: stop.carParking,
-      pickupType: stop.pickupType,
-      dropOffType: stop.dropOffType,
-
+    let url = entityId && subEntityId && subSubComponent && subSubEntityId
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}/${subSubEntityId}`
+      : entityId && subEntityId && subSubComponent
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}`
+      : entityId && subEntityId
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}`
+      : entityId && subComponent
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}`
+      : entityId
+      ? `/feed/${feedSourceId}/edit/${component}/${entityId}`
+      : component
+      ? `/feed/${feedSourceId}/edit/${component}`
+      : `/feed/${feedSourceId}/edit/`
+    if (component && componentList.indexOf(component) === -1) {
+      url = `/feed/${feedSourceId}/edit/`
     }
-    const method = stop.id !== -1 ? 'put' : 'post'
-    const url = stop.id !== -1
-      ? `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
-      : `/api/manager/secure/stop?feedId=${feedId}`
-    return secureFetch(url, getState(), method, data)
-      .then(res => res.json())
-      .then(stop => {
-        //console.log('got GTFS+ val result', validationResult)
-        dispatch(receiveGtfsValidation(stop))
-      })
+    else if (subComponent && subComponentList.indexOf(subComponent) === -1) {
+      url = `/feed/${feedSourceId}/edit/${component}/${entityId}/`
+    }
+    else if (subSubComponent && subSubComponentList.indexOf(subSubComponent) === -1) {
+      url = `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/`
+    }
+    if (entityId === 'new' && getState().editor.tableData[component].findIndex(e => e.id === 'new') === -1) {
+      dispatch(createGtfsEntity(feedSourceId, component))
+    }
+    if (!getState().routing.locationBeforeTransitions || !getState().routing.locationBeforeTransitions.pathname || getState().routing.locationBeforeTransitions.pathname !== url) {
+      browserHistory.push(url)
+    }
+    dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
   }
 }
 
-export function requestingStops (feedId) {
+export function savingActiveGtfsEntity (component, entity) {
   return {
-    type: 'REQUESTING_STOPS',
-    feedId
+    type: 'SAVING_ACTIVE_GTFS_ENTITY',
+    component,
+    entity
   }
 }
 
-export function receiveStops (feedId, stops) {
-  return {
-    type: 'RECEIVE_STOPS',
-    feedId,
-    stops
-  }
-}
-
-export function fetchStops (feedId) {
+export function saveActiveGtfsEntity (component, optionalEntity) {
   return function (dispatch, getState) {
-    dispatch(requestingStops(feedId))
-    const url = `/api/manager/secure/stop?feedId=${feedId}`
-    return secureFetch(url, getState())
+    let entity
+    switch (component) {
+      case 'stop':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveStop(entity.feedId, entity))
+      case 'route':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveRoute(entity.feedId, entity))
+      case 'agency':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveAgency(entity.feedId, entity))
+      case 'trippattern':
+        let route = getState().editor.active.entity
+        let patternId = getState().editor.active.subEntityId
+        entity = optionalEntity || route.tripPatterns.find(p => p.id === patternId)
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveTripPattern(entity.feedId, entity))
+      case 'calendar':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveCalendar(entity.feedId, entity))
+      case 'scheduleexception':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveScheduleException(entity.feedId, entity))
+      case 'fare':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveFare(entity.feedId, entity))
+      case 'feedinfo':
+        entity = optionalEntity || getState().editor.active.entity
+        dispatch(savingActiveGtfsEntity(component, entity))
+        return dispatch(saveFeedInfo(entity.id, entity))
+      default:
+        console.log('no action specified!')
+        return
+    }
+  }
+}
+export function deletingEntity (feedId, component, entityId) {
+  return {
+    type: 'DELETING_ENTITY',
+    feedId,
+    component,
+    entityId
+  }
+}
+
+export function deleteGtfsEntity (feedId, component, entityId, routeId) {
+  return function (dispatch, getState) {
+    dispatch(deletingEntity(feedId, component, entityId))
+    if (entityId === 'new') {
+      return dispatch(getGtfsTable(component, feedId))
+    }
+    const url = `/api/manager/secure/${component}/${entityId}?feedId=${feedId}`
+    return secureFetch(url, getState(), 'delete')
       .then(res => res.json())
-      .then(stops => {
-        dispatch(receiveStops(feedId, stops))
+      .then(entity => {
+        if (component === 'trippattern' && routeId) {
+          dispatch(fetchTripPatternsForRoute(feedId, routeId))
+        }
+        else {
+          dispatch(getGtfsTable(component, feedId))
+        }
       })
   }
 }
 
+export function updateActiveGtfsEntity (entity, component, props) {
+  return {
+    type: 'UPDATE_ACTIVE_GTFS_ENTITY',
+    entity,
+    component,
+    props
+  }
+}
 
+export function resetActiveGtfsEntity (entity, component) {
+  return {
+    type: 'RESET_ACTIVE_GTFS_ENTITY',
+    entity,
+    component
+  }
+}
 
+export function createGtfsEntity (feedSourceId, component, props) {
+  return {
+    type: 'CREATE_GTFS_ENTITY',
+    feedSourceId,
+    component,
+    props
+  }
+}
+
+export function cloneGtfsEntity (feedSourceId, component, entityId, save) {
+  return function (dispatch, getState) {
+    if (entityId === 'new') {
+      return null
+    }
+    let props = {...getState().editor.tableData[component].find(e => e.id === entityId)}
+    props.id = 'new'
+    switch (component) {
+      case 'trippattern':
+        props.name = props.name + ' copy'
+        break
+    }
+    dispatch(newGtfsEntity(feedSourceId, component, props, save))
+  }
+}
+
+export function newGtfsEntity (feedSourceId, component, props, save) {
+  return function (dispatch, getState) {
+    if (!props) {
+      const generateProps = (component) => {
+        let agency = getState().editor.tableData.agency ? getState().editor.tableData.agency[0] : null
+        let color = generateRandomColor()
+        switch (component) {
+          case 'route':
+            return {
+              route_id: generateUID(),
+              agency_id: agency ? agency.id : null,
+              route_short_name: generateRandomInt(1, 300),
+              route_long_name: faker.address.streetName(),
+              route_color: color,
+              route_text_color: idealTextColor(color),
+              route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.defaultRouteType !== null ? getState().editor.tableData.feedinfo.defaultRouteType : 3,
+            }
+          case 'stop':
+            let stopId = generateUID()
+            return {
+              stop_id: stopId,
+              stop_name: faker.address.streetName(),
+              stop_lat: 0,
+              stop_lon: 0,
+              // route_color: color,
+              // route_text_color: idealTextColor(color),
+              // route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.routeTypeId !== null ? getState().editor.tableData.feedinfo.routeTypeId : 3,
+            }
+          case 'scheduleexception':
+            return {
+              dates: []
+            }
+          case 'trippattern':
+            return {
+              // patternStops: [],
+            }
+        }
+      }
+      props = generateProps(component)
+    }
+    if (save) {
+      dispatch(saveActiveGtfsEntity(component, props))
+      // .then((entity) => {
+      //   if (props && 'routeId' in props) {
+      //     dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, entity.id))
+      //   }
+      //   else {
+      //     console.log('setting after save')
+      //     dispatch(setActiveGtfsEntity(feedSourceId, component, entity.id))
+      //   }
+      // })
+    } else {
+      dispatch(createGtfsEntity(feedSourceId, component, props))
+      if (props && 'routeId' in props) {
+        // console.log('setting after create')
+        dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, 'new'))
+      }
+      else {
+        console.log('setting after create')
+        dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
+      }
+    }
+
+  }
+}
 
 /////// GENERIC TABLE ACTIONS + OLD GTFS+ ACTIONS PORTED OVER
 
@@ -264,6 +345,16 @@ export function getGtfsTable (tableId, feedId) {
         return dispatch(fetchStops(feedId))
       case 'route':
         return dispatch(fetchRoutes(feedId))
+      case 'agency':
+        return dispatch(fetchAgencies(feedId))
+      case 'calendar':
+        return dispatch(fetchCalendars(feedId))
+      case 'fare':
+        return dispatch(fetchFares(feedId))
+      case 'scheduleexception':
+        return dispatch(fetchScheduleExceptions(feedId))
+      case 'feedinfo':
+        return dispatch(fetchFeedInfo(feedId))
       default:
         const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
         return secureFetch(url, getState())
@@ -271,41 +362,42 @@ export function getGtfsTable (tableId, feedId) {
           .then(entities => {
             console.log('got editor result', entities)
             dispatch(receiveGtfsTable(tableId, entities))
+            return entities
           })
     }
   }
 }
 
-export function saveGtfsRow (tableId, rowIndex, feedId) {
-  return function (dispatch, getState) {
-    // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
-    // for(const field of table.fields) {
-    //   rowData[field.name] = null
-    // }
-    const data = getState().editor.tableData[tableId][rowIndex]
-    console.log(data)
-    // const data = {
-    //   defaultLat:"33.755",
-    //   defaultLon:"-84.39",
-    //   gtfsAgencyId:"CCT GTFS",
-    //   id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
-    //   lang:"en",
-    //   name:"CCT GTFS",
-    //   phone:null,
-    //   routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
-    //   sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
-    //   timezone:"America/New_York",
-    //   url:"http://test.com",
-    // }
-    const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
-    return secureFetch(url, getState(), 'post', data)
-      .then(res => res.json())
-      .then(entity => {
-        console.log('got editor result', entity)
-        // dispatch(receiveGtfsValidation(validationIssues))
-      })
-  }
-}
+// export function saveGtfsRow (tableId, rowIndex, feedId) {
+//   return function (dispatch, getState) {
+//     // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
+//     // for(const field of table.fields) {
+//     //   rowData[field.name] = null
+//     // }
+//     const data = getState().editor.tableData[tableId][rowIndex]
+//     console.log(data)
+//     // const data = {
+//     //   defaultLat:"33.755",
+//     //   defaultLon:"-84.39",
+//     //   gtfsAgencyId:"CCT GTFS",
+//     //   id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
+//     //   lang:"en",
+//     //   name:"CCT GTFS",
+//     //   phone:null,
+//     //   routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
+//     //   sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
+//     //   timezone:"America/New_York",
+//     //   url:"http://test.com",
+//     // }
+//     const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
+//     return secureFetch(url, getState(), 'post', data)
+//       .then(res => res.json())
+//       .then(entity => {
+//         console.log('got editor result', entity)
+//         // dispatch(receiveGtfsValidation(validationIssues))
+//       })
+//   }
+// }
 
 // EDIT ACTIVE GTFS+ ACTIONS
 

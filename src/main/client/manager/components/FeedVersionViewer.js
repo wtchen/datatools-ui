@@ -1,20 +1,28 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table, Button, Glyphicon } from 'react-bootstrap'
+import { Row, Col, Table } from 'react-bootstrap'
 import moment from 'moment'
-import { browserHistory } from 'react-router'
 
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
-import NotesViewer from './NotesViewer'
+import NotesViewerPanel from './NotesViewerPanel'
 import ActiveGtfsPlusVersionSummary from '../../gtfsplus/containers/ActiveGtfsPlusVersionSummary'
-import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { isModuleEnabled } from '../../common/util/config'
 
-const dateFormat = 'MMM. DD, YYYY', timeFormat = 'h:MMa'
+const dateFormat = 'MMM. DD, YYYY'
+const timeFormat = 'h:MMa'
 
 export default class FeedVersionViewer extends Component {
 
+  static propTypes = {
+    version: PropTypes.object,
+
+    newNotePosted: PropTypes.func,
+    notesRequested: PropTypes.func,
+    validationResultRequested: PropTypes.func
+  }
+
   render () {
     const version = this.props.version
-    const messages = DT_CONFIG.messages.active.FeedVersionViewer
+    const messages = window.DT_CONFIG.messages.active.FeedVersionViewer
 
     return (
       <div>
@@ -39,7 +47,7 @@ export default class FeedVersionViewer extends Component {
                 </tr>
                 <tr>
                   <td className='col-md-4'><b>{messages.fileSize}</b></td>
-                  <td>{version.fileSize ? Math.round(version.fileSize/10000) / 100 + ' MB' : 'N/A'}</td>
+                  <td>{version.fileSize ? Math.round(version.fileSize / 10000) / 100 + ' MB' : 'N/A'}</td>
                 </tr>
               </tbody>
             </Table>
@@ -81,7 +89,7 @@ export default class FeedVersionViewer extends Component {
           : null
         }
 
-        <NotesViewer
+        <NotesViewerPanel
           type='feed-version'
           version={this.props.version}
           notes={version.notes}

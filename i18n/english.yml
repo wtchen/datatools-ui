@@ -48,6 +48,8 @@ DeploymentsPanel:
     feedCount: Number of feeds
 ProjectViewer:
   mergeFeeds: Merge Feeds
+  settings: Project Settings
+  deployments: Deployments
   feeds:
     title: Feed Sources
     search: Search by feed source name

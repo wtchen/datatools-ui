@@ -1,31 +1,31 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import FeedSourceViewer from '../components/FeedSourceViewer'
 
+import { createFeedInfo } from '../../editor/actions/feedInfo'
+
 import {
-  fetchFeedSourceAndProject,
-  updateFeedSource,
-  runFetchFeed,
-  fetchFeedVersions,
-  uploadFeed,
-  fetchPublicFeedSource,
-  receiveFeedVersions,
-  fetchPublicFeedVersions,
-  updateExternalFeedResource,
   deleteFeedVersion,
-  fetchValidationResult,
   downloadFeedViaToken,
+  fetchFeedSourceAndProject,
+  fetchFeedSource,
+  fetchFeedVersions,
   fetchNotesForFeedSource,
-  postNoteForFeedSource,
   fetchNotesForFeedVersion,
-  postNoteForFeedVersion
+  fetchValidationResult,
+  postNoteForFeedSource,
+  postNoteForFeedVersion,
+  renameFeedVersion,
+  runFetchFeed,
+  updateExternalFeedResource,
+  uploadFeed,
+  updateFeedSource
 } from '../actions/feeds'
 
 import { updateTargetForSubscription } from '../../manager/actions/user'
 import { createDeploymentFromFeedSource } from '../../manager/actions/deployments'
-
+import { importSnapshotFromFeedVersion } from '../../editor/actions/snapshots'
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
@@ -43,8 +43,11 @@ const mapStateToProps = (state, ownProps) => {
   let feedSource
   if (project) {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
+  } else if (!project && !state.projects.isFetching) {
+    feedSource = null
   }
   let feedVersionIndex
+  let isFetching = state.projects.isFetching
   let routeVersionIndex = +ownProps.routeParams.feedVersionIndex
   let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
   if (feedSource && typeof feedSource.feedVersions !== 'undefined') {
@@ -53,8 +56,7 @@ const mapStateToProps = (state, ownProps) => {
       // cannot use browserHistory.push in middle of state transition
       // browserHistory.push(`/feed/${feedSourceId}`)
       window.location.href = `/feed/${feedSourceId}`
-    }
-    else {
+    } else {
       feedVersionIndex = hasVersionIndex
         ? routeVersionIndex
         : feedSource.feedVersions.length
@@ -62,15 +64,54 @@ const mapStateToProps = (state, ownProps) => {
   }
   return {
     feedSource,
+    feedSourceId,
     feedVersionIndex,
     project,
-    user
+    user,
+    isFetching
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId
   return {
+    createDeployment: (feedSource) => {
+      dispatch(createDeploymentFromFeedSource(feedSource))
+      .then((deployment) => {
+        browserHistory.push(`/deployment/${deployment.id}`)
+      })
+    },
+    importSnapshotFromFeedVersion : (feedVersion) => {
+      dispatch(importSnapshotFromFeedVersion(feedVersion))
+    },
+    deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
+      dispatch(deleteFeedVersion(feedSource, feedVersion))
+    },
+    downloadFeedClicked: (feedVersion) => { dispatch(downloadFeedViaToken(feedVersion)) },
+    externalPropertyChanged: (feedSource, resourceType, propName, newValue) => {
+      dispatch(updateExternalFeedResource(feedSource, resourceType, { [propName]: newValue }))
+    },
+    feedSourcePropertyChanged: (feedSource, propName, newValue) => {
+      dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
+    },
+    feedVersionRenamed: (feedSource, feedVersion, name) => {
+      dispatch(renameFeedVersion(feedSource, feedVersion, name))
+    },
+    gtfsPlusDataRequested: (feedVersion) => {
+      dispatch(downloadGtfsPlusFeed(feedVersion.id))
+    },
+    newNotePostedForFeedSource: (feedSource, note) => {
+      dispatch(postNoteForFeedSource(feedSource, note))
+    },
+    newNotePostedForVersion: (version, note) => {
+      dispatch(postNoteForFeedVersion(version, note))
+    },
+    notesRequestedForFeedSource: (feedSource) => {
+      dispatch(fetchNotesForFeedSource(feedSource))
+    },
+    notesRequestedForVersion: (feedVersion) => {
+      dispatch(fetchNotesForFeedVersion(feedVersion))
+    },
     onComponentMount: (initialProps) => {
       let unsecured = true
       if (initialProps.user.profile !== null) {
@@ -79,55 +120,30 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.project) {
         dispatch(fetchFeedSourceAndProject(feedSourceId, unsecured))
         .then((feedSource) => {
+          // go back to projects list if no feed source found
+          if (!feedSource) {
+            // browserHistory.push('/project')
+            return null
+          }
           return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
-      }
-      else if(!initialProps.feedSource) {
+      } else if (!initialProps.feedSource) {
         dispatch(fetchFeedSource(feedSourceId, unsecured))
         .then((feedSource) => {
           return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
-      }
-      else if(!initialProps.feedSource.versions) {
+      } else if (!initialProps.feedSource.versions) {
         dispatch(fetchFeedVersions(initialProps.feedSource, unsecured))
       }
     },
-    feedSourcePropertyChanged: (feedSource, propName, newValue) => {
-      dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
-    },
-    externalPropertyChanged: (feedSource, resourceType, propName, newValue) => {
-      dispatch(updateExternalFeedResource(feedSource, resourceType, { [propName]: newValue } ))
-    },
     updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
-    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
-    downloadFeedClicked: (feedVersion) => { dispatch(downloadFeedViaToken(feedVersion)) },
-    deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
-      dispatch(deleteFeedVersion(feedSource, feedVersion))
-    },
+    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     validationResultRequested: (feedSource, feedVersion) => {
       dispatch(fetchValidationResult(feedSource, feedVersion))
     },
-    notesRequestedForFeedSource: (feedSource) => {
-      dispatch(fetchNotesForFeedSource(feedSource))
-    },
-    newNotePostedForFeedSource: (feedSource, note) => {
-      dispatch(postNoteForFeedSource(feedSource, note))
-    },
-    notesRequestedForVersion: (feedVersion) => {
-      dispatch(fetchNotesForFeedVersion(feedVersion))
-    },
-    newNotePostedForVersion: (version, note) => {
-      dispatch(postNoteForFeedVersion(version, note))
-    },
-    gtfsPlusDataRequested: () => {
-      dispatch(downloadGtfsPlusFeed(version.id))
-    },
-    createDeployment: (feedSource) => {
-      dispatch(createDeploymentFromFeedSource(feedSource))
-      .then((deployment) => {
-        browserHistory.push(`/deployment/${deployment.id}`)
-      })
+    createFeedInfo: (feedSourceId) => {
+      dispatch(createFeedInfo(feedSourceId))
     }
   }
 }

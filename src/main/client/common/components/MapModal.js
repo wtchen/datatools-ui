@@ -68,12 +68,12 @@ export default class MapModal extends React.Component {
   }
   initializeMap() {
     if(this.mapInitialized || this.props.initialized) return
-    const leafletMap = this.getMap().getLeafletElement()
+    const leafletMap = this.getMap().leafletElement
     leafletMap.invalidateSize()
     this.mapInitialized = true
   }
   ok () {
-    if(this.state.markerSelect) this.state.onConfirm(this.state.marker[0])
+    if(this.state.markerSelect) this.state.onConfirm(this.state.marker)
     if(this.state.rectangleSelect) this.state.onConfirm(this.state.rectangle)
     else this.state.onConfirm()
     this.close()
@@ -97,7 +97,7 @@ export default class MapModal extends React.Component {
     const clickHandler = (e) => {
       console.log(e.latlng)
       if (this.state.markerSelect) {
-        this.refs.map.getLeafletElement().panTo(e.latlng)
+        this.refs.map.leafletElement.panTo(e.latlng)
         this.setState({marker: e.latlng})
       }
     }
@@ -115,7 +115,7 @@ export default class MapModal extends React.Component {
             onClick={clickHandler}
           >
             <TileLayer
-              url='http://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+              url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
               attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
             />
             {this.state.rectangleSelect
@@ -123,9 +123,9 @@ export default class MapModal extends React.Component {
                   ref='drawnItems'
                 >
                   <EditControl
-                  onEdited={(e) => this._onEditPath(e)}
-                  onCreated={(e) => this._onCreate(e)}
-                  onDeleted={(e) => this._onDeleted(e)}
+                    onEdited={(e) => this._onEditPath(e)}
+                    onCreated={(e) => this._onCreate(e)}
+                    onDeleted={(e) => this._onDeleted(e)}
                     position='topright'
                     draw={this.state.draw
                       ? {

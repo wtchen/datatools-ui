@@ -1,5 +1,6 @@
 import React  from 'react'
-import { Button, Modal, Input, Glyphicon } from 'react-bootstrap'
+import { Button, Modal, FormControl, ControlLabel, FormGroup, Glyphicon } from 'react-bootstrap'
+import ReactDOM from 'react-dom'
 
 import UserSettings  from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
@@ -17,7 +18,7 @@ export default class CreateUser extends React.Component {
     this.setState({
       showModal: false
     })
-    this.props.createUser({email: this.refs.email.getValue(), password: this.refs.password.getValue(), permissions: this.refs.userSettings.getSettings()})
+    this.props.createUser({email: ReactDOM.findDOMNode(this.refs.email).value, password: ReactDOM.findDOMNode(this.refs.password).value, permissions: this.refs.userSettings.getSettings()})
   }
 
   cancel () {
@@ -52,8 +53,14 @@ export default class CreateUser extends React.Component {
             <Modal.Title>Create User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Input ref='email' type='email' label='Email Address' placeholder='Enter email' />
-            <Input ref='password' type='password' label='Password' />
+            <FormGroup controlId="formControlsEmail">
+              <ControlLabel>Email Address</ControlLabel>
+              <FormControl ref='email' type='email' placeholder='Enter email' />
+            </FormGroup>
+            <FormGroup controlId="formControlsPassword">
+              <ControlLabel>Password</ControlLabel>
+              <FormControl ref='password' type='password' />
+            </FormGroup>
             <UserSettings
               projects={this.props.projects}
               fetchProjectFeeds={this.props.fetchProjectFeeds}

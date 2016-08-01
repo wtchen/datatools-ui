@@ -25,19 +25,22 @@ export const userLoggedIn = (token, profile) => {
 export function checkExistingLogin() {
   return function (dispatch, getState) {
     dispatch(checkingExistingLogin())
-    console.log('checkExistingLogin');
     var login = getState().user.auth0.checkExistingLogin()
     if(login) {
       return login.then((userTokenAndProfile) => {
-        console.log(userTokenAndProfile)
-        dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
+        if (userTokenAndProfile) {
+          dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
+        }
+        else {
+          console.log('error checking token')
+        }
       })
     }
     else {
-      console.log('no login found');
+      console.log('no login found')
       dispatch(noExistingLogin())
       // return empty promise
-      return new Promise((resolve) => { resolve(null); })
+      return new Promise((resolve) => { resolve(null) })
     }
   }
 }
@@ -50,7 +53,7 @@ export function fetchUser (user) {
       .then(response => response.json())
       .then(user => {
         // console.log(user)
-        return JSON.parse(user)
+        return user
       })
   }
 }
@@ -156,9 +159,7 @@ export function createPublicUser (credentials) {
     return secureFetch(url, getState(), 'post', credentials)
       .then(response => response.json())
       .then(profile => {
-        // console.log(JSON.parse(profile))
-        return dispatch(createdPublicUser(JSON.parse(profile)))
-        // return JSON.parse(user)
+        return dispatch(createdPublicUser(profile))
       })
   }
 }
@@ -175,7 +176,7 @@ export function login (credentials, user, lockOptions) {
       // })
     }
     else {
-      credentials.client_id = getState().config.auth0ClientId
+      credentials.client_id = DT_CONFIG.auth0.client_id
       credentials.connection = 'Username-Password-Authentication'
       credentials.username = credentials.email
       credentials.grant_type = 'password'

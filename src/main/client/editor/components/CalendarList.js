@@ -18,6 +18,7 @@ export default class CalendarList extends Component {
     // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
     console.log('table view', this.props.tableView)
     console.log('entity: ', this.props.entity)
+    console.log('component: ', this.props.activeComponent)
     const feedSource = this.props.feedSource
     const sidePadding = '5px'
     const rowHeight = '37px'
@@ -51,7 +52,7 @@ export default class CalendarList extends Component {
       : this.props.activeComponent === 'stop'
       ? 'stop_name'
       : null
-    const activeEntity = this.props.entities ? this.props.entities.find(entity => entity[entId] === this.props.entity) : null
+    const activeEntity = this.props.entities ? this.props.entities.find(entity => entity.id === this.props.entity) : null
     const agencyList = (
       <div
         style={{height: '75%', overflowY: 'scroll',}}
@@ -61,21 +62,22 @@ export default class CalendarList extends Component {
       >
         <thead></thead>
         <tbody>
-        {this.props.entities ? this.props.entities.map(entity => {
+        {this.props.entities
+          ? this.props.entities.map(entity => {
           return (
             <tr
               href='#'
-              key={entity[entId]}
+              key={entity.id}
               onMouseDown={(e) => console.log(e)}
               style={rowStyle}
               onClick={() => {
-                if (this.props.entity && this.props.entity === entity[entId]) browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
-                else browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}/${entity[entId]}`)
+                if (this.props.entity && this.props.entity === entity.id) browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
+                else browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}/${entity.id}`)
               }}
             >
               <td
-                /*className={activeEntity && entity[entId] === activeEntity[entId] ? 'success' : ''}*/
-                style={activeEntity && entity[entId] === activeEntity[entId] ? {backgroundColor: activeColor} : {}}
+                /*className={activeEntity && entity.id === activeEntity.id ? 'success' : ''}*/
+                style={activeEntity && entity.id === activeEntity.id ? {backgroundColor: activeColor} : {}}
               >
               <small>{this.props.activeComponent !== 'route'
                 ? entity[entName]
@@ -91,7 +93,7 @@ export default class CalendarList extends Component {
             </tr>
           )
         })
-        : <Icon spin name='spinner' />
+        : <tr><td><Icon spin name='refresh' /></td></tr>
       }
         </tbody>
       </Table>
@@ -164,6 +166,20 @@ export default class CalendarList extends Component {
           }}
         />
     )
+    let tableViewButton = (
+      <Button
+        bsSize='xsmall'
+        onClick={() => {!this.props.tableView
+          ? browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}?table=true`)
+          : browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
+        }}
+      >
+        {!this.props.tableView
+          ? <span><Icon name='table'/> Switch to table view</span>
+          : <span><Icon name='list'/> Switch to list view</span>
+        }
+      </Button>
+    )
     return (
       <div
         style={panelStyle}
@@ -178,13 +194,6 @@ export default class CalendarList extends Component {
               <Button
                 bsSize='small'
                 disabled={!activeEntity}
-                bsStyle='success'
-              >
-                <Icon name='plus'/>
-              </Button>
-              <Button
-                bsSize='small'
-                disabled={!activeEntity}
               >
                 <Icon name='clone'/>
               </Button>
@@ -196,24 +205,35 @@ export default class CalendarList extends Component {
                 <Icon name='trash'/>
               </Button>
             </ButtonToolbar>
-            {this.props.activeComponent} editor
+            <Button
+              bsSize='small'
+            >
+              <Icon name='plus'/> New {this.props.activeComponent}
+            </Button>
           </h3>
-          <Button
-            bsSize='xsmall'
-            onClick={() => {!this.props.tableView
-              ? browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}?table=true`)
-              : browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
+          {/*tableViewButton*/}
+        </div>
+        <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified activeKey={this.props.activeComponent} onSelect={this.handleSelect}>
+          <NavItem
+            eventKey={'calendar'}
+            onClick={() => {
+              if (this.props.activeComponent !== 'calendar') {
+                browserHistory.push(`/feed/${this.props.feedSource.id}/edit/calendar`)
+              }
             }}
           >
-            {!this.props.tableView
-              ? <span><Icon name='table'/> Switch to table view</span>
-              : <span><Icon name='list'/> Switch to list view</span>
-            }
-          </Button>
-        </div>
-        <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified activeKey={1} onSelect={this.handleSelect}>
-          <NavItem eventKey={1} href='/home'>Calendars</NavItem>
-          <NavItem eventKey={2} title='Item'>Exception</NavItem>
+            Calendars
+          </NavItem>
+          <NavItem
+            eventKey={'scheduleexception'}
+            onClick={() => {
+              if (this.props.activeComponent !== 'scheduleexception') {
+                browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
+              }
+            }}
+          >
+            Exception
+          </NavItem>
         </Nav>
         {!this.props.tableView
           ? agencyList

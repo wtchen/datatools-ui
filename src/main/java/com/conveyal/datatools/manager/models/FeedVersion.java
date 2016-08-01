@@ -9,15 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,9 +39,9 @@ import com.conveyal.r5.point_to_point.builder.TNBuilderConfig;
 import com.conveyal.r5.transit.TransportNetwork;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.geotools.data.shapefile.index.Data;
 import org.mapdb.Fun.Function2;
 import org.mapdb.Fun.Tuple2;
 
@@ -152,12 +151,25 @@ public class FeedVersion extends Model implements Serializable {
     public String hash;
 
     @JsonIgnore
-    public File getFeed() {
+    public File getGtfsFile() {
         return feedStore.getFeed(id);
     }
 
-    public File newFeed(InputStream inputStream) {
+    public File newGtfsFile(InputStream inputStream) {
         return feedStore.newFeed(id, inputStream, getFeedSource());
+    }
+
+    @JsonIgnore
+    public GTFSFeed getGtfsFeed() {
+        try {
+            if(!DataManager.gtfsCache.containsId(this.id)) {
+                DataManager.gtfsCache.put(id, getGtfsFile());
+            }
+            return DataManager.gtfsCache.get(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /** The results of validating this feed */
@@ -173,11 +185,24 @@ public class FeedVersion extends Model implements Serializable {
     }
 
 
-    /** When this feed was uploaded to or fetched by GTFS Data Manager */
+    /** When this version was uploaded/fetched */
     public Date updated;
 
     /** The version of the feed, starting with 0 for the first and so on */
     public int version;
+
+    /** A name for this version. Defaults to creation date if not specified by user */
+    public String name;
+
+    public String getName() {
+        return name != null ? name : (getFormattedTimestamp() + " Version");
+    }
+
+    @JsonIgnore
+    public String getFormattedTimestamp() {
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy H:mm");
+        return format.format(this.updated);
+    }
 
     public static FeedVersion get(String id) {
         // TODO Auto-generated method stub
@@ -189,36 +214,34 @@ public class FeedVersion extends Model implements Serializable {
     }
 
     public void validate() {
-        File feed = null;
+        File gtfsFile = null;
         try {
-            feed = getFeed();
+            gtfsFile = getGtfsFile();
         } catch (Exception e) {
-//            halt(400, "No GTFS feed exists for this version.");
             LOG.warn("No GTFS feed exists for version: {}", this.id);
             return;
         }
-        
-//        FeedProcessor fp = new FeedProcessor(feed);
-        GTFSFeed f = null;
-        try {
-            f = GTFSFeed.fromFile(feed.getAbsolutePath());
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        GTFSFeed gtfsFeed = getGtfsFeed();
+        if(gtfsFeed == null) {
+            LOG.warn("Could not get GTFSFeed object for FeedVersion {}", id);
             return;
         }
+
         Map<LocalDate, Integer> tripsPerDate;
         // load feed into GTFS api
+        // TODO: pass GTFSFeed to GTFSApi
         if (DataManager.config.get("modules").get("gtfsapi").get("load_on_fetch").asBoolean()) {
             LOG.info("Loading feed into GTFS api");
-            String md5 = ApiMain.loadFeedFromFile(feed, this.feedSourceId);
+            String md5 = ApiMain.loadFeedFromFile(gtfsFile, this.feedSourceId);
             if (GtfsApiController.feedUpdater != null) {
                 GtfsApiController.feedUpdater.addFeedETag(md5);
             }
         }
 
         try {
-            f.validate();
-            FeedStats stats = f.calculateStats();
+            gtfsFeed.validate();
+            FeedStats stats = gtfsFeed.calculateStats();
             validationResult = new FeedValidationResult();
             validationResult.agencies = stats.getAllAgencies().stream().map(agency -> agency.agency_id).collect(Collectors.toList());
             validationResult.agencyCount = stats.getAgencyCount();
@@ -252,7 +275,7 @@ public class FeedVersion extends Model implements Serializable {
             validationResult.loadStatus = LoadStatus.SUCCESS;
             validationResult.tripCount = stats.getTripCount();
             validationResult.stopTimesCount = stats.getStopTimesCount();
-            validationResult.errorCount = f.errors.size();
+            validationResult.errorCount = gtfsFeed.errors.size();
             tripsPerDate = stats.getTripsPerDateOfService();
         } catch (Exception e) {
             LOG.error("Unable to validate feed {}", this);
@@ -276,7 +299,7 @@ public class FeedVersion extends Model implements Serializable {
                 File tempFile = File.createTempFile(this.id, ".json");
                 tempFile.deleteOnExit();
                 Map<String, Object> validation = new HashMap<>();
-                validation.put("errors", f.errors);
+                validation.put("errors", gtfsFeed.errors);
                 validation.put("tripsPerDate", tripsPerDate
 //                        .entrySet()
 //                        .stream()
@@ -314,7 +337,7 @@ public class FeedVersion extends Model implements Serializable {
     }
 
     public void hash () {
-        this.hash = HashUtils.hashFile(getFeed());
+        this.hash = HashUtils.hashFile(getGtfsFile());
     }
 
     public static void commit() {
@@ -347,7 +370,10 @@ public class FeedVersion extends Model implements Serializable {
         }
 
         // Create/save r5 network
-        TransportNetwork tn = TransportNetwork.fromFiles(osmExtract.getAbsolutePath(), gtfsDir + this.id, TNBuilderConfig.defaultConfig());
+//        TransportNetwork tn = TransportNetwork.fromFiles(osmExtract.getAbsolutePath(), gtfsDir + this.id, TNBuilderConfig.defaultConfig());
+        List<GTFSFeed> feedList = new ArrayList<>();
+        feedList.add(DataManager.gtfsCache.get(id));
+        TransportNetwork tn = TransportNetwork.fromFeeds(osmExtract.getAbsolutePath(), feedList, TNBuilderConfig.defaultConfig());
         this.transportNetwork = tn;
         File tnFile = new File(feedSourceDir + this.id + "_network.dat");
         OutputStream tnOut = null;
@@ -400,7 +426,7 @@ public class FeedVersion extends Model implements Serializable {
     @JsonInclude(Include.NON_NULL)
     @JsonView(JsonViews.UserInterface.class)
     public Long getFileTimestamp() {
-        File file = getFeed();
+        File file = getGtfsFile();
         if(file == null) return null;
         return file.lastModified();
     }
@@ -408,7 +434,7 @@ public class FeedVersion extends Model implements Serializable {
     @JsonInclude(Include.NON_NULL)
     @JsonView(JsonViews.UserInterface.class)
     public Long getFileSize() {
-        File file = getFeed();
+        File file = getGtfsFile();
         if(file == null) return null;
         return file.length();
     }
@@ -417,7 +443,7 @@ public class FeedVersion extends Model implements Serializable {
      * Delete this feed version.
      */
     public void delete() {
-        File feed = getFeed();
+        File feed = getGtfsFile();
         if (feed != null && feed.exists())
             feed.delete();
 

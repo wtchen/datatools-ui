@@ -31,8 +31,34 @@ application:
     gtfs: /path/to/gtfs
     regions: /path/to/regions/geojson
 ```
+### Setting up Auth0
 
-Update the following properties in `config.yml` to reflect the public Auth0 settings:
+Once you've created an Auth0 account, create an application in Auth0 to use with the Data Manager. You'll need to update the following application-level and account-level settings to include `http://localhost:9000` (or the domain where the application will be hosted):
+
+- Account level
+    - Allowed logout URLs
+- Application level
+    - Allowed Callback URLs
+    - Allowed Origins (CORS)
+
+Create your first Auth0 user through Auth0 web console. You'll need to supply the user with the following default application admin `app_metadata`:
+
+```json
+{
+  "datatools": [{
+    "permissions": [
+      {
+        "type": "administer-application"
+      }
+    ],
+    "subscriptions": [],
+    "projects": [],
+    "client_id": your-auth0-client-id
+  }]
+}
+```
+
+Update the following properties in `config.yml` to reflect the public Auth0 application settings:
 
 ```yaml
 auth0:
@@ -40,7 +66,7 @@ auth0:
   client_id: your-auth0-client-id
 ```
 
-Update the following properties in `config_server.yml` to reflect the secure Auth0 settings:
+Update the following properties in `config_server.yml` to reflect the secure Auth0 application settings:
 
 ```yaml
 auth0:

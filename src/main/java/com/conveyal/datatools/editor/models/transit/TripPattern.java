@@ -2,6 +2,7 @@ package com.conveyal.datatools.editor.models.transit;
 
 
 import com.conveyal.datatools.editor.datastore.FeedTx;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static com.conveyal.datatools.editor.utils.GeoUtils.getCoordDistances;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TripPattern extends Model implements Cloneable, Serializable {
     public static final long serialVersionUID = 1;
     public static final Logger LOG = LoggerFactory.getLogger(TripPattern.class);
@@ -39,7 +41,7 @@ public class TripPattern extends Model implements Cloneable, Serializable {
 
     public String feedId;
 
-    public List<TripPatternStop> patternStops;
+    public List<TripPatternStop> patternStops = new ArrayList<TripPatternStop>();
     
     /**
      * Lines showing how stops are being snapped to the shape.
@@ -268,6 +270,11 @@ public class TripPattern extends Model implements Cloneable, Serializable {
         }
     }
 
+    // cast generic Geometry object to LineString because jackson2-geojson library only returns generic Geometry objects
+    public void setShape (Geometry g) {
+        this.shape = (LineString) g;
+    }
+
     public void calcShapeDistTraveled () {
         FeedTx tx = VersionedDataStore.getFeedTx(feedId);
         calcShapeDistTraveled(tx);
@@ -343,13 +350,13 @@ public class TripPattern extends Model implements Cloneable, Serializable {
         }
 
         if (backwards > 0) {
-            LOG.warn("Detected likely backwards shape for trip pattern %s (%s) on route %s, reversing", id, name, routeId);
+            LOG.warn("Detected likely backwards shape for trip pattern {} ({}) on route {}, reversing", id, name, routeId);
             this.shape = (LineString) this.shape.reverse();
             calcShapeDistTraveled(tx);
             return;
         }
         else if (backwards == 0) {
-            LOG.warn("Unable to tell if shape is backwards for trip pattern %s (%s) on route %s, assuming it is correct", id, name, routeId);
+            LOG.warn("Unable to tell if shape is backwards for trip pattern {} ({}) on route {}, assuming it is correct", id, name, routeId);
         }
 
         // first pass: fix the obvious stops
@@ -391,7 +398,7 @@ public class TripPattern extends Model implements Cloneable, Serializable {
             }
         }
 
-        LOG.info("Fixed %s / %s stops after first round for trip pattern %s (%s) on route %s", fixed, shapeDistTraveled.length, id, name, routeId);
+        LOG.info("Fixed {} / {} stops after first round for trip pattern {} ({}) on route {}", fixed, shapeDistTraveled.length, id, name, routeId);
 
         // pass 2: fix the rest of the stops
         lastShapeDistTraveled = 0;
@@ -418,7 +425,7 @@ public class TripPattern extends Model implements Cloneable, Serializable {
             subShape = (LineString) shapeIdx.extractLine(getLoc(shapeDist, lastShapeDistTraveled), getLoc(shapeDist, nextShapeDistTraveled));
 
             if (subShape.getLength() < 0.00000001) {
-                LOG.warn("Two stops on trip pattern %s map to same point on shape", id);
+                LOG.warn("Two stops on trip pattern {} map to same point on shape", id);
                 shapeDistTraveled[i] = lastShapeDistTraveled;
                 continue;
             }
@@ -463,7 +470,7 @@ public class TripPattern extends Model implements Cloneable, Serializable {
 
         // this can happen due to rounding errors
         else if (distTraveled >= distances[distances.length - 1]) {
-            LOG.warn("Shape dist traveled past end of shape, was %s, expected max %s, clamping", distTraveled, distances[distances.length - 1]);
+            LOG.warn("Shape dist traveled past end of shape, was {}, expected max {}, clamping", distTraveled, distances[distances.length - 1]);
             return new LinearLocation(distances.length - 1, 0);
         }
 

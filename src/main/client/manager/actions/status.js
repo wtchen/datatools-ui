@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchFeedVersion } from './feeds'
+import { fetchSnapshots } from '../../editor/actions/snapshots'
 
 export function setErrorMessage (message) {
   return {
@@ -118,6 +119,9 @@ export function handleFinishedJob (job) {
     switch (job.type) {
       case 'VALIDATE_FEED':
         dispatch(fetchFeedVersion(job.feedVersionId))
+        break
+      case 'PROCESS_SNAPSHOT':
+        dispatch(fetchSnapshots(job.feedVersion.feedSource))
         break
     }
   }

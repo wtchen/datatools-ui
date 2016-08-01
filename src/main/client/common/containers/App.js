@@ -27,6 +27,8 @@ import ActiveGtfsTableEditor from '../../editor/containers/ActiveGtfsTableEditor
 import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
 import ActiveGtfsValidationExplorer from '../../manager/containers/validation/ActiveGtfsValidationExplorer'
 
+require('../style.css')
+
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
 class App extends React.Component {
@@ -47,7 +49,6 @@ class App extends React.Component {
     const requireAuth = (nextState, replace, callback) => {
       this.props.checkExistingLogin()
       .then((action) => {
-        console.log('requiring auth')
         if (this.props.user.profile === null) {
           // replace(null, '/')
           this.props.login({closable: false}, callback)
@@ -71,33 +72,32 @@ class App extends React.Component {
         callback()
       })
     }
-
+    const routes = [
+      <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />,
+      <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />,
+      <Route path='/signup' component={ActiveSignupPage} />,
+      <Route path='/' component={ActivePublicFeedsViewer} />,
+      <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />,
+      <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,
+      <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />,
+      <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />,
+      <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />,
+      <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />,
+      <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />,
+      <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />,
+      <Route path='/project/:projectId(/:subpage)' component={ActiveProjectViewer} onEnter={requireAuth} />,
+      <Route path='/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)(/:subsubcomponent)(/:subsubentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />,
+      <Route path='/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)' component={ActiveFeedSourceViewer} onEnter={requireAuth} />,
+      <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />,
+      <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />,
+      <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />,
+      <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />,
+      <Route path='/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)' component={ActiveGtfsTableEditor} onEnter={requireAuth} />,
+      <Route path='*' component={PageNotFound} />,
+    ]
     return (
       <Router history={this.props.history}>
-        <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />
-        <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />
-        <Route path='/signup' component={ActiveSignupPage} />
-        <Route path='/' component={ActivePublicFeedsViewer} />
-        <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />
-        <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />
-        <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />
-        <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />
-        <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />
-        <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />
-        <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />
-        <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />
-        <Route path='/project/:projectId(/:subpage)' component={ActiveProjectViewer} onEnter={requireAuth} />
-        <Route path='/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />
-        <Route path='/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)' component={ActiveFeedSourceViewer} onEnter={requireAuth} />
-        <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />
-        <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />
-        <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />
-
-        <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />
-
-        <Route path='/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)' component={ActiveGtfsTableEditor} onEnter={requireAuth} />
-
-        <Route path='*' component={PageNotFound} />
+        {routes}
       </Router>
     )
   }

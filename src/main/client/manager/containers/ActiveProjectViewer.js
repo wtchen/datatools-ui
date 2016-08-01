@@ -17,10 +17,18 @@ import {
   createFeedSource,
   saveFeedSource,
   updateFeedSource,
-  deleteFeedSource
+  runFetchFeed,
+  deleteFeedSource,
+  uploadFeed
 } from '../actions/feeds'
 
-import { fetchProjectDeployments, createDeployment, saveDeployment, deleteDeployment } from '../actions/deployments'
+import {
+  fetchProjectDeployments,
+  createDeployment,
+  createDeploymentFromFeedSource,
+  saveDeployment,
+  deleteDeployment
+} from '../actions/deployments'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -59,9 +67,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
     },
     deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
+    createDeploymentFromFeedSource: (feedSource) => {
+      dispatch(createDeploymentFromFeedSource(feedSource))
+      .then((deployment) => {
+        browserHistory.push(`/deployment/${deployment.id}`)
+      })
+    },
     onNewDeploymentClick: () => { dispatch(createDeployment(projectId)) },
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
+    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
+    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     deleteFeedSourceConfirmed: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
     deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) },
     downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) },

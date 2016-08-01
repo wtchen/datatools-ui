@@ -5,9 +5,14 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { browserHistory, hashHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-import { checkExistingLogin } from './manager/actions/user'
+// import promise from 'redux-promise'
+import createLogger from 'redux-logger'
 
+import { checkExistingLogin } from './manager/actions/user'
 import App from './common/containers/App'
+
+
+import 'react-virtualized/styles.css'
 
 import config from 'json!yaml!../../../config.yml'
 
@@ -42,6 +47,7 @@ import * as gtfsPlusReducers from './gtfsplus/reducers'
 import * as editorReducers from './editor/reducers'
 import * as gtfsReducers from './gtfs/reducers'
 
+const logger = createLogger({duration: true, collapsed: true})
 const store = createStore(
   combineReducers({
     ...managerReducers,
@@ -53,16 +59,16 @@ const store = createStore(
     ...gtfsReducers,
     routing: routerReducer
   }),
-  applyMiddleware(thunkMiddleware)
+  applyMiddleware(thunkMiddleware, logger)
 )
 
 console.log('initial store', store.getState())
 
 // Every time the state changes, log it
 // Note that subscribe() returns a function for unregistering the listener
-let unsubscribe = store.subscribe(() =>
-  console.log('store updated', store.getState())
-)
+let unsubscribe = store.subscribe(() => {
+  // console.log('store updated', store.getState())
+})
 
 const appHistory = syncHistoryWithStore(browserHistory, store)
 

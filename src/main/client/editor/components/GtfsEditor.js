@@ -1,20 +1,22 @@
 import React, {Component, PropTypes} from 'react'
 import Sidebar from 'react-sidebar'
-import { Grid, Row, Col, Button, Glyphicon, PageHeader, Nav, NavItem } from 'react-bootstrap'
-import { browserHistory, Link } from 'react-router'
+import { Grid, Row, Col, Button, Glyphicon, PageHeader, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
+import { shallowEqual } from 'react-pure-render'
 import { LinkContainer } from 'react-router-bootstrap'
-import {Icon} from 'react-fa'
-
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsTable from './GtfsTable'
 import EditorMap from './EditorMap'
+import EditorSidebar from './EditorSidebar'
 import RouteEditor from './RouteEditor'
-import EntityList from './EntityList'
+import ActiveEntityList from '../containers/ActiveEntityList'
+import EntityDetails from './EntityDetails'
 // import StopEditor from './StopEditor'
 import CalendarList from './CalendarList'
 // import FareEditor from './FareEditor'
+import TimetableEditor from './TimetableEditor'
 
-import FeedInfoPanel from './FeedInfoPanel'
+import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
 
 export default class GtfsEditor extends Component {
 
@@ -29,46 +31,46 @@ export default class GtfsEditor extends Component {
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
+  componentDidUpdate (prevProps) {
+    // console.log(prevProps, this.props)
+    this.props.onComponentUpdate(prevProps, this.props)
+  }
   componentWillReceiveProps (nextProps) {
-
+    // clear GTFS content if feedSource changes (i.e., user switches feed sources)
     if (nextProps.feedSourceId !== this.props.feedSourceId) {
       this.props.clearGtfsContent()
       this.props.onComponentMount(nextProps)
+      dispatch(getGtfsTable('calendar', feedSourceId))
     }
+    // fetch table if it doesn't exist already and user changes tabs
     if (nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
-      console.log('getting table: ' + nextProps.activeComponent)
-      console.log(nextProps.feedSource, this.props.feedSource)
+      // console.log('getting table: ' + nextProps.activeComponent)
+      // console.log(nextProps.feedSource, this.props.feedSource)
       this.props.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
     }
-  }
-
-  save () {
-    const zip = new JSZip()
-
-    for(const table of DT_CONFIG.modules.editor.spec) {
-      if(!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
-
-      let fileContent = ''
-      // white the header line
-      const fieldNameArr = table.fields.map(field => field['name'])
-      fileContent += fieldNameArr.join(',') + '\n'
-
-      // write the data rows
-      var dataRows = this.props.tableData[table.id].map(rowData => {
-        const rowText = fieldNameArr.map(fieldName => {
-          return rowData[fieldName] || ''
-        }).join(',')
-        fileContent += rowText + '\n'
-      })
-
-      // add to the zip archive
-      zip.file(table.name, fileContent)
+    // fetch sub components of active entity on active entity switch (e.g., fetch trip patterns when route changed)
+    if (nextProps.feedSource && nextProps.activeEntity && (!this.props.activeEntity || nextProps.activeEntity.id !== this.props.activeEntity.id)) {
+      // console.log(nextProps.activeComponent)
+      // console.log(nextProps.activeEntity, nextProps.activeEntityId)
+      if (nextProps.activeComponent === 'route') {
+        console.log('getting trip patterns')
+        this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
+      }
     }
-
-    zip.generateAsync({type:"blob"}).then((content) => {
-      this.props.feedSaved(content)
-    })
+    // fetch required sub sub component entities if active sub entity changes
+    if (nextProps.subSubComponent && nextProps.activeSubSubEntity && !shallowEqual(nextProps.activeSubSubEntity, this.props.activeSubSubEntity)) {
+      switch (nextProps.subSubComponent) {
+        case 'timetable':
+          console.log(nextProps.activeSubEntity)
+          console.log(nextProps.activeSubSubEntity)
+          let pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.activeSubEntity)
+          // fetch trips if they haven't been fetched
+          if (!pattern[nextProps.activeSubSubEntity]) {
+            this.props.fetchTripsForCalendar(nextProps.feedSource.id, pattern, nextProps.activeSubSubEntity)
+          }
+          break
+      }
+    }
   }
 
   render () {
@@ -77,19 +79,6 @@ export default class GtfsEditor extends Component {
     const activeComponent = this.props.activeComponent
     const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
 
-    // const buttonStyle = {
-    //   display: 'block',
-    //   width: '100%'
-    // }
-
-    let navItemStyle = {
-
-    }
-    let navWidth = '49px'
-    let navLinkStyle = {
-      width: navWidth,
-      color: 'black'
-    }
     let primaryPanelStyle = {
       width: '300px',
       height: '100%',
@@ -100,122 +89,99 @@ export default class GtfsEditor extends Component {
       paddingRight: '5px',
       paddingLeft: '5px'
     }
-    let sidebarItems = [
-      {
-        id: 'agency',
-        icon: 'building',
-        title: 'Edit agencies'
-      },
-      {
-        id: 'route',
-        icon: 'bus',
-        title: 'Edit routes'
-      },
-      {
-        id: 'stop',
-        icon: 'map-marker',
-        title: 'Edit stops'
-      },
-      {
-        id: 'calendar',
-        icon: 'calendar',
-        title: 'Edit calendars'
-      },
-      {
-        id: 'fare',
-        icon: 'usd',
-        title: 'Edit fares'
-      },
-    ]
-    let sidebarContent = <Nav stacked bsStyle='pills' activeKey={this.props.activeComponent}>
-                            <NavItem
-                              className='text-center'
-                              style={navLinkStyle}
-                              title={`Back to feed source`}
-                              onClick={(e) => {
-                                e.preventDefault()
-                                browserHistory.push(`/feed/${feedSource.id}`)
-                              }}
-                            ><Icon name='reply' size='lg' /></NavItem>
-                            {sidebarItems.map(item => (
-                              <NavItem
-                                active={this.props.activeComponent === item.id}
-                                href={item.id}
-                                key={item.id}
-                                className='text-center'
-                                style={navLinkStyle}
-                                title={item.title}
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  if (this.props.activeComponent === item.id) {
-                                    browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                                  }
-                                  else {
-                                    browserHistory.push(`/feed/${feedSource.id}/edit/${item.id}`)
-                                  }
-                                }}
-                              ><Icon name={item.icon} size='lg' /></NavItem>
-                            ))}
-                        </Nav>
+
+    let listWidth = 220
+    let detailsWidth = 300
+    let entityDetails = this.props.activeEntityId
+      ? (
+          <EntityDetails
+            width={detailsWidth}
+            key='entity-details'
+            offset={listWidth}
+            stops={this.props.tableData.stop}
+            {...this.props}
+            getGtfsEntity={(type, id) => {
+              return this.props.entities.find(ent => ent.id === id)
+            }}
+            getGtfsEntityIndex={(type, id) => {
+              return this.props.entities.findIndex(ent => ent.id === id)
+            }}
+          />
+        )
+      : null
     return (
       <div>
       <Sidebar
-        sidebar={sidebarContent}
+        sidebar={
+          <EditorSidebar
+            activeComponent={this.props.activeComponent}
+            feedSource={this.props.feedSource}
+            setActiveEntity={this.props.setActiveEntity}
+          />
+        }
+        styles={{content: {overflow: 'hidden'}}}
         docked={true}
         shadow={false}
       >
-        {this.props.activeComponent === 'agency'
-          ? <EntityList
-              tableView={this.props.tableView}
-              activeComponent={this.props.activeComponent}
-              entity={this.props.activeEntity}
-              entities={this.props.tableData[this.props.activeComponent]}
+        {this.props.subSubComponent === 'timetable'
+          ? <TimetableEditor
               feedSource={feedSource}
-              newRowsDisplayed={this.props.newRowsDisplayed}
+              route={this.props.activeEntity}
+              activePatternId={this.props.activeSubEntity}
+              activeScheduleId={this.props.activeSubSubEntity}
+              setActiveEntity={this.props.setActiveEntity}
+              tableData={this.props.tableData}
+              deleteEntity={this.props.deleteEntity}
+              updateActiveEntity={this.props.updateActiveEntity}
+              resetActiveEntity={this.props.resetActiveEntity}
+              saveActiveEntity={this.props.saveActiveEntity}
+              saveTripsForCalendar={this.props.saveTripsForCalendar}
+              deleteTripsForCalendar={this.props.deleteTripsForCalendar}
             />
-          : this.props.activeComponent === 'route'
-          ? <EntityList
-              tableView={this.props.tableView}
-              activeComponent={this.props.activeComponent}
-              entity={this.props.activeEntity}
-              entities={this.props.tableData[this.props.activeComponent]}
-              feedSource={feedSource}
-              newRowsDisplayed={this.props.newRowsDisplayed}
+          : this.props.activeComponent === 'feedinfo'
+          ? <EntityDetails
+              width={detailsWidth}
+              {...this.props}
             />
-          : this.props.activeComponent === 'stop'
-          ? <EntityList
-              tableView={this.props.tableView}
-              activeComponent={this.props.activeComponent}
-              entity={this.props.activeEntity}
-              entities={this.props.tableData[this.props.activeComponent]}
-              feedSource={feedSource}
-              newRowsDisplayed={this.props.newRowsDisplayed}
-            />
-          : this.props.activeComponent === 'calendar'
-          ? <CalendarList
-              tableView={this.props.tableView}
-              activeComponent={this.props.activeComponent}
-              entity={this.props.activeEntity}
-              entities={this.props.tableData[this.props.activeComponent]}
-              feedSource={feedSource}
-              newRowsDisplayed={this.props.newRowsDisplayed}
-            />
-          : this.props.activeComponent === 'fare'
-          ? <div style={primaryPanelStyle}><h3>{this.props.activeComponent}</h3></div>
+          : this.props.activeComponent
+          ? [
+              <ActiveEntityList
+                width={listWidth}
+                setActiveEntity={this.props.setActiveEntity}
+                cloneEntity={this.props.cloneEntity}
+                updateActiveEntity={this.props.updateActiveEntity}
+                deleteEntity={this.props.deleteEntity}
+                newEntityClicked={this.props.newEntityClicked}
+                entities={this.props.entities}
+                activeEntityId={this.props.activeEntityId}
+                activeComponent={this.props.activeComponent}
+                feedSource={this.props.feedSource}
+                key='entity-list'
+              />
+              ,
+              entityDetails
+            ]
           : null
         }
         <EditorMap
-          feedSource={feedSource}
-          feedInfo={this.props.feedInfo}
-          activeComponent={this.props.activeComponent}
-          entity={this.props.activeEntity}
-          entities={this.props.tableData[this.props.activeComponent]}
+          offset={this.props.activeComponent === 'feedinfo'
+            ? detailsWidth
+            : this.props.activeEntity
+            ? listWidth + detailsWidth
+            : this.props.activeComponent
+            ? listWidth
+            : 0
+          }
+          hidden={this.props.subSubComponent === 'timetable'}
+          stops={this.props.tableData.stop || []}
+          {...this.props}
         />
-        <FeedInfoPanel
+        <ActiveFeedInfoPanel
           feedSource={this.props.feedSource}
           feedInfo={this.props.feedInfo}
         />
       </Sidebar>
+      <CurrentStatusMessage />
       </div>
     )
   }

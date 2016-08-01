@@ -14,7 +14,7 @@ export default class IsochroneMap extends ValidationMap {
   }
 
   fetchIsochrones (latlng) {
-    const center = super.getMap().getLeafletElement().getCenter()
+    const center = super.getMap().leafletElement.getCenter()
     this.props.fetchIsochrones(this.props.version, latlng.lat, latlng.lng, center.lat, center.lng)
     this.setState({ lastClicked: latlng })
   }

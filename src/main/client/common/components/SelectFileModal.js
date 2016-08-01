@@ -1,5 +1,6 @@
 import React from 'react'
-import { Modal, Button, Input, Glyphicon } from 'react-bootstrap'
+import { Modal, Button, FormControl, Glyphicon } from 'react-bootstrap'
+import ReactDOM from 'react-dom'
 
 export default class SelectFileModal extends React.Component {
 
@@ -21,14 +22,23 @@ export default class SelectFileModal extends React.Component {
       showModal: true,
       title: props.title,
       body: props.body,
-      onConfirm: props.onConfirm
+      onConfirm: props.onConfirm,
+      errorMessage: props.errorMessage
     })
   }
 
   ok () {
-    this.close()
+
     if(this.state.onConfirm) {
-      this.state.onConfirm(this.refs.fileInput.getInputDOMNode().files)
+      if (this.state.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
+        this.close()
+      }
+      else {
+        this.setState({error: this.state.errorMessage})
+      }
+    }
+    else {
+      this.close()
     }
   }
 
@@ -41,7 +51,11 @@ export default class SelectFileModal extends React.Component {
 
         <Modal.Body>
           <p>{this.state.body}</p>
-          <Input ref='fileInput' type='file' />
+          {this.state.error
+            ? <p>{this.state.error}</p>
+            : null
+          }
+          <FormControl ref='fileInput' type='file' />
         </Modal.Body>
 
         <Modal.Footer>

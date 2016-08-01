@@ -52,7 +52,7 @@ public class TripPatternController {
             else if (routeId != null) {
 
                 if (!tx.routes.containsKey(routeId))
-                    halt(404);
+                    halt(404, "routeId '" + routeId + "' does not exist");
                 else {
                     Set<Tuple2<String, String>> tpKeys = tx.tripPatternsByRoute.subSet(new Tuple2(routeId, null), new Tuple2(routeId, Fun.HI));
 
@@ -67,8 +67,8 @@ public class TripPatternController {
                     json = Base.toJson(patts, false);
                 }
             }
-            else {
-                halt(400);
+            else { // get all patterns
+                json = Base.toJson(tx.tripPatterns, false);
             }
             
             tx.rollback();

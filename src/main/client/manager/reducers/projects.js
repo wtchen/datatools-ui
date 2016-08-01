@@ -61,9 +61,9 @@ const projects = (state = {
       }
       return update(newState || state, {all: {[projectIndex]: {deployments: {$unshift: [deployment]}}}})
 
+    case 'REQUESTING_FEEDSOURCE':
     case 'REQUEST_PROJECTS':
       return update(state, { isFetching: { $set: true }})
-
     case 'RECEIVE_PROJECTS':
       activeProjectId = state.active ? state.active.id : DT_CONFIG.application.active_project
       activeIndex = action.projects.findIndex(p => p.id === activeProjectId)
@@ -123,6 +123,9 @@ const projects = (state = {
       }
 
     case 'RECEIVE_FEEDSOURCE':
+      if (!action.feedSource) {
+        return update(state, { isFetching: { $set: false }})
+      }
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       let existingSources = state.all[projectIndex].feedSources || [], updatedSources
       sourceIndex = existingSources.findIndex(s => s.id === action.feedSource.id)
@@ -139,10 +142,12 @@ const projects = (state = {
         ]
       }
       return update(state,
-        {all:
-          {[projectIndex]:
-            {$merge: {feedSources: updatedSources}}
-          }
+        {
+          all:
+            {[projectIndex]:
+              {$merge: {feedSources: updatedSources}}
+            },
+          isFetching: { $set: false }
         }
       )
 

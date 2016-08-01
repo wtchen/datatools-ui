@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
 import moment_tz from 'moment-timezone'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, FormControl, Panel, Glyphicon, Badge, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -102,7 +102,7 @@ export default class DeploymentViewer extends Component {
           >
             <Row>
               <Col xs={8} sm={6} md={4}>
-                <Input
+                <FormControl
                   type='text'
                   placeholder={messages.search}
                   onChange={evt => this.props.searchTextChanged(evt.target.value)}

@@ -12,13 +12,13 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.conveyal.datatools.manager.DataManager;
 import com.conveyal.datatools.manager.auth.Auth0UserProfile;
 import com.conveyal.datatools.manager.jobs.BuildTransportNetworkJob;
+import com.conveyal.datatools.manager.jobs.CreateFeedVersionFromSnapshotJob;
 import com.conveyal.datatools.manager.jobs.ProcessSingleFeedJob;
 import com.conveyal.datatools.manager.models.FeedDownloadToken;
 import com.conveyal.datatools.manager.models.FeedSource;
 import com.conveyal.datatools.manager.models.FeedVersion;
 import com.conveyal.datatools.manager.models.JsonViews;
 import com.conveyal.datatools.manager.utils.json.JsonManager;
-import com.conveyal.gtfs.validator.json.FeedValidationResult;
 import com.conveyal.r5.analyst.PointSet;
 import com.conveyal.r5.analyst.cluster.AnalystClusterRequest;
 import com.conveyal.r5.analyst.cluster.ResultEnvelope;
@@ -42,7 +42,6 @@ import java.util.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -105,7 +104,7 @@ public class FeedVersionController  {
         FeedSource s = v.getFeedSource();
 
         if (userProfile.canAdministerProject(s.feedCollectionId) || userProfile.canViewFeed(s.feedCollectionId, s.id)) {
-            return ok(v.getFeed());
+            return ok(v.getGtfsFile());
         }
         else {
             return unauthorized();
@@ -169,7 +168,7 @@ public class FeedVersionController  {
         InputStream uploadStream;
         try {
             uploadStream = part.getInputStream();
-            v.newFeed(uploadStream);
+            v.newGtfsFile(uploadStream);
         } catch (Exception e) {
             LOG.error("Unable to open input stream from upload");
             halt(400, "Unable to read uploaded feed");
@@ -179,10 +178,12 @@ public class FeedVersionController  {
 
         FeedVersion latest = s.getLatest();
         if (latest != null && latest.hash.equals(v.hash)) {
-            v.getFeed().delete();
+            v.getGtfsFile().delete();
             // Uploaded feed is same as latest version
             halt(304);
         }
+
+        v.name = v.getFormattedTimestamp() + " Upload";
 
         v.save();
         new ProcessSingleFeedJob(v, userProfile.getUser_id()).run();
@@ -192,6 +193,19 @@ public class FeedVersionController  {
             Thread tnThread = new Thread(btnj);
             tnThread.start();
         }*/
+
+        return true;
+    }
+
+    public static Boolean createFeedVersionFromSnapshot (Request req, Response res) throws IOException, ServletException {
+
+        Auth0UserProfile userProfile = req.attribute("user");
+        FeedSource s = FeedSource.get(req.queryParams("feedSourceId"));
+
+        CreateFeedVersionFromSnapshotJob createFromSnapshotJob =
+                new CreateFeedVersionFromSnapshotJob(s, req.queryParams("snapshotId"), userProfile.getUser_id());
+
+        new Thread(createFromSnapshotJob).start();
 
         return true;
     }
@@ -217,6 +231,7 @@ public class FeedVersionController  {
     public static Object getValidationResult(Request req, Response res) {
         String id = req.params("id");
         FeedVersion version = FeedVersion.get(id);
+        // TODO: separate this out if non s3 bucket
         String s3Bucket = DataManager.config.get("application").get("data").get("gtfs_s3_bucket").asText();
         String keyName = "validation/" + version.id + ".json";
         if (s3Bucket != null) {
@@ -332,7 +347,7 @@ public class FeedVersionController  {
     private static Object downloadFeedVersion(FeedVersion version, Response res) {
         if(version == null) halt(500, "FeedVersion is null");
 
-        File file = version.getFeed();
+        File file = version.getGtfsFile();
 
         res.raw().setContentType("application/octet-stream");
         res.raw().setHeader("Content-Disposition", "attachment; filename=" + file.getName());
@@ -354,6 +369,27 @@ public class FeedVersionController  {
         }
 
         return res.raw();
+    }
+
+    public static Boolean renameFeedVersion (Request req, Response res) throws JsonProcessingException {
+        String id = req.params("id");
+        if (id == null) {
+            halt(404, "Must specify feed version ID");
+        }
+        FeedVersion v = FeedVersion.get(id);
+
+        if (v == null) {
+            halt(404, "Version ID does not exist");
+        }
+
+        String name = req.queryParams("name");
+        if (name == null) {
+            halt(400, "Name parameter not specified");
+        }
+
+        v.name = name;
+        v.save();
+        return true;
     }
 
     private static Object downloadFeedVersionDirectly(Request req, Response res) {
@@ -390,6 +426,8 @@ public class FeedVersionController  {
         get(apiPrefix + "secure/feedversion/:id/isochrones", FeedVersionController::getIsochrones, json::write);
         get(apiPrefix + "secure/feedversion", FeedVersionController::getAllFeedVersions, json::write);
         post(apiPrefix + "secure/feedversion", FeedVersionController::createFeedVersion, json::write);
+        post(apiPrefix + "secure/feedversion/fromsnapshot", FeedVersionController::createFeedVersionFromSnapshot, json::write);
+        put(apiPrefix + "secure/feedversion/:id/rename", FeedVersionController::renameFeedVersion, json::write);
         delete(apiPrefix + "secure/feedversion/:id", FeedVersionController::deleteFeedVersion, json::write);
 
         get(apiPrefix + "public/feedversion", FeedVersionController::getAllFeedVersions, json::write);

@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import { Grid, Row, Col, Button, Table, Input, Panel, OverlayTrigger, Popover, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, FormControl, Panel, OverlayTrigger, Popover, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -38,8 +38,7 @@ export default class ProjectsList extends React.Component {
           <Panel header={(<h3>Projects</h3>)}>
           <Row>
             <Col xs={4}>
-              <Input
-                type="text"
+              <FormControl
                 placeholder={messages.search}
                 onChange={evt => this.props.searchTextChanged(evt.target.value)}
               />

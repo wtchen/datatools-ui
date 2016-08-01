@@ -45,8 +45,8 @@ export default class JobMonitor extends React.Component {
                 <div>
                   <strong>{job.name}</strong>{/* <Button bsStyle='link'><Icon className='pull-right' name='times-circle'/></Button> */}
                 </div>
-                <ProgressBar label={`${job.status.percentComplete}%`} active={true} now={job.status.percentComplete} style={progressBarStyle} />
-                <div style={statusMessageStyle} >{job.status.message}</div>
+                <ProgressBar label={`${job.status ? job.status.percentComplete : 0}%`} active={true} now={job.status ? job.status.percentComplete : 0} style={progressBarStyle} />
+                <div style={statusMessageStyle} >{job.status ? job.status.message : 'waiting'}</div>
               </div>
             </div>
           )

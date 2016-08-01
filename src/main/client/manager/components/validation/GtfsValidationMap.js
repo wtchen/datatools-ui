@@ -126,7 +126,7 @@ class ValidationMap extends React.Component {
 
     const getIsochrones = (e) => {
       console.log(e)
-      const center = this.refs.validationMap.getLeafletElement().getCenter()
+      const center = this.refs.validationMap.leafletElement.getCenter()
       console.log(center)
       this.props.fetchIsochrones(this.props.version, e.latlng.lat, e.latlng.lng, center.lat, center.lng)
     }
@@ -185,7 +185,7 @@ class ValidationMap extends React.Component {
         scrollWheelZoom={true}
       >
         <TileLayer
-          url='http://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+          url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
         <div>

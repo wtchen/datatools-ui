@@ -16,6 +16,7 @@ import com.conveyal.datatools.common.status.MonitorableJob;
 import com.conveyal.datatools.manager.models.FeedSource;
 import com.conveyal.datatools.manager.utils.CorsFilter;
 import com.conveyal.datatools.manager.utils.ResponseError;
+import com.conveyal.gtfs.GTFSCache;
 import com.conveyal.gtfs.api.ApiMain;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,8 @@ public class DataManager {
 
     public static Map<String, Set<MonitorableJob>> userJobsMap = new HashMap<>();
 
+    public static GTFSCache gtfsCache;
+
     public static void main(String[] args) throws IOException {
         FileInputStream in;
 
@@ -66,7 +69,7 @@ public class DataManager {
         if(config.get("application").has("port")) {
             port(Integer.parseInt(config.get("application").get("port").asText()));
         }
-
+        gtfsCache = new GTFSCache(getConfigPropertyAsText("application.data.gtfs_s3_bucket"), new File(getConfigPropertyAsText("application.data.gtfs")));
         CorsFilter.apply();
 
         String apiPrefix = "/api/manager/";
@@ -92,6 +95,7 @@ public class DataManager {
             TripPatternController.register(apiPrefix);
             SnapshotController.register(apiPrefix);
             FeedInfoController.register(apiPrefix);
+            FareController.register(apiPrefix);
         }
 
         // module-specific controllers
@@ -152,7 +156,15 @@ public class DataManager {
             halt(404);
             return null;
         });
-
+        
+        // return assets as byte array
+        get("/assets/*", (request, response) -> {
+            try (InputStream stream = ApiMain.class.getResourceAsStream("/public" + request.pathInfo())) {
+                return IOUtils.toByteArray(stream);
+            } catch (IOException e) {
+                return null;
+            }
+        });
         // return index.html for any sub-directory
         get("/*", (request, response) -> {
             response.type("text/html");

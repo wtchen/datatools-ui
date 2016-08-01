@@ -28,7 +28,8 @@ export default class StatusMessage extends React.Component {
       position: 'fixed',
       left: '15px',
       bottom: '0px',
-      height: '60px'
+      height: '60px',
+      zIndex: 1000
     }
 
     return (
