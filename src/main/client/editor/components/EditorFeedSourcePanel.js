@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Panel, Row, Col, Table, ButtonToolbar, Button, Glyphicon } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 import moment from 'moment'
 
 export default class EditorFeedSourcePanel extends Component {
@@ -26,7 +27,7 @@ export default class EditorFeedSourcePanel extends Component {
     return (
       <Row>
         <Col xs={12}>
-          {this.props.feedSource.editorSnapshots
+          {this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
             ? <Table striped>
                 <thead>
                   <tr>
@@ -68,7 +69,7 @@ export default class EditorFeedSourcePanel extends Component {
                   })}
                 </tbody>
               </Table>
-            : <span>No snapshots loaded</span>
+            : <span>No snapshots loaded. <Button bsStyle='success' onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}>Create GTFS from scratch</Button></span>
           }
         </Col>
       </Row>
