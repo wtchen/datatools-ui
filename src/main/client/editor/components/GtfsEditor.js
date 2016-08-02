@@ -189,6 +189,7 @@ export default class GtfsEditor extends Component {
         <ActiveFeedInfoPanel
           feedSource={this.props.feedSource}
           project={this.props.project}
+          setActiveEntity={this.props.setActiveEntity}
           feedInfo={this.props.feedInfo}
         />
       </Sidebar>

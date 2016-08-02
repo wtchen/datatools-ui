@@ -14,7 +14,7 @@ export default class FeedInfoPanel extends Component {
     project: PropTypes.object,
     feedInfo: PropTypes.object,
     createSnapshot: PropTypes.func,
-    setActiveGtfsEntity: PropTypes.func
+    setActiveEntity: PropTypes.func
   }
 
   constructor (props) {
@@ -82,7 +82,7 @@ export default class FeedInfoPanel extends Component {
               id='add-entity-dropdown'
               onSelect={key => {
                 console.log(key)
-                this.props.setActiveGtfsEntity(feedSource.id, key, 'new')
+                this.props.setActiveEntity(feedSource.id, key, {id: 'new'})
               }}
             >
               {componentList.map(c => {
