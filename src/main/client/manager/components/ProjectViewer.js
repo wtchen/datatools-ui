@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Tabs, Tab, Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, SplitButton, MenuItem } from 'react-bootstrap'
+import { Tabs, Tab, Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, Dropdown, MenuItem } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import Icon from 'react-fa'
 
@@ -122,7 +122,9 @@ export default class ProjectViewer extends Component {
             }}
           >
             <Tab
-              eventKey='sources' title={<span><Glyphicon glyph='list' /> {messages.feeds.title}</span>}
+              eventKey='sources'
+              title={<span><Glyphicon glyph='list' /> {messages.feeds.title}</span>}
+              id='feed-sources'
             >
                 <Row>
                   <Col xs={4}>
@@ -228,7 +230,10 @@ export default class ProjectViewer extends Component {
                 </Row>
             </Tab>
             <Tab
-              eventKey='settings' title={<span><Glyphicon glyph='cog'/> {messages.settings}</span>}
+              eventKey='settings'
+              disabled={projectEditDisabled}
+              title={<span><Glyphicon glyph='cog'/> {messages.settings}</span>}
+              id='project-settings'
             >
               <ProjectSettings
                 project={this.props.project}
@@ -239,7 +244,10 @@ export default class ProjectViewer extends Component {
             </Tab>
             {isModuleEnabled('deployment')
               ? <Tab
-                  eventKey='deployments' title={<span><Glyphicon glyph='globe' /> {messages.deployments}</span>}
+                  eventKey='deployments'
+                  disabled={projectEditDisabled}
+                  title={<span><Glyphicon glyph='globe' /> {messages.deployments}</span>}
+                  id='deployments'
                 >
                   <DeploymentsPanel
                     deployments={this.props.project.deployments}
@@ -413,17 +421,17 @@ class FeedSourceTableRow extends Component {
           : na
         }</td>
         <td className='col-xs-2'>
-        <SplitButton
+        <Dropdown
           bsStyle='default'
-          title={<span><Glyphicon glyph='refresh' /> Update</span>}
-          onClick={() => this.props.updateFeedClicked() }
           onSelect={key => {
             console.log(key)
             switch (key) {
               case 'delete':
                 return this.props.deleteFeedSourceClicked()
-              case 'edit':
-                return browserHistory.push(`/feed/${fs.id}/edit`)
+              // case 'edit':
+              //   return browserHistory.push(`/feed/${fs.id}/edit`)
+              case 'update':
+                return this.props.updateFeedClicked()
               case 'upload':
                 return this.props.uploadFeedSourceClicked()
               case 'deploy':
@@ -435,30 +443,40 @@ class FeedSourceTableRow extends Component {
           id={`feed-source-action-button`}
           pullRight
         >
-          <MenuItem disabled={editGtfsDisabled} eventKey='edit'><Icon name='pencil'/> Edit</MenuItem>
-          <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-          {isModuleEnabled('deployment') || DT_CONFIG.application.notifications_enabled
-            ? <MenuItem divider />
-            : null
-          }
-          {isModuleEnabled('deployment')
-            ? <MenuItem disabled={!fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
-            : null
-          }
-          {DT_CONFIG.application.notifications_enabled
-            ? <WatchButton
-                isWatching={isWatchingFeed}
-                user={this.props.user}
-                target={fs.id}
-                subscriptionType='feed-updated'
-                componentClass='menuItem'
-              />
-            : null
-          }
-          <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
-          <MenuItem divider />
-          <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
-        </SplitButton>
+          <Button
+            bsStyle='default'
+            disabled={editGtfsDisabled}
+            onClick={() => browserHistory.push(`/feed/${fs.id}/edit/`) }
+          >
+            <Glyphicon glyph='pencil' /> Edit
+          </Button>
+          <Dropdown.Toggle bsStyle='default'/>
+          <Dropdown.Menu>
+            <MenuItem disabled={disabled  || !fs.url} eventKey='update'><Glyphicon glyph='refresh' /> Update</MenuItem>
+            <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
+            {isModuleEnabled('deployment') || DT_CONFIG.application.notifications_enabled
+              ? <MenuItem divider />
+              : null
+            }
+            {isModuleEnabled('deployment')
+              ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
+              : null
+            }
+            {DT_CONFIG.application.notifications_enabled
+              ? <WatchButton
+                  isWatching={isWatchingFeed}
+                  user={this.props.user}
+                  target={fs.id}
+                  subscriptionType='feed-updated'
+                  componentClass='menuItem'
+                />
+              : null
+            }
+            <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
+            <MenuItem divider />
+            <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
+          </Dropdown.Menu>
+          </Dropdown>
         </td>
       </tr>
     )
