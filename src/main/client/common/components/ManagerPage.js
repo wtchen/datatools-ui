@@ -35,26 +35,28 @@ export default class ManagerPage extends React.Component {
           defaultTitle={DT_CONFIG.application.title}
           titleTemplate={`${DT_CONFIG.application.title} - %s`}
         />
-        <ManagerSidebar />
-        {/*<ManagerNavbar noMargin={this.props.noMargin}/>*/}
-        <div style={{ paddingTop: 20, paddingLeft: 50 }}>
-          {this.props.children}
-        </div>
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>
         <InfoModal ref='infoModal'/>
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
-        <footer className='footer'>
-          <div className='container'>
-            <ul className='list-inline text-center text-muted'>
-              <li><a href={DT_CONFIG.application.changelog_url}>Changelog</a></li>
-              <li><a href={DT_CONFIG.application.docs_url}>Guide</a></li>
-              <li><a href={`mailto:${DT_CONFIG.application.support_email}`}>Contact</a></li>
-            </ul>
-            <p className='text-center text-muted'>&copy; <a href='http://conveyal.com'>Conveyal</a></p>
-          </div>
-        </footer>
+
+        <ManagerSidebar />
+        {/*<ManagerNavbar noMargin={this.props.noMargin}/>*/}
+        <div className='page'>
+          {this.props.children}
+
+          <footer className='footer'>
+            <div className='container'>
+              <ul className='list-inline text-center text-muted'>
+                <li><a href={DT_CONFIG.application.changelog_url}>Changelog</a></li>
+                <li><a href={DT_CONFIG.application.docs_url}>Guide</a></li>
+                <li><a href={`mailto:${DT_CONFIG.application.support_email}`}>Contact</a></li>
+              </ul>
+              <p className='text-center text-muted'>&copy; <a href='http://conveyal.com'>Conveyal</a></p>
+            </div>
+          </footer>
+        </div>
       </div>
     )
   }
