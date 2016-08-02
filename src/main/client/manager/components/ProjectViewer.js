@@ -140,7 +140,7 @@ export default class ProjectViewer extends Component {
                       className='pull-right'
                       onClick={() => this.props.onNewFeedSourceClick()}
                     >
-                      {messages.feeds.new}
+                      <Glyphicon glyph='plus' /> {messages.feeds.new}
                     </Button>
                     <ButtonToolbar>
                       {isExtensionEnabled('transitland')
@@ -422,6 +422,7 @@ class FeedSourceTableRow extends Component {
         }</td>
         <td className='col-xs-2'>
         <Dropdown
+          className='pull-right'
           bsStyle='default'
           onSelect={key => {
             console.log(key)
