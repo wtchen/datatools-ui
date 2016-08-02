@@ -73,7 +73,7 @@ const mapStateToProps = (state, ownProps) => {
     // ownProps.routeParams.entity && state.editor.tableData[activeComponent]
     // ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
     // : null
-  const entityEdited = state.editor.active.edited
+  const entityEdited = state.editor.active && state.editor.active.edited
 
   // const isEditingGeometry = state.editor.editSettings.editGeometry
   // const isAddingStops = state.editor.editSettings.addStops
