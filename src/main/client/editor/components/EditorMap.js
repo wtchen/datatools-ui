@@ -19,7 +19,7 @@ import { EditControl } from 'react-leaflet-draw'
 // import CircleMarkerWithLabel from './CircleMarkerWithLabel'
 // import MarkerWithLabel from './MarkerWithLabel'
 import MinuteSecondInput from './MinuteSecondInput'
-import StopMarkersLayer from './StopMarkersLayer'
+// import StopMarkersLayer from './StopMarkersLayer'
 import StopLayer from '../../scenario-editor/components/StopLayer'
 import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
 
