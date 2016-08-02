@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { clearGtfsContent, fetchBaseGtfs } from './editor'
 
 // SNAPSHOT ACTIONS
 
@@ -51,6 +52,8 @@ export function restoreSnapshot (feedSource, snapshot) {
         return response.json()
       }).then((stops) => {
         dispatch(restoredSnapshot(snapshot.name))
+        dispatch(clearGtfsContent())
+        dispatch(fetchBaseGtfs(feedSource.id))
       })
   }
 }

@@ -102,8 +102,15 @@ export default class FeedInfoPanel extends Component {
                 <Dropdown
                   dropup
                   pullRight
-                  onSelect={(key) => {
-                    // this.addStopToPattern(activePattern, stop, key)
+                  onSelect={key => {
+                    let snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
+                    this.props.showConfirmModal({
+                      title: `Restore ${key}?`,
+                      body: `Are you sure you want to restore this snapshot?`,
+                      onConfirm: () => {
+                        this.props.restoreSnapshot(feedSource, snapshot)
+                      }
+                    })
                   }}
                 >
                 <OverlayTrigger placement='top' overlay={<Tooltip id='snapshot-tooltip'>Take snapshot</Tooltip>}>
@@ -116,25 +123,21 @@ export default class FeedInfoPanel extends Component {
                     <Icon name='camera'/>
                   </Button>
                 </OverlayTrigger>
-                    <Dropdown.Toggle bsStyle='primary'/>
+                    <Dropdown.Toggle
+                      bsStyle='primary'
+                      onClick={() => {
+                        this.props.getSnapshots(feedSource)
+                      }}
+                    />
                     <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
-                      <MenuItem value={0} eventKey={0}>
-                        Revert to snapshot
-                      </MenuItem>
-                      {
-                      //   activePattern.patternStops && activePattern.patternStops.map((stop, i) => {
-                      //   let addIndex = activePattern.patternStops.length - i
-                      //   if (index === activePattern.patternStops.length - 1 && index === addIndex - 1) {
-                      //     return null
-                      //   }
-                      //   // disable adding stop to current position or directly before/after current position
-                      //   return (
-                      //     <MenuItem disabled={index >= addIndex - 2 && index <= addIndex} value={addIndex - 1} eventKey={addIndex - 1}>
-                      //       {addIndex === 1 ? 'Add to beginning' : `Insert as stop #${addIndex}`}
-                      //     </MenuItem>
-                      //   )
-                      // })
-                    }
+                      {this.props.feedSource && this.props.feedSource.editorSnapshots
+                        ? this.props.feedSource.editorSnapshots.map(snapshot => {
+                            return (
+                              <MenuItem eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.id}</MenuItem>
+                            )
+                          })
+                        : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>
+                      }
                     </Dropdown.Menu>
               </Dropdown>
             }
