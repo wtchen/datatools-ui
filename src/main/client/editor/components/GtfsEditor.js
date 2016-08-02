@@ -1,22 +1,17 @@
 import React, {Component, PropTypes} from 'react'
 import Sidebar from 'react-sidebar'
 import { Grid, Row, Col, Button, Glyphicon, PageHeader, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import { shallowEqual } from 'react-pure-render'
-import { LinkContainer } from 'react-router-bootstrap'
-import ManagerPage from '../../common/components/ManagerPage'
+
+import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import GtfsTable from './GtfsTable'
 import ConfirmModal from '../../common/components/ConfirmModal.js'
+import CurrentStatusModal from '../../common/containers/CurrentStatusModal'
 import EditorMap from './EditorMap'
 import EditorSidebar from './EditorSidebar'
-import RouteEditor from './RouteEditor'
 import ActiveEntityList from '../containers/ActiveEntityList'
 import EntityDetails from './EntityDetails'
-// import StopEditor from './StopEditor'
-import CalendarList from './CalendarList'
-// import FareEditor from './FareEditor'
 import TimetableEditor from './TimetableEditor'
-
 import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
 
 export default class GtfsEditor extends Component {
@@ -196,6 +191,7 @@ export default class GtfsEditor extends Component {
       </Sidebar>
       <CurrentStatusMessage />
       <ConfirmModal ref='confirmModal'/>
+      <CurrentStatusModal ref='statusModal'/>
       </div>
     )
   }
