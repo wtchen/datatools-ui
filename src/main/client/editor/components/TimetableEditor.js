@@ -2,8 +2,6 @@ import React, {Component, PropTypes} from 'react'
 import { InputGroup, Table, Checkbox, ListGroup, Nav, NavItem, ListGroupItem, Button, ButtonGroup, DropdownButton, MenuItem, ButtonToolbar, Collapse, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 import moment from 'moment'
-// import ReactDataGrid from 'react-data-grid'
-// require('react-data-grid/addons')
 import update from 'react-addons-update'
 import objectPath from 'object-path'
 
@@ -102,7 +100,7 @@ export default class TimetableEditor extends Component {
     this.setState({
       data: sortedTrips, // tripRows
       edited: [],
-
+      hideDepartureTimes: false
     })
   }
   shouldComponentUpdate (nextProps) {
@@ -143,16 +141,13 @@ export default class TimetableEditor extends Component {
       paddingRight: '5px',
       paddingLeft: '5px',
     }
-    if (activePattern) {
-      // for (var i = 0; i < activePattern..length; i++) {
-        // activePattern.[i]
-      // }
+    const headerStyle = {
+      position: 'fixed',
+      zIndex: 1000,
+      backgroundColor: 'white',
+      width: `${this.state.width - 54}px`,
+      paddingRight: '10px'
     }
-    // activePattern && activePattern.patternStops.map((ps, index) => {
-    //   return {
-    //
-    //   }
-    // })
     const columns = [
       {
         name: 'Block ID',
@@ -186,11 +181,13 @@ export default class TimetableEditor extends Component {
           hidden: false,
           type: 'ARRIVAL_TIME'
         })
-        columns.push({
-          key: `stopTimes.${index}.departureTime`,
-          hidden: true,
-          type: 'DEPARTURE_TIME'
-        })
+        if (!this.state.hideDepartureTimes) {
+          columns.push({
+            key: `stopTimes.${index}.departureTime`,
+            hidden: true,
+            type: 'DEPARTURE_TIME'
+          })
+        }
       })
     }
     return (
@@ -199,13 +196,23 @@ export default class TimetableEditor extends Component {
         className='timetable-editor'
       >
       <div
-        style={{position: 'fixed', zIndex: 1000, backgroundColor: 'white', width: `${this.state.width - 54}px`, paddingRight: '10px'}}
+        className='timetable-header'
+        style={headerStyle}
       >
         <h3>
         <Form
           className='pull-right'
           inline
         >
+          <Checkbox
+            value={this.state.hideDepartureTimes}
+            onChange={(evt) => {
+              this.setState({hideDepartureTimes: !this.state.hideDepartureTimes})
+            }}
+          >
+            <small> Hide departure times</small>
+          </Checkbox>
+          {'  '}
           <InputGroup>
             <FormControl style={{width: '40px'}} type='text' />
             <InputGroup.Button>
@@ -332,7 +339,6 @@ export default class TimetableEditor extends Component {
             onClick={() => {
               if (this.props.activeComponent !== 'scheduleexception') {
                 this.props.setActiveEntity(feedSource.id, 'calendar', {id: 'new'})
-                // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
               }
             }}
           >
@@ -340,190 +346,192 @@ export default class TimetableEditor extends Component {
           </NavItem>
         </Nav>
       </div>
-      {activeSchedule
-        ?
-          // <Table striped hover>
-          <table style={{marginTop: '125px',}} className='handsontable'>
-            <thead
-            >
-              <tr>
-                <th>
-                  <input
-                    ref='check-all'
-                    type='checkbox'
-                    checked={this.state.selected[0] === '*'}
-                    // onChange={(e) => {
-                    //   console.log(e.checked)
-                    // }}
-                    onClick={(e) => {
-                      console.log(e.checked)
-                      if (this.state.selected[0] === '*') {
-                        this.setState({selected: []})
-                      }
-                      else {
-                        this.setState({selected: ['*']})
-                      }
-                    }}
-                  />
-                </th>
-                {columns.map(c => {
-                  if (c.hidden) return null
-                  return (
-                    <th
-                      style={{width: `${c.width}px`}}
-                      title={c.title ? c.title : c.name}
-                      colSpan={c.colSpan ? c.colSpan : '1'}
-                    >
-                      {c.name}
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.data
-                ? this.state.data.map((row, rowIndex) => {
-                  let rowValues = []
-                  let rowCheckedColor = '#F3FAF6'
-                  let rowIsChecked = this.state.selected[0] === '*' && this.state.selected.indexOf(rowIndex) === -1 || this.state.selected[0] !== '*' && this.state.selected.indexOf(rowIndex) !== -1
-                  return (
-                    <tr style={{margin: 0, padding: 0}}>
-                    <td ref={`check-${rowIndex}`}>
-                      <input
-                        type='checkbox'
-                        checked={rowIsChecked}
-                        onClick={(e) => {
-                          this.toggleRowSelection(rowIndex)
-                        }}
-                      />
-                    </td>
-                    {columns.map((col, colIndex) => {
-                      let values = []
-                      let val = objectPath.get(row, col.key)
-                      rowValues.push(val)
-                      let cellStyle = {
-                        width: '60px',
-                        color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000',
-                      }
-                      if (rowIsChecked) {
-                        cellStyle.backgroundColor = rowCheckedColor
-                      }
-                      let previousValue = rowValues[colIndex - 1]
-                      return (
-                        <EditableCell
-                          ref={`cell-${rowIndex}-${colIndex}`}
-                          onChange={(value) => {
-                            this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
-                          }}
-                          key={`cell-${rowIndex}-${colIndex}`}
-                          // onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${colIndex}`}) }}
-                          onRowSelect={(evt) => {
+      <div
+        className='timetable-body'
+        style={{marginTop: '125px'}}
+      >
+        {activeSchedule
+          ? <table className='handsontable'>
+              <thead
+              >
+                <tr>
+                  <th>
+                    <input
+                      ref='check-all'
+                      type='checkbox'
+                      checked={this.state.selected[0] === '*'}
+                      // onChange={(e) => {
+                      //   console.log(e.checked)
+                      // }}
+                      onClick={(e) => {
+                        console.log(e.checked)
+                        if (this.state.selected[0] === '*') {
+                          this.setState({selected: []})
+                        }
+                        else {
+                          this.setState({selected: ['*']})
+                        }
+                      }}
+                    />
+                  </th>
+                  {columns.map(c => {
+                    if (c.hidden) return null
+                    return (
+                      <th
+                        style={{width: `${c.width}px`}}
+                        title={c.title ? c.title : c.name}
+                        colSpan={c.colSpan && !this.state.hideDepartureTimes ? c.colSpan : '1'}
+                      >
+                        {c.name}
+                      </th>
+                    )
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.data
+                  ? this.state.data.map((row, rowIndex) => {
+                    let rowValues = []
+                    let rowCheckedColor = '#F3FAF6'
+                    let rowIsChecked = this.state.selected[0] === '*' && this.state.selected.indexOf(rowIndex) === -1 || this.state.selected[0] !== '*' && this.state.selected.indexOf(rowIndex) !== -1
+                    return (
+                      <tr style={{margin: 0, padding: 0}}>
+                      <td ref={`check-${rowIndex}`}>
+                        <input
+                          type='checkbox'
+                          checked={rowIsChecked}
+                          onClick={(e) => {
                             this.toggleRowSelection(rowIndex)
                           }}
-                          onLeft={(evt) => {
-                            if (colIndex - 1 >= 0) {
-                              this.setState({activeCell: `${rowIndex}-${colIndex - 1}`})
-                              return true
-                            }
-                            else {
-                              return false
-                            }
-                          }}
-                          onRight={(evt) => {
-                            if (colIndex + 1 <= columns.length - 1) {
-                              this.setState({activeCell: `${rowIndex}-${colIndex + 1}`})
-                              return true
-                            }
-                            else {
-                              return false
-                            }
-                          }}
-                          onUp={(evt) => {
-                            if (rowIndex - 1 >= 0) {
-                              this.setState({activeCell: `${rowIndex - 1}-${colIndex}`})
-                              return true
-                            }
-                            else {
-                              return false
-                            }
-                          }}
-                          onDown={(evt) => {
-                            if (rowIndex + 1 <= sortedTrips.length - 1) {
-                              this.setState({activeCell: `${rowIndex + 1}-${colIndex}`})
-                              return true
-                            }
-                            else {
-                              return false
-                            }
-                          }}
-                          duplicateLeft={(evt) => {
-                            console.log(previousValue)
-                            this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)
-                          }}
-                          handlePastedRows={(rows) => {
-                            console.log(rows)
-                            let newRows = [...this.state.data]
-                            let date = moment().startOf('day').format('YYYY-MM-DD')
-                            let editedRows = []
-                            for (var i = 0; i < rows.length; i++) {
-                              editedRows.push(i)
-                              // TODO: fix handlePaste to accommodate new rows objects
-                              for (var j = 0; j < rows[0].length; j++) {
-                                let path = `${rowIndex + i}.${columns[colIndex + j].key}`
-                                console.log(path)
-                                if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
-                                  let newValue = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
-                                  objectPath.set(newRows, path, newValue)
+                        />
+                      </td>
+                      {columns.map((col, colIndex) => {
+                        let values = []
+                        let val = objectPath.get(row, col.key)
+                        rowValues.push(val)
+                        let cellStyle = {
+                          width: '60px',
+                          color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000',
+                        }
+                        if (rowIsChecked) {
+                          cellStyle.backgroundColor = rowCheckedColor
+                        }
+                        let previousValue = rowValues[colIndex - 1]
+                        return (
+                          <EditableCell
+                            ref={`cell-${rowIndex}-${colIndex}`}
+                            onChange={(value) => {
+                              this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
+                            }}
+                            key={`cell-${rowIndex}-${colIndex}`}
+                            // onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${colIndex}`}) }}
+                            onRowSelect={(evt) => {
+                              this.toggleRowSelection(rowIndex)
+                            }}
+                            onLeft={(evt) => {
+                              if (colIndex - 1 >= 0) {
+                                this.setState({activeCell: `${rowIndex}-${colIndex - 1}`})
+                                return true
+                              }
+                              else {
+                                return false
+                              }
+                            }}
+                            onRight={(evt) => {
+                              if (colIndex + 1 <= columns.length - 1) {
+                                this.setState({activeCell: `${rowIndex}-${colIndex + 1}`})
+                                return true
+                              }
+                              else {
+                                return false
+                              }
+                            }}
+                            onUp={(evt) => {
+                              if (rowIndex - 1 >= 0) {
+                                this.setState({activeCell: `${rowIndex - 1}-${colIndex}`})
+                                return true
+                              }
+                              else {
+                                return false
+                              }
+                            }}
+                            onDown={(evt) => {
+                              if (rowIndex + 1 <= sortedTrips.length - 1) {
+                                this.setState({activeCell: `${rowIndex + 1}-${colIndex}`})
+                                return true
+                              }
+                              else {
+                                return false
+                              }
+                            }}
+                            duplicateLeft={(evt) => {
+                              console.log(previousValue)
+                              this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)
+                            }}
+                            handlePastedRows={(rows) => {
+                              console.log(rows)
+                              let newRows = [...this.state.data]
+                              let date = moment().startOf('day').format('YYYY-MM-DD')
+                              let editedRows = []
+                              for (var i = 0; i < rows.length; i++) {
+                                editedRows.push(i)
+                                // TODO: fix handlePaste to accommodate new rows objects
+                                for (var j = 0; j < rows[0].length; j++) {
+                                  let path = `${rowIndex + i}.${columns[colIndex + j].key}`
+                                  console.log(path)
+                                  if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
+                                    let newValue = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
+                                    objectPath.set(newRows, path, newValue)
+                                  }
+                                }
+                              }
+                              let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
+                              this.setState(update(this.state, stateUpdate))
+                            }}
+                            invalidData={/TIME/.test(col.type) && val >= 0 && val < previousValue}
+                            isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
+                            isFocused={false}
+                            renderTime={colIndex >= 3}
+                            cellRenderer={!/TIME/.test(col.type)
+                              ? (value) => value
+                              : (value) => {
+                                if (value >= 0)
+                                  return moment().startOf('day').seconds(value).format('HH:mm:ss')
+                                else {
+                                  return ''
                                 }
                               }
                             }
-                            let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
-                            this.setState(update(this.state, stateUpdate))
-                          }}
-                          invalidData={/TIME/.test(col.type) && val >= 0 && val < previousValue}
-                          isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
-                          isFocused={false}
-                          renderTime={colIndex >= 3}
-                          cellRenderer={!/TIME/.test(col.type)
-                            ? (value) => value
-                            : (value) => {
-                              if (value >= 0)
-                                return moment().startOf('day').seconds(value).format('HH:mm:ss')
-                              else {
-                                return ''
-                              }
-                            }
-                          }
-                          // reverseRenderer={(value) => {
-                          //   let date = moment().startOf('day').format('YYYY-MM-DD')
-                          //   return moment(date + 'T' + value, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
-                          // }}
-                          data={val}//colIndex < 3 || isNaN(col) ? col : moment().startOf('day').seconds(col).format('HH:mm:ss')}
-                          style={cellStyle}
-                        />
-                      )
-                    })}
-                    </tr>
-                  )
-                })
-                : null
-              }
-            </tbody>
-          </table>
-          // </Table>
-        : <p className='lead text-center'>
-            Choose a calendar to edit timetables or
-            {' '}
-            <a
-              bsStyle='link'
-              href='#'
-              onClick={(e) => {
-                e.preventDefault()
-                this.props.setActiveEntity(feedSource.id, 'calendar')
-              }}
-            >create a new one</a>.
-          </p>
-      }
+                            // reverseRenderer={(value) => {
+                            //   let date = moment().startOf('day').format('YYYY-MM-DD')
+                            //   return moment(date + 'T' + value, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
+                            // }}
+                            data={val}//colIndex < 3 || isNaN(col) ? col : moment().startOf('day').seconds(col).format('HH:mm:ss')}
+                            style={cellStyle}
+                          />
+                        )
+                      })}
+                      </tr>
+                    )
+                  })
+                  : null
+                }
+              </tbody>
+            </table>
+          : <p className='lead text-center'>
+              Choose a calendar to edit timetables or
+              {' '}
+              <a
+                bsStyle='link'
+                href='#'
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.props.setActiveEntity(feedSource.id, 'calendar', {id: 'new'})
+                }}
+              >create a new one</a>.
+            </p>
+        }
+      </div> {/* End timetable body */}
       </div>
     )
   }
