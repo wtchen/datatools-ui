@@ -75,11 +75,10 @@ export function toggleEditSetting (setting) {
   }
 }
 
-export function updateMapSetting (setting, value) {
+export function updateMapSetting (props) {
   return {
     type: 'UPDATE_MAP_SETTING',
-    setting,
-    value
+    props
   }
 }
 
@@ -129,7 +128,7 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     else if (subSubComponent && subSubComponentList.indexOf(subSubComponent) === -1) {
       url = `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/`
     }
-    if (entityId === 'new' && getState().editor.tableData[component].findIndex(e => e.id === 'new') === -1) {
+    if (entityId === 'new' && (!getState().editor.tableData[component] || getState().editor.tableData[component].findIndex(e => e.id === 'new') === -1)) {
       dispatch(createGtfsEntity(feedSourceId, component))
     }
     if (!getState().routing.locationBeforeTransitions || !getState().routing.locationBeforeTransitions.pathname || getState().routing.locationBeforeTransitions.pathname !== url) {
@@ -149,42 +148,50 @@ export function savingActiveGtfsEntity (component, entity) {
 
 export function saveActiveGtfsEntity (component, optionalEntity) {
   return function (dispatch, getState) {
-    let entity
+    let entity, feedId
     switch (component) {
       case 'stop':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveStop(entity.feedId, entity))
+        return dispatch(saveStop(feedId, entity))
       case 'route':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveRoute(entity.feedId, entity))
+        return dispatch(saveRoute(feedId, entity))
       case 'agency':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveAgency(entity.feedId, entity))
+        return dispatch(saveAgency(feedId, entity))
       case 'trippattern':
         let route = getState().editor.active.entity
         let patternId = getState().editor.active.subEntityId
         entity = optionalEntity || route.tripPatterns.find(p => p.id === patternId)
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveTripPattern(entity.feedId, entity))
+        return dispatch(saveTripPattern(feedId, entity))
       case 'calendar':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveCalendar(entity.feedId, entity))
+        return dispatch(saveCalendar(feedId, entity))
       case 'scheduleexception':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveScheduleException(entity.feedId, entity))
+        return dispatch(saveScheduleException(feedId, entity))
       case 'fare':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveFare(entity.feedId, entity))
+        return dispatch(saveFare(feedId, entity))
       case 'feedinfo':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.id || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveFeedInfo(entity.id, entity))
+        return dispatch(saveFeedInfo(feedId, entity))
       default:
         console.log('no action specified!')
         return
