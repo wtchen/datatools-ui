@@ -13,10 +13,10 @@ import { getEntityName } from '../util/gtfs'
 export default class EntityList extends Component {
 
   static propTypes = {
-    feedSource: PropTypes.object.isRequired,
-    entities: PropTypes.array.isRequired,
-    activeEntity: PropTypes.object.isRequired,
-    activeEntityId: PropTypes.string.isRequired,
+    feedSource: PropTypes.object,
+    entities: PropTypes.array,
+    activeEntity: PropTypes.object,
+    activeEntityId: PropTypes.string,
     width: PropTypes.number.isRequired,
     setActiveEntity: PropTypes.func.isRequired,
     updateActiveEntity: PropTypes.func.isRequired,
@@ -31,14 +31,9 @@ export default class EntityList extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.activeComponent){
-      if (nextProps.entity) {
-        let entity = nextProps.entity
-        this.setState({selectValue: {value: entity.id, label: getEntityName(nextProps.activeComponent, entity), entity}})
-      }
-      else {
-        this.setState({selectValue: null})
-      }
+    let fromIndex, toIndex
+    if (nextProps.activeComponent !== this.props.activeComponent) {
+      this.setState({fromIndex, toIndex})
     }
   }
   shouldComponentUpdate (nextProps) {
@@ -86,6 +81,7 @@ export default class EntityList extends Component {
       height: '100%',
       position: 'absolute',
       left: '0px',
+      zIndex: 1,
       backgroundColor: 'white',
       paddingRight: '0px',
       paddingLeft: sidePadding
@@ -95,7 +91,7 @@ export default class EntityList extends Component {
       var bName = getEntityName(this.props.activeComponent, b)
       if (a.isCreating && !b.isCreating) return -1
       if (!a.isCreating && b.isCreating) return 1
-      if (!isNaN(parseInt(aName)) && !isNaN(parseInt(bName))) {
+      if (!isNaN(parseInt(aName)) && !isNaN(parseInt(bName)) && !isNaN(+aName) && !isNaN(+bName)) {
         if (parseInt(aName) < parseInt(bName)) return -1
         if (parseInt(aName) > parseInt(bName)) return 1
         return 0
@@ -112,47 +108,60 @@ export default class EntityList extends Component {
           activeIndex = index
         }
         const isActive = activeEntity && entity.id === activeEntity.id
-        const isSelected = index >= this.state.fromIndex && index <= this.state.toIndex
+        const isSelected = typeof this.state.fromIndex !== 'undefined' && typeof this.state.toIndex !== 'undefined' && index >= this.state.fromIndex && index <= this.state.toIndex
         const name = getEntityName(this.props.activeComponent, entity) || '[Unnamed]'
         return {name, id: entity.id, isActive, isSelected}
       }
     )
     : []
     let shiftKey
-    const entityList = (
-      <div
-        onClick={(e) => {
-          console.log(e)
-          shiftKey = e.shiftKey
-        }}
-      >
-        <FlexTable
-          width={this.props.width - 5}
-          height={560}
-          disableHeader={true}
-          headerHeight={20}
-          rowHeight={25}
-          scrollToIndex={activeIndex}
-          rowClassName='entity-list-row noselect'
-          rowStyle={({ index }) => this._getRowStyle(index, list)}
-          rowCount={list.length}
-          onRowClick={({ index }) => {
-            // timeout set in order to get shiftkey from div event listener
-            setTimeout(() => {
-              this._onRowClick(index, list, shiftKey)
-            }, 15)
+    const entityList = list.length
+    ? (
+        <div
+          onClick={(e) => {
+            console.log(e)
+            shiftKey = e.shiftKey
           }}
-          rowGetter={({ index }) => list[index]}
         >
-          <FlexColumn
-            label='Name'
-            dataKey='name'
-            className='small entity-list-row'
+          <FlexTable
             width={this.props.width - 5}
-          />
-        </FlexTable>
+            height={560}
+            key={`${this.props.activeComponent}-table`}
+            disableHeader={true}
+            headerHeight={20}
+            rowHeight={25}
+            scrollToIndex={activeIndex}
+            rowClassName='entity-list-row noselect'
+            rowStyle={({ index }) => this._getRowStyle(index, list)}
+            rowCount={list.length}
+            onRowClick={({ index }) => {
+              // timeout set in order to get shiftkey from div event listener
+              setTimeout(() => {
+                this._onRowClick(index, list, shiftKey)
+              }, 15)
+            }}
+            rowGetter={({ index }) => list[index]}
+          >
+            <FlexColumn
+              label='Name'
+              dataKey='name'
+              className='small entity-list-row'
+              width={this.props.width - 5}
+            />
+          </FlexTable>
+          </div>
+        )
+      : <div style={{marginTop: '20px'}} className='text-center'>
+        <Button
+          bsSize='small'
+          disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
+          onClick={() => {
+            this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent)
+          }}
+        >
+          <Icon name='plus'/> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
+        </Button>
         </div>
-      )
 
     const activeTable = DT_CONFIG.modules.editor.spec
       .find(t => t.id === this.props.activeComponent)
@@ -237,15 +246,32 @@ export default class EntityList extends Component {
                 onClick={() => {
                   let fromIndex, toIndex
                   if (activeEntity) {
-                    this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
+                    this.props.showConfirmModal({
+                      title: `Delete ${this.props.activeComponent}?`,
+                      body: `Are you sure you want to delete this ${this.props.activeComponent}?`,
+                      onConfirm: () => {
+                        this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
+                        this.setState({fromIndex, toIndex})
+                        this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+                      }
+                    })
+                    // this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
                   }
                   else {
-                    for (var i = this.state.fromIndex; i <= this.state.toIndex; i++) {
-                      this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, sortedEntities[i].id)
-                    }
+                    this.props.showConfirmModal({
+                      title: `Delete ${+this.state.toIndex - +this.state.fromindex} ${this.props.activeComponent}s?`,
+                      body: `Are you sure you want to delete these ${this.state.toIndex - this.state.fromindex} ${this.props.activeComponent}s?`,
+                      onConfirm: () => {
+                        for (var i = 0; i < list.length; i++) {
+                          if (list[i].isSelected) {
+                            this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, list[i].id)
+                          }
+                        }
+                        this.setState({fromIndex, toIndex})
+                        this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+                      }
+                    })
                   }
-                  this.setState({fromIndex, toIndex})
-                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
                 }}
               >
                 <Icon name='trash'/>
@@ -256,14 +282,14 @@ export default class EntityList extends Component {
               this.props.activeComponent === 'stop'
               ? <span className='small'>Right-click map for new stop</span>
               : <Button
-                bsSize='small'
-                disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
-                onClick={() => {
-                  this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent)
-                }}
-              >
-                <Icon name='plus'/> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
-              </Button>
+                  bsSize='small'
+                  disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
+                  onClick={() => {
+                    this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent)
+                  }}
+                >
+                  <Icon name='plus'/> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
+                </Button>
             }
           </div>
           {/* Table view button */}
