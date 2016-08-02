@@ -288,7 +288,7 @@ export default class FeedSourceViewer extends Component {
             </Col>
           </Row>
 
-          <Tabs>
+          <Tabs id='feed-source-viewer-tabs'>
             <Tab eventKey='versions' title={<span><Glyphicon glyph='list' /> {messages.versions}</span>}>
               <FeedVersionNavigator
                 versions={fs.feedVersions}

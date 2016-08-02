@@ -402,7 +402,7 @@ export default class ProjectSettings extends Component {
                           </h5>
                         )
                         return (
-                          <Panel
+                          <Panel key={i}
                             header={server.name ? title : `[${messages.deployment.servers.serverPlaceholder}]`}
                             defaultExpanded={server.name === ''}
                             collapsible

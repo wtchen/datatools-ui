@@ -39,7 +39,7 @@ export default class EditorFeedSourcePanel extends Component {
                 <tbody>
                   {this.props.feedSource.editorSnapshots.map(snapshot => {
                     return (
-                      <tr>
+                      <tr key={snapshot.id}>
                         <td>{snapshot.name}</td>
                         <td>{moment(snapshot.date).format()}</td>
                         <td>
