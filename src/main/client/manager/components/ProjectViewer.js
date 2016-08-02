@@ -107,7 +107,7 @@ export default class ProjectViewer extends Component {
               </h2>
             </Col>
           </Row>
-          <Tabs
+          <Tabs id='project-viewer-tabs'
             activeKey={this.props.activeComponent ? this.props.activeComponent : 'sources'}
             onSelect={(key) => {
               if (key === 'sources') {
