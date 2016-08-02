@@ -11,6 +11,7 @@ export default class EditorSidebar extends Component {
   static propTypes = {
     activeComponent: PropTypes.string,
     feedSource: PropTypes.object,
+    feedInfo: PropTypes.object,
     setActiveEntity: PropTypes.func
   }
 
@@ -18,7 +19,7 @@ export default class EditorSidebar extends Component {
     super(props)
   }
   shouldComponentUpdate (nextProps) {
-    return nextProps.activeComponent !== this.props.activeComponent || !shallowEqual(nextProps.feedSource, this.props.feedSource)
+    return !shallowEqual(nextProps, this.props)
   }
   render () {
     const sidebarItems = [
@@ -33,11 +34,12 @@ export default class EditorSidebar extends Component {
     return (
       <Nav stacked bsStyle='pills' activeKey={activeComponent}>
         {sidebarItems.map(item => (
-          <OverlayTrigger placement='right' overlay={<Tooltip id={`${item.id}-tooltip`}>{item.title}</Tooltip>}>
+          <OverlayTrigger key={item.id} placement='right' overlay={<Tooltip id={`${item.id}-tooltip`}>{item.title}</Tooltip>}>
             <NavItem
               active={activeComponent === item.id || activeComponent === 'scheduleexception' && item.id === 'calendar'}
               href={item.id}
-              key={item.id}
+              key={`nav-${item.id}`}
+              disabled={['feedinfo', 'back'].indexOf(item.id) === -1 && !this.props.feedInfo}
               className='text-center'
               title={item.title}
               onClick={(e) => {
