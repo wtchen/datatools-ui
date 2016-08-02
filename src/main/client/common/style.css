@@ -41,23 +41,23 @@ body {
 .bus-stop-icon:hover {
   color: yellow;
 }
-.bus-stop-icon:active {
+/*.bus-stop-icon:active {
   background-color: blue;
-}
+}*/
 
 .bus-stop-icon-bg:hover {
   color: yellow;
 }
 .bus-stop-icon-bg:active {
-  background-color: blue;
+  color: blue;
 }
 
 .bus-stop-icon-fg:hover {
   color: yellow;
 }
-.bus-stop-icon-fg:active {
+/*.bus-stop-icon-fg:active {
   background-color: blue;
-}
+}*/
 
 /*Sticky footer styles*/
 
