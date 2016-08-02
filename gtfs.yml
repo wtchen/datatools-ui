@@ -28,14 +28,17 @@
     inputType: DATE
     columnWidth: 12
     helpContent: "The feed provides complete and reliable schedule information for service in the period from the beginning of the feed_start_date day to the end of the feed_end_date day. Both days are given as dates in YYYYMMDD format as for calendar.txt, or left empty if unavailable. The feed_end_date date must not precede the feed_start_date date if both are given. Feed providers are encouraged to give schedule data outside this period to advise of likely future service, but feed consumers should treat it mindful of its non-authoritative status. If feed_start_date or feed_end_date extend beyond the active calendar dates defined in calendar.txt and calendar_dates.txt, the feed is making an explicit assertion that there is no service for dates within the feed_start_date or feed_end_date range but not included in the active calendar dates."
-  - name: "feed_version"
-    required: false
-    inputType: TEXT
-    columnWidth: 12
-    helpContent: "The feed publisher can specify a string here that indicates the current version of their GTFS feed. GTFS-consuming applications can display this value to help feed publishers determine whether the latest version of their feed has been incorporated."
-  - name: defaultRouteType
+  - name: color
+    displayName: Default color
     datatools: true
-    columnWidth: 12
+    required: false
+    inputType: COLOR
+    columnWidth: 6
+    # helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
+  - name: defaultRouteType
+    displayName: Default route type
+    datatools: true
+    columnWidth: 6
     required: false
     inputType: DROPDOWN
     options:
@@ -55,6 +58,26 @@
       text: Gondola
     - value: 7
       text: Funicular
+  - name: "feed_version"
+    required: false
+    inputType: TEXT
+    columnWidth: 12
+    helpContent: "The feed publisher can specify a string here that indicates the current version of their GTFS feed. GTFS-consuming applications can display this value to help feed publishers determine whether the latest version of their feed has been incorporated."
+  - name: "defaultLat"
+    required: false
+    displayName: Default lat
+    datatools: true
+    inputType: LATITUDE
+    columnWidth: 6
+    # helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
+  - name: "defaultLon"
+    displayName: Default lon
+    required: false
+    datatools: true
+    inputType: LONGITUDE
+    columnWidth: 6
+    # helpContent: "The stop_lon field contains the longitude of a stop or station. The field value must be a valid WGS 84 longitude value from -180 to 180."
+
 
 - id: agency
   name: agency.txt
@@ -181,6 +204,34 @@
   name: routes.txt
   helpContent: This file contains information for a route.
   fields:
+  - name: status
+    datatools: true
+    displayName: Status
+    required: true
+    inputType: DROPDOWN
+    options:
+    - value: 'IN_PROGRESS'
+      text: 'In Progress'
+    - value: 'PENDING_APPROVAL'
+      text: 'Pending Approval'
+    - value: 'APPROVED'
+      text: 'Approved'
+    columnWidth: 6
+    adminOnly: true
+    # helpContent: The route_id field contains an ID that uniquely identifies a route. The route_id is dataset unique.
+  - name: publiclyVisible
+    datatools: true
+    displayName: Public?
+    required: true
+    inputType: DROPDOWN
+    options:
+    - value: 0
+      text: 'No'
+    - value: 1
+      text: 'Yes'
+    columnWidth: 6
+    adminOnly: true
+    # helpContent: The route_id field contains an ID that uniquely identifies a route. The route_id is dataset unique.
   - name: route_id
     required: true
     inputType: ID
@@ -242,8 +293,12 @@
     helpContent: In systems that have colors assigned to routes, the route_color field defines a color that corresponds to a route. The color must be provided as a six-character hexadecimal number, for example, 00FFFF. If no color is specified, the default route color is white (FFFFFF).
   - name: route_text_color
     required: false
-    inputType: COLOR
-    placeholder: '000000'
+    inputType: DROPDOWN
+    options:
+      - value: 'FFFFFF'
+        text: White
+      - value: '000000'
+        text: Black
     columnWidth: 6
     helpContent: The route_text_color field can be used to specify a legible color to use for text drawn against a background of route_color. The color must be provided as a six-character hexadecimal number, for example, FFD700. If no color is specified, the default text color is black (000000).
   - name: routeBrandingUrl
