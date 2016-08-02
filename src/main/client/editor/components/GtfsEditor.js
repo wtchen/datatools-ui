@@ -6,6 +6,7 @@ import { shallowEqual } from 'react-pure-render'
 import { LinkContainer } from 'react-router-bootstrap'
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsTable from './GtfsTable'
+import ConfirmModal from '../../common/components/ConfirmModal.js'
 import EditorMap from './EditorMap'
 import EditorSidebar from './EditorSidebar'
 import RouteEditor from './RouteEditor'
@@ -40,12 +41,10 @@ export default class GtfsEditor extends Component {
     if (nextProps.feedSourceId !== this.props.feedSourceId) {
       this.props.clearGtfsContent()
       this.props.onComponentMount(nextProps)
-      dispatch(getGtfsTable('calendar', feedSourceId))
+      this.props.getGtfsTable('calendar', feedSourceId)
     }
     // fetch table if it doesn't exist already and user changes tabs
-    if (nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
-      // console.log('getting table: ' + nextProps.activeComponent)
-      // console.log(nextProps.feedSource, this.props.feedSource)
+    if (nextProps.activeComponent && nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
       this.props.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
     }
     // fetch sub components of active entity on active entity switch (e.g., fetch trip patterns when route changed)
@@ -71,6 +70,10 @@ export default class GtfsEditor extends Component {
           break
       }
     }
+  }
+
+  showConfirmModal (props) {
+    this.refs.confirmModal.open(props)
   }
 
   render () {
@@ -99,6 +102,7 @@ export default class GtfsEditor extends Component {
             key='entity-details'
             offset={listWidth}
             stops={this.props.tableData.stop}
+            showConfirmModal={(props) => this.showConfirmModal(props)}
             {...this.props}
             getGtfsEntity={(type, id) => {
               return this.props.entities.find(ent => ent.id === id)
@@ -116,6 +120,7 @@ export default class GtfsEditor extends Component {
           <EditorSidebar
             activeComponent={this.props.activeComponent}
             feedSource={this.props.feedSource}
+            feedInfo={this.props.feedInfo}
             setActiveEntity={this.props.setActiveEntity}
           />
         }
@@ -127,6 +132,7 @@ export default class GtfsEditor extends Component {
           ? <TimetableEditor
               feedSource={feedSource}
               route={this.props.activeEntity}
+              showConfirmModal={(props) => this.showConfirmModal(props)}
               activePatternId={this.props.activeSubEntity}
               activeScheduleId={this.props.activeSubSubEntity}
               setActiveEntity={this.props.setActiveEntity}
@@ -153,6 +159,7 @@ export default class GtfsEditor extends Component {
                 deleteEntity={this.props.deleteEntity}
                 newEntityClicked={this.props.newEntityClicked}
                 entities={this.props.entities}
+                showConfirmModal={(props) => this.showConfirmModal(props)}
                 activeEntityId={this.props.activeEntityId}
                 activeComponent={this.props.activeComponent}
                 feedSource={this.props.feedSource}
@@ -166,7 +173,7 @@ export default class GtfsEditor extends Component {
         <EditorMap
           offset={this.props.activeComponent === 'feedinfo'
             ? detailsWidth
-            : this.props.activeEntity
+            : this.props.activeEntityId
             ? listWidth + detailsWidth
             : this.props.activeComponent
             ? listWidth
@@ -174,14 +181,19 @@ export default class GtfsEditor extends Component {
           }
           hidden={this.props.subSubComponent === 'timetable'}
           stops={this.props.tableData.stop || []}
+          showConfirmModal={(props) => this.showConfirmModal(props)}
+          drawStops={this.props.mapState.zoom > 14}
+          zoomToTarget={this.props.mapState.target}
           {...this.props}
         />
         <ActiveFeedInfoPanel
           feedSource={this.props.feedSource}
+          project={this.props.project}
           feedInfo={this.props.feedInfo}
         />
       </Sidebar>
       <CurrentStatusMessage />
+      <ConfirmModal ref='confirmModal'/>
       </div>
     )
   }
