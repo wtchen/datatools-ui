@@ -455,7 +455,9 @@ export default class TimetableEditor extends Component {
         style={{marginTop: '125px'}}
       >
         {activeSchedule
-          ? <table className='handsontable'>
+          ? <table
+              className='handsontable'
+            >
               <thead
               >
                 <tr>
