@@ -35,7 +35,7 @@ export default class ProjectsList extends React.Component {
         <Helmet
           title={messages.title}
         />
-        <Grid>
+        <Grid fluid>
           <Panel header={(<h3>Projects</h3>)}>
           <Row>
             <Col xs={4}>

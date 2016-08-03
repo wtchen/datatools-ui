@@ -72,7 +72,7 @@ export default class ProjectViewer extends Component {
       <Helmet
         title={this.props.project.name}
       />
-        <Grid>
+        <Grid fluid>
           <Row>
             <Col xs={12}>
               <Breadcrumbs

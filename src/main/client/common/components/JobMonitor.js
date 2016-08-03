@@ -8,7 +8,7 @@ export default class JobMonitor extends React.Component {
 
   static propTypes = {
     jobMonitor: PropTypes.object,
-    target: PropTypes.element,
+    target: PropTypes.object,
     visible: PropTypes.func,
     close: PropTypes.func
   }

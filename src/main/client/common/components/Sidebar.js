@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import { Navbar, Nav, NavItem, Button, ButtonToolbar } from 'react-bootstrap'
+import ReactDOM from 'react-dom'
+import { Navbar, Button, ButtonToolbar, Checkbox } from 'react-bootstrap'
 import { Icon } from 'react-fa'
 
 import SidebarPopover from './SidebarPopover'
@@ -8,12 +9,15 @@ import JobMonitor from './JobMonitor'
 export default class Sidebar extends Component {
 
   static propTypes = {
+    expanded: PropTypes.bool,
+    jobMonitor: PropTypes.object,
     username: PropTypes.string,
+
     loginHandler: PropTypes.func,
     logoutHandler: PropTypes.func,
     resetPasswordHandler: PropTypes.func,
-    jobMonitor: PropTypes.object,
-    setJobMonitorVisible: PropTypes.func
+    setJobMonitorVisible: PropTypes.func,
+    setSidebarExpanded: PropTypes.func
   }
 
   constructor (props) {
@@ -29,15 +33,15 @@ export default class Sidebar extends Component {
     }
   }
 
+  navSelected (key) {
+    this.setState({visiblePopover: (key === this.state.visiblePopover) ? null : key})
+  }
+
   render () {
     const messages = DT_CONFIG.messages.active.DatatoolsNavbar
 
-    const iconStyle = {
-      color: '#ccc'
-    }
-
     const navbarStyle = {
-      width: 50,
+      width: this.props.expanded ? 150 : 50,
       height: '100%',
       position: 'fixed',
       borderRadius: 0
@@ -50,45 +54,29 @@ export default class Sidebar extends Component {
         inverse
         style={navbarStyle}
       >
-
-        <Nav stacked bsStyle='pills' style={{ marginLeft: -25 }}>
-          <NavItem className='text-center'>
-            <Icon name='smile-o' size='3x' style={iconStyle} />
-          </NavItem>
-        </Nav>
-
-        <Nav stacked bsStyle='pills' style={{ position: 'absolute', bottom: 20, marginLeft: -16 }}
-          onSelect={(key) => {
-            if (key === this.state.visiblePopover) closePopover()
-            else this.setState({visiblePopover: key})
-          }}
-        >
-          <NavItem className='text-center' eventKey='job'>
-            <Icon name='bell' size='lg' style={iconStyle} ref='bellIcon'/>
-          </NavItem>
-
-          <NavItem className='text-center' eventKey='user'>
-            <Icon name='user' size='lg' style={iconStyle} ref='userIcon' />
-          </NavItem>
-
-          <NavItem className='text-center' eventKey='language'>
-            <Icon name='globe' size='lg' style={iconStyle} ref='languageIcon' />
-          </NavItem>
-
-          <NavItem className='text-center' eventKey='help'>
-            <Icon name='question-circle' size='lg' style={iconStyle} ref='helpIcon' />
-          </NavItem>
-        </Nav>
+        <div style={{ position: 'absolute', bottom: 10 }}>
+          <SidebarNavItem ref='jobNav' expanded={this.props.expanded}
+            icon='bell' label='Job Monitor'
+            onClick={() => this.navSelected('job')} />
+          <SidebarNavItem ref='userNav' expanded={this.props.expanded}
+            icon='user' label='Account'
+            onClick={() => this.navSelected('user')} />
+          <SidebarNavItem ref='settingsNav' expanded={this.props.expanded}
+            icon='gear' label='Settings'
+            onClick={() => this.navSelected('help')} />
+        </div>
       </Navbar>
 
+      {/* Job Monitor Popover */}
       <JobMonitor
         jobMonitor={this.props.jobMonitor}
-        target={this.refs.bellIcon}
+        target={this.refs.jobNav}
         visible={() => this.state.visiblePopover === 'job' }
         close={() => closePopover()}
       />
 
-      <SidebarPopover target={this.refs.userIcon} title={this.props.username}
+      {/* User Popover */}
+      <SidebarPopover target={this.refs.userNav} title={this.props.username}
         visible={() => this.state.visiblePopover === 'user' }
         close={() => closePopover()}
       >
@@ -104,20 +92,71 @@ export default class Sidebar extends Component {
         </ButtonToolbar>
       </SidebarPopover>
 
-      <SidebarPopover target={this.refs.languageIcon} title='Language'
-        visible={() => this.state.visiblePopover === 'language' }
-        close={() => closePopover()}
-      >
-      </SidebarPopover>
-
-      <SidebarPopover target={this.refs.helpIcon} title='Help'
+      {/* Settings Popover */}
+      <SidebarPopover target={this.refs.settingsNav} title='Settings'
+        expanded={this.props.expanded}
         visible={() => this.state.visiblePopover === 'help' }
         close={() => closePopover()}
       >
-        <div>Change Password</div>
-        <div>Logout</div>
+        <div>
+          <Checkbox ref='showLabelsCheckbox' checked={this.props.expanded}
+            onClick={() => { this.props.setSidebarExpanded(!this.props.expanded) }}
+          >
+            Show Sidebar Labels
+          </Checkbox>
+
+        </div>
       </SidebarPopover>
 
     </div>
+  }
+}
+
+class SidebarNavItem extends Component {
+
+  static propTypes = {
+    expanded: PropTypes.bool,
+    icon: PropTypes.string,
+    label: PropTypes.string,
+    onClick: PropTypes.func
+  }
+
+  render () {
+    const containerStyle = {
+      marginBottom: 20,
+      cursor: 'pointer'
+    }
+
+    const iconContainerStyle = {
+      width: 20,
+      height: 20,
+      textAlign: 'center',
+      float: 'left'
+    }
+
+    const iconStyle = {
+      color: '#ccc'
+    }
+
+    const labelStyle = {
+      color: '#ccc',
+      fontWeight: 'bold',
+      marginLeft: 30
+    }
+
+    return (
+      <div style={containerStyle} onClick={() => this.props.onClick()}>
+        <div style={iconContainerStyle}>
+          <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'
+
+          />
+        </div>
+        {this.props.expanded
+          ? <div style={labelStyle}>{this.props.label}</div>
+          : null
+        }
+        <div style={{ clear: 'both' }} />
+      </div>
+    )
   }
 }

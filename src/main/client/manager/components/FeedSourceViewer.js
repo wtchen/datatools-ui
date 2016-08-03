@@ -127,7 +127,7 @@ export default class FeedSourceViewer extends Component {
     if (this.props.isFetching) {
       return (
         <ManagerPage ref='page'>
-          <Grid>
+          <Grid fluid>
             <h1
               className='text-center'
               style={{
@@ -146,7 +146,7 @@ export default class FeedSourceViewer extends Component {
     } else if (!fs) {
       return (
         <ManagerPage ref='page'>
-          <Grid>
+          <Grid fluid>
             <Row>
               <Col xs={12}>
                 <p>No feed source found for <strong>{this.props.feedSourceId}</strong></p>
@@ -169,7 +169,7 @@ export default class FeedSourceViewer extends Component {
       <Helmet
         title={this.props.feedSource.name}
       />
-        <Grid>
+        <Grid fluid>
           <Row> {/* Breadcrumbs Row */}
             <Col xs={12}>
               <Breadcrumbs

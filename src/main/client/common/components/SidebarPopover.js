@@ -5,11 +5,13 @@ import { Glyphicon, Popover } from 'react-bootstrap'
 export default class SidebarPopover extends Component {
 
   static propTypes = {
-    target: PropTypes.element,
+    children: PropTypes.node,
+    expanded: PropTypes.bool,
+    target: PropTypes.object,
     title: PropTypes.string,
-    visible: PropTypes.func,
+
     close: PropTypes.func,
-    children: PropTypes.node
+    visible: PropTypes.func
   }
 
   constructor (props) {
@@ -64,7 +66,7 @@ export default class SidebarPopover extends Component {
   render () {
     const style = {
       position: 'fixed',
-      marginLeft: 60,
+      marginLeft: this.props.expanded ? 160 : 60,
       width: 276, // max from bootstrap
       top: this.state.top,
       visibility: this.props.visible() ? 'visible' : 'hidden'

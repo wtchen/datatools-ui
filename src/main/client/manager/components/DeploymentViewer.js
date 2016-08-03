@@ -43,7 +43,7 @@ export default class DeploymentViewer extends Component {
       <Helmet
         title={this.props.deployment.name}
       />
-        <Grid>
+        <Grid fluid>
           <Row>
             <Col xs={12}>
               <Breadcrumbs

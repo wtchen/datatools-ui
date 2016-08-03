@@ -9,6 +9,7 @@ import ConfirmModal from './ConfirmModal.js'
 import SelectFileModal from './SelectFileModal.js'
 import InfoModal from './InfoModal.js'
 import ManagerSidebar from '../containers/ManagerSidebar'
+import PageContent from '../containers/PageContent'
 
 import { getConfigProperty } from '../util/config'
 
@@ -43,21 +44,23 @@ export default class ManagerPage extends React.Component {
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
         <ManagerSidebar />
-        {/*<ManagerNavbar noMargin={this.props.noMargin}/>*/}
-        <div className='page'>
-          {this.props.children}
-
-          <footer className='footer'>
-            <div className='container'>
-              <ul className='list-inline text-center text-muted'>
-                <li><a href={getConfigProperty('application.changelog_url')}>Changelog</a></li>
-                <li><a href={getConfigProperty('application.docs_url')}>Guide</a></li>
-                <li><a href={`mailto:${getConfigProperty('application.support_email')}`}>Contact</a></li>
-              </ul>
-              <p className='text-center text-muted'>&copy; <a href='http://conveyal.com'>Conveyal</a></p>
+        <PageContent>
+            <div style={{ padding: 20 }}>
+              {this.props.children}
             </div>
-          </footer>
-        </div>
+
+            <footer className='footer'>
+              <div className='container'>
+                <ul className='list-inline text-center text-muted'>
+                  <li><a href={getConfigProperty('application.changelog_url')}>Changelog</a></li>
+                  <li><a href={getConfigProperty('application.docs_url')}>Guide</a></li>
+                  <li><a href={`mailto:${getConfigProperty('application.support_email')}`}>Contact</a></li>
+                </ul>
+                <p className='text-center text-muted'>&copy; <a href='http://conveyal.com'>Conveyal</a></p>
+              </div>
+            </footer>
+        </PageContent>
+
       </div>
     )
   }
