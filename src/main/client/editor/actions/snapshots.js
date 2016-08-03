@@ -109,15 +109,15 @@ export function deleteSnapshot (feedSource, snapshot) {
   }
 }
 
-export function importingSnapshotFromFeedVersion () {
+export function loadingFeedVersionForEditing () {
   return {
-    type: 'IMPORTING_SNAPSHOT_FROM_FEEDVERSION'
+    type: 'LOADING_FEEDVERSION_FOR_EDITING'
   }
 }
 
-export function importSnapshotFromFeedVersion (feedVersion, snapshot) {
+export function loadFeedVersionForEditing (feedVersion, snapshot) {
   return function (dispatch, getState) {
-    dispatch(importingSnapshotFromFeedVersion())
+    dispatch(loadingFeedVersionForEditing())
     const url = `/api/manager/secure/snapshot/import?feedVersionId=${feedVersion.id}`
     return secureFetch(url, getState(), 'post')
       .then((response) => {
