@@ -9,7 +9,7 @@ import { Grid, Row, Col, Button, Table, Panel, Glyphicon, Badge, Form, Tabs, Tab
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
 import languages from '../../common/util/languages'
-import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
 import MapModal from '../../common/components/MapModal.js'
 
 export default class ProjectSettings extends Component {
@@ -31,7 +31,7 @@ export default class ProjectSettings extends Component {
 
   render () {
     console.log(this.state)
-    const messages = DT_CONFIG.messages.active.ProjectSettings
+    const messages = getComponentMessages('ProjectSettings')
     const tabRowStyle = { marginTop: '20px' }
     const project = this.props.project
     const autoFetchChecked = typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds

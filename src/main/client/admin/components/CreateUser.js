@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 
 import UserSettings  from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class CreateUser extends React.Component {
 
@@ -35,7 +36,7 @@ export default class CreateUser extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.active.CreateUser
+    const messages = getComponentMessages('CreateUser')
     return (
       <div>
         <Button

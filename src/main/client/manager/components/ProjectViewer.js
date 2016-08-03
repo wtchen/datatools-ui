@@ -11,7 +11,7 @@ import WatchButton from '../../common/containers/WatchButton'
 import ProjectSettings from './ProjectSettings'
 import EditableTextField from '../../common/components/EditableTextField'
 import { defaultSorter, retrievalMethodString } from '../../common/util/util'
-import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
 
 export default class ProjectViewer extends Component {
 
@@ -57,7 +57,7 @@ export default class ProjectViewer extends Component {
     if(!this.props.project) {
       return <ManagerPage />
     }
-    const messages = DT_CONFIG.messages.active.ProjectViewer
+    const messages = getComponentMessages('ProjectViewer')
     const isWatchingProject = this.props.user.subscriptions.hasProjectSubscription(this.props.project.id, 'project-updated')
     const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
     const filteredFeedSources = this.props.project.feedSources
@@ -290,7 +290,7 @@ class DeploymentsPanel extends Component {
   //   })
   // }
   render () {
-    const messages = DT_CONFIG.messages.active.DeploymentsPanel
+    const messages = getComponentMessages('DeploymentsPanel')
     const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     return (

@@ -15,7 +15,7 @@ import ExternalPropertiesTable from './ExternalPropertiesTable'
 import FeedVersionNavigator from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
-import { isModuleEnabled } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -158,7 +158,7 @@ export default class FeedSourceViewer extends Component {
       )
     }
 
-    const messages = DT_CONFIG.messages.active.FeedSourceViewer
+    const messages = getComponentMessages('FeedSourceViewer')
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
@@ -471,7 +471,7 @@ export default class FeedSourceViewer extends Component {
             </Tab>
 
             <Tab eventKey='notes'
-              title={<span><Glyphicon glyph='comment' /> {window.DT_CONFIG.messages.active.NotesViewer.title}</span>}
+              title={<span><Glyphicon glyph='comment' /> {getComponentMessages('NotesViewer').title}</span>}
               onEnter={() => this.props.notesRequestedForFeedSource(fs)}
             >
               <NotesViewer

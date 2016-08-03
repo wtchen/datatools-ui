@@ -4,6 +4,7 @@ import update from 'react-addons-update'
 import ReactDOM from 'react-dom'
 
 import allPermissions from './permissions'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class UserSettings extends React.Component {
 
@@ -110,7 +111,7 @@ export default class UserSettings extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.active.UserSettings
+    const messages = getComponentMessages('UserSettings')
     let currentProject = this.props.projects[this.state.currentProjectIndex]
 
     const getProjectLabel = (access) => {
@@ -224,7 +225,7 @@ class ProjectSettings extends React.Component {
 
   render () {
     let lookup = {}
-    const messages = DT_CONFIG.messages.active.UserSettings
+    const messages = getComponentMessages('UserSettings')
 
     let feedSources = this.props.project.feedSources
     if (feedSources) {

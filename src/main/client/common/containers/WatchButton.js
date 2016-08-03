@@ -3,11 +3,13 @@ import { Button, Glyphicon, MenuItem } from 'react-bootstrap'
 import { updateTargetForSubscription } from '../../manager/actions/user'
 import { connect } from 'react-redux'
 
+import { getComponentMessages } from '../util/config'
+
 export class WatchButton extends React.Component {
   render () {
     console.log(this.props)
     const {dispatch, isWatching, user, target, subscriptionType} = this.props
-    const messages = DT_CONFIG.messages.active.WatchButton
+    const messages = getComponentMessages('WatchButton')
 
     if (!DT_CONFIG.application.notifications_enabled)
       return null

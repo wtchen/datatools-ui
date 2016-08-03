@@ -1,7 +1,17 @@
+import objectPath from 'object-path'
+
+export const getConfigProperty = (propertyString) => {
+  return objectPath.get(window.DT_CONFIG, propertyString)
+}
+
+export const getComponentMessages = (componentName) => {
+  return objectPath.get(window.DT_CONFIG, ['messages', 'active', componentName])
+}
+
 export const isModuleEnabled = (moduleName) => {
-  return DT_CONFIG.modules && DT_CONFIG.modules[moduleName] && DT_CONFIG.modules[moduleName].enabled
+  return objectPath.get(window.DT_CONFIG, ['modules', moduleName, 'enabled'])
 }
 
 export const isExtensionEnabled = (extensionName) => {
-  return DT_CONFIG.extensions && DT_CONFIG.extensions[extensionName] && DT_CONFIG.extensions[extensionName].enabled
+  return objectPath.get(window.DT_CONFIG, ['extensions', extensionName, 'enabled'])
 }

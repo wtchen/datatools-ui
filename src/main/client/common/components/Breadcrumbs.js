@@ -2,12 +2,14 @@ import React from 'react'
 import { Link } from 'react-router'
 import { Glyphicon } from 'react-bootstrap'
 
+import { getComponentMessages } from '../util/config'
+
 export default class Breadcrumbs extends React.Component {
   constructor (props) {
     super(props)
   }
   render () {
-    const messages = DT_CONFIG.messages.active.Breadcrumbs
+    const messages = getComponentMessages('Breadcrumbs')
     return (
       <ol className='breadcrumb'>
         <li><Link to='/'>{messages.root}</Link></li>

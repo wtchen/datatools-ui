@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 
-import { isModuleEnabled } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
 import FeedVersionViewer from './FeedVersionViewer'
 import EditableTextField from '../../common/components/EditableTextField'
 
@@ -35,7 +35,7 @@ export default class FeedVersionNavigator extends Component {
       fontSize: '24px',
       fontWeight: 'bold'
     }
-    const messages = DT_CONFIG.messages.active.FeedVersionNavigator
+    const messages = getComponentMessages('FeedVersionNavigator')
     const hasVersions = this.props.versions && this.props.versions.length > 0
 
     const sortedVersions = hasVersions && this.props.versions.sort((a, b) => {

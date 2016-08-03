@@ -6,6 +6,7 @@ import Select from 'react-select'
 
 // import timezones from '../util/timezones'
 import moment_tz from 'moment-timezone'
+import { getComponentMessages } from '../util/config'
 
 export default class TimezoneSelect extends React.Component {
   constructor(props) {
@@ -35,7 +36,7 @@ export default class TimezoneSelect extends React.Component {
   }
   render() {
     // console.log('render search feeds', this.props.feeds)
-    const messages = DT_CONFIG.messages.active.TimezoneSelect
+    const messages = getComponentMessages('TimezoneSelect')
 
     const options = moment_tz.tz.names().map(tz => ({value: tz, label: tz}))
     const handleChange = (input) => {

@@ -10,7 +10,7 @@ import Breadcrumbs from '../../common/components/Breadcrumbs'
 import EditableTextField from '../../common/components/EditableTextField'
 import { versionsSorter, retrievalMethodString } from '../../common/util/util'
 import languages from '../../common/util/languages'
-import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
 
 export default class DeploymentViewer extends Component {
 
@@ -34,7 +34,7 @@ export default class DeploymentViewer extends Component {
       fs.deployable &&
       fs.latestValidation
     ) : []
-    const messages = DT_CONFIG.messages.active.DeploymentViewer
+    const messages = getComponentMessages('DeploymentViewer')
     const versions = this.props.deployment.feedVersions.sort(versionsSorter)
 
     console.log(this.props.deployment)

@@ -6,6 +6,7 @@ import { Link } from 'react-router'
 import ManagerPage from '../../common/components/ManagerPage'
 import EditableTextField from '../../common/components/EditableTextField'
 import defaultSorter from '../../common/util/util'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class ProjectsList extends React.Component {
 
@@ -22,7 +23,7 @@ export default class ProjectsList extends React.Component {
     if (!this.props.projects) {
       return <ManagerPage />
     }
-    const messages = DT_CONFIG.messages.active.ProjectsList
+    const messages = getComponentMessages('ProjectsList')
     const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const visibleProjects = this.props.projects.filter((project) => {
       if(project.isCreating) return true // projects actively being created are always visible

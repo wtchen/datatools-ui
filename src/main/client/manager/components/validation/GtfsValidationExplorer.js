@@ -8,6 +8,7 @@ import IssuesMap from './IssuesMap'
 import IsochroneMap from './IsochroneMap'
 import GtfsValidationSummary from './GtfsValidationSummary'
 import TripsChart from './TripsChart'
+import { getComponentMessages } from '../../../common/util/config'
 
 export default class GtfsValidationExplorer extends Component {
 
@@ -33,7 +34,7 @@ export default class GtfsValidationExplorer extends Component {
 
   render() {
     const version = this.props.version
-    const messages = DT_CONFIG.messages.active.GtfsValidationExplorer
+    const messages = getComponentMessages('GtfsValidationExplorer')
 
     if (!version || !this.props.version.validationResult) {
       return (
