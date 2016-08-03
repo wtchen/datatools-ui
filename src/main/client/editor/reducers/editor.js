@@ -315,7 +315,7 @@ const editor = (state = defaultState, action) => {
           agencyBrandingUrl: ent.agencyBrandingUrl,
 
           // gtfs spec props
-          agency_id: ent.gtfsAgencyId,
+          agency_id: ent.agencyId,
           agency_name: ent.name,
           agency_url: ent.url,
           agency_timezone: ent.timezone,
@@ -628,7 +628,7 @@ const editor = (state = defaultState, action) => {
               return {
                 id: ent.id,
                 feedId: ent.feedId,
-                agency_id: ent.gtfsAgencyId,
+                agency_id: ent.agencyId,
                 agency_name: ent.name,
                 agency_url: ent.url,
                 agency_timezone: ent.timezone,
