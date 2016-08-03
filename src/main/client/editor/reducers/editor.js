@@ -1,6 +1,8 @@
 import update from 'react-addons-update'
+import rbush from 'rbush'
 import polyUtil from 'polyline-encoded'
-import { getControlPoints } from '../util/gtfs'
+import { getControlPoints, getEntityBounds } from '../util/gtfs'
+import { latLngBounds } from 'leaflet'
 
 const mapStop = (s) => {
   return {
@@ -42,13 +44,15 @@ const defaultState = {
   },
   mapState: {
     zoom: null,
-    bounds: null
+    bounds: latLngBounds([[60, 60], [-60, -20]]),
+    target: null
   },
   tableData: {},
+  stopTree: null,
   validation: null
 }
 const editor = (state = defaultState, action) => {
-  let stateUpdate, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates
+  let stateUpdate, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState
   switch (action.type) {
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
@@ -56,10 +60,16 @@ const editor = (state = defaultState, action) => {
       }
       return state
     case 'UPDATE_MAP_SETTING':
+      mapState = {...state.mapState}
+      for (var key in action.props) {
+        mapState[key] = action.props[key]
+      }
+      if (!('target' in action.props)) {
+        mapState.target = null
+      }
+      console.log(mapState)
       return update(state, {
-        mapState: {
-          [action.setting]: {$set: action.value}
-        }
+        mapState: {$set: mapState}
       })
     case 'TOGGLE_EDIT_SETTING':
       if (action.setting === 'editGeometry' && !state.editSettings.editGeometry) {
@@ -262,7 +272,6 @@ const editor = (state = defaultState, action) => {
           for (var key in action.props) {
             console.log(key, action.props[key])
             activeEntity[key] = action.props[key]
-
           }
           console.log(activeEntity)
           stateUpdate = {
@@ -311,7 +320,7 @@ const editor = (state = defaultState, action) => {
           feedId: ent.feedId,
 
           // gtfs spec props
-          agency_id: ent.gtfsAgencyId,
+          agency_id: ent.agencyId,
           agency_name: ent.name,
           agency_url: ent.url,
           agency_timezone: ent.timezone,
@@ -368,34 +377,43 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_FEED_INFO':
-      if (!action.feedInfo) return state
-      const feedInfo = {
-        // datatools props
-        id: action.feedInfo.id,
-        color: action.feedInfo.color,
-        defaultLat: action.feedInfo.defaultLat,
-        defaultLon: action.feedInfo.defaultLon,
-        defaultRouteType: action.feedInfo.defaultRouteType,
+      const feedInfo = action.feedInfo
+        ? {
+            // datatools props
+            id: action.feedInfo.id,
+            color: action.feedInfo.color,
+            defaultLat: action.feedInfo.defaultLat,
+            defaultLon: action.feedInfo.defaultLon,
+            defaultRouteType: action.feedInfo.defaultRouteType,
 
-        // gtfs spec props
-        feed_end_date: action.feedInfo.feedEndDate,
-        feed_start_date: action.feedInfo.feedStartDate,
-        feed_lang: action.feedInfo.feedLang,
-        feed_publisher_name: action.feedInfo.feedPublisherName,
-        feed_publisher_url: action.feedInfo.feedPublisherUrl,
-        feed_version: action.feedInfo.feedVersion,
+            // gtfs spec props
+            feed_end_date: action.feedInfo.feedEndDate,
+            feed_start_date: action.feedInfo.feedStartDate,
+            feed_lang: action.feedInfo.feedLang,
+            feed_publisher_name: action.feedInfo.feedPublisherName,
+            feed_publisher_url: action.feedInfo.feedPublisherUrl,
+            feed_version: action.feedInfo.feedVersion,
+          }
+        : null
+      let mapState = {...state.mapState}
+      if (feedInfo && feedInfo.defaultLon && feedInfo.defaultLat) {
+        mapState.bounds = getEntityBounds([feedInfo.defaultLon, feedInfo.defaultLat], 0.5)
+        mapState.target = feedInfo.id
       }
+
       if (state.active.component === 'feedinfo') {
         return update(state, {
           tableData: {feedinfo: {$set: feedInfo}},
           active: {
             entity: {$set: feedInfo},
             edited: {$set: false}
-          }
+          },
+          mapState: {$set: mapState}
         })
       } else {
         return update(state, {
-          tableData: {feedinfo: {$set: feedInfo}}
+          tableData: {feedinfo: {$set: feedInfo}},
+          mapState: {$set: mapState}
         })
       }
     case 'RECEIVE_CALENDARS':
@@ -472,6 +490,8 @@ const editor = (state = defaultState, action) => {
           id: r.id,
           feedId: r.feedId,
           routeBrandingUrl: r.routeBrandingUrl,
+          publiclyVisible: r.publiclyVisible,
+          status: r.status,
 
           // gtfs spec props
           agency_id: r.agencyId,
@@ -558,11 +578,13 @@ const editor = (state = defaultState, action) => {
       }
     case 'RECEIVE_STOPS':
       const stops = action.stops ? action.stops.map(mapStop) : []
-
+      var tree = rbush(9, ['[0]', '[1]', '[0]', '[1]'])
+      tree.load(stops.map(s => ([s.stop_lon, s.stop_lat, s])))
       stopIndex = state.active.entity && action.stops.findIndex(s => s.id === state.active.entity.id)
       if (stopIndex !== -1) {
         return update(state, {
           tableData: {stop: {$set: stops}},
+          stopTree: {$set: tree},
           active: {
             entity: {$set: stops[stopIndex]},
             edited: {$set: false}
@@ -570,7 +592,8 @@ const editor = (state = defaultState, action) => {
         })
       } else {
         return update(state, {
-          tableData: {stop: {$set: stops}}
+          tableData: {stop: {$set: stops}},
+          stopTree: {$set: tree}
         })
       }
     case 'RECEIVE_STOP':
@@ -610,7 +633,7 @@ const editor = (state = defaultState, action) => {
               return {
                 id: ent.id,
                 feedId: ent.feedId,
-                agency_id: ent.gtfsAgencyId,
+                agency_id: ent.agencyId,
                 agency_name: ent.name,
                 agency_url: ent.url,
                 agency_timezone: ent.timezone,

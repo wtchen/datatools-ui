@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom'
 import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar } from 'react-bootstrap'
 
 import WatchButton from '../../common/containers/WatchButton'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class NotesViewer extends Component {
 
@@ -24,7 +25,7 @@ export default class NotesViewer extends Component {
     }
   }
   render () {
-    const messages = window.DT_CONFIG.messages.active.NotesViewer
+    const messages = getComponentMessages('NotesViewer')
 
     const isWatchingComments = this.props.feedSource
       ? this.props.user.subscriptions.hasFeedSubscription(this.props.feedSource.projectId, this.props.feedSource.id, 'feed-commented-on')

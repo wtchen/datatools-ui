@@ -4,6 +4,7 @@ import com.conveyal.datatools.common.status.MonitorableJob;
 import com.conveyal.datatools.editor.datastore.FeedTx;
 import com.conveyal.datatools.editor.models.Snapshot;
 import com.conveyal.datatools.editor.models.transit.Agency;
+import com.conveyal.datatools.editor.models.transit.Fare;
 import com.conveyal.datatools.editor.models.transit.Route;
 import com.conveyal.datatools.editor.models.transit.Stop;
 import com.conveyal.datatools.editor.models.transit.StopTime;
@@ -11,10 +12,7 @@ import com.conveyal.datatools.editor.models.transit.Trip;
 import com.conveyal.datatools.manager.DataManager;
 import com.conveyal.datatools.manager.models.FeedVersion;
 import com.conveyal.gtfs.GTFSFeed;
-import com.conveyal.gtfs.model.CalendarDate;
-import com.conveyal.gtfs.model.Entity;
-import com.conveyal.gtfs.model.Service;
-import com.conveyal.gtfs.model.ShapePoint;
+import com.conveyal.gtfs.model.*;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -43,6 +41,8 @@ import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
+import static spark.Spark.halt;
+
 
 public class ProcessGtfsSnapshotMerge extends MonitorableJob {
     public static final Logger LOG = LoggerFactory.getLogger(ProcessGtfsSnapshotMerge.class);
@@ -59,9 +59,6 @@ public class ProcessGtfsSnapshotMerge extends MonitorableJob {
     private Status status;
     private EditorFeed feed;
 
-    /** once the merge runs this will have the ID of the created agency */
-    //public String agencyId;
-
     public FeedVersion feedVersion;
 
     /*public ProcessGtfsSnapshotMerge (File gtfsFile) {
@@ -69,7 +66,7 @@ public class ProcessGtfsSnapshotMerge extends MonitorableJob {
     }*/
 
     public ProcessGtfsSnapshotMerge (FeedVersion feedVersion, String owner) {
-        super(owner, "Processing snapshot for " + feedVersion.getFeedSource().name, JobType.PROCESS_SNAPSHOT);
+        super(owner, "Creating snapshot for " + feedVersion.getFeedSource().name, JobType.PROCESS_SNAPSHOT);
         this.gtfsFile = feedVersion.getGtfsFile();
         this.feedVersion = feedVersion;
         status = new Status();
@@ -89,34 +86,54 @@ public class ProcessGtfsSnapshotMerge extends MonitorableJob {
 
         GlobalTx gtx = VersionedDataStore.getGlobalTx();
 
-        // map from (non-gtfs) agency IDs to transactions.
-        //Map<String, FeedTx> agencyTxs = Maps.newHashMap();
-
-
         // create a new feed based on this version
         FeedTx feedTx = VersionedDataStore.getFeedTx(feedVersion.feedSourceId);
+
         feed = new EditorFeed();
         feed.setId(feedVersion.feedSourceId);
         Rectangle2D bounds = feedVersion.getValidationSummary().bounds;
         feed.defaultLat = bounds.getCenterY();
         feed.defaultLon = bounds.getCenterX();
-        gtx.feeds.put(feedVersion.feedSourceId, feed);
 
 
         try {
-            input = feedVersion.getGtfsFeed();
+            // clear the existing data
+            for(String key : feedTx.agencies.keySet()) feedTx.agencies.remove(key);
+            for(String key : feedTx.routes.keySet()) feedTx.routes.remove(key);
+            for(String key : feedTx.stops.keySet()) feedTx.stops.remove(key);
+            for(String key : feedTx.calendars.keySet()) feedTx.calendars.remove(key);
+            for(String key : feedTx.exceptions.keySet()) feedTx.exceptions.remove(key);
+            for(String key : feedTx.fares.keySet()) feedTx.fares.remove(key);
+            for(String key : feedTx.tripPatterns.keySet()) feedTx.tripPatterns.remove(key);
+            for(String key : feedTx.trips.keySet()) feedTx.trips.remove(key);
+            LOG.info("Cleared old data");
+
+            // input = feedVersion.getGtfsFeed();
+            // TODO: use GtfsCache?
+            input = GTFSFeed.fromFile(feedVersion.getGtfsFile().getAbsolutePath());
+            if(input == null) return;
 
             LOG.info("GtfsImporter: importing feed...");
 
-            // load the basic feed info
+            // load feed_info.txt
+            if(input.feedInfo.size() > 0) {
+                FeedInfo feedInfo = input.feedInfo.values().iterator().next();
+                feed.feedPublisherName = feedInfo.feed_publisher_name;
+                feed.feedPublisherUrl = feedInfo.feed_publisher_url;
+                feed.feedLang = feedInfo.feed_lang;
+                feed.feedEndDate = feedInfo.feed_end_date;
+                feed.feedStartDate = feedInfo.feed_start_date;
+                feed.feedVersion = feedInfo.feed_version;
+            }
+            gtx.feeds.put(feedVersion.feedSourceId, feed);
 
             // load the GTFS agencies
             for (com.conveyal.gtfs.model.Agency gtfsAgency : input.agency.values()) {
                 Agency agency = new Agency(gtfsAgency, feed);
-                //agencyId = agency.id;
-                //agency.sourceId = sourceId;
+
                 // don't save the agency until we've come up with the stop centroid, below.
                 agencyCount++;
+
                 // we do want to use the modified agency ID here, because everything that refers to it has a reference
                 // to the agency object we updated.
                 feedTx.agencies.put(agency.id, agency);
@@ -365,8 +382,6 @@ public class ProcessGtfsSnapshotMerge extends MonitorableJob {
 
                 for (String tripId : pattern.getValue()) {
                     com.conveyal.gtfs.model.Trip gtfsTrip = input.trips.get(tripId);
-                    //String agencyId = agencyIdMap.get(gtfsTrip.route.agency.agency_id).id;
-                    //FeedTx tx = agencyTxs.get(agencyId);
 
                     if (!tripPatternsByRoute.containsKey(gtfsTrip.route_id)) {
                         TripPattern pat = createTripPatternFromTrip(gtfsTrip, feedTx);
@@ -424,10 +439,14 @@ public class ProcessGtfsSnapshotMerge extends MonitorableJob {
             gtx.commit();
 
             // create an initial snapshot for this FeedVersion
-            Snapshot snapshot = VersionedDataStore.takeSnapshot(feed.id, "Initial state for " + feedVersion.id, "none");
+            Snapshot snapshot = VersionedDataStore.takeSnapshot(feed.id, "Snapshot of " + feedVersion.name, "none");
 
 
             LOG.info("Imported GTFS file: " + agencyCount + " agencies; " + routeCount + " routes;" + stopCount + " stops; " +  stopTimeCount + " stopTimes; " + tripCount + " trips;" + shapePointCount + " shapePoints");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            halt(404, "Failed to process GTFS snapshot.");
         }
         finally {
             feedTx.rollbackIfOpen();
@@ -466,7 +485,7 @@ public class ProcessGtfsSnapshotMerge extends MonitorableJob {
         TripPattern patt = new TripPattern();
         com.conveyal.gtfs.model.Route gtfsRoute = input.routes.get(gtfsTrip.route_id);
         patt.routeId = routeIdMap.get(gtfsTrip.route_id).id;
-        patt.feedId = feed.id; //agencyId = agencyIdMap.get(gtfsTrip.route.agency.agency_id).id;
+        patt.feedId = feed.id;
         if (gtfsTrip.shape_id != null) {
             if (!shapes.containsKey(gtfsTrip.shape_id)) {
                 LOG.warn("Missing shape for shape ID {}, referenced by trip {}", gtfsTrip.shape_id, gtfsTrip.trip_id);

@@ -5,6 +5,7 @@ import { PureComponent, shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 
 import languages from '../util/languages'
+import { getComponentMessages } from '../util/config'
 
 export default class LanguageSelect extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ export default class LanguageSelect extends React.Component {
   }
   render() {
     // console.log('render search feeds', this.props.feeds)
-    const messages = DT_CONFIG.messages.active.LanguageSelect
+    const messages = getComponentMessages('LanguageSelect')
 
     const options = languages.map(lang => ({value: lang.code, label: lang.name}))
     const handleChange = (input) => {

@@ -25,7 +25,7 @@ export function saveAgency (feedId, agency) {
     const data = {
       // defaultLat:"33.755",
       // defaultLon:"-84.39",
-      gtfsAgencyId: agency.agency_id,
+      agencyId: agency.agency_id,
       lang: agency.agency_lang,
       feedId: agency.feedId,
       name: agency.agency_name,

@@ -144,7 +144,8 @@ FeedVersionNavigator:
   previous: Previous
   next: Next
   download: Download
-  edit: Edit
+  load: Load for Editing
+  confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
   feed: Feed
   delete: Delete
 NotesViewer:

@@ -1,5 +1,6 @@
 package com.conveyal.datatools.editor.controllers.api;
 
+import com.conveyal.datatools.editor.utils.S3Utils;
 import com.conveyal.datatools.editor.datastore.FeedTx;
 import com.conveyal.datatools.manager.models.JsonViews;
 import com.conveyal.datatools.manager.utils.json.JsonManager;
@@ -16,6 +17,9 @@ import org.mapdb.Fun.Tuple2;
 
 import java.util.Collection;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
@@ -25,6 +29,7 @@ import static spark.Spark.*;
 public class RouteController {
     public static JsonManager<Route> json =
             new JsonManager<>(Route.class, JsonViews.UserInterface.class);
+    private static Logger LOG = LoggerFactory.getLogger(Route.class);
     public static Object getRoute(Request req, Response res) {
         String id = req.params("id");
         String feedId = req.queryParams("feedId");
@@ -138,6 +143,40 @@ public class RouteController {
                 route.gtfsRouteId = "ROUTE_" + id;
             }
             
+            tx.routes.put(id, route);
+            tx.commit();
+
+            return route;
+        } catch (Exception e) {
+            e.printStackTrace();
+            halt(400);
+        }
+        return null;
+    }
+
+    public static Object uploadRouteBranding(Request req, Response res) {
+        Route route;
+        String id = req.params("id");
+        String feedId = req.queryParams("feedId");
+
+        try {
+            if (feedId == null) {
+                halt(400);
+            }
+            FeedTx tx = VersionedDataStore.getFeedTx(feedId);
+
+            if (!tx.routes.containsKey(id)) {
+                tx.rollback();
+                halt(404);
+            }
+
+            route = tx.routes.get(id);
+
+            String url = S3Utils.uploadBranding(req, id);
+
+            // set routeBrandingUrl to s3 location
+            route.routeBrandingUrl = url;
+
             tx.routes.put(id, route);
             tx.commit();
 
@@ -278,6 +317,7 @@ public class RouteController {
         post(apiPrefix + "secure/route/merge", RouteController::mergeRoutes, json::write);
         post(apiPrefix + "secure/route", RouteController::createRoute, json::write);
         put(apiPrefix + "secure/route/:id", RouteController::updateRoute, json::write);
+        post(apiPrefix + "secure/route/:id/uploadbranding", RouteController::uploadRouteBranding, json::write);
         delete(apiPrefix + "secure/route/:id", RouteController::deleteRoute, json::write);
     }
 }

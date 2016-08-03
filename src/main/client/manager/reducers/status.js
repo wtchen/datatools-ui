@@ -61,7 +61,7 @@ const config = (state = {
     case 'SAVING_DEPLOYMENT':
       return update(state, {message: {$set: 'Saving deployment...'}})
     case 'REQUESTING_GTFSEDITOR_SNAPSHOTS':
-      return update(state, {message: {$set: 'Loading Snapshots...'}})
+      return update(state, {message: {$set: 'Loading snapshots...'}})
     case 'SAVING_AGENCY':
       return update(state, {message: {$set: 'Saving agency...'}})
     case 'SAVING_STOP':
@@ -84,6 +84,8 @@ const config = (state = {
       return update(state, {message: {$set: 'Restoring snapshot...'}})
     case 'RENAMING_FEEDVERSION':
       return update(state, {message: {$set: 'Renaming feed version...'}})
+    case 'LOADING_FEEDVERSION_FOR_EDITING':
+      return update(state, {message: {$set: 'Loading version into editor...'}})
 
     // Status Modal
     case 'SET_ERROR_MESSAGE':

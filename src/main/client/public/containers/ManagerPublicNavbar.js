@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 
 import DatatoolsNavbar from '../../common/components/DatatoolsNavbar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
+import { getConfigProperty } from '../../common/util/config'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    title: DT_CONFIG.application.title,
+    title: getConfigProperty('application.title'),
     managerUrl: '/project',
     editorUrl: null,
     userAdminUrl: null,

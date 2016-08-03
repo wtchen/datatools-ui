@@ -2,7 +2,7 @@ import React from 'react'
 import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 
-import { isModuleEnabled, isExtensionEnabled } from '../../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../../common/util/config'
 
 export default class GtfsValidationViewer extends React.Component {
 
@@ -18,7 +18,7 @@ export default class GtfsValidationViewer extends React.Component {
   render () {
 
     const result = this.props.validationResult
-    const messages = DT_CONFIG.messages.active.GtfsValidationViewer
+    const messages = getComponentMessages('GtfsValidationViewer')
 
     const header = (
       <h3 onClick={() => {
@@ -100,7 +100,7 @@ class ResultTable extends React.Component {
     const tableStyle = {
       tableLayout: 'fixed'
     }
-    const messages = DT_CONFIG.messages.active.ResultTable
+    const messages = getComponentMessages('ResultTable')
 
     const breakWordStyle = {
       wordWrap: 'break-word',

@@ -71,7 +71,7 @@ export function createUser (credentials) {
     return secureFetch(url, getState(), 'post', credentials)
       .then(response => response.json())
       .then(profile => {
-        dispatch(createdUser(JSON.parse(profile)))
+        dispatch(createdUser(profile))
         return dispatch(fetchUsers())
       })
   }

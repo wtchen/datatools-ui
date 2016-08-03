@@ -3,8 +3,9 @@ import { secureFetch } from '../../common/util/util'
 import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
 import { fetchRtdSigns } from './signs'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
+import { getConfigProperty } from '../../common/util/config'
 
-function requestProjects() {
+function requestProjects () {
   return {
     type: 'REQUEST_PROJECTS',
   }
@@ -26,7 +27,7 @@ export function fetchProjects () {
       .then((projects) => {
         console.log('received projects', projects)
         dispatch(receiveProjects(projects))
-        project = getState().projects.active || projects.find(proj => proj.id === DT_CONFIG.application.active_project)
+        project = getState().projects.active || projects.find(proj => proj.id === getConfigProperty('application.active_project'))
         return dispatch(fetchProjectFeeds(project.id))
       })
       .then(() => {

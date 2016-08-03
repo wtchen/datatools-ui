@@ -6,6 +6,7 @@ import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import SelectFileModal from '../../common/components/SelectFileModal'
 import ManagerNavbar from '../../common/containers/ManagerNavbar'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class PublicPage extends React.Component {
 
@@ -25,8 +26,8 @@ export default class PublicPage extends React.Component {
     return (
       <div>
         <Helmet
-          defaultTitle={DT_CONFIG.application.title}
-          titleTemplate={`${DT_CONFIG.application.title} - %s`}
+          defaultTitle={getConfigProperty('application.title')}
+          titleTemplate={`${getConfigProperty('application.title')} - %s`}
         />
         <ManagerNavbar
         />

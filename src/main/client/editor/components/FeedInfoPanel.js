@@ -1,16 +1,20 @@
 import React, {Component, PropTypes} from 'react'
-import { Button, Row, Col, Dropdown, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Button, ButtonGroup, DropdownButton, Dropdown, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import Icon from 'react-fa'
+import { browserHistory } from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import CreateSnapshotModal from './CreateSnapshotModal'
+import { componentList } from '../util/gtfs'
 
 export default class FeedInfoPanel extends Component {
 
   static propTypes = {
     feedSource: PropTypes.object,
+    project: PropTypes.object,
     feedInfo: PropTypes.object,
-    createSnapshot: PropTypes.func
+    createSnapshot: PropTypes.func,
+    setActiveEntity: PropTypes.func
   }
 
   constructor (props) {
@@ -22,20 +26,22 @@ export default class FeedInfoPanel extends Component {
 
   render () {
     let { feedSource, feedInfo } = this.props
+    if (!feedInfo) return null
     let panelWidth = '400px'
     let panelHeight = '100px'
     let panelStyle = {
-      backgroundColor: 'white',
+      // backgroundColor: 'white',
       position: 'absolute',
       right: this.state.right,
       bottom: 20,
       borderRadius: '5px',
-      height: panelHeight,
+      // height: panelHeight,
       width: panelWidth
     }
     if (!feedInfo || !feedSource) {
       return null
     }
+    const toolbarVisible = this.state.right > 0
     return (
       <ReactCSSTransitionGroup transitionName={`slide-${this.state.right > 0 ? 'right' : 'left'}`} transitionEnterTimeout={500} transitionLeaveTimeout={300}>
       <div style={panelStyle}>
@@ -44,31 +50,69 @@ export default class FeedInfoPanel extends Component {
             this.props.createSnapshot(feedSource, name, comment)
           }}
         />
-        <Row>
-          <Col xs={2}>
-            <Button
-              style={{height: panelHeight}}
-              onClick={() => {
-                if (this.state.right > 0) {
-                  this.setState({right: -370})
-                }
-                else {
-                  this.setState({right: 5})
+          <ButtonGroup>
+            <OverlayTrigger placement='top' overlay={<Tooltip id='hide-tooltip'>{toolbarVisible ? 'Hide toolbar' : 'Show toolbar'}</Tooltip>}>
+              <Button
+                onClick={() => {
+                  if (toolbarVisible) {
+                    this.setState({right: -370})
+                  }
+                  else {
+                    this.setState({right: 5})
+                  }
+                }}
+              >
+                <Icon name={toolbarVisible ? 'caret-right' : 'caret-left'}/>
+              </Button>
+            </OverlayTrigger>
+            <DropdownButton dropup title={`Editing ${feedSource && feedSource.name}`} id='navigation-dropdown'
+              onSelect={key => {
+                switch (key) {
+                  case '1':
+                    return browserHistory.push(`/project/${this.props.project.id}`)
+                  case '2':
+                    return browserHistory.push(`/feed/${this.props.feedSource.id}`)
                 }
               }}
             >
-              <Icon name={this.state.right > 0 ? 'caret-right' : 'caret-left'}/>
+              <MenuItem eventKey='1'><Icon name='reply'/> Back to project</MenuItem>
+              <MenuItem eventKey='2'><Icon name='reply'/> Back to feed source</MenuItem>
+            </DropdownButton>
+            <DropdownButton pullRight dropup title={<span><Icon name='plus'/></span>}
+              id='add-entity-dropdown'
+              onSelect={key => {
+                console.log(key)
+                this.props.setActiveEntity(feedSource.id, key, {id: 'new'})
+              }}
+            >
+              {componentList.map(c => {
+                return (
+                  <MenuItem key={c} eventKey={c}>Add {c}</MenuItem>
+                )
+              })}
+            </DropdownButton>
+            <Button
+              onClick={() => {
+
+              }}
+            >
+              <Icon name='crosshairs'/>
             </Button>
-          </Col>
-          <Col xs={10}>
-            <h3>
-              Editing {feedSource.name}
-              {'  '}
-              <Dropdown
-                onSelect={(key) => {
-                  // this.addStopToPattern(activePattern, stop, key)
-                }}
-              >
+              {
+                <Dropdown
+                  dropup
+                  pullRight
+                  onSelect={key => {
+                    let snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
+                    this.props.showConfirmModal({
+                      title: `Restore ${key}?`,
+                      body: `Are you sure you want to restore this snapshot?`,
+                      onConfirm: () => {
+                        this.props.restoreSnapshot(feedSource, snapshot)
+                      }
+                    })
+                  }}
+                >
                 <OverlayTrigger placement='top' overlay={<Tooltip id='snapshot-tooltip'>Take snapshot</Tooltip>}>
                   <Button
                     bsStyle='primary'
@@ -79,33 +123,25 @@ export default class FeedInfoPanel extends Component {
                     <Icon name='camera'/>
                   </Button>
                 </OverlayTrigger>
-                <OverlayTrigger placement='top' overlay={<Tooltip id='snapshot-tooltip'>Revert to snapshot</Tooltip>}>
-                  <Dropdown.Toggle bsStyle='primary'>
+                    <Dropdown.Toggle
+                      bsStyle='primary'
+                      onClick={() => {
+                        this.props.getSnapshots(feedSource)
+                      }}
+                    />
                     <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
-                      <MenuItem value={0} eventKey={0}>
-                        Revert to snapshot
-                      </MenuItem>
-                      {
-                      //   activePattern.patternStops && activePattern.patternStops.map((stop, i) => {
-                      //   let addIndex = activePattern.patternStops.length - i
-                      //   if (index === activePattern.patternStops.length - 1 && index === addIndex - 1) {
-                      //     return null
-                      //   }
-                      //   // disable adding stop to current position or directly before/after current position
-                      //   return (
-                      //     <MenuItem disabled={index >= addIndex - 2 && index <= addIndex} value={addIndex - 1} eventKey={addIndex - 1}>
-                      //       {addIndex === 1 ? 'Add to beginning' : `Insert as stop #${addIndex}`}
-                      //     </MenuItem>
-                      //   )
-                      // })
-                    }
+                      {this.props.feedSource && this.props.feedSource.editorSnapshots
+                        ? this.props.feedSource.editorSnapshots.map(snapshot => {
+                            return (
+                              <MenuItem eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.id}</MenuItem>
+                            )
+                          })
+                        : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>
+                      }
                     </Dropdown.Menu>
-                  </Dropdown.Toggle>
-                </OverlayTrigger>
               </Dropdown>
-            </h3>
-          </Col>
-        </Row>
+            }
+          </ButtonGroup>
       </div>
       </ReactCSSTransitionGroup>
     )

@@ -75,11 +75,10 @@ export function toggleEditSetting (setting) {
   }
 }
 
-export function updateMapSetting (setting, value) {
+export function updateMapSetting (props) {
   return {
     type: 'UPDATE_MAP_SETTING',
-    setting,
-    value
+    props
   }
 }
 
@@ -129,7 +128,7 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     else if (subSubComponent && subSubComponentList.indexOf(subSubComponent) === -1) {
       url = `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/`
     }
-    if (entityId === 'new' && getState().editor.tableData[component].findIndex(e => e.id === 'new') === -1) {
+    if (entityId === 'new' && (!getState().editor.tableData[component] || getState().editor.tableData[component].findIndex(e => e.id === 'new') === -1)) {
       dispatch(createGtfsEntity(feedSourceId, component))
     }
     if (!getState().routing.locationBeforeTransitions || !getState().routing.locationBeforeTransitions.pathname || getState().routing.locationBeforeTransitions.pathname !== url) {
@@ -149,42 +148,50 @@ export function savingActiveGtfsEntity (component, entity) {
 
 export function saveActiveGtfsEntity (component, optionalEntity) {
   return function (dispatch, getState) {
-    let entity
+    let entity, feedId
     switch (component) {
       case 'stop':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveStop(entity.feedId, entity))
+        return dispatch(saveStop(feedId, entity))
       case 'route':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveRoute(entity.feedId, entity))
+        return dispatch(saveRoute(feedId, entity))
       case 'agency':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveAgency(entity.feedId, entity))
+        return dispatch(saveAgency(feedId, entity))
       case 'trippattern':
         let route = getState().editor.active.entity
         let patternId = getState().editor.active.subEntityId
         entity = optionalEntity || route.tripPatterns.find(p => p.id === patternId)
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveTripPattern(entity.feedId, entity))
+        return dispatch(saveTripPattern(feedId, entity))
       case 'calendar':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveCalendar(entity.feedId, entity))
+        return dispatch(saveCalendar(feedId, entity))
       case 'scheduleexception':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveScheduleException(entity.feedId, entity))
+        return dispatch(saveScheduleException(feedId, entity))
       case 'fare':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveFare(entity.feedId, entity))
+        return dispatch(saveFare(feedId, entity))
       case 'feedinfo':
         entity = optionalEntity || getState().editor.active.entity
+        feedId = entity.id || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
-        return dispatch(saveFeedInfo(entity.id, entity))
+        return dispatch(saveFeedInfo(feedId, entity))
       default:
         console.log('no action specified!')
         return
@@ -368,36 +375,19 @@ export function getGtfsTable (tableId, feedId) {
   }
 }
 
-// export function saveGtfsRow (tableId, rowIndex, feedId) {
-//   return function (dispatch, getState) {
-//     // const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
-//     // for(const field of table.fields) {
-//     //   rowData[field.name] = null
-//     // }
-//     const data = getState().editor.tableData[tableId][rowIndex]
-//     console.log(data)
-//     // const data = {
-//     //   defaultLat:"33.755",
-//     //   defaultLon:"-84.39",
-//     //   gtfsAgencyId:"CCT GTFS",
-//     //   id:"6270524a-3802-4a59-b7ff-3e1d880a08b0",
-//     //   lang:"en",
-//     //   name:"CCT GTFS",
-//     //   phone:null,
-//     //   routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
-//     //   sourceId:"277a268e-5b38-4aff-949c-b70517fb8224",
-//     //   timezone:"America/New_York",
-//     //   url:"http://test.com",
-//     // }
-//     const url = `/api/manager/secure/${tableId}?feedId=${feedId}`
-//     return secureFetch(url, getState(), 'post', data)
-//       .then(res => res.json())
-//       .then(entity => {
-//         console.log('got editor result', entity)
-//         // dispatch(receiveGtfsValidation(validationIssues))
-//       })
-//   }
-// }
+export function fetchBaseGtfs (feedId) {
+  return function (dispatch, getState) {
+    const tablesToFetch = ['calendar', 'agency', 'route', 'stop']
+    dispatch(fetchFeedInfo(feedId))
+    for (var i = 0; i < tablesToFetch.length; i++) {
+      dispatch(getGtfsTable(tablesToFetch[i], feedId))
+    }
+  }
+}
+
+
+
+
 
 // EDIT ACTIVE GTFS+ ACTIONS
 

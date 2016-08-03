@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { clearGtfsContent, fetchBaseGtfs } from './editor'
 
 // SNAPSHOT ACTIONS
 
@@ -51,6 +52,8 @@ export function restoreSnapshot (feedSource, snapshot) {
         return response.json()
       }).then((stops) => {
         dispatch(restoredSnapshot(snapshot.name))
+        dispatch(clearGtfsContent())
+        dispatch(fetchBaseGtfs(feedSource.id))
       })
   }
 }
@@ -106,15 +109,15 @@ export function deleteSnapshot (feedSource, snapshot) {
   }
 }
 
-export function importingSnapshotFromFeedVersion () {
+export function loadingFeedVersionForEditing () {
   return {
-    type: 'IMPORTING_SNAPSHOT_FROM_FEEDVERSION'
+    type: 'LOADING_FEEDVERSION_FOR_EDITING'
   }
 }
 
-export function importSnapshotFromFeedVersion (feedVersion, snapshot) {
+export function loadFeedVersionForEditing (feedVersion, snapshot) {
   return function (dispatch, getState) {
-    dispatch(importingSnapshotFromFeedVersion())
+    dispatch(loadingFeedVersionForEditing())
     const url = `/api/manager/secure/snapshot/import?feedVersionId=${feedVersion.id}`
     return secureFetch(url, getState(), 'post')
       .then((response) => {

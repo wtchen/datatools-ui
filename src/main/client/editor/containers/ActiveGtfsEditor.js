@@ -4,7 +4,7 @@ import GtfsEditor  from '../components/GtfsEditor'
 import { componentList } from '../util/gtfs'
 import { fetchFeedSourceAndProject, fetchFeedVersion } from '../../manager/actions/feeds'
 import {
-  fetchFeedInfo,
+  fetchFeedInfo
 } from '../actions/feedInfo'
 import {
   fetchStops,
@@ -12,6 +12,7 @@ import {
 } from '../actions/stop'
 import {
   fetchRoutes,
+  uploadRouteBranding
 } from '../actions/route'
 import {
   fetchTripPatterns,
@@ -72,7 +73,7 @@ const mapStateToProps = (state, ownProps) => {
     // ownProps.routeParams.entity && state.editor.tableData[activeComponent]
     // ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
     // : null
-  const entityEdited = state.editor.active.edited
+  const entityEdited = state.editor.active && state.editor.active.edited
 
   // const isEditingGeometry = state.editor.editSettings.editGeometry
   // const isAddingStops = state.editor.editSettings.addStops
@@ -88,7 +89,7 @@ const mapStateToProps = (state, ownProps) => {
   // const mapZoom = state.editor.mapState.zoom
   // const mapBounds = state.editor.mapState.bounds
   const mapState = state.editor.mapState
-
+  const stopTree = state.editor.stopTree
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   const entities = state.editor.tableData[activeComponent]
   let user = state.user
@@ -131,6 +132,7 @@ const mapStateToProps = (state, ownProps) => {
     activeSubSubEntity,
     editSettings,
     mapState,
+    stopTree,
     // isAddingStops,
     // isEditingGeometry,
     // isFollowingStreets,
@@ -255,11 +257,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     toggleEditSetting: (setting) => {
       dispatch(toggleEditSetting(setting))
     },
-    updateMapSetting: (setting, value) => {
-      dispatch(updateMapSetting(setting, value))
+    updateMapSetting: (props) => {
+      dispatch(updateMapSetting(props))
     },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
+    },
+    uploadRouteBranding: (feedSourceId, routeId, file) => {
+      dispatch(uploadRouteBranding(feedSourceId, routeId, file))
     },
     setActiveEntity: (feedSourceId, component, entity, subComponent, subEntity, subSubComponent, subSubEntity) => {
       let entityId = entity && entity.id

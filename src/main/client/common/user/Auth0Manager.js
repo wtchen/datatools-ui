@@ -1,7 +1,9 @@
 import fetch from 'isomorphic-fetch'
 import { browserHistory } from 'react-router'
 
+import { isTokenExpired } from '../util/jwtHelper'
 import UserPermissions from './UserPermissions'
+import { getConfigProperty } from '../util/config'
 
 // import '../../assets/mtc_manager_logo.png'
 
@@ -15,11 +17,22 @@ export default class Auth0Manager {
     this.auth0 = new Auth0({clientID: props.client_id, domain: props.domain})
   }
 
+  loggedIn () {
+    // Checks if there is a saved token and it's still valid
+    const token = this.getToken()
+    return !!token && !isTokenExpired(token)
+  }
+
+  getToken () {
+    // Retrieves the user token from localStorage
+    return localStorage.getItem('userToken')
+  }
+
   checkExistingLogin () {
     // Get the user token if we've saved it in localStorage before
-    var userToken = localStorage.getItem('userToken')
+    var userToken = this.getToken()
 
-    if(userToken) return this.loginFromToken(userToken)
+    if (userToken) return this.loginFromToken(userToken)
 
     // check if we have returned from an SSO redirect
     var hash = this.lock.parseHash()
@@ -31,8 +44,7 @@ export default class Auth0Manager {
       let newLocation = hash.state || ''
       browserHistory.push(newLocation)
 
-    }
-    else {
+    } else {
       // check if logged in elsewhere via SSO
       this.auth0.getSSOData((err, data) => {
         if (!err && data.sso) {
@@ -68,8 +80,8 @@ export default class Auth0Manager {
     return new Promise((resolve, reject) => {
       var lockOptions = {
         connections: ['Username-Password-Authentication'],
-        // callbackURL: DT_CONFIG.application.url,
-        icon: DT_CONFIG.application.logo ? DT_CONFIG.application.logo : icon,
+        // callbackURL: getConfigProperty('application.url'),
+        icon: getConfigProperty('application.logo') ? getConfigProperty('application.logo') : icon,
         disableSignupAction: true,
         // disableResetAction: true,
         authParams: {

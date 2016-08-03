@@ -10,6 +10,8 @@ import SelectFileModal from './SelectFileModal.js'
 import InfoModal from './InfoModal.js'
 import ManagerSidebar from '../containers/ManagerSidebar'
 
+import { getConfigProperty } from '../util/config'
+
 export default class ManagerPage extends React.Component {
 
   constructor (props) {
@@ -32,15 +34,14 @@ export default class ManagerPage extends React.Component {
     return (
       <div>
         <Helmet
-          defaultTitle={DT_CONFIG.application.title}
-          titleTemplate={`${DT_CONFIG.application.title} - %s`}
+          defaultTitle={getConfigProperty('application.title')}
+          titleTemplate={`${getConfigProperty('application.title')} - %s`}
         />
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>
         <InfoModal ref='infoModal'/>
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
-
         <ManagerSidebar />
         {/*<ManagerNavbar noMargin={this.props.noMargin}/>*/}
         <div className='page'>
@@ -49,9 +50,9 @@ export default class ManagerPage extends React.Component {
           <footer className='footer'>
             <div className='container'>
               <ul className='list-inline text-center text-muted'>
-                <li><a href={DT_CONFIG.application.changelog_url}>Changelog</a></li>
-                <li><a href={DT_CONFIG.application.docs_url}>Guide</a></li>
-                <li><a href={`mailto:${DT_CONFIG.application.support_email}`}>Contact</a></li>
+                <li><a href={getConfigProperty('application.changelog_url')}>Changelog</a></li>
+                <li><a href={getConfigProperty('application.docs_url')}>Guide</a></li>
+                <li><a href={`mailto:${getConfigProperty('application.support_email')}`}>Contact</a></li>
               </ul>
               <p className='text-center text-muted'>&copy; <a href='http://conveyal.com'>Conveyal</a></p>
             </div>

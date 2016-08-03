@@ -8,7 +8,7 @@ import RegionSearch from './RegionSearch'
 
 import PublicPage from './PublicPage'
 import FeedsMap from './FeedsMap'
-import { isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
 
 export default class PublicFeedsViewer extends React.Component {
 
@@ -24,7 +24,7 @@ export default class PublicFeedsViewer extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.active.PublicFeedsViewer
+    const messages = getComponentMessages('PublicFeedsViewer')
     if (!this.props.projects) {
       return <PublicPage />
     }
@@ -131,7 +131,7 @@ class PublicFeedsTable extends React.Component {
 
   render () {
     let feeds = []
-    const messages = DT_CONFIG.messages.active.PublicFeedsTable
+    const messages = getComponentMessages('PublicFeedsTable')
     const feedArray = this.props.projects.map(p => {
       const regions = p.name.split(', ')
       if (p.feedSources) {

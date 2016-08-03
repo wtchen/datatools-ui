@@ -1,7 +1,7 @@
 import React from 'react'
 import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, LayersControl } from 'react-leaflet'
 import { divIcon } from 'leaflet'
-import { Button, Dropdown, ButtonToolbar, Row, Col, ButtonGroup, Form, MenuItem, SplitButton, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
+import { Button, Dropdown, OverlayTrigger, Tooltip, ButtonToolbar, Row, Col, ButtonGroup, Form, MenuItem, SplitButton, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
 import {Icon} from 'react-fa'
 import ll from 'lonlng'
@@ -19,6 +19,7 @@ import { EditControl } from 'react-leaflet-draw'
 // import CircleMarkerWithLabel from './CircleMarkerWithLabel'
 // import MarkerWithLabel from './MarkerWithLabel'
 import MinuteSecondInput from './MinuteSecondInput'
+// import StopMarkersLayer from './StopMarkersLayer'
 import StopLayer from '../../scenario-editor/components/StopLayer'
 import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
 
@@ -38,9 +39,11 @@ export default class EditorMap extends React.Component {
   }
   componentWillMount () {
     this.updateDimensions()
+    this.setState({willMount: true})
   }
   componentDidMount () {
     window.addEventListener("resize", () => this.updateDimensions())
+    this.setState({willMount: false})
   }
   componentWillUnmount () {
     window.removeEventListener("resize", () => this.updateDimensions())
@@ -49,10 +52,14 @@ export default class EditorMap extends React.Component {
     if (nextProps.editSettings.controlPoints && nextProps.editSettings.controlPoints.length && !shallowEqual(nextProps.editSettings.controlPoints, this.props.editSettings.controlPoints)) {
       this.setState({controlPoints: nextProps.editSettings.controlPoints[nextProps.editSettings.controlPoints.length - 1]})
     }
+    if (nextProps.zoomToTarget && !shallowEqual(nextProps.zoomToTarget, this.props.zoomToTarget)) {
+      this.setState({zoomToTarget: true})
+    }
   }
-  shouldComponentUpdate (nextProps) {
+  shouldComponentUpdate (nextProps, nextState) {
     // return true
     const shouldUpdate =
+            !shallowEqual(nextState, this.state) ||
             this.props.hidden !== nextProps.hidden ||
             (nextProps.activeComponent === 'stop' || nextProps.activeComponent === 'route') && nextProps.activeEntityId !== this.props.activeEntityId ||
             nextProps.activeEntity && this.props.activeEntity && nextProps.activeEntity.tripPatterns && !this.props.activeEntity.tripPatterns ||
@@ -60,10 +67,12 @@ export default class EditorMap extends React.Component {
             nextProps.activeComponent !== this.props.activeComponent ||
             !this.props.activeEntity && nextProps.activeEntity ||
             // TODO: add bounds to shouldComponentUpdate and move mapZoom/bounds to mapState reducer
-            !shallowEqual(nextProps.mapState, this.props.mapState) ||
+            nextProps.drawStops && !shallowEqual(nextProps.mapState.bounds, this.props.mapState.bounds) ||
+            !shallowEqual(nextProps.drawStops, this.props.drawStops) ||
+            !shallowEqual(nextProps.zoomToTarget, this.props.zoomToTarget) ||
             !shallowEqual(nextProps.editSettings, this.props.editSettings) ||
             !shallowEqual(nextProps.activeSubEntity, this.props.activeSubEntity) ||
-            nextProps.activeComponent === 'stop' && this.props.mapState.zoom !== nextProps.mapZoom ||
+            // nextProps.activeComponent === 'stop' && this.props.mapState.zoom !== nextProps.mapState.zoom ||
             nextProps.activeComponent === 'stop' && this.props.activeEntity && nextProps.activeEntity && (this.props.activeEntity.stop_lon !== nextProps.activeEntity.stop_lon || this.props.activeEntity.stop_lat !== nextProps.activeEntity.stop_lat) ||
             nextProps.activeEntityId !== this.props.activeEntityId
 
@@ -273,13 +282,21 @@ export default class EditorMap extends React.Component {
     }
   }
   mapBoundsChanged (e) {
-    const zoom = e.target.getZoom()
-    const bounds = e.target.getBounds()
-    if (this.props.mapState.zoom !== zoom) {
-      this.props.updateMapSetting('zoom', zoom)
+    if (this.state.zoomToTarget) {
+      setTimeout(() => {
+        this.setState({zoomToTarget: false})
+      }, 200)
+      return false
     }
-    if (!bounds.equals(this.props.mapState.bounds)) {
-      this.props.updateMapSetting('bounds', e.target.getBounds())
+    else {
+      const zoom = e.target.getZoom()
+      const bounds = e.target.getBounds()
+      if (this.props.mapState.zoom !== zoom) {
+        this.props.updateMapSetting({zoom})
+      }
+      if (!bounds.equals(this.props.mapState.bounds)) {
+        this.props.updateMapSetting({bounds: e.target.getBounds()})
+      }
     }
   }
   async handlePatternEdit (controlPointRef, begin, end) {
@@ -678,7 +695,7 @@ export default class EditorMap extends React.Component {
                   if (!stop) return null
                   const color = '#000'
                   const patternStopIcon = divIcon({
-                    html: `<span class="fa-stack">
+                    html: `<span title="${index + 1}. ${stop.stop_name}" class="fa-stack">
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <strong class="fa-stack-1x fa-inverse calendar-text">${index + 1}</strong>
                           </span>`,
@@ -901,66 +918,79 @@ export default class EditorMap extends React.Component {
           ]
         )
       case 'stop':
-        // console.log(entities)
-        const busIcon = divIcon({
-          html: `<span class="fa-stack bus-stop-icon">
-                  <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: blue"></i>
-                  <i class="fa fa-stack-1x fa-bus bus-stop-icon-fg"></i>
-                </span>`,
-          className: '',
-          iconSize: [24, 24],
-        })
-        const activeBusIcon = divIcon({
-          html: `<span class="fa-stack bus-stop-icon">
-                  <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: green"></i>
-                  <i class="fa fa-stack-1x fa-bus bus-stop-icon-fg"></i>
-                </span>`,
-          className: '',
-          iconSize: [24, 24],
-        })
+        // <StopMarkersLayer
+        //   stops={this.props.stops}
+        //   activeEntity={this.props.activeEntity}
+        //   feedSource={this.props.feedSource}
+        //   mapState={this.props.mapState}
+        //   setActiveEntity={this.props.setActiveEntity}
+        //   updateActiveEntity={this.props.updateActiveEntity}
+        //   entityEdited={this.props.entityEdited}
+        // />
+
+        const paddedBounds = this.props.mapState.bounds.pad(.05)
+        var results = this.props.stopTree && this.props.drawStops
+          ? this.props.stopTree.search({
+              minX: paddedBounds.getWest(),
+              minY: paddedBounds.getSouth(),
+              maxX: paddedBounds.getEast(),
+              maxY: paddedBounds.getNorth()
+            })
+          : []
+
+        if (this.props.activeEntity && results.findIndex(r => r[2].id === this.props.activeEntity.id) === -1) {
+          results.push([0, 0, this.props.activeEntity])
+        }
+        console.log(results)
+        const outOfZoom = !this.props.drawStops
+        console.log(this.props.mapState.bounds, paddedBounds)
         return [
-          entities ? entities.map(stop => {
+          results ? results.map(result => {
+            const stop = result[2]
             const isActive = this.props.activeEntity && this.props.activeEntity.id === stop.id
-            if (isActive) return null
-            if (!isActive) {
-              if (!this.props.mapState.zoom || this.props.mapState.zoom < 14) {
-                return null
-              }
-              if (stop.stop_lat > this.props.mapState.bounds.getNorth() || stop.stop_lat < this.props.mapState.bounds.getSouth() || stop.stop_lon > this.props.mapState.bounds.getEast() || stop.stop_lon < this.props.mapState.bounds.getWest()) {
-                return null
-              }
+            // const outOfBounds = !paddedBounds.contains([stop.stop_lat, stop.stop_lon]) //
+            const outOfBounds = true // stop.stop_lat > paddedBounds.getNorth() || stop.stop_lat < paddedBounds.getSouth() || stop.stop_lon > paddedBounds.getEast() || stop.stop_lon < paddedBounds.getWest()
+            const busIcon = divIcon({
+              // html: `<span class="fa-stack bus-stop-icon">
+              //         <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: blue"></i>
+              //         <i class="fa fa-stack-1x fa-bus bus-stop-icon-fg"></i>
+              //       </span>`,
+              // html: `<span class="fa-stack">
+              //         <i class="fa fa-circle fa-stack-2x"></i>
+              //         <strong class="fa-stack-1x fa-inverse calendar-text">${index + 1}</strong>
+              //       </span>`,
+              html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon" style="opacity: 0.6">
+                      <i class="fa fa-circle fa-stack-2x" style="color: #ffffff"></i>
+                      <i class="fa fa-bus fa-stack-1x" style="color: #000000"></i>
+                    </span>`,
+              className: '',
+              iconSize: [24, 24],
+            })
+            const activeBusIcon = divIcon({
+              html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon">
+                      <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: #000"></i>
+                      <i class="fa fa-stack-1x fa-bus fa-inverse bus-stop-icon-fg"></i>
+                    </span>`,
+              className: '',
+              iconSize: [24, 24],
+            })
+            const hidden = !isActive && outOfZoom
+            if (hidden) {
+              return null
             }
             if (isNaN(stop.stop_lat) || isNaN(stop.stop_lon)) {
               return null
             }
-            const stopLatLng = [stop.stop_lat, stop.stop_lon]
-            const editingStop = this.state.editStop === stop.id
-            const escapeListener = (e) => {
-              console.log(e)
-              // [Esc] is pressed
-              if (e.keyCode === 27 && this.props.entityEdited) {
-                console.log('escape pressed')
-
-                this.setState({editStop: null, editFinished: null, editStopLatLng: null})
-
-                // reset latlng
-                this.refs[stop.id].leafletElement.setLatLng(stopLatLng)
-
-                // set active entity
-                this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-
-                // remove listeners
-                this.refs.map.leafletElement.removeEventListener('mousemove')
-                document.removeEventListener('keydown', escapeListener, false)
-              }
-            }
+            const key = Math.random()
             const marker = (
               <Marker
-                position={stopLatLng}
-                icon={busIcon}
-                // zIndexOffset={1000}
+                position={[stop.stop_lat, stop.stop_lon]}
+                icon={isActive ? activeBusIcon : busIcon}
+                zIndexOffset={isActive ? 1000 : 0}
                 key={`${stop.id}`}
                 ref={`${stop.id}`}
+                // label={`${index + 1} - ${stop.stop_name}`}
+                // opacity={hidden ? 0 : 1.0}
                 draggable={isActive}
                 onDragEnd={(e) => {
                   console.log(e)
@@ -970,9 +1000,6 @@ export default class EditorMap extends React.Component {
                   this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
                 }}
                 onClick={(e) => {
-                  console.log('stop clicked', e)
-                  // this.resetMap()
-
                   // set active entity
                   if (!isActive)
                     this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
@@ -982,26 +1009,6 @@ export default class EditorMap extends React.Component {
             )
             return marker
           })
-          : null
-          ,
-          this.props.activeEntity
-          ? <Marker
-              position={[this.props.activeEntity.stop_lat, this.props.activeEntity.stop_lon]}
-              icon={activeBusIcon}
-              ref={`${this.props.activeEntity.id}`}
-              key={`${this.props.activeEntity.id}`}
-              draggable={true}
-              onDragEnd={(e) => {
-                console.log(e)
-                let latlng = e.target.getLatLng()
-                let stopLatLng = this.getStopLatLng(latlng)
-                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, stopLatLng)
-                this.refs[`${this.props.activeEntity.id}`].leafletElement.setLatLng(latlng)
-              }}
-              onClick={(e) => {
-                this.refs.map.leafletElement.setView(e.latlng, 15)
-              }}
-            />
           : null
         ]
       default:
@@ -1030,45 +1037,42 @@ export default class EditorMap extends React.Component {
 
   render () {
     console.log(this.state)
-    // console.log(this.state.controlPoints)
-    // console.log(this.refs.map)
     const { feedSource, feedInfo, activeComponent, entities, activeEntity, subComponent } = this.props
-    // if (!feedSource) return null
-    // console.log(entities)
-    //const summary = version.validationSummary
-    // const bounds = this.getBounds(this.props.activeComponent, this.props.entities) || [[34, -87], [33, -86]]
     const offset = 0.005
     let feedSourceBounds = feedSource && feedSource.latestValidation && feedSource.latestValidation.bounds
       ? [[feedSource.latestValidation.bounds.north + offset, feedSource.latestValidation.bounds.west - offset], [feedSource.latestValidation.bounds.south - offset, feedSource.latestValidation.bounds.east + offset]]
       : [[60, 60], [-60, -20]]
-    let bounds = feedSourceBounds
+    let bounds = this.state.zoomToTarget
+      ? this.props.mapState.bounds
+      : this.refs.map
+      ? this.refs.map.leafletElement.getBounds()
+      : feedSourceBounds
+      // // don't adjust bounds if state tells us not to or editing is in progress because that's really annoying
+      // if (this.props.editSettings.editGeometry || this.props.editSettings.addStops || this.props.entityEdited) {
+      //   let mapBounds = this.refs.map.leafletElement.getBounds()
+      //   bounds = mapBounds
+      // }
+      // // if active stop
+      // else if (activeEntity && stop && activeComponent === 'stop' && !isNaN(this.props.activeEntity.stop_lat) && !isNaN(this.props.activeEntity.stop_lon)) {
+      //   bounds = [[this.props.activeEntity.stop_lat + offset, this.props.activeEntity.stop_lon - offset], [this.props.activeEntity.stop_lat - offset, this.props.activeEntity.stop_lon + offset]]
+      // }
+      // // if active trip pattern
+      // else if (activeEntity && route && activeComponent === 'route' && subComponent === 'trippattern') {
+      //   if (this.refs.patterns) {
+      //     let patternBounds = this.refs.patterns.leafletElement.getBounds()
+      //     if (patternBounds && patternBounds.isValid()){
+      //       bounds = [[patternBounds.getNorth() + offset, patternBounds.getWest() - offset], [patternBounds.getSouth() - offset, patternBounds.getEast() + offset]]
+      //     }
+      //   }
+      // }
+      // // fall back to current state
+      // else if (this.refs.map)  {
+      //   let mapBounds = this.refs.map.leafletElement.getBounds()
+      //   bounds = mapBounds
+      // }
     let stop = activeComponent === 'stop' && activeEntity
     let route = activeComponent === 'route' && activeEntity
-    // don't adjust bounds if state tells us not to or editing is in progress because that's really annoying
-    // if (this.props.editSettings.editGeometry || this.props.editSettings.addStops || this.props.entityEdited) {
-    //   let mapBounds = this.refs.map.leafletElement.getBounds()
-    //   bounds = mapBounds
-    // }
-    // if active stop
-    // else if (activeEntity && stop && activeComponent === 'stop' && !isNaN(stop.stop_lat) && !isNaN(stop.stop_lon)) {
-    //   bounds = [[stop.stop_lat + offset, stop.stop_lon - offset], [stop.stop_lat - offset, stop.stop_lon + offset]]
-    // }
-    // // if active trip pattern
-    // else if (activeEntity && route && activeComponent === 'route' && subComponent === 'trippattern') {
-    //   if (this.refs.patterns) {
-    //     let patternBounds = this.refs.patterns.leafletElement.getBounds()
-    //     if (patternBounds && patternBounds.isValid()){
-    //       bounds = [[patternBounds.getNorth() + offset, patternBounds.getWest() - offset], [patternBounds.getSouth() - offset, patternBounds.getEast() + offset]]
-    //     }
-    //   }
-    // }
-    // // fall back to current state
-    // else if (this.refs.map)  {
-    //   let mapBounds = this.refs.map.leafletElement.getBounds()
-    //   bounds = mapBounds
-    // }
     let mapWidth = this.state.width - this.props.offset - 54
-    // console.log('map width' + mapWidth)
     const mapStyle = {
       height: '100%',
       width: `${mapWidth}px`,
@@ -1078,20 +1082,22 @@ export default class EditorMap extends React.Component {
     if (this.props.hidden) {
       mapStyle.display = 'none'
     }
+    let mapProps = {
+      ref: 'map',
+      zoomControl: false,
+      style: mapStyle,
+      maxBounds: [[200, 180], [-200, -180]],
+      onContextMenu: (e) => this.mapRightClicked(e),
+      onClick: (e) => this.mapClicked(e),
+      onZoomEnd: (e) => this.mapBoundsChanged(e),
+      onMoveEnd: (e) => this.mapBoundsChanged(e),
+      scrollWheelZoom: true,
+    }
+    if (this.state.willMount || this.state.zoomToTarget) {
+      mapProps.bounds = bounds
+    }
     return (
-      <Map
-        ref='map'
-        zoomControl={false}
-        style={mapStyle}
-        bounds={bounds}
-        maxBounds={[[200, 180], [-200, -180]]}
-        onContextMenu={(e) => this.mapRightClicked(e)}
-        onClick={(e) => this.mapClicked(e)}
-        onZoomEnd={(e) => this.mapBoundsChanged(e)}
-        onMoveEnd={(e) => this.mapBoundsChanged(e)}
-        // onMouseMove={(e) => this.mouseMoved(e)}
-        scrollWheelZoom={true}
-      >
+      <Map {...mapProps}>
         <ZoomControl position='topright' />
         <LayersControl position='topleft'>
           <LayersControl.BaseLayer name='Streets' checked>

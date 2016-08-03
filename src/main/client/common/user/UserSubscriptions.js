@@ -1,7 +1,9 @@
+import { getConfigProperty } from '../util/config'
+
 export default class UserSubscriptions {
   constructor (datatoolsApps) {
     const datatoolsJson = datatoolsApps && datatoolsApps.constructor === Array
-      ? datatoolsApps.find(dt => dt.client_id === DT_CONFIG.auth0.client_id)
+      ? datatoolsApps.find(dt => dt.client_id === getConfigProperty('auth0.client_id'))
       : datatoolsApps
     this.subscriptionLookup = {}
     if (datatoolsJson && datatoolsJson.subscriptions) {

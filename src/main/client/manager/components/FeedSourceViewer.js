@@ -15,7 +15,7 @@ import ExternalPropertiesTable from './ExternalPropertiesTable'
 import FeedVersionNavigator from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
-import { isModuleEnabled } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -39,8 +39,8 @@ export default class FeedSourceViewer extends Component {
     externalPropertyChanged: PropTypes.func,
     feedSourcePropertyChanged: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
-    importSnapshotFromFeedVersion: PropTypes.func,
     gtfsPlusDataRequested: PropTypes.func,
+    loadFeedVersionForEditing: PropTypes.func,
     newNotePostedForFeedSource: PropTypes.func,
     newNotePostedForVersion: PropTypes.func,
     notesRequestedForFeedSource: PropTypes.func,
@@ -75,7 +75,7 @@ export default class FeedSourceViewer extends Component {
   }
 
   updateSnapshotVersions (feedSource) {
-    const url = DT_CONFIG.modules.editor.url + '/api/mgrsnapshot?sourceId=' + feedSource.id
+    const url = getConfigProperty('modules.editor.url') + '/api/mgrsnapshot?sourceId=' + feedSource.id
     fetch(url)
       .then(res => res.json())
       .then(snapshots => {
@@ -158,11 +158,11 @@ export default class FeedSourceViewer extends Component {
       )
     }
 
-    const messages = DT_CONFIG.messages.active.FeedSourceViewer
+    const messages = getComponentMessages('FeedSourceViewer')
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
-    const dateFormat = DT_CONFIG.application.date_format
+    const dateFormat = getConfigProperty('application.date_format')
 
     return (
       <ManagerPage ref='page'>
@@ -288,7 +288,7 @@ export default class FeedSourceViewer extends Component {
             </Col>
           </Row>
 
-          <Tabs>
+          <Tabs id='feed-source-viewer-tabs'>
             <Tab eventKey='versions' title={<span><Glyphicon glyph='list' /> {messages.versions}</span>}>
               <FeedVersionNavigator
                 versions={fs.feedVersions}
@@ -314,7 +314,7 @@ export default class FeedSourceViewer extends Component {
                   this.props.gtfsPlusDataRequested(version)
                 }}
                 feedVersionRenamed={(version, name) => this.props.feedVersionRenamed(fs, version, name)}
-                importSnapshotFromFeedVersion={(version) => this.props.importSnapshotFromFeedVersion(version)}
+                loadFeedVersionForEditing={(version) => this.props.loadFeedVersionForEditing(version)}
               />
             </Tab>
 
@@ -471,7 +471,7 @@ export default class FeedSourceViewer extends Component {
             </Tab>
 
             <Tab eventKey='notes'
-              title={<span><Glyphicon glyph='comment' /> {window.DT_CONFIG.messages.active.NotesViewer.title}</span>}
+              title={<span><Glyphicon glyph='comment' /> {getComponentMessages('NotesViewer').title}</span>}
               onEnter={() => this.props.notesRequestedForFeedSource(fs)}
             >
               <NotesViewer

@@ -1,9 +1,41 @@
 import along from 'turf-along'
 import lineDistance from 'turf-line-distance'
+import { latLngBounds } from 'leaflet'
+import { extent } from 'turf-extent'
 
 export const componentList = ['route', 'stop', 'fare', 'feedinfo', 'calendar', 'scheduleexception', 'agency']
 export const subComponentList = ['trippattern']
 export const subSubComponentList = ['timetable']
+
+export const getEntityBounds = (entity, offset = 0.005) => {
+  if (!entity) return null
+
+  // [lng, lat]
+  if (entity.constructor === Array) {
+    return latLngBounds([[entity[1] + offset, entity[0] - offset], [entity[1] - offset, entity[0] + offset]])
+  }
+  // stop
+  else if (typeof entity.stop_lat !== 'undefined') {
+    return latLngBounds([[entity.stop_lat + offset, entity.stop_lon - offset], [entity.stop_lat - offset, entity.stop_lon + offset]])
+  }
+  // route
+  else if (typeof entity.tripPatterns !== 'undefined') {
+    let coordinates = []
+    entity.tripPatterns.map(pattern => {
+      if (pattern.shape.coordinates) {
+        coordinates = [
+          ...coordinates,
+          ...pattern.shape.coordinates.map(c => ([c[1], c[0]]))
+        ]
+      }
+    })
+    return latLngBounds(coordinates)
+  }
+  // trip pattern
+  else if (typeof entity.shape !== 'undefined') {
+    return latLngBounds(entity.shape.coordinates.map(c => ([c[1], c[0]])))
+  }
+}
 
 export const getEntityName = (component, entity) => {
   if (!entity) {

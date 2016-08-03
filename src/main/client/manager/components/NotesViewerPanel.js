@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Panel, Glyphicon } from 'react-bootstrap'
 
 import NotesViewer from './NotesViewer'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class NotesViewerPanel extends Component {
 
@@ -33,7 +34,7 @@ export default class NotesViewerPanel extends Component {
   }
 
   render () {
-    const messages = window.DT_CONFIG.messages.active.NotesViewer
+    const messages = getComponentMessages('NotesViewer')
     const type = this.props.type === 'feed-source'
       ? messages.feedSource
       : messages.feedVersion

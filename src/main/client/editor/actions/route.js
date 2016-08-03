@@ -30,6 +30,9 @@ export function saveRoute (feedId, route) {
       agencyId: route.agency_id,
       feedId: route.feedId,
       routeBrandingUrl: route.routeBrandingUrl,
+      publiclyVisible: route.publiclyVisible,
+      status: route.status,
+
       routeShortName: route.route_short_name,
       routeLongName: route.route_long_name,
       routeDesc: route.route_desc,
@@ -102,4 +105,52 @@ export function fetchRoutes (feedId) {
         return routes
       })
   }
+}
+
+export function uploadRouteBranding (feedId, routeId, file) {
+  return function (dispatch, getState) {
+    console.log(file)
+    var data = new FormData()
+    data.append('file', file)
+    console.log(data)
+    const url = `/api/manager/secure/route/${routeId}/uploadbranding?feedId=${feedId}`
+    return fetch(url, {
+      method: 'post',
+      headers: { 'Authorization': 'Bearer ' + getState().user.token },
+      body: data
+    }).then(res => res.json())
+      .then(r => {
+        return dispatch(fetchRoutes(feedId))
+      })
+  }
+  // export function uploadFeed (feedSource, file) {
+  //   return function (dispatch, getState) {
+  //     dispatch(uploadingFeed())
+  //     const url = `/api/manager/secure/feedversion?feedSourceId=${feedSource.id}`
+  //
+  //     var data = new FormData()
+  //     data.append('file', file)
+  //
+      // return fetch(url, {
+      //   method: 'post',
+      //   headers: { 'Authorization': 'Bearer ' + getState().user.token },
+      //   body: data
+      // }).then(res => {
+  //       if (res.status === 304) {
+  //         dispatch(feedNotModified(feedSource, 'Feed upload cancelled because it matches latest feed version.'))
+  //       }
+  //       else if (res.status >= 400) {
+  //         dispatch(setErrorMessage('Error uploading feed source'))
+  //       }
+  //       else {
+  //         dispatch(uploadedFeed(feedSource))
+  //         dispatch(startJobMonitor())
+  //       }
+  //       console.log('uploadFeed result', res)
+  //
+  //       // fetch feed source with versions
+  //       return dispatch(fetchFeedSource(feedSource.id, true))
+  //     })
+  //   }
+  // }
 }

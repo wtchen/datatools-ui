@@ -5,7 +5,7 @@ import moment from 'moment'
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
 import NotesViewerPanel from './NotesViewerPanel'
 import ActiveGtfsPlusVersionSummary from '../../gtfsplus/containers/ActiveGtfsPlusVersionSummary'
-import { isModuleEnabled } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
 
 const dateFormat = 'MMM. DD, YYYY'
 const timeFormat = 'h:MMa'
@@ -22,7 +22,7 @@ export default class FeedVersionViewer extends Component {
 
   render () {
     const version = this.props.version
-    const messages = window.DT_CONFIG.messages.active.FeedVersionViewer
+    const messages = getComponentMessages('FeedVersionViewer')
 
     return (
       <div>

@@ -5,6 +5,7 @@ import { Panel, Grid, Row, Col, Button, FormGroup, InputGroup, FormControl, Glyp
 import CreateUser from './CreateUser'
 import UserSettings from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class UserList extends React.Component {
 
@@ -23,7 +24,7 @@ export default class UserList extends React.Component {
       marginLeft: '12px'
     }
 
-    const messages = DT_CONFIG.messages.active.UserList
+    const messages = getComponentMessages('UserList')
     const minUserIndex = this.props.page * this.props.perPage + 1
     const maxUserIndex = Math.min((this.props.page + 1) * this.props.perPage, this.props.userCount)
     const maxPage = Math.ceil(this.props.userCount / this.props.perPage) - 1

@@ -2,6 +2,7 @@ application:
   data:
     mapdb: /path/to/mapdb
     gtfs: /path/to/gtfs
+    editor_mapdb: /path/to/editor
     regions: /path/to/regions/geojson
     use_s3_storage: false
     gtfs_s3_bucket: bucket-name
@@ -24,14 +25,14 @@ modules:
   editor:
     enabled: true
   legacy_editor:
-    enabled: true
+    enabled: false
     url: http://localhost:9001
   alerts:
-    enabled: true
+    enabled: false
     use_extension: mtc
     url: /alerts
   sign_config:
-    enabled: true
+    enabled: false
     url: /signs
   user_admin:
     enabled: true
@@ -39,9 +40,9 @@ modules:
   validator:
     enabled: true
   deployment:
-    enabled: true
+    enabled: false
   gtfsapi:
-    enabled: true
+    enabled: false
     load_on_fetch: false
     load_on_startup: false
     use_extension: mtc

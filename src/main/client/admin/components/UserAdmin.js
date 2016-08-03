@@ -5,6 +5,7 @@ import Helmet from 'react-helmet'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
+import { getComponentMessages } from '../../common/util/config'
 
 export default class UserAdmin extends React.Component {
 
@@ -26,7 +27,7 @@ export default class UserAdmin extends React.Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.active.UserAdmin
+    const messages = getComponentMessages('UserAdmin')
     return (
       <ManagerPage ref='page'>
       <Helmet
