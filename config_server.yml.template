@@ -1,6 +1,8 @@
 auth0:
   client_secret: your-auth0-client-secret
   api_token: your-auth0-api-token
-  sparkpost:
-    key: your-api-key
-    from_email: email@example.com
+
+# For email notifications
+sparkpost:
+  key: your-api-key
+  from_email: email@example.com
