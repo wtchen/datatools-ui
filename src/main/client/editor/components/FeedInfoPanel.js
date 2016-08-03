@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import CreateSnapshotModal from './CreateSnapshotModal'
-import { componentList } from '../util/gtfs'
+import { gtfsIcons } from '../util/gtfs'
 
 export default class FeedInfoPanel extends Component {
 
@@ -27,8 +27,8 @@ export default class FeedInfoPanel extends Component {
   render () {
     let { feedSource, feedInfo } = this.props
     if (!feedInfo) return null
-    let panelWidth = '400px'
-    let panelHeight = '100px'
+    let panelWidth = 280
+    // let panelHeight = '100px'
     let panelStyle = {
       // backgroundColor: 'white',
       position: 'absolute',
@@ -36,7 +36,7 @@ export default class FeedInfoPanel extends Component {
       bottom: 20,
       borderRadius: '5px',
       // height: panelHeight,
-      width: panelWidth
+      width: `${panelWidth}px`
     }
     if (!feedInfo || !feedSource) {
       return null
@@ -55,7 +55,7 @@ export default class FeedInfoPanel extends Component {
               <Button
                 onClick={() => {
                   if (toolbarVisible) {
-                    this.setState({right: -370})
+                    this.setState({right: 30 - panelWidth})
                   }
                   else {
                     this.setState({right: 5})
@@ -85,19 +85,23 @@ export default class FeedInfoPanel extends Component {
                 this.props.setActiveEntity(feedSource.id, key, {id: 'new'})
               }}
             >
-              {componentList.map(c => {
+              {gtfsIcons.map(c => {
+                if (!c.addable) return null
+                let name = c.id === 'scheduleexception' ? 'schedule exception' : c.id
                 return (
-                  <MenuItem key={c} eventKey={c}>Add {c}</MenuItem>
+                  <MenuItem key={c.id} eventKey={c.id}><Icon fixedWidth name={c.icon}/> Add {name}</MenuItem>
                 )
               })}
             </DropdownButton>
-            <Button
-              onClick={() => {
-
-              }}
-            >
-              <Icon name='crosshairs'/>
-            </Button>
+            {
+            // <Button
+            //   onClick={() => {
+            //
+            //   }}
+            // >
+            //   <Icon name='crosshairs'/>
+            // </Button>
+            }
               {
                 <Dropdown
                   dropup
@@ -133,7 +137,7 @@ export default class FeedInfoPanel extends Component {
                       {this.props.feedSource && this.props.feedSource.editorSnapshots
                         ? this.props.feedSource.editorSnapshots.map(snapshot => {
                             return (
-                              <MenuItem eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.id}</MenuItem>
+                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.id}</MenuItem>
                             )
                           })
                         : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>

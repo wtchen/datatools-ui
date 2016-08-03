@@ -11,8 +11,7 @@ import {
   fetchStopsForTripPattern,
 } from '../actions/stop'
 import {
-  fetchRoutes,
-  uploadRouteBranding
+  fetchRoutes
 } from '../actions/route'
 import {
   fetchTripPatterns,
@@ -48,7 +47,8 @@ import {
   downloadGtfsFeed,
   importGtfsFromGtfs,
   loadGtfsEntities,
-  receiveGtfsEntities
+  receiveGtfsEntities,
+  uploadBrandingAsset
 } from '../actions/editor'
 
 const mapStateToProps = (state, ownProps) => {
@@ -147,15 +147,13 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  // console.log(ownProps)
-  // console.log(ownProps.location.pathname.split('/'))
-  const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
-  const activeComponent = ownProps.routeParams.subpage // location.pathname.split('/')[4]
-  const subComponent = ownProps.routeParams.subsubpage // location.pathname.split('/')[5]
-  const subSubComponent = ownProps.routeParams.subsubcomponent // location.pathname.split('/')[6]
-  const activeEntityId = ownProps.routeParams.entity // location.pathname.split('/')[7]
-  const activeSubEntity = ownProps.routeParams.subentity // location.pathname.split('/')[8]
-  const activeSubSubEntity = ownProps.routeParams.subsubentity // location.pathname.split('/')[9]
+  const feedSourceId = ownProps.routeParams.feedSourceId
+  const activeComponent = ownProps.routeParams.subpage
+  const subComponent = ownProps.routeParams.subsubpage
+  const subSubComponent = ownProps.routeParams.subsubcomponent
+  const activeEntityId = ownProps.routeParams.entity
+  const activeSubEntity = ownProps.routeParams.subentity
+  const activeSubSubEntity = ownProps.routeParams.subsubentity
 
   return {
     onComponentMount: (initialProps) => {
@@ -188,9 +186,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               if (activeComponent === 'route' && activeEntityId) {
                 dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntityId))
                 .then((tripPatterns) => {
-                  console.log(tripPatterns)
                   let pattern = tripPatterns && tripPatterns.find(p => p.id === activeSubEntity)
-                  console.log(pattern)
                   if (subSubComponent === 'timetable' && activeSubSubEntity) {
                     dispatch(fetchTripsForCalendar(feedSourceId, pattern, activeSubSubEntity))
                   }
@@ -263,8 +259,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))
     },
-    uploadRouteBranding: (feedSourceId, routeId, file) => {
-      dispatch(uploadRouteBranding(feedSourceId, routeId, file))
+    uploadBrandingAsset: (feedSourceId, entityId, component, file) => {
+      dispatch(uploadBrandingAsset(feedSourceId, entityId, component, file))
     },
     setActiveEntity: (feedSourceId, component, entity, subComponent, subEntity, subSubComponent, subSubEntity) => {
       let entityId = entity && entity.id

@@ -4,6 +4,7 @@ import {Icon} from 'react-fa'
 import ll from 'lonlng'
 
 import EditableTextField from '../../common/components/EditableTextField'
+import { getConfigProperty } from '../../common/util/config'
 import PatternStopsTable from './PatternStopsTable'
 import { polyline as getPolyline } from '../../scenario-editor/utils/valhalla'
 
@@ -38,18 +39,6 @@ export default class TripPatternList extends Component {
     this.props.saveActiveEntity('trippattern')
     return true
   }
-  async extendPatternToStop (pattern, endPoint, stop) {
-    let newShape = await getPolyline([endPoint, stop])
-    if (newShape) {
-      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ...newShape]}})
-      this.props.saveActiveEntity('trippattern')
-      return true
-    } else {
-      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ll.toCoordinates(stop)]}})
-      this.props.saveActiveEntity('trippattern')
-      return false
-    }
-  }
   render () {
     const { feedSource, activeEntity } = this.props
     const activePatternId = this.props.activeSubEntity
@@ -83,12 +72,12 @@ export default class TripPatternList extends Component {
         {activeEntity.tripPatterns ? activeEntity.tripPatterns.map(pattern => {
           const rowStyle = {
             paddingTop: 5,
-            paddingBottom: 5,
+            paddingBottom: 5
           }
           const activeRowStyle = {
             backgroundColor: activeColor,
             paddingTop: 5,
-            paddingBottom: 5,
+            paddingBottom: 5
           }
           const isActive = activePatternId && pattern.id === activePatternId
           const timetableOptions = [
@@ -257,7 +246,7 @@ export default class TripPatternList extends Component {
                             let useFrequency = key !== 'timetables'
                             let other = key === 'timetables' ? 'frequencies' : 'timetables'
                             this.props.showConfirmModal({
-                              title: `Use ${key}?`,
+                              title: `Use ${key} for ${activePattern.name}?`,
                               body: `Are you sure you want to use ${key} for this trip pattern? Any trips created using ${other} will be lost.`,
                               onConfirm: () => {
                                 console.log('use ' + key)
@@ -328,7 +317,7 @@ export default class TripPatternList extends Component {
       </div>
     )
 
-    const activeTable = DT_CONFIG.modules.editor.spec
+    const activeTable = getConfigProperty('modules.editor.spec')
       .find(t => t.id === 'route')
 
     return (

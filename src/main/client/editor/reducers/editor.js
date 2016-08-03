@@ -52,7 +52,7 @@ const defaultState = {
   validation: null
 }
 const editor = (state = defaultState, action) => {
-  let stateUpdate, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState
+  let stateUpdate, key, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState
   switch (action.type) {
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
@@ -61,13 +61,12 @@ const editor = (state = defaultState, action) => {
       return state
     case 'UPDATE_MAP_SETTING':
       mapState = {...state.mapState}
-      for (var key in action.props) {
+      for (key in action.props) {
         mapState[key] = action.props[key]
       }
       if (!('target' in action.props)) {
         mapState.target = null
       }
-      console.log(mapState)
       return update(state, {
         mapState: {$set: mapState}
       })
@@ -150,9 +149,7 @@ const editor = (state = defaultState, action) => {
       for (var i = 0; i < controlPoints.length; i++) {
         newControlPoints.push(Object.assign({}, controlPoints[i]))
       }
-      console.log(newControlPoints[action.index].distance)
       let newest = update(newControlPoints, {[action.index]: {point: {$set: action.point}, distance: {$set: action.distance}}})
-      console.log(newest[action.index].distance)
       return update(state, {
         editSettings: {
           controlPoints: {$push: [newest]},
@@ -187,7 +184,6 @@ const editor = (state = defaultState, action) => {
         }
         // if tableData's component array is undefined, add it
         if(!state.tableData[action.component]) {
-          console.log('adding new '+action.component+' array');
           newState = update(state, {
             tableData: {[action.component]: {$set: []}}
           })
@@ -269,11 +265,9 @@ const editor = (state = defaultState, action) => {
         case 'trippattern':
           patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
           activeEntity = Object.assign({}, state.active.entity.tripPatterns[patternIndex])
-          for (var key in action.props) {
-            console.log(key, action.props[key])
+          for (key in action.props) {
             activeEntity[key] = action.props[key]
           }
-          console.log(activeEntity)
           stateUpdate = {
             active: {
               entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
@@ -293,7 +287,7 @@ const editor = (state = defaultState, action) => {
         // case 'timetable':
         //   activeEntity = Object.assign({}, state.active.entity)
         //   patternIndex = activeEntity.tripPatterns.findIndex(p => p.id === action.entity.id)
-        //   for (var key in action.props) {
+        //   for (key in action.props) {
         //     activeEntity.tripPatterns[patternIndex][key] = action.props[key]
         //   }
         //   return update(state, {
@@ -302,7 +296,7 @@ const editor = (state = defaultState, action) => {
         //   })
         default:
           activeEntity = Object.assign({}, state.active.entity)
-          for (var key in action.props) {
+          for (key in action.props) {
             activeEntity[key] = action.props[key]
           }
           return update(state, {
@@ -318,6 +312,7 @@ const editor = (state = defaultState, action) => {
           // datatools props
           id: ent.id,
           feedId: ent.feedId,
+          agencyBrandingUrl: ent.agencyBrandingUrl,
 
           // gtfs spec props
           agency_id: ent.gtfsAgencyId,
@@ -326,7 +321,7 @@ const editor = (state = defaultState, action) => {
           agency_timezone: ent.timezone,
           agency_lang: ent.lang,
           agency_phone: ent.phone,
-          agency_fare_url: ent.fare_url,
+          agency_fare_url: ent.agencyFareUrl,
           agency_email: ent.email,
         }
       })

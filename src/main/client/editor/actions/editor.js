@@ -4,6 +4,7 @@ import faker from 'faker'
 import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
 import { componentList, subComponentList, subSubComponentList } from '../util/gtfs'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
+import { getConfigProperty } from '../../common/util/config'
 import { browserHistory } from 'react-router'
 import {
   fetchFeedInfo,
@@ -375,6 +376,24 @@ export function getGtfsTable (tableId, feedId) {
   }
 }
 
+export function uploadBrandingAsset (feedId, entityId, component, file) {
+  return function (dispatch, getState) {
+    if (!file) return null
+    var data = new FormData()
+    data.append('file', file)
+    console.log(data)
+    const url = `/api/manager/secure/${component}/${entityId}/uploadbranding?feedId=${feedId}`
+    return fetch(url, {
+      method: 'post',
+      headers: { 'Authorization': 'Bearer ' + getState().user.token },
+      body: data
+    }).then(res => res.json())
+      .then(r => {
+        return dispatch(getGtfsTable(component, feedId))
+      })
+  }
+}
+
 export function fetchBaseGtfs (feedId) {
   return function (dispatch, getState) {
     const tablesToFetch = ['calendar', 'agency', 'route', 'stop']
@@ -392,7 +411,7 @@ export function fetchBaseGtfs (feedId) {
 // EDIT ACTIVE GTFS+ ACTIONS
 
 export function addGtfsRow (tableId) {
-  const table = DT_CONFIG.modules.editor.spec.find(t => t.id === tableId)
+  const table = getConfigProperty('modules.editor.spec').find(t => t.id === tableId)
 
   let rowData = {}
   for(const field of table.fields) {
@@ -563,7 +582,7 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     const getDataType = function(tableId, fieldName) {
       const lookupKey = tableId + ':' + fieldName
       if(lookupKey in typeLookup) return typeLookup[lookupKey]
-      const fieldInfo = DT_CONFIG.modules.editor.spec
+      const fieldInfo = getConfigProperty('modules.editor.spec')
         .find(t => t.id === tableId).fields.find(f => f.name === fieldName)
       if(!fieldInfo) return null
       typeLookup[lookupKey] = fieldInfo.inputType

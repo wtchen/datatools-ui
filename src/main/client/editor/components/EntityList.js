@@ -9,6 +9,7 @@ import EntityDetails from './EntityDetails'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import GtfsTable from './GtfsTable'
 import { getEntityName } from '../util/gtfs'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class EntityList extends Component {
 
@@ -73,6 +74,10 @@ export default class EntityList extends Component {
     }
     this.setState({fromIndex, toIndex})
   }
+  // TODO: add hover to row rendering
+  // _rowRenderer (props) {
+  //
+  // }
   render () {
     const sidePadding = '5px'
     let panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
@@ -163,7 +168,7 @@ export default class EntityList extends Component {
         </Button>
         </div>
 
-    const activeTable = DT_CONFIG.modules.editor.spec
+    const activeTable = getConfigProperty('modules.editor.spec')
       .find(t => t.id === this.props.activeComponent)
     const entityTable = this.props.tableView
       ? (
@@ -185,10 +190,10 @@ export default class EntityList extends Component {
           }}
           showHelpClicked={(tableId, fieldName) => {
             const helpContent = fieldName
-              ? DT_CONFIG.modules.editor.spec
+              ? getConfigProperty('modules.editor.spec')
                   .find(t => t.id === tableId).fields
                     .find(f => f.name === fieldName).helpContent
-              : DT_CONFIG.modules.editor.spec
+              : getConfigProperty('modules.editor.spec')
                   .find(t => t.id === tableId).helpContent
             this.refs.page.showInfoModal({
               title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),

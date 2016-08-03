@@ -23,19 +23,19 @@ export function saveAgency (feedId, agency) {
   return function (dispatch, getState) {
     dispatch(savingAgency(feedId, agency))
     const data = {
-      // defaultLat:"33.755",
-      // defaultLon:"-84.39",
+      // datatools props
+      id: agency.id === 'new' ? null : agency.id,
+      feedId: agency.feedId,
+
+      // gtfs spec
       gtfsAgencyId: agency.agency_id,
       lang: agency.agency_lang,
-      feedId: agency.feedId,
       name: agency.agency_name,
       phone: agency.agency_phone,
-      // routeTypeId:"0f7313df-cb1a-4029-80f1-24620a86fa2e",
-      sourceId: "277a268e-5b38-4aff-949c-b70517fb8224",
       timezone: agency.agency_timezone,
       url: agency.agency_url,
-      id: agency.id === 'new' ? null : agency.id,
-      // fare_url: agency.agency_fare_url,
+      agencyFareUrl: agency.agency_fare_url,
+      agencyBrandingUrl: agency.agency_branding_url,
     }
     const method = agency.id !== 'new' ? 'put' : 'post'
     const url = agency.id !== 'new'

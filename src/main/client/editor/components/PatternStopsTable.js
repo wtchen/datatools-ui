@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table, Button, Checkbox, Collapse, FormGroup, ControlLabel, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 import {Icon} from 'react-fa'
-import { DropTarget } from 'react-dnd'
+// import { DropTarget } from 'react-dnd'
 
 import { getEntityName } from '../util/gtfs'
-import MinuteSecondInput from './MinuteSecondInput'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import PatternStopRow from './PatternStopRow'
+import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
+import ll from 'lonlng'
 
 export default class PatternStopsTable extends Component {
   static propTypes = {
@@ -23,6 +24,18 @@ export default class PatternStopsTable extends Component {
     super(props)
     this.state = {}
   }
+  async extendPatternToStop (pattern, endPoint, stop) {
+    let newShape = await getPolyline([endPoint, stop])
+    if (newShape) {
+      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ...newShape]}})
+      this.props.saveActiveEntity('trippattern')
+      return true
+    } else {
+      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ll.toCoordinates(stop)]}})
+      this.props.saveActiveEntity('trippattern')
+      return false
+    }
+  }
   render () {
     let { stops,
           pattern,
@@ -36,29 +49,12 @@ export default class PatternStopsTable extends Component {
 
     if (!pattern) return null
 
-    let onDragOver = (e) => {
-      e.preventDefault()
-      // Logic here
-      console.log('onDragOver')
-    }
-    let onDragStart = (e) => {
-      e.dataTransfer.setData('id', 'setTheId')
-      console.log(e.currentTarget)
-      console.log(e.target.value)
-      console.log(e.target.key)
-      console.log('onDragStart')
-    }
-    let onDrop = (e) => {
-      console.log('onDrop')
-      var id = e.dataTransfer.getData('id')
-      console.log('Dropped with id:', id)
-    }
+    let cumulativeTravelTime = 0
     const stopRowStyle = {
       cursor: 'pointer',
       paddingTop: 2,
-      paddingBottom: 2,
+      paddingBottom: 2
     }
-    let totalTravelTime = 0
     return (
       <Table
         hover
@@ -74,14 +70,19 @@ export default class PatternStopsTable extends Component {
         <tbody>
           {stops && pattern.patternStops && pattern.patternStops.length
             ? pattern.patternStops.map((s, index) => {
-              <PatternStopRow
-                patternStop={s}
-                activePattern={pattern}
-                activeStop={this.state.activeStop}
-                setActiveStop={(s) => this.setState({activeStop: s})}
-                index={index}
-                {...this.props}
-              />
+              return (
+                <PatternStopRow
+                  patternStop={s}
+                  activePattern={pattern}
+                  rowStyle={stopRowStyle}
+                  cumulativeTravelTime={cumulativeTravelTime}
+                  key={s.stopId}
+                  activeStop={this.state.activeStop}
+                  setActiveStop={(stop) => this.setState({activeStop: stop})}
+                  index={index}
+                  {...this.props}
+                />
+              )
             })
             : !stops
             ? <tr><td className='text-center'><Icon spin name='refresh' /></td></tr>
@@ -93,13 +94,14 @@ export default class PatternStopsTable extends Component {
           >
               {editSettings.addStops
                 ? [
-                    <td>
+                    <td
+                      key='stop-selector-cell'
+                    >
                       <VirtualizedEntitySelect
                         value={entity ? {value: entity.id, label: getEntityName(activeComponent, entity), entity: entity} : null}
                         component={'stop'}
                         entities={stops}
                         onChange={(input) => {
-                          console.log(input)
                           let patternStops = [...pattern.patternStops]
                           let stop = input.entity
                           let coordinates = pattern.shape && pattern.shape.coordinates
@@ -120,8 +122,7 @@ export default class PatternStopsTable extends Component {
                             else {
                               patternStops.push(newStop)
                               if (patternStops.length > 1) {
-                                let previousStop = stops.find(s => patternStop.id === patternStops[patternStops.length - 2].stopId)
-                                console.log(previousStop)
+                                let previousStop = stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
                                 getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], editSettings.followStreets)
                                 .then(geojson => {
                                   updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
@@ -148,7 +149,10 @@ export default class PatternStopsTable extends Component {
                       />
                     </td>
                     ,
-                    <td className='col-xs-2'>
+                    <td
+                      key='cancel-add-stops-cell'
+                      className='col-xs-2'
+                    >
                       <Button
                         bsStyle='danger'
                         // className='pull-right'

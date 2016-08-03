@@ -33,33 +33,39 @@ export default class EditorSidebar extends Component {
     const { activeComponent, feedSource, setActiveEntity } = this.props
     return (
       <Nav stacked bsStyle='pills' activeKey={activeComponent}>
-        {sidebarItems.map(item => (
-          <OverlayTrigger key={item.id} placement='right' overlay={<Tooltip id={`${item.id}-tooltip`}>{item.title}</Tooltip>}>
-            <NavItem
-              active={activeComponent === item.id || activeComponent === 'scheduleexception' && item.id === 'calendar'}
-              href={item.id}
-              key={`nav-${item.id}`}
-              disabled={['feedinfo', 'back'].indexOf(item.id) === -1 && !this.props.feedInfo}
-              className='text-center'
-              title={item.title}
-              onClick={(e) => {
-                e.preventDefault()
-                if (item.id === 'back') {
-                  browserHistory.push(`/feed/${feedSource.id}`)
-                }
-                else if (activeComponent === item.id) {
-                  browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                }
-                else {
-                  setActiveEntity(feedSource.id, item.id)
-                  // browserHistory.push(`/feed/${feedSource.id}/edit/${item.id}`)
-                }
-              }}
-            >
-              <Icon name={item.icon} fixedWidth={true} size='lg' />
-            </NavItem>
-          </OverlayTrigger>
-        ))}
+        {sidebarItems.map(item => {
+          if (item.hideSidebar) {
+            return null
+          }
+          return (
+            <OverlayTrigger key={item.id} placement='right' overlay={<Tooltip id={`${item.id}-tooltip`}>{item.title}</Tooltip>}>
+              <NavItem
+                active={activeComponent === item.id || activeComponent === 'scheduleexception' && item.id === 'calendar'}
+                href={item.id}
+                key={`nav-${item.id}`}
+                disabled={['feedinfo', 'back'].indexOf(item.id) === -1 && !this.props.feedInfo}
+                className='text-center'
+                title={item.title}
+                onClick={(e) => {
+                  e.preventDefault()
+                  if (item.id === 'back') {
+                    browserHistory.push(`/feed/${feedSource.id}`)
+                  }
+                  else if (activeComponent === item.id) {
+                    browserHistory.push(`/feed/${feedSource.id}/edit/`)
+                  }
+                  else {
+                    setActiveEntity(feedSource.id, item.id)
+                    // browserHistory.push(`/feed/${feedSource.id}/edit/${item.id}`)
+                  }
+                }}
+              >
+                <Icon name={item.icon} fixedWidth={true} size='lg' />
+              </NavItem>
+            </OverlayTrigger>
+          )
+        }
+      )}
       </Nav>
     )
   }
