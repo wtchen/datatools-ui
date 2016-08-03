@@ -6,6 +6,7 @@ import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
 import { fetchProjectsWithPublicFeeds, fetchProjects } from '../../manager/actions/projects'
 import { fetchFeedSource, receiveFeedSource } from '../../manager/actions/feeds'
 import { updateUserData, fetchUser, updateTargetForSubscription, removeUserSubscription } from '../../manager/actions/user'
+import { getConfigProperty } from '../../common/util/config'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -22,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.projects){
         dispatch(fetchProjects())
         .then(() => {
-          let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions
+          let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
           if (subscriptions) {
             Promise.all(
               subscriptions.map(sub => {
@@ -39,7 +40,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
       else {
-        let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions
+        let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
         if (subscriptions) {
           Promise.all(
             subscriptions.map(sub => {

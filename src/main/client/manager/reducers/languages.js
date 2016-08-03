@@ -1,9 +1,10 @@
 import update from 'react-addons-update'
+import { getConfigProperty } from '../../common/util/config'
 
 const languages = (state = {
-  all: DT_CONFIG.messages.all,
+  all: getConfigProperty('messages.all'),
   // set active default to english
-  active: DT_CONFIG.messages.active,
+  active: getConfigProperty('messages.active'),
 }, action) => {
   let languageIndex
   switch (action.type) {

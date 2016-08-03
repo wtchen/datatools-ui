@@ -6,7 +6,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { browserHistory, Link } from 'react-router'
 import { Icon } from 'react-fa'
 
-import { isModuleEnabled, getComponentMessages } from '../util/config'
+import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../util/config'
 import JobMonitor from './JobMonitor'
 
 export default class DatatoolsNavbar extends Component {
@@ -137,7 +137,7 @@ export default class DatatoolsNavbar extends Component {
               : null
             }
             {isModuleEnabled('legacy_editor') && this.props.username
-              ? <NavItem href={DT_CONFIG.modules.legacy_editor.url}>
+              ? <NavItem href={getConfigProperty('modules.legacy_editor.url')}>
                   {messages.editor}
                 </NavItem>
               : null

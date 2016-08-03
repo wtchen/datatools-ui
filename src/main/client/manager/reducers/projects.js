@@ -1,4 +1,5 @@
 import update from 'react-addons-update'
+import { getConfigProperty } from '../../common/util/config'
 
 const projects = (state = {
   isFetching: false,
@@ -65,7 +66,7 @@ const projects = (state = {
     case 'REQUEST_PROJECTS':
       return update(state, { isFetching: { $set: true }})
     case 'RECEIVE_PROJECTS':
-      activeProjectId = state.active ? state.active.id : DT_CONFIG.application.active_project
+      activeProjectId = state.active ? state.active.id : getConfigProperty('application.active_project')
       activeIndex = action.projects.findIndex(p => p.id === activeProjectId)
       return {
         isFetching: false,
@@ -95,7 +96,7 @@ const projects = (state = {
           ]
         }
       }
-      activeProjectId = state.active ? state.active.id : DT_CONFIG.application.active_project
+      activeProjectId = state.active ? state.active.id : getConfigProperty('application.active_project')
       activeProject = action.project.id === activeProjectId ? action.project : null
       if (state.active && !activeProject) { // active project already exists and received project does not match active project
         activeProject = state.active

@@ -7,6 +7,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import PublicPage from './PublicPage'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class UserAccount extends React.Component {
 
@@ -23,7 +24,7 @@ export default class UserAccount extends React.Component {
       color: 'red',
       cursor: 'pointer'
     }
-    let subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions
+    let subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
     return (
       <PublicPage ref='publicPage'>
         <Grid>
@@ -49,7 +50,7 @@ export default class UserAccount extends React.Component {
               />
               <Button onClick={() => {this.props.getUser(this.props.user.profile.user_id)}}>Get User</Button>
             </Col>
-            { DT_CONFIG.application.notifications_enabled ?
+            { getConfigProperty('application.notifications_enabled') ?
               <Col xs={4}>
                 <h3>My Subscriptions</h3>
                 <ul>

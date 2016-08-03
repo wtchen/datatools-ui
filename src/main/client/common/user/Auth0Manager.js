@@ -3,6 +3,7 @@ import { browserHistory } from 'react-router'
 
 import { isTokenExpired } from '../util/jwtHelper'
 import UserPermissions from './UserPermissions'
+import { getConfigProperty } from '../util/config'
 
 // import '../../assets/mtc_manager_logo.png'
 
@@ -79,8 +80,8 @@ export default class Auth0Manager {
     return new Promise((resolve, reject) => {
       var lockOptions = {
         connections: ['Username-Password-Authentication'],
-        // callbackURL: DT_CONFIG.application.url,
-        icon: DT_CONFIG.application.logo ? DT_CONFIG.application.logo : icon,
+        // callbackURL: getConfigProperty('application.url'),
+        icon: getConfigProperty('application.logo') ? getConfigProperty('application.logo') : icon,
         disableSignupAction: true,
         // disableResetAction: true,
         authParams: {

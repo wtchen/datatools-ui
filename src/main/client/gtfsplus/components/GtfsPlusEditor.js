@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsPlusTable from './GtfsPlusTable'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class GtfsPlusEditor extends Component {
 
@@ -26,7 +27,7 @@ export default class GtfsPlusEditor extends Component {
   save () {
     const zip = new JSZip()
 
-    for(const table of DT_CONFIG.modules.gtfsplus.spec) {
+    for(const table of getConfigProperty('modules.gtfsplus.spec')) {
       if(!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
 
       let fileContent = ''
@@ -59,7 +60,7 @@ export default class GtfsPlusEditor extends Component {
       width: '100%'
     }
 
-    const activeTable = DT_CONFIG.modules.gtfsplus.spec
+    const activeTable = getConfigProperty('modules.gtfsplus.spec')
       .find(t => t.id === this.state.activeTableId)
 
     return (
@@ -95,7 +96,7 @@ export default class GtfsPlusEditor extends Component {
 
           <Row>
             <Col xs={2}>
-              {DT_CONFIG.modules.gtfsplus.spec.map(table => {
+              {getConfigProperty('modules.gtfsplus.spec').map(table => {
                 return (<p>
                   <Button
                     bsStyle={table.id === this.state.activeTableId ? 'info' : 'default'}
@@ -132,10 +133,10 @@ export default class GtfsPlusEditor extends Component {
                 }}
                 showHelpClicked={(tableId, fieldName) => {
                   const helpContent = fieldName
-                    ? DT_CONFIG.modules.gtfsplus.spec
+                    ? getConfigProperty('modules.gtfsplus.spec')
                         .find(t => t.id === tableId).fields
                           .find(f => f.name === fieldName).helpContent
-                    : DT_CONFIG.modules.gtfsplus.spec
+                    : getConfigProperty('modules.gtfsplus.spec')
                         .find(t => t.id === tableId).helpContent
                   this.refs.page.showInfoModal({
                     title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),

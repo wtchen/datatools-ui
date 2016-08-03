@@ -11,7 +11,7 @@ import WatchButton from '../../common/containers/WatchButton'
 import ProjectSettings from './ProjectSettings'
 import EditableTextField from '../../common/components/EditableTextField'
 import { defaultSorter, retrievalMethodString } from '../../common/util/util'
-import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 export default class ProjectViewer extends Component {
 
@@ -87,7 +87,7 @@ export default class ProjectViewer extends Component {
                 <ButtonToolbar
                   className={`pull-right`}
                 >
-                {DT_CONFIG.application.notifications_enabled
+                {getConfigProperty('application.notifications_enabled')
                   ? <WatchButton
                       isWatching={isWatchingProject}
                       user={this.props.user}
@@ -376,7 +376,7 @@ class FeedSourceTableRow extends Component {
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
-    const dateFormat = DT_CONFIG.application.date_format
+    const dateFormat = getConfigProperty('application.date_format')
     return (
       <tr key={fs.id}>
         <td className="col-md-4">
@@ -454,7 +454,7 @@ class FeedSourceTableRow extends Component {
           <Dropdown.Menu>
             <MenuItem disabled={disabled  || !fs.url} eventKey='update'><Glyphicon glyph='refresh' /> Update</MenuItem>
             <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-            {isModuleEnabled('deployment') || DT_CONFIG.application.notifications_enabled
+            {isModuleEnabled('deployment') || getConfigProperty('application.notifications_enabled')
               ? <MenuItem divider />
               : null
             }
@@ -462,7 +462,7 @@ class FeedSourceTableRow extends Component {
               ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
               : null
             }
-            {DT_CONFIG.application.notifications_enabled
+            {getConfigProperty('application.notifications_enabled')
               ? <WatchButton
                   isWatching={isWatchingFeed}
                   user={this.props.user}

@@ -4,7 +4,7 @@ import update from 'react-addons-update'
 import ReactDOM from 'react-dom'
 
 import allPermissions from './permissions'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 export default class UserSettings extends React.Component {
 
@@ -42,14 +42,14 @@ export default class UserSettings extends React.Component {
           type: 'administer-application'
         }],
         projects: [],
-        client_id: DT_CONFIG.auth0.client_id
+        client_id: getConfigProperty('auth0.client_id')
       }
     }
 
     let settings = {
       permissions: [],
       projects: [],
-      client_id: DT_CONFIG.auth0.client_id
+      client_id: getConfigProperty('auth0.client_id')
     }
 
     this.props.projects.forEach((project, i) => {

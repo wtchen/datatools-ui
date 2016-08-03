@@ -3,9 +3,10 @@ import update from 'react-addons-update'
 import Auth0Manager from '../../common/user/Auth0Manager'
 import UserPermissions from '../../common/user/UserPermissions'
 import UserSubscriptions from '../../common/user/UserSubscriptions'
+import { getConfigProperty } from '../../common/util/config'
 
 const user = (state = {
-  auth0: new Auth0Manager(DT_CONFIG.auth0),
+  auth0: new Auth0Manager(getConfigProperty('auth0')),
   isCheckingLogin: true,
   token: null,
   profile: null,

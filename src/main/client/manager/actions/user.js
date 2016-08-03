@@ -1,6 +1,7 @@
 import { secureFetch } from '../../common/util/util'
 import { fetchProjects } from './projects'
 import update from 'react-addons-update'
+import { getConfigProperty } from '../../common/util/config'
 
 export const checkingExistingLogin = () => {
   return {
@@ -60,7 +61,7 @@ export function fetchUser (user) {
 
 export function removeUserSubscription (profile, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions || [{type: subscriptionType, target: []}]
+    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions || [{type: subscriptionType, target: []}]
     let index = subscriptions.findIndex(sub => sub.type === subscriptionType)
     if (index > -1) {
       subscriptions.splice(index, 1)
@@ -73,7 +74,7 @@ export function removeUserSubscription (profile, subscriptionType) {
 
 export function updateTargetForSubscription (profile, target, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === DT_CONFIG.auth0.client_id).subscriptions || [{type: subscriptionType, target: []}]
+    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions || [{type: subscriptionType, target: []}]
     if (subscriptions.findIndex(sub => sub.type === subscriptionType) === -1) {
       subscriptions.push({type: subscriptionType, target: []})
     }
@@ -96,7 +97,7 @@ export function updateTargetForSubscription (profile, target, subscriptionType) 
 // server call
 export function updateUserData (user, userData) {
   return function (dispatch, getState) {
-    var dtIndex = user.profile ? user.profile.app_metadata.datatools.findIndex(dt => dt.client_id === DT_CONFIG.auth0.client_id) : user.app_metadata.datatools.findIndex(dt => dt.client_id === DT_CONFIG.auth0.client_id)
+    var dtIndex = user.profile ? user.profile.app_metadata.datatools.findIndex(dt => dt.client_id === getConfigProperty('auth0.client_id')) : user.app_metadata.datatools.findIndex(dt => dt.client_id === getConfigProperty('auth0.client_id'))
     console.log(dtIndex)
     var datatools = user.profile ? user.profile.app_metadata.datatools : user.app_metadata.datatools
     for (var type in userData) {
@@ -176,7 +177,7 @@ export function login (credentials, user, lockOptions) {
       // })
     }
     else {
-      credentials.client_id = DT_CONFIG.auth0.client_id
+      credentials.client_id = getConfigProperty('auth0.client_id')
       credentials.connection = 'Username-Password-Authentication'
       credentials.username = credentials.email
       credentials.grant_type = 'password'

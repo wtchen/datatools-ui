@@ -3,6 +3,8 @@ import { Panel, Row, Col, Table, Input, Button, Glyphicon, Well, Alert } from 'r
 import { Link, browserHistory } from 'react-router'
 import moment from 'moment'
 
+import { getConfigProperty } from '../../common/util/config'
+
 export default class GtfsPlusVersionSummary extends Component {
 
   constructor (props) {
@@ -98,7 +100,7 @@ export default class GtfsPlusVersionSummary extends Component {
                 </tr>
               </thead>
               <tbody>
-                {DT_CONFIG.modules.gtfsplus.spec.map(table => {
+                {getConfigProperty('modules.gtfsplus.spec').map(table => {
                   return (<tr style={{ color: this.isTableIncluded(table.id) === 'Yes' ? 'black' : 'lightGray' }}>
                     <td>{table.name}</td>
                     <td>{this.isTableIncluded(table.id)}</td>

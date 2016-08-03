@@ -15,7 +15,7 @@ import ExternalPropertiesTable from './ExternalPropertiesTable'
 import FeedVersionNavigator from './FeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
-import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -75,7 +75,7 @@ export default class FeedSourceViewer extends Component {
   }
 
   updateSnapshotVersions (feedSource) {
-    const url = DT_CONFIG.modules.editor.url + '/api/mgrsnapshot?sourceId=' + feedSource.id
+    const url = getConfigProperty('modules.editor.url') + '/api/mgrsnapshot?sourceId=' + feedSource.id
     fetch(url)
       .then(res => res.json())
       .then(snapshots => {
@@ -162,7 +162,7 @@ export default class FeedSourceViewer extends Component {
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
-    const dateFormat = DT_CONFIG.application.date_format
+    const dateFormat = getConfigProperty('application.date_format')
 
     return (
       <ManagerPage ref='page'>

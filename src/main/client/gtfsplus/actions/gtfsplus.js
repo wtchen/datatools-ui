@@ -1,13 +1,14 @@
 import JSZip from 'jszip'
 
 import { secureFetch } from '../../common/util/util'
+import { getConfigProperty } from '../../common/util/config'
 import { fetchFeedVersions } from '../../manager/actions/feeds'
 import { getFeedId } from '../../common/util/modules'
 
 // EDIT ACTIVE GTFS+ ACTIONS
 
 export function addGtfsPlusRow (tableId) {
-  const table = DT_CONFIG.modules.gtfsplus.spec.find(t => t.id === tableId)
+  const table = getConfigProperty('modules.gtfsplus.spec').find(t => t.id === tableId)
 
   let rowData = {}
   for(const field of table.fields) {
@@ -177,7 +178,7 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     const getDataType = function(tableId, fieldName) {
       const lookupKey = tableId + ':' + fieldName
       if(lookupKey in typeLookup) return typeLookup[lookupKey]
-      const fieldInfo = DT_CONFIG.modules.gtfsplus.spec
+      const fieldInfo = getConfigProperty('modules.gtfsplus.spec')
         .find(t => t.id === tableId).fields.find(f => f.name === fieldName)
       if(!fieldInfo) return null
       typeLookup[lookupKey] = fieldInfo.inputType

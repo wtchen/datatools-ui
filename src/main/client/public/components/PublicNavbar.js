@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import { getConfigProperty } from '../../common/util/config'
+
 class PublicNavbar extends Component {
 
   static propTypes = {
@@ -37,11 +39,11 @@ class PublicNavbar extends Component {
       <Navbar>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href='#'>{DT_CONFIG.application.title}</a>
+            <a href='#'>{getConfigProperty('application.title')}</a>
           </Navbar.Brand>
         </Navbar.Header>
         <Nav pullRight>
-          <NavItem href={DT_CONFIG.application.docs_url}><Glyphicon glyph='question-sign' /> Guide</NavItem>
+          <NavItem href={getConfigProperty('application.docs_url')}><Glyphicon glyph='question-sign' /> Guide</NavItem>
           <LinkContainer to={{ pathname: '/signup' }}>
             <NavItem>Sign up</NavItem>
           </LinkContainer>
