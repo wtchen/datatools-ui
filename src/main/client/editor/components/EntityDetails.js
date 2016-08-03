@@ -19,6 +19,7 @@ import LanguageSelect from '../../common/components/LanguageSelect'
 import TripPatternList from './TripPatternList'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import { getEntityName, gtfsIcons, getEntityBounds } from '../util/gtfs'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class EntityDetails extends Component {
 
@@ -225,9 +226,10 @@ export default class EntityDetails extends Component {
           if (isNotValid) {
             validationErrors.push({field: field.name, invalid: isNotValid})
           }
-          return (
+          let elements = [
             <FormGroup
               controlId={`${editorField}`}
+              key={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
               validationState={isNotValid
                 ? 'error'
@@ -247,7 +249,32 @@ export default class EntityDetails extends Component {
               }}
             />
             </FormGroup>
-          )
+          ]
+          if (field.name === 'agencyBrandingUrl' || field.name === 'routeBrandingUrl') {
+            elements.push(
+              <FormGroup
+                className='col-xs-12'
+                key={`${editorField}-upload`}
+              >
+                <ControlLabel>Upload {this.props.activeComponent} branding asset</ControlLabel>
+                <Dropzone
+                  accept='image/*'
+                  multiple={false}
+                  onDrop={(files) => {
+                    this.props.uploadBrandingAsset(this.props.feedSource.id, this.props.activeEntity.id, this.props.activeComponent, files[0])
+                    this.setState({file: files[0]})
+                  }}
+                >
+                  <div style={{marginBottom: '10px'}}>Drop {this.props.activeComponent} image here, or click to select image to upload.</div>
+                  {this.props.activeEntity && this.props.activeEntity[field.name]
+                    ? <img className='img-responsive' src={this.state.file && this.state.file.preview || this.props.activeEntity[field.name]} />
+                    : null
+                  }
+                </Dropzone>
+              </FormGroup>
+            )
+          }
+          return elements
         case 'EMAIL':
           isNotValid = field.required && !currentValue || currentValue && !validator.isEmail(currentValue)
           if (isNotValid) {
@@ -590,28 +617,27 @@ export default class EntityDetails extends Component {
           )
         case 'DAY_OF_WEEK_BOOLEAN':
           return ([
-            <span>
-            {editorField === 'monday'
-              ? <div className='col-xs-12'><ControlLabel>Days of service</ControlLabel></div> : null
-            }
+            <span key={`dow-label`}>
+              {editorField === 'monday'
+                ? <div className='col-xs-12'><ControlLabel>Days of service</ControlLabel></div> : null
+              }
             </span>
             ,
-            <span className='col-xs-3'>
-            <Checkbox
-              inline
-              checked={this.state[editorField] === 1 || currentValue === 1}
-              onChange={(evt) => {
-                console.log(evt.target.checked)
-                let props = {}
-                currentValue = evt.target.checked ? 1 : 0
-                props[field.name] = value
-                this.setState({[editorField]: value})
-                this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-              }}
-            >
-              {toSentenceCase(editorField.substr(0, 3))}
-            </Checkbox>
-            {'     '}
+            <span key={`${editorField}`} className='col-xs-3'>
+              <Checkbox
+                inline
+                checked={this.state[editorField] === 1 || currentValue === 1}
+                onChange={(evt) => {
+                  console.log(evt.target.checked)
+                  let props = {}
+                  currentValue = evt.target.checked ? 1 : 0
+                  props[field.name] = currentValue
+                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
+                }}
+              >
+                {toSentenceCase(editorField.substr(0, 3))}
+              </Checkbox>
+              {'     '}
             </span>]
           )
         case 'DROPDOWN':
@@ -742,7 +768,7 @@ export default class EntityDetails extends Component {
       }
     }
     const rowIndex = 0
-    const table = DT_CONFIG.modules.editor.spec.find(
+    const table = getConfigProperty('modules.editor.spec').find(
       t => this.props.activeComponent === 'scheduleexception'
         ? t.id === 'calendar_dates'
         : this.props.activeComponent === 'fare'
@@ -774,7 +800,6 @@ export default class EntityDetails extends Component {
             }}
           ><Icon name='plus'/> Add rule</Button>
             {this.props.activeEntity.fareRules.map((rule, index) => {
-
               let ruleEntity
               if (rule.route_id) {
                 ruleEntity = this.props.tableData.route && this.props.tableData.route.find(r => r.route_id === rule.route_id)
@@ -1089,30 +1114,6 @@ export default class EntityDetails extends Component {
                 ? getInput(rowIndex, field, entity[editorField], (rowIndex * table.fields.length) + colIndex + 1)
                 : null
             })}
-            {this.props.activeComponent === 'route' && DT_CONFIG.application.data.gtfs_s3_bucket
-              ? <FormGroup
-                  className='col-xs-12'
-                >
-                  <ControlLabel>Upload route branding asset</ControlLabel>
-                  <Dropzone
-                    accept='image/*'
-                    multiple={false}
-                    onDrop={(files) => {
-                      // this.setState({uploadFile: files[0]})
-                      this.props.uploadRouteBranding(this.props.feedSource.id, this.props.activeEntity.id, files[0])
-                    }}
-                    // className='center-block'
-                    // style={{height: '40px', width: '100%'}}
-                  >
-                    <div style={{marginBottom: '10px'}}>Drop a route image here, or click to select image to upload.</div>
-                    {this.props.activeEntity && this.props.activeEntity.routeBrandingUrl
-                      ? <img className='img-responsive' src={this.props.activeEntity.routeBrandingUrl} />
-                      : null
-                    }
-                  </Dropzone>
-                </FormGroup>
-              : null
-            }
             <p className='col-xs-12'>* = field is required</p>
           </Form>
           {
@@ -1283,6 +1284,7 @@ export default class EntityDetails extends Component {
           : [
           <div
               style={{height: '100px'}}
+              key='details-header'
             >
               {header}
               {!this.props.tableData[this.props.activeComponent] && this.props.activeComponent === 'feedinfo'
@@ -1296,7 +1298,7 @@ export default class EntityDetails extends Component {
               {subNav}
             </div>
             ,
-            <div style={{height: '80%', overflowY: 'scroll'}}>
+            <div key='details-body' style={{height: '80%', overflowY: 'scroll'}}>
               {this.props.subComponent === 'trippattern'
                 ? <TripPatternList
                     {...this.props}

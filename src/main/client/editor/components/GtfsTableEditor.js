@@ -5,6 +5,7 @@ import { browserHistory, Link } from 'react-router'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import GtfsTable from './GtfsTable'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class GtfsTableEditor extends Component {
 
@@ -26,7 +27,7 @@ export default class GtfsTableEditor extends Component {
   save () {
     const zip = new JSZip()
 
-    for(const table of DT_CONFIG.modules.editor.spec) {
+    for(const table of getConfigProperty('modules.editor.spec')) {
       if(!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
 
       let fileContent = ''
@@ -59,7 +60,7 @@ export default class GtfsTableEditor extends Component {
       width: '100%'
     }
 
-    const activeTable = DT_CONFIG.modules.editor.spec
+    const activeTable = getConfigProperty('modules.editor.spec')
       .find(t => t.id === this.state.activeTableId)
 
     return (
@@ -95,7 +96,7 @@ export default class GtfsTableEditor extends Component {
 
           <Row>
             <Col xs={2}>
-              {DT_CONFIG.modules.editor.spec.map(table => {
+              {getConfigProperty('modules.editor.spec').map(table => {
                 return (<p>
                   <Button
                     bsStyle={table.id === this.state.activeTableId ? 'info' : 'default'}
@@ -134,10 +135,10 @@ export default class GtfsTableEditor extends Component {
                 }}
                 showHelpClicked={(tableId, fieldName) => {
                   const helpContent = fieldName
-                    ? DT_CONFIG.modules.editor.spec
+                    ? getConfigProperty('modules.editor.spec')
                         .find(t => t.id === tableId).fields
                           .find(f => f.name === fieldName).helpContent
-                    : DT_CONFIG.modules.editor.spec
+                    : getConfigProperty('modules.editor.spec')
                         .find(t => t.id === tableId).helpContent
                   this.refs.page.showInfoModal({
                     title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),

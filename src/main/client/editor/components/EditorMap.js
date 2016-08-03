@@ -42,11 +42,11 @@ export default class EditorMap extends React.Component {
     this.setState({willMount: true})
   }
   componentDidMount () {
-    window.addEventListener("resize", () => this.updateDimensions())
+    window.addEventListener('resize', () => this.updateDimensions())
     this.setState({willMount: false})
   }
   componentWillUnmount () {
-    window.removeEventListener("resize", () => this.updateDimensions())
+    window.removeEventListener('resize', () => this.updateDimensions())
   }
   componentWillReceiveProps (nextProps) {
     if (nextProps.editSettings.controlPoints && nextProps.editSettings.controlPoints.length && !shallowEqual(nextProps.editSettings.controlPoints, this.props.editSettings.controlPoints)) {
@@ -568,6 +568,7 @@ export default class EditorMap extends React.Component {
                     position={[position.geometry.coordinates[1], position.geometry.coordinates[0]]}
                     icon={arrowIcon}
                     ref={`directionIcon-${index}`}
+                    key={`directionIcon-${index}`}
                     color='black'
                   >
                   </Marker>
@@ -627,6 +628,7 @@ export default class EditorMap extends React.Component {
                     zIndexOffset={1000}
                     // key={Math.random()}
                     ref={`controlPoint-${index}`}
+                    key={`controlPoint-${index}`}
                     draggable={
                       true
                       // !s.hidden
@@ -661,7 +663,7 @@ export default class EditorMap extends React.Component {
                   ref='controlPointBegin'
                   draggable={true}
                   onDrag={(e) => {
-
+                  key='controlPointBegin'
                   }}
                   onDragStart={(e) => {
                     let beginStop = this.props.stops.find(s => s.id === activePattern.patternStops[0].stopId)
@@ -1036,7 +1038,6 @@ export default class EditorMap extends React.Component {
   }
 
   render () {
-    console.log(this.state)
     const { feedSource, feedInfo, activeComponent, entities, activeEntity, subComponent } = this.props
     const offset = 0.005
     let feedSourceBounds = feedSource && feedSource.latestValidation && feedSource.latestValidation.bounds

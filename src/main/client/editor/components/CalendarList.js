@@ -5,6 +5,7 @@ import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import EditableTextField from '../../common/components/EditableTextField'
+import { getConfigProperty } from '../../common/util/config'
 import EntityDetails from './EntityDetails'
 import GtfsTable from './GtfsTable'
 
@@ -100,7 +101,7 @@ export default class CalendarList extends Component {
       </div>
     )
 
-    const activeTable = DT_CONFIG.modules.editor.spec
+    const activeTable = getConfigProperty('modules.editor.spec')
       .find(t => t.id === this.props.activeComponent)
     const agencyTable = (
       <GtfsTable
@@ -121,10 +122,10 @@ export default class CalendarList extends Component {
         }}
         showHelpClicked={(tableId, fieldName) => {
           const helpContent = fieldName
-            ? DT_CONFIG.modules.editor.spec
+            ? getConfigProperty('modules.editor.spec')
                 .find(t => t.id === tableId).fields
                   .find(f => f.name === fieldName).helpContent
-            : DT_CONFIG.modules.editor.spec
+            : getConfigProperty('modules.editor.spec')
                 .find(t => t.id === tableId).helpContent
           this.refs.page.showInfoModal({
             title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),
@@ -154,10 +155,10 @@ export default class CalendarList extends Component {
           }}
           showHelpClicked={(tableId, fieldName) => {
             const helpContent = fieldName
-              ? DT_CONFIG.modules.editor.spec
+              ? getConfigProperty('modules.editor.spec')
                   .find(t => t.id === tableId).fields
                     .find(f => f.name === fieldName).helpContent
-              : DT_CONFIG.modules.editor.spec
+              : getConfigProperty('modules.editor.spec')
                   .find(t => t.id === tableId).helpContent
             this.refs.page.showInfoModal({
               title: `Help for ${tableId}.txt` + (fieldName ? `: ${fieldName}` : ''),

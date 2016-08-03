@@ -78,31 +78,44 @@ export const gtfsIcons = [
   {
     id: 'feedinfo',
     icon: 'info',
+    addable: false,
     title: 'Edit feed info'
   },
   {
     id: 'agency',
     icon: 'building',
+    addable: true,
     title: 'Edit agencies'
   },
   {
     id: 'route',
     icon: 'bus',
+    addable: true,
     title: 'Edit routes'
   },
   {
     id: 'stop',
     icon: 'map-marker',
+    addable: true,
     title: 'Edit stops'
   },
   {
     id: 'calendar',
     icon: 'calendar',
+    addable: true,
     title: 'Edit calendars'
+  },
+  {
+    id: 'scheduleexception',
+    icon: 'ban',
+    addable: true,
+    hideSidebar: true,
+    title: 'Edit schedule exceptions'
   },
   {
     id: 'fare',
     icon: 'ticket',
+    addable: true,
     title: 'Edit fares'
   }
 ]
@@ -112,18 +125,18 @@ export const getControlPoints = (pattern, snapToStops) => {
     return []
   }
   let controlPoints = []
-  pattern.patternStops && pattern.patternStops.map((ps, index) => {
+  pattern.shape && pattern.patternStops && pattern.patternStops.map((ps, index) => {
     // set distance to average of patternStop and next patternStop, if last stop set to end of segment
     let distance = pattern.patternStops[index + 1]
       ? (pattern.patternStops[index + 1].shapeDistTraveled + ps.shapeDistTraveled) / 2
       : lineDistance(pattern.shape, 'meters')
-    let point = along(pattern.shape, distance, 'meters')
+    let point = pattern.shape && along(pattern.shape, distance, 'meters')
     let controlPoint = {
       point,
       distance: distance,
       permanent: true
     }
-    let stopPoint = along(pattern.shape, ps.shapeDistTraveled, 'meters')
+    let stopPoint = pattern.shape && along(pattern.shape, ps.shapeDistTraveled, 'meters')
     let stopControl = {
       point: stopPoint,
       permanent: true,

@@ -1,20 +1,34 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table, Button, Checkbox, Collapse, FormGroup, ControlLabel, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Row, Col, Button, Collapse, FormGroup, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
-import { DragSource } from 'react-dnd'
+// import { DragSource } from 'react-dnd'
 
 import { getEntityName } from '../util/gtfs'
 import MinuteSecondInput from './MinuteSecondInput'
-import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 
-export default class PatternStopRow {
+export default class PatternStopRow extends Component {
+  static propTypes = {
+    index: PropTypes.number,
+    cumulativeTravelTime: PropTypes.number,
+
+    stops: PropTypes.array,
+
+    patternStop: PropTypes.object,
+    activePattern: PropTypes.object,
+    rowStyle: PropTypes.object,
+
+    activeStop: PropTypes.string,
+
+    setActiveStop: PropTypes.func,
+    updateActiveEntity: PropTypes.func,
+    saveActiveEntity: PropTypes.func
+  }
   constructor (props) {
-    // super(props)
+    super(props)
   }
   render () {
-    let { index, patternStop, setActiveStop, activePattern } = this.props
-    totalTravelTime += patternStop.defaultTravelTime + patternStop.defaultDwellTime
-    const key = `${index}-${s.stopId}`
+    let { index, patternStop, setActiveStop, activePattern, cumulativeTravelTime, stops, updateActiveEntity, saveActiveEntity, rowStyle } = this.props
+    const key = `${index}-${patternStop.stopId}`
     let stopIsActive = this.props.activeStop === key
     let stop = stops.find(st => st.id === patternStop.stopId)
     let stopName = getEntityName('stop', stop)
@@ -24,15 +38,11 @@ export default class PatternStopRow {
       : stop.stop_name
     let titleStopName = stop ? `${index + 1}. ${stopName}` : `${index + 1}. ${patternStop.stopId}`
     let fullStopName = stop ? `${index + 1}. ${abbreviatedStopName}` : `${index + 1}. ${patternStop.stopId}`
-
-    return // connectDragSource
-    (
+    return (
       <tr
         key={key}
-        draggable={true}
-        style={stopRowStyle}
-        onDragOver={onDragOver}
-        onDragStart={onDragStart}
+        // draggable={true}
+        style={rowStyle}
       >
         <td
           style={{padding: '0px'}}
@@ -43,13 +53,12 @@ export default class PatternStopRow {
             style={{width: '100%', margin: '0px'}}
             className='small'
             onClick={(e) => {
-              console.log(e.target)
               if (!stopIsActive) setActiveStop(key)
               else setActiveStop(null)
             }}
           >
             <span className='pull-right'>
-              <span>{Math.round(totalTravelTime/60)} (+{Math.round(patternStop.defaultTravelTime / 60)} +{Math.round(patternStop.defaultDwellTime / 60)})</span>
+              <span>{Math.round(cumulativeTravelTime / 60)} (+{Math.round(patternStop.defaultTravelTime / 60)} +{Math.round(patternStop.defaultDwellTime / 60)})</span>
               {'    '}
               <Button bsSize='xsmall' bsStyle='link' style={{cursor: '-webkit-grab'}}><Icon name='bars'/></Button>
             </span>
@@ -81,12 +90,11 @@ export default class PatternStopRow {
                   <Row>
                     <Col xs={6}>
                       <FormGroup
-                        controlId="formBasicText"
-                        /*validationState={this.getValidationState()}*/
+                        controlId='formBasicText'
                       >
                         <ControlLabel>Default travel time</ControlLabel>
                         <MinuteSecondInput
-                          seconds={s.defaultTravelTime}
+                          seconds={patternStop.defaultTravelTime}
                           onChange={(value) => {
                             let patternStops = [...activePattern.patternStops]
                             patternStops[index].defaultTravelTime = value
@@ -97,12 +105,11 @@ export default class PatternStopRow {
                     </Col>
                     <Col xs={6}>
                       <FormGroup
-                        controlId="formBasicText"
-                        /*validationState={this.getValidationState()}*/
+                        controlId='formBasicText'
                       >
                         <ControlLabel>Default dwell time</ControlLabel>
                         <MinuteSecondInput
-                          seconds={s.defaultDwellTime}
+                          seconds={patternStop.defaultDwellTime}
                           onChange={(value) => {
                             let patternStops = [...activePattern.patternStops]
                             patternStops[index].defaultDwellTime = value

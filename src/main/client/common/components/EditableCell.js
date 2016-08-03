@@ -88,6 +88,7 @@ export default class EditableCell extends Component {
           return false
         }
       case 13: // Enter
+        evt.preventDefault()
         // handle shift
         if (evt.shiftKey){
           this.save(evt)
@@ -143,30 +144,24 @@ export default class EditableCell extends Component {
         return true
     }
   }
-  save (evt) {
-    // this.setState({data: evt.target.value, isEditing: false})
-    // this.props.onChange(evt.target.value)
-
+  save () {
     if (!this.props.renderTime) {
-      console.log(evt.target.value)
       console.log(this.state.data)
-      if (evt.target.value !== this.state.originalData) {
-        this.setState({data: evt.target.value, isEditing: false})
-        this.props.onChange(evt.target.value)
+      if (this.state.data !== this.state.originalData) {
+        console.log('saving data... ' + this.state.data)
+        this.setState({isEditing: false})
+        this.props.onChange(this.state.data)
       }
       else {
         this.cancel()
       }
     }
     else {
+      console.log('render time' + this.state.data)
       let date = moment().startOf('day').format('YYYY-MM-DD')
-      let momentTime = moment(date + 'T' + evt.target.value, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a'], true)
-      // console.log(momentTime.isValid())
+      let momentTime = moment(date + 'T' + this.state.data, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a'], true)
       let value = momentTime.diff(date, 'seconds')
-      // console.log(value)
-      // console.log(evt.target.value)
-      // console.log(this.state.data)
-      // console.log(this.cellRenderer(this.state.data))
+
       // check for valid time and new value
       if (momentTime.isValid() && value !== this.state.data) {
         console.log('saving data... ' + value)
@@ -188,7 +183,6 @@ export default class EditableCell extends Component {
   }
   handleChange (evt) {
     this.setState({data: evt.target.value})
-    // this.props.onChange(evt.target.value)
   }
   handlePaste (evt) {
     let text = evt.clipboardData.getData('Text')
@@ -208,10 +202,7 @@ export default class EditableCell extends Component {
   render () {
       var cellHtml
       var cellStyle = {
-        // width: '100%',
-        // height: '100%',
         fontWeight: this.state.edited ? 'bold' : 'normal'
-        // display: 'inline-block',
       }
       if (this.state.isEditing) {
         cellHtml = (
@@ -219,18 +210,16 @@ export default class EditableCell extends Component {
           type='text'
           ref='cellInput'
           defaultValue={this.cellRenderer(this.state.data)}
+          placeholder={this.props.placeholder || ''}
           onPaste={(evt) => this.handlePaste(evt)}
           style={{
             width: '100%',
-            height: '100%',
-            // zIndex: 20,
-            // display: this.state.isEditing ? 'inline' : 'none'
+            height: '100%'
           }}
           autoFocus='true'
           onKeyDown={(evt) => this.handleKeyDown(evt)}
           onChange={(evt) => this.handleChange(evt)}
           onBlur={(evt) => this.cancel(evt)}
-          // className='editable-cell'
         />
       )
       }
@@ -251,36 +240,19 @@ export default class EditableCell extends Component {
       return (
         <td
           className='editable-cell small'
-          // tabIndex={0}
           style={{
             margin: 0,
             padding: 0,
             whiteSpace: 'nowrap',
             backgroundColor: this.props.invalidData ? 'pink' : 'white',
             border: '1px solid #ddd',
-            ...this.props.style,
-            // ...cellStyle
+            ...this.props.style
           }}
           onClick={(evt) => {
             this.handleClick(evt)
-            // this.props.onClick(evt)
           }}
-          // contentEditable
-          // dangerouslySetInnerHTML={{__html: this.state.data}}
         >
           {cellHtml}
-          {
-            // <ContentEditable
-            //   autoFocus='true'
-            //   onPaste={(evt) => this.handlePaste(evt)}
-            //   onKeyDown={(evt) => this.handleKeyDown(evt)}
-            //   onChange={(evt) => this.handleChange(evt)}
-            //   onFocus={(evt) => console.log(evt)}
-            //   html={this.state.data} // innerHTML of the editable div
-            //   disabled={false}       // use true to disable edition
-            //   onChange={(evt) => this.handleChange(evt)} // handle innerHTML change
-            // />
-          }
         </td>
       )
   }

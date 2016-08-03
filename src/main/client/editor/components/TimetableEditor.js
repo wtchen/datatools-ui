@@ -9,7 +9,6 @@ import EditableTextField from '../../common/components/EditableTextField'
 import EditableCell from '../../common/components/EditableCell'
 
 export default class TimetableEditor extends Component {
-
   constructor (props) {
     super(props)
     this.state = {
@@ -26,10 +25,10 @@ export default class TimetableEditor extends Component {
     this.updateDimensions()
   }
   componentDidMount () {
-    window.addEventListener("resize", () => this.updateDimensions())
+    window.addEventListener('resize', () => this.updateDimensions())
   }
   componentWillUnmount () {
-    window.removeEventListener("resize", () => this.updateDimensions())
+    window.removeEventListener('resize', () => this.updateDimensions())
   }
   toggleRowSelection (rowIndex) {
     let selectIndex = this.state.selected.indexOf(rowIndex)
@@ -115,6 +114,80 @@ export default class TimetableEditor extends Component {
   //   Object.assign(rows[e.rowIdx], e.updated);
   //   this.setState({rows:rows});
   // }
+  _onDown (evt, rowIndex, colIndex) {
+      if (rowIndex + 1 <= this.state.data.length - 1) {
+        this.setState({activeCell: `${rowIndex + 1}-${colIndex}`})
+        return true
+      }
+      else {
+        return false
+      }
+  }
+  _onUp (evt, rowIndex, colIndex) {
+    if (rowIndex - 1 >= 0) {
+      this.setState({activeCell: `${rowIndex - 1}-${colIndex}`})
+      return true
+    }
+    else {
+      return false
+    }
+  }
+  _onRight (evt, rowIndex, colIndex, columns) {
+    if (colIndex + 1 <= columns.length - 1) {
+      this.setState({activeCell: `${rowIndex}-${colIndex + 1}`})
+      return true
+    }
+    else {
+      return false
+    }
+  }
+  _onLeft (evt, rowIndex, colIndex) {
+    if (colIndex - 1 >= 0) {
+      this.setState({activeCell: `${rowIndex}-${colIndex - 1}`})
+      return true
+    }
+    else {
+      return false
+    }
+  }
+  handlePastedRows (rows, rowIndex, colIndex, columns) {
+    let newRows = [...this.state.data]
+    let date = moment().startOf('day').format('YYYY-MM-DD')
+    let editedRows = []
+    for (var i = 0; i < rows.length; i++) {
+      editedRows.push(i)
+      // TODO: fix handlePaste to accommodate new rows objects
+      for (var j = 0; j < rows[0].length; j++) {
+        let path = `${rowIndex + i}.${columns[colIndex + j].key}`
+        if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
+          let newValue = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
+          objectPath.set(newRows, path, newValue)
+        }
+      }
+    }
+    let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
+    this.setState(update(this.state, stateUpdate))
+  }
+  isDataValid (col, value, previousValue) {
+    if (/TIME/.test(col.type)) {
+      return value && value >= 0 && value < previousValue
+    }
+    else {
+      return true
+    }
+  }
+  getCellRenderer (col, value) {
+    if (!/TIME/.test(col.type)) {
+      return value
+    }
+    else {
+      if (value && value >= 0)
+        return moment().startOf('day').seconds(value).format('HH:mm:ss')
+      else {
+        return ''
+      }
+    }
+  }
   render () {
     console.log(this.state)
     const { feedSource, route, activePatternId, tableData, activeScheduleId } = this.props
@@ -124,13 +197,7 @@ export default class TimetableEditor extends Component {
     const activePattern = route && route.tripPatterns ? route.tripPatterns.find(p => p.id === activePatternId) : null
     const activeSchedule = tableData.calendar ? tableData.calendar.find(c => c.id === activeScheduleId) : null
     const trips = activePattern && activeSchedule ? activePattern[activeScheduleId] : []
-    const sortedTrips = trips ? trips.sort((a, b) => {
-      // if(a.isCreating && !b.isCreating) return -1
-      // if(!a.isCreating && b.isCreating) return 1
-      if(a.stopTimes[0].departureTime < b.stopTimes[0].departureTime) return -1
-      if(a.stopTimes[0].departureTime > b.stopTimes[0].departureTime) return 1
-      return 0
-    }) : []
+
     // console.log(activeSchedule)
     const calendars = tableData.calendar
     const panelStyle = {
@@ -153,43 +220,77 @@ export default class TimetableEditor extends Component {
         name: 'Block ID',
         width: 30,
         key: 'blockId',
-        type: 'TEXT'
+        type: 'TEXT',
+        placeholder: '300'
       },
       {
         name: 'Trip ID',
         width: 300,
         key: 'gtfsTripId',
-        type: 'TEXT'
+        type: 'TEXT',
+        placeholder: '12345678'
       },
       {
         name: 'Trip Headsign',
         width: 300,
         key: 'tripHeadsign',
-        type: 'TEXT'
+        type: 'TEXT',
+        placeholder: 'Destination via Transfer Center'
       },
     ]
     if (activePattern && activePattern.patternStops) {
-      activePattern.patternStops.map((ps, index) => {
-        let stop = tableData.stop ? tableData.stop.find(st => st.id === ps.stopId) : null
-        let stopName = stop ? stop.stop_name : ps.stopId
-        columns.push({
-          name: stopName && stopName.length > 15 ? stopName.substr(0, 15) + '...' : stopName,
-          title: stopName,
-          width: 100,
-          key: `stopTimes.${index}.arrivalTime`,
-          colSpan: '2',
-          hidden: false,
-          type: 'ARRIVAL_TIME'
-        })
-        if (!this.state.hideDepartureTimes) {
+      if (!activePattern.useFrequency) {
+        activePattern.patternStops.map((ps, index) => {
+          let stop = tableData.stop ? tableData.stop.find(st => st.id === ps.stopId) : null
+          let stopName = stop ? stop.stop_name : ps.stopId
+          columns.push({
+            name: stopName && stopName.length > 15 ? stopName.substr(0, 15) + '...' : stopName,
+            title: stopName,
+            width: 100,
+            key: `stopTimes.${index}.arrivalTime`,
+            colSpan: '2',
+            hidden: false,
+            type: 'ARRIVAL_TIME',
+            placeholder: 'HH:MM:SS'
+          })
           columns.push({
             key: `stopTimes.${index}.departureTime`,
-            hidden: true,
-            type: 'DEPARTURE_TIME'
+            hidden: this.state.hideDepartureTimes,
+            type: 'DEPARTURE_TIME',
+            placeholder: 'HH:MM:SS'
           })
-        }
-      })
+        })
+      }
+      else {
+        columns.push({
+          name: 'Start time',
+          width: 100,
+          key: 'startTime',
+          type: 'TIME',
+          placeholder: 'HH:MM:SS'
+        })
+        columns.push({
+          name: 'End time',
+          width: 100,
+          key: 'endTime',
+          type: 'TIME',
+          placeholder: 'HH:MM:SS'
+        })
+        columns.push({
+          name: 'Headway',
+          width: 60,
+          key: 'headway',
+          type: 'MINUTES',
+          placeholder: '15 (min)'
+        })
+      }
     }
+    const tableType = !activePattern
+      ? ''
+      : activePattern.useFrequency
+      ? 'Editing frequencies for'
+      : 'Editing timetables for'
+    const headerText = <span>{tableType} {activePattern ? activePattern.name : <Icon spin name='refresh' />}</span>
     return (
       <div
         style={panelStyle}
@@ -204,14 +305,17 @@ export default class TimetableEditor extends Component {
           className='pull-right'
           inline
         >
-          <Checkbox
-            value={this.state.hideDepartureTimes}
-            onChange={(evt) => {
-              this.setState({hideDepartureTimes: !this.state.hideDepartureTimes})
-            }}
-          >
-            <small> Hide departure times</small>
-          </Checkbox>
+          {activePattern && !activePattern.useFrequency
+            ? <Checkbox
+                value={this.state.hideDepartureTimes}
+                onChange={(evt) => {
+                  this.setState({hideDepartureTimes: !this.state.hideDepartureTimes})
+                }}
+              >
+                <small> Hide departure times</small>
+              </Checkbox>
+            : null
+          }
           {'  '}
           <InputGroup>
             <FormControl style={{width: '40px'}} type='text' />
@@ -311,7 +415,7 @@ export default class TimetableEditor extends Component {
             }}
           ><Icon name='reply'/> Back to route</Button>
           {' '}
-          Editing timetables for {activePattern ? activePattern.name : <Icon spin name='refresh' />}
+          {headerText}
         </h3>
         <Nav style={{marginBottom: '5px'}} bsStyle='tabs' activeKey={activeScheduleId} onSelect={this.handleSelect}>
           {calendars
@@ -351,7 +455,9 @@ export default class TimetableEditor extends Component {
         style={{marginTop: '125px'}}
       >
         {activeSchedule
-          ? <table className='handsontable'>
+          ? <table
+              className='handsontable'
+            >
               <thead
               >
                 <tr>
@@ -375,7 +481,7 @@ export default class TimetableEditor extends Component {
                     />
                   </th>
                   {columns.map(c => {
-                    if (c.hidden) return null
+                    if (!c.name) return null
                     return (
                       <th
                         style={{width: `${c.width}px`}}
@@ -406,107 +512,45 @@ export default class TimetableEditor extends Component {
                         />
                       </td>
                       {columns.map((col, colIndex) => {
-                        let values = []
                         let val = objectPath.get(row, col.key)
                         rowValues.push(val)
                         let cellStyle = {
                           width: '60px',
-                          color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000',
+                          color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000'
                         }
                         if (rowIsChecked) {
                           cellStyle.backgroundColor = rowCheckedColor
                         }
                         let previousValue = rowValues[colIndex - 1]
+
+                        // if departure times are hidden do not display cell
+                        if (col.hidden) return null
+
                         return (
                           <EditableCell
                             ref={`cell-${rowIndex}-${colIndex}`}
                             onChange={(value) => {
                               this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
+                              // set departure time value if departure times are hidden
+                              if (this.state.hideDepartureTimes && columns[colIndex + 1] && columns[colIndex + 1].type === 'DEPARTURE_TIME') {
+                                this.setCellValue(value, rowIndex, `${rowIndex}.${columns[colIndex + 1].key}`)
+                              }
                             }}
                             key={`cell-${rowIndex}-${colIndex}`}
-                            // onClick={(evt) => { this.setState({activeCell: `${rowIndex}-${colIndex}`}) }}
-                            onRowSelect={(evt) => {
-                              this.toggleRowSelection(rowIndex)
-                            }}
-                            onLeft={(evt) => {
-                              if (colIndex - 1 >= 0) {
-                                this.setState({activeCell: `${rowIndex}-${colIndex - 1}`})
-                                return true
-                              }
-                              else {
-                                return false
-                              }
-                            }}
-                            onRight={(evt) => {
-                              if (colIndex + 1 <= columns.length - 1) {
-                                this.setState({activeCell: `${rowIndex}-${colIndex + 1}`})
-                                return true
-                              }
-                              else {
-                                return false
-                              }
-                            }}
-                            onUp={(evt) => {
-                              if (rowIndex - 1 >= 0) {
-                                this.setState({activeCell: `${rowIndex - 1}-${colIndex}`})
-                                return true
-                              }
-                              else {
-                                return false
-                              }
-                            }}
-                            onDown={(evt) => {
-                              if (rowIndex + 1 <= sortedTrips.length - 1) {
-                                this.setState({activeCell: `${rowIndex + 1}-${colIndex}`})
-                                return true
-                              }
-                              else {
-                                return false
-                              }
-                            }}
-                            duplicateLeft={(evt) => {
-                              console.log(previousValue)
-                              this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)
-                            }}
-                            handlePastedRows={(rows) => {
-                              console.log(rows)
-                              let newRows = [...this.state.data]
-                              let date = moment().startOf('day').format('YYYY-MM-DD')
-                              let editedRows = []
-                              for (var i = 0; i < rows.length; i++) {
-                                editedRows.push(i)
-                                // TODO: fix handlePaste to accommodate new rows objects
-                                for (var j = 0; j < rows[0].length; j++) {
-                                  let path = `${rowIndex + i}.${columns[colIndex + j].key}`
-                                  console.log(path)
-                                  if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
-                                    let newValue = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
-                                    objectPath.set(newRows, path, newValue)
-                                  }
-                                }
-                              }
-                              let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
-                              this.setState(update(this.state, stateUpdate))
-                            }}
+                            onRowSelect={(evt) => this.toggleRowSelection(rowIndex)}
+                            onLeft={(evt) => this._onLeft(evt, rowIndex, colIndex)}
+                            onRight={(evt) => this._onRight(evt, rowIndex, colIndex, columns)}
+                            onUp={(evt) => this._onUp(evt, rowIndex, colIndex)}
+                            onDown={(evt) => this._onDown(evt, rowIndex, colIndex)}
+                            duplicateLeft={(evt) => this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)}
+                            handlePastedRows={(rows) => this.handlePastedRows(rows, rowIndex, colIndex, columns)}
                             invalidData={/TIME/.test(col.type) && val >= 0 && val < previousValue}
                             isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
                             isFocused={false}
-                            renderTime={colIndex >= 3}
-                            cellRenderer={!/TIME/.test(col.type)
-                              ? (value) => value
-                              : (value) => {
-                                if (value >= 0)
-                                  return moment().startOf('day').seconds(value).format('HH:mm:ss')
-                                else {
-                                  return ''
-                                }
-                              }
-                            }
-                            // reverseRenderer={(value) => {
-                            //   let date = moment().startOf('day').format('YYYY-MM-DD')
-                            //   return moment(date + 'T' + value, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
-                            // }}
-                            data={val}//colIndex < 3 || isNaN(col) ? col : moment().startOf('day').seconds(col).format('HH:mm:ss')}
+                            placeholder={col.placeholder}
+                            renderTime={/TIME/.test(col.type)}
+                            cellRenderer={(value) => this.getCellRenderer(col, value)}
+                            data={val}
                             style={cellStyle}
                           />
                         )
