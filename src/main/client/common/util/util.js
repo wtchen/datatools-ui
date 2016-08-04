@@ -26,7 +26,7 @@ export function retrievalMethodString (method) {
   }
 }
 
-export function secureFetch (url, state, method, payload) {
+export function secureFetch (url, state, method, payload, mode) {
   var opts = {
     method: method || 'get',
     headers: {
@@ -35,7 +35,8 @@ export function secureFetch (url, state, method, payload) {
       'Content-Type': 'application/json'
     }
   }
-  if(payload) opts.body = JSON.stringify(payload)
+  if (mode) opts.mode = mode
+  if (payload) opts.body = JSON.stringify(payload)
   return fetch(url, opts)
 }
 

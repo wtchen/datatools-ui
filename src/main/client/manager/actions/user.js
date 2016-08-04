@@ -2,6 +2,7 @@ import { secureFetch } from '../../common/util/util'
 import { fetchProjects } from './projects'
 import update from 'react-addons-update'
 import { getConfigProperty } from '../../common/util/config'
+import objectPath from 'object-path'
 
 export const checkingExistingLogin = () => {
   return {
@@ -54,6 +55,34 @@ export function fetchUser (user) {
       .then(response => response.json())
       .then(user => {
         // console.log(user)
+        return user
+      })
+  }
+}
+
+export function updateUserMetadata (profile, props) {
+  return function (dispatch, getState) {
+    const CLIENT_ID = getConfigProperty('auth0.client_id')
+    let userMetadata = profile.user_metadata || {
+          lang: 'en',
+          datatools: [
+            {
+              client_id: CLIENT_ID
+            }
+          ]
+        }
+    for (var key in props) {
+      objectPath.set(userMetadata, `datatools.${CLIENT_ID}.${key}`, props[key])
+    }
+    const payload = {user_metadata: userMetadata}
+    const url = `https://${getConfigProperty('auth0.domain')}/api/v2/users/${profile.user_id}`
+    return secureFetch(url, getState(), 'patch', payload)
+      .then(response => response.json())
+      .then(user => {
+        console.log(user)
+        if (user.user_id === getState().user.profile.user_id) {
+          dispatch(checkExistingLogin())
+        }
         return user
       })
   }
