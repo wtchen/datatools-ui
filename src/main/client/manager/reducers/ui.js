@@ -1,7 +1,7 @@
 import update from 'react-addons-update'
 
 const ui = (state = {
-  sidebarExpanded: false
+  sidebarExpanded: true
 }, action) => {
   switch (action.type) {
     case 'SET_SIDEBAR_EXPANDED':

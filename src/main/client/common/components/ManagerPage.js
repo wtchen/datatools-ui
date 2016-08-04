@@ -1,14 +1,14 @@
 import React from 'react'
-import { Grid } from 'react-bootstrap'
 import Helmet from 'react-helmet'
+import { browserHistory } from 'react-router'
 
-import ManagerNavbar from '../containers/ManagerNavbar'
 import CurrentStatusMessage from '../containers/CurrentStatusMessage'
 import CurrentStatusModal from '../containers/CurrentStatusModal'
 import ConfirmModal from './ConfirmModal.js'
 import SelectFileModal from './SelectFileModal.js'
 import InfoModal from './InfoModal.js'
-import ManagerSidebar from '../containers/ManagerSidebar'
+import ActiveSidebar from '../containers/ActiveSidebar'
+import ActiveSidebarNavItem from '../containers/ActiveSidebarNavItem'
 import PageContent from '../containers/PageContent'
 
 import { getConfigProperty } from '../util/config'
@@ -43,7 +43,14 @@ export default class ManagerPage extends React.Component {
         <InfoModal ref='infoModal'/>
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
-        <ManagerSidebar />
+        <ActiveSidebar>
+          <ActiveSidebarNavItem icon='list' label='Projects'
+            onClick={() => browserHistory.push(`/project`) } />
+          <ActiveSidebarNavItem icon='users' label='User Admin'
+            onClick={() => browserHistory.push(`/admin`) } />
+          <ActiveSidebarNavItem icon='globe' label='Public Site'
+            onClick={() => browserHistory.push(`/`) } />
+        </ActiveSidebar>
         <PageContent>
             <div style={{ padding: 20 }}>
               {this.props.children}

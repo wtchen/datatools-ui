@@ -54,7 +54,7 @@ export default class UserAdmin extends React.Component {
               setPage={this.props.setPage}
               userSearch={this.props.userSearch}
             />
-          : <Grid><Row><Col xs={12}>
+          : <Grid fluid><Row><Col xs={12}>
               {this.state.user
                 ? <p>You do not have sufficient user privileges to access this area</p>
                 : <p>You must be an admin to access this area</p>

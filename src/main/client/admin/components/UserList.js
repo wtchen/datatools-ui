@@ -31,7 +31,7 @@ export default class UserList extends React.Component {
 
     return (
 
-      <Grid>
+      <Grid fluid>
         <Row style={{ marginBottom: '18px' }}>
           <Col xs={12}>
             <h2>{messages.title}</h2>

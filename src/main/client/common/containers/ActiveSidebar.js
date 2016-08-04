@@ -31,9 +31,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-var ManagerSidebar = connect(
+var ActiveSidebar = connect(
   mapStateToProps,
   mapDispatchToProps
 )(Sidebar)
 
-export default ManagerSidebar
+export default ActiveSidebar

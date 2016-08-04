@@ -6,33 +6,30 @@ import { shallowEqual } from 'react-pure-render'
 
 import { gtfsIcons } from '../util/gtfs'
 
-import SidebarNavItem from '../../common/components/SidebarNavItem'
-import ManagerSidebar from '../../common/containers/ManagerSidebar'
+import ActiveSidebarNavItem from '../../common/containers/ActiveSidebarNavItem'
+import ActiveSidebar from '../../common/containers/ActiveSidebar'
 
 export default class EditorSidebar extends Component {
 
   static propTypes = {
-    expanded: PropTypes.bool,
     activeComponent: PropTypes.string,
     feedSource: PropTypes.object,
     feedInfo: PropTypes.object,
     setActiveEntity: PropTypes.func
   }
 
-
   render () {
     const { activeComponent, feedSource, setActiveEntity } = this.props
 
     return (
-      <ManagerSidebar>
-        <SidebarNavItem ref='backNav' expanded={this.props.expanded}
+      <ActiveSidebar>
+        <ActiveSidebarNavItem ref='backNav'
           icon='reply' label='Back to Feed'
           onClick={() => browserHistory.push(`/feed/${feedSource.id}`) } />
         {gtfsIcons.map(item => {
           return item.hideSidebar
             ? null
-            : <SidebarNavItem key={item.id}
-                expanded={this.props.expanded}
+            : <ActiveSidebarNavItem key={item.id}
                 icon={item.icon} label={item.label}
                 active={activeComponent === item.id || activeComponent === 'scheduleexception' && item.id === 'calendar'}
                 onClick={() => {
@@ -44,7 +41,7 @@ export default class EditorSidebar extends Component {
                 }}
               />
         })}
-      </ManagerSidebar>
+      </ActiveSidebar>
     )
   }
 }
