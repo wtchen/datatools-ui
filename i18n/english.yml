@@ -46,6 +46,7 @@ DeploymentsPanel:
     name: Name
     creationDate: Creation date
     feedCount: Number of feeds
+    deployedTo: Deployed to
 ProjectViewer:
   mergeFeeds: Merge Feeds
   settings: Project Settings

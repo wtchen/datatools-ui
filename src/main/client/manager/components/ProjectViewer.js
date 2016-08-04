@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Tabs, Tab, Grid, Row, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, Dropdown, MenuItem } from 'react-bootstrap'
+import { Tabs, Tab, Grid, Row, Label, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, Dropdown, MenuItem } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import Icon from 'react-fa'
 
@@ -309,6 +309,7 @@ class DeploymentsPanel extends Component {
                 <tr>
                   <th className='col-md-4'>{messages.table.name}</th>
                   <th>{messages.table.creationDate}</th>
+                  <th>{messages.table.deployedTo}</th>
                   <th>{messages.table.feedCount}</th>
                   <th></th>
                 </tr>
@@ -332,14 +333,24 @@ class DeploymentsPanel extends Component {
                             link={`/deployment/${dep.id}`}
                           />
                         </td>
-                        <td>{dep.dateCreated
-                          ? (<span>{moment(dep.dateCreated).format('MMM Do YYYY')} ({moment(dep.dateCreated).fromNow()})</span>)
-                          : na
-                        }</td>
-                        <td>{dep.feedVersions
-                          ? (<span>{dep.feedVersions.length}</span>)
-                          : na
-                        }</td>
+                        <td>
+                          {dep.dateCreated
+                            ? (<span>{moment(dep.dateCreated).format('MMM Do YYYY')} ({moment(dep.dateCreated).fromNow()})</span>)
+                            : na
+                          }
+                        </td>
+                        <td>
+                          {dep.deployedTo
+                            ? (<Label>{dep.deployedTo}</Label>)
+                            : na
+                          }
+                        </td>
+                        <td>
+                          {dep.feedVersions
+                            ? (<span>{dep.feedVersions.length}</span>)
+                            : na
+                          }
+                        </td>
                         <td>
                           <Button
                             bsStyle='danger'

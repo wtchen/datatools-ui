@@ -91,6 +91,10 @@ export default class DeploymentViewer extends Component {
                   />
                 */}
                 {this.props.deployment.name}
+                {this.props.deployment.deployedTo
+                  ? <Label>{this.props.deployment.deployedTo}</Label>
+                  : null
+                }
                 </h2>
               </div>
             </Col>
