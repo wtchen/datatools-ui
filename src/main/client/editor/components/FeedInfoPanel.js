@@ -27,7 +27,7 @@ export default class FeedInfoPanel extends Component {
   render () {
     let { feedSource, feedInfo } = this.props
     if (!feedInfo) return null
-    let panelWidth = 280
+    let panelWidth = 340
     // let panelHeight = '100px'
     let panelStyle = {
       // backgroundColor: 'white',
@@ -42,6 +42,12 @@ export default class FeedInfoPanel extends Component {
       return null
     }
     const toolbarVisible = this.state.right > 0
+    const feedName = feedSource && feedSource.name && feedSource.name.length > 10
+      ? feedSource.name.substr(0, 10) + '...'
+      : feedSource && feedSource.name
+      ? feedSource.name
+      : 'Unnamed'
+
     return (
       <ReactCSSTransitionGroup transitionName={`slide-${this.state.right > 0 ? 'right' : 'left'}`} transitionEnterTimeout={500} transitionLeaveTimeout={300}>
       <div style={panelStyle}>
@@ -65,7 +71,7 @@ export default class FeedInfoPanel extends Component {
                 <Icon name={toolbarVisible ? 'caret-right' : 'caret-left'}/>
               </Button>
             </OverlayTrigger>
-            <DropdownButton dropup title={`Editing ${feedSource && feedSource.name}`} id='navigation-dropdown'
+            <DropdownButton dropup title={<span title={`Editing ${feedSource && feedSource.name}`}>Editing {feedName}</span>} id='navigation-dropdown'
               onSelect={key => {
                 switch (key) {
                   case '1':
