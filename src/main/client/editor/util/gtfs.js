@@ -22,7 +22,7 @@ export const getEntityBounds = (entity, offset = 0.005) => {
   else if (typeof entity.tripPatterns !== 'undefined') {
     let coordinates = []
     entity.tripPatterns.map(pattern => {
-      if (pattern.shape.coordinates) {
+      if (pattern.shape && pattern.shape.coordinates) {
         coordinates = [
           ...coordinates,
           ...pattern.shape.coordinates.map(c => ([c[1], c[0]]))
