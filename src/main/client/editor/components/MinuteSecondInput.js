@@ -5,13 +5,14 @@ export default class MinuteSecondInput extends Component {
 
   static propTypes = {
     seconds: PropTypes.number,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    style: PropTypes.object
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      seconds: this.props.seconds
+      seconds: typeof this.props.seconds === 'undefined' ? '' : this.props.seconds
     }
   }
   onChange (value) {
@@ -33,13 +34,13 @@ export default class MinuteSecondInput extends Component {
     const minuteSecond = string.split(':')
     console.log(minuteSecond)
     if (!isNaN(minuteSecond[0]) && !isNaN(minuteSecond[1])) {
-      return +minuteSecond[0] * 60 + +minuteSecond[1]
+      return Math.abs(+minuteSecond[0]) * 60 + Math.abs(+minuteSecond[1])
     }
     else if (isNaN(minuteSecond[0])) {
-      return +minuteSecond[1]
+      return Math.abs(+minuteSecond[1])
     }
     else if (isNaN(minuteSecond[1])) {
-      return +minuteSecond[0] * 60
+      return Math.abs(+minuteSecond[0] * 60)
     }
     else {
       return 0
@@ -51,6 +52,7 @@ export default class MinuteSecondInput extends Component {
       <FormControl
         value={typeof this.state.string !== 'undefined' ? this.state.string : this.convertSecondsToString(seconds)}
         placeholder={'mm:ss'}
+        style={this.props.style}
         onChange={(evt) => {
           this.onChange(evt.target.value)
         }}
