@@ -103,14 +103,14 @@ export default class Sidebar extends Component {
         </div>
       </Navbar>
 
-      {/* Job Monitor Popover
+      {/* Job Monitor Popover */}
       <JobMonitor
         jobMonitor={this.props.jobMonitor}
         target={this.refs.jobNav}
         expanded={this.props.expanded}
         visible={() => this.state.visiblePopover === 'job' }
         close={() => closePopover()}
-      />*/}
+      />
 
       {/* User Popover */}
       <SidebarPopover target={this.refs.userNav} title={this.props.username}

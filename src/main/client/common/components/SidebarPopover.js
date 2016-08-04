@@ -41,7 +41,7 @@ export default class SidebarPopover extends Component {
   reposition () {
     const padding = 10 // minimum space between popover and top/bottom of screen
 
-    const height = ReactDOM.findDOMNode(this.refs.popover).offsetHeight
+    const height = ReactDOM.findDOMNode(this.refs.popover) ? ReactDOM.findDOMNode(this.refs.popover).offsetHeight : 0
     const target = ReactDOM.findDOMNode(this.props.target)
     const targetTop = target ? target.getBoundingClientRect().top : 0
     const targetHeight = target ? target.getBoundingClientRect().bottom - target.getBoundingClientRect().top : 0
