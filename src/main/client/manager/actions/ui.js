@@ -10,6 +10,6 @@ export function settingSidebarExpanded (value) {
 export function setSidebarExpanded (value) {
   return function (dispatch, getState) {
     dispatch(settingSidebarExpanded(value))
-    dispatch(updateUserMetadata(getState().user.profile, {sidebar_expanded: value}))
+    dispatch(updateUserMetadata(getState().user.profile, {sidebarExpanded: value}))
   }
 }

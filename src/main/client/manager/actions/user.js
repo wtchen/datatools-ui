@@ -63,6 +63,7 @@ export function fetchUser (user) {
 export function updateUserMetadata (profile, props) {
   return function (dispatch, getState) {
     const CLIENT_ID = getConfigProperty('auth0.client_id')
+
     let userMetadata = profile.user_metadata || {
           lang: 'en',
           datatools: [
@@ -71,12 +72,14 @@ export function updateUserMetadata (profile, props) {
             }
           ]
         }
+    let clientIndex = userMetadata.datatools.findIndex(d => d.client_id === CLIENT_ID)
     for (var key in props) {
-      objectPath.set(userMetadata, `datatools.${CLIENT_ID}.${key}`, props[key])
+      objectPath.set(userMetadata, `datatools.${clientIndex}.${key}`, props[key])
     }
     const payload = {user_metadata: userMetadata}
+    console.log('updating user metadata props', props, payload)
     const url = `https://${getConfigProperty('auth0.domain')}/api/v2/users/${profile.user_id}`
-    return secureFetch(url, getState(), 'patch', payload)
+    return secureFetch(url, getState(), 'PATCH', payload)
       .then(response => response.json())
       .then(user => {
         console.log(user)
