@@ -58,9 +58,11 @@ export default class EditorFeedSourcePanel extends Component {
                             >
                               <Glyphicon glyph='pencil' /> {messages.restore}
                             </Button>
-                            <Button bsStyle='success'>
-                              <Glyphicon glyph='download' /> {messages.download}
-                            </Button>
+                            {
+                            // <Button bsStyle='success'>
+                            //   <Glyphicon glyph='download' /> {messages.download}
+                            // </Button>
+                            }
                             <Button bsStyle='info'
                               onClick={() => this.props.exportSnapshotAsVersion(this.props.feedSource, snapshot)}
                             >
