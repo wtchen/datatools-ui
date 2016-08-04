@@ -7,7 +7,6 @@ import { getComponentMessages, getConfigProperty } from '../util/config'
 
 export class WatchButton extends React.Component {
   render () {
-    console.log(this.props)
     const {dispatch, isWatching, user, target, subscriptionType} = this.props
     const messages = getComponentMessages('WatchButton')
 
