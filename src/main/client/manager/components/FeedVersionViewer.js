@@ -41,13 +41,17 @@ export default class FeedVersionViewer extends Component {
                     {moment(version.validationSummary.endDate).format(dateFormat)}
                   </td>
                 </tr>
-                <tr>
+                {/*<tr>
                   <td className='col-md-4'><b>{messages.timestamp}</b></td>
                   <td>{version.fileTimestamp ? moment(version.fileTimestamp).format(dateFormat + ', ' + timeFormat) : 'N/A' }</td>
                 </tr>
                 <tr>
                   <td className='col-md-4'><b>{messages.fileSize}</b></td>
                   <td>{version.fileSize ? Math.round(version.fileSize / 10000) / 100 + ' MB' : 'N/A'}</td>
+                </tr>*/}
+                <tr>
+                  <td className='col-md-4'><b>{messages.agencyCount}</b></td>
+                  <td>{version.validationSummary.agencyCount}</td>
                 </tr>
               </tbody>
             </Table>
@@ -55,10 +59,6 @@ export default class FeedVersionViewer extends Component {
           <Col xs={12} sm={6}>
             <Table striped>
               <tbody>
-                <tr>
-                  <td className='col-md-4'><b>{messages.agencyCount}</b></td>
-                  <td>{version.validationSummary.agencyCount}</td>
-                </tr>
                 <tr>
                   <td className='col-md-4'><b>{messages.routeCount}</b></td>
                   <td>{version.validationSummary.routeCount}</td>

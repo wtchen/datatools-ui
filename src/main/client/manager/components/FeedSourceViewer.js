@@ -205,7 +205,7 @@ export default class FeedSourceViewer extends Component {
                 <ul className="list-unstyled">
                   <li><b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
                   <li><b>Number of versions:</b> {fs.feedVersionCount}</li>
-                  <li><b>Average file size:</b> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>
+                  {/*<li><b>Average file size:</b> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>*/}
                 </ul>
               </Well>
             </Col>
