@@ -13,7 +13,6 @@ import ActiveEntityList from '../containers/ActiveEntityList'
 import EntityDetails from './EntityDetails'
 import TimetableEditor from './TimetableEditor'
 import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
-import ManagerSidebar from '../../common/containers/ManagerSidebar'
 
 export default class GtfsEditor extends Component {
 
