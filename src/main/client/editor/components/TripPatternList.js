@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, Button, ButtonGroup, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Table, Button, ButtonGroup, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 import ll from 'lonlng'
 
@@ -7,6 +7,9 @@ import EditableTextField from '../../common/components/EditableTextField'
 import { getConfigProperty } from '../../common/util/config'
 import PatternStopsTable from './PatternStopsTable'
 import { polyline as getPolyline } from '../../scenario-editor/utils/valhalla'
+import MinuteSecondInput from './MinuteSecondInput'
+
+const DEFAULT_SPEED = 20 // km/hr
 
 export default class TripPatternList extends Component {
   static propTypes = {
@@ -24,7 +27,10 @@ export default class TripPatternList extends Component {
   }
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      // avgSpeed: 20, // km/hr
+      // dwellTime: 0 // seconds
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -38,6 +44,22 @@ export default class TripPatternList extends Component {
     this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: newShape}})
     this.props.saveActiveEntity('trippattern')
     return true
+  }
+  calculateDefaultTimes (pattern, speed = DEFAULT_SPEED, dwellTime = 0) {
+    console.log(speed, dwellTime)
+    if (!speed) {
+      speed = DEFAULT_SPEED
+    }
+    let patternStops = [...pattern.patternStops]
+    let convertedSpeed = speed * 1000 / 60 / 60 // km/hr -> m/s
+    // let cumulativeTravelTime = 0
+    for (var i = 0; i < patternStops.length; i++) {
+      patternStops[i].defaultDwellTime = dwellTime
+      patternStops[i].defaultTravelTime = patternStops[i].shapeDistTraveled / convertedSpeed
+      // cumulativeTravelTime += dwellTime +
+    }
+    this.props.updateActiveEntity(pattern, 'trippattern', {patternStops})
+    this.props.saveActiveEntity('trippattern')
   }
   render () {
     const { feedSource, activeEntity } = this.props
@@ -273,21 +295,25 @@ export default class TripPatternList extends Component {
                       </ButtonGroup>
                       <hr/>
                       <h4>
-                        <Button
-                          onClick={() => {
-                            this.props.toggleEditSetting('addStops')
-                          }}
-                          bsStyle={this.props.editSettings.addStops ? 'default' : 'success'}
-                          bsSize='small'
+                        <ButtonToolbar
                           className='pull-right'
                         >
-                        {this.props.editSettings.addStops
-                          ? <span><Icon name='times'/> Cancel</span>
-                          : <span><Icon name='plus'/> Add stop</span>
-                        }
-                        </Button>
+                          <Button
+                            onClick={() => {
+                              this.props.toggleEditSetting('addStops')
+                            }}
+                            bsStyle={this.props.editSettings.addStops ? 'default' : 'success'}
+                            bsSize='small'
+                          >
+                          {
+                            this.props.editSettings.addStops
+                            ? <span><Icon name='times'/> Cancel</span>
+                            : <span><Icon name='plus'/> Add stop</span>
+                          }
+                          </Button>
+                        </ButtonToolbar>
                         {this.props.editSettings.addStops && this.props.mapState.zoom <= 14
-                          ? <small className='pull-right'>Zoom to add stops</small>
+                          ? <small className='pull-right' style={{margin: '5px'}}>Zoom to view stops</small>
                           : null
                         }
                         Stops
@@ -302,6 +328,43 @@ export default class TripPatternList extends Component {
                         activeComponent={this.props.activeComponent}
                         toggleEditSetting={this.props.toggleEditSetting}
                       />
+                      <Form>
+                        <FormGroup className={`col-xs-4`} bsSize='small'>
+                          <ControlLabel><small>Dwell time</small></ControlLabel>
+                          <MinuteSecondInput
+                            seconds={this.state.dwellTime}
+                            // style={{width: '60px'}}
+                            onChange={(value) => {
+                              this.setState({dwellTime: value})
+                            }}
+                          />
+                        </FormGroup>
+                        {'  '}
+                        <InputGroup
+                          style={{paddingTop: '25px'}}
+                          className={`col-xs-8`}
+                          bsSize='small'
+                        >
+                          <FormControl
+                            type='number'
+                            min={1}
+                            placeholder={`${DEFAULT_SPEED} (km/hr)`}
+                            onChange={(evt) => {
+                              this.setState({speed: evt.target.value})
+                            }}
+                          />
+                          <InputGroup.Button>
+                            <Button
+                              onClick={() => {
+                                this.calculateDefaultTimes(activePattern, this.state.speed, this.state.dwellTime)
+                              }}
+                              bsStyle='default'
+                            >
+                              <Icon name='calculator'/> Calc. times
+                            </Button>
+                          </InputGroup.Button>
+                        </InputGroup>
+                      </Form>
                     </div>
                   : <div></div>
                 }

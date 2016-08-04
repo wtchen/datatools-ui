@@ -70,6 +70,7 @@ export default class PatternStopsTable extends Component {
         <tbody>
           {stops && pattern.patternStops && pattern.patternStops.length
             ? pattern.patternStops.map((s, index) => {
+              cumulativeTravelTime += s.defaultDwellTime + s.defaultTravelTime
               return (
                 <PatternStopRow
                   patternStop={s}
@@ -154,7 +155,7 @@ export default class PatternStopsTable extends Component {
                       className='col-xs-2'
                     >
                       <Button
-                        bsStyle='danger'
+                        bsStyle='default'
                         // className='pull-right'
                         style={{marginLeft: '5px'}}
                         onClick={() => {
