@@ -13,7 +13,6 @@ export default class MapModal extends React.Component {
     }
   }
   componentWillReceiveProps (newProps) {
-    console.log('status model new props', newProps)
     if (newProps.title) {
       this.setState({
         showModal: true,

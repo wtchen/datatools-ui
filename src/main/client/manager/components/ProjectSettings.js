@@ -30,7 +30,6 @@ export default class ProjectSettings extends Component {
   }
 
   render () {
-    console.log(this.state)
     const messages = getComponentMessages('ProjectSettings')
     const tabRowStyle = { marginTop: '20px' }
     const project = this.props.project
@@ -64,7 +63,6 @@ export default class ProjectSettings extends Component {
                                   placeholder='34.8977,-87.29987'
                                   onChange={(evt) => {
                                     const latLng = evt.target.value.split(',')
-                                    console.log(latLng)
                                     if (typeof latLng[0] !== 'undefined' && typeof latLng[1] !== 'undefined') {
                                       let stateUpdate = { general: { $merge: {defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]} } }
                                       this.setState(update(this.state, stateUpdate))
@@ -85,7 +83,6 @@ export default class ProjectSettings extends Component {
                                         marker: project.defaultLocationLat !== null &&  project.defaultLocationLon !== null ? {lat: project.defaultLocationLat, lng: project.defaultLocationLon} : null,
                                         bounds: bounds,
                                         onConfirm: (marker) => {
-                                          console.log('OK, coordinates', marker)
                                           if (marker) {
                                             ReactDOM.findDOMNode(this.refs.defaultLocation).value = `${marker.lat.toFixed(6)},${marker.lng.toFixed(6)}`
                                             let stateUpdate = { general: { $merge: {defaultLocationLat: marker.lat, defaultLocationLon: marker.lng} } }
