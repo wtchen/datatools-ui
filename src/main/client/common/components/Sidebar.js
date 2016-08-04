@@ -46,6 +46,30 @@ export default class Sidebar extends Component {
       borderRadius: 0
     }
 
+    const logoContainerStyle = {
+      position: 'fixed',
+      top: 10,
+      left: 10
+    }
+
+    const logoIconStyle = {
+      float: 'left',
+      background: '#bbb',
+      width: 30,
+      height: 30,
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      lineHeight: '120%',
+    }
+
+    const logoLabelStyle = {
+      marginLeft: 40,
+      lineHeight: '95%',
+      color: '#bbb',
+      fontSize: 16
+    }
+
     const closePopover = () => this.setState({visiblePopover: null})
 
     return <div>
@@ -53,7 +77,16 @@ export default class Sidebar extends Component {
         inverse
         style={navbarStyle}
       >
-        <div style={{ position: 'absolute', top: 30 }}>
+        <div style={logoContainerStyle}>
+          <div style={logoIconStyle}>G</div>
+          {this.props.expanded
+            ? <div style={logoLabelStyle}>GTFS Data<br/>Manager</div>
+            : null
+          }
+          <div style={{ clear: 'both' }} />
+        </div>
+
+        <div style={{ position: 'absolute', top: 60 }}>
           {this.props.children}
         </div>
 
