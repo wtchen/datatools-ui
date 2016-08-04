@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
 import { Navbar, Button, ButtonToolbar, Checkbox } from 'react-bootstrap'
-import { Icon } from 'react-fa'
 
+import SidebarNavItem from './SidebarNavItem'
 import SidebarPopover from './SidebarPopover'
 import JobMonitor from './JobMonitor'
 
@@ -54,6 +53,10 @@ export default class Sidebar extends Component {
         inverse
         style={navbarStyle}
       >
+        <div style={{ position: 'absolute', top: 30 }}>
+          {this.props.children}
+        </div>
+
         <div style={{ position: 'absolute', bottom: 10 }}>
           <SidebarNavItem ref='jobNav' expanded={this.props.expanded}
             icon='bell' label='Job Monitor'
@@ -71,12 +74,14 @@ export default class Sidebar extends Component {
       <JobMonitor
         jobMonitor={this.props.jobMonitor}
         target={this.refs.jobNav}
+        expanded={this.props.expanded}
         visible={() => this.state.visiblePopover === 'job' }
         close={() => closePopover()}
       />
 
       {/* User Popover */}
       <SidebarPopover target={this.refs.userNav} title={this.props.username}
+        expanded={this.props.expanded}
         visible={() => this.state.visiblePopover === 'user' }
         close={() => closePopover()}
       >
@@ -109,54 +114,5 @@ export default class Sidebar extends Component {
       </SidebarPopover>
 
     </div>
-  }
-}
-
-class SidebarNavItem extends Component {
-
-  static propTypes = {
-    expanded: PropTypes.bool,
-    icon: PropTypes.string,
-    label: PropTypes.string,
-    onClick: PropTypes.func
-  }
-
-  render () {
-    const containerStyle = {
-      marginBottom: 20,
-      cursor: 'pointer'
-    }
-
-    const iconContainerStyle = {
-      width: 20,
-      height: 20,
-      textAlign: 'center',
-      float: 'left'
-    }
-
-    const iconStyle = {
-      color: '#ccc'
-    }
-
-    const labelStyle = {
-      color: '#ccc',
-      fontWeight: 'bold',
-      marginLeft: 30
-    }
-
-    return (
-      <div style={containerStyle} onClick={() => this.props.onClick()}>
-        <div style={iconContainerStyle}>
-          <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'
-
-          />
-        </div>
-        {this.props.expanded
-          ? <div style={labelStyle}>{this.props.label}</div>
-          : null
-        }
-        <div style={{ clear: 'both' }} />
-      </div>
-    )
   }
 }

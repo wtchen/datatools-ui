@@ -143,6 +143,7 @@ const mapStateToProps = (state, ownProps) => {
     // editActions,
     // mapZoom,
     // mapBounds
+    sidebarExpanded: state.ui.sidebarExpanded
   }
 }
 

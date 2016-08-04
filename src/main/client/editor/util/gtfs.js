@@ -79,31 +79,36 @@ export const gtfsIcons = [
     id: 'feedinfo',
     icon: 'info',
     addable: false,
-    title: 'Edit feed info'
+    title: 'Edit feed info',
+    label: 'Feed Info'
   },
   {
     id: 'agency',
     icon: 'building',
     addable: true,
-    title: 'Edit agencies'
+    title: 'Edit agencies',
+    label: 'Agencies'
   },
   {
     id: 'route',
     icon: 'bus',
     addable: true,
-    title: 'Edit routes'
+    title: 'Edit routes',
+    label: 'Routes'
   },
   {
     id: 'stop',
     icon: 'map-marker',
     addable: true,
-    title: 'Edit stops'
+    title: 'Edit stops',
+    label: 'Stops'
   },
   {
     id: 'calendar',
     icon: 'calendar',
     addable: true,
-    title: 'Edit calendars'
+    title: 'Edit calendars',
+    label: 'Calendars'
   },
   {
     id: 'scheduleexception',
@@ -116,7 +121,8 @@ export const gtfsIcons = [
     id: 'fare',
     icon: 'ticket',
     addable: true,
-    title: 'Edit fares'
+    title: 'Edit fares',
+    label: 'Fares'
   }
 ]
 

@@ -7,6 +7,7 @@ import SidebarPopover from './SidebarPopover'
 export default class JobMonitor extends React.Component {
 
   static propTypes = {
+    expanded: PropTypes.bool,
     jobMonitor: PropTypes.object,
     target: PropTypes.object,
     visible: PropTypes.func,
@@ -31,9 +32,7 @@ export default class JobMonitor extends React.Component {
       <SidebarPopover
         ref='statusPopover'
         title='Server Jobs'
-        target={this.props.target}
-        visible={this.props.visible}
-        close={this.props.close}
+        {...this.props}
       >
         {this.props.jobMonitor.jobs.map(job => {
           return (

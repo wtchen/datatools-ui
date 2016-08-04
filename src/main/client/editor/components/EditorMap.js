@@ -74,7 +74,8 @@ export default class EditorMap extends React.Component {
             !shallowEqual(nextProps.activeSubEntity, this.props.activeSubEntity) ||
             // nextProps.activeComponent === 'stop' && this.props.mapState.zoom !== nextProps.mapState.zoom ||
             nextProps.activeComponent === 'stop' && this.props.activeEntity && nextProps.activeEntity && (this.props.activeEntity.stop_lon !== nextProps.activeEntity.stop_lon || this.props.activeEntity.stop_lat !== nextProps.activeEntity.stop_lat) ||
-            nextProps.activeEntityId !== this.props.activeEntityId
+            nextProps.activeEntityId !== this.props.activeEntityId ||
+            nextProps.sidebarExpanded !== this.props.sidebarExpanded
 
     // return at this point
     if (shouldUpdate) {
@@ -1073,7 +1074,8 @@ export default class EditorMap extends React.Component {
       // }
     let stop = activeComponent === 'stop' && activeEntity
     let route = activeComponent === 'route' && activeEntity
-    let mapWidth = this.state.width - this.props.offset - 54
+    let mapWidth = this.state.width - this.props.offset - (this.props.sidebarExpanded ? 150 : 50)
+
     const mapStyle = {
       height: '100%',
       width: `${mapWidth}px`,

@@ -13,6 +13,7 @@ import ActiveEntityList from '../containers/ActiveEntityList'
 import EntityDetails from './EntityDetails'
 import TimetableEditor from './TimetableEditor'
 import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
+import ManagerSidebar from '../../common/containers/ManagerSidebar'
 
 export default class GtfsEditor extends Component {
 
@@ -110,7 +111,7 @@ export default class GtfsEditor extends Component {
       : null
     return (
       <div>
-      <Sidebar
+      {/*<Sidebar
         sidebar={
           <EditorSidebar
             activeComponent={this.props.activeComponent}
@@ -122,76 +123,95 @@ export default class GtfsEditor extends Component {
         styles={{content: {overflow: 'hidden'}}}
         docked={true}
         shadow={false}
-      >
-        {this.props.subSubComponent === 'timetable'
-          ? <TimetableEditor
-              feedSource={feedSource}
-              route={this.props.activeEntity}
-              showConfirmModal={(props) => this.showConfirmModal(props)}
-              activePatternId={this.props.activeSubEntity}
-              activeScheduleId={this.props.activeSubSubEntity}
-              setActiveEntity={this.props.setActiveEntity}
-              tableData={this.props.tableData}
-              deleteEntity={this.props.deleteEntity}
-              updateActiveEntity={this.props.updateActiveEntity}
-              resetActiveEntity={this.props.resetActiveEntity}
-              saveActiveEntity={this.props.saveActiveEntity}
-              saveTripsForCalendar={this.props.saveTripsForCalendar}
-              deleteTripsForCalendar={this.props.deleteTripsForCalendar}
-            />
-          : this.props.activeComponent === 'feedinfo'
-          ? <EntityDetails
-              width={detailsWidth}
-              {...this.props}
-            />
-          : this.props.activeComponent
-          ? [
-              <ActiveEntityList
-                width={listWidth}
-                setActiveEntity={this.props.setActiveEntity}
-                cloneEntity={this.props.cloneEntity}
-                updateActiveEntity={this.props.updateActiveEntity}
-                deleteEntity={this.props.deleteEntity}
-                newEntityClicked={this.props.newEntityClicked}
-                entities={this.props.entities}
-                showConfirmModal={(props) => this.showConfirmModal(props)}
-                activeEntityId={this.props.activeEntityId}
-                activeComponent={this.props.activeComponent}
-                feedSource={this.props.feedSource}
-                key='entity-list'
-              />
-              ,
-              entityDetails
-            ]
-          : null
-        }
-        <EditorMap
-          offset={this.props.activeComponent === 'feedinfo'
-            ? detailsWidth
-            : this.props.activeEntityId
-            ? listWidth + detailsWidth
-            : this.props.activeComponent
-            ? listWidth
-            : 0
-          }
-          hidden={this.props.subSubComponent === 'timetable'}
-          stops={this.props.tableData.stop || []}
-          showConfirmModal={(props) => this.showConfirmModal(props)}
-          drawStops={this.props.mapState.zoom > 14}
-          zoomToTarget={this.props.mapState.target}
-          {...this.props}
-        />
-        <ActiveFeedInfoPanel
+      >*/}
+
+        <EditorSidebar
+          activeComponent={this.props.activeComponent}
+          expanded={this.props.sidebarExpanded}
           feedSource={this.props.feedSource}
-          project={this.props.project}
-          showConfirmModal={(props) => this.showConfirmModal(props)}
-          setActiveEntity={this.props.setActiveEntity}
           feedInfo={this.props.feedInfo}
+          setActiveEntity={this.props.setActiveEntity}
         />
-      </Sidebar>
-      <CurrentStatusMessage />
-      <ConfirmModal ref='confirmModal'/>
-      <CurrentStatusModal ref='statusModal'/>
+
+        <div style={{
+          position: 'fixed',
+          left: this.props.sidebarExpanded ? 150 : 50,
+          bottom: 0,
+          right: 0,
+          top: 0,
+        }}>
+          {this.props.subSubComponent === 'timetable'
+            ? <TimetableEditor
+                feedSource={feedSource}
+                route={this.props.activeEntity}
+                showConfirmModal={(props) => this.showConfirmModal(props)}
+                activePatternId={this.props.activeSubEntity}
+                activeScheduleId={this.props.activeSubSubEntity}
+                setActiveEntity={this.props.setActiveEntity}
+                tableData={this.props.tableData}
+                deleteEntity={this.props.deleteEntity}
+                updateActiveEntity={this.props.updateActiveEntity}
+                resetActiveEntity={this.props.resetActiveEntity}
+                saveActiveEntity={this.props.saveActiveEntity}
+                saveTripsForCalendar={this.props.saveTripsForCalendar}
+                deleteTripsForCalendar={this.props.deleteTripsForCalendar}
+                sidebarExpanded={this.props.sidebarExpanded}
+              />
+            : this.props.activeComponent === 'feedinfo'
+            ? <EntityDetails
+                width={detailsWidth}
+                {...this.props}
+              />
+            : this.props.activeComponent
+            ? [
+                <ActiveEntityList
+                  width={listWidth}
+                  setActiveEntity={this.props.setActiveEntity}
+                  cloneEntity={this.props.cloneEntity}
+                  updateActiveEntity={this.props.updateActiveEntity}
+                  deleteEntity={this.props.deleteEntity}
+                  newEntityClicked={this.props.newEntityClicked}
+                  entities={this.props.entities}
+                  showConfirmModal={(props) => this.showConfirmModal(props)}
+                  activeEntityId={this.props.activeEntityId}
+                  activeComponent={this.props.activeComponent}
+                  feedSource={this.props.feedSource}
+                  key='entity-list'
+                />
+                ,
+                entityDetails
+              ]
+            : null
+          }
+          <EditorMap
+            offset={this.props.activeComponent === 'feedinfo'
+              ? detailsWidth
+              : this.props.activeEntityId
+              ? listWidth + detailsWidth
+              : this.props.activeComponent
+              ? listWidth
+              : 0
+            }
+            hidden={this.props.subSubComponent === 'timetable'}
+            stops={this.props.tableData.stop || []}
+            showConfirmModal={(props) => this.showConfirmModal(props)}
+            drawStops={this.props.mapState.zoom > 14}
+            zoomToTarget={this.props.mapState.target}
+            sidebarExpanded={this.props.sidebarExpanded}
+            {...this.props}
+          />
+          <ActiveFeedInfoPanel
+            feedSource={this.props.feedSource}
+            project={this.props.project}
+            showConfirmModal={(props) => this.showConfirmModal(props)}
+            setActiveEntity={this.props.setActiveEntity}
+            feedInfo={this.props.feedInfo}
+          />
+        </div>
+        {/*</Sidebar>*/}
+        <CurrentStatusMessage />
+        <ConfirmModal ref='confirmModal'/>
+        <CurrentStatusModal ref='statusModal'/>
       </div>
     )
   }
