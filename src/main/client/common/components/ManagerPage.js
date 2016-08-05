@@ -52,11 +52,29 @@ export default class ManagerPage extends React.Component {
             onClick={() => browserHistory.push(`/`) } />
         </ActiveSidebar>
         <PageContent>
-            <div style={{ padding: 20 }}>
+            <div
+              style={{
+                padding: '20px',
+                paddingBottom: '140px',
+                minHeight: '100%',
+                marginBottom: '-140px',
+                position: 'relative'
+              }}
+            >
               {this.props.children}
             </div>
 
-            <footer className='footer'>
+            <footer
+              className='footer'
+              style={{
+                position: 'relative',
+                bottom: 0,
+                width: '100%',
+                marginTop: '40px',
+                height: '100px',
+                backgroundColor: '#f5f5f5',
+              }}
+            >
               <div className='container'>
                 <ul className='list-inline text-center text-muted'>
                   <li><a href={getConfigProperty('application.changelog_url')}>Changelog</a></li>
