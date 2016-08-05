@@ -1,6 +1,6 @@
 import React from 'react'
-import { Modal, Button, Glyphicon } from 'react-bootstrap'
-import { Map, Marker, Popup, TileLayer, FeatureGroup } from 'react-leaflet'
+import { Modal, Button } from 'react-bootstrap'
+import { Map, Marker, TileLayer, FeatureGroup } from 'react-leaflet'
 import { EditControl } from 'react-leaflet-draw'
 
 let polyline

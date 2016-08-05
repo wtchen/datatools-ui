@@ -1,6 +1,4 @@
 import React, {Component, PropTypes} from 'react'
-import ReactDOM from 'react-dom'
-
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon, OverlayTrigger, Popover, ProgressBar, Button, Badge } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { browserHistory, Link } from 'react-router'

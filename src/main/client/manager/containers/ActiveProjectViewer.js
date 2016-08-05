@@ -1,12 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
+import { browserHistory } from 'react-router'
 import ProjectViewer from '../components/ProjectViewer'
 
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 import {
   fetchProject,
-  fetchProjectWithFeeds,
   thirdPartySync,
   fetchFeedsForProject,
   updateProject,
@@ -27,7 +26,8 @@ import {
   createDeployment,
   createDeploymentFromFeedSource,
   saveDeployment,
-  deleteDeployment
+  deleteDeployment,
+  updateDeployment
 } from '../actions/deployments'
 
 const mapStateToProps = (state, ownProps) => {
@@ -49,7 +49,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         return
       }
       dispatch(setVisibilitySearchText(null))
-      console.log(initialProps)
       if (!initialProps.project) {
         dispatch(fetchProject(projectId))
         .then(project => {
@@ -64,7 +63,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
     newFeedSourceNamed: (name) => { dispatch(saveFeedSource({ projectId, name })) },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
-      dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
+      dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
     },
     deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
     createDeploymentFromFeedSource: (feedSource) => {
@@ -75,12 +74,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     onNewDeploymentClick: () => { dispatch(createDeployment(projectId)) },
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },
-    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
+    updateDeployment: (deployment, changes) => { dispatch(updateDeployment(deployment, changes)) },
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     deleteFeedSourceConfirmed: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
     deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) },
-    downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) },
+    downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) }
   }
 }
 

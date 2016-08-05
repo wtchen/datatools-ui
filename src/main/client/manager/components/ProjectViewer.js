@@ -110,15 +110,15 @@ export default class ProjectViewer extends Component {
           </Row>
           <Tabs
             id='project-viewer-tabs'
-            activeKey={this.props.activeComponent ? this.props.activeComponent : 'sources'}
+            // activeKey={this.props.activeComponent ? this.props.activeComponent : 'sources'}
             onSelect={(key) => {
-              if (key === 'sources') {
-                browserHistory.push(`/project/${this.props.project.id}/`)
-              }
-              else {
-                browserHistory.push(`/project/${this.props.project.id}/${key}`)
-              }
-              if (key === 'deployments') {
+              // if (key === 'sources') {
+              //   browserHistory.push(`/project/${this.props.project.id}/`)
+              // }
+              // else {
+              //   browserHistory.push(`/project/${this.props.project.id}/${key}`)
+              // }
+              if (key === 'deployments'  && !this.props.project.deployments) {
                 this.props.deploymentsRequested()
               }
             }}
@@ -215,16 +215,16 @@ export default class ProjectViewer extends Component {
                       <tbody>
                         {filteredFeedSources.map((feedSource) => {
                           return <FeedSourceTableRow
-                                  feedSource={feedSource}
-                                  project={this.props.project}
-                                  key={feedSource.id}
-                                  user={this.props.user}
-                                  newFeedSourceNamed={this.props.newFeedSourceNamed}
-                                  feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
-                                  deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
-                                  uploadFeedSourceClicked={() => this.showUploadFeedModal(feedSource)}
-                                  updateFeedClicked={() => this.props.updateFeedClicked(feedSource)}
-                                />
+                                    feedSource={feedSource}
+                                    project={this.props.project}
+                                    key={feedSource.id}
+                                    user={this.props.user}
+                                    newFeedSourceNamed={this.props.newFeedSourceNamed}
+                                    feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
+                                    deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
+                                    uploadFeedSourceClicked={() => this.showUploadFeedModal(feedSource)}
+                                    updateFeedClicked={() => this.props.updateFeedClicked(feedSource)}
+                                  />
                         })}
                       </tbody>
                     </Table>
@@ -252,10 +252,12 @@ export default class ProjectViewer extends Component {
                 >
                   <DeploymentsPanel
                     deployments={this.props.project.deployments}
+                    expanded={this.props.activeComponent === 'deployments'}
                     deleteDeploymentConfirmed={this.props.deleteDeploymentConfirmed}
                     deploymentsRequested={this.props.deploymentsRequested}
                     onNewDeploymentClick={this.props.onNewDeploymentClick}
                     newDeploymentNamed={this.props.newDeploymentNamed}
+                    updateDeployment={this.props.updateDeployment}
                   />
                 </Tab>
               : null
@@ -268,11 +270,25 @@ export default class ProjectViewer extends Component {
 }
 
 class DeploymentsPanel extends Component {
+  static propTypes = {
+    deployments: PropTypes.object,
+    deleteDeploymentConfirmed: PropTypes.func,
+    deploymentsRequested: PropTypes.func,
+    onNewDeploymentClick: PropTypes.func,
+    newDeploymentNamed: PropTypes.func,
+    updateDeployment: PropTypes.func,
+    expanded: PropTypes.bool
+  }
   constructor (props) {
     super(props)
   }
+  componentWillMount () {
+    if (this.props.expanded) {
+      this.props.deploymentsRequested()
+    }
+  }
   shouldComponentUpdate (nextProps, nextState) {
-    return !shallowEqual(nextProps, this.props) || !shallowEqual(nextState, this.state)
+    return !shallowEqual(nextProps.deployments, this.props.deployments)
   }
   // deleteDeployment (deployment) {
   //   console.log(this.refs)
@@ -287,7 +303,6 @@ class DeploymentsPanel extends Component {
   // }
   render () {
     const messages = getComponentMessages('DeploymentsPanel')
-    const deployments = this.props.deployments
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     return (
         <Row>
@@ -322,9 +337,8 @@ class DeploymentsPanel extends Component {
                             isEditing={(dep.isCreating === true)}
                             value={dep.name}
                             onChange={(value) => {
-                              console.log(dep.isCreating)
-                              if(dep.isCreating) this.props.newDeploymentNamed(value)
-                              else this.props.feedSourcePropertyChanged(dep, 'name', value)
+                              if (dep.isCreating) this.props.newDeploymentNamed(value)
+                              else this.props.updateDeployment(dep, {name: value})
                             }}
                             link={`/deployment/${dep.id}`}
                           />
@@ -377,7 +391,7 @@ class FeedSourceTableRow extends Component {
     super(props)
   }
   shouldComponentUpdate (nextProps) {
-    return !shallowEqual(nextProps, this.props)
+    return !shallowEqual(nextProps.feedSource, this.props.feedSource)
   }
   render () {
     const fs = this.props.feedSource
@@ -388,7 +402,7 @@ class FeedSourceTableRow extends Component {
     const dateFormat = getConfigProperty('application.date_format')
     return (
       <tr key={fs.id}>
-        <td className="col-md-4">
+        <td className='col-md-4'>
           <div>
             <EditableTextField
               isEditing={(fs.isCreating === true)}
@@ -430,62 +444,60 @@ class FeedSourceTableRow extends Component {
           : na
         }</td>
         <td className='col-xs-2'>
-        <Dropdown
-          className='pull-right'
-          bsStyle='default'
-          onSelect={key => {
-            console.log(key)
-            switch (key) {
-              case 'delete':
-                return this.props.deleteFeedSourceClicked()
-              // case 'edit':
-              //   return browserHistory.push(`/feed/${fs.id}/edit`)
-              case 'update':
-                return this.props.updateFeedClicked()
-              case 'upload':
-                return this.props.uploadFeedSourceClicked()
-              case 'deploy':
-                return this.props.createDeployment(fs)
-              case 'public':
-                return browserHistory.push(`/public/feed/${fs.id}`)
-            }
-          }}
-          id={`feed-source-action-button`}
-          pullRight
-        >
-          <Button
+          <Dropdown
+            className='pull-right'
             bsStyle='default'
-            disabled={editGtfsDisabled}
-            onClick={() => browserHistory.push(`/feed/${fs.id}/edit/`) }
+            onSelect={key => {
+              console.log(key)
+              switch (key) {
+                case 'delete':
+                  return this.props.deleteFeedSourceClicked()
+                case 'update':
+                  return this.props.updateFeedClicked()
+                case 'upload':
+                  return this.props.uploadFeedSourceClicked()
+                case 'deploy':
+                  return this.props.createDeployment(fs)
+                case 'public':
+                  return browserHistory.push(`/public/feed/${fs.id}`)
+              }
+            }}
+            id={`feed-source-action-button`}
+            pullRight
           >
-            <Glyphicon glyph='pencil' /> Edit
-          </Button>
-          <Dropdown.Toggle bsStyle='default'/>
-          <Dropdown.Menu>
-            <MenuItem disabled={disabled  || !fs.url} eventKey='update'><Glyphicon glyph='refresh' /> Update</MenuItem>
-            <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-            {isModuleEnabled('deployment') || getConfigProperty('application.notifications_enabled')
-              ? <MenuItem divider />
-              : null
-            }
-            {isModuleEnabled('deployment')
-              ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
-              : null
-            }
-            {getConfigProperty('application.notifications_enabled')
-              ? <WatchButton
-                  isWatching={isWatchingFeed}
-                  user={this.props.user}
-                  target={fs.id}
-                  subscriptionType='feed-updated'
-                  componentClass='menuItem'
-                />
-              : null
-            }
-            <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
-            <MenuItem divider />
-            <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
-          </Dropdown.Menu>
+            <Button
+              bsStyle='default'
+              disabled={editGtfsDisabled}
+              onClick={() => browserHistory.push(`/feed/${fs.id}/edit/`) }
+            >
+              <Glyphicon glyph='pencil' /> Edit
+            </Button>
+            <Dropdown.Toggle bsStyle='default'/>
+            <Dropdown.Menu>
+              <MenuItem disabled={disabled  || !fs.url} eventKey='update'><Glyphicon glyph='refresh' /> Update</MenuItem>
+              <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
+              {isModuleEnabled('deployment') || getConfigProperty('application.notifications_enabled')
+                ? <MenuItem divider />
+                : null
+              }
+              {isModuleEnabled('deployment')
+                ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
+                : null
+              }
+              {getConfigProperty('application.notifications_enabled')
+                ? <WatchButton
+                    isWatching={isWatchingFeed}
+                    user={this.props.user}
+                    target={fs.id}
+                    subscriptionType='feed-updated'
+                    componentClass='menuItem'
+                  />
+                : null
+              }
+              <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
+              <MenuItem divider />
+              <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
+            </Dropdown.Menu>
           </Dropdown>
         </td>
       </tr>
