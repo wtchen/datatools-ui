@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { getComponentMessages, getConfigProperty } from '../util/config'
 
-export class WatchButton extends React.Component {
+class WatchButton extends React.Component {
   render () {
     const {dispatch, isWatching, user, target, subscriptionType} = this.props
     const messages = getComponentMessages('WatchButton')
