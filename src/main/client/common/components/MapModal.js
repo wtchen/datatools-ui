@@ -12,22 +12,21 @@ export default class MapModal extends React.Component {
       showModal: false
     }
   }
-  componentWillReceiveProps (newProps) {
-    if (newProps.title) {
-      this.setState({
-        showModal: true,
-        title: newProps.title,
-        body: newProps.body,
-      })
-    }
-  }
+  // componentWillReceiveProps (newProps) {
+  //   if (newProps.title) {
+  //     this.setState({
+  //       showModal: true,
+  //       title: newProps.title,
+  //       body: newProps.body,
+  //     })
+  //   }
+  // }
   close () {
     this.setState({
       showModal: false
     })
     // this.props.clearStatusModal()
   }
-
   open (props) {
     this.setState({
       showModal: true,
@@ -79,7 +78,6 @@ export default class MapModal extends React.Component {
   }
 
   render () {
-    console.log(this.state)
     const bounds = this.state.bounds
       ? this.state.bounds
       : [[60, -120], [0, 120]]

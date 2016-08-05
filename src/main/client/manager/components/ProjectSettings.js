@@ -4,6 +4,7 @@ import moment from 'moment'
 import moment_tz from 'moment-timezone'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
+import { shallowEqual } from 'react-pure-render'
 
 import { Grid, Row, Col, Button, Table, Panel, Glyphicon, Badge, Form, Tabs, Tab, Radio, Checkbox, FormGroup, InputGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
@@ -28,7 +29,9 @@ export default class ProjectSettings extends Component {
 
   componentWillReceiveProps (nextProps) {
   }
-
+  shouldComponentUpdate (nextProps, nextState) {
+    return !shallowEqual(nextProps, this.props) || !shallowEqual(nextState, this.state)
+  }
   render () {
     const messages = getComponentMessages('ProjectSettings')
     const tabRowStyle = { marginTop: '20px' }

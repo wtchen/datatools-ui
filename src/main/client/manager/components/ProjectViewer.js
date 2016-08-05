@@ -4,6 +4,7 @@ import moment from 'moment'
 import { Tabs, Tab, Grid, Row, Label, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, Dropdown, MenuItem } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import Icon from 'react-fa'
+import { shallowEqual } from 'react-pure-render'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
@@ -107,7 +108,8 @@ export default class ProjectViewer extends Component {
               </h2>
             </Col>
           </Row>
-          <Tabs id='project-viewer-tabs'
+          <Tabs
+            id='project-viewer-tabs'
             activeKey={this.props.activeComponent ? this.props.activeComponent : 'sources'}
             onSelect={(key) => {
               if (key === 'sources') {
@@ -123,8 +125,8 @@ export default class ProjectViewer extends Component {
           >
             <Tab
               eventKey='sources'
+              unmountOnExit
               title={<span><Glyphicon glyph='list' /> {messages.feeds.title}</span>}
-              id='feed-sources'
             >
                 <Row>
                   <Col xs={4}>
@@ -231,13 +233,12 @@ export default class ProjectViewer extends Component {
             </Tab>
             <Tab
               eventKey='settings'
+              unmountOnExit
               disabled={projectEditDisabled}
               title={<span><Glyphicon glyph='cog'/> {messages.settings}</span>}
-              id='project-settings'
             >
               <ProjectSettings
                 project={this.props.project}
-                expanded={this.props.activeComponent === 'settings'}
                 updateProjectSettings={this.props.updateProjectSettings}
                 projectEditDisabled={projectEditDisabled}
               />
@@ -245,13 +246,12 @@ export default class ProjectViewer extends Component {
             {isModuleEnabled('deployment')
               ? <Tab
                   eventKey='deployments'
+                  unmountOnExit
                   disabled={projectEditDisabled}
                   title={<span><Glyphicon glyph='globe' /> {messages.deployments}</span>}
-                  id='deployments'
                 >
                   <DeploymentsPanel
                     deployments={this.props.project.deployments}
-                    expanded={this.props.activeComponent === 'deployments'}
                     deleteDeploymentConfirmed={this.props.deleteDeploymentConfirmed}
                     deploymentsRequested={this.props.deploymentsRequested}
                     onNewDeploymentClick={this.props.onNewDeploymentClick}
@@ -270,13 +270,9 @@ export default class ProjectViewer extends Component {
 class DeploymentsPanel extends Component {
   constructor (props) {
     super(props)
-    console.log(this.props.expanded)
-    this.state = { expanded: this.props.expanded }
   }
-  componentWillMount () {
-    if (this.props.expanded) {
-      this.props.deploymentsRequested()
-    }
+  shouldComponentUpdate (nextProps, nextState) {
+    return !shallowEqual(nextProps, this.props) || !shallowEqual(nextState, this.state)
   }
   // deleteDeployment (deployment) {
   //   console.log(this.refs)
@@ -380,7 +376,9 @@ class FeedSourceTableRow extends Component {
   constructor (props) {
     super(props)
   }
-
+  shouldComponentUpdate (nextProps) {
+    return !shallowEqual(nextProps, this.props)
+  }
   render () {
     const fs = this.props.feedSource
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)

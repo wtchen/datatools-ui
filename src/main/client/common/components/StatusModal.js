@@ -10,7 +10,6 @@ export default class StatusModal extends React.Component {
     }
   }
   componentWillReceiveProps (newProps) {
-    console.log('status model new props', newProps)
     if (newProps.title) {
       this.setState({
         showModal: true,
@@ -36,7 +35,7 @@ export default class StatusModal extends React.Component {
   }
 
   ok () {
-    if(this.state.onConfirm) this.state.onConfirm()
+    if (this.state.onConfirm) this.state.onConfirm()
     this.close()
   }
 
