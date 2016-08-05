@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { clearGtfsContent, fetchBaseGtfs } from './editor'
+import { startJobMonitor } from '../../manager/actions/status'
 
 // SNAPSHOT ACTIONS
 
@@ -121,6 +122,7 @@ export function loadFeedVersionForEditing (feedVersion, snapshot) {
     const url = `/api/manager/secure/snapshot/import?feedVersionId=${feedVersion.id}`
     return secureFetch(url, getState(), 'post')
       .then((response) => {
+        dispatch(startJobMonitor())
         return response.json()
       }).then(() => {
         dispatch(fetchSnapshots(feedVersion.feedSource))
