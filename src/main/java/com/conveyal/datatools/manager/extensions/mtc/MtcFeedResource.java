@@ -25,6 +25,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static spark.Spark.halt;
+
 /**
  * Created by demory on 3/30/16.
  */
@@ -99,7 +101,7 @@ public class MtcFeedResource implements ExternalFeedResource {
                 for (FeedSource existingSource : project.getProjectFeedSources()) {
                     ExternalFeedSourceProperty agencyIdProp =
                             ExternalFeedSourceProperty.find(existingSource, this.getResourceType(), "AgencyId");
-                    if (agencyIdProp != null && agencyIdProp.value.equals(car.AgencyId)) {
+                    if (agencyIdProp != null && car != null && agencyIdProp.value.equals(car.AgencyId)) {
                         //System.out.println("already exists: " + car.AgencyId);
                         source = existingSource;
                     }
@@ -132,8 +134,10 @@ public class MtcFeedResource implements ExternalFeedResource {
                 }
             }
         } catch(Exception ex) {
-            LOG.error("Could not read feeds from MTC RTD API");
+            String errorMessage = "Could not read feeds from MTC RTD API";
+            LOG.error(errorMessage);
             ex.printStackTrace();
+            halt(400, errorMessage);
         }
     }
 
