@@ -82,15 +82,12 @@ export default class PublicFeedSourceViewer extends React.Component {
 
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
             {fs.feedVersions && fs.feedVersions.length > 0
-              ? <div>
-                <span>Versions!!</span>
-                <ActiveFeedVersionNavigator
+              ? <ActiveFeedVersionNavigator
                   versions={fs.feedVersions}
                   feedSource={fs}
                   versionIndex={fs.feedVersions.length}
                   isPublic
                 />
-                </div>
               : <span>No Feed Versions to show.</span>
             }
           </Panel>
