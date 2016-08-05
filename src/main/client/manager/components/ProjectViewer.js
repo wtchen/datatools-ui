@@ -125,7 +125,6 @@ export default class ProjectViewer extends Component {
           >
             <Tab
               eventKey='sources'
-              unmountOnExit
               title={<span><Glyphicon glyph='list' /> {messages.feeds.title}</span>}
             >
                 <Row>
@@ -233,7 +232,6 @@ export default class ProjectViewer extends Component {
             </Tab>
             <Tab
               eventKey='settings'
-              unmountOnExit
               disabled={projectEditDisabled}
               title={<span><Glyphicon glyph='cog'/> {messages.settings}</span>}
             >
@@ -246,7 +244,6 @@ export default class ProjectViewer extends Component {
             {isModuleEnabled('deployment')
               ? <Tab
                   eventKey='deployments'
-                  unmountOnExit
                   disabled={projectEditDisabled}
                   title={<span><Glyphicon glyph='globe' /> {messages.deployments}</span>}
                 >
