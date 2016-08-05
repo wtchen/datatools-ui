@@ -1,58 +1,29 @@
 import React from 'react'
-import fetch from 'isomorphic-fetch'
-import { Grid, Row, Col, Table, FormControl, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, Table, Panel, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
-import ManagerPage from '../../common/components/ManagerPage'
-import FeedVersionNavigator from '../../manager/components/FeedVersionNavigator'
-import { retrievalMethodString } from '../../common/util/util'
-
-const retrievalMethods = [
-  'FETCHED_AUTOMATICALLY',
-  'MANUALLY_UPLOADED',
-  'PRODUCED_IN_HOUSE'
-]
+import PublicPage from './PublicPage'
+import ActiveFeedVersionNavigator from '../../manager/containers/ActiveFeedVersionNavigator'
 
 export default class PublicFeedSourceViewer extends React.Component {
 
   constructor (props) {
     super(props)
-
-    this.state = {
-      snapshotVersions: []
-    }
-
-    if(this.props.feedSource) this.updateSnapshotVersions(this.props.feedSource)
   }
 
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
 
-  componentWillReceiveProps (nextProps) {
-    if(nextProps.feedSource) this.updateSnapshotVersions(nextProps.feedSource)
-  }
-
-  updateSnapshotVersions (feedSource) {
-    const url = this.props.editorUrl + '/api/mgrsnapshot?sourceId=' + feedSource.id
-    fetch(url)
-      .then(res => res.json())
-      .then(snapshots => {
-        this.setState({
-          snapshotVersions: snapshots
-        })
-      })
-  }
-
   render () {
     const fs = this.props.feedSource
 
-    if(!fs) {
-      return <ManagerPage />
+    if (!fs) {
+      return <PublicPage></PublicPage>
     }
 
     return (
-      <ManagerPage ref='page'>
+      <PublicPage>
         <Grid>
           <Row>
             <Col xs={12}>
@@ -103,45 +74,6 @@ export default class PublicFeedSourceViewer extends React.Component {
                         {fs.name}
                       </td>
                     </tr>
-
-                    <tr>
-                      <td>Retrieval Method</td>
-                      <td>
-                        {fs.retrievalMethod}
-                      </td>
-                    </tr>
-
-                    {fs.retrievalMethod === 'FETCHED_AUTOMATICALLY'
-                      ? <tr>
-                          <td>Retrieval URL</td>
-                          <td>
-                            <a href={fs.url}>{fs.url}</a>
-                          </td>
-                        </tr>
-                      : null
-                    }
-
-                    {fs.retrievalMethod === 'PRODUCED_IN_HOUSE'
-                      ? <tr>
-                          <td>Editor Snapshot</td>
-                          <td>
-                            <FormControl componentClass='select'
-                              value={fs.snapshotVersion}
-                              onChange={(evt) => {
-                                console.log(evt.target.value);
-                                this.props.feedSourcePropertyChanged(fs, 'snapshotVersion', evt.target.value)
-                              }}
-                            >
-                              {this.state.snapshotVersions.map(snapshot => {
-                                return <option value={snapshot.id} key={snapshot.id}>
-                                  {snapshot.name}
-                                </option>
-                              })}
-                            </FormControl>
-                          </td>
-                        </tr>
-                      : null
-                    }
                   </tbody>
                 </Table>
               </Col>
@@ -149,13 +81,21 @@ export default class PublicFeedSourceViewer extends React.Component {
           </Panel>
 
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
-            <FeedVersionNavigator
-              versions={fs.feedVersions}
-              feedSource={fs}
-            />
+            {fs.feedVersions && fs.feedVersions.length > 0
+              ? <div>
+                <span>Versions!!</span>
+                <ActiveFeedVersionNavigator
+                  versions={fs.feedVersions}
+                  feedSource={fs}
+                  versionIndex={fs.feedVersions.length}
+                  isPublic
+                />
+                </div>
+              : <span>No Feed Versions to show.</span>
+            }
           </Panel>
         </Grid>
-      </ManagerPage>
+      </PublicPage>
     )
   }
 }

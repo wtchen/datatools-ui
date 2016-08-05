@@ -370,14 +370,14 @@ export function deletingFeedVersion () {
   }
 }
 
-export function deleteFeedVersion (feedSource, feedVersion, changes) {
+export function deleteFeedVersion (feedVersion, changes) {
   return function (dispatch, getState) {
     dispatch(deletingFeedVersion())
     const url = '/api/manager/secure/feedversion/' + feedVersion.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
         // fetch feed source with versions
-        return dispatch(fetchFeedSource(feedSource.id, true))
+        return dispatch(fetchFeedSource(feedVersion.feedSource.id, true))
       })
   }
 }
@@ -390,23 +390,23 @@ export function requestingValidationResult () {
   }
 }
 
-export function receiveValidationResult (feedSource, feedVersion, validationResult) {
+export function receiveValidationResult (feedVersion, validationResult) {
   return {
     type: 'RECEIVE_VALIDATION_RESULT',
-    feedSource,
     feedVersion,
     validationResult
   }
 }
 
-export function fetchValidationResult (feedSource, feedVersion) {
+export function fetchValidationResult (feedVersion, isPublic) {
   return function (dispatch, getState) {
     dispatch(requestingValidationResult())
-    const url = `/api/manager/secure/feedversion/${feedVersion.id}/validation`
+    const route = isPublic ? 'public' : 'secure'
+    const url = `/api/manager/${route}/feedversion/${feedVersion.id}/validation`
     return secureFetch(url, getState())
     .then(response => response.json())
     .then(result => {
-      dispatch(receiveValidationResult(feedSource, feedVersion, result))
+      dispatch(receiveValidationResult(feedVersion, result))
     })
   }
 }
@@ -444,9 +444,10 @@ export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat
 
 // Download a GTFS file for a FeedVersion
 
-export function downloadFeedViaToken (feedVersion) {
+export function downloadFeedViaToken (feedVersion, isPublic) {
   return function (dispatch, getState) {
-    const url = `/api/manager/secure/feedversion/${feedVersion.id}/downloadtoken`
+    const route = isPublic ? 'public' : 'secure'
+    const url = `/api/manager/${route}/feedversion/${feedVersion.id}/downloadtoken`
     secureFetch(url, getState())
     .then(response => response.json())
     .then(result => {

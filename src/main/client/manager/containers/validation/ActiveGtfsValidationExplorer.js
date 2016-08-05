@@ -57,12 +57,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
         .then((feedVersions) => {
           let version = feedVersions[feedVersionIndex - 1]
-          dispatch(fetchValidationResult(version.feedSource, version))
+          dispatch(fetchValidationResult(version))
         })
       }
     },
     fetchValidationResult: (feedVersion) => {
-      dispatch(fetchValidationResult(feedVersion.feedSource, feedVersion))
+      dispatch(fetchValidationResult(feedVersion))
     },
     fetchIsochrones: (feedVersion, fromLat, fromLon, toLat, toLon) => {
       dispatch(fetchFeedVersionIsochrones(feedVersion, fromLat, fromLon, toLat, toLon))

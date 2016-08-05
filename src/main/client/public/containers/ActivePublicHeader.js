@@ -1,7 +1,7 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
-import DatatoolsNavbar from '../../common/components/DatatoolsNavbar'
+import PublicHeader from '../components/PublicHeader'
+
 import { login, logout, resetPassword } from '../../manager/actions/user'
 import { getConfigProperty } from '../../common/util/config'
 
@@ -21,14 +21,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loginHandler: () => { dispatch(login()) },
     logoutHandler: () => { dispatch(logout()) },
-    // openAccount: () => { dispatch(openAccount())},
     resetPasswordHandler: () => { dispatch(resetPassword()) }
   }
 }
 
-var ManagerPublicNavbar = connect(
+const ActivePublicHeader = connect(
   mapStateToProps,
   mapDispatchToProps
-)(DatatoolsNavbar)
+)(PublicHeader)
 
-export default ManagerPublicNavbar
+export default ActivePublicHeader

@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         .then((feedVersions) => {
           console.log(feedVersions)
           let version = feedVersions.find(v => v.id === feedVersionId)
-          dispatch(fetchValidationResult(version.feedSource, version))
+          dispatch(fetchValidationResult(version))
         })
       }
       else if (!initialProps.feedSource) {
@@ -84,7 +84,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         .then((feedVersions) => {
           console.log(feedVersions)
           let version = feedVersions.find(v => v.id === feedVersionId)
-          dispatch(fetchValidationResult(version.feedSource, version))
+          dispatch(fetchValidationResult(version))
         })
       }
       else if (!initialProps.feedSource.versions) {
@@ -92,11 +92,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         .then((feedVersions) => {
           console.log(feedVersions)
           let version = feedVersions.find(v => v.id === feedVersionId)
-          dispatch(fetchValidationResult(version.feedSource, version))
+          dispatch(fetchValidationResult(version))
         })
       }
       else if (!initialProps.feedSource.versions.validationResult) {
-        // dispatch(fetchValidationResult(version.feedSource, version))
+        // dispatch(fetchValidationResult(version))
       }
     },
     fetchIsochrones: (feedVersion, fromLat, fromLon, toLat, toLon) => {

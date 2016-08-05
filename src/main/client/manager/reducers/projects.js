@@ -205,8 +205,8 @@ const projects = (state = {
       )
 
     case 'RECEIVE_VALIDATION_RESULT':
-      projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
-      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
+      projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
       // let result = {}
       // action.validationResult.map(error => {

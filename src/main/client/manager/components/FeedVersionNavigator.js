@@ -11,10 +11,11 @@ export default class FeedVersionNavigator extends Component {
 
   static propTypes = {
     deleteDisabled: PropTypes.bool,
+    isPublic: PropTypes.bool,
     versions: PropTypes.array,
     versionIndex: PropTypes.number,
 
-    deleteVersionClicked: PropTypes.func,
+    deleteFeedVersionConfirmed: PropTypes.func,
     downloadFeedClicked: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
     gtfsPlusDataRequested: PropTypes.func,
@@ -95,9 +96,13 @@ export default class FeedVersionNavigator extends Component {
                   <span>&nbsp;&nbsp;</span>
 
                   {/* Name Display / Editor */}
-                  <EditableTextField inline value={version.name}
-                    onChange={(value) => this.props.feedVersionRenamed(version, value)}
-                  />
+                  {this.props.isPublic
+                    ? <span>{version.name}</span>
+                    : <EditableTextField inline value={version.name}
+                        disabled={this.props.isPublic}
+                        onChange={(value) => this.props.feedVersionRenamed(version, value)}
+                      />
+                  }
                 </div>
               : messages.noVersions
             }
@@ -105,23 +110,23 @@ export default class FeedVersionNavigator extends Component {
 
           {/* Version-Specific Button Toolbar */}
           <Col xs={12} sm={6}>
-            <ConfirmModal ref='confirmLoad' />
+            <ConfirmModal ref='confirm' />
             <ButtonToolbar className='pull-right'>
 
               {/* "Download Feed" Button */}
               <Button bsStyle='primary'
                 disabled={!hasVersions}
-                onClick={(evt) => this.props.downloadFeedClicked(version)}
+                onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
               >
                 <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
               </Button>
 
               {/* "Load for Editing" Button */}
-              {isModuleEnabled('editor')
+              {isModuleEnabled('editor') && !this.props.isPublic
                 ? <Button bsStyle='success'
                     disabled={!hasVersions}
                     onClick={(evt) => {
-                      this.refs.confirmLoad.open({
+                      this.refs.confirm.open({
                         title: messages.load,
                         body: messages.confirmLoad,
                         onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
@@ -134,14 +139,21 @@ export default class FeedVersionNavigator extends Component {
               }
 
               {/* "Delete Version" Button */}
-              <Button bsStyle='danger'
-                disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteVersionClicked === 'undefined'}
-                onClick={(evt) => {
-                  this.props.deleteVersionClicked(version)
-                }}
-              >
-                <Glyphicon glyph='remove' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
-              </Button>
+              {!this.props.isPublic
+                ? <Button bsStyle='danger'
+                    disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
+                    onClick={(evt) => {
+                      this.refs.confirm.open({
+                        title: `${messages.delete} ${messages.version}`,
+                        body: messages.confirmDelete,
+                        onConfirm: () => { this.props.deleteFeedVersionConfirmed(version) }
+                      })
+                    }}
+                  >
+                    <Glyphicon glyph='remove' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
+                  </Button>
+                : null
+              }
             </ButtonToolbar>
           </Col>
         </Row>
@@ -152,7 +164,7 @@ export default class FeedVersionNavigator extends Component {
           ? <FeedVersionViewer
               version={version}
               validationResultRequested={(version) => {
-                this.props.validationResultRequested(version)
+                this.props.validationResultRequested(version, this.props.isPublic)
               }}
               gtfsPlusDataRequested={(version) => {
                 this.props.gtfsPlusDataRequested(version)

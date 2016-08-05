@@ -12,7 +12,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import WatchButton from '../../common/containers/WatchButton'
 import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable from './ExternalPropertiesTable'
-import FeedVersionNavigator from './FeedVersionNavigator'
+import ActiveFeedVersionNavigator from '../containers/ActiveFeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
 import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
@@ -290,31 +290,11 @@ export default class FeedSourceViewer extends Component {
 
           <Tabs id='feed-source-viewer-tabs'>
             <Tab eventKey='versions' title={<span><Glyphicon glyph='list' /> {messages.versions}</span>}>
-              <FeedVersionNavigator
+              <ActiveFeedVersionNavigator
                 versions={fs.feedVersions}
                 feedSource={fs}
                 versionIndex={this.props.feedVersionIndex}
-                user={this.props.user}
-                updateUserSubscription={this.props.updateUserSubscription}
-                updateDisabled={disabled}
-                editGtfsDisabled={editGtfsDisabled}
                 deleteDisabled={disabled}
-                validationResultRequested={(version) => this.props.validationResultRequested(fs, version) }
-                downloadFeedClicked={(version) => this.props.downloadFeedClicked(version)}
-                deleteVersionClicked={(version) => {
-                  this.deleteFeedVersion(fs, version)
-                }}
-                notesRequestedForVersion={(version) => {
-                  this.props.notesRequestedForVersion(version)
-                }}
-                newNotePostedForVersion={(version, note) => {
-                  this.props.newNotePostedForVersion(version, note)
-                }}
-                gtfsPlusDataRequested={(version) => {
-                  this.props.gtfsPlusDataRequested(version)
-                }}
-                feedVersionRenamed={(version, name) => this.props.feedVersionRenamed(fs, version, name)}
-                loadFeedVersionForEditing={(version) => this.props.loadFeedVersionForEditing(version)}
               />
             </Tab>
 

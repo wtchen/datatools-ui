@@ -140,7 +140,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     validationResultRequested: (feedSource, feedVersion) => {
-      dispatch(fetchValidationResult(feedSource, feedVersion))
+      dispatch(fetchValidationResult(feedVersion))
     },
     createFeedInfo: (feedSourceId) => {
       dispatch(createFeedInfo(feedSourceId))
