@@ -31,6 +31,7 @@ export default class FeedSourceViewer extends Component {
     feedVersionIndex: PropTypes.number,
     isFetching: PropTypes.bool,
     project: PropTypes.object,
+    routeParams: PropTypes.object,
     user: PropTypes.object,
 
     createDeployment: PropTypes.func,
@@ -89,8 +90,8 @@ export default class FeedSourceViewer extends Component {
   }
   getAverageFileSize (feedVersions) {
     let sum = 0
-    for( var i = 0; i < feedVersions.length; i++ ){
-        sum += feedVersions[i].fileSize
+    for (var i = 0; i < feedVersions.length; i++) {
+      sum += feedVersions[i].fileSize
     }
     return Math.floor(sum / feedVersions.length / 10000) / 100
   }
@@ -112,8 +113,7 @@ export default class FeedSourceViewer extends Component {
         let nameArray = files[0].name.split('.')
         if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
           return false
-        }
-        else {
+        } else {
           this.props.uploadFeedClicked(this.props.feedSource, files[0])
           return true
         }
@@ -202,7 +202,7 @@ export default class FeedSourceViewer extends Component {
             <Col xs={3}>
               <Well bsSize='small'>
                 <h4>Feed Summary</h4>
-                <ul className="list-unstyled">
+                <ul className='list-unstyled'>
                   <li><b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
                   <li><b>Number of versions:</b> {fs.feedVersionCount}</li>
                   {/*<li><b>Average file size:</b> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>*/}
@@ -291,7 +291,7 @@ export default class FeedSourceViewer extends Component {
           <Tabs id='feed-source-viewer-tabs'>
             <Tab eventKey='versions' title={<span><Glyphicon glyph='list' /> {messages.versions}</span>}>
               <ActiveFeedVersionNavigator
-                versions={fs.feedVersions}
+                routeParams={this.props.routeParams}
                 feedSource={fs}
                 versionIndex={this.props.feedVersionIndex}
                 deleteDisabled={disabled}

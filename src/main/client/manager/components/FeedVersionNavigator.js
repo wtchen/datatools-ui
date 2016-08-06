@@ -11,9 +11,9 @@ export default class FeedVersionNavigator extends Component {
 
   static propTypes = {
     deleteDisabled: PropTypes.bool,
+    feedSource: PropTypes.object,
+    feedVersionIndex: PropTypes.number,
     isPublic: PropTypes.bool,
-    versions: PropTypes.array,
-    versionIndex: PropTypes.number,
 
     deleteFeedVersionConfirmed: PropTypes.func,
     downloadFeedClicked: PropTypes.func,
@@ -37,10 +37,11 @@ export default class FeedVersionNavigator extends Component {
       fontSize: '24px',
       fontWeight: 'bold'
     }
+    const versions = this.props.feedSource.feedVersions
     const messages = getComponentMessages('FeedVersionNavigator')
-    const hasVersions = this.props.versions && this.props.versions.length > 0
+    const hasVersions = versions && versions.length > 0
 
-    const sortedVersions = hasVersions && this.props.versions.sort((a, b) => {
+    const sortedVersions = hasVersions && versions.sort((a, b) => {
       if (a.updated < b.updated) return -1
       if (a.updated > b.updated) return 1
       return 0
@@ -48,13 +49,15 @@ export default class FeedVersionNavigator extends Component {
 
     let version
 
-    if (typeof this.props.versionIndex === 'undefined') {
+    if (typeof this.props.feedVersionIndex === 'undefined') {
       return null
-    } else if (hasVersions && this.props.versions.length >= this.props.versionIndex) {
-      version = sortedVersions[this.props.versionIndex - 1]
+    } else if (hasVersions && versions.length >= this.props.feedVersionIndex) {
+      version = sortedVersions[this.props.feedVersionIndex - 1]
     } else {
-      console.log(`Error version ${this.props.versionIndex} does not exist`)
+      console.log(`Error version ${this.props.feedVersionIndex} does not exist`)
     }
+
+    const publicPrefix = this.props.isPublic ? '/public' : ''
 
     return (
       <div>
@@ -67,18 +70,18 @@ export default class FeedVersionNavigator extends Component {
                   <ButtonGroup>
                     {/* Previous Version Button */}
                     <Button href='#'
-                      disabled={!hasVersions || !sortedVersions[this.props.versionIndex - 2]}
-                      onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex - 1}`)}
+                      disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex - 2]}
+                      onClick={() => browserHistory.push(`${publicPrefix}/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex - 1}`)}
                     >
                       <Glyphicon glyph='arrow-left' />
                     </Button>
 
                     {/* Version Selector Dropdown */}
                     <DropdownButton href='#' id='versionSelector'
-                      title={`${this.props.versionIndex} ${messages.of} ${this.props.versions.length}`}
-                      onSelect={(key) => browserHistory.push(`/feed/${version.feedSource.id}/version/${key}`)}
+                      title={`${this.props.feedVersionIndex} ${messages.of} ${versions.length}`}
+                      onSelect={(key) => browserHistory.push(`${publicPrefix}/feed/${version.feedSource.id}/version/${key}`)}
                     >
-                      {this.props.versions.map((version, k) => {
+                      {versions.map((version, k) => {
                         k = k + 1
                         return <MenuItem key={k} eventKey={k}>{k}. {version.name}</MenuItem>
                       })}
@@ -86,8 +89,8 @@ export default class FeedVersionNavigator extends Component {
 
                     {/* Next Version Button */}
                     <Button href='#'
-                      disabled={!hasVersions || !sortedVersions[this.props.versionIndex]}
-                      onClick={() => browserHistory.push(`/feed/${version.feedSource.id}/version/${this.props.versionIndex + 1}`)}
+                      disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex]}
+                      onClick={() => browserHistory.push(`${publicPrefix}/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex + 1}`)}
                     >
                       <Glyphicon glyph='arrow-right' />
                     </Button>

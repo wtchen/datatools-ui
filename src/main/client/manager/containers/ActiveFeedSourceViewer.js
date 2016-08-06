@@ -46,8 +46,8 @@ const mapStateToProps = (state, ownProps) => {
   } else if (!project && !state.projects.isFetching) {
     feedSource = null
   }
-  let feedVersionIndex
   let isFetching = state.projects.isFetching
+  /*let feedVersionIndex
   let routeVersionIndex = +ownProps.routeParams.feedVersionIndex
   let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
   if (feedSource && typeof feedSource.feedVersions !== 'undefined') {
@@ -61,11 +61,11 @@ const mapStateToProps = (state, ownProps) => {
         ? routeVersionIndex
         : feedSource.feedVersions.length
     }
-  }
+  }*/
   return {
     feedSource,
     feedSourceId,
-    feedVersionIndex,
+    //feedVersionIndex,
     project,
     user,
     isFetching
