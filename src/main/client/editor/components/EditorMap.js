@@ -14,6 +14,7 @@ import lineSlice from 'turf-line-slice'
 import pointOnLine from 'turf-point-on-line'
 
 import { generateUID } from '../../common/util/util'
+import { getConfigProperty } from '../../common/util/config'
 import { EditControl } from 'react-leaflet-draw'
 
 // import CircleMarkerWithLabel from './CircleMarkerWithLabel'
@@ -1105,14 +1106,14 @@ export default class EditorMap extends React.Component {
         <LayersControl position='topleft'>
           <LayersControl.BaseLayer name='Streets' checked>
             <TileLayer
-              url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}{retina}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+              url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
               retina='@2x'
               attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
             />
           </LayersControl.BaseLayer>
           <LayersControl.BaseLayer name='Satellite'>
             <TileLayer
-              url='https://api.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}{retina}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+              url={`https://api.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
               retina='@2x'
               attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
             />

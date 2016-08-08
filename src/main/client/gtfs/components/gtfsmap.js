@@ -4,13 +4,27 @@ import fetch from 'isomorphic-fetch'
 
 import { Button } from 'react-bootstrap'
 
-import { Map, Marker, Popup, TileLayer, GeoJson, FeatureGroup, Polyline } from 'react-leaflet'
+import { Map, Marker, Popup, TileLayer, GeoJson } from 'react-leaflet'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
 import { getFeedsBounds } from '../../common/util/geo'
+import { getConfigProperty } from '../../common/util/config'
 
 export default class GtfsMap extends React.Component {
-
+  static propTypes = {
+    searchFocus: PropTypes.string,
+    bounds: PropTypes.array,
+    feeds: PropTypes.array,
+    entities: PropTypes.array,
+    position: PropTypes.array,
+    stops: PropTypes.array,
+    onStopClick: PropTypes.func,
+    onRouteClick: PropTypes.func,
+    onZoomChange: PropTypes.func,
+    popupAction: PropTypes.func,
+    newEntityId: PropTypes.string,
+    patterns: PropTypes.array
+  }
   constructor (props) {
     super(props)
 
@@ -44,10 +58,6 @@ export default class GtfsMap extends React.Component {
   }
 
   render () {
-    const {attribution, centerCoordinates, geojson, markers, transitive, url, zoom} = this.props
-
-    console.log('map props', this.props)
-
     var mapStyle = {
       height: '400px',
       width: '555px'
@@ -79,7 +89,7 @@ export default class GtfsMap extends React.Component {
         className='Gtfs-Map'
         >
         <TileLayer
-          url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'
+          url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
         {this.props.stops ? this.props.stops.map((stop, index) => {
@@ -101,7 +111,7 @@ export default class GtfsMap extends React.Component {
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, stop.feed_id).name}</li>
                       {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
                     </ul>
-                    <Button href="#" onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
+                    <Button href='#' onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
                   </div>
                 </Popup>
               </Marker>
@@ -125,7 +135,7 @@ export default class GtfsMap extends React.Component {
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, stop.feed_id).name}</li>
                       {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
                     </ul>
-                    <Button href="#" onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
+                    <Button href='#' onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
                   </div>
                 </Popup>
               </Marker>
@@ -152,7 +162,7 @@ export default class GtfsMap extends React.Component {
                       <li><strong>Agency:</strong> {getFeed(this.props.feeds, route.feed_id).name}</li>
                     </ul>
                     {this.props.onRouteClick
-                      ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
+                      ? <Button href='#' onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
                       : <p>[Must add stops first]</p>
                     }
 
@@ -177,7 +187,7 @@ export default class GtfsMap extends React.Component {
                     <li><strong>Agency:</strong> {getFeed(this.props.feeds, route.feed_id).name}</li>
                   </ul>
                   {this.props.onRouteClick
-                    ? <Button href="#" onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
+                    ? <Button href='#' onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
                     : <p>[Must add stops first]</p>
                   }
                 </div>
@@ -233,18 +243,15 @@ export default class GtfsMap extends React.Component {
         return response.json()
       })
 
-
     let entitySearches = []
-    if (ents.indexOf('stops') > -1){
+    if (ents.indexOf('stops') > -1) {
       entitySearches.push(getStops)
-    }
-    else {
+    } else {
       entitySearches.push(null)
     }
-    if (ents.indexOf('routes') > -1){
+    if (ents.indexOf('routes') > -1) {
       entitySearches.push(getRoutes)
-    }
-    else {
+    } else {
       entitySearches.push(null)
     }
     Promise.all(entitySearches).then((results) => {
