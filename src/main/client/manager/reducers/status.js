@@ -6,7 +6,8 @@ const config = (state = {
   jobMonitor: {
     timer: null,
     visible: false,
-    jobs: []
+    jobs: [],
+    retired: []
   }
 }, action) => {
   switch (action.type) {
@@ -114,14 +115,23 @@ const config = (state = {
       return update(state, { jobMonitor: { $merge: { timer: action.timer } } })
     case 'SET_JOBMONITOR_VISIBLE':
       return update(state, { jobMonitor: { $merge: { visible: action.visible } } })
+    case 'REMOVE_RETIRED_JOB':
+      let jobIndex = state.jobMonitor.retired.findIndex(job => job.jobId === action.job.jobId)
+      if (jobIndex === -1) {
+        return state
+      }
+      return update(state, { jobMonitor: { retired: { $splice: [[jobIndex, 1]] } } })
     case 'RECEIVE_JOBS':
       let visible = state.jobMonitor.visible
       let jobs = action.jobs || []
-
+      let retired = state.jobMonitor.retired
       // make monitor visible if jobs are being received for the first time
       if (state.jobMonitor.jobs.length === 0 && jobs.length > 0) visible = true
-
-      return update(state, { jobMonitor: { $merge: { jobs, visible } } })
+      for (var i = 0; i < state.jobMonitor.jobs.length; i++) {
+        let jobIndex = jobs.findIndex(j => j.jobId === state.jobMonitor.jobs[i].jobId)
+        if (jobIndex === -1) retired.push(state.jobMonitor.jobs[i])
+      }
+      return update(state, { jobMonitor: { $merge: { jobs, visible, retired } } })
 
     // case 'DEPLOYING_TO_TARGET':
     //  return update(state, { popover: { jobs: { $push: [{name: `Processing deployment`, percent_complete: 5, status: 'processing'}] } } })

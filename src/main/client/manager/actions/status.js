@@ -45,6 +45,13 @@ export function watchStatus (job) {
   }
 }*/
 
+export function removeRetiredJob (job) {
+  return {
+    type: 'REMOVE_RETIRED_JOB',
+    job
+  }
+}
+
 export function receiveJobs (jobs) {
   return {
     type: 'RECEIVE_JOBS',

@@ -8,7 +8,8 @@ export default class SidebarNavItem extends Component {
     expanded: PropTypes.bool,
     icon: PropTypes.string,
     label: PropTypes.string,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    image: PropTypes.string
   }
 
   constructor (props) {
@@ -34,6 +35,13 @@ export default class SidebarNavItem extends Component {
       float: 'left'
     }
 
+    const imageContainerStyle = {
+      width: 30,
+      height: 30,
+      textAlign: 'center',
+      float: 'left'
+    }
+
     const iconStyle = {
     }
 
@@ -47,11 +55,15 @@ export default class SidebarNavItem extends Component {
         onMouseEnter={() => this.toggleHover()} onMouseLeave={() => this.toggleHover()}
         onClick={() => this.props.onClick()}
       >
-        <div style={iconContainerStyle}>
-          <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'
 
-          />
-        </div>
+          {this.props.image
+            ? <div style={imageContainerStyle}>
+                <img width={40} height={40} src={this.props.image}/>
+              </div>
+            : <div style={iconContainerStyle}>
+                <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'/>
+              </div>
+          }
         {this.props.expanded
           ? <div style={labelStyle}>{this.props.label}</div>
           : null

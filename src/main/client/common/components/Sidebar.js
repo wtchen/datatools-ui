@@ -11,11 +11,13 @@ export default class Sidebar extends Component {
     expanded: PropTypes.bool,
     jobMonitor: PropTypes.object,
     username: PropTypes.string,
+    userPicture: PropTypes.string,
 
     loginHandler: PropTypes.func,
     logoutHandler: PropTypes.func,
     resetPasswordHandler: PropTypes.func,
     setJobMonitorVisible: PropTypes.func,
+    removeRetiredJob: PropTypes.func,
     setSidebarExpanded: PropTypes.func
   }
 
@@ -95,7 +97,7 @@ export default class Sidebar extends Component {
             icon='bell' label='Job Monitor'
             onClick={() => this.navSelected('job')} />
           <SidebarNavItem ref='userNav' expanded={this.props.expanded}
-            icon='user' label='Account'
+            icon='user' label='Account' image={this.props.userPicture}
             onClick={() => this.navSelected('user')} />
           <SidebarNavItem ref='settingsNav' expanded={this.props.expanded}
             icon='gear' label='Settings'
@@ -110,6 +112,7 @@ export default class Sidebar extends Component {
         expanded={this.props.expanded}
         visible={() => this.state.visiblePopover === 'job' }
         close={() => closePopover()}
+        removeRetiredJob={this.props.removeRetiredJob}
       />
 
       {/* User Popover */}

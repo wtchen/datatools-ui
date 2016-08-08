@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
+import { setErrorMessage, startJobMonitor } from './status'
 import { fetchProjectFeeds, updateFeedSource } from './feeds'
 // Bulk Project Actions
 
@@ -149,9 +150,10 @@ export function runningFetchFeedsForProject () {
   }
 }
 
-export function receiveFetchFeedsForProject () {
+export function receiveFetchFeedsForProject (project) {
   return {
     type: 'RECEIVE_FETCH_FEED_FOR_PROJECT',
+    project
   }
 }
 
@@ -161,11 +163,24 @@ export function fetchFeedsForProject (project) {
     dispatch(runningFetchFeedsForProject())
     const url = `/api/manager/secure/project/${project.id}/fetch`
     return secureFetch(url, getState(), 'post')
-      .then(response => response.json())
+      .then(res => {
+        if (res.status === 304) {
+          // dispatch(feedNotModified(feedSource, 'Feed fetch cancelled because it matches latest feed version.'))
+          console.log('fetch cancelled because matches latest')
+        }
+        else if (res.status >= 400) {
+          dispatch(setErrorMessage('Error fetching project feeds'))
+        }
+        else {
+          dispatch(receiveFetchFeedsForProject(project))
+          dispatch(startJobMonitor())
+          return res.json()
+        }
+      })
       .then(result => {
         console.log('fetchFeed result', result)
         dispatch(receiveFetchFeedsForProject())
-        dispatch((fetchProject(project.id)))
+        dispatch((fetchProjectWithFeeds(project.id)))
       })
   }
 }

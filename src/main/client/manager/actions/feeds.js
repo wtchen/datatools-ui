@@ -226,6 +226,7 @@ export function runFetchFeed (feedSource) {
         }
         else {
           dispatch(receivedFetchFeed(feedSource))
+          dispatch(startJobMonitor())
           return res.json()
         }
       })
