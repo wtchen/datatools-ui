@@ -1,11 +1,19 @@
-import React from 'react'
+import React, {Component, PropTypes} from 'react'
 import { Grid, Row, Col, Table, Panel, Glyphicon } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 import PublicPage from './PublicPage'
 import ActiveFeedVersionNavigator from '../../manager/containers/ActiveFeedVersionNavigator'
 
-export default class PublicFeedSourceViewer extends React.Component {
+export default class PublicFeedSourceViewer extends Component {
+
+  static propTypes = {
+    feedSource: PropTypes.object,
+    routeParams: PropTypes.object,
+    user: PropTypes.object,
+
+    onComponentMount: PropTypes.func
+  }
 
   constructor (props) {
     super(props)
@@ -19,7 +27,7 @@ export default class PublicFeedSourceViewer extends React.Component {
     const fs = this.props.feedSource
 
     if (!fs) {
-      return <PublicPage></PublicPage>
+      return <PublicPage />
     }
 
     return (
@@ -27,19 +35,10 @@ export default class PublicFeedSourceViewer extends React.Component {
         <Grid>
           <Row>
             <Col xs={12}>
-            { this.props.user.profile !== null ?
               <ul className='breadcrumb'>
                 <li><Link to='/'>Explore</Link></li>
-                <li><Link to='/project'>Projects</Link></li>
-                <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
                 <li className='active'>{fs.name}</li>
               </ul>
-              : <ul className='breadcrumb'>
-                  <li><Link to='/'>Explore</Link></li>
-                  <li className='active'>{fs.name}</li>
-                </ul>
-            }
-
             </Col>
           </Row>
 
@@ -47,8 +46,8 @@ export default class PublicFeedSourceViewer extends React.Component {
             <Col xs={12}>
               <h2>
               {fs.name} <small>Public view
-              { this.props.user.profile !== null ?
-                <span> (<Link to={`/feed/${fs.id}`}>View private page</Link>)</span>
+              {this.props.user.profile
+                ? <span>(<Link to={`/feed/${fs.id}`}>View private page</Link>)</span>
                 : null
               }
               </small>
@@ -82,15 +81,11 @@ export default class PublicFeedSourceViewer extends React.Component {
 
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
             {fs.feedVersions && fs.feedVersions.length > 0
-              ? <div>
-                <span>Versions!!</span>
-                <ActiveFeedVersionNavigator
-                  versions={fs.feedVersions}
+              ? <ActiveFeedVersionNavigator
                   feedSource={fs}
-                  versionIndex={fs.feedVersions.length}
+                  routeParams={this.props.routeParams}
                   isPublic
                 />
-                </div>
               : <span>No Feed Versions to show.</span>
             }
           </Panel>

@@ -15,7 +15,26 @@ import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
-  return {}
+  let feedVersionIndex
+  let routeVersionIndex = parseInt(ownProps.routeParams.feedVersionIndex, 10)
+  let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
+
+  if (ownProps.feedSource && typeof ownProps.feedSource.feedVersions !== 'undefined') {
+    if ((hasVersionIndex && isNaN(routeVersionIndex)) ||
+        routeVersionIndex > ownProps.feedSource.feedVersions.length ||
+        routeVersionIndex < 0) {
+      console.log(`version index ${routeVersionIndex} is invalid`)
+      // cannot use browserHistory.push in middle of state transition
+      // browserHistory.push(`/feed/${feedSourceId}`)
+      window.location.href = `/feed/${ownProps.feedSource.id}`
+    } else {
+      feedVersionIndex = hasVersionIndex
+        ? routeVersionIndex
+        : ownProps.feedSource.feedVersions.length
+    }
+  }
+
+  return { feedVersionIndex }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {

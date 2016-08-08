@@ -77,7 +77,7 @@ class App extends React.Component {
       <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />,
       <Route path='/signup' component={ActiveSignupPage} />,
       <Route path='/' component={ActivePublicFeedsViewer} />,
-      <Route path='/public/feed/:feedSourceId' component={ActivePublicFeedSourceViewer} />,
+      <Route path='/public/feed/:feedSourceId(/version/:feedVersionIndex)' component={ActivePublicFeedSourceViewer} />,
       <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,
       <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />,
       <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />,
