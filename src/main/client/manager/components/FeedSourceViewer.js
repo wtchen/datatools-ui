@@ -55,39 +55,12 @@ export default class FeedSourceViewer extends Component {
 
   constructor (props) {
     super(props)
-
-    this.state = {
-      snapshotVersions: []
-    }
-
-    if (this.props.feedSource && this.props.feedSource.retrievalMethod === 'PRODUCED_IN_HOUSE') {
-      this.updateSnapshotVersions(this.props.feedSource)
-    }
   }
 
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.feedSource && nextProps.feedSource.retrievalMethod === 'PRODUCED_IN_HOUSE') {
-      this.updateSnapshotVersions(nextProps.feedSource)
-    }
-  }
-
-  updateSnapshotVersions (feedSource) {
-    const url = getConfigProperty('modules.editor.url') + '/api/mgrsnapshot?sourceId=' + feedSource.id
-    fetch(url)
-      .then(res => res.json())
-      .then(snapshots => {
-        this.setState({
-          snapshotVersions: snapshots
-        })
-      })
-      .catch(err => {
-        console.log('Error fetching snapshots', err)
-      })
-  }
   getAverageFileSize (feedVersions) {
     let sum = 0
     for (var i = 0; i < feedVersions.length; i++) {
@@ -221,7 +194,7 @@ export default class FeedSourceViewer extends Component {
                 </Button>
                 {isModuleEnabled('editor')
                   ? <Button
-                      disabled={editGtfsDisabled} // || !fs.latestValidation}
+                      disabled={editGtfsDisabled}
                       bsStyle='success' bsSize='large'
                       onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
                       <Glyphicon glyph='pencil' /> Edit
@@ -385,27 +358,6 @@ export default class FeedSourceViewer extends Component {
                         : null
                       }
 
-                      {fs.retrievalMethod === 'PRODUCED_IN_HOUSE'
-                        ? <tr>
-                            <td>Editor Snapshot</td>
-                            <td>
-                              <FormControl componentClass='select'
-                                value={fs.snapshotVersion}
-                                onChange={(evt) => {
-                                  this.props.feedSourcePropertyChanged(fs, 'snapshotVersion', evt.target.value)
-                                }}
-                              >
-                                <option>{messages.properties.noneSelected}</option>
-                                {this.state.snapshotVersions.map(snapshot => {
-                                  return <option value={snapshot.id} key={snapshot.id}>
-                                    {snapshot.name}
-                                  </option>
-                                })}
-                              </FormControl>
-                            </td>
-                          </tr>
-                        : null
-                      }
                       <tr>
                         <td>{messages.properties.public}</td>
                         <td>
