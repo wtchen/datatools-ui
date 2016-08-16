@@ -28,6 +28,14 @@ export default class ProjectSettings extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    this.setState({
+      general: {},
+      deployment: {
+        buildConfig: {},
+        routerConfig: {},
+        otpServers: nextProps.project && nextProps.project.otpServers ? nextProps.project.otpServers : []
+      }
+    })
   }
   shouldComponentUpdate (nextProps, nextState) {
     return !shallowEqual(nextProps, this.props) || !shallowEqual(nextState, this.state)
@@ -36,6 +44,11 @@ export default class ProjectSettings extends Component {
     const messages = getComponentMessages('ProjectSettings')
     const tabRowStyle = { marginTop: '20px' }
     const project = this.props.project
+    const generalSettingsUnedited = Object.keys(this.state.general).length === 0 && this.state.general.constructor === Object
+    const deploymentSettingsUnedited =
+      Object.keys(this.state.deployment.buildConfig).length === 0 &&
+      Object.keys(this.state.deployment.buildConfig).length === 0 &&
+      shallowEqual(this.state.deployment.otpServers, this.props.project.otpServers)
     const autoFetchChecked = typeof this.state.general.autoFetchFeeds !== 'undefined' ? this.state.general.autoFetchFeeds : project.autoFetchFeeds
     const projectEditDisabled = this.props.projectEditDisabled
     const defaultFetchTime = moment().startOf('day').add(2, 'hours')
@@ -212,10 +225,11 @@ export default class ProjectSettings extends Component {
                   </Row>
                   <Row>
                     <Col xs={12}>
+                      {/* Save button */}
                       <Button
                         bsStyle='primary'
                         type='submit'
-                        disabled={projectEditDisabled}
+                        disabled={projectEditDisabled || generalSettingsUnedited}
                         onClick={(evt) => {
                           evt.preventDefault()
                           console.log(this.state)
@@ -312,7 +326,7 @@ export default class ProjectSettings extends Component {
                         label={messages.deployment.buildConfig.numItineraries}
                         ref='numItineraries'
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: {routerConfig: { numItineraries: { $set: +evt.target.value } } } }
+                          let stateUpdate = { deployment: { routerConfig: { numItineraries: { $set: +evt.target.value } } } }
                           this.setState(update(this.state, stateUpdate))
                         }}
                       />
@@ -327,7 +341,7 @@ export default class ProjectSettings extends Component {
                         label={messages.deployment.buildConfig.walkSpeed}
                         ref='walkSpeed'
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: {routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
+                          let stateUpdate = { deployment: { routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
                           this.setState(update(this.state, stateUpdate))
                         }}
                       />
@@ -344,7 +358,7 @@ export default class ProjectSettings extends Component {
                         label={messages.deployment.buildConfig.stairsReluctance}
                         ref='stairsReluctance'
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: {routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
+                          let stateUpdate = { deployment: { routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
                           this.setState(update(this.state, stateUpdate))
                         }}
                       />
@@ -359,7 +373,7 @@ export default class ProjectSettings extends Component {
                         label={messages.deployment.buildConfig.carDropoffTime}
                         ref='carDropoffTime'
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: {routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
+                          let stateUpdate = { deployment: { routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
                           this.setState(update(this.state, stateUpdate))
                         }}
                       />
@@ -374,7 +388,7 @@ export default class ProjectSettings extends Component {
                         label={messages.deployment.buildConfig.brandingUrlRoot}
                         ref='brandingUrlRoot'
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: {routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
+                          let stateUpdate = { deployment: { routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
                           this.setState(update(this.state, stateUpdate))
                         }}
                       />
@@ -394,7 +408,7 @@ export default class ProjectSettings extends Component {
                         <Glyphicon glyph='plus'/> {messages.deployment.servers.new}
                       </Button>
                       <h4>{messages.deployment.servers.title}</h4>
-                      {this.state.deployment.otpServers.map((server, i) => {
+                      {this.state.deployment.otpServers && this.state.deployment.otpServers.map((server, i) => {
                         let title = (
                           <h5>
                             {server.name}{'  '}
@@ -516,10 +530,11 @@ export default class ProjectSettings extends Component {
                   </Row>
                   <Row>
                     <Col md={12}>
+                      {/* Save button */}
                       <Button
                         bsStyle='primary'
                         type='submit'
-                        disabled={projectEditDisabled}
+                        disabled={projectEditDisabled || deploymentSettingsUnedited}
                         onClick={(evt) => {
                           evt.preventDefault()
                           console.log(this.state)
