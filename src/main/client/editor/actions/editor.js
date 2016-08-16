@@ -259,13 +259,17 @@ export function cloneGtfsEntity (feedSourceId, component, entityId, save) {
     if (entityId === 'new') {
       return null
     }
-    let props = {...getState().editor.tableData[component].find(e => e.id === entityId)}
-    props.id = 'new'
+    let props
     switch (component) {
       case 'trippattern':
+        props = {...getState().editor.active.entity.tripPatterns.find(tp => tp.id === entityId)}
         props.name = props.name + ' copy'
         break
+      default:
+        props = {...getState().editor.tableData[component].find(e => e.id === entityId)}
+        break
     }
+    props.id = 'new'
     dispatch(newGtfsEntity(feedSourceId, component, props, save))
   }
 }
