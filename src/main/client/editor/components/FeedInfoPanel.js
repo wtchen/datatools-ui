@@ -57,6 +57,7 @@ export default class FeedInfoPanel extends Component {
           }}
         />
           <ButtonGroup>
+            {/* Hide toolbar toggle */}
             <OverlayTrigger placement='top' overlay={<Tooltip id='hide-tooltip'>{toolbarVisible ? 'Hide toolbar' : 'Show toolbar'}</Tooltip>}>
               <Button
                 onClick={() => {
@@ -71,6 +72,7 @@ export default class FeedInfoPanel extends Component {
                 <Icon name={toolbarVisible ? 'caret-right' : 'caret-left'}/>
               </Button>
             </OverlayTrigger>
+            {/* Navigation dropdown */}
             <DropdownButton dropup title={<span title={`Editing ${feedSource && feedSource.name}`}>Editing {feedName}</span>} id='navigation-dropdown'
               onSelect={key => {
                 switch (key) {
@@ -84,6 +86,7 @@ export default class FeedInfoPanel extends Component {
               <MenuItem eventKey='1'><Icon name='reply'/> Back to project</MenuItem>
               <MenuItem eventKey='2'><Icon name='reply'/> Back to feed source</MenuItem>
             </DropdownButton>
+            {/* Add entity dropdown */}
             <DropdownButton pullRight dropup title={<span><Icon name='plus'/></span>}
               id='add-entity-dropdown'
               onSelect={key => {
@@ -99,30 +102,22 @@ export default class FeedInfoPanel extends Component {
                 )
               })}
             </DropdownButton>
+            {/* Snapshot dropdown */}
             {
-            // <Button
-            //   onClick={() => {
-            //
-            //   }}
-            // >
-            //   <Icon name='crosshairs'/>
-            // </Button>
-            }
-              {
-                <Dropdown
-                  dropup
-                  pullRight
-                  onSelect={key => {
-                    let snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
-                    this.props.showConfirmModal({
-                      title: `Restore ${key}?`,
-                      body: `Are you sure you want to restore this snapshot?`,
-                      onConfirm: () => {
-                        this.props.restoreSnapshot(feedSource, snapshot)
-                      }
-                    })
-                  }}
-                >
+              <Dropdown
+                dropup
+                pullRight
+                onSelect={key => {
+                  let snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
+                  this.props.showConfirmModal({
+                    title: `Restore ${key}?`,
+                    body: `Are you sure you want to restore this snapshot?`,
+                    onConfirm: () => {
+                      this.props.restoreSnapshot(feedSource, snapshot)
+                    }
+                  })
+                }}
+              >
                 <OverlayTrigger placement='top' overlay={<Tooltip id='snapshot-tooltip'>Take snapshot</Tooltip>}>
                   <Button
                     bsStyle='primary'
@@ -143,7 +138,7 @@ export default class FeedInfoPanel extends Component {
                       {this.props.feedSource && this.props.feedSource.editorSnapshots
                         ? this.props.feedSource.editorSnapshots.map(snapshot => {
                             return (
-                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.id}</MenuItem>
+                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.name}</MenuItem>
                             )
                           })
                         : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>
