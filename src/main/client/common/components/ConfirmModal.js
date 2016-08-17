@@ -17,16 +17,22 @@ export default class ConfirmModal extends React.Component {
   }
 
   open (props) {
-    this.setState({
-      showModal: true,
-      title: props.title,
-      body: props.body,
-      onConfirm: props.onConfirm
-    })
+
+    if (props) { // TODO: get rid of this, open should not accepts any props
+      this.setState({
+        showModal: true,
+        title: props.title,
+        body: props.body,
+        onConfirm: props.onConfirm
+      })
+    } else {
+      this.setState({ showModal: true })
+    }
   }
 
   ok () {
-    if(this.state.onConfirm) this.state.onConfirm()
+    if (this.props.onConfirm) this.props.onConfirm()
+    else if (this.state.onConfirm) this.state.onConfirm()
     this.close()
   }
 
@@ -34,11 +40,11 @@ export default class ConfirmModal extends React.Component {
     return (
       <Modal show={this.state.showModal} onHide={this.close}>
         <Modal.Header>
-          <Modal.Title>{this.state.title}</Modal.Title>
+          <Modal.Title>{this.props.title || this.state.title}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <p>{this.state.body}</p>
+          <p>{this.props.body || this.state.body}</p>
         </Modal.Body>
 
         <Modal.Footer>

@@ -18,23 +18,35 @@ export default class SelectFileModal extends React.Component {
   }
 
   open (props) {
-    this.setState({
-      showModal: true,
-      title: props.title,
-      body: props.body,
-      onConfirm: props.onConfirm,
-      errorMessage: props.errorMessage
-    })
+    if (props) {
+      this.setState({
+        showModal: true,
+        title: props.title,
+        body: props.body,
+        onConfirm: props.onConfirm,
+        errorMessage: props.errorMessage
+      })
+    } else {
+      this.setState({ showModal: true })
+    }
   }
 
   ok () {
 
-    if(this.state.onConfirm) {
+    if(this.props.onConfirm) {
+      if (this.props.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
+        this.close()
+      }
+      else {
+        this.setState({error: this.props.errorMessage || this.state.errorMessage})
+      }
+    }
+    else if(this.state.onConfirm) {
       if (this.state.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
         this.close()
       }
       else {
-        this.setState({error: this.state.errorMessage})
+        this.setState({error: this.props.errorMessage || this.state.errorMessage})
       }
     }
     else {
@@ -46,11 +58,11 @@ export default class SelectFileModal extends React.Component {
     return (
       <Modal show={this.state.showModal} onHide={this.close}>
         <Modal.Header>
-          <Modal.Title>{this.state.title}</Modal.Title>
+          <Modal.Title>{this.props.title || this.state.title}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <p>{this.state.body}</p>
+          <p>{this.props.body || this.state.body}</p>
           {this.state.error
             ? <p>{this.state.error}</p>
             : null

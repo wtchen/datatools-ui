@@ -61,8 +61,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))
     thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
     updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
-    newFeedSourceNamed: (name) => { dispatch(saveFeedSource({ projectId, name })) },
-    feedSourcePropertyChanged: (feedSource, propName, newValue) => {
+    saveFeedSource: (name) => { dispatch(saveFeedSource({ projectId, name })) },
+    updateFeedSourceProperty: (feedSource, propName, newValue) => {
       dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
     },
     deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
@@ -76,9 +76,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },
     updateDeployment: (deployment, changes) => { dispatch(updateDeployment(deployment, changes)) },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
-    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
-    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
-    deleteFeedSourceConfirmed: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
+    uploadFeed: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
+    fetchFeed: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
+    deleteFeedSource: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
     deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) },
     downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) }
   }

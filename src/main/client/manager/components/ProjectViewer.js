@@ -1,17 +1,17 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
-import { Tabs, Tab, Grid, Row, Label, Col, Button, Table, FormControl, Checkbox, Panel, Glyphicon, Badge, ButtonInput, ButtonToolbar, form, Dropdown, MenuItem } from 'react-bootstrap'
-import { Link, browserHistory } from 'react-router'
-import Icon from 'react-fa'
+import { Tabs, Tab, Grid, Row, Label, Col, Button, Table, FormControl, Glyphicon, ButtonToolbar } from 'react-bootstrap'
+
 import { shallowEqual } from 'react-pure-render'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
 import WatchButton from '../../common/containers/WatchButton'
 import ProjectSettings from './ProjectSettings'
+import FeedSourceTable from './FeedSourceTable'
 import EditableTextField from '../../common/components/EditableTextField'
-import { defaultSorter, retrievalMethodString } from '../../common/util/util'
+import { defaultSorter } from '../../common/util/util'
 import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 export default class ProjectViewer extends Component {
@@ -32,6 +32,7 @@ export default class ProjectViewer extends Component {
       }
     })
   }
+
   showUploadFeedModal (feedSource) {
     this.refs.page.showSelectFileModal({
       title: 'Upload Feed',
@@ -49,6 +50,7 @@ export default class ProjectViewer extends Component {
       errorMessage: 'Uploaded file must be a valid zip file (.zip).'
     })
   }
+
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
@@ -198,35 +200,7 @@ export default class ProjectViewer extends Component {
                 </Row>
                 <Row>
                   <Col xs={12}>
-                    <Table striped hover>
-                      <thead>
-                        <tr>
-                          <th className='col-md-4'>Name</th>
-                          <th>{messages.feeds.table.public}</th>
-                          <th>{messages.feeds.table.deployable}</th>
-                          <th>{messages.feeds.table.retrievalMethod}</th>
-                          <th>{messages.feeds.table.lastUpdated}</th>
-                          <th>{messages.feeds.table.errorCount}</th>
-                          <th>{messages.feeds.table.validRange}</th>
-                          <th></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {filteredFeedSources.map((feedSource) => {
-                          return <FeedSourceTableRow
-                                    feedSource={feedSource}
-                                    project={this.props.project}
-                                    key={feedSource.id}
-                                    user={this.props.user}
-                                    newFeedSourceNamed={this.props.newFeedSourceNamed}
-                                    feedSourcePropertyChanged={this.props.feedSourcePropertyChanged}
-                                    deleteFeedSourceClicked={() => this.deleteFeedSource(feedSource)}
-                                    uploadFeedSourceClicked={() => this.showUploadFeedModal(feedSource)}
-                                    updateFeedClicked={() => this.props.updateFeedClicked(feedSource)}
-                                  />
-                        })}
-                      </tbody>
-                    </Table>
+                    <FeedSourceTable {...this.props} feedSources={filteredFeedSources} />
                   </Col>
                 </Row>
             </Tab>
@@ -380,125 +354,4 @@ class DeploymentsPanel extends Component {
         </Row>
     )
   }
-}
-
-class FeedSourceTableRow extends Component {
-
-  constructor (props) {
-    super(props)
-  }
-  shouldComponentUpdate (nextProps) {
-    return !shallowEqual(nextProps.feedSource, this.props.feedSource)
-  }
-  render () {
-    const fs = this.props.feedSource
-    const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
-    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
-    const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
-    const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
-    const dateFormat = getConfigProperty('application.date_format')
-    return (
-      <tr key={fs.id}>
-        <td className='col-md-4'>
-          <div>
-            <EditableTextField
-              isEditing={(fs.isCreating === true)}
-              value={fs.name}
-              disabled={disabled}
-              onChange={(value) => {
-                if(fs.isCreating) this.props.newFeedSourceNamed(value)
-                else this.props.feedSourcePropertyChanged(fs, 'name', value)
-              }}
-              link={`/feed/${fs.id}`}
-            />
-          </div>
-        </td>
-        <td>
-          <Checkbox
-            disabled={disabled}
-            defaultChecked={fs.isPublic}
-            onChange={(e) => {
-              this.props.feedSourcePropertyChanged(fs, 'isPublic', e.target.checked)
-            }}
-          />
-        </td>
-        <td>
-          <Checkbox
-            disabled={disabled}
-            defaultChecked={fs.deployable}
-            onChange={(e) => {
-              this.props.feedSourcePropertyChanged(fs, 'deployable', e.target.checked)
-            }}
-          />
-        </td>
-        <td>
-          <Badge>{retrievalMethodString(fs.retrievalMethod)}</Badge>
-        </td>
-        <td>{fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : na}</td>
-        <td>{fs.latestValidation ? fs.latestValidation.errorCount : na}</td>
-        <td>{fs.latestValidation
-          ? (<span>{moment(fs.latestValidation.startDate).format(dateFormat)} to {moment(fs.latestValidation.endDate).format(dateFormat)}</span>)
-          : na
-        }</td>
-        <td className='col-xs-2'>
-          <Dropdown
-            className='pull-right'
-            bsStyle='default'
-            onSelect={key => {
-              console.log(key)
-              switch (key) {
-                case 'delete':
-                  return this.props.deleteFeedSourceClicked()
-                case 'update':
-                  return this.props.updateFeedClicked()
-                case 'upload':
-                  return this.props.uploadFeedSourceClicked()
-                case 'deploy':
-                  return this.props.createDeployment(fs)
-                case 'public':
-                  return browserHistory.push(`/public/feed/${fs.id}`)
-              }
-            }}
-            id={`feed-source-action-button`}
-            pullRight
-          >
-            <Button
-              bsStyle='default'
-              disabled={editGtfsDisabled}
-              onClick={() => browserHistory.push(`/feed/${fs.id}/edit/`) }
-            >
-              <Glyphicon glyph='pencil' /> Edit
-            </Button>
-            <Dropdown.Toggle bsStyle='default'/>
-            <Dropdown.Menu>
-              <MenuItem disabled={disabled  || !fs.url} eventKey='update'><Glyphicon glyph='refresh' /> Update</MenuItem>
-              <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-              {isModuleEnabled('deployment') || getConfigProperty('application.notifications_enabled')
-                ? <MenuItem divider />
-                : null
-              }
-              {isModuleEnabled('deployment')
-                ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
-                : null
-              }
-              {getConfigProperty('application.notifications_enabled')
-                ? <WatchButton
-                    isWatching={isWatchingFeed}
-                    user={this.props.user}
-                    target={fs.id}
-                    subscriptionType='feed-updated'
-                    componentClass='menuItem'
-                  />
-                : null
-              }
-              <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
-              <MenuItem divider />
-              <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
-            </Dropdown.Menu>
-          </Dropdown>
-        </td>
-      </tr>
-    )
-  }
-
 }
