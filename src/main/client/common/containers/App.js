@@ -13,6 +13,7 @@ import ActivePublicFeedSourceViewer from '../../public/containers/ActivePublicFe
 import ActiveDeploymentViewer from '../../manager/containers/ActiveDeploymentViewer'
 import ActivePublicFeedsViewer from '../../public/containers/ActivePublicFeedsViewer'
 import ActiveSignupPage from '../../public/containers/ActiveSignupPage'
+import ActiveUserHomePage from '../../manager/containers/ActiveUserHomePage'
 import ActiveUserAccount from '../../public/containers/ActiveUserAccount'
 import ActiveUserAdmin from '../../admin/containers/ActiveUserAdmin'
 import MainAlertsViewer from '../../alerts/containers/MainAlertsViewer'
@@ -76,6 +77,7 @@ class App extends React.Component {
       <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />,
       <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />,
       <Route path='/signup' component={ActiveSignupPage} />,
+      <Route path='/home' component={ActiveUserHomePage} onEnter={requireAuth} />,
       <Route path='/' component={ActivePublicFeedsViewer} />,
       <Route path='/public/feed/:feedSourceId(/version/:feedVersionIndex)' component={ActivePublicFeedSourceViewer} />,
       <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,

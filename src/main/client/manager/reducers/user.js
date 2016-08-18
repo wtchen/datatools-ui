@@ -11,6 +11,7 @@ const user = (state = {
   token: null,
   profile: null,
   permissions: null,
+  recentActivity: null,
   subscriptions: null
 }, action) => {
   switch (action.type) {
@@ -40,6 +41,10 @@ const user = (state = {
         profile: { $set: action.profile },
         permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools)},
         subscriptions: { $set: new UserSubscriptions(action.profile.app_metadata.datatools)},
+      })
+    case 'RECEIVE_USER_RECENT_ACTIVITY':
+      return update(state, {
+        recentActivity: { $set: action.activity }
       })
     default:
       return state

@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Navbar, Button, ButtonToolbar, Checkbox } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 
 import SidebarNavItem from './SidebarNavItem'
 import SidebarPopover from './SidebarPopover'
@@ -51,7 +52,8 @@ export default class Sidebar extends Component {
     const logoContainerStyle = {
       position: 'fixed',
       top: 10,
-      left: 10
+      left: 10,
+      cursor: 'pointer'
     }
 
     const logoIconStyle = {
@@ -79,7 +81,9 @@ export default class Sidebar extends Component {
         inverse
         style={navbarStyle}
       >
-        <div style={logoContainerStyle}>
+        <div style={logoContainerStyle}
+          onClick={() => { browserHistory.push('/home') }}
+        >
           <div style={logoIconStyle}>G</div>
           {this.props.expanded
             ? <div style={logoLabelStyle}>GTFS Data<br/>Manager</div>

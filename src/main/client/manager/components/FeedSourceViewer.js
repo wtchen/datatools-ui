@@ -10,6 +10,7 @@ import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
 import EditableTextField from '../../common/components/EditableTextField'
 import WatchButton from '../../common/containers/WatchButton'
+import StarButton from '../../common/containers/StarButton'
 import { retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable from './ExternalPropertiesTable'
 import ActiveFeedVersionNavigator from '../containers/ActiveFeedVersionNavigator'
@@ -160,6 +161,12 @@ export default class FeedSourceViewer extends Component {
                 <ButtonToolbar
                   className={`pull-right`}
                 >
+                  <StarButton
+                    isStarred
+                    user={this.props.user}
+                    target={fs.id}
+                  />
+
                   <WatchButton
                     isWatching={isWatchingFeed}
                     user={this.props.user}

@@ -248,3 +248,26 @@ export function resetPassword() {
     getState().user.auth0.resetPassword()
   }
 }
+
+// Recent Activity for User's Subscriptions
+
+export function getRecentActivity (user) {
+  return function (dispatch, getState) {
+    const userId = user.profile.user_id
+    console.log('getRecentActivity for ' + userId)
+    const url = `/api/manager/secure/user/${userId}/recentactivity`
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(activity => {
+        console.log('got recent activity', activity)
+        return dispatch(receiveRecentActivity(activity))
+      })
+  }
+}
+
+function receiveRecentActivity (activity) {
+  return {
+    type: 'RECEIVE_USER_RECENT_ACTIVITY',
+    activity
+  }
+}
