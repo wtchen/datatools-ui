@@ -106,6 +106,7 @@ FeedSourceViewer:
   update: Update
 FeedVersionViewer:
   status: Status
+  version: Version
   validDates: Valid Dates
   noVersionsExist: No versions exist for this feed source.
   timestamp: File Timestamp
@@ -226,6 +227,26 @@ ProjectSettings:
       gtfs: Use GTFS-Derived Extract Bounds
       custom: Use Custom Extract Bounds
       bounds: Custom Extract Bounds
+UserAccount:
+  title: My settings
+  personalSettings:
+    title: Personal settings
+    profile:
+      title: Profile
+      profileInformation: Profile information
+    account:
+      title: Account
+    organizations:
+      title: Organizations
+    notifications:
+      title: Notifications
+      subscriptions: Your subscriptions
+      methods: Notification methods
+      unsubscribeAll: Unsubscribe from all
+    billing:
+      title: Billing
+  organizationSettings:
+    title: Organization settings
 
 UserAdmin:
   title: Administration
