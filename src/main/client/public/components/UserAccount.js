@@ -55,7 +55,7 @@ export default class UserAccount extends Component {
       {
         id: 'notifications',
         hidden: !getConfigProperty('application.notifications_enabled'),
-        component: <Panel header={<h4>Your Subscriptions</h4>}>
+        component: <Panel header={<h4>{getMessage(messages, 'notifications.subscriptions')}</h4>}>
           <ul>
             {subscriptions.length ? subscriptions.map(sub => {
               return (
@@ -121,7 +121,7 @@ export default class UserAccount extends Component {
           </Row>
           <Row>
             <Col xs={3}>
-              <Panel header={<h4>Personal settings</h4>}>
+              <Panel header={<h4>{getMessage(messages, 'personalSettings')}</h4>}>
                 <ListGroup fill>
                   {accountSections.map(section => {
                     if (section.hidden) return null
@@ -136,7 +136,7 @@ export default class UserAccount extends Component {
                   })}
                 </ListGroup>
               </Panel>
-              <Panel header={<h4>Organization settings</h4>}>
+              <Panel header={<h4>{getMessage(messages, 'organizationSettings')}</h4>}>
                 <ListGroup fill>
                   {this.props.projects && this.props.projects.map(project => {
                     if (project.hidden) return null

@@ -229,24 +229,22 @@ ProjectSettings:
       bounds: Custom Extract Bounds
 UserAccount:
   title: My settings
-  personalSettings:
-    title: Personal settings
-    profile:
-      title: Profile
-      profileInformation: Profile information
-    account:
-      title: Account
-    organizations:
-      title: Organizations
-    notifications:
-      title: Notifications
-      subscriptions: Your subscriptions
-      methods: Notification methods
-      unsubscribeAll: Unsubscribe from all
-    billing:
-      title: Billing
-  organizationSettings:
-    title: Organization settings
+  personalSettings: Personal settings
+  profile:
+    title: Profile
+    profileInformation: Profile information
+  account:
+    title: Account
+  organizations:
+    title: Organizations
+  notifications:
+    title: Notifications
+    subscriptions: Your subscriptions
+    methods: Notification methods
+    unsubscribeAll: Unsubscribe from all
+  billing:
+    title: Billing
+  organizationSettings: Organization settings
 
 UserAdmin:
   title: Administration
