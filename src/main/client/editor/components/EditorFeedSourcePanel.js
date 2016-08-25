@@ -1,11 +1,11 @@
 import React, {Component, PropTypes} from 'react'
-import { Panel, Row, Col, Table, ButtonToolbar, Button, Glyphicon } from 'react-bootstrap'
+import { Panel, Row, Col, Table, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import moment from 'moment'
 import Icon from 'react-fa'
 
 import ConfirmModal from '../../common/components/ConfirmModal'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 export default class EditorFeedSourcePanel extends Component {
 
@@ -31,55 +31,38 @@ export default class EditorFeedSourcePanel extends Component {
   render () {
     const messages = getComponentMessages('EditorFeedSourcePanel')
     const hasVersions = this.props.feedSource && this.props.feedSource.feedVersions && this.props.feedSource.feedVersions.length > 0
-
+    const currentSnapshot = this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
+       ? this.props.feedSource.editorSnapshots.find(s => s.current)
+       : null
     return (
       <Row>
         <ConfirmModal ref='confirmLoad' />
-        <Col xs={12}>
+        <Col xs={9}>
           {this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
-            ? <Table striped>
-                <thead>
-                  <tr>
-                    <th className='col-md-3'>{messages.name}</th>
-                    <th className='col-md-2'>{messages.date}</th>
-                    <th className='col-md-7'></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.props.feedSource.editorSnapshots.map(snapshot => {
-                    return (
-                      <tr key={snapshot.id}>
-                        <td>{snapshot.name}</td>
-                        <td>{moment(snapshot.date).format()}</td>
-                        <td>
-                          <ButtonToolbar className='pull-right'>
-                            <Button bsStyle='primary'
-                              onClick={() => this.props.restoreSnapshot(this.props.feedSource, snapshot)}
-                            >
-                              <Glyphicon glyph='pencil' /> {messages.restore}
-                            </Button>
-                            {
-                            // <Button bsStyle='success'>
-                            //   <Glyphicon glyph='download' /> {messages.download}
-                            // </Button>
-                            }
-                            <Button bsStyle='info'
-                              onClick={() => this.props.exportSnapshotAsVersion(this.props.feedSource, snapshot)}
-                            >
-                              <Glyphicon glyph='export' /> {messages.version}
-                            </Button>
-                            <Button bsStyle='danger'
-                              onClick={() => this.props.deleteSnapshot(this.props.feedSource, snapshot)}
-                            >
-                              <Glyphicon glyph='remove' /> {messages.delete}
-                            </Button>
-                          </ButtonToolbar>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </Table>
+            ? <div>
+                <Panel bsStyle='success' header={<h3>Active snapshot</h3>}>
+                  {currentSnapshot
+                    ? <ListGroup fill>
+                        <SnapshotItem snapshot={currentSnapshot} {...this.props}/>
+                      </ListGroup>
+                    : <ListGroup fill>
+                        <ListGroupItem>No active snapshot</ListGroupItem>
+                      </ListGroup>
+                  }
+                </Panel>
+                <Panel bsStyle='warning' header={<h3>Inactive snapshots</h3>}>
+                  <ListGroup fill>
+                    {this.props.feedSource.editorSnapshots.length === 1
+                      ? <ListGroupItem>No other snapshots</ListGroupItem>
+                      : this.props.feedSource.editorSnapshots.map(s => {
+                          return (
+                            <SnapshotItem snapshot={s} {...this.props}/>
+                          )
+                        })
+                    }
+                  </ListGroup>
+                </Panel>
+              </div>
             : <div>
                 <p>No snapshots loaded.</p>
                 <Button
@@ -105,7 +88,55 @@ export default class EditorFeedSourcePanel extends Component {
               </div>
           }
         </Col>
+        <Col xs={3}>
+          <Panel header={<h3><Icon name='camera'/> What are snapshots?</h3>}>
+            <p>Snapshots are save points you can always revert back to when editing a GTFS feed.</p>
+            <p>A snapshot might represent a work-in-progress, future planning scenario or even different service patterns (e.g., summer schedule markup).</p>
+          </Panel>
+        </Col>
       </Row>
+    )
+  }
+}
+
+class SnapshotItem extends Component {
+  static propTypes = {
+    snapshot: PropTypes.object,
+    feedSource: PropTypes.object
+  }
+  render () {
+    const { snapshot, feedSource } = this.props
+    const dateFormat = getConfigProperty('application.date_format')
+    const timeFormat = 'h:MMa'
+    const messages = getComponentMessages('EditorFeedSourcePanel')
+    return (
+      <ListGroupItem header={snapshot.name}>
+        <p>
+          <ButtonToolbar className='pull-right' style={{marginTop: '-20px'}}>
+            <Button bsStyle='primary'
+              onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
+            >
+              <Glyphicon glyph='pencil' /> {messages.restore}
+            </Button>
+            {
+            // <Button bsStyle='success'>
+            //   <Glyphicon glyph='download' /> {messages.download}
+            // </Button>
+            }
+            <Button bsStyle='info'
+              onClick={() => this.props.exportSnapshotAsVersion(feedSource, snapshot)}
+            >
+              <Glyphicon glyph='export' /> {messages.version}
+            </Button>
+            <Button bsStyle='danger'
+              onClick={() => this.props.deleteSnapshot(feedSource, snapshot)}
+            >
+              <Glyphicon glyph='remove' /> {messages.delete}
+            </Button>
+          </ButtonToolbar>
+          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon name='clock-o'/> {moment(snapshot.snapshotTime).fromNow()}</span>
+        </p>
+      </ListGroupItem>
     )
   }
 }

@@ -7,6 +7,7 @@ import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import GtfsTable from './GtfsTable'
 import ConfirmModal from '../../common/components/ConfirmModal.js'
 import CurrentStatusModal from '../../common/containers/CurrentStatusModal'
+import ManagerNavbar from '../../common/containers/ManagerNavbar'
 import EditorMap from './EditorMap'
 import EditorSidebar from './EditorSidebar'
 import ActiveEntityList from '../containers/ActiveEntityList'
@@ -131,13 +132,13 @@ export default class GtfsEditor extends Component {
           feedInfo={this.props.feedInfo}
           setActiveEntity={this.props.setActiveEntity}
         />
-
+        {/*<ManagerNavbar/>*/}
         <div style={{
           position: 'fixed',
           left: this.props.sidebarExpanded ? 150 : 50,
           bottom: 0,
           right: 0,
-          top: 0,
+          top: 0 // 50,
         }}>
           {this.props.subSubComponent === 'timetable'
             ? <TimetableEditor

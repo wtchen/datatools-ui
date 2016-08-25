@@ -63,6 +63,7 @@ const projects = (state = {
       return update(newState || state, {all: {[projectIndex]: {deployments: {$unshift: [deployment]}}}})
 
     case 'REQUESTING_FEEDSOURCE':
+    case 'REQUESTING_FEEDSOURCES':
     case 'REQUEST_PROJECTS':
       return update(state, { isFetching: { $set: true }})
     case 'RECEIVE_PROJECTS':
@@ -79,6 +80,9 @@ const projects = (state = {
     case 'SET_ACTIVE_PROJECT':
       return update(state, { active: { $set: action.project }})
     case 'RECEIVE_PROJECT':
+      if (!action.project) {
+        return state
+      }
       if (!state.all) { // there are no current projects loaded
         projects = [action.project]
       } else { // projects already loaded
@@ -105,19 +109,34 @@ const projects = (state = {
 
     case 'RECEIVE_FEEDSOURCES':
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
+
+      // if lazy fetching the rest of the feed sources, don't overwrite current feed source
+      if (state.all[projectIndex] && state.all[projectIndex].feedSources && state.all[projectIndex].feedSources.length === 1) {
+        sourceIndex = action.feedSources.findIndex(fs => fs.id === state.all[projectIndex].feedSources[0].id)
+        action.feedSources.splice(sourceIndex, 1)
+        feeds = [
+          ...state.all[projectIndex].feedSources,
+          ...action.feedSources
+        ]
+      }
+      else {
+        feeds = action.feedSources
+      }
       if (state.active && action.projectId === state.active.id) {
         return update(state,
         {
-          active: {$merge: {feedSources: action.feedSources}},
+          isFetching: {$set: false},
+          active: {$merge: {feedSources: feeds}},
           all: {
-            [projectIndex]: {$merge: {feedSources: action.feedSources}}
+            [projectIndex]: {$merge: {feedSources: feeds}}
           }
         })
       } else { // if projectId does not match active project
         return update(state,
           {
+            isFetching: {$set: false},
             all: {
-              [projectIndex]: {$merge: {feedSources: action.feedSources}}
+              [projectIndex]: {$merge: {feedSources: feeds}}
             }
           }
         )

@@ -39,19 +39,7 @@ export default class DeploymentViewer extends Component {
 
     console.log(this.props.deployment)
     return (
-      <ManagerPage ref='page'>
-      <Helmet
-        title={this.props.deployment.name}
-      />
-        <Grid fluid>
-          <Row>
-            <Col xs={12}>
-              <Breadcrumbs
-                project={this.props.project}
-                deployment={this.props.deployment}
-              />
-            </Col>
-          </Row>
+        <div>
           <Row>
             <Col xs={12}>
               <div>
@@ -168,8 +156,7 @@ export default class DeploymentViewer extends Component {
               </Col>
             </Row>
           </Panel>
-        </Grid>
-      </ManagerPage>
+        </div>
     )
   }
 }

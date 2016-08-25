@@ -1,6 +1,7 @@
 import React from 'react'
-import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
+import { Panel, Table, Glyphicon, Button, Badge } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
+import Icon from 'react-fa'
 
 import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../../common/util/config'
 
@@ -10,7 +11,9 @@ export default class GtfsValidationViewer extends React.Component {
     super(props)
     this.state = { expanded: false }
   }
-
+  componentWillMount () {
+    this.props.fetchValidationResult()
+  }
   componentWillReceiveProps (nextProps) {
     if(!nextProps.validationResult) this.setState({ expanded: false })
   }
@@ -22,7 +25,7 @@ export default class GtfsValidationViewer extends React.Component {
 
     const header = (
       <h3 onClick={() => {
-        if(!result) this.props.validationResultRequested()
+        if(!result) this.props.fetchValidationResult()
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> {messages.title}
@@ -70,12 +73,7 @@ export default class GtfsValidationViewer extends React.Component {
       report = (<div>{messages.noResults}</div>)
     }
 
-    return (
-      <Panel
-        header={header}
-        collapsible
-        expanded={this.state.expanded}
-      >
+    return <div>
       <p>
         {isModuleEnabled('validator')
           ? <Button
@@ -88,9 +86,8 @@ export default class GtfsValidationViewer extends React.Component {
           : null
         }
       </p>
-        {report}
-      </Panel>
-    )
+      {report}
+    </div>
   }
 }
 
@@ -109,17 +106,17 @@ class ResultTable extends React.Component {
     if (!this.props.invalidValues) {
       return (
         <Panel
-          header={(<span><Glyphicon glyph='alert' /> {this.props.title} (0)</span>)}
-          collapsible
-        />
+          header={(<h5><Icon className='text-success' name='check' /> {this.props.title} <Badge>0</Badge></h5>)}
+        >
+          No issues found.
+        </Panel>
       )
     }
     return (
       <Panel
-        header={(<span><Glyphicon glyph='alert' /> {this.props.title} ({this.props.invalidValues.length})</span>)}
-        collapsible
+        header={(<h5><Icon className='text-warning' name='exclamation-triangle' /> {this.props.title} <Badge>{this.props.invalidValues.length}</Badge></h5>)}
       >
-        <Table striped style={tableStyle}>
+        <Table striped style={tableStyle} fill>
           <thead>
             <tr>
               <th>{messages.problemType}</th>

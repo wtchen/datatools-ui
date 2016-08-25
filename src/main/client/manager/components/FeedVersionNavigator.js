@@ -1,11 +1,13 @@
 import React, {Component, PropTypes} from 'react'
 import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
+import Icon from 'react-fa'
 
 import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
 import FeedVersionViewer from './FeedVersionViewer'
 import EditableTextField from '../../common/components/EditableTextField'
 import ConfirmModal from '../../common/components/ConfirmModal'
+import SelectFileModal from '../../common/components/SelectFileModal'
 
 export default class FeedVersionNavigator extends Component {
 
@@ -22,21 +24,25 @@ export default class FeedVersionNavigator extends Component {
     loadFeedVersionForEditing: PropTypes.func,
     newNotePostedForVersion: PropTypes.func,
     notesRequestedForVersion: PropTypes.func,
-    validationResultRequested: PropTypes.func
+    fetchValidationResult: PropTypes.func
   }
 
   constructor (props) {
     super(props)
+    this.state = {}
   }
 
   componentWillReceiveProps (nextProps) {
   }
 
   render () {
+    console.log(this.props)
     const versionTitleStyle = {
       fontSize: '24px',
       fontWeight: 'bold'
     }
+    const { disabled } = this.props
+    const fs = this.props.feedSource
     const versions = this.props.feedSource.feedVersions
     const messages = getComponentMessages('FeedVersionNavigator')
     const hasVersions = versions && versions.length > 0
@@ -61,123 +67,129 @@ export default class FeedVersionNavigator extends Component {
 
     return (
       <div>
-        <Row>
-          {/* Version Navigation Widget and Name Editor */}
-          <Col xs={12} sm={6} style={versionTitleStyle}>
-            {hasVersions
-              ? <div>
-                  {/* Version Navigation/Selection Widget */}
-                  <ButtonGroup>
-                    {/* Previous Version Button */}
-                    <Button href='#'
-                      disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex - 2]}
-                      onClick={() => browserHistory.push(`${publicPrefix}/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex - 1}`)}
-                    >
-                      <Glyphicon glyph='arrow-left' />
-                    </Button>
+        <ConfirmModal ref='deleteModal'
+          title='Delete Feed Source?'
+          body={`Are you sure you want to delete the feed source ${fs.name}?`}
+          onConfirm={() => {
+            console.log('OK, deleting')
+            this.props.deleteFeedSource(fs)
+          }}
+        />
 
-                    {/* Version Selector Dropdown */}
-                    <DropdownButton href='#' id='versionSelector'
-                      title={`${this.props.feedVersionIndex} ${messages.of} ${versions.length}`}
-                      onSelect={(key) => browserHistory.push(`${publicPrefix}/feed/${version.feedSource.id}/version/${key}`)}
-                    >
-                      {versions.map((version, k) => {
-                        k = k + 1
-                        return <MenuItem key={k} eventKey={k}>{k}. {version.name}</MenuItem>
-                      })}
-                    </DropdownButton>
-
-                    {/* Next Version Button */}
-                    <Button href='#'
-                      disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex]}
-                      onClick={() => browserHistory.push(`${publicPrefix}/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex + 1}`)}
-                    >
-                      <Glyphicon glyph='arrow-right' />
-                    </Button>
-                  </ButtonGroup>
-
-                  <span>&nbsp;&nbsp;</span>
-
-                  {/* Name Display / Editor */}
-                  {this.props.isPublic
-                    ? <span>{version.name}</span>
-                    : <EditableTextField inline value={version.name}
-                        disabled={this.props.isPublic}
-                        onChange={(value) => this.props.feedVersionRenamed(version, value)}
-                      />
-                  }
-                </div>
-              : messages.noVersions
+        <SelectFileModal ref='uploadModal'
+          title='Upload Feed'
+          body='Select a GTFS feed to upload:'
+          onConfirm={(files) => {
+            let nameArray = files[0].name.split('.')
+            if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
+              return false
+            } else {
+              this.props.uploadFeed(fs, files[0])
+              return true
             }
-          </Col>
+          }}
+          errorMessage='Uploaded file must be a valid zip file (.zip).'
+        />
+        <Row style={{marginBottom: '20px'}}>
+          {/* Version Navigation Widget and Name Editor */}
+          <Col xs={12} style={versionTitleStyle}>
+              <ButtonToolbar>
+                <ButtonGroup>
+                  <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon name='square'/></Button>
+                  <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon name='list'/></Button>
+                </ButtonGroup>
+                {this.state.listView
+                  ? null
+                  : <ButtonGroup> {/* Version Navigation/Selection Widget */}
+                      {/* Previous Version Button */}
+                      <Button href='#'
+                        disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex - 2]}
+                        onClick={() => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${this.props.feedVersionIndex - 1}`)}
+                      >
+                        <Glyphicon glyph='arrow-left' />
+                      </Button>
 
-          {/* Version-Specific Button Toolbar */}
-          <Col xs={12} sm={6}>
-            <ConfirmModal ref='confirm' />
-            <ButtonToolbar className='pull-right'>
+                      {/* Version Selector Dropdown */}
+                      <DropdownButton href='#' id='versionSelector'
+                        title={`${messages.version} ${this.props.feedVersionIndex} ${messages.of} ${versions.length}`}
+                        onSelect={(key) => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${key}`)}
+                      >
+                        {versions.map((version, k) => {
+                          k = k + 1
+                          return <MenuItem key={k} eventKey={k}>{k}. {version.name}</MenuItem>
+                        })}
+                      </DropdownButton>
 
-              {/* "Download Feed" Button */}
-              <Button bsStyle='primary'
-                disabled={!hasVersions}
-                onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
-              >
-                <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
-              </Button>
-
-              {/* "Load for Editing" Button */}
-              {isModuleEnabled('editor') && !this.props.isPublic
-                ? <Button bsStyle='success'
-                    disabled={!hasVersions}
-                    onClick={(evt) => {
-                      this.refs.confirm.open({
-                        title: messages.load,
-                        body: messages.confirmLoad,
-                        onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
-                      })
-                    }}
-                  >
-                    <Glyphicon glyph='pencil' /><span className='hidden-xs'> {messages.load}</span>
-                  </Button>
-                : null
-              }
-
-              {/* "Delete Version" Button */}
-              {!this.props.isPublic
-                ? <Button bsStyle='danger'
-                    disabled={this.props.deleteDisabled || !hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
-                    onClick={(evt) => {
-                      this.refs.confirm.open({
-                        title: `${messages.delete} ${messages.version}`,
-                        body: messages.confirmDelete,
-                        onConfirm: () => { this.props.deleteFeedVersionConfirmed(version) }
-                      })
-                    }}
-                  >
-                    <Glyphicon glyph='remove' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
-                  </Button>
-                : null
-              }
-            </ButtonToolbar>
+                      {/* Next Version Button */}
+                      <Button href='#'
+                        disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex]}
+                        onClick={() => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${this.props.feedVersionIndex + 1}`)}
+                      >
+                        <Glyphicon glyph='arrow-right' />
+                      </Button>
+                    </ButtonGroup>
+                  }
+                  <ButtonToolbar className='pull-right'>
+                    <Button bsStyle='primary'>Deploy feed</Button>
+                    {isModuleEnabled('editor')
+                      ? <Button
+                          // disabled={editGtfsDisabled} // || !fs.latestValidation}
+                          bsStyle='info'
+                          onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
+                          <Glyphicon glyph='pencil' /> Edit feed
+                        </Button>
+                      : null
+                    }
+                    <DropdownButton
+                      bsStyle='success'
+                      title={<span><Icon name='plus'/> Create new version</span>} id='bg-nested-dropdown'
+                      onSelect={key => {
+                        console.log(key)
+                        switch (key) {
+                          case 'delete':
+                            return this.refs['deleteModal'].open()
+                          case 'fetch':
+                            return this.props.fetchFeed(fs)
+                          case 'upload':
+                            return this.refs['uploadModal'].open()
+                          case 'deploy':
+                            return this.props.createDeploymentFromFeedSource(fs)
+                          case 'public':
+                            return browserHistory.push(`/public/feed/${fs.id}`)
+                        }
+                      }}
+                    >
+                      <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
+                      <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
+                      <MenuItem divider />
+                      <MenuItem disabled={disabled || !fs.editorSnapshots || fs.editorSnapshots.length === 0} eventKey='snapshot'><Glyphicon glyph='camera'/> From snapshot</MenuItem>
+                    </DropdownButton>
+                  </ButtonToolbar>
+                </ButtonToolbar>
           </Col>
         </Row>
-
-        <Row><Col xs={12}><span>&nbsp;</span></Col></Row>
-
-        {version
-          ? <FeedVersionViewer
+        <Row>
+          <Col xs={12}>
+            <FeedVersionViewer
+              isPublic={this.props.isPublic}
               version={version}
-              validationResultRequested={(version) => {
-                this.props.validationResultRequested(version, this.props.isPublic)
+              feedVersionIndex={this.props.feedVersionIndex}
+              versionSection={this.props.versionSection || null}
+              versions={versions}
+              listView={this.state.listView}
+              hasVersions={hasVersions}
+              fetchValidationResult={(version) => {
+                this.props.fetchValidationResult(version, this.props.isPublic)
               }}
               gtfsPlusDataRequested={(version) => {
                 this.props.gtfsPlusDataRequested(version)
               }}
               notesRequested={() => { this.props.notesRequestedForVersion(version) }}
               newNotePosted={(note) => { this.props.newNotePostedForVersion(version, note) }}
+              {...this.props}
             />
-          : <p>{messages.noVersionsExist}</p>
-        }
-
+          </Col>
+        </Row>
       </div>
     )
   }

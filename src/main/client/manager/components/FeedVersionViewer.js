@@ -1,11 +1,17 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Table } from 'react-bootstrap'
+import { Row, Col, Table, Image, ButtonGroup, Button, Panel, Label, Glyphicon, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
+import { LinkContainer } from 'react-router-bootstrap'
+import Icon from 'react-fa'
+import numeral from 'numeral'
 
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
-import NotesViewerPanel from './NotesViewerPanel'
+import GtfsValidationExplorer from './validation/GtfsValidationExplorer'
+import NotesViewer from './NotesViewer'
+import ConfirmModal from '../../common/components/ConfirmModal'
+import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsPlusVersionSummary from '../../gtfsplus/containers/ActiveGtfsPlusVersionSummary'
-import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
 
 const dateFormat = 'MMM. DD, YYYY'
 const timeFormat = 'h:MMa'
@@ -14,90 +20,235 @@ export default class FeedVersionViewer extends Component {
 
   static propTypes = {
     version: PropTypes.object,
+    versions: PropTypes.array,
+
+    isPublic: PropTypes.bool,
+    hasVersions: PropTypes.bool,
+    listView: PropTypes.bool,
 
     newNotePosted: PropTypes.func,
     notesRequested: PropTypes.func,
-    validationResultRequested: PropTypes.func
+    fetchValidationResult: PropTypes.func,
+    feedVersionRenamed: PropTypes.func,
+    downloadFeedClicked: PropTypes.func,
+    loadFeedVersionForEditing: PropTypes.func
   }
 
   render () {
     const version = this.props.version
+
+
     const messages = getComponentMessages('FeedVersionViewer')
 
-    return (
+    if (!version) return <p>{messages.noVersionsExist}</p>
+
+    const fsCenter = version.validationSummary && version.validationSummary.bounds
+      ? `${(version.validationSummary.bounds.east + version.validationSummary.bounds.west) / 2},${(version.validationSummary.bounds.north + version.validationSummary.bounds.south) / 2}`
+      : null
+    const fsOverlay = fsCenter
+      ? `pin-l-bus(${fsCenter})/`
+      : ''
+    const mapUrl = fsCenter
+      ? `https://api.mapbox.com/v4/mapbox.light/${fsOverlay}${fsCenter},6/1000x800@2x.png?access_token=${getConfigProperty('mapbox.access_token')}`
+      : ''
+
+    const versionHeader = (
       <div>
-        <Row>
-          <Col xs={12} sm={6}>
-            <Table striped>
-              <tbody>
-                <tr>
-                  <td className='col-md-4'><b>{messages.status}</b></td>
-                  <td>{version.validationSummary.loadStatus}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>{messages.validDates}</b></td>
-                  <td>
-                    {moment(version.validationSummary.startDate).format(dateFormat)} to&nbsp;
-                    {moment(version.validationSummary.endDate).format(dateFormat)}
-                  </td>
-                </tr>
-                {/*<tr>
-                  <td className='col-md-4'><b>{messages.timestamp}</b></td>
-                  <td>{version.fileTimestamp ? moment(version.fileTimestamp).format(dateFormat + ', ' + timeFormat) : 'N/A' }</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>{messages.fileSize}</b></td>
-                  <td>{version.fileSize ? Math.round(version.fileSize / 10000) / 100 + ' MB' : 'N/A'}</td>
-                </tr>*/}
-                <tr>
-                  <td className='col-md-4'><b>{messages.agencyCount}</b></td>
-                  <td>{version.validationSummary.agencyCount}</td>
-                </tr>
-              </tbody>
-            </Table>
-          </Col>
-          <Col xs={12} sm={6}>
-            <Table striped>
-              <tbody>
-                <tr>
-                  <td className='col-md-4'><b>{messages.routeCount}</b></td>
-                  <td>{version.validationSummary.routeCount}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>{messages.tripCount}</b></td>
-                  <td>{version.validationSummary.tripCount}</td>
-                </tr>
-                <tr>
-                  <td className='col-md-4'><b>{messages.stopTimesCount}</b></td>
-                  <td>{version.validationSummary.stopTimesCount}</td>
-                </tr>
-              </tbody>
-          </Table>
-          </Col>
-        </Row>
-
-        <GtfsValidationViewer
-          validationResult={version.validationResult}
-          version={version}
-          validationResultRequested={() => { this.props.validationResultRequested(version) }}
-        />
-
-        {isModuleEnabled('gtfsplus')
-          ? <ActiveGtfsPlusVersionSummary
-              version={version}
-            />
-          : null
+      <h4
+        style={{margin: '0px'}}
+      >
+        {/* Name Display / Editor */}
+        {version.validationSummary.loadStatus === 'SUCCESS' && version.validationSummary.errorCount === 0
+          ? <Icon title='Feed loaded successfully, and is error-free!' className='text-success' name='check' style={{marginRight: 10}}/>
+          : version.validationSummary.errorCount > 0
+          ? <Icon title='Feed loaded successfully, but has errors.' className='text-warning' name='exclamation-triangle' style={{marginRight: 10}}/>
+          : <Icon title='Feed did not load successfully, something has gone wrong!' className='text-danger' name='times' style={{marginRight: 10}}/>
         }
+        {this.props.isPublic
+          ? <span>{version.name}</span>
+          : <EditableTextField inline value={version.name}
+              disabled={this.props.isPublic}
+              onChange={(value) => this.props.feedVersionRenamed(version, value)}
+            />
+        }
+        <ConfirmModal ref='confirm' />
+        {/* Version-Specific Button Toolbar */}
+        <ButtonToolbar className='pull-right'>
 
-        <NotesViewerPanel
-          type='feed-version'
-          version={this.props.version}
-          notes={version.notes}
-          noteCount={version.noteCount}
-          notesRequested={() => { this.props.notesRequested() }}
-          newNotePosted={(note) => { this.props.newNotePosted(note) }}
-        />
+          {/* "Download Feed" Button */}
+          <Button bsStyle='primary'
+            disabled={!this.props.hasVersions}
+            onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
+          >
+            <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
+          </Button>
+
+          {/* "Load for Editing" Button */}
+          {isModuleEnabled('editor') && !this.props.isPublic
+            ? <Button bsStyle='success'
+                disabled={!this.props.hasVersions}
+                onClick={(evt) => {
+                  this.refs.confirm.open({
+                    title: messages.load,
+                    body: messages.confirmLoad,
+                    onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
+                  })
+                }}
+              >
+                <Glyphicon glyph='pencil' /><span className='hidden-xs'> {messages.load}</span>
+              </Button>
+            : null
+          }
+
+          {/* "Delete Version" Button */}
+          {!this.props.isPublic
+            ? <Button bsStyle='danger'
+                disabled={this.props.deleteDisabled || !this.props.hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
+                onClick={(evt) => {
+                  this.refs.confirm.open({
+                    title: `${messages.delete} ${messages.version}`,
+                    body: messages.confirmDelete,
+                    onConfirm: () => { this.props.deleteFeedVersionConfirmed(version) }
+                  })
+                }}
+              >
+                <Glyphicon glyph='trash' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
+              </Button>
+            : null
+          }
+        </ButtonToolbar>
+      </h4>
+      <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}><Icon name='clock-o'/> Version published {moment(version.updated).fromNow()}</small>
       </div>
     )
+
+
+    if (this.props.listView) {
+      return (
+        <Row>
+          <Col xs={12} sm={12}>
+              <Panel header={<h3>List of feed versions</h3>}>
+                <ListGroup fill>
+                  {this.props.versions
+                    ? this.props.versions.map(v => {
+                        return (
+                          <ListGroupItem>
+                            {v.name}
+                          </ListGroupItem>
+                        )
+                      })
+                    : <ListGroupItem>
+                        No versions
+                      </ListGroupItem>
+                  }
+                </ListGroup>
+              </Panel>
+          </Col>
+        </Row>
+      )
+    }
+
+    switch (this.props.versionSection) {
+      case 'validation':
+        return <GtfsValidationExplorer
+                  {...this.props}
+                />
+      default:
+        return (
+          <Row>
+            <Col xs={12} sm={3}>
+              <Panel>
+                <ListGroup fill>
+                <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}`} active={!this.props.versionSection}><ListGroupItem><Icon name='info-circle'/> Version summary</ListGroupItem></LinkContainer>
+                <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/issues`} active={this.props.versionSection === 'issues'}><ListGroupItem><Icon name='exclamation-triangle'/> Validation issues <Label bsStyle={version.validationSummary.errorCount ? 'warning' : 'success'}>{version.validationSummary.errorCount}</Label></ListGroupItem></LinkContainer>
+                {isModuleEnabled('gtfsplus')
+                  ? <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/gtfsplus`} active={this.props.versionSection === 'gtfsplus'}><ListGroupItem><Icon name='plus'/> GTFS+ for this version</ListGroupItem></LinkContainer>
+                  : null
+                }
+                <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/comments`} active={this.props.versionSection === 'comments'}><ListGroupItem><Glyphicon glyph='comment'/> Version comments <Label>{version.noteCount}</Label></ListGroupItem></LinkContainer>
+                </ListGroup>
+              </Panel>
+            </Col>
+            <Col xs={12} sm={9}>
+              {!this.props.versionSection
+                ? <Panel bsStyle='info' header={versionHeader}>
+                    <ListGroup hover fill>
+                        <ListGroupItem
+                          style={{
+                            maxHeight: '200px',
+                            overflowY: 'hidden',
+                            padding: '0px'
+                          }}
+                          >
+                          <Image
+                            style={{
+                              position: 'relative',
+                              top: '50%',
+                              transform: 'translateY(-30%)'
+                            }}
+                            responsive
+                            src={mapUrl}
+                          />
+                        </ListGroupItem>
+                        <ListGroupItem
+                          header={`${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
+                        >
+                          <Icon name='calendar'/> {messages.validDates}
+                        </ListGroupItem>
+                        <ListGroupItem>
+                          <Row>
+                            <Col xs={3} className='text-center'>
+                              <p title={`${version.validationSummary.agencyCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.agencyCount).format('0 a')}</p>
+                              <p style={{marginBottom: '0px'}}>{messages.agencyCount}</p>
+                            </Col>
+                            <Col xs={3} className='text-center'>
+                              <p title={`${version.validationSummary.routeCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.routeCount).format('0 a')}</p>
+                              <p style={{marginBottom: '0px'}}>{messages.routeCount}</p>
+                            </Col>
+                            <Col xs={3} className='text-center'>
+                              <p title={`${version.validationSummary.tripCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.tripCount).format('0 a')}</p>
+                              <p style={{marginBottom: '0px'}}>{messages.tripCount}</p>
+                            </Col>
+                            <Col xs={3} className='text-center'>
+                              <p title={`${version.validationSummary.stopTimesCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.stopTimesCount).format('0 a')}</p>
+                              <p style={{marginBottom: '0px'}}>{messages.stopTimesCount}</p>
+                            </Col>
+                          </Row>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                          <Icon name='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(dateFormat + ', ' + timeFormat) : 'N/A' }
+                        </ListGroupItem>
+                    </ListGroup>
+                  </Panel>
+                : this.props.versionSection === 'issues'
+                ? <GtfsValidationViewer
+                    validationResult={version.validationResult}
+                    version={version}
+                    fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
+                  />
+                : this.props.versionSection === 'gtfsplus' && isModuleEnabled('gtfsplus')
+                ? <ActiveGtfsPlusVersionSummary
+                    version={version}
+                  />
+                : this.props.versionSection === 'comments'
+                ? <NotesViewer
+                    type='feed-version'
+                    stacked={true}
+                    user={this.props.user}
+                    version={this.props.version}
+                    notes={version.notes}
+                    noteCount={version.noteCount}
+                    notesRequested={() => { this.props.notesRequested() }}
+                    newNotePosted={(note) => { this.props.newNotePosted(note) }}
+                  />
+                : null
+              }
+              {/**/}
+            </Col>
+          </Row>
+        )
+
+    }
+
   }
 }

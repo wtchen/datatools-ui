@@ -61,3 +61,27 @@
 .container .text-muted {
   margin: 20px 0;
 }
+
+
+
+/* ICON HELPER CLASSES */
+.icon-link {
+  color: #777;
+  margin-right: 10px;
+}
+
+
+
+/* NOTES VIEWER */
+
+/*.comment-panel:after {
+  content: "";
+	border: 10px solid transparent;
+	height: 0;
+  border-color: rgba(136, 183, 213, 0);
+	border-right-color: #f5f5f5;
+	width: 0;
+  position: relative;
+  left: -10px;
+  top: 0px;
+}*/

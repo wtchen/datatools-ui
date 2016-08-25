@@ -1,6 +1,7 @@
 import { UserAuthWrapper } from 'redux-auth-wrapper'
 import { routerActions, push } from 'react-router-redux'
 import fetch from 'isomorphic-fetch'
+import { setErrorMessage } from '../../manager/actions/status'
 
 export function defaultSorter(a, b) {
   if(a.isCreating && !b.isCreating) return -1
@@ -26,7 +27,8 @@ export function retrievalMethodString (method) {
   }
 }
 
-export function secureFetch (url, state, method, payload, mode) {
+export function secureFetch (url, state, method, payload, raw) {
+  // return function (dispatch, getState) {
   var opts = {
     method: method || 'get',
     headers: {
@@ -35,13 +37,30 @@ export function secureFetch (url, state, method, payload, mode) {
       'Content-Type': 'application/json'
     }
   }
-  if (mode) opts.mode = mode
   if (payload) opts.body = JSON.stringify(payload)
   return fetch(url, opts)
+    // .then(res => {
+    //   // if raw response is requested
+    //   if (raw) return res
+    //
+    //   // check for errors
+    //   if (res.status >= 500) {
+    //     dispatch(setErrorMessage('Network error!'))
+    //     return null
+    //   } else if (res.status >= 300) {
+    //     res.text().then(text => {
+    //       dispatch(setErrorMessage(text))
+    //     })
+    //     return null
+    //   } else {
+    //     return res.json()
+    //   }
+    // })
+  // }
 }
 
 export function generateUID () {
-    return ('0000' + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-4)
+    return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
 }
 
 export function generateRandomInt (min, max) {

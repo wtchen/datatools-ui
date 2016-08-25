@@ -23,7 +23,7 @@ export default class SignupPage extends React.Component {
         placeholder='user@example.com'
         onChange={(evt) => {
           const email = evt.target.value
-          this.setState({email: email})
+          this.setState({email})
         }}
       />
     </FormGroup>
@@ -34,8 +34,8 @@ export default class SignupPage extends React.Component {
         type='text'
         placeholder='user123'
         onChange={(evt) => {
-          const username = evt.target.value
-          this.setState({username: username})
+          const name = evt.target.value
+          this.setState({name})
         }}
       />
     </FormGroup>
@@ -47,7 +47,7 @@ export default class SignupPage extends React.Component {
         placeholder='password'
         onChange={(evt) => {
           const password = evt.target.value
-          this.setState({password: password})
+          this.setState({password})
         }}
       />
     </FormGroup>
@@ -66,6 +66,7 @@ export default class SignupPage extends React.Component {
             <Col xs={4}>
               <form>
                 <p>Already have an account? <Button href='#' bsStyle='link' onClick={this.props.loginHandler}>Sign in</Button></p>
+                {/* username */}
                 {email}
                 {password}
                 <Button

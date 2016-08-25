@@ -50,6 +50,7 @@ import {
   receiveGtfsEntities,
   uploadBrandingAsset
 } from '../actions/editor'
+import { updateUserMetadata } from '../../manager/actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
@@ -157,6 +158,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const activeSubSubEntity = ownProps.routeParams.subsubentity
 
   return {
+    updateUserMetadata: (profile, props) => {
+      dispatch(updateUserMetadata(profile, props))
+    },
     onComponentMount: (initialProps) => {
       const tablesToFetch = ['calendar', 'agency', 'route', 'stop']
 

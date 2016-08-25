@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Router, Route, Redirect } from 'react-router'
+import { Router, Route, browserHistory } from 'react-router'
 
-import { checkExistingLogin, userLoggedIn, login } from '../../manager/actions/user'
+import { checkExistingLogin, login } from '../../manager/actions/user'
 import { checkJobStatus } from '../../manager/actions/status'
 
 // import NoAccessScreen from '../components/NoAccessScreen'
@@ -56,8 +56,7 @@ class App extends React.Component {
           .then(() => {
             callback()
           })
-        }
-        else {
+        } else {
           callback()
         }
       })
@@ -68,14 +67,19 @@ class App extends React.Component {
       .then((action) => {
         console.log('requiring admin')
         if (this.props.user.profile === null || !this.props.user.permissions.isApplicationAdmin()) {
-          replace(null, '/')
+          browserHistory.push('/')
+          // this.props.login({closable: false}, callback)
+          // .then(() => {
+          //   callback()
+          // })
+        } else {
+          callback()
         }
-        callback()
       })
     }
     const routes = [
-      <Route path='/account' component={ActiveUserAccount} onEnter={requireAuth} />,
-      <Route path='/admin' component={ActiveUserAdmin} onEnter={requireAdmin} />,
+      <Route path='/settings(/:subpage)(/:projectId)' component={ActiveUserAccount} onEnter={requireAuth} />,
+      <Route path='/admin(/:subpage)' component={ActiveUserAdmin} onEnter={requireAdmin} />,
       <Route path='/signup' component={ActiveSignupPage} />,
       <Route path='/home' component={ActiveUserHomePage} onEnter={requireAuth} />,
       <Route path='/' component={ActivePublicFeedsViewer} />,
@@ -87,11 +91,12 @@ class App extends React.Component {
       <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />,
       <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />,
       <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />,
-      <Route path='/project/:projectId(/:subpage)' component={ActiveProjectViewer} onEnter={requireAuth} />,
+      <Route path='/project/:projectId(/:subpage)(/:subsubpage)' component={ActiveProjectViewer} onEnter={requireAuth} />,
+      // <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />,
       <Route path='/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)(/:subsubcomponent)(/:subsubentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />,
-      <Route path='/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)' component={ActiveFeedSourceViewer} onEnter={requireAuth} />,
+      <Route path='/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)(/:subsubpage)' component={ActiveFeedSourceViewer} onEnter={requireAuth} />,
       <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />,
-      <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />,
+
       <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />,
       <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />,
       <Route path='/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)' component={ActiveGtfsTableEditor} onEnter={requireAuth} />,

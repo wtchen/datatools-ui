@@ -8,6 +8,7 @@ export default class EditableTextField extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
     inline: PropTypes.bool,
+    hideEditButton: PropTypes.bool,
     isEditing: PropTypes.bool,
     link: PropTypes.string,
     maxLength: PropTypes.number,
@@ -122,18 +123,23 @@ export default class EditableTextField extends Component {
                 ? <Link to={this.props.link}>{displayValue}</Link>
                 : displayValue || '(none)'
               }
-              {'  '}
-              <Button bsStyle='link'
-                ref='editButton'
-                tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
-                onClick={() => this.edit()}
-                disabled={this.props.disabled !== null ? this.props.disabled : false}
-              >
-                <Glyphicon
-                  style={iconStyle}
-                  glyph={ 'pencil' }
-                />
-              </Button>
+              {this.props.hideEditButton
+                ? null
+                : <span>
+                    {'  '}
+                    <Button bsStyle='link'
+                      ref='editButton'
+                      tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
+                      onClick={() => this.edit()}
+                      disabled={this.props.disabled !== null ? this.props.disabled : false}
+                    >
+                      <Glyphicon
+                        style={iconStyle}
+                        glyph={ 'pencil' }
+                      />
+                    </Button>
+                  </span>
+              }
             </span>
         }
       </div>

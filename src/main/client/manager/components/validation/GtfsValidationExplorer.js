@@ -20,7 +20,10 @@ export default class GtfsValidationExplorer extends Component {
   }
 
   componentWillMount () {
-    this.props.onComponentMount(this.props)
+    // this.props.onComponentMount(this.props)
+    if (this.props.version && !this.props.version.validationResult) {
+      this.props.fetchValidationResult(this.props.version)
+    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -52,43 +55,6 @@ export default class GtfsValidationExplorer extends Component {
     const tabRowStyle = { marginTop: '20px' }
 
     return (
-      <ManagerPage ref='page'>
-        <Grid>
-          <Row>
-            <Col xs={8}>
-              <Breadcrumbs
-                project={this.props.project}
-                feedSource={version.feedSource}
-                feedVersion={version}
-              />
-            </Col>
-            <Col xs={4}>
-              <ButtonGroup className='pull-right'>
-                <Button href='#'
-                  disabled={!version.previousVersionId}
-                  onClick={(evt) => {
-                    evt.preventDefault()
-                    //this.setState({ versionIndex: this.state.versionIndex - 1 })
-                    browserHistory.push(`/feed/${version.feedSource.id}/validation/${version.version - 1}`)
-                  }}
-                >
-                  <Glyphicon glyph='arrow-left' /><span className='hidden-xs'> Previous</span><span className='hidden-xs hidden-sm'> Version</span>
-                </Button>
-                <Button href='#'
-                  disabled={!version.nextVersionId}
-                  onClick={(evt) => {
-                    evt.preventDefault()
-                    //this.setState({ versionIndex: this.state.versionIndex - 1 })
-                    browserHistory.push(`/feed/${version.feedSource.id}/validation/${version.version + 1}`)
-                  }}
-                >
-                  <span className='hidden-xs'>Next </span><span className='hidden-xs hidden-sm'>Version </span><Glyphicon glyph='arrow-right' />
-                </Button>
-              </ButtonGroup>
-
-
-            </Col>
-          </Row>
           <Row>
             <Col xs={12}>
               <Tabs id='validation-explorer-tabs'
@@ -115,7 +81,7 @@ export default class GtfsValidationExplorer extends Component {
                       <GtfsValidationSummary
                         validationResult={version.validationResult}
                         version={version}
-                        validationResultRequested={() => { this.props.validationResultRequested(version) }}
+                        fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
                       />
                     </Col>
                   </Row>
@@ -143,8 +109,6 @@ export default class GtfsValidationExplorer extends Component {
               </Tabs>
             </Col>
           </Row>
-        </Grid>
-      </ManagerPage>
     )
   }
 }

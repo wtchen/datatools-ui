@@ -6,6 +6,7 @@ import ProjectViewer from '../components/ProjectViewer'
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
 import {
   fetchProject,
+  deleteProject,
   thirdPartySync,
   fetchFeedsForProject,
   updateProject,
@@ -37,7 +38,9 @@ const mapStateToProps = (state, ownProps) => {
       : null,
     visibilitySearchText: state.projects.filter.searchText,
     activeComponent: ownProps.routeParams.subpage,
-    user: state.user
+    activeSubComponent: ownProps.routeParams.subsubpage,
+    user: state.user,
+    isFetching: state.projects.isFetching
   }
 }
 
@@ -58,7 +61,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       else if (!initialProps.project.feedSources || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) dispatch(fetchProjectFeeds(projectId))
     },
     onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
-    updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))
+    updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings, true)) }, // dispatch(updateProject(project, { [propName] : newValue }))
     thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
     updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
     saveFeedSource: (name) => { dispatch(saveFeedSource({ projectId, name })) },
@@ -79,6 +82,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     uploadFeed: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     fetchFeed: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     deleteFeedSource: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
+    deleteProject: (project) => {
+      dispatch(deleteProject(project))
+      .then(() => browserHistory.push('/home'))
+    },
     deleteDeploymentConfirmed: (deployment) => { dispatch(deleteDeployment(deployment)) },
     downloadMergedFeed: (project) => { dispatch(downloadFeedForProject(project)) }
   }

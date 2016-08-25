@@ -32,7 +32,7 @@ export default class PublicHeader extends Component {
               ? <DropdownButton bsStyle='info'
                   title={<span><Glyphicon glyph='user'/> {this.props.username}</span>}
                 >
-                  <MenuItem onClick={() => browserHistory.push('/account')}>My Account</MenuItem>
+                  <MenuItem onClick={() => browserHistory.push('/settings/profile')}>My Account</MenuItem>
                   <MenuItem onClick={() => this.props.resetPasswordHandler()}>Change Password</MenuItem>
                   <MenuItem onClick={() => this.props.logoutHandler()}>Log Out</MenuItem>
                 </DropdownButton>
@@ -51,8 +51,8 @@ export default class PublicHeader extends Component {
 
             {/* "Create Account" Button (only show if no active user) */}
             {this.props.username
-              ? <Button bsStyle='primary' onClick={() => { browserHistory.push('/project') }}>
-                  <Glyphicon glyph='share-alt'/> Manager Console
+              ? <Button bsStyle='primary' onClick={() => { browserHistory.push('/home') }}>
+                  <Glyphicon glyph='share-alt'/> My Dashboard
                 </Button>
               : null
             }

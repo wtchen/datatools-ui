@@ -5,7 +5,7 @@ export const getConfigProperty = (propertyString) => {
 }
 
 export const getComponentMessages = (componentName) => {
-  return objectPath.get(window.DT_CONFIG, ['messages', 'active', componentName])
+  return objectPath.get(window.DT_CONFIG, ['messages', 'active', componentName]) || {}
 }
 
 export const isModuleEnabled = (moduleName) => {

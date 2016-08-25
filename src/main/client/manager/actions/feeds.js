@@ -30,6 +30,18 @@ export function fetchProjectFeeds (projectId) {
   }
 }
 
+export function fetchUserFeeds (userId) {
+  return function (dispatch, getState) {
+    dispatch(requestingFeedSources())
+    const url = '/api/manager/secure/feedsource?userId=' + userId
+    return secureFetch(url, getState())
+      .then(response => response.json())
+      .then(feedSources => {
+        dispatch(receiveFeedSources(feedSources))
+      })
+  }
+}
+
 function requestingPublicFeeds () {
   return {
     type: 'REQUESTING_PUBLIC_FEEDS'
@@ -123,16 +135,16 @@ export function requestingFeedSource () {
   }
 }
 
-export function receiveFeedSource(feedSource) {
+export function receiveFeedSource (feedSource) {
   return {
     type: 'RECEIVE_FEEDSOURCE',
     feedSource
   }
 }
 
-export function fetchFeedSource(feedSourceId, fetchVersions) {
+export function fetchFeedSource (feedSourceId, fetchVersions) {
   return function (dispatch, getState) {
-    console.log('fetchFeedSource', feedSourceId);
+    console.log('fetchFeedSource', feedSourceId)
     dispatch(requestingFeedSource())
     const url = '/api/manager/secure/feedsource/' + feedSourceId
     return secureFetch(url, getState())

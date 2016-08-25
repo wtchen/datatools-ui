@@ -22,8 +22,8 @@ if(config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
 config.modules.editor.spec = require('json!yaml!../../../gtfs.yml')
 
 // function to require all lang files in i18n dir
-function requireAll(requireContext) {
-  return requireContext.keys().map(requireContext);
+function requireAll (requireContext) {
+  return requireContext.keys().map(requireContext)
 }
 // requires and returns all modules that match
 var lang = requireAll(require.context('json!yaml!../../../i18n', true, /.yml/))

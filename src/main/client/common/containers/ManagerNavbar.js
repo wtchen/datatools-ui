@@ -18,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
     signConfigUrl: getConfigProperty('modules.sign_config') ? getConfigProperty('modules.sign_config.url') : null,
     docsUrl: getConfigProperty('application.docs_url') ? getConfigProperty('application.docs_url') : null,
     username: state.user.profile ? state.user.profile.email : null,
+    sidebarExpanded: state.ui.sidebarExpanded,
     userIsAdmin: state.user.profile && state.user.permissions.isApplicationAdmin(),
     projects: state.projects ? state.projects : null,
     languages: state.languages ? state.languages : ['English', 'Español', 'Français'],

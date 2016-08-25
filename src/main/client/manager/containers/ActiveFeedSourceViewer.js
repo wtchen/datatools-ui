@@ -66,6 +66,8 @@ const mapStateToProps = (state, ownProps) => {
     feedSource,
     feedSourceId,
     //feedVersionIndex,
+    activeComponent: ownProps.routeParams.subpage,
+    activeSubComponent: ownProps.routeParams.subsubpage,
     project,
     user,
     isFetching
@@ -92,7 +94,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateExternalFeedResource(feedSource, resourceType, { [propName]: newValue }))
     },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
-      dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
+      return dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
     },
     feedVersionRenamed: (feedSource, feedVersion, name) => {
       dispatch(renameFeedVersion(feedSource, feedVersion, name))
@@ -136,10 +138,22 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         dispatch(fetchFeedVersions(initialProps.feedSource, unsecured))
       }
     },
-    updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
+    componentDidUpdate: (prevProps, newProps) => {
+      let unsecured = true
+      if (newProps.user.profile !== null) {
+        unsecured = false
+      }
+      if (prevProps.feedSource && newProps.feedSource && prevProps.feedSource.id !== newProps.feedSource.id) {
+        dispatch(fetchFeedSource(feedSourceId, unsecured))
+        .then((feedSource) => {
+          return dispatch(fetchFeedVersions(feedSource, unsecured))
+        })
+      }
+    },
+    fetchFeed: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
-    uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
-    validationResultRequested: (feedSource, feedVersion) => {
+    uploadFeed: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
+    fetchValidationResult: (feedSource, feedVersion) => {
       dispatch(fetchValidationResult(feedVersion))
     },
     createFeedInfo: (feedSourceId) => {

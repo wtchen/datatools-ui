@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import { browserHistory } from 'react-router'
 
@@ -10,11 +10,14 @@ import InfoModal from './InfoModal.js'
 import ActiveSidebar from '../containers/ActiveSidebar'
 import ActiveSidebarNavItem from '../containers/ActiveSidebarNavItem'
 import PageContent from '../containers/PageContent'
+import ManagerNavbar from '../containers/ManagerNavbar'
 
 import { getConfigProperty } from '../util/config'
 
-export default class ManagerPage extends React.Component {
-
+export default class ManagerPage extends Component {
+  static propTypes = {
+    children: PropTypes.object
+  }
   constructor (props) {
     super(props)
   }
@@ -44,18 +47,20 @@ export default class ManagerPage extends React.Component {
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
         <ActiveSidebar>
-          <ActiveSidebarNavItem icon='list' label='Projects'
+          {/* <ActiveSidebarNavItem icon='home' label='Home'
             onClick={() => browserHistory.push(`/project`) } />
-          <ActiveSidebarNavItem icon='users' label='User Admin'
+          <ActiveSidebarNavItem icon='users' label='Users'
             onClick={() => browserHistory.push(`/admin`) } />
-          <ActiveSidebarNavItem icon='globe' label='Public Site'
-            onClick={() => browserHistory.push(`/`) } />
+          <ActiveSidebarNavItem icon='globe' label='Explore'
+            onClick={() => browserHistory.push(`/`) } />*/}
         </ActiveSidebar>
         <PageContent>
+            {/*<ManagerNavbar breadcrumbs={this.props.breadcrumbs}/>*/}
             <div
               style={{
                 padding: '20px',
                 paddingBottom: '140px',
+                // paddingTop: '60px',
                 minHeight: '100%',
                 marginBottom: '-140px',
                 position: 'relative'
@@ -72,7 +77,7 @@ export default class ManagerPage extends React.Component {
                 width: '100%',
                 marginTop: '40px',
                 height: '100px',
-                backgroundColor: '#f5f5f5',
+                backgroundColor: '#f5f5f5'
               }}
             >
               <div className='container'>

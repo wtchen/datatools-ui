@@ -14,6 +14,7 @@ import lineSlice from 'turf-line-slice'
 import pointOnLine from 'turf-point-on-line'
 
 import { generateUID } from '../../common/util/util'
+import { getUserMetadataProperty } from '../../common/util/user'
 import { getConfigProperty } from '../../common/util/config'
 import { EditControl } from 'react-leaflet-draw'
 
@@ -25,7 +26,6 @@ import StopLayer from '../../scenario-editor/components/StopLayer'
 import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
 
 export default class EditorMap extends React.Component {
-
   constructor (props) {
     super(props)
     this.state = {
@@ -227,6 +227,11 @@ export default class EditorMap extends React.Component {
         )
       }
     }
+  }
+  mapBaseLayerChanged (e, layers) {
+    const layer = layers.find(l => l.name === e.name)
+    console.log('base layer changed', e)
+    this.props.updateUserMetadata(this.props.user.profile, {editor: {map_id: layer.id}})
   }
   addControlPoint (pattern, latlng) {
     console.log('adding control point at ' + latlng)
@@ -1040,6 +1045,24 @@ export default class EditorMap extends React.Component {
   }
 
   render () {
+    const mapLayers = [
+      {
+        name: 'Streets',
+        id: getConfigProperty('mapbox.map_id')
+      },
+      {
+        name: 'Light',
+        id: 'mapbox.light'
+      },
+      {
+        name: 'Dark',
+        id: 'mapbox.dark'
+      },
+      {
+        name: 'Satellite',
+        id: 'mapbox.streets-satellite'
+      }
+    ]
     const { feedSource, feedInfo, activeComponent, entities, activeEntity, subComponent } = this.props
     const offset = 0.005
     let feedSourceBounds = feedSource && feedSource.latestValidation && feedSource.latestValidation.bounds
@@ -1095,29 +1118,30 @@ export default class EditorMap extends React.Component {
       onClick: (e) => this.mapClicked(e),
       onZoomEnd: (e) => this.mapBoundsChanged(e),
       onMoveEnd: (e) => this.mapBoundsChanged(e),
+      onBaseLayerChange: (e) => this.mapBaseLayerChanged(e, mapLayers),
       scrollWheelZoom: true,
     }
     if (this.state.willMount || this.state.zoomToTarget) {
       mapProps.bounds = bounds
     }
+    const activeMapLayerIndex = mapLayers.findIndex(l => l.id === getUserMetadataProperty(this.props.user.profile, 'editor.map_id'))
     return (
       <Map {...mapProps}>
         <ZoomControl position='topright' />
         <LayersControl position='topleft'>
-          <LayersControl.BaseLayer name='Streets' checked>
-            <TileLayer
-              url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
-              retina='@2x'
-              attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
-            />
-          </LayersControl.BaseLayer>
-          <LayersControl.BaseLayer name='Satellite'>
-            <TileLayer
-              url={`https://api.tiles.mapbox.com/v4/mapbox.streets-satellite/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
-              retina='@2x'
-              attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
-            />
-          </LayersControl.BaseLayer>
+          {mapLayers.map((layer, index) => (
+            <LayersControl.BaseLayer
+              name={layer.name}
+              key={layer.id}
+              checked={activeMapLayerIndex !== -1 ? index === activeMapLayerIndex : index === 0}
+            >
+              <TileLayer
+                url={`https://api.tiles.mapbox.com/v4/${layer.id}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
+                retina='@2x'
+                attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
+              />
+            </LayersControl.BaseLayer>
+          ))}
           <LayersControl.Overlay name='Route Alignments'>
             <FeatureGroup>
               {this.props.tripPatterns ? this.props.tripPatterns.map((tp) => {

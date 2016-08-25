@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
+import gravatar from 'gravatar'
 import ReactDOM from 'react-dom'
-import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar } from 'react-bootstrap'
+import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar, Media } from 'react-bootstrap'
 
 import WatchButton from '../../common/containers/WatchButton'
 import { getComponentMessages } from '../../common/util/config'
@@ -14,6 +15,7 @@ export default class NotesViewer extends Component {
     type: PropTypes.string,
     user: PropTypes.object,
     version: PropTypes.object,
+    stacked: PropTypes.bool,
 
     newNotePosted: PropTypes.func,
     notesRequested: PropTypes.func
@@ -24,6 +26,9 @@ export default class NotesViewer extends Component {
       value: ''
     }
   }
+  componentWillMount () {
+    this.props.notesRequested(this.props.feedSource)
+  }
   render () {
     const messages = getComponentMessages('NotesViewer')
 
@@ -33,9 +38,8 @@ export default class NotesViewer extends Component {
 
     return (
       <Row>
-        <Col xs={12} sm={8} md={6}>
+        <Col xs={12} sm={this.props.stacked ? 12 : 8} md={this.props.stacked ? 12 : 6}>
           <h3>
-            {messages.all}
             <ButtonToolbar
               className='pull-right'
             >
@@ -52,40 +56,57 @@ export default class NotesViewer extends Component {
                 <Glyphicon glyph='refresh' /><span className='hidden-xs'> {messages.refresh}</span>
               </Button>
             </ButtonToolbar>
+            {messages.all}
           </h3>
           {this.props.notes && this.props.notes.length > 0
             ? this.props.notes.map(note => {
                 return (
-                  <Panel>
-                    <p><i>{note.body || '(no content)'}</i></p>
-                    <p style={{ textAlign: 'right' }}>- <b>{note.userEmail}</b> at {moment(note.date).format("h:MMa, MMM. DD YYYY")}</p>
-                  </Panel>
+                  <Media>
+                   <Media.Left>
+                      <img width={64} height={64} src={`${gravatar.url(note.userEmail, {protocol: 'https', s: '100'})}`} alt={note.userEmail}/>
+                    </Media.Left>
+                    <Media.Body>
+                      <Panel className='comment-panel' header={<Media.Heading>{note.userEmail} <small title={moment(note.date).format('h:MMa, MMM. DD YYYY')}>commented {moment(note.date).fromNow()}</small></Media.Heading>}>
+                      <p>{note.body || '(no content)'}</p>
+                      </Panel>
+                    </Media.Body>
+                  </Media>
                 )
               })
             : <p><i>{messages.none}</i></p>
 
           }
         </Col>
-        <Col xs={12} sm={4} md={6}>
+        <Col xs={12} sm={this.props.stacked ? 12 : 4} md={this.props.stacked ? 12 : 6}>
           <h3>{messages.postComment}</h3>
-          <FormControl
-            ref='newNoteBody'
-            componentClass='textarea'
-            value={this.state.value}
-            onChange={(evt) => {
-              this.setState({value: evt.target.value})
-            }}
-          />
-          <Button
-            className='pull-right'
-            disabled={this.state.value === ''}
-            onClick={() => {
-              this.props.newNotePosted({
-                body: this.state.value
-              })
-              this.setState({value: ''})
-            }}
-          >{messages.new}</Button>
+          <Media>
+           <Media.Left>
+              <img width={64} height={64} src={this.props.user ? this.props.user.profile.picture : ''}/>
+            </Media.Left>
+            <Media.Body>
+              <Panel className='comment-panel' header={<Media.Heading>{this.props.user ? this.props.user.profile.email : ''}</Media.Heading>}>
+                <FormControl
+                  ref='newNoteBody'
+                  componentClass='textarea'
+                  value={this.state.value}
+                  onChange={(evt) => {
+                    this.setState({value: evt.target.value})
+                  }}
+                />
+                <Button
+                  className='pull-right'
+                  style={{marginTop: '10px'}}
+                  disabled={this.state.value === ''}
+                  onClick={() => {
+                    this.props.newNotePosted({
+                      body: this.state.value
+                    })
+                    this.setState({value: ''})
+                  }}
+                >{messages.new}</Button>
+              </Panel>
+            </Media.Body>
+          </Media>
         </Col>
       </Row>
     )

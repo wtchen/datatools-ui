@@ -11,7 +11,9 @@ export default class GtfsPlusVersionSummary extends Component {
     super(props)
     this.state = { expanded: false }
   }
-
+  componentDidMount () {
+    this.props.gtfsPlusDataRequested(this.props.version)
+  }
   isTableIncluded (tableId) {
     if(!this.props.gtfsplus.tableData) return null
     return tableId in this.props.gtfsplus.tableData ? 'Yes' : 'No'
@@ -54,8 +56,6 @@ export default class GtfsPlusVersionSummary extends Component {
     return (
       <Panel
         header={header}
-        collapsible
-        expanded={this.state.expanded}
       >
         <Row>
           <Col xs={6}>
@@ -63,7 +63,6 @@ export default class GtfsPlusVersionSummary extends Component {
           </Col>
           <Col xs={6} style={{ textAlign: 'right' }}>
             <Button
-              bsSize='large'
               disabled={editingIsDisabled}
               bsStyle='primary'
               onClick={() => { browserHistory.push(`/gtfsplus/${this.props.version.feedSource.id}/${this.props.version.id}`) }}
@@ -72,7 +71,6 @@ export default class GtfsPlusVersionSummary extends Component {
             </Button>
             {this.gtfsPlusEdited()
               ? <Button
-                  bsSize='large'
                   disabled={publishingIsDisabled}
                   bsStyle='primary'
                   style={{ marginLeft: '6px' }}
@@ -89,28 +87,30 @@ export default class GtfsPlusVersionSummary extends Component {
         </Row>
         <Row>
           <Col xs={12}>
-            <Table striped>
-              <thead>
-                <tr>
-                  <th>Table</th>
-                  <th>Included?</th>
-                  <th>Records</th>
-                  <th>Validation Issues</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {getConfigProperty('modules.gtfsplus.spec').map(table => {
-                  return (<tr style={{ color: this.isTableIncluded(table.id) === 'Yes' ? 'black' : 'lightGray' }}>
-                    <td>{table.name}</td>
-                    <td>{this.isTableIncluded(table.id)}</td>
-                    <td>{this.tableRecordCount(table.id)}</td>
-                    <td>{this.validationIssueCount(table.id)}</td>
-                    <td></td>
-                  </tr>)
-                })}
-              </tbody>
-            </Table>
+            <Panel>
+              <Table striped fill>
+                <thead>
+                  <tr>
+                    <th>Table</th>
+                    <th>Included?</th>
+                    <th>Records</th>
+                    <th>Validation Issues</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getConfigProperty('modules.gtfsplus.spec').map(table => {
+                    return (<tr style={{ color: this.isTableIncluded(table.id) === 'Yes' ? 'black' : 'lightGray' }}>
+                      <td>{table.name}</td>
+                      <td>{this.isTableIncluded(table.id)}</td>
+                      <td>{this.tableRecordCount(table.id)}</td>
+                      <td>{this.validationIssueCount(table.id)}</td>
+                      <td></td>
+                    </tr>)
+                  })}
+                </tbody>
+              </Table>
+            </Panel>
           </Col>
         </Row>
       </Panel>

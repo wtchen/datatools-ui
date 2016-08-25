@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import UserAdmin from '../components/UserAdmin'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
@@ -20,13 +21,17 @@ const mapStateToProps = (state, ownProps) => {
   return {
     projects: state.projects.all,
     user: state.user,
-    admin: state.admin
+    admin: state.admin,
+    activeComponent: ownProps.routeParams.subpage
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
+      if (!initialProps.activeComponent) {
+        browserHistory.push('/admin/users')
+      }
       if (!initialProps.users)
         dispatch(fetchUsers())
 

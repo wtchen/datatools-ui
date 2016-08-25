@@ -38,9 +38,11 @@ export function fetchProjects () {
     dispatch(requestingProjects())
     return secureFetch('/api/manager/secure/project', getState())
       .then(response => response.json())
-      .then(projects =>
+      // .catch(err => console.log(err))
+      .then(projects => {
         dispatch(receiveProjects(projects))
-      )
+        return projects
+      })
   }
 }
 
@@ -50,6 +52,7 @@ export function fetchProjectsWithPublicFeeds () {
     const url = '/api/manager/public/project'
     return secureFetch(url, getState())
       .then(response => response.json())
+      // .catch(err => console.log(err))
       .then(projects => {
         dispatch(receiveProjects(projects))
       })
@@ -78,6 +81,7 @@ export function fetchProject (projectId, unsecure) {
     const url = `/api/manager/${apiRoot}/project/${projectId}`
     return secureFetch(url, getState())
       .then(response => response.json())
+      // .catch(err => console.log(err))
       .then(project => {
         dispatch(receiveProject(project))
         return project
@@ -94,6 +98,7 @@ export function fetchProjectWithFeeds (projectId, unsecure) {
     const url = `/api/manager/${apiRoot}/project/${projectId}`
     return secureFetch(url, getState())
       .then(response => response.json())
+      // .catch(err => console.log(err))
       .then(project => {
         dispatch(receiveProject(project))
         if (!unsecure)
@@ -102,13 +107,44 @@ export function fetchProjectWithFeeds (projectId, unsecure) {
   }
 }
 
-export function updateProject (project, changes) {
+function deletingProject () {
+  return {
+    type: 'DELETING_PROJECT',
+  }
+}
+
+export function deletedProject (project) {
+  return {
+    type: 'DELETED_PROJECT',
+    project
+  }
+}
+
+export function deleteProject (project) {
+  return function (dispatch, getState) {
+    dispatch(deletingProject())
+    const url = `/api/manager/secure/project/${project.id}`
+    return secureFetch(url, getState(), 'delete')
+      .then(response => response.json())
+      // .catch(err => console.log(err))
+      .then(project => {
+        dispatch(deletedProject(project))
+        return project
+      })
+  }
+}
+
+export function updateProject (project, changes, fetchFeeds = false) {
   return function (dispatch, getState) {
     dispatch(savingProject())
     const url = `/api/manager/secure/project/${project.id}`
     return secureFetch(url, getState(), 'put', changes)
       .then((res) => {
-        return dispatch(fetchProject(project.id))
+        if (fetchFeeds) {
+          return dispatch(fetchProjectWithFeeds(project.id))
+        } else {
+          return dispatch(fetchProject(project.id))
+        }
       })
   }
 }
@@ -137,6 +173,7 @@ export function thirdPartySync (projectId, type) {
     const url = '/api/manager/secure/project/' + projectId + '/thirdPartySync/' + type
     return secureFetch(url, getState())
       .then(response => response.json())
+      // .catch(err => console.log(err))
       .then(project => {
         dispatch(receiveSync())
         return dispatch(fetchProject(projectId))

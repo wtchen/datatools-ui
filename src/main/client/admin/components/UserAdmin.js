@@ -1,20 +1,20 @@
-import fetch  from 'isomorphic-fetch'
-import React  from 'react'
-import { Grid, Row, Col } from 'react-bootstrap'
+import React, { Component, PropTypes } from 'react'
+import { Grid, Row, Col, Panel, ListGroup, ListGroupItem, Button } from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
 import Helmet from 'react-helmet'
+import Icon from 'react-fa'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
 import { getComponentMessages } from '../../common/util/config'
 
-export default class UserAdmin extends React.Component {
-
+export default class UserAdmin extends Component {
+  static propTypes = {
+    user: PropTypes.user,
+    onComponentMount: PropTypes.func
+  }
   constructor (props) {
     super(props)
-
-    this.state = {
-      user: null
-    }
   }
 
   componentWillMount () {
@@ -33,34 +33,84 @@ export default class UserAdmin extends React.Component {
       <Helmet
         title={messages.title}
       />
-        {
-          this.isAdmin() &&
-          this.props.admin.users &&
-          this.props.projects
-          ? <UserList
-              token={this.props.user.token}
-              projects={this.props.projects}
-              users={this.props.admin.users}
-              userCount={this.props.admin.userCount}
-              page={this.props.admin.page}
-              perPage={this.props.admin.perPage}
-              isFetching={this.props.admin.isFetching}
+      <Grid>
+        <Row style={{ marginBottom: '18px' }}>
+          <Col xs={12}>
+            <h2>
+              <LinkContainer className='pull-right' to='/home'>
+                <Button>
+                  Back to dashboard
+                </Button>
+              </LinkContainer>
+              <Icon name='cog'/> {messages.title}
+            </h2>
+          </Col>
+        </Row>
+        <Row>
+          {this.isAdmin()
+            ? <div>
+                <Col xs={12} sm={3}>
+                  <Panel>
+                    <ListGroup fill>
+                      <LinkContainer to='/admin/users'><ListGroupItem>User management</ListGroupItem></LinkContainer>
+                      <LinkContainer to='/admin/logs'><ListGroupItem>Application logs</ListGroupItem></LinkContainer>
+                      <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>
+                      <LinkContainer to='/admin/regions'><ListGroupItem>Regions</ListGroupItem></LinkContainer>
+                    </ListGroup>
+                  </Panel>
+                </Col>
+                <Col xs={12} sm={9}>
+                  {
+                    this.props.admin.users &&
+                    this.props.projects &&
+                    this.props.activeComponent === 'users'
+                    ? <UserList
+                        token={this.props.user.token}
+                        projects={this.props.projects}
+                        users={this.props.admin.users}
+                        userCount={this.props.admin.userCount}
+                        page={this.props.admin.page}
+                        perPage={this.props.admin.perPage}
+                        isFetching={this.props.admin.isFetching}
 
-              setUserPermission={this.props.setUserPermission}
-              saveUser={this.props.saveUser}
-              deleteUser={this.props.deleteUser}
-              fetchProjectFeeds={this.props.fetchProjectFeeds}
-              createUser={this.props.createUser}
-              setPage={this.props.setPage}
-              userSearch={this.props.userSearch}
-            />
-          : <Grid fluid><Row><Col xs={12}>
-              {this.state.user
-                ? <p>You do not have sufficient user privileges to access this area</p>
-                : <p>You must be an admin to access this area</p>
-              }
-            </Col></Row></Grid>
-        }
+                        setUserPermission={this.props.setUserPermission}
+                        saveUser={this.props.saveUser}
+                        deleteUser={this.props.deleteUser}
+                        fetchProjectFeeds={this.props.fetchProjectFeeds}
+                        createUser={this.props.createUser}
+                        setPage={this.props.setPage}
+                        userSearch={this.props.userSearch}
+                      />
+                    : this.props.activeComponent === 'logs'
+                    ? <p className='text-center' style={{marginTop: '100px'}}>
+                        <Button
+                          bsStyle='danger'
+                          bsSize='large'
+                          href='https://manage.auth0.com/#/logs'
+                        >
+                          <Icon name='star'/> View application logs on Auth0.com
+                        </Button>
+                      </p>
+                    : null
+                  }
+                </Col>
+              </div>
+            : <div>
+                {this.props.user
+                  ? <p>{messages.noAccess}</p>
+                  : <h1
+                      className='text-center'
+                      style={{
+                        marginTop: '150px'
+                      }}
+                    >
+                      <Icon size='5x' spin name='refresh' />
+                    </h1>
+                }
+              </div>
+          }
+        </Row>
+        </Grid>
       </ManagerPage>
     )
   }

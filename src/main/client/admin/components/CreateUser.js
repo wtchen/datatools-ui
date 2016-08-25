@@ -41,7 +41,6 @@ export default class CreateUser extends React.Component {
       <div>
         <Button
           bsStyle='primary'
-          bsSize='large'
           onClick={this.open.bind(this)}
           className='pull-right'
         >

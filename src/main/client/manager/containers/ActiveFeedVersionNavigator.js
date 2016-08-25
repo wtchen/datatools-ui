@@ -34,7 +34,10 @@ const mapStateToProps = (state, ownProps) => {
     }
   }
 
-  return { feedVersionIndex }
+  return {
+    feedVersionIndex,
+    versionSection: ownProps.routeParams.subpage
+  }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -60,7 +63,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     notesRequestedForVersion: (feedVersion) => {
       dispatch(fetchNotesForFeedVersion(feedVersion))
     },
-    validationResultRequested: (feedVersion, isPublic) => {
+    fetchValidationResult: (feedVersion, isPublic) => {
       dispatch(fetchValidationResult(feedVersion, isPublic))
     }
   }

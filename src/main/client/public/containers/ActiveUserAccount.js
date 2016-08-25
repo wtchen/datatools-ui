@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import UserAccount from '../components/UserAccount'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
@@ -12,7 +13,9 @@ const mapStateToProps = (state, ownProps) => {
   return {
     visibilitySearchText: state.projects.filter.searchText,
     projects: state.projects.all,
-    user: state.user
+    user: state.user,
+    activeComponent: ownProps.routeParams.subpage,
+    projectId: ownProps.routeParams.projectId
   }
 }
 
@@ -20,6 +23,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   // const projectId = ownProps.routeParams.projectId
   return {
     onComponentMount: (initialProps) => {
+      if (!ownProps.routeParams.subpage) {
+        browserHistory.push('/settings/profile')
+      }
       if (!initialProps.projects){
         dispatch(fetchProjects())
         .then(() => {

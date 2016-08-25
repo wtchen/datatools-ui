@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, Glyphicon, Badge, ButtonInput, form } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, ListGroup, ListGroupItem, Glyphicon, Badge, ButtonInput, ControlLabel } from 'react-bootstrap'
 import { Link } from 'react-router'
+import Icon from 'react-fa'
 import { LinkContainer } from 'react-router-bootstrap'
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 
 import EditableTextField from '../../common/components/EditableTextField'
-import PublicPage from './PublicPage'
+import ManagerPage from '../../common/components/ManagerPage'
 import { getConfigProperty } from '../../common/util/config'
 
-export default class UserAccount extends React.Component {
-
+export default class UserAccount extends Component {
+  static propTypes = {
+    activeComponent: PropTypes.string
+  }
   constructor (props) {
     super(props)
   }
@@ -25,82 +28,135 @@ export default class UserAccount extends React.Component {
       cursor: 'pointer'
     }
     let subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
-    return (
-      <PublicPage ref='publicPage'>
-        <Grid>
-          <Row>
-            <Col xs={12}>
-              <h2>
-                My Account &nbsp;&nbsp;&nbsp;
-                <LinkContainer to={{ pathname: '/project' }}>
-                  <Button>View my Projects</Button>
-                </LinkContainer>
-              </h2>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col xs={4}>
-              <h3>User info</h3>
-              <EditableTextField
-                value={this.props.user.profile.email}
-                onChange={(value) => {
-                  this.props.updateUserName(this.props.user, value)
-                }}
-              />
-              <Button onClick={() => {this.props.getUser(this.props.user.profile.user_id)}}>Get User</Button>
-            </Col>
-            { getConfigProperty('application.notifications_enabled') ?
-              <Col xs={4}>
-                <h3>My Subscriptions</h3>
-                <ul>
-                  {subscriptions.length ? subscriptions.map(sub => {
-                    return (
-                      <li>
-                        {sub.type.replace('-', ' ')} &nbsp;
+    const accountSections = [
+      {
+        id: 'profile',
+        component: <div>
+                    <Panel header={<h4>Profile information</h4>}>
+                      <ControlLabel>Email address</ControlLabel>
+                      <EditableTextField
+                        value={this.props.user.profile.email}
+                        onChange={(value) => {
+                          this.props.updateUserName(this.props.user, value)
+                        }}
+                      />
+                      {/* <Button onClick={() => {this.props.getUser(this.props.user.profile.user_id)}}>Get User</Button> */}
+                      </Panel>
+                  </div>
+      },
+      {
+        id: 'account'
+      },
+      {
+        id: 'organizations'
+      },
+      {
+        id: 'subscriptions',
+        hidden: !getConfigProperty('application.notifications_enabled'),
+        component: <Panel header={<h4>Your Subscriptions</h4>}>
+          <ul>
+            {subscriptions.length ? subscriptions.map(sub => {
+              return (
+                <li>
+                  {sub.type.replace('-', ' ')} &nbsp;
+                    <Glyphicon
+                      glyph='remove'
+                      style={removeIconStyle}
+                      onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
+                    />
+                  <ul>
+                    {sub.target.length ? sub.target.map(target => {
+                      let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
+                      if (this.props.projects) {
+                        for (var i = 0; i < this.props.projects.length; i++) {
+                          let feed = this.props.projects[i].feedSources ? this.props.projects[i].feedSources.find(fs => fs.id === target) : null
+                          fs = feed ? feed : fs
+                        }
+                      }
+                      return (
+                        <li>
+                          {
+                            fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
+                            :
+                            <span>{target}</span>
+                          } &nbsp;
                           <Glyphicon
                             glyph='remove'
                             style={removeIconStyle}
-                            onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
+                            onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
                           />
-                        <ul>
-                          {sub.target.length ? sub.target.map(target => {
-                            let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
-                            if (this.props.projects) {
-                              for (var i = 0; i < this.props.projects.length; i++) {
-                                let feed = this.props.projects[i].feedSources ? this.props.projects[i].feedSources.find(fs => fs.id === target) : null
-                                fs = feed ? feed : fs
-                              }
-                            }
-                            return (
-                              <li>
-                                {
-                                  fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
-                                  :
-                                  <span>{target}</span>
-                                } &nbsp;
-                                <Glyphicon
-                                  glyph='remove'
-                                  style={removeIconStyle}
-                                  onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
-                                />
-                              </li>
-                            )
-                          }) : <li>No feeds subscribed to.</li>
-                        }
-                        </ul>
-                      </li>
+                        </li>
+                      )
+                    }) : <li>No feeds subscribed to.</li>
+                  }
+                  </ul>
+                </li>
+              )
+            })
+            : <li>No subscriptions.</li>
+          }
+          </ul>
+        </Panel>
+      },
+      {
+        id: 'billing'
+      }
+    ]
+    const activeSection = accountSections.find(section => section.id === this.props.activeComponent)
+    const visibleComponent = activeSection ? activeSection.component : null
+    return (
+      <ManagerPage ref='page'>
+        <Grid>
+          <Row style={{marginBottom: '20px'}}>
+            <Col xs={12}>
+              <h1>
+                <LinkContainer className='pull-right' to={{ pathname: '/home' }}>
+                  <Button>Back to dashboard</Button>
+                </LinkContainer>
+                <Icon name='user'/> My settings
+              </h1>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={3}>
+              <Panel header={<h4>Personal settings</h4>}>
+                <ListGroup fill>
+                  {accountSections.map(section => {
+                    if (section.hidden) return null
+
+                    return (
+                      <LinkContainer key={section.id} to={`/settings/${section.id}`}>
+                        <ListGroupItem active={this.props.activeComponent === section.id}>
+                          {section.id}
+                        </ListGroupItem>
+                      </LinkContainer>
                     )
-                  })
-                  : <li>No subscriptions.</li>
-                }
-                </ul>
-              </Col>
-              : ''
-            }
+                  })}
+                </ListGroup>
+              </Panel>
+              <Panel header={<h4>Organization settings</h4>}>
+                <ListGroup fill>
+                  {this.props.projects && this.props.projects.map(project => {
+                    if (project.hidden) return null
+
+                    return (
+                      <LinkContainer key={project.id} to={`/project/${project.id}`}>
+                        <ListGroupItem active={this.props.projectId === project.id}>
+                          {project.name}
+                        </ListGroupItem>
+                      </LinkContainer>
+                    )
+                  })}
+                </ListGroup>
+              </Panel>
+            </Col>
+            <Col xs={1}></Col>
+            <Col xs={6}>
+              {visibleComponent}
+            </Col>
           </Row>
         </Grid>
-      </PublicPage>
+      </ManagerPage>
     )
   }
 }

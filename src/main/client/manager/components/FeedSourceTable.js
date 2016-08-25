@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
 
-import { Button, Table, Checkbox, Glyphicon, Dropdown, MenuItem } from 'react-bootstrap'
-import { browserHistory } from 'react-router'
-import Icon from 'react-fa'
+import { Button, Table, Checkbox, Glyphicon, Dropdown, MenuItem, Panel, ListGroupItem, ListGroup } from 'react-bootstrap'
+import { browserHistory, Link } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
+import { Icon, IconStack } from 'react-fa'
 import { shallowEqual } from 'react-pure-render'
 
 import EditableTextField from '../../common/components/EditableTextField'
@@ -19,12 +20,15 @@ export default class FeedSourceTable extends Component {
     project: PropTypes.object,
     user: PropTypes.object,
 
+    isFetching: PropTypes.bool,
+
     createDeploymentFromFeedSource: PropTypes.func,
     deleteFeedSource: PropTypes.func,
     updateFeedSourceProperty: PropTypes.func,
     saveFeedSource: PropTypes.func,
     fetchFeed: PropTypes.func,
-    uploadFeed: PropTypes.func
+    uploadFeed: PropTypes.func,
+    onNewFeedSourceClick: PropTypes.func
   }
 
   constructor (props) {
@@ -49,32 +53,26 @@ export default class FeedSourceTable extends Component {
     />
 
     return (
-      <Table striped hover>
-        <thead>
-        <tr>
-          <th className='col-md-4'>Name</th>
-          <th>{messages.feeds.table.public}</th>
-          <th>{messages.feeds.table.deployable}</th>
-          <th>{messages.feeds.table.lastUpdated}</th>
-          <th>{messages.feeds.table.errorCount}</th>
-          <th>{messages.feeds.table.validRange}</th>
-          <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {this.props.feedSources.map((feedSource) => {
-          return <FeedSourceTableRow key={feedSource.id}
-            feedSource={feedSource}
-            project={this.props.project}
-            user={this.props.user}
-            updateFeedSourceProperty={this.props.updateFeedSourceProperty}
-            saveFeedSource={this.props.saveFeedSource}
-            hoverComponent={hover}
-            onHover={(fs) => this.setState({activeFeedSource: fs})}
-          />
-        })}
-        </tbody>
-      </Table>
+      <ListGroup fill>
+        {this.props.isFetching
+          ? <ListGroupItem className='text-center'><Icon size='2x' spin name='refresh' /></ListGroupItem>
+          : this.props.feedSources.length
+          ? this.props.feedSources.map((feedSource) => {
+              return <FeedSourceTableRow key={feedSource.id}
+                feedSource={feedSource}
+                project={this.props.project}
+                user={this.props.user}
+                updateFeedSourceProperty={this.props.updateFeedSourceProperty}
+                saveFeedSource={this.props.saveFeedSource}
+                hoverComponent={hover}
+                onHover={(fs) => this.setState({activeFeedSource: fs})}
+              />
+            })
+          : <ListGroupItem className='text-center'>
+              <Button bsStyle='success' onClick={() => this.props.onNewFeedSourceClick()}><Icon name='plus'/> {messages.feeds.createFirst}</Button>
+            </ListGroupItem>
+          }
+      </ListGroup>
     )
   }
 }
@@ -109,8 +107,74 @@ class FeedSourceTableRow extends Component {
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
     const dateFormat = getConfigProperty('application.date_format')
-
-    return (
+    const messages = getComponentMessages('ProjectViewer')
+    const feedItem = (
+      <ListGroupItem
+        header={
+          <h4>
+          <EditableTextField
+            isEditing={(fs.isCreating === true)}
+            value={fs.name}
+            inline
+            hideEditButton
+            disabled={disabled}
+            onChange={(value) => {
+              if (fs.isCreating) this.props.saveFeedSource(value)
+              else this.props.updateFeedSourceProperty(fs, 'name', value)
+            }}
+            link={`/feed/${fs.id}`}
+          />
+          {' '}
+          {!fs.isPublic ? <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/> : null}
+          </h4>
+        }
+        key={fs.id}
+        // bsStyle={fs.isPublic ? 'default' : 'warning'}
+        onMouseEnter={() => {
+          if (!this.state.hovered) {
+            this.setState({ hovered: true })
+            this.props.onHover(fs)
+          }
+        }}
+        onMouseLeave={() => {
+          if (this.state.hovered) this.setState({ hovered: false })
+        }}
+      >
+        <span
+          className='pull-right'
+          style={{marginTop: '-20px'}}
+        >{this.state.hovered
+          ? this.props.hoverComponent
+          : null
+        }
+        </span>
+        <ul className='list-inline' style={{marginBottom: '0px'}}>
+        {fs.lastUpdated
+          ? <li style={{minWidth: '200px'}}>{messages.feeds.table.lastUpdated} {moment(fs.lastUpdated).format(dateFormat)}</li>
+          : <li style={{minWidth: '200px'}}>No versions exist yet.</li>
+        }
+          {fs.latestValidation && fs.latestValidation.errorCount > 0
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-warning'><Icon name='exclamation-triangle'/> {fs.latestValidation.errorCount}</li>
+            : fs.latestValidation
+            ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' name='check'/></li>
+            : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' name='circle-o'/></li>
+          }
+          {fs.latestValidation && fs.latestValidation.endDate < +moment()
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-danger'><Icon name='calendar-times-o'/></li>
+            : fs.latestValidation
+            ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' name='calendar-check-o'/></li>
+            : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' name='calendar-o'/></li>
+          }
+          {isModuleEnabled('deployment') && fs.deployable
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-success'><Icon name='map'/></li>
+            : isModuleEnabled('deployment')
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon name='map-o'/></li>
+            : null
+          }
+        </ul>
+      </ListGroupItem>
+    )
+    const feedRow = (
       <tr key={fs.id}
         onMouseEnter={() => {
           if (!this.state.hovered) {
@@ -168,6 +232,8 @@ class FeedSourceTableRow extends Component {
         </td>
       </tr>
     )
+
+    return feedItem
   }
 }
 
@@ -218,6 +284,7 @@ class FeedSourceDropdown extends Component {
       <Dropdown
         className='pull-right'
         bsStyle='default'
+        bsSize='small'
         onSelect={key => {
           console.log(key)
           switch (key) {

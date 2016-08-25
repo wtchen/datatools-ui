@@ -2,7 +2,9 @@ import React, {Component, PropTypes} from 'react'
 import fetch from 'isomorphic-fetch'
 import Icon from 'react-fa'
 import Helmet from 'react-helmet'
-import { Grid, Row, Col, Well, Button, Table, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, FormControl, Checkbox } from 'react-bootstrap'
+import { sentence as toSentenceCase } from 'change-case'
+import { LinkContainer } from 'react-router-bootstrap'
+import { Grid, Row, Col, ListGroup, ListGroupItem, Well, Button, Table, Image, Badge, Panel, Label, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, FormControl, InputGroup, ControlLabel, FormGroup, Checkbox, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import moment from 'moment'
 
@@ -34,6 +36,8 @@ export default class FeedSourceViewer extends Component {
     project: PropTypes.object,
     routeParams: PropTypes.object,
     user: PropTypes.object,
+    activeComponent: PropTypes.string,
+    activeSubComponent: PropTypes.string,
 
     createDeployment: PropTypes.func,
     deleteFeedVersionConfirmed: PropTypes.func,
@@ -48,18 +52,30 @@ export default class FeedSourceViewer extends Component {
     notesRequestedForFeedSource: PropTypes.func,
     notesRequestedForVersion: PropTypes.func,
     onComponentMount: PropTypes.func,
-    updateFeedClicked: PropTypes.func,
+    fetchFeed: PropTypes.func,
     updateUserSubscription: PropTypes.func,
-    uploadFeedClicked: PropTypes.func,
-    validationResultRequested: PropTypes.func
+    uploadFeed: PropTypes.func,
+    fetchValidationResult: PropTypes.func
   }
 
   constructor (props) {
     super(props)
+    this.state = {}
   }
 
   componentWillMount () {
     this.props.onComponentMount(this.props)
+    // this.setState({willMount: true})
+  }
+  componentDidMount () {
+    this.setState({didMount: true})
+
+  }
+  componentDidUpdate (prevProps) {
+    this.props.componentDidUpdate(prevProps, this.props)
+    if (this.props.feedSource && this.state.didMount) {
+      this.setState({didMount: false})
+    }
   }
 
   getAverageFileSize (feedVersions) {
@@ -98,7 +114,7 @@ export default class FeedSourceViewer extends Component {
 
   render () {
     const fs = this.props.feedSource
-    if (this.props.isFetching) {
+    if (this.props.isFetching && this.state.didMount) {
       return (
         <ManagerPage ref='page'>
           <Grid fluid>
@@ -137,27 +153,145 @@ export default class FeedSourceViewer extends Component {
     const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
     const dateFormat = getConfigProperty('application.date_format')
-
+    const autoFetchFeed = fs.retrievalMethod === 'FETCHED_AUTOMATICALLY'
+    const fsCenter = fs.latestValidation && fs.latestValidation.bounds
+      ? `${(fs.latestValidation.bounds.east + fs.latestValidation.bounds.west) / 2},${(fs.latestValidation.bounds.north + fs.latestValidation.bounds.south) / 2}`
+      : null
+    const fsOverlay = fsCenter
+      ? `pin-l-bus(${fsCenter})/`
+      : ''
+    const mapUrl = fsCenter
+      ? `https://api.mapbox.com/v4/mapbox.light/${fsOverlay}${fsCenter},6/1000x400@2x.png?access_token=${getConfigProperty('mapbox.access_token')}`
+      : ''
+    const resourceType = this.props.activeComponent === 'settings' && this.props.activeSubComponent && this.props.activeSubComponent.toUpperCase()
+    const activeTab = ['settings', 'comments', 'snapshots'].indexOf(this.props.activeComponent) === -1 || typeof this.props.routeParams.feedVersionIndex !== 'undefined'
+      ? ''
+      : this.props.activeComponent
+    console.log(this.props.activeComponent, this.props.routeParams.feedVersionIndex)
+    const activeSettings = !resourceType
+      ? <Col xs={7}>
+        <Panel header={<h3>Settings</h3>}>
+          <ListGroup fill>
+            <ListGroupItem>
+              <FormGroup inline>
+                <ControlLabel>Feed source name</ControlLabel>
+                <InputGroup>
+                  <FormControl
+                    value={typeof this.state.name !== 'undefined' ? this.state.name : fs.name}
+                    onChange={(evt) => {
+                      this.setState({name: evt.target.value})
+                    }}
+                  />
+                  <InputGroup.Button>
+                    <Button
+                      disabled={!this.state.name || this.state.name === fs.name}
+                      onClick={() => {
+                        this.props.feedSourcePropertyChanged(fs, 'name', this.state.name)
+                        .then(() => this.setState({name: null}))
+                      }}
+                    >Rename</Button>
+                  </InputGroup.Button>
+                </InputGroup>
+              </FormGroup>
+            </ListGroupItem>
+            <ListGroupItem>
+              <FormGroup>
+                <Checkbox checked={fs.deployable} onChange={() => this.props.feedSourcePropertyChanged(fs, 'deployable', !fs.deployable)}><strong>Make feed source deployable</strong></Checkbox>
+                <small>Enable this feed source to be deployed to an OpenTripPlanner (OTP) instance (defined in organization settings) as part of a collection of feed sources or individually.</small>
+              </FormGroup>
+            </ListGroupItem>
+          </ListGroup>
+        </Panel>
+        <Panel header={<h3>Automatic fetch</h3>}>
+          <ListGroup fill>
+            <ListGroupItem>
+              <FormGroup inline>
+                <ControlLabel>Feed source fetch URL</ControlLabel>
+                <InputGroup>
+                  <FormControl
+                    value={typeof this.state.url !== 'undefined' ? this.state.url : fs.url}
+                    onChange={(evt) => {
+                      this.setState({url: evt.target.value})
+                    }}
+                  />
+                  <InputGroup.Button>
+                    <Button
+                      disabled={!this.state.url || this.state.url === fs.url}
+                      onClick={() => {
+                        this.props.feedSourcePropertyChanged(fs, 'url', this.state.url)
+                        .then(() => this.setState({url: null}))
+                      }}
+                    >Change URL</Button>
+                  </InputGroup.Button>
+                </InputGroup>
+              </FormGroup>
+            </ListGroupItem>
+            <ListGroupItem>
+              <FormGroup>
+                <Checkbox checked={autoFetchFeed} onChange={() => this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', autoFetchFeed ? 'MANUALLY_UPLOADED' : 'FETCHED_AUTOMATICALLY')} bsStyle='danger'><strong>Auto fetch feed source</strong></Checkbox>
+                <small>Set this feed source to fetch automatically. (Feed source URL must be specified and project auto fetch must be enabled.)</small>
+              </FormGroup>
+            </ListGroupItem>
+          </ListGroup>
+        </Panel>
+        <Panel bsStyle='danger' header={<h3>Danger zone</h3>}>
+          <ListGroup fill>
+            <ListGroupItem>
+              <Button onClick={() => this.props.feedSourcePropertyChanged(fs, 'isPublic', !fs.isPublic)} className='pull-right'>Make {fs.isPublic ? 'private' : 'public'}</Button>
+              <h4>Make this feed source {fs.isPublic ? 'private' : 'public'}.</h4>
+              <p>This feed source is currently {fs.isPublic ? 'public' : 'private'}.</p>
+            </ListGroupItem>
+            <ListGroupItem>
+              <Button className='pull-right' bsStyle='danger'><Icon name='trash'/> Delete feed source</Button>
+              <h4>Delete this feed source.</h4>
+              <p>Once you delete a feed source, it cannot be recovered.</p>
+            </ListGroupItem>
+          </ListGroup>
+        </Panel>
+      </Col>
+      : <Col xs={7}>
+          <ExternalPropertiesTable
+            resourceType={resourceType}
+            editingIsDisabled={disabled}
+            resourceProps={fs.externalProperties[resourceType]}
+            externalPropertyChanged={(name, value) => {
+              this.props.externalPropertyChanged(fs, resourceType, name, value)
+            }}
+          />
+        </Col>
     return (
-      <ManagerPage ref='page'>
+      <ManagerPage ref='page'
+        breadcrumbs={
+          <Breadcrumbs
+            project={this.props.project}
+            feedSource={this.props.feedSource}
+          />
+        }
+      >
       <Helmet
         title={this.props.feedSource.name}
       />
         <Grid fluid>
-          <Row> {/* Breadcrumbs Row */}
+          <Row
+            style={{
+              backgroundColor: '#F5F5F5',
+              // backgroundImage: `url("${mapUrl}")`,
+              margin: '-40px',
+              paddingTop: '40px',
+              marginBottom: '-64px',
+              paddingBottom: '60px',
+              paddingRight: '20px',
+              paddingLeft: '20px',
+              borderBottom: '1px #e3e3e3 solid'
+            }}
+          > {/*  Title + Shortcut Buttons Row */}
             <Col xs={12}>
-              <Breadcrumbs
-                project={this.props.project}
-                feedSource={this.props.feedSource}
-              />
-            </Col>
-          </Row>
-
-          <Row> {/*  Title + Shortcut Buttons Row */}
-            <Col xs={12}>
-              <h2 style={{ borderBottom: '1px solid #ddd', paddingBottom: 12, marginBottom: 24 }}>
-                {fs.name}
-
+              <h3>
+                <Icon className='icon-link' name='folder-open-o'/>
+                <Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
+                {' '}/{' '}
+                <Link to={`/feed/${fs.id}`}>{fs.name}</Link>{' '}
+                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/>}
                 <ButtonToolbar
                   className={`pull-right`}
                 >
@@ -173,123 +307,197 @@ export default class FeedSourceViewer extends Component {
                     target={fs.id}
                     subscriptionType='feed-updated'
                   />
+                  <Button><Icon name='thumbs-o-up'/></Button>
                 </ButtonToolbar>
-              </h2>
+              </h3>
+              <ul className='list-unstyled list-inline small' style={{marginBottom: '0px'}}>
+                <li><Icon name='clock-o'/> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
+                <li><Icon name='link'/> {fs.url ? fs.url : '(none)'}
+                </li>
+                {<li><Icon name='file-archive-o'/> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>}
+              </ul>
+              {/*<li><Icon name='list-ol'/> {fs.feedVersionCount}</li><small style={{marginLeft: '30px'}}><Icon name='link'/> <a href={fs.url}>{fs.url}</a></small>*/}
             </Col>
           </Row>
 
-          <Row>
-            <Col xs={3}>
-              <Well bsSize='small'>
-                <h4>Feed Summary</h4>
-                <ul className='list-unstyled'>
-                  <li><b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
-                  <li><b>Number of versions:</b> {fs.feedVersionCount}</li>
-                  {/*<li><b>Average file size:</b> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>*/}
-                </ul>
-              </Well>
-            </Col>
+          {/* Feed Versions tab */}
+          <Tabs id='feed-source-viewer-tabs'
+            style={{minHeight: '400px'}}
+            activeKey={activeTab}
+            onSelect={(eventKey => browserHistory.push(`/feed/${fs.id}/${eventKey}`))}
+          >
+            <Tab eventKey='' title={<span><Icon className='icon-link' name='database'/><span className='hidden-xs'>{messages.gtfs}</span></span>}>
+              <Row>
+                {/*<Col xs={12} sm={3}>
+                  <Well bsSize='small'>
+                    <h4>Feed Summary</h4>
+                    <ul className='list-unstyled small'>
+                      <li><b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
+                      <li><b>Number of versions:</b> {fs.feedVersionCount}</li>
+                      <hr style={{marginTop: '5px', marginBottom: '0px'}}/>
+                      <li><b>URL:</b> <EditableTextField
+                          value={fs.url}
+                          inline
+                          maxLength={25}
+                          disabled={disabled}
+                          onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
+                        />
+                      </li>
+                    </ul>
+                  </Well>
+                </Col>*/}
 
-            <Col xs={1} />
-
-            <Col xs={4}>
-              <ButtonToolbar>
-                <Button bsStyle='success' bsSize='large'
-                  onClick={(evt) => { this.showUploadFeedModal() }}
-                >
-                  <Glyphicon glyph='upload' /> Upload
-                </Button>
-                {isModuleEnabled('editor')
-                  ? <Button
-                      disabled={editGtfsDisabled}
-                      bsStyle='success' bsSize='large'
-                      onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
-                      <Glyphicon glyph='pencil' /> Edit
+                <Col xs={12} sm={7} style={{maxHeight: '200px', overflowY: 'hidden'}}>
+                  {/*<Image
+                    style={{
+                      position: 'relative',
+                      top: '50%',
+                      transform: 'translateY(-30%)'
+                    }}
+                    responsive
+                    src={mapUrl}
+                  />*/}
+                  {/*
+                  <ButtonToolbar>
+                    <Button bsStyle='success' bsSize='large'
+                      onClick={(evt) => { this.showUploadFeedModal() }}
+                    >
+                      <Glyphicon glyph='upload' /> Upload
                     </Button>
-                  : null
-                }
-                <Button bsStyle='success' bsSize='large'
-                  onClick={(evt) => { this.props.updateFeedClicked(fs) }}
-                >
-                  <Glyphicon glyph='download' /> Fetch
-                </Button>
-              </ButtonToolbar>
-              <Row style={{ marginTop: 12 }}>
-                <Col xs={12}>
-                  <div style={{ display: 'inline-block' }}>
-                    <b>Fetch URL:&nbsp;</b>
-                  </div>
-                  <div style={{ display: 'inline-block' }}>
-                    <EditableTextField
-                      value={fs.url}
-                      maxLength={30}
-                      disabled={disabled}
-                      onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
-                    />
-                  </div>
+                    {isModuleEnabled('editor')
+                      ? <Button
+                          disabled={editGtfsDisabled} // || !fs.latestValidation}
+                          bsStyle='success' bsSize='large'
+                          onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
+                          <Glyphicon glyph='pencil' /> Edit
+                        </Button>
+                      : null
+                    }
+                    <Button bsStyle='success' bsSize='large'
+                      onClick={(evt) => { this.props.fetchFeed(fs) }}
+                    >
+                      <Glyphicon glyph='download' /> Fetch
+                    </Button>
+                  </ButtonToolbar>
+                  <Row style={{ marginTop: 12 }}>
+                    <Col xs={12} sm={12}>
+                      <div style={{ display: 'inline-block' }}>
+                        <b>Fetch URL:&nbsp;</b>
+                      </div>
+                      <div style={{ display: 'inline-block' }}>
+                        <EditableTextField
+                          value={fs.url}
+                          maxLength={30}
+                          disabled={disabled}
+                          onChange={(value) => this.props.feedSourcePropertyChanged(fs, 'url', value)}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                  */}
+                </Col>
+
+                <Col xs={12} sm={2}>
+                  {/*<Row>
+                    <Col xs={12}>
+                      <ButtonToolbar style={{marginBottom: '10px'}}>
+                        <Button block bsSize='large' bsStyle='info'><Glyphicon glyph='pencil'/> Edit feed</Button>
+                      </ButtonToolbar>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs={12}>
+                      <h5>Create new version</h5>
+                      <ul className='list-unstyled'>
+                        <li><Button onClick={(evt) => { this.showUploadFeedModal() }} style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='upload'/> Upload file</Button></li>
+                        <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='download'/> Fetch by URL</Button></li>
+                        <hr style={{marginTop: '5px', marginBottom: '5px'}}/>
+                        <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='camera'/> Load from snapshot</Button></li>
+                      </ul>
+                    </Col>
+                  </Row>*/}
+                  {/*<ButtonToolbar className='pull-right'>
+                    <DropdownButton
+                      pullRight
+                      title={<span><Icon name='plus'/> New version</span>}
+                    >
+                      <MenuItem><Glyphicon glyph='upload'/> Upload</MenuItem>
+                      <MenuItem><Glyphicon glyph='download'/> Fetch</MenuItem>
+                      <MenuItem divider />
+                      <MenuItem><Glyphicon glyph='camera'/> From snapshot</MenuItem>
+                    </DropdownButton>
+                  </ButtonToolbar>
+                  */}
                 </Col>
               </Row>
-
-            </Col>
-
-            <Col xs={4}>
+              {/*<Panel>
+                12 Versions
+              </Panel>*/}
               <Row>
                 <Col xs={12}>
-                  <ButtonGroup className='pull-right'>
-                    <Button onClick={() => {
-                      this.props.feedSourcePropertyChanged(fs, 'deployable', !fs.deployable)
-                    }}>
-                      <Glyphicon glyph={fs.deployable ? 'check' : 'unchecked'} /> Deployable
-                    </Button>
-                    <Button bsStyle='primary' disabled={!fs.deployable}
-                      onClick={() => { this.props.createDeployment(fs) }}
-                    >
-                      <Glyphicon glyph='globe' /> Deploy
-                    </Button>
-                  </ButtonGroup>
+                  <ActiveFeedVersionNavigator
+                    routeParams={this.props.routeParams}
+                    feedSource={fs}
+                    disabled={disabled}
+                    versionIndex={this.props.feedVersionIndex}
+                    deleteDisabled={disabled}
+                    {...this.props}
+                  />
                 </Col>
+                {/* <Col xs={3}>
+                  <Panel header={<h3><Icon name='camera'/> Snapshots</h3>}>
+                    <ListGroup fill>
+                      <ListGroupItem>
+                        Snapshot 1
+                      </ListGroupItem>
+                    </ListGroup>
+                  </Panel>
+                </Col> */}
               </Row>
-              <Row style={{marginTop: 10}}>
-                <Col xs={12}>
-                  <ButtonGroup className='pull-right'>
-                    <Button onClick={() => {
-                      this.props.feedSourcePropertyChanged(fs, 'isPublic', !fs.isPublic)
-                    }}>
-                      <Glyphicon glyph={fs.isPublic ? 'check' : 'unchecked'} /> Public
-                    </Button>
-                    <Button bsStyle='primary' disabled={!fs.isPublic}
-                      onClick={() => { browserHistory.push(`/public/feed/${fs.id}`) }}
-                    >
-                      <Glyphicon glyph='globe' /> View Public Page
-                    </Button>
-                  </ButtonGroup>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-
-          <Tabs id='feed-source-viewer-tabs'>
-            <Tab eventKey='versions' title={<span><Glyphicon glyph='list' /> {messages.versions}</span>}>
-              <ActiveFeedVersionNavigator
-                routeParams={this.props.routeParams}
-                feedSource={fs}
-                versionIndex={this.props.feedVersionIndex}
-                deleteDisabled={disabled}
-              />
             </Tab>
 
             {isModuleEnabled('editor')
               ? <Tab eventKey='snapshots'
-                  title={<span><Glyphicon glyph='camera' /> Editor Snapshots</span>}
+                  title={<span><Icon className='icon-link' name='camera' /><span className='hidden-xs'>Snapshots </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
                 >
                   <ActiveEditorFeedSourcePanel feedSource={fs} />
                 </Tab>
               : null
             }
-
-            <Tab eventKey='properties' title={<span><Glyphicon glyph='cog' /> {messages.properties.title}</span>}>
+            {/* Comments for feed source */}
+            <Tab eventKey='comments'
+              title={<span><Glyphicon className='icon-link' glyph='comment' /><span className='hidden-xs'>{getComponentMessages('NotesViewer').title} </span><Badge>{fs.noteCount}</Badge></span>}
+              onEnter={() => this.props.notesRequestedForFeedSource(fs)}
+            >
+              <NotesViewer
+                type='feed-source'
+                notes={fs.notes}
+                feedSource={fs}
+                user={this.props.user}
+                updateUserSubscription={this.props.updateUserSubscription}
+                noteCount={fs.noteCount}
+                notesRequested={() => { this.props.notesRequestedForFeedSource(fs) }}
+                newNotePosted={(note) => { this.props.newNotePostedForFeedSource(fs, note) }}
+              />
+            </Tab>
+            {/* Settings */}
+            <Tab eventKey='settings' title={<span><Glyphicon className='icon-link' glyph='cog' /><span className='hidden-xs'>{messages.properties.title}</span></span>}>
               <Row>
+                <Col xs={3}>
+                <Panel>
+                  <ListGroup fill>
+                  <LinkContainer to={`/feed/${fs.id}/settings`} active={!this.props.activeSubComponent}><ListGroupItem>General</ListGroupItem></LinkContainer>
+                  {Object.keys(fs.externalProperties || {}).map(resourceType => {
+                    const resourceLowerCase = resourceType.toLowerCase()
+                    return (
+                      <LinkContainer to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={this.props.activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
+                    )
+                  })}
+                  </ListGroup>
+                </Panel>
+                </Col>
                 <Col xs={6}>
+                {/*
                   <Table striped style={{ tableLayout: 'fixed' }}>
                     <thead>
                       <tr>
@@ -339,8 +547,8 @@ export default class FeedSourceViewer extends Component {
                                   </Button>
                                 : <Button
                                     className='pull-right'
-                                    disabled={disabled || typeof this.props.updateFeedClicked === 'undefined'}
-                                    onClick={(evt) => { this.props.updateFeedClicked(fs) }}
+                                    disabled={disabled || typeof this.props.fetchFeed === 'undefined'}
+                                    onClick={(evt) => { this.props.fetchFeed(fs) }}
                                   >
                                     <Glyphicon glyph='refresh' /> Update
                                   </Button>
@@ -391,40 +599,27 @@ export default class FeedSourceViewer extends Component {
                       </tr>
                     </tbody>
                   </Table>
+                */}
                 </Col>
-
+                {activeSettings}
+                {/*
                 <Col xs={12} sm={6}>
                   {Object.keys(fs.externalProperties || {}).map(resourceType => {
-                    return (<ExternalPropertiesTable
-                      resourceType={resourceType}
-                      editingIsDisabled={disabled}
-                      resourceProps={fs.externalProperties[resourceType]}
-                      externalPropertyChanged={(name, value) => {
-                        this.props.externalPropertyChanged(fs, resourceType, name, value)
-                      }}
-                    />)
+                    return (
+                      <ExternalPropertiesTable
+                        resourceType={resourceType}
+                        editingIsDisabled={disabled}
+                        resourceProps={fs.externalProperties[resourceType]}
+                        externalPropertyChanged={(name, value) => {
+                          this.props.externalPropertyChanged(fs, resourceType, name, value)
+                        }}
+                      />
+                    )
                   })}
-                </Col>
+                </Col>*/}
 
               </Row>
             </Tab>
-
-            <Tab eventKey='notes'
-              title={<span><Glyphicon glyph='comment' /> {getComponentMessages('NotesViewer').title}</span>}
-              onEnter={() => this.props.notesRequestedForFeedSource(fs)}
-            >
-              <NotesViewer
-                type='feed-source'
-                notes={fs.notes}
-                feedSource={fs}
-                user={this.props.user}
-                updateUserSubscription={this.props.updateUserSubscription}
-                noteCount={fs.noteCount}
-                notesRequested={() => { this.props.notesRequestedForFeedSource(fs) }}
-                newNotePosted={(note) => { this.props.newNotePostedForFeedSource(fs, note) }}
-              />
-            </Tab>
-
           </Tabs>
         </Grid>
       </ManagerPage>

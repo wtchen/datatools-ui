@@ -27,7 +27,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       .then((user) => {
         dispatch(login(credentials, user))
         .then(() => {
-          browserHistory.push('/project')
+          browserHistory.push('/home')
         })
       })
     }

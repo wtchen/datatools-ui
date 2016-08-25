@@ -1,10 +1,11 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes, Component } from 'react'
 import { ProgressBar, Button } from 'react-bootstrap'
 import { Icon } from 'react-fa'
+import truncate from 'truncate'
 
 import SidebarPopover from './SidebarPopover'
 
-export default class JobMonitor extends React.Component {
+export default class JobMonitor extends Component {
 
   static propTypes = {
     expanded: PropTypes.bool,
@@ -40,19 +41,20 @@ export default class JobMonitor extends React.Component {
             <div key={`retired-${job.jobId}`} style={jobContainerStyle}>
               <div style={{ float: 'left' }}>
                 {job.status && job.status.error
-                  ? <Icon name='exclamation-circle'/>
-                  : <Icon name='check'/>
+                  ? <Icon className='text-warning' name='exclamation-circle'/>
+                  : <Icon className='text-success' name='check'/>
                 }
               </div>
               <div style={{ marginLeft: 25 }}>
                 <div>
-                  <strong>{job.name}</strong>
                   <Button
                     bsStyle='link'
+                    className='pull-right'
                     onClick={() => this.props.removeRetiredJob(job)}
                   >
                     <Icon className='pull-right' name='times-circle'/>
                   </Button>
+                  <strong title={job.name}>{truncate(job.name, 25)}</strong>
                 </div>
                 <div style={statusMessageStyle} >{job.status && job.status.error ? 'Error!' : 'Completed!'}</div>
               </div>

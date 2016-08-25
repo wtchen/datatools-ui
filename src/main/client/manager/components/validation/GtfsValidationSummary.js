@@ -25,7 +25,7 @@ export default class GtfsValidationSummary extends React.Component {
     })
     const header = (
       <h3 onClick={() => {
-        if(!result) this.props.validationResultRequested()
+        if(!result) this.props.fetchValidationResult()
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> Validation Results

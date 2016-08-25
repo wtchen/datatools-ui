@@ -4,6 +4,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { browserHistory, Link } from 'react-router'
 import { Icon } from 'react-fa'
 
+import Breadcrumbs from './Breadcrumbs'
 import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../util/config'
 import JobMonitor from './JobMonitor'
 
@@ -90,7 +91,10 @@ export default class DatatoolsNavbar extends Component {
       </NavDropdown>
     )
 
-    const navBarStyle = this.props.noMargin ? {marginBottom: 0} : {}
+    const navBarStyle = {
+      left: this.props.sidebarExpanded ? 150 : 50,
+      height: '40px'
+    }
 
     return (<div>
       <Navbar
@@ -98,44 +102,16 @@ export default class DatatoolsNavbar extends Component {
         style={navBarStyle}
       >
         <Navbar.Header>
-          <Navbar.Brand>
-            <Link to='/'>{this.props.title}</Link>
-          </Navbar.Brand>
+          <Nav>
+            <NavItem active>Manage</NavItem>
+            <NavItem>Explore</NavItem>
+            <NavItem>Edit</NavItem>
+          </Nav>
           <Navbar.Toggle />
         </Navbar.Header>
         <Navbar.Collapse>
-          <Nav>
-            {this.props.managerUrl && this.props.username
-              ? <LinkContainer to={this.props.managerUrl}>
-                  <NavItem>{messages.manager}</NavItem>
-                </LinkContainer>
-              : null
-            }
-            {isModuleEnabled('legacy_editor') && this.props.username
-              ? <NavItem href={getConfigProperty('modules.legacy_editor.url')}>
-                  {messages.editor}
-                </NavItem>
-              : null
-            }
-            {isModuleEnabled('alerts') && this.props.alertsUrl && this.props.username
-              ? <LinkContainer to={this.props.alertsUrl}>
-                  <NavItem>{messages.alerts}</NavItem>
-                </LinkContainer>
-              : null
-            }
-            {isModuleEnabled('user_admin') && this.props.userAdminUrl && this.props.userIsAdmin
-              ? <LinkContainer to={this.props.userAdminUrl}>
-                  <NavItem>{messages.users}</NavItem>
-                </LinkContainer>
-              : null
-            }
-            {isModuleEnabled('sign_config') && this.props.signConfigUrl && this.props.username
-              ? <LinkContainer to={this.props.signConfigUrl}>
-                  <NavItem>{messages.signConfig}</NavItem>
-                </LinkContainer>
-              : null
-            }
-          </Nav>
+          {this.props.breadcrumbs}
+          {/*
           <Nav pullRight>
             {projectControl}
             {this.props.docsUrl
@@ -147,6 +123,7 @@ export default class DatatoolsNavbar extends Component {
             {userControl}
             {languageControl}
           </Nav>
+          */}
         </Navbar.Collapse>
       </Navbar>
     </div>)

@@ -85,7 +85,7 @@ export default class GtfsValidationMap extends React.Component {
       </ManagerPage>
     )
     return (
-      <ManagerPage ref='page' noMargin={true}>
+      <ManagerPage ref='page'>
         <Grid fluid style={{margin: 0, padding: 0}}>
             <Col mdOffset={8} md={4} xs={12}>
               <ValidationPanel
@@ -266,7 +266,7 @@ class ValidationPanel extends React.Component {
         <GtfsValidationSummary
           validationResult={version.validationResult}
           version={version}
-          validationResultRequested={() => { this.props.validationResultRequested(version) }}
+          fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
         />
       </div>
     )

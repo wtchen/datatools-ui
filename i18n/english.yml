@@ -40,6 +40,7 @@ ProjectsList:
     content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
 DeploymentsPanel:
   title: Deployments
+  search: Search for deployments by name
   new: New Deployment
   delete: Remove deployment
   table:
@@ -48,8 +49,8 @@ DeploymentsPanel:
     feedCount: Number of feeds
     deployedTo: Deployed to
 ProjectViewer:
-  mergeFeeds: Merge Feeds
-  settings: Project Settings
+  mergeFeeds: Merge all
+  settings: Settings
   deployments: Deployments
   feeds:
     title: Feed Sources
@@ -59,11 +60,12 @@ ProjectViewer:
       public: Public?
       deployable: Deployable?
       retrievalMethod: Retrieval Method
-      lastUpdated: GTFS Last Updated
-      errorCount: Error Count
+      lastUpdated: Updated
+      errorCount: Errors
       validRange: Valid Range
     new: New Feed Source
-    update: Update all
+    createFirst: Create first feed source!
+    update: Fetch all
 EditorFeedSourcePanel:
   version: Version
   createFromScratch: Create GTFS from Scratch
@@ -84,9 +86,10 @@ FeedSourceViewer:
   deploy: Deploy
   private: Private view
   viewPublic: View public page
-  versions: Feed Versions
+  versions: Versions
+  gtfs: GTFS
   properties:
-    title: Feed Source Properties
+    title: Settings
     property: Property
     value: Value
     name: Name
@@ -104,8 +107,9 @@ FeedSourceViewer:
 FeedVersionViewer:
   status: Status
   validDates: Valid Dates
+  noVersionsExist: No versions exist for this feed source.
   timestamp: File Timestamp
-  size: File Size
+  fileSize: File Size
   agencyCount: Agency Count
   routeCount: Route Count
   tripCount: Trip Count
@@ -155,8 +159,6 @@ DeploymentViewer:
 FeedVersionNavigator:
   version: Version
   of: of
-  noVersions: (No Versions)
-  noVersionsExist: No versions exist for this feed source.
   previous: Previous
   next: Next
   download: Download
@@ -166,7 +168,7 @@ FeedVersionNavigator:
   delete: Delete
   confirmDelete: Are you sure you want to delete this version? This cannot be undone.
 NotesViewer:
-  title: Comments for this
+  title: Comments
   feedSource: Feed Source
   feedVersion: Version
   all: All Comments
@@ -175,7 +177,7 @@ NotesViewer:
   postComment: Post a New Comment
   new: Post
 ProjectSettings:
-  title: Project Settings
+  title: Settings
   save: Save
   general:
     title: General
@@ -220,12 +222,25 @@ ProjectSettings:
       bounds: Custom Extract Bounds
 
 UserAdmin:
-  title: User Management
+  title: Administration
+  noAccess: You do not have sufficient user privileges to access this area.
 UserList:
   title: User Management
   showing: Showing Users
   of: of
   search: Search by username
+UserHomePage:
+  title: Projects
+  noProjects: You currently do not have any projects.
+  createFirst: Create my first project
+  search: Search projects
+  table:
+    name: Project Name
+  new: New Project
+  help:
+    title: What's a project?
+    content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+
 CreateUser:
   new: Create User
 UserSettings:
