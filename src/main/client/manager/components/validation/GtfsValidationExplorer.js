@@ -8,7 +8,7 @@ import IssuesMap from './IssuesMap'
 import IsochroneMap from './IsochroneMap'
 import GtfsValidationSummary from './GtfsValidationSummary'
 import TripsChart from './TripsChart'
-import { getComponentMessages } from '../../../common/util/config'
+import { getComponentMessages, getMessage } from '../../../common/util/config'
 
 export default class GtfsValidationExplorer extends Component {
 

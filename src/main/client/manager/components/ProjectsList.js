@@ -6,7 +6,7 @@ import { Link } from 'react-router'
 import ManagerPage from '../../common/components/ManagerPage'
 import EditableTextField from '../../common/components/EditableTextField'
 import defaultSorter from '../../common/util/util'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class ProjectsList extends React.Component {
 
@@ -33,14 +33,14 @@ export default class ProjectsList extends React.Component {
     return (
       <ManagerPage ref='page'>
         <Helmet
-          title={messages.title}
+          title={getMessage(messages, 'title')}
         />
         <Grid fluid>
           <Panel header={(<h3>Projects</h3>)}>
           <Row>
             <Col xs={4}>
               <FormControl
-                placeholder={messages.search}
+                placeholder={getMessage(messages, 'search')}
                 onChange={evt => this.props.searchTextChanged(evt.target.value)}
               />
             </Col>
@@ -52,9 +52,9 @@ export default class ProjectsList extends React.Component {
               className='pull-right'
               onClick={() => this.props.onNewProjectClick()}
             >
-              {messages.new}
+              {getMessage(messages, 'new')}
             </Button>
-            <OverlayTrigger trigger="click" placement="left" overlay={<Popover id='project-help' title={messages.help.title}>{messages.help.content}</Popover>}>
+            <OverlayTrigger trigger="click" placement="left" overlay={<Popover id='project-help' title={getMessage(messages, 'help.title')}>{getMessage(messages, 'help.content')}</Popover>}>
               <Button bsStyle="link" className='pull-right'><Glyphicon glyph='question-sign'/></Button>
             </OverlayTrigger>
             </Col>
@@ -64,7 +64,7 @@ export default class ProjectsList extends React.Component {
               <Table striped hover>
                 <thead>
                   <tr>
-                    <th className="col-md-4">{messages.table.name}</th>
+                    <th className="col-md-4">{getMessage(messages, 'table.name')}</th>
                     <th className="col-md-8"></th>
                   </tr>
                 </thead>
@@ -94,14 +94,14 @@ export default class ProjectsList extends React.Component {
                   })
                   : <tr>
                   <td className='col-md-12 text-center'>
-                    {messages.noProjects}
+                    {getMessage(messages, 'noProjects')}
                     {'    '}
                     <Button
                       bsStyle='primary'
                       disabled={projectCreationDisabled}
                       onClick={() => this.props.onNewProjectClick()}
                     >
-                      {messages.createFirst}
+                      {getMessage(messages, 'createFirst')}
                     </Button>
                   </td></tr>
                 }

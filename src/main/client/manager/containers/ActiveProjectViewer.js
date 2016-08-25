@@ -61,7 +61,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       else if (!initialProps.project.feedSources || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) dispatch(fetchProjectFeeds(projectId))
     },
     onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
-    updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings, true)) }, // dispatch(updateProject(project, { [propName] : newValue }))
+    updateProjectSettings: (project, newSettings) => {
+      return dispatch(updateProject(project, newSettings, true))
+    },
     thirdPartySync: (type) => { dispatch(thirdPartySync(projectId, type)) },
     updateAllFeeds: (project) => { dispatch(fetchFeedsForProject(project)) },
     saveFeedSource: (name) => { dispatch(saveFeedSource({ projectId, name })) },

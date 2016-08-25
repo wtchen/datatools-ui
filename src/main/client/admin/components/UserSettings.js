@@ -4,7 +4,7 @@ import update from 'react-addons-update'
 import ReactDOM from 'react-dom'
 
 import allPermissions from './permissions'
-import { getComponentMessages, getConfigProperty } from '../../common/util/config'
+import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 export default class UserSettings extends React.Component {
 
@@ -116,9 +116,9 @@ export default class UserSettings extends React.Component {
 
     const getProjectLabel = (access) => {
       switch(access) {
-        case 'none': return <Label>{messages.project.noAccess}</Label>
-        case 'admin': return <Label bsStyle='primary'>{messages.project.admin}</Label>
-        case 'custom': return <Label bsStyle='success'>{messages.project.custom}</Label>
+        case 'none': return <Label>{getMessage(messages, 'project.noAccess')}</Label>
+        case 'admin': return <Label bsStyle='primary'>{getMessage(messages, 'project.admin')}</Label>
+        case 'custom': return <Label bsStyle='success'>{getMessage(messages, 'project.custom')}</Label>
       }
     }
 
@@ -160,19 +160,19 @@ export default class UserSettings extends React.Component {
     return (
       <Row>
         <Col xs={4}>
-          <Panel header={<h3>{messages.application}</h3>}>
+          <Panel header={<h3>{getMessage(messages, 'application')}</h3>}>
             <Checkbox
               checked={this.state.appAdminChecked}
               onChange={(evt) => this.appAdminClicked(evt.target.checked)}
               ref='appAdminCheckbox'
             >
-              {messages.admin.title}
+              {getMessage(messages, 'admin.title')}
             </Checkbox>
           </Panel>
         </Col>
         <Col xs={8}>
           {this.state.appAdminChecked
-            ? <i>{messages.admin.description}</i>
+            ? <i>{getMessage(messages, 'admin.description')}</i>
             : projectPanel
           }
         </Col>
@@ -245,24 +245,24 @@ class ProjectSettings extends React.Component {
                 <Button
                   active={this.props.settings.access === 'none'}
                   onClick={this.setAccess.bind(this, 'none')}
-                >{messages.project.noAccess}</Button>
+                >{getMessage(messages, 'project.noAccess')}</Button>
 
                 <Button
                   active={this.props.settings.access === 'admin'}
                   onClick={this.setAccess.bind(this, 'admin')}
-                >{messages.project.admin}</Button>
+                >{getMessage(messages, 'project.admin')}</Button>
 
                 <Button
                   active={this.props.settings.access === 'custom'}
                   onClick={this.setAccess.bind(this, 'custom')}
-                >{messages.project.custom}</Button>
+                >{getMessage(messages, 'project.custom')}</Button>
               </ButtonGroup>
             </Col>
           </Row>
           {this.props.settings.access === 'custom' ? (
             <Row>
               <Col xs={6}>
-                <h4>{messages.project.feeds}</h4>
+                <h4>{getMessage(messages, 'project.feeds')}</h4>
                 {feedSources
                   ? feedSources.map((feed, i) => {
                     let name = (feed.name === '') ? '(unnamed feed)' : feed.name
@@ -277,11 +277,11 @@ class ProjectSettings extends React.Component {
                       {name}
                     </Checkbox>
                   })
-                  : messages.project.cannotFetchFeeds
+                  : getMessage(messages, 'project.cannotFetchFeeds')
               }
               </Col>
               <Col xs={6}>
-                <h4>{messages.project.permissions}</h4>
+                <h4>{getMessage(messages, 'project.permissions')}</h4>
                 {allPermissions.map((permission, i) => {
                   let refName = 'permission-' + permission.type
                   let checked = this.props.settings.permissions.indexOf(permission.type) !== -1

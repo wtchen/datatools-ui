@@ -7,6 +7,7 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Grid, Row, Col, ListGroup, ListGroupItem, Well, Button, Table, Image, Badge, Panel, Label, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, FormControl, InputGroup, ControlLabel, FormGroup, Checkbox, DropdownButton, MenuItem } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import moment from 'moment'
+import numeral from 'numeral'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
@@ -18,7 +19,7 @@ import ExternalPropertiesTable from './ExternalPropertiesTable'
 import ActiveFeedVersionNavigator from '../containers/ActiveFeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
-import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 const retrievalMethods = [
   'FETCHED_AUTOMATICALLY',
@@ -80,10 +81,14 @@ export default class FeedSourceViewer extends Component {
 
   getAverageFileSize (feedVersions) {
     let sum = 0
-    for (var i = 0; i < feedVersions.length; i++) {
-      sum += feedVersions[i].fileSize
+    let avg
+    if (feedVersions) {
+      for (var i = 0; i < feedVersions.length; i++) {
+        sum += feedVersions[i].fileSize
+      }
+      avg = sum / feedVersions.length
     }
-    return Math.floor(sum / feedVersions.length / 10000) / 100
+    return numeral(avg || 0).format('0 b')
   }
   deleteFeedVersion (feedSource, feedVersion) {
     this.refs['page'].showConfirmModal({
@@ -314,7 +319,7 @@ export default class FeedSourceViewer extends Component {
                 <li><Icon name='clock-o'/> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
                 <li><Icon name='link'/> {fs.url ? fs.url : '(none)'}
                 </li>
-                {<li><Icon name='file-archive-o'/> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>}
+                {<li><Icon name='file-archive-o'/> {this.getAverageFileSize(fs.feedVersions)}</li>}
               </ul>
               {/*<li><Icon name='list-ol'/> {fs.feedVersionCount}</li><small style={{marginLeft: '30px'}}><Icon name='link'/> <a href={fs.url}>{fs.url}</a></small>*/}
             </Col>
@@ -326,7 +331,7 @@ export default class FeedSourceViewer extends Component {
             activeKey={activeTab}
             onSelect={(eventKey => browserHistory.push(`/feed/${fs.id}/${eventKey}`))}
           >
-            <Tab eventKey='' title={<span><Icon className='icon-link' name='database'/><span className='hidden-xs'>{messages.gtfs}</span></span>}>
+            <Tab eventKey='' title={<span><Icon className='icon-link' name='database'/><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
               <Row>
                 {/*<Col xs={12} sm={3}>
                   <Well bsSize='small'>
@@ -481,7 +486,7 @@ export default class FeedSourceViewer extends Component {
               />
             </Tab>
             {/* Settings */}
-            <Tab eventKey='settings' title={<span><Glyphicon className='icon-link' glyph='cog' /><span className='hidden-xs'>{messages.properties.title}</span></span>}>
+            <Tab eventKey='settings' title={<span><Glyphicon className='icon-link' glyph='cog' /><span className='hidden-xs'>{getMessage(messages, 'properties.title')}</span></span>}>
               <Row>
                 <Col xs={3}>
                 <Panel>
@@ -501,8 +506,8 @@ export default class FeedSourceViewer extends Component {
                   <Table striped style={{ tableLayout: 'fixed' }}>
                     <thead>
                       <tr>
-                        <th className='col-md-4'>{messages.properties.property}</th>
-                        <th className='col-md-8'>{messages.properties.value}</th>
+                        <th className='col-md-4'>{getMessage(messages, 'properties.property')}</th>
+                        <th className='col-md-8'>{getMessage(messages, 'properties.value')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -518,7 +523,7 @@ export default class FeedSourceViewer extends Component {
                       </tr>
 
                       <tr>
-                        <td>{messages.properties.retrievalMethod.title}</td>
+                        <td>{getMessage(messages, 'properties.retrievalMethod.title')}</td>
                         <td>
                           <Row>
                             <Col xs={8}>
@@ -574,7 +579,7 @@ export default class FeedSourceViewer extends Component {
                       }
 
                       <tr>
-                        <td>{messages.properties.public}</td>
+                        <td>{getMessage(messages, 'properties.public')}</td>
                         <td>
                           <Checkbox
                             disabled={disabled}
@@ -586,7 +591,7 @@ export default class FeedSourceViewer extends Component {
                         </td>
                       </tr>
                       <tr>
-                        <td>{messages.properties.deployable}</td>
+                        <td>{getMessage(messages, 'properties.deployable')}</td>
                         <td>
                           <Checkbox
                             disabled={disabled}

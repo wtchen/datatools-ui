@@ -3,7 +3,7 @@ import { Button, Glyphicon, MenuItem } from 'react-bootstrap'
 import { updateTargetForSubscription } from '../../manager/actions/user'
 import { connect } from 'react-redux'
 
-import { getComponentMessages, getConfigProperty } from '../util/config'
+import { getComponentMessages, getMessage, getConfigProperty } from '../util/config'
 import WatchButton from './WatchButton'
 
 export default class FeedSourceActionButton extends Component {

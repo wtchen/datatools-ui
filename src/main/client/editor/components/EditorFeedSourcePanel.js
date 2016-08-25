@@ -5,7 +5,7 @@ import moment from 'moment'
 import Icon from 'react-fa'
 
 import ConfirmModal from '../../common/components/ConfirmModal'
-import { getComponentMessages, getConfigProperty } from '../../common/util/config'
+import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 export default class EditorFeedSourcePanel extends Component {
 
@@ -69,7 +69,7 @@ export default class EditorFeedSourcePanel extends Component {
                   bsStyle='success'
                   onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}
                 >
-                  <Icon name='file'/> {messages.createFromScratch}
+                  <Icon name='file'/> {getMessage(messages, 'createFromScratch')}
                 </Button>
                 {' '}or{' '}
                 <Button bsStyle='success'
@@ -77,13 +77,13 @@ export default class EditorFeedSourcePanel extends Component {
                     onClick={(evt) => {
                       let version = this.props.feedSource.feedVersions[this.props.feedSource.feedVersions.length - 1]
                       this.refs.confirmLoad.open({
-                        title: messages.load,
-                        body: messages.confirmLoad,
+                        title: getMessage(messages, 'load'),
+                        body: getMessage(messages, 'confirmLoad'),
                         onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
                       })
                     }}
                   >
-                    <Glyphicon glyph='pencil' /> {messages.loadLatest}
+                    <Glyphicon glyph='pencil' /> {getMessage(messages, 'loadLatest')}
                   </Button>
               </div>
           }
@@ -116,22 +116,22 @@ class SnapshotItem extends Component {
             <Button bsStyle='primary'
               onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
             >
-              <Glyphicon glyph='pencil' /> {messages.restore}
+              <Glyphicon glyph='pencil' /> {getMessage(messages, 'restore')}
             </Button>
             {
             // <Button bsStyle='success'>
-            //   <Glyphicon glyph='download' /> {messages.download}
+            //   <Glyphicon glyph='download' /> {getMessage(messages, 'download')}
             // </Button>
             }
             <Button bsStyle='info'
               onClick={() => this.props.exportSnapshotAsVersion(feedSource, snapshot)}
             >
-              <Glyphicon glyph='export' /> {messages.version}
+              <Glyphicon glyph='export' /> {getMessage(messages, 'version')}
             </Button>
             <Button bsStyle='danger'
               onClick={() => this.props.deleteSnapshot(feedSource, snapshot)}
             >
-              <Glyphicon glyph='remove' /> {messages.delete}
+              <Glyphicon glyph='remove' /> {getMessage(messages, 'delete')}
             </Button>
           </ButtonToolbar>
           <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon name='clock-o'/> {moment(snapshot.snapshotTime).fromNow()}</span>

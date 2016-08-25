@@ -3,7 +3,7 @@ import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button,
 import { browserHistory } from 'react-router'
 import Icon from 'react-fa'
 
-import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 import FeedVersionViewer from './FeedVersionViewer'
 import EditableTextField from '../../common/components/EditableTextField'
 import ConfirmModal from '../../common/components/ConfirmModal'
@@ -111,7 +111,7 @@ export default class FeedVersionNavigator extends Component {
 
                       {/* Version Selector Dropdown */}
                       <DropdownButton href='#' id='versionSelector'
-                        title={`${messages.version} ${this.props.feedVersionIndex} ${messages.of} ${versions.length}`}
+                        title={`${getMessage(messages, 'version')} ${this.props.feedVersionIndex} ${getMessage(messages, 'of')} ${versions.length}`}
                         onSelect={(key) => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${key}`)}
                       >
                         {versions.map((version, k) => {

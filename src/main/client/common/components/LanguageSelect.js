@@ -5,7 +5,7 @@ import { PureComponent, shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 
 import languages from '../util/languages'
-import { getComponentMessages } from '../util/config'
+import { getComponentMessages, getMessage } from '../util/config'
 
 export default class LanguageSelect extends React.Component {
   constructor(props) {
@@ -48,7 +48,7 @@ export default class LanguageSelect extends React.Component {
       // this.refs.gtfsSelect.loadOptions('')
     }
 
-    const placeholder = messages.placeholder
+    const placeholder = getMessage(messages, 'placeholder')
     return (
     <Select
       ref='langSelect'

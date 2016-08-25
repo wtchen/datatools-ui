@@ -6,7 +6,7 @@ import Select from 'react-select'
 
 // import timezones from '../util/timezones'
 import moment_tz from 'moment-timezone'
-import { getComponentMessages } from '../util/config'
+import { getComponentMessages, getMessage } from '../util/config'
 
 export default class TimezoneSelect extends React.Component {
   constructor(props) {
@@ -49,7 +49,7 @@ export default class TimezoneSelect extends React.Component {
       // this.refs.gtfsSelect.loadOptions('')
     }
 
-    const placeholder = messages.placeholder
+    const placeholder = getMessage(messages, 'placeholder')
     return (
     <Select
       ref='tzSelect'

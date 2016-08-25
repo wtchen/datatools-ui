@@ -13,7 +13,7 @@ import ProjectSettings from './ProjectSettings'
 import FeedSourceTable from './FeedSourceTable'
 import EditableTextField from '../../common/components/EditableTextField'
 import { defaultSorter } from '../../common/util/util'
-import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 export default class ProjectViewer extends Component {
   static propTypes = {
@@ -83,7 +83,7 @@ export default class ProjectViewer extends Component {
               <MenuItem key='1'>Item</MenuItem>
             </DropdownButton>
             <FormControl
-              placeholder={messages.feeds.search}
+              placeholder={getMessage(messages, 'feeds.search')}
               onChange={evt => this.props.searchTextChanged(evt.target.value)}
             />
           </InputGroup>
@@ -95,7 +95,7 @@ export default class ProjectViewer extends Component {
             className='pull-right'
             onClick={() => this.props.onNewFeedSourceClick()}
           >
-            <Glyphicon glyph='plus' /> {messages.feeds.new}
+            <Glyphicon glyph='plus' /> {getMessage(messages, 'feeds.new')}
           </Button>
           <ButtonToolbar>
           {isExtensionEnabled('transitland') || isExtensionEnabled('transitfeeds') || isExtensionEnabled('mtc')
@@ -150,13 +150,13 @@ export default class ProjectViewer extends Component {
                 this.props.updateAllFeeds(this.props.project)
               }}
             >
-              <Icon name='cloud-download' /> {messages.feeds.update}
+              <Icon name='cloud-download' /> {getMessage(messages, 'feeds.update')}
             </Button>
             <Button
               bsStyle='primary'
               onClick={() => { this.props.downloadMergedFeed(this.props.project) }}
             >
-              <Glyphicon glyph='download'/> {messages.mergeFeeds}
+              <Glyphicon glyph='download'/> {getMessage(messages, 'mergeFeeds')}
             </Button>
           </ButtonToolbar>
         </Col>
@@ -229,7 +229,7 @@ export default class ProjectViewer extends Component {
           >
             <Tab
               eventKey='sources'
-              title={<span><Glyphicon className='icon-link' glyph='list' /><span className='hidden-xs'>{messages.feeds.title}</span></span>}
+              title={<span><Glyphicon className='icon-link' glyph='list' /><span className='hidden-xs'>{getMessage(messages, 'feeds.title')}</span></span>}
             >
               <Row>
                 <Col xs={12} sm={9}>
@@ -248,7 +248,7 @@ export default class ProjectViewer extends Component {
               ? <Tab
                   eventKey='deployments'
                   disabled={projectEditDisabled}
-                  title={<span><Glyphicon className='icon-link' glyph='globe' /><span className='hidden-xs'>{messages.deployments}</span></span>}
+                  title={<span><Glyphicon className='icon-link' glyph='globe' /><span className='hidden-xs'>{getMessage(messages, 'deployments')}</span></span>}
                 >
                   <DeploymentsPanel
                     deployments={this.props.project.deployments}
@@ -265,7 +265,7 @@ export default class ProjectViewer extends Component {
             <Tab
               eventKey='settings'
               disabled={projectEditDisabled}
-              title={<span><Glyphicon className='icon-link' glyph='cog'/><span className='hidden-xs'>{messages.settings}</span></span>}
+              title={<span><Glyphicon className='icon-link' glyph='cog'/><span className='hidden-xs'>{getMessage(messages, 'settings')}</span></span>}
             >
               <ProjectSettings
                 activeSettingsPanel={this.props.activeSubComponent}
@@ -323,7 +323,7 @@ class DeploymentsPanel extends Component {
                 <Row>
                 <Col xs={4}>
                   <FormControl
-                    placeholder={messages.search}
+                    placeholder={getMessage(messages, 'search')}
                     onChange={evt => this.props.searchTextChanged(evt.target.value)}
                   />
                 </Col>
@@ -334,7 +334,7 @@ class DeploymentsPanel extends Component {
                   className='pull-right'
                   onClick={() => this.props.onNewDeploymentClick()}
                 >
-                  <Glyphicon glyph='plus'/> {messages.new}
+                  <Glyphicon glyph='plus'/> {getMessage(messages, 'new')}
                 </Button>
                 </Col>
                 </Row>
@@ -343,10 +343,10 @@ class DeploymentsPanel extends Component {
               <Table striped hover fill>
                 <thead>
                   <tr>
-                    <th className='col-md-4'>{messages.table.name}</th>
-                    <th>{messages.table.creationDate}</th>
-                    <th>{messages.table.deployedTo}</th>
-                    <th>{messages.table.feedCount}</th>
+                    <th className='col-md-4'>{getMessage(messages, 'table.name')}</th>
+                    <th>{getMessage(messages, 'table.creationDate')}</th>
+                    <th>{getMessage(messages, 'table.deployedTo')}</th>
+                    <th>{getMessage(messages, 'table.feedCount')}</th>
                     <th></th>
                   </tr>
                 </thead>

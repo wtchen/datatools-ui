@@ -8,7 +8,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import ManagerPage from '../../common/components/ManagerPage'
-import { getConfigProperty } from '../../common/util/config'
+import { getConfigProperty, getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class UserAccount extends Component {
   static propTypes = {
@@ -27,6 +27,8 @@ export default class UserAccount extends Component {
       color: 'red',
       cursor: 'pointer'
     }
+    const messages = getComponentMessages('UserAccount')
+
     let subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
     const accountSections = [
       {
@@ -51,7 +53,7 @@ export default class UserAccount extends Component {
         id: 'organizations'
       },
       {
-        id: 'subscriptions',
+        id: 'notifications',
         hidden: !getConfigProperty('application.notifications_enabled'),
         component: <Panel header={<h4>Your Subscriptions</h4>}>
           <ul>
@@ -123,11 +125,11 @@ export default class UserAccount extends Component {
                 <ListGroup fill>
                   {accountSections.map(section => {
                     if (section.hidden) return null
-
+                    console.log(section.id, messages)
                     return (
                       <LinkContainer key={section.id} to={`/settings/${section.id}`}>
                         <ListGroupItem active={this.props.activeComponent === section.id}>
-                          {section.id}
+                          {getMessage(messages, `${section.id}.title`)}
                         </ListGroupItem>
                       </LinkContainer>
                     )

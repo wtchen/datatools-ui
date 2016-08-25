@@ -4,7 +4,7 @@ import { Glyphicon, Label } from 'react-bootstrap'
 import { PureComponent, shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class RegionSearch extends React.Component {
 
@@ -100,7 +100,7 @@ export default class RegionSearch extends React.Component {
       this.refs.gtfsSelect.loadOptions('')
     }
 
-    const placeholder = messages.placeholder
+    const placeholder = getMessage(messages, 'placeholder')
     return (
     <Select.Async
       ref='gtfsSelect'

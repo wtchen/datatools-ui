@@ -7,7 +7,7 @@ import moment from 'moment'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import EditableTextField from '../../common/components/EditableTextField'
-import { getConfigProperty, getComponentMessages } from '../../common/util/config'
+import { getConfigProperty, getComponentMessages, getMessage } from '../../common/util/config'
 import defaultSorter from '../../common/util/util'
 
 export default class UserHomePage extends Component {
@@ -16,7 +16,8 @@ export default class UserHomePage extends Component {
     user: PropTypes.object,
     projects: PropTypes.array,
 
-    onComponentMount: PropTypes.func
+    onComponentMount: PropTypes.func,
+    logoutHandler: PropTypes.func
   }
   constructor (props) {
     super(props)
@@ -76,7 +77,7 @@ export default class UserHomePage extends Component {
                 <Row>
                 <Col xs={12}>
                 <h4 style={{marginTop: 0, marginBottom: 15}}>
-                  <Button className='pull-right' bsSize='xsmall'><Icon name='sign-out'/> Log out</Button>
+                  <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon name='sign-out'/> Log out</Button>
                   Hello, {this.props.user.profile.nickname}.
                 </h4>
                 </Col>
@@ -86,8 +87,13 @@ export default class UserHomePage extends Component {
                     <img style={{ width: '100%', borderRadius: '50%' }} src={this.props.user.profile.picture} />
                   </Col>
                   <Col md={8}>
-                    <div style={{ color: '#666' }}><Icon name='user' /> {this.props.user.profile.email}</div>
-                    <div><Badge style= {{ backgroundColor: '#bbb' }}>Application Admin</Badge></div>
+                    <div className='text-muted'><Icon name='user' /> {this.props.user.profile.email}</div>
+                    <div><Badge className='text-muted'>
+                      {this.props.user.permissions.isApplicationAdmin()
+                        ? 'Application admin'
+                        : 'Standard plan'
+                      }
+                    </Badge></div>
                     <div style={{ marginTop: 15 }}>
                       <ButtonToolbar className='pull-right'>
                         <Button bsStyle='primary' bsSize='small'
@@ -142,7 +148,7 @@ export default class UserHomePage extends Component {
                 <ListGroup fill>
                   <ListGroupItem>
                     <FormControl
-                      placeholder={messages.search}
+                      placeholder={getMessage(messages, 'search')}
                       onChange={evt => this.props.searchTextChanged(evt.target.value)}
                     />
                     <ButtonGroup style={{marginTop: 10}} justified>

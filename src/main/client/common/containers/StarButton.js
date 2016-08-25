@@ -4,7 +4,7 @@ import { updateStar } from '../../manager/actions/user'
 import { connect } from 'react-redux'
 import { Icon } from 'react-fa'
 
-import { getComponentMessages } from '../util/config'
+import { getComponentMessages, getMessage } from '../util/config'
 
 class StarButton extends React.Component {
   render () {
@@ -16,8 +16,8 @@ class StarButton extends React.Component {
         dispatch(updateStar(user.profile, target, !isStarred))
       }}>
         {isStarred
-          ? <span><Icon name='star-o'/> {messages.unstar}</span>
-          : <span><Icon name='star'/> {messages.star}</span>
+          ? <span><Icon name='star-o'/> {getMessage(messages, 'unstar')}</span>
+          : <span><Icon name='star'/> {getMessage(messages, 'star')}</span>
         }
       </Button>
     )

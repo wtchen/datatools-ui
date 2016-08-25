@@ -10,7 +10,7 @@ import Breadcrumbs from '../../common/components/Breadcrumbs'
 import EditableTextField from '../../common/components/EditableTextField'
 import { versionsSorter, retrievalMethodString } from '../../common/util/util'
 import languages from '../../common/util/languages'
-import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class DeploymentViewer extends Component {
 
@@ -48,14 +48,14 @@ export default class DeploymentViewer extends Component {
                     bsStyle='default'
                     onClick={() => this.props.downloadDeployment(this.props.deployment)}
                   >
-                    <span><Glyphicon glyph='download' /> {messages.download}</span>
+                    <span><Glyphicon glyph='download' /> {getMessage(messages, 'download')}</span>
                   </Button>
                   <DropdownButton
                     bsStyle='primary'
                     disabled={!this.props.project.otpServers || !this.props.project.otpServers.length}
                     title={this.props.project.otpServers && this.props.project.otpServers.length
-                      ? <span><Glyphicon glyph='globe' /> {messages.deploy}</span>
-                      : <span>{messages.noServers}</span>
+                      ? <span><Glyphicon glyph='globe' /> {getMessage(messages, 'deploy')}</span>
+                      : <span>{getMessage(messages, 'noServers')}</span>
                     }
                     onSelect={(evt) => {
                       console.log(evt)
@@ -88,7 +88,7 @@ export default class DeploymentViewer extends Component {
             </Col>
           </Row>
           <Panel
-            header={(<h3><Glyphicon glyph='list' /> {messages.versions}</h3>)}
+            header={(<h3><Glyphicon glyph='list' /> {getMessage(messages, 'versions')}</h3>)}
             collapsible
             defaultExpanded={true}
           >
@@ -96,7 +96,7 @@ export default class DeploymentViewer extends Component {
               <Col xs={8} sm={6} md={4}>
                 <FormControl
                   type='text'
-                  placeholder={messages.search}
+                  placeholder={getMessage(messages, 'search')}
                   onChange={evt => this.props.searchTextChanged(evt.target.value)}
                 />
               </Col>
@@ -105,7 +105,7 @@ export default class DeploymentViewer extends Component {
                   bsStyle='primary'
                   className='pull-right'
                   disabled={!deployableFeeds.length}
-                  title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> {messages.addFeedSource}</span> : <span>{messages.allFeedsAdded}</span>}
+                  title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> {getMessage(messages, 'addFeedSource')}</span> : <span>{getMessage(messages, 'allFeedsAdded')}</span>}
                   onSelect={(evt) => {
                     console.log(evt)
                     let feed = deployableFeeds.find(fs => fs.id === evt)
@@ -125,16 +125,16 @@ export default class DeploymentViewer extends Component {
                 <Table striped hover>
                   <thead>
                     <tr>
-                      <th className='col-md-4'>{messages.table.name}</th>
+                      <th className='col-md-4'>{getMessage(messages, 'table.name')}</th>
                       <th>Version</th>
-                      <th className='hidden-xs'>{messages.table.dateRetrieved}</th>
-                      <th className='hidden-xs'>{messages.table.loadStatus}</th>
-                      <th className='hidden-xs'>{messages.table.errorCount}</th>
-                      <th className='hidden-xs'>{messages.table.routeCount}</th>
-                      <th className='hidden-xs'>{messages.table.tripCount}</th>
-                      <th className='hidden-xs'>{messages.table.stopTimesCount}</th>
-                      <th>{messages.table.validFrom}</th>
-                      <th>{messages.table.expires}</th>
+                      <th className='hidden-xs'>{getMessage(messages, 'table.dateRetrieved')}</th>
+                      <th className='hidden-xs'>{getMessage(messages, 'table.loadStatus')}</th>
+                      <th className='hidden-xs'>{getMessage(messages, 'table.errorCount')}</th>
+                      <th className='hidden-xs'>{getMessage(messages, 'table.routeCount')}</th>
+                      <th className='hidden-xs'>{getMessage(messages, 'table.tripCount')}</th>
+                      <th className='hidden-xs'>{getMessage(messages, 'table.stopTimesCount')}</th>
+                      <th>{getMessage(messages, 'table.validFrom')}</th>
+                      <th>{getMessage(messages, 'table.expires')}</th>
                       <th></th>
                     </tr>
                   </thead>

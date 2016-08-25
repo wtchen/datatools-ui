@@ -7,6 +7,7 @@ import Icon from 'react-fa'
 import SidebarNavItem from './SidebarNavItem'
 import SidebarPopover from './SidebarPopover'
 import JobMonitor from './JobMonitor'
+import { getComponentMessages, getMessage } from '../util/config'
 
 export default class Sidebar extends Component {
 
@@ -42,7 +43,7 @@ export default class Sidebar extends Component {
   }
 
   render () {
-    const messages = DT_CONFIG.messages.active.DatatoolsNavbar
+    const messages = getComponentMessages('DatatoolsNavbar')
 
     const navbarStyle = {
       width: this.props.expanded ? 150 : 50,

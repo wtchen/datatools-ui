@@ -11,7 +11,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import SelectFileModal from '../../common/components/SelectFileModal'
 import WatchButton from '../../common/containers/WatchButton'
-import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 export default class FeedSourceTable extends Component {
 
@@ -69,7 +69,7 @@ export default class FeedSourceTable extends Component {
               />
             })
           : <ListGroupItem className='text-center'>
-              <Button bsStyle='success' onClick={() => this.props.onNewFeedSourceClick()}><Icon name='plus'/> {messages.feeds.createFirst}</Button>
+              <Button bsStyle='success' onClick={() => this.props.onNewFeedSourceClick()}><Icon name='plus'/> {getMessage(messages, 'feeds.createFirst')}</Button>
             </ListGroupItem>
           }
       </ListGroup>
@@ -150,7 +150,7 @@ class FeedSourceTableRow extends Component {
         </span>
         <ul className='list-inline' style={{marginBottom: '0px'}}>
         {fs.lastUpdated
-          ? <li style={{minWidth: '200px'}}>{messages.feeds.table.lastUpdated} {moment(fs.lastUpdated).format(dateFormat)}</li>
+          ? <li style={{minWidth: '200px'}}>{getMessage(messages, 'feeds.table.lastUpdated')} {moment(fs.lastUpdated).format(dateFormat)}</li>
           : <li style={{minWidth: '200px'}}>No versions exist yet.</li>
         }
           {fs.latestValidation && fs.latestValidation.errorCount > 0
@@ -169,6 +169,10 @@ class FeedSourceTableRow extends Component {
             ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-success'><Icon name='map'/></li>
             : isModuleEnabled('deployment')
             ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon name='map-o'/></li>
+            : null
+          }
+          {fs.url
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon name='link'/></li>
             : null
           }
         </ul>

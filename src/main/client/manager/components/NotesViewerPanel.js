@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Panel, Glyphicon } from 'react-bootstrap'
 
 import NotesViewer from './NotesViewer'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class NotesViewerPanel extends Component {
 
@@ -36,14 +36,14 @@ export default class NotesViewerPanel extends Component {
   render () {
     const messages = getComponentMessages('NotesViewer')
     const type = this.props.type === 'feed-source'
-      ? messages.feedSource
-      : messages.feedVersion
+      ? getMessage(messages, 'feedSource')
+      : getMessage(messages, 'feedVersion')
     const header = (
       <h3 onClick={() => {
         if (!this.props.notes) this.props.notesRequested()
         this.setState({ expanded: !this.state.expanded })
       }}>
-        <Glyphicon glyph='comment' /> {messages.title} {type} {this.noteCount() !== null ? `(${this.noteCount()})` : ''}
+        <Glyphicon glyph='comment' /> {getMessage(messages, 'title')} {type} {this.noteCount() !== null ? `(${this.noteCount()})` : ''}
       </h3>
     )
     return (

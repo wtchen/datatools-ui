@@ -5,7 +5,7 @@ import { browserHistory, Link } from 'react-router'
 import { Icon } from 'react-fa'
 
 import Breadcrumbs from './Breadcrumbs'
-import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../util/config'
+import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../util/config'
 import JobMonitor from './JobMonitor'
 
 export default class DatatoolsNavbar extends Component {
@@ -30,15 +30,15 @@ export default class DatatoolsNavbar extends Component {
     const messages = getComponentMessages('DatatoolsNavbar')
 
     if (!this.props.username) {
-      userControl = (<NavItem onClick={this.props.loginHandler} href='#'>{messages.login}</NavItem>)
+      userControl = (<NavItem onClick={this.props.loginHandler} href='#'>{getMessage(messages, 'login')}</NavItem>)
     } else {
       userControl = (
         <NavDropdown title={
           <span><Glyphicon glyph='user' /> {this.props.username}</span>
         } id='basic-nav-dropdown'>
-        <MenuItem onClick={() => browserHistory.push('/account')}>{messages.account}</MenuItem>
-          <MenuItem onClick={this.props.resetPasswordHandler}>{messages.resetPassword}</MenuItem>
-          <MenuItem onClick={this.props.logoutHandler}>{messages.logout}</MenuItem>
+        <MenuItem onClick={() => browserHistory.push('/account')}>{getMessage(messages, 'account')}</MenuItem>
+          <MenuItem onClick={this.props.resetPasswordHandler}>{getMessage(messages, 'resetPassword')}</MenuItem>
+          <MenuItem onClick={this.props.logoutHandler}>{getMessage(messages, 'logout')}</MenuItem>
         </NavDropdown>
       )
     }
@@ -116,7 +116,7 @@ export default class DatatoolsNavbar extends Component {
             {projectControl}
             {this.props.docsUrl
               ? <NavItem href={this.props.docsUrl} active={this.props.docsUrl === '#'}>
-                  <Glyphicon glyph='question-sign' /> {messages.guide}
+                  <Glyphicon glyph='question-sign' /> {getMessage(messages, 'guide')}
                 </NavItem>
               : null
             }

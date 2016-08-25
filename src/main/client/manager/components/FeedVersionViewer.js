@@ -11,7 +11,7 @@ import NotesViewer from './NotesViewer'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsPlusVersionSummary from '../../gtfsplus/containers/ActiveGtfsPlusVersionSummary'
-import { isModuleEnabled, getComponentMessages, getConfigProperty } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 const dateFormat = 'MMM. DD, YYYY'
 const timeFormat = 'h:MMa'
@@ -33,14 +33,19 @@ export default class FeedVersionViewer extends Component {
     downloadFeedClicked: PropTypes.func,
     loadFeedVersionForEditing: PropTypes.func
   }
-
+  getVersionDateLabel (version) {
+    const now = +moment()
+    const future = version.validationSummary && version.validationSummary.startDate > now
+    const expired = version.validationSummary && version.validationSummary.endDate < now
+    return version.validationSummary
+      ? <Label bsStyle={future ? 'info' : expired ? 'danger' : 'success'}>{future ? 'future' : expired ? 'expired' : 'active'}</Label>
+      : null
+  }
   render () {
     const version = this.props.version
-
-
     const messages = getComponentMessages('FeedVersionViewer')
 
-    if (!version) return <p>{messages.noVersionsExist}</p>
+    if (!version) return <p>{getMessage(messages, 'noVersionsExist')}</p>
 
     const fsCenter = version.validationSummary && version.validationSummary.bounds
       ? `${(version.validationSummary.bounds.east + version.validationSummary.bounds.west) / 2},${(version.validationSummary.bounds.north + version.validationSummary.bounds.south) / 2}`
@@ -51,7 +56,6 @@ export default class FeedVersionViewer extends Component {
     const mapUrl = fsCenter
       ? `https://api.mapbox.com/v4/mapbox.light/${fsOverlay}${fsCenter},6/1000x800@2x.png?access_token=${getConfigProperty('mapbox.access_token')}`
       : ''
-
     const versionHeader = (
       <div>
       <h4
@@ -71,52 +75,9 @@ export default class FeedVersionViewer extends Component {
               onChange={(value) => this.props.feedVersionRenamed(version, value)}
             />
         }
-        <ConfirmModal ref='confirm' />
-        {/* Version-Specific Button Toolbar */}
-        <ButtonToolbar className='pull-right'>
-
-          {/* "Download Feed" Button */}
-          <Button bsStyle='primary'
-            disabled={!this.props.hasVersions}
-            onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
-          >
-            <Glyphicon glyph='download' /><span className='hidden-xs'> {messages.download}</span><span className='hidden-xs hidden-sm'> {messages.feed}</span>
-          </Button>
-
-          {/* "Load for Editing" Button */}
-          {isModuleEnabled('editor') && !this.props.isPublic
-            ? <Button bsStyle='success'
-                disabled={!this.props.hasVersions}
-                onClick={(evt) => {
-                  this.refs.confirm.open({
-                    title: messages.load,
-                    body: messages.confirmLoad,
-                    onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
-                  })
-                }}
-              >
-                <Glyphicon glyph='pencil' /><span className='hidden-xs'> {messages.load}</span>
-              </Button>
-            : null
-          }
-
-          {/* "Delete Version" Button */}
-          {!this.props.isPublic
-            ? <Button bsStyle='danger'
-                disabled={this.props.deleteDisabled || !this.props.hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
-                onClick={(evt) => {
-                  this.refs.confirm.open({
-                    title: `${messages.delete} ${messages.version}`,
-                    body: messages.confirmDelete,
-                    onConfirm: () => { this.props.deleteFeedVersionConfirmed(version) }
-                  })
-                }}
-              >
-                <Glyphicon glyph='trash' /><span className='hidden-xs'> {messages.delete}</span><span className='hidden-xs hidden-sm'> {messages.version}</span>
-              </Button>
-            : null
-          }
-        </ButtonToolbar>
+        <VersionButtonToolbar
+          {...this.props}
+        />
       </h4>
       <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}><Icon name='clock-o'/> Version published {moment(version.updated).fromNow()}</small>
       </div>
@@ -134,6 +95,14 @@ export default class FeedVersionViewer extends Component {
                         return (
                           <ListGroupItem>
                             {v.name}
+                            {' '}
+                            <small>
+                            {this.getVersionDateLabel(v)}
+                            </small>
+                            <VersionButtonToolbar
+                              version={v}
+                              {...this.props}
+                            />
                           </ListGroupItem>
                         )
                       })
@@ -191,32 +160,40 @@ export default class FeedVersionViewer extends Component {
                           />
                         </ListGroupItem>
                         <ListGroupItem
-                          header={`${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
+                          header={
+                            <h4>
+                              {`${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
+                              {' '}
+                              <small>
+                                {this.getVersionDateLabel(version)}
+                              </small>
+                            </h4>
+                          }
                         >
-                          <Icon name='calendar'/> {messages.validDates}
+                          <Icon name='calendar'/> {getMessage(messages, 'validDates')}
                         </ListGroupItem>
                         <ListGroupItem>
                           <Row>
                             <Col xs={3} className='text-center'>
                               <p title={`${version.validationSummary.agencyCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.agencyCount).format('0 a')}</p>
-                              <p style={{marginBottom: '0px'}}>{messages.agencyCount}</p>
+                              <p style={{marginBottom: '0px'}}>{getMessage(messages, 'agencyCount')}</p>
                             </Col>
                             <Col xs={3} className='text-center'>
                               <p title={`${version.validationSummary.routeCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.routeCount).format('0 a')}</p>
-                              <p style={{marginBottom: '0px'}}>{messages.routeCount}</p>
+                              <p style={{marginBottom: '0px'}}>{getMessage(messages, 'routeCount')}</p>
                             </Col>
                             <Col xs={3} className='text-center'>
                               <p title={`${version.validationSummary.tripCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.tripCount).format('0 a')}</p>
-                              <p style={{marginBottom: '0px'}}>{messages.tripCount}</p>
+                              <p style={{marginBottom: '0px'}}>{getMessage(messages, 'tripCount')}</p>
                             </Col>
                             <Col xs={3} className='text-center'>
                               <p title={`${version.validationSummary.stopTimesCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.stopTimesCount).format('0 a')}</p>
-                              <p style={{marginBottom: '0px'}}>{messages.stopTimesCount}</p>
+                              <p style={{marginBottom: '0px'}}>{getMessage(messages, 'stopTimesCount')}</p>
                             </Col>
                           </Row>
                         </ListGroupItem>
                         <ListGroupItem>
-                          <Icon name='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(dateFormat + ', ' + timeFormat) : 'N/A' }
+                          <Icon name='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }
                         </ListGroupItem>
                     </ListGroup>
                   </Panel>
@@ -247,8 +224,62 @@ export default class FeedVersionViewer extends Component {
             </Col>
           </Row>
         )
-
     }
+  }
+}
 
+class VersionButtonToolbar extends Component {
+  render () {
+    const version = this.props.version
+    const messages = getComponentMessages('FeedVersionViewer')
+    return (
+      <div style={{display: 'inline'}}>
+      <ConfirmModal ref='confirm' />
+      <ButtonToolbar className='pull-right'>
+
+        {/* "Download Feed" Button */}
+        <Button bsStyle='primary'
+          disabled={!this.props.hasVersions}
+          onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
+        >
+          <Glyphicon glyph='download' /><span className='hidden-xs'> {getMessage(messages, 'download')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'feed')}</span>
+        </Button>
+
+        {/* "Load for Editing" Button */}
+        {isModuleEnabled('editor') && !this.props.isPublic
+          ? <Button bsStyle='success'
+              disabled={!this.props.hasVersions}
+              onClick={(evt) => {
+                this.refs.confirm.open({
+                  title: getMessage(messages, 'load'),
+                  body: getMessage(messages, 'confirmLoad'),
+                  onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
+                })
+              }}
+            >
+              <Glyphicon glyph='pencil' /><span className='hidden-xs'> {getMessage(messages, 'load')}</span>
+            </Button>
+          : null
+        }
+
+        {/* "Delete Version" Button */}
+        {!this.props.isPublic
+          ? <Button bsStyle='danger'
+              disabled={this.props.deleteDisabled || !this.props.hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
+              onClick={(evt) => {
+                this.refs.confirm.open({
+                  title: `${getMessage(messages, 'delete')} ${getMessage(messages, 'version')}`,
+                  body: getMessage(messages, 'confirmDelete'),
+                  onConfirm: () => { this.props.deleteFeedVersionConfirmed(version) }
+                })
+              }}
+            >
+              <Glyphicon glyph='trash' /><span className='hidden-xs'> {getMessage(messages, 'delete')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'version')}</span>
+            </Button>
+          : null
+        }
+      </ButtonToolbar>
+      </div>
+    )
   }
 }

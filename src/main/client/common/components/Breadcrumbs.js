@@ -4,7 +4,7 @@ import { SplitButton, MenuItem } from 'react-bootstrap'
 import { connect } from 'react-redux'
 
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
-import { getComponentMessages } from '../util/config'
+import { getComponentMessages, getMessage } from '../util/config'
 
 class Breadcrumbs extends React.Component {
   constructor (props) {
@@ -50,9 +50,9 @@ class Breadcrumbs extends React.Component {
         }}
         className='breadcrumb' // col-sm-6'
       >
-        <li><Link to='/'>{messages.root}</Link></li>
+        <li><Link to='/'>{getMessage(messages, 'root')}</Link></li>
         {this.props.project
-          ? <li><Link to='/project'>{messages.projects}</Link></li>
+          ? <li><Link to='/project'>{getMessage(messages, 'projects')}</Link></li>
           : null
         }
         {/* active project OR link to project */}
@@ -67,7 +67,7 @@ class Breadcrumbs extends React.Component {
           : null
         }
         {this.props.deployment
-          ? <li><Link to={`/project/${this.props.deployment.project.id}/deployments`}>{messages.deployments}</Link></li>
+          ? <li><Link to={`/project/${this.props.deployment.project.id}/deployments`}>{getMessage(messages, 'deployments')}</Link></li>
           : null
         }
         {this.props.deployment

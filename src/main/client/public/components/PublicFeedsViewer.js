@@ -8,7 +8,7 @@ import RegionSearch from './RegionSearch'
 
 import PublicPage from './PublicPage'
 import FeedsMap from './FeedsMap'
-import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class PublicFeedsViewer extends React.Component {
 
@@ -159,13 +159,13 @@ class PublicFeedsTable extends React.Component {
         search={true}
       >
         <TableHeaderColumn isKey={true} dataSort={true} hidden={true} dataField='id'>Feed ID</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='name' dataFormat={this.feedFormat}>{messages.name}</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='region'>{messages.region}</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='state'>{messages.stateProvince}</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='country'>{messages.country}</TableHeaderColumn>
-        <TableHeaderColumn dataSort={true} dataField='lastUpdated' sortFunc={this.dateSort}>{messages.lastUpdated}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='name' dataFormat={this.feedFormat}>{getMessage(messages, 'name')}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='region'>{getMessage(messages, 'region')}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='state'>{getMessage(messages, 'stateProvince')}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='country'>{getMessage(messages, 'country')}</TableHeaderColumn>
+        <TableHeaderColumn dataSort={true} dataField='lastUpdated' sortFunc={this.dateSort}>{getMessage(messages, 'lastUpdated')}</TableHeaderColumn>
         <TableHeaderColumn dataSort={true} dataField='lastUpdated' hidden={true}>last_update</TableHeaderColumn>
-        <TableHeaderColumn dataField='url' dataFormat={this.urlFormat}>{messages.link}</TableHeaderColumn>
+        <TableHeaderColumn dataField='url' dataFormat={this.urlFormat}>{getMessage(messages, 'link')}</TableHeaderColumn>
       </BootstrapTable>
     )
   }

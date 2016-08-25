@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
+
 import UserHomePage from '../components/UserHomePage'
-import { getRecentActivity } from '../actions/user'
+import { getRecentActivity, logout } from '../actions/user'
 import { fetchProjects } from '../actions/projects'
 import { fetchProjectFeeds } from '../actions/feeds'
 
@@ -21,7 +22,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(fetchProjectFeeds(projects[i].id))
         }
       })
-    }
+    },
+    logoutHandler: () => { dispatch(logout()) }
   }
 }
 

@@ -6,7 +6,7 @@ import Icon from 'react-fa'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class UserAdmin extends Component {
   static propTypes = {
@@ -31,7 +31,7 @@ export default class UserAdmin extends Component {
     return (
       <ManagerPage ref='page'>
       <Helmet
-        title={messages.title}
+        title={getMessage(messages, 'title')}
       />
       <Grid>
         <Row style={{ marginBottom: '18px' }}>
@@ -42,7 +42,7 @@ export default class UserAdmin extends Component {
                   Back to dashboard
                 </Button>
               </LinkContainer>
-              <Icon name='cog'/> {messages.title}
+              <Icon name='cog'/> {getMessage(messages, 'title')}
             </h2>
           </Col>
         </Row>
@@ -97,7 +97,7 @@ export default class UserAdmin extends Component {
               </div>
             : <div>
                 {this.props.user
-                  ? <p>{messages.noAccess}</p>
+                  ? <p>{getMessage(messages, 'noAccess')}</p>
                   : <h1
                       className='text-center'
                       style={{

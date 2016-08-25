@@ -3,7 +3,7 @@ import { Panel, Table, Glyphicon, Button, Badge } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import Icon from 'react-fa'
 
-import { isModuleEnabled, isExtensionEnabled, getComponentMessages } from '../../../common/util/config'
+import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage } from '../../../common/util/config'
 
 export default class GtfsValidationViewer extends React.Component {
 
@@ -28,7 +28,7 @@ export default class GtfsValidationViewer extends React.Component {
         if(!result) this.props.fetchValidationResult()
         this.setState({ expanded: !this.state.expanded })
       }}>
-        <Glyphicon glyph='check' /> {messages.title}
+        <Glyphicon glyph='check' /> {getMessage(messages, 'title')}
       </h3>
     )
 
@@ -44,22 +44,22 @@ export default class GtfsValidationViewer extends React.Component {
       report = (
         <div>
           <ResultTable
-            title={messages.routeIssues}
+            title={getMessage(messages, 'routeIssues')}
             invalidValues={errors.routes}
           />
 
           <ResultTable
-            title={messages.stopIssues}
+            title={getMessage(messages, 'stopIssues')}
             invalidValues={errors.stops}
           />
 
           <ResultTable
-            title={messages.tripIssues}
+            title={getMessage(messages, 'tripIssues')}
             invalidValues={errors.trips}
           />
 
           <ResultTable
-            title={messages.shapeIssues}
+            title={getMessage(messages, 'shapeIssues')}
             invalidValues={errors.shapes}
           />
 
@@ -70,7 +70,7 @@ export default class GtfsValidationViewer extends React.Component {
         </div>
       )
     } else if (result) {
-      report = (<div>{messages.noResults}</div>)
+      report = (<div>{getMessage(messages, 'noResults')}</div>)
     }
 
     return <div>
@@ -81,7 +81,7 @@ export default class GtfsValidationViewer extends React.Component {
               bsSize='large'
               bsStyle='primary'
             >
-              {messages.explorer}
+              {getMessage(messages, 'explorer')}
             </Button>
           : null
         }
@@ -119,10 +119,10 @@ class ResultTable extends React.Component {
         <Table striped style={tableStyle} fill>
           <thead>
             <tr>
-              <th>{messages.problemType}</th>
-              <th>{messages.priority}</th>
-              <th>{messages.affectedIds}</th>
-              <th className='col-md-6'>{messages.description}</th>
+              <th>{getMessage(messages, 'problemType')}</th>
+              <th>{getMessage(messages, 'priority')}</th>
+              <th>{getMessage(messages, 'affectedIds')}</th>
+              <th className='col-md-6'>{getMessage(messages, 'description')}</th>
             </tr>
           </thead>
           <tbody>

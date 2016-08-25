@@ -7,7 +7,7 @@ import Icon from 'react-fa'
 import CreateUser from './CreateUser'
 import UserSettings from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class UserList extends Component {
   static propTypes = {
@@ -68,7 +68,7 @@ export default class UserList extends Component {
               </Button>
             </ButtonGroup>
             {this.props.userCount > 0
-              ? <span style={headerStyle}>{messages.showing} {minUserIndex } - {maxUserIndex} {messages.of} {this.props.userCount}</span>
+              ? <span style={headerStyle}>{getMessage(messages, 'showing')} {minUserIndex } - {maxUserIndex} {getMessage(messages, 'of')} {this.props.userCount}</span>
               : <span style={headerStyle}>(No results to show)</span>
             }
           </Col>
@@ -80,7 +80,7 @@ export default class UserList extends Component {
                 <InputGroup ref='foo'>
                   <FormControl type='text'
                     ref='searchInput'
-                    placeholder={messages.search}
+                    placeholder={getMessage(messages, 'search')}
                     onKeyUp={e => {
                       if (e.keyCode === 13) this.userSearch()
                     }}

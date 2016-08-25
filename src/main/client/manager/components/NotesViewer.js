@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar, Media } from 'react-bootstrap'
 
 import WatchButton from '../../common/containers/WatchButton'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class NotesViewer extends Component {
 
@@ -50,13 +50,13 @@ export default class NotesViewer extends Component {
                 subscriptionType={this.props.version ? 'feedversion-commented-on' : 'feed-commented-on'}
               />
               <Button
-                title={messages.refresh}
+                title={getMessage(messages, 'refresh')}
                 onClick={() => { this.props.notesRequested() }}
               >
-                <Glyphicon glyph='refresh' /><span className='hidden-xs'> {messages.refresh}</span>
+                <Glyphicon glyph='refresh' /><span className='hidden-xs'> {getMessage(messages, 'refresh')}</span>
               </Button>
             </ButtonToolbar>
-            {messages.all}
+            {getMessage(messages, 'all')}
           </h3>
           {this.props.notes && this.props.notes.length > 0
             ? this.props.notes.map(note => {
@@ -73,12 +73,12 @@ export default class NotesViewer extends Component {
                   </Media>
                 )
               })
-            : <p><i>{messages.none}</i></p>
+            : <p><i>{getMessage(messages, 'none')}</i></p>
 
           }
         </Col>
         <Col xs={12} sm={this.props.stacked ? 12 : 4} md={this.props.stacked ? 12 : 6}>
-          <h3>{messages.postComment}</h3>
+          <h3>{getMessage(messages, 'postComment')}</h3>
           <Media>
            <Media.Left>
               <img width={64} height={64} src={this.props.user ? this.props.user.profile.picture : ''}/>
@@ -103,7 +103,7 @@ export default class NotesViewer extends Component {
                     })
                     this.setState({value: ''})
                   }}
-                >{messages.new}</Button>
+                >{getMessage(messages, 'new')}</Button>
               </Panel>
             </Media.Body>
           </Media>

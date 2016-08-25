@@ -3,7 +3,7 @@ import { Button, Glyphicon, MenuItem } from 'react-bootstrap'
 import { updateTargetForSubscription } from '../../manager/actions/user'
 import { connect } from 'react-redux'
 
-import { getComponentMessages, getConfigProperty } from '../util/config'
+import { getComponentMessages, getMessage, getConfigProperty } from '../util/config'
 
 class WatchButton extends React.Component {
   render () {
@@ -18,8 +18,8 @@ class WatchButton extends React.Component {
             onClick={() => dispatch(updateTargetForSubscription(user.profile, target, subscriptionType)) }
           >
           {
-            isWatching ? <span><Glyphicon glyph='eye-close'/> {messages.unwatch}</span>
-            : <span><Glyphicon glyph='eye-open'/> {messages.watch}</span>
+            isWatching ? <span><Glyphicon glyph='eye-close'/> {getMessage(messages, 'unwatch')}</span>
+            : <span><Glyphicon glyph='eye-open'/> {getMessage(messages, 'watch')}</span>
           }
         </MenuItem>
       )
@@ -30,8 +30,8 @@ class WatchButton extends React.Component {
             onClick={() => dispatch(updateTargetForSubscription(user.profile, target, subscriptionType)) }
           >
             {
-              isWatching ? <span><Glyphicon glyph='eye-close'/> {messages.unwatch}</span>
-              : <span><Glyphicon glyph='eye-open'/> {messages.watch}</span>
+              isWatching ? <span><Glyphicon glyph='eye-close'/> {getMessage(messages, 'unwatch')}</span>
+              : <span><Glyphicon glyph='eye-open'/> {getMessage(messages, 'watch')}</span>
             }
           </Button>
       )

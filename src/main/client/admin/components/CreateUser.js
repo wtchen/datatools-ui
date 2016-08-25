@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 
 import UserSettings  from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
-import { getComponentMessages } from '../../common/util/config'
+import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class CreateUser extends React.Component {
 
@@ -69,7 +69,7 @@ export default class CreateUser extends React.Component {
             />
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.save.bind(this)}>{messages.new}</Button>
+            <Button onClick={this.save.bind(this)}>{getMessage(messages, 'new')}</Button>
           </Modal.Footer>
         </Modal>
       </div>

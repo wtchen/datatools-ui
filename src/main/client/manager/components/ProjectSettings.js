@@ -12,7 +12,7 @@ import { Row, Col, Button, Panel, Glyphicon, Form, Tabs, Tab, Radio, Checkbox, F
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
 // import languages from '../../common/util/languages'
-import { isModuleEnabled, getComponentMessages } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 import MapModal from '../../common/components/MapModal.js'
 
 export default class ProjectSettings extends Component {
@@ -60,7 +60,7 @@ export default class ProjectSettings extends Component {
     const defaultFetchTime = moment().startOf('day').add(2, 'hours')
     const activeSettingsPanel = !this.props.activeSettingsPanel
       ? <div className='general-settings-panel'>
-          <Panel header={<h4>{messages.title}</h4>}>
+          <Panel header={<h4>{getMessage(messages, 'title')}</h4>}>
             <ListGroup fill>
               <ListGroupItem>
               <FormGroup inline>
@@ -76,7 +76,7 @@ export default class ProjectSettings extends Component {
                     <Button
                       disabled={!this.state.name}
                       onClick={() => {
-                        this.props.feedSourcePropertyChanged(project, 'name', this.state.name)
+                        this.props.updateProjectSettings(project, {name: this.state.name})
                         .then(() => this.setState({name: null}))
                       }}
                     >Rename</Button>
@@ -86,7 +86,7 @@ export default class ProjectSettings extends Component {
               </ListGroupItem>
             </ListGroup>
           </Panel>
-          <Panel header={<h4>{messages.general.updates.title}</h4>}>
+          <Panel header={<h4>{getMessage(messages, 'general.updates.title')}</h4>}>
             <ListGroup fill>
               <ListGroupItem>
                 <FormGroup>
@@ -99,7 +99,7 @@ export default class ProjectSettings extends Component {
                     this.setState(update(this.state, stateUpdate))
                   }}
                 >
-                  <strong>{messages.general.updates.autoFetchFeeds}</strong>
+                  <strong>{getMessage(messages, 'general.updates.autoFetchFeeds')}</strong>
                 </Checkbox>
                 {autoFetchChecked
                   ? <DateTimeField
@@ -122,11 +122,11 @@ export default class ProjectSettings extends Component {
               </ListGroupItem>
             </ListGroup>
           </Panel>
-          <Panel header={<h4>{messages.general.location.title}</h4>}>
+          <Panel header={<h4>{getMessage(messages, 'general.location.title')}</h4>}>
             <ListGroup fill>
               <ListGroupItem>
                 <FormGroup>
-                  <ControlLabel><Glyphicon glyph='map-marker' /> {messages.general.location.defaultLocation}</ControlLabel>
+                  <ControlLabel><Glyphicon glyph='map-marker' /> {getMessage(messages, 'general.location.defaultLocation')}</ControlLabel>
                   <InputGroup ref='defaultLocationGroup'>
                     <FormControl
                       type='text'
@@ -177,7 +177,7 @@ export default class ProjectSettings extends Component {
               </ListGroupItem>
               <ListGroupItem>
                 <FormGroup>
-                  <ControlLabel><Glyphicon glyph='fullscreen' /> {messages.general.location.boundingBox}</ControlLabel>
+                  <ControlLabel><Glyphicon glyph='fullscreen' /> {getMessage(messages, 'general.location.boundingBox')}</ControlLabel>
                   <InputGroup ref='boundingBoxGroup'>
                     <FormControl
                       type='text'
@@ -229,7 +229,7 @@ export default class ProjectSettings extends Component {
                 </FormGroup>
               </ListGroupItem>
               <ListGroupItem>
-                <ControlLabel><Glyphicon glyph='time' /> {messages.general.location.defaultTimeZone}</ControlLabel>
+                <ControlLabel><Glyphicon glyph='time' /> {getMessage(messages, 'general.location.defaultTimeZone')}</ControlLabel>
                 <TimezoneSelect
                   value={this.state.general.defaultTimeZone || project.defaultTimeZone}
                   onChange={(option) => {
@@ -239,7 +239,7 @@ export default class ProjectSettings extends Component {
                 />
               </ListGroupItem>
               <ListGroupItem>
-                <ControlLabel><Glyphicon glyph='globe' /> {messages.general.location.defaultLanguage}</ControlLabel>
+                <ControlLabel><Glyphicon glyph='globe' /> {getMessage(messages, 'general.location.defaultLanguage')}</ControlLabel>
                 <LanguageSelect
                   value={this.state.general.defaultLanguage || project.defaultLanguage}
                   onChange={(option) => {
@@ -273,20 +273,20 @@ export default class ProjectSettings extends Component {
                   this.props.updateProjectSettings(project, this.state.general)
                 }}
               >
-                {messages.save}
+                {getMessage(messages, 'save')}
               </Button>
             </Col>
           </Row>
       </div>
       : <div className='general-settings-panel'>
-          <Panel header={<h4>{messages.deployment.buildConfig.title}</h4>}>
+          <Panel header={<h4>{getMessage(messages, 'deployment.buildConfig.title')}</h4>}>
             <Row>
             <Col xs={6}>
             <FormGroup>
               <FormControl
                 componentClass='select'
                 defaultValue={project.buildConfig && project.buildConfig.fetchElevationUS ? project.buildConfig.fetchElevationUS : ''}
-                label={messages.deployment.buildConfig.fetchElevationUS}
+                label={getMessage(messages, 'deployment.buildConfig.fetchElevationUS')}
                 ref='fetchElevationUS'
                 onChange={(evt) => {
                   let stateUpdate = { deployment: { buildConfig: { fetchElevationUS: { $set: (evt.target.value === 'true') } } } }
@@ -303,7 +303,7 @@ export default class ProjectSettings extends Component {
             <FormControl
               componentClass='select'
               defaultValue={project.buildConfig && project.buildConfig.stationTransfers ? project.buildConfig.stationTransfers : ''}
-              label={messages.deployment.buildConfig.stationTransfers}
+              label={getMessage(messages, 'deployment.buildConfig.stationTransfers')}
               ref='stationTransfers'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { buildConfig: { stationTransfers: { $set: (evt.target.value === 'true') } } } }
@@ -320,7 +320,7 @@ export default class ProjectSettings extends Component {
             <FormControl
               defaultValue={project.buildConfig && project.buildConfig.subwayAccessTime ? project.buildConfig.subwayAccessTime : ''}
               placeholder='2.5 (min)'
-              label={messages.deployment.buildConfig.subwayAccessTime}
+              label={getMessage(messages, 'deployment.buildConfig.subwayAccessTime')}
               ref='subwayAccessTime'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { buildConfig: { subwayAccessTime: { $set: +evt.target.value } } } }
@@ -332,7 +332,7 @@ export default class ProjectSettings extends Component {
             <FormControl
               defaultValue={project.buildConfig && project.buildConfig.fares ? project.buildConfig.fares : ''}
               placeholder='fares'
-              label={messages.deployment.buildConfig.fares}
+              label={getMessage(messages, 'deployment.buildConfig.fares')}
               ref='fares'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { buildConfig: { fares: { $set: evt.target.value } } } }
@@ -349,7 +349,7 @@ export default class ProjectSettings extends Component {
               type='integer'
               defaultValue={project.routerConfig && project.routerConfig.numItineraries ? project.routerConfig.numItineraries : ''}
               placeholder='6'
-              label={messages.deployment.buildConfig.numItineraries}
+              label={getMessage(messages, 'deployment.buildConfig.numItineraries')}
               ref='numItineraries'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { routerConfig: { numItineraries: { $set: +evt.target.value } } } }
@@ -364,7 +364,7 @@ export default class ProjectSettings extends Component {
               type='number'
               defaultValue={project.routerConfig && project.routerConfig.walkSpeed ? project.routerConfig.walkSpeed : ''}
               placeholder='3.0'
-              label={messages.deployment.buildConfig.walkSpeed}
+              label={getMessage(messages, 'deployment.buildConfig.walkSpeed')}
               ref='walkSpeed'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
@@ -381,7 +381,7 @@ export default class ProjectSettings extends Component {
               type='number'
               defaultValue={project.routerConfig && project.routerConfig.stairsReluctance ? project.routerConfig.stairsReluctance : ''}
               placeholder='2.0'
-              label={messages.deployment.buildConfig.stairsReluctance}
+              label={getMessage(messages, 'deployment.buildConfig.stairsReluctance')}
               ref='stairsReluctance'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
@@ -396,7 +396,7 @@ export default class ProjectSettings extends Component {
               type='number'
               defaultValue={project.routerConfig && project.routerConfig.carDropoffTime ? project.routerConfig.carDropoffTime : ''}
               placeholder='240 (sec)'
-              label={messages.deployment.buildConfig.carDropoffTime}
+              label={getMessage(messages, 'deployment.buildConfig.carDropoffTime')}
               ref='carDropoffTime'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
@@ -411,7 +411,7 @@ export default class ProjectSettings extends Component {
               type='text'
               defaultValue={project.routerConfig && project.routerConfig.brandingUrlRoot ? project.routerConfig.brandingUrlRoot : ''}
               placeholder='http://gtfs.example.com/branding'
-              label={messages.deployment.buildConfig.brandingUrlRoot}
+              label={getMessage(messages, 'deployment.buildConfig.brandingUrlRoot')}
               ref='brandingUrlRoot'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
@@ -431,9 +431,9 @@ export default class ProjectSettings extends Component {
                   this.setState(update(this.state, stateUpdate))
                 }}
               >
-                <Glyphicon glyph='plus'/> {messages.deployment.servers.new}
+                <Glyphicon glyph='plus'/> {getMessage(messages, 'deployment.servers.new')}
               </Button>
-              {messages.deployment.servers.title}
+              {getMessage(messages, 'deployment.servers.title')}
             </h4>
           }>
             <div>
@@ -446,7 +446,7 @@ export default class ProjectSettings extends Component {
               )
               return (
                 <Panel key={i}
-                  header={server.name ? title : `[${messages.deployment.servers.serverPlaceholder}]`}
+                  header={server.name ? title : `[${getMessage(messages, 'deployment.servers.serverPlaceholder')}]`}
                   defaultExpanded={server.name === ''}
                   collapsible
                 >
@@ -463,10 +463,10 @@ export default class ProjectSettings extends Component {
                       Remove <Glyphicon glyph='remove'/>
                     </Button>
                     <FormGroup>
-                      <ControlLabel>{messages.deployment.servers.name}</ControlLabel>
+                      <ControlLabel>{getMessage(messages, 'deployment.servers.name')}</ControlLabel>
                       <FormControl
                         type='text'
-                        placeholder={messages.deployment.servers.namePlaceholder}
+                        placeholder={getMessage(messages, 'deployment.servers.namePlaceholder')}
                         defaultValue={server.name}
                         onChange={(evt) => {
                           let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { name: evt.target.value } } } } }
@@ -475,7 +475,7 @@ export default class ProjectSettings extends Component {
                       />
                     </FormGroup>
                     <FormGroup>
-                      <ControlLabel>{messages.deployment.servers.public}</ControlLabel>
+                      <ControlLabel>{getMessage(messages, 'deployment.servers.public')}</ControlLabel>
                       <FormControl
                         type='text'
                         placeholder='http://otp.example.com'
@@ -487,7 +487,7 @@ export default class ProjectSettings extends Component {
                       />
                     </FormGroup>
                     <FormGroup>
-                      <ControlLabel>{messages.deployment.servers.internal}</ControlLabel>
+                      <ControlLabel>{getMessage(messages, 'deployment.servers.internal')}</ControlLabel>
                       <FormControl
                         type='text'
                         placeholder='http://127.0.0.1/otp,http://0.0.0.0/otp'
@@ -505,7 +505,7 @@ export default class ProjectSettings extends Component {
                         this.setState(update(this.state, stateUpdate))
                       }}
                     >
-                      {messages.deployment.servers.admin}
+                      {getMessage(messages, 'deployment.servers.admin')}
                     </Checkbox>
                   </Form>
                 </Panel>
@@ -515,7 +515,7 @@ export default class ProjectSettings extends Component {
             }
             </div>
           </Panel>
-          <Panel header={<h4>{messages.deployment.osm.title}</h4>}>
+          <Panel header={<h4>{getMessage(messages, 'deployment.osm.title')}</h4>}>
             <FormGroup
               onChange={(evt) => {
                 let stateUpdate = { deployment: { useCustomOsmBounds: { $set: (evt.target.value === 'true') } } }
@@ -527,14 +527,14 @@ export default class ProjectSettings extends Component {
                 checked={typeof this.state.deployment.useCustomOsmBounds !== 'undefined' ? !this.state.deployment.useCustomOsmBounds : !project.useCustomOsmBounds}
                 value={false}
               >
-                {messages.deployment.osm.gtfs}
+                {getMessage(messages, 'deployment.osm.gtfs')}
               </Radio>
               <Radio
                 name='osm-extract'
                 checked={typeof this.state.deployment.useCustomOsmBounds !== 'undefined' ? this.state.deployment.useCustomOsmBounds : project.useCustomOsmBounds}
                 value={true}
               >
-                {messages.deployment.osm.custom}
+                {getMessage(messages, 'deployment.osm.custom')}
               </Radio>
             </FormGroup>
             {project.useCustomOsmBounds || this.state.deployment.useCustomOsmBounds
@@ -542,7 +542,7 @@ export default class ProjectSettings extends Component {
                   type='text'
                   defaultValue={project.osmNorth !== null ? `${project.osmWest},${project.osmSouth},${project.osmEast},${project.osmNorth}` : ''}
                   placeholder='-88.45,33.22,-87.12,34.89'
-                  label={(<span><Glyphicon glyph='fullscreen' /> {messages.deployment.osm.bounds}</span>)}
+                  label={(<span><Glyphicon glyph='fullscreen' /> {getMessage(messages, 'deployment.osm.bounds')}</span>)}
                   ref='osmBounds'
                   onChange={(evt) => {
                     const bBox = evt.target.value.split(',')
@@ -569,7 +569,7 @@ export default class ProjectSettings extends Component {
                   this.props.updateProjectSettings(project, this.state.deployment)
                 }}
               >
-                {messages.save}
+                {getMessage(messages, 'save')}
               </Button>
             </Col>
           </Row>
@@ -580,9 +580,9 @@ export default class ProjectSettings extends Component {
       <Col xs={12} sm={3}>
         <Panel>
           <ListGroup fill>
-            <LinkContainer to={`/project/${project.id}/settings`}><ListGroupItem>{messages.general.title}</ListGroupItem></LinkContainer>
+            <LinkContainer to={`/project/${project.id}/settings`}><ListGroupItem>{getMessage(messages, 'general.title')}</ListGroupItem></LinkContainer>
             {isModuleEnabled('deployment')
-              ? <LinkContainer to={`/project/${project.id}/settings/deployment`}><ListGroupItem>{messages.deployment.title}</ListGroupItem></LinkContainer>
+              ? <LinkContainer to={`/project/${project.id}/settings/deployment`}><ListGroupItem>{getMessage(messages, 'deployment.title')}</ListGroupItem></LinkContainer>
               : null
             }
           </ListGroup>
