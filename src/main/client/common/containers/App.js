@@ -61,7 +61,12 @@ class App extends React.Component {
         }
       })
     }
-
+    const checkLogin = (nextState, replace, callback) => {
+      this.props.checkExistingLogin()
+      .then((action) => {
+        callback()
+      })
+    }
     const requireAdmin = (nextState, replace, callback) => {
       this.props.checkExistingLogin()
       .then((action) => {
@@ -80,10 +85,10 @@ class App extends React.Component {
     const routes = [
       <Route path='/settings(/:subpage)(/:projectId)' component={ActiveUserAccount} onEnter={requireAuth} />,
       <Route path='/admin(/:subpage)' component={ActiveUserAdmin} onEnter={requireAdmin} />,
-      <Route path='/signup' component={ActiveSignupPage} />,
-      <Route path='/home' component={ActiveUserHomePage} onEnter={requireAuth} />,
-      <Route path='/' component={ActivePublicFeedsViewer} />,
-      <Route path='/public/feed/:feedSourceId(/version/:feedVersionIndex)' component={ActivePublicFeedSourceViewer} />,
+      <Route path='/signup' component={ActiveSignupPage} onEnter={checkLogin} />,
+      <Route path='/home(/:projectId)' component={ActiveUserHomePage} onEnter={requireAuth} />,
+      <Route path='/' component={ActivePublicFeedsViewer} onEnter={checkLogin} />,
+      <Route path='/public/feed/:feedSourceId(/version/:feedVersionIndex)' component={ActivePublicFeedSourceViewer} onEnter={checkLogin} />,
       <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,
       <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />,
       <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />,
