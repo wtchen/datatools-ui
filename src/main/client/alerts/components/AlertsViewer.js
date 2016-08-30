@@ -43,9 +43,13 @@ export default class AlertsViewer extends React.Component {
               <VisibleAlertsList />
             </Col>
             <Col xs={12} sm={6}>
-              <GlobalGtfsFilter
-                permissionFilter='edit-alert'
-              />
+              <Row>
+                <Col xs={12}>
+                  <GlobalGtfsFilter
+                    permissionFilter='edit-alert'
+                  />
+                </Col>
+              </Row>
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.onStopClick}

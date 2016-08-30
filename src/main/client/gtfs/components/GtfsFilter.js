@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Panel, Button, DropdownButton, MenuItem, Badge, Glyphicon, Label } from 'react-bootstrap'
+import { Panel, Button, DropdownButton, MenuItem, Badge, Glyphicon, Label, ButtonToolbar } from 'react-bootstrap'
 
 export default class GtfsFilter extends React.Component {
 
@@ -16,7 +16,7 @@ export default class GtfsFilter extends React.Component {
     var buttonMinimalStyle = {
       marginTop: '10px',
       marginBottom: '5px',
-      textAlign: 'right'
+      // textAlign: 'right'
     }
 
     var compare = function (a, b) {
@@ -36,7 +36,7 @@ export default class GtfsFilter extends React.Component {
     var feedLookup = {}
     for(var f of this.props.allFeeds) feedLookup[f.id] = f
     return (
-        <div style={buttonMinimalStyle}>
+        <ButtonToolbar className='pull-right' style={buttonMinimalStyle}>
           <DropdownButton
             bsStyle='default'
             bsSize='small'
@@ -83,7 +83,7 @@ export default class GtfsFilter extends React.Component {
           >
             {activeFeeds.length > 0 ? 'Remove All' : 'Add All'}
           </Button>
-        </div>
+        </ButtonToolbar>
     )
   }
 }

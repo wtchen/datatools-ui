@@ -3,22 +3,23 @@ import { secureFetch } from '../../common/util/util'
 import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
 import { fetchRtdAlerts } from './alerts'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
+import { setActiveProject } from '../../manager/actions/projects'
 import { getConfigProperty } from '../../common/util/config'
 
-function requestProjects() {
+function requestProjects () {
   return {
-    type: 'REQUEST_PROJECTS',
+    type: 'REQUEST_PROJECTS'
   }
 }
 
-function receiveProjects(projects) {
+function receiveProjects (projects) {
   return {
     type: 'RECEIVE_PROJECTS',
     projects
   }
 }
 
-export function fetchProjects() {
+export function fetchProjects () {
   return function (dispatch, getState) {
     dispatch(requestProjects())
     let project
@@ -27,7 +28,13 @@ export function fetchProjects() {
       .then((projects) => {
         console.log('received projects', projects)
         dispatch(receiveProjects(projects))
-        project = getState().projects.active || projects.find(proj => proj.id === getConfigProperty('application.active_project'))
+        if (getState().projects.active) {
+          project = getState().projects.active
+        } else {
+          project = projects.find(proj => proj.id === getConfigProperty('application.active_project')) ||
+            projects[0]
+          dispatch(setActiveProject(project))
+        }
         return dispatch(fetchProjectFeeds(project.id))
       })
       .then(() => {
