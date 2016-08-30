@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
 
 import { Button } from 'react-bootstrap'
+import { Browser } from 'leaflet'
 
 import { Map, Marker, Popup, TileLayer, GeoJson } from 'react-leaflet'
 
@@ -88,7 +89,7 @@ export default class GtfsMap extends React.Component {
         className='Gtfs-Map'
         >
         <TileLayer
-          url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
+          url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}${Browser.retina ? '@2x' : ''}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
         {this.props.stops ? this.props.stops.map((stop, index) => {
