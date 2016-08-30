@@ -1,30 +1,45 @@
-import React from 'react'
+import React, { PropTypes, Component } from 'react'
 
-import { Row, Col, ButtonGroup, Button, FormControl } from 'react-bootstrap'
+import { Row, ButtonGroup, Button, FormControl, FormGroup } from 'react-bootstrap'
 import AlertPreview from './AlertPreview'
+import Icon from 'react-fa'
 
-export default class AlertsList extends React.Component {
+export default class AlertsList extends Component {
+  static propTypes = {
+    alerts: PropTypes.array,
+    visibilityFilter: PropTypes.object,
+    isFetching: PropTypes.bool,
+    editableFeeds: PropTypes.array,
+    publishableFeeds: PropTypes.array,
 
+    onEditClick: PropTypes.func,
+    onZoomClick: PropTypes.func,
+    onDeleteClick: PropTypes.func,
+
+    searchTextChanged: PropTypes.func,
+    visibilityFilterChanged: PropTypes.func
+  }
   constructor (props) {
     super(props)
   }
   render () {
-
-    let sortedAlerts = this.props.alerts.sort((a,b) => {
-      if(a.id < b.id) return -1
-      if(a.id > b.id) return 1
+    let sortedAlerts = this.props.alerts.sort((a, b) => {
+      if (a.id < b.id) return -1
+      if (a.id > b.id) return 1
       return 0
     })
 
     return (
       <div>
         <Row>
-          <FormControl
-            type='text'
-            placeholder='Search Alerts'
-            onChange={evt => this.props.searchTextChanged(evt.target.value)}
-            defaultValue={this.props.visibilityFilter.searchText}
-          />
+          <FormGroup>
+            <FormControl
+              type='text'
+              placeholder='Search Alerts'
+              onChange={evt => this.props.searchTextChanged(evt.target.value)}
+              defaultValue={this.props.visibilityFilter.searchText}
+            />
+          </FormGroup>
         </Row>
         <Row>
           <ButtonGroup justified>
@@ -55,8 +70,9 @@ export default class AlertsList extends React.Component {
         <Row>
 
         {this.props.isFetching
-          ? <p>Loading alerts...</p>
-          : sortedAlerts.map((alert) => {
+          ? <p className='text-center'><Icon size='5x' spin name='refresh' /></p>
+          : sortedAlerts.length
+          ? sortedAlerts.map((alert) => {
             return <AlertPreview
               alert={alert}
               key={alert.id}
@@ -67,6 +83,7 @@ export default class AlertsList extends React.Component {
               onDeleteClick={this.props.onDeleteClick}
             />
           })
+          : <p className='lead text-center'>No alerts found.</p>
         }
         </Row>
       </div>
