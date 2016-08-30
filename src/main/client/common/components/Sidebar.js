@@ -19,7 +19,7 @@ export default class Sidebar extends Component {
 
     loginHandler: PropTypes.func,
     logoutHandler: PropTypes.func,
-    resetPasswordHandler: PropTypes.func,
+    resetPassword: PropTypes.func,
     setJobMonitorVisible: PropTypes.func,
     removeRetiredJob: PropTypes.func,
     setSidebarExpanded: PropTypes.func
@@ -131,7 +131,7 @@ export default class Sidebar extends Component {
         <ButtonToolbar>
           <Button bsSize='small' bsStyle='info' onClick={() => {
             this.setState({ visiblePopover: null })
-            this.props.resetPasswordHandler()
+            this.props.resetPassword()
           }}>Change Password</Button>
           <Button bsSize='small' bsStyle='info' onClick={() => {
             this.setState({ visiblePopover: null })

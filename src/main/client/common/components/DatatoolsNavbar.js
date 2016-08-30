@@ -20,7 +20,7 @@ export default class DatatoolsNavbar extends Component {
     signConfigUrl: PropTypes.string,
     loginHandler: PropTypes.func,
     logoutHandler: PropTypes.func,
-    resetPasswordHandler: PropTypes.func,
+    resetPassword: PropTypes.func,
     jobMonitor: PropTypes.object,
     setJobMonitorVisible: PropTypes.func
   };
@@ -37,7 +37,7 @@ export default class DatatoolsNavbar extends Component {
           <span><Glyphicon glyph='user' /> {this.props.username}</span>
         } id='basic-nav-dropdown'>
         <MenuItem onClick={() => browserHistory.push('/account')}>{getMessage(messages, 'account')}</MenuItem>
-          <MenuItem onClick={this.props.resetPasswordHandler}>{getMessage(messages, 'resetPassword')}</MenuItem>
+          <MenuItem onClick={this.props.resetPassword}>{getMessage(messages, 'resetPassword')}</MenuItem>
           <MenuItem onClick={this.props.logoutHandler}>{getMessage(messages, 'logout')}</MenuItem>
         </NavDropdown>
       )

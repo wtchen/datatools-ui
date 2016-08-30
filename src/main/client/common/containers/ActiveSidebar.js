@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loginHandler: () => { dispatch(login()) },
     logoutHandler: () => { dispatch(logout()) },
-    resetPasswordHandler: () => { dispatch(resetPassword()) },
+    resetPassword: () => { dispatch(resetPassword()) },
     setActiveProject: (project) => { dispatch(setActiveProject(project)) },
     setActiveLanguage: (language) => { dispatch(setActiveLanguage(language)) },
     setJobMonitorVisible: (visible) => { dispatch(setJobMonitorVisible(visible)) },
