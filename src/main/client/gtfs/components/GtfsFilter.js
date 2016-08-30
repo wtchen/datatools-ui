@@ -28,7 +28,7 @@ export default class GtfsFilter extends React.Component {
     }
 
     var activeFeeds = this.props.activeFeeds.sort(compare)
-    var activeAndLoadedFeeds = this.props.activeFeeds.filter(f => this.props.loadedFeeds.findIndex(feed => feed.id === f.id) !== -1)
+    var activeAndLoadedFeeds = this.props.activeFeeds.filter(f => f && this.props.loadedFeeds.findIndex(feed => feed.id === f.id) !== -1)
     var nonActiveFeeds = this.props.allFeeds.filter((feed) => {
       return (activeFeeds.indexOf(feed) === -1)
     }).sort(compare)
@@ -44,7 +44,7 @@ export default class GtfsFilter extends React.Component {
               : activeAndLoadedFeeds.length < 3 ? `Searching ${activeAndLoadedFeeds.map(feed => feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name).join(' and ')}`
               : `Searching ${activeAndLoadedFeeds.length} feeds`}
             alt={activeAndLoadedFeeds.join(', ')}
-            onSelect={(evt, eventKey) => {
+            onSelect={eventKey => {
               let feed = feedLookup[eventKey]
               activeFeeds.indexOf(feed) === -1 ? this.props.onAddFeed(feed) : this.props.onRemoveFeed(feed)
             }}
