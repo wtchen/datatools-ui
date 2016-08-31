@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import PublicHeader from '../components/PublicHeader'
 
@@ -13,15 +14,19 @@ const mapStateToProps = (state, ownProps) => {
     userAdminUrl: null,
     alertsUrl: null,
     signConfigUrl: null,
-    username: state.user.profile ? state.user.profile.email : null
+    username: state.user.profile ? state.user.profile.email : null,
+    userPicture: state.user.profile ? state.user.profile.picture : null
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    loginHandler: () => { dispatch(login()) },
+    loginHandler: () => {
+      dispatch(login())
+      .then(() => browserHistory.push('/home'))
+    },
     logoutHandler: () => { dispatch(logout()) },
-    resetPasswordHandler: () => { dispatch(resetPassword()) }
+    resetPassword: () => { dispatch(resetPassword()) }
   }
 }
 
