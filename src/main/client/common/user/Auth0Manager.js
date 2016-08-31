@@ -98,7 +98,9 @@ export default class Auth0Manager {
         // save token to localStorage
         localStorage.setItem('userToken', token)
 
-        this.setupSingleLogout()
+        // initialize auto log out check
+        // this.setupSingleLogout()
+
         //this.userLoggedIn(token, profile)
         resolve(constructUserObj(token, profile))
       })
