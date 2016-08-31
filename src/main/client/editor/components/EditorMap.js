@@ -1,6 +1,6 @@
 import React from 'react'
 import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, LayersControl } from 'react-leaflet'
-import { divIcon } from 'leaflet'
+import { divIcon, Browser } from 'leaflet'
 import { Button, Dropdown, OverlayTrigger, Tooltip, ButtonToolbar, Row, Col, ButtonGroup, Form, MenuItem, SplitButton, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
 import {Icon} from 'react-fa'
@@ -490,7 +490,7 @@ export default class EditorMap extends React.Component {
                     endPoint = latLngs[latLngs.length - 1]
                     // console.log(this.state.newLatLngs)
                     let lineColor = route.route_color && this.props.editSettings.editGeometry
-                      ? `#${(0xffffff ^ parseInt(route.route_color)).toString(16)}`
+                      ? '#F3F315' // `#${(0xffffff ^ parseInt(route.route_color)).toString(16)}`
                       : route.route_color
                       ? `#${route.route_color}`
                       : this.props.editSettings.editGeometry
@@ -529,10 +529,9 @@ export default class EditorMap extends React.Component {
                           // : null
                         }
                         lineCap='butt'
-                        lineJoin='miter'
-                        color={lineColor
-                        }
-                        opacity={isActive ? 0.8 : 0.1}
+                        // lineJoin='miter'
+                        color={lineColor}
+                        opacity={isActive ? 0.8 : 0.5}
                       />
                     )
                   })
@@ -1136,8 +1135,7 @@ export default class EditorMap extends React.Component {
               checked={activeMapLayerIndex !== -1 ? index === activeMapLayerIndex : index === 0}
             >
               <TileLayer
-                url={`https://api.tiles.mapbox.com/v4/${layer.id}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
-                retina='@2x'
+                url={`https://api.tiles.mapbox.com/v4/${layer.id}/{z}/{x}/{y}${Browser.retina ? '@2x' : ''}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
                 attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
               />
             </LayersControl.BaseLayer>
