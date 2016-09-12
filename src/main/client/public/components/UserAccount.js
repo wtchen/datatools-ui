@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, ListGroup, ListGroupItem, Glyphicon, Badge, ButtonInput, ControlLabel } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Table, Input, Panel, Checkbox, ListGroup, ListGroupItem, Glyphicon, Badge, ButtonInput, ControlLabel } from 'react-bootstrap'
 import { Link } from 'react-router'
 import Icon from 'react-fa'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -12,7 +12,9 @@ import { getConfigProperty, getComponentMessages, getMessage } from '../../commo
 
 export default class UserAccount extends Component {
   static propTypes = {
-    activeComponent: PropTypes.string
+    activeComponent: PropTypes.string,
+
+    resetPassword: PropTypes.func
   }
   constructor (props) {
     super(props)
@@ -24,7 +26,6 @@ export default class UserAccount extends Component {
 
   render () {
     var removeIconStyle = {
-      color: 'red',
       cursor: 'pointer'
     }
     const messages = getComponentMessages('UserAccount')
@@ -35,14 +36,29 @@ export default class UserAccount extends Component {
         id: 'profile',
         component: <div>
                     <Panel header={<h4>Profile information</h4>}>
-                      <ControlLabel>Email address</ControlLabel>
-                      <EditableTextField
-                        value={this.props.user.profile.email}
-                        onChange={(value) => {
-                          this.props.updateUserName(this.props.user, value)
-                        }}
-                      />
-                      {/* <Button onClick={() => {this.props.getUser(this.props.user.profile.user_id)}}>Get User</Button> */}
+                      <ListGroup fill>
+                        <ListGroupItem>
+                          <ControlLabel>Email address</ControlLabel>
+                          <EditableTextField
+                            value={this.props.user.profile.email}
+                            onChange={(value) => {
+                              this.props.updateUserName(this.props.user, value)
+                            }}
+                          />
+                          {/* <Button onClick={() => {this.props.getUser(this.props.user.profile.user_id)}}>Get User</Button> */}
+                        </ListGroupItem>
+                        <ListGroupItem>
+                          <p><strong>Avatar</strong></p>
+                          <a href='http://gravatar.com'>
+                            <img className='img-rounded' height={40} width={40} src={this.props.user.profile.picture}/>
+                            <span style={{marginLeft: '10px'}}>Change on gravatar.com</span>
+                          </a>
+                        </ListGroupItem>
+                        <ListGroupItem>
+                          <p><strong>Password</strong></p>
+                          <Button onClick={() => this.props.resetPassword()}>Change password</Button>
+                        </ListGroupItem>
+                      </ListGroup>
                       </Panel>
                   </div>
       },
@@ -55,50 +71,78 @@ export default class UserAccount extends Component {
       {
         id: 'notifications',
         hidden: !getConfigProperty('application.notifications_enabled'),
-        component: <Panel header={<h4>{getMessage(messages, 'notifications.subscriptions')}</h4>}>
-          <ul>
-            {subscriptions.length ? subscriptions.map(sub => {
-              return (
-                <li>
-                  {sub.type.replace('-', ' ')} &nbsp;
-                    <Glyphicon
-                      glyph='remove'
-                      style={removeIconStyle}
-                      onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
-                    />
-                  <ul>
-                    {sub.target.length ? sub.target.map(target => {
-                      let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
-                      if (this.props.projects) {
-                        for (var i = 0; i < this.props.projects.length; i++) {
-                          let feed = this.props.projects[i].feedSources ? this.props.projects[i].feedSources.find(fs => fs.id === target) : null
-                          fs = feed ? feed : fs
+        component:
+        <div>
+          <Panel
+            header={<h4>Notification methods</h4>}
+          >
+            <ListGroup fill>
+              <ListGroupItem>
+                <h4>Watching</h4>
+                <p>Receive updates to any feed sources or comments you are watching.</p>
+                <Checkbox inline>Email</Checkbox>{' '}<Checkbox inline>Web</Checkbox>
+              </ListGroupItem>
+            </ListGroup>
+          </Panel>
+          <Panel
+            header={
+              <h4>
+                <Button
+                  onClick={() => this.props.unsubscribeAll(this.props.user.profile)}
+                  className='pull-right'
+                  bsSize='xsmall'
+                >
+                  {getMessage(messages, 'notifications.unsubscribeAll')}
+                </Button>
+                {getMessage(messages, 'notifications.subscriptions')}
+              </h4>
+            }
+          >
+            <ul>
+              {subscriptions.length ? subscriptions.map(sub => {
+                return (
+                  <li>
+                    {sub.type.replace('-', ' ')} &nbsp;
+                      <Icon
+                        name='trash'
+                        className='text-danger'
+                        style={removeIconStyle}
+                        onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
+                      />
+                    <ul>
+                      {sub.target.length ? sub.target.map(target => {
+                        let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
+                        if (this.props.projects) {
+                          for (var i = 0; i < this.props.projects.length; i++) {
+                            let feed = this.props.projects[i].feedSources ? this.props.projects[i].feedSources.find(fs => fs.id === target) : null
+                            fs = feed ? feed : fs
+                          }
                         }
-                      }
-                      return (
-                        <li>
-                          {
-                            fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
-                            :
-                            <span>{target}</span>
-                          } &nbsp;
-                          <Glyphicon
-                            glyph='remove'
-                            style={removeIconStyle}
-                            onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
-                          />
-                        </li>
-                      )
-                    }) : <li>No feeds subscribed to.</li>
-                  }
-                  </ul>
-                </li>
-              )
-            })
-            : <li>No subscriptions.</li>
-          }
-          </ul>
-        </Panel>
+                        return (
+                          <li>
+                            {
+                              fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
+                              : <span>{target}</span>
+                            } {' '}
+                            <Icon
+                              name='trash'
+                              className='text-danger'
+                              style={removeIconStyle}
+                              onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
+                            />
+                          </li>
+                        )
+                      }) : <li>No feeds subscribed to.</li>
+                    }
+                    </ul>
+                  </li>
+                )
+              })
+              : <li>No subscriptions.</li>
+            }
+            </ul>
+          </Panel>
+        </div>
       },
       {
         id: 'billing'
