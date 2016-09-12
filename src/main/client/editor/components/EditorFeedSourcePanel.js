@@ -126,12 +126,12 @@ class SnapshotItem extends Component {
             <Button bsStyle='info'
               onClick={() => this.props.exportSnapshotAsVersion(feedSource, snapshot)}
             >
-              <Glyphicon glyph='export' /> {getMessage(messages, 'version')}
+              <Glyphicon glyph='export' /> {getMessage(messages, 'publish')}
             </Button>
             <Button bsStyle='danger'
               onClick={() => this.props.deleteSnapshot(feedSource, snapshot)}
             >
-              <Glyphicon glyph='remove' /> {getMessage(messages, 'delete')}
+              <Icon name='trash' /> {getMessage(messages, 'delete')}
             </Button>
           </ButtonToolbar>
           <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon name='clock-o'/> {moment(snapshot.snapshotTime).fromNow()}</span>

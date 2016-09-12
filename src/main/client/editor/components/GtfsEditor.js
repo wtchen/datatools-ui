@@ -1,22 +1,58 @@
 import React, {Component, PropTypes} from 'react'
-import Sidebar from 'react-sidebar'
-import { Grid, Row, Col, Button, Glyphicon, PageHeader, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import Helmet from 'react-helmet'
 import { shallowEqual } from 'react-pure-render'
 
 import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
-import GtfsTable from './GtfsTable'
 import ConfirmModal from '../../common/components/ConfirmModal.js'
 import CurrentStatusModal from '../../common/containers/CurrentStatusModal'
-import ManagerNavbar from '../../common/containers/ManagerNavbar'
 import EditorMap from './EditorMap'
+import EditorHelpModal from './EditorHelpModal'
 import EditorSidebar from './EditorSidebar'
 import ActiveEntityList from '../containers/ActiveEntityList'
 import EntityDetails from './EntityDetails'
 import TimetableEditor from './TimetableEditor'
 import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
 
-export default class GtfsEditor extends Component {
+import { getConfigProperty } from '../../common/util/config'
 
+export default class GtfsEditor extends Component {
+  static propTypes = {
+    currentTable: PropTypes.string,
+    feedSourceId: PropTypes.string,
+    feedSource: PropTypes.object,
+    project: PropTypes.object,
+    user: PropTypes.object,
+    tableData: PropTypes.object,
+    feedInfo: PropTypes.object,
+    mapState: PropTypes.object,
+
+    entities: PropTypes.array,
+
+    onComponentMount: PropTypes.func,
+    onComponentUpdate: PropTypes.func,
+    clearGtfsContent: PropTypes.func,
+    getGtfsTable: PropTypes.func,
+    fetchTripPatternsForRoute: PropTypes.func,
+    fetchTripsForCalendar: PropTypes.func,
+    saveTripsForCalendar: PropTypes.func,
+    deleteTripsForCalendar: PropTypes.func,
+    setActiveEntity: PropTypes.func,
+    updateActiveEntity: PropTypes.func,
+    saveActiveEntity: PropTypes.func,
+    resetActiveEntity: PropTypes.func,
+    deleteEntity: PropTypes.func,
+    cloneEntity: PropTypes.func,
+    newEntityClicked: PropTypes.func,
+
+    sidebarExpanded: PropTypes.bool,
+
+    activeEntity: PropTypes.object,
+    activeEntityId: PropTypes.string,
+    activeSubEntity: PropTypes.string,
+    activeSubSubEntity: PropTypes.string,
+    activeComponent: PropTypes.string,
+    subSubComponent: PropTypes.string
+  }
   constructor (props) {
     super(props)
 
@@ -37,7 +73,7 @@ export default class GtfsEditor extends Component {
     if (nextProps.feedSourceId !== this.props.feedSourceId) {
       this.props.clearGtfsContent()
       this.props.onComponentMount(nextProps)
-      this.props.getGtfsTable('calendar', feedSourceId)
+      this.props.getGtfsTable('calendar', this.props.feedSourceId)
     }
     // fetch table if it doesn't exist already and user changes tabs
     if (nextProps.activeComponent && nextProps.activeComponent !== this.props.activeComponent && !nextProps.tableData[nextProps.activeComponent]) {
@@ -73,21 +109,8 @@ export default class GtfsEditor extends Component {
   }
 
   render () {
-    // if(!this.props.feedSource) return null
     const feedSource = this.props.feedSource
-    const activeComponent = this.props.activeComponent
     const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
-
-    let primaryPanelStyle = {
-      width: '300px',
-      height: '100%',
-      position: 'absolute',
-      left: '0px',
-      zIndex: 99,
-      backgroundColor: 'white',
-      paddingRight: '5px',
-      paddingLeft: '5px'
-    }
 
     let listWidth = 220
     let detailsWidth = 300
@@ -109,22 +132,13 @@ export default class GtfsEditor extends Component {
           />
         )
       : null
+    const defaultTitle = `${getConfigProperty('application.title')}: GTFS Editor`
     return (
       <div>
-      {/*<Sidebar
-        sidebar={
-          <EditorSidebar
-            activeComponent={this.props.activeComponent}
-            feedSource={this.props.feedSource}
-            feedInfo={this.props.feedInfo}
-            setActiveEntity={this.props.setActiveEntity}
-          />
-        }
-        styles={{content: {overflow: 'hidden'}}}
-        docked={true}
-        shadow={false}
-      >*/}
-
+        <Helmet
+          defaultTitle={defaultTitle}
+          titleTemplate={`${defaultTitle} - %s`}
+        />
         <EditorSidebar
           activeComponent={this.props.activeComponent}
           expanded={this.props.sidebarExpanded}
@@ -132,13 +146,12 @@ export default class GtfsEditor extends Component {
           feedInfo={this.props.feedInfo}
           setActiveEntity={this.props.setActiveEntity}
         />
-        {/*<ManagerNavbar/>*/}
         <div style={{
           position: 'fixed',
           left: this.props.sidebarExpanded ? 150 : 50,
           bottom: 0,
           right: 0,
-          top: 0 // 50,
+          top: 0
         }}>
           {this.props.subSubComponent === 'timetable'
             ? <TimetableEditor
@@ -164,23 +177,22 @@ export default class GtfsEditor extends Component {
               />
             : this.props.activeComponent
             ? [
-                <ActiveEntityList
-                  width={listWidth}
-                  setActiveEntity={this.props.setActiveEntity}
-                  cloneEntity={this.props.cloneEntity}
-                  updateActiveEntity={this.props.updateActiveEntity}
-                  deleteEntity={this.props.deleteEntity}
-                  newEntityClicked={this.props.newEntityClicked}
-                  entities={this.props.entities}
-                  showConfirmModal={(props) => this.showConfirmModal(props)}
-                  activeEntityId={this.props.activeEntityId}
-                  activeComponent={this.props.activeComponent}
-                  feedSource={this.props.feedSource}
-                  key='entity-list'
-                />
-                ,
-                entityDetails
-              ]
+              <ActiveEntityList
+                width={listWidth}
+                setActiveEntity={this.props.setActiveEntity}
+                cloneEntity={this.props.cloneEntity}
+                updateActiveEntity={this.props.updateActiveEntity}
+                deleteEntity={this.props.deleteEntity}
+                newEntityClicked={this.props.newEntityClicked}
+                entities={this.props.entities}
+                showConfirmModal={(props) => this.showConfirmModal(props)}
+                activeEntityId={this.props.activeEntityId}
+                activeComponent={this.props.activeComponent}
+                feedSource={this.props.feedSource}
+                key='entity-list'
+              />,
+              entityDetails
+            ]
             : null
           }
           <EditorMap
@@ -200,6 +212,12 @@ export default class GtfsEditor extends Component {
             sidebarExpanded={this.props.sidebarExpanded}
             {...this.props}
           />
+          {!this.props.activeComponent
+            ? <EditorHelpModal
+                show
+              />
+            : null
+          }
           <ActiveFeedInfoPanel
             feedSource={this.props.feedSource}
             project={this.props.project}
@@ -208,7 +226,6 @@ export default class GtfsEditor extends Component {
             feedInfo={this.props.feedInfo}
           />
         </div>
-        {/*</Sidebar>*/}
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal'/>
         <CurrentStatusModal ref='statusModal'/>

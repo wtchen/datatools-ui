@@ -3,8 +3,6 @@ import { Checkbox, Radio, Button, ButtonToolbar, Form, FormControl, FormGroup, C
 import {Icon, IconStack} from 'react-fa'
 import reactCSS from 'reactcss'
 import validator from 'validator'
-import { LinkContainer } from 'react-router-bootstrap'
-import { PureComponent, shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 import { sentence as toSentenceCase } from 'change-case'
 import DateTimeField from 'react-bootstrap-datetimepicker'
@@ -30,12 +28,22 @@ export default class EntityDetails extends Component {
     activeEntity: PropTypes.object.isRequired,
     activeEntityId: PropTypes.string.isRequired,
     width: PropTypes.number.isRequired,
+
     setActiveEntity: PropTypes.func.isRequired,
+    resetActiveEntity: PropTypes.func.isRequired,
     updateActiveEntity: PropTypes.func.isRequired,
     deleteEntity: PropTypes.func.isRequired,
     newEntityClicked: PropTypes.func.isRequired,
+    uploadBrandingAsset: PropTypes.func,
+    fieldEdited: PropTypes.func,
+    gtfsEntitySelected: PropTypes.func,
+    getGtfsEntity: PropTypes.func,
+
     activeComponent: PropTypes.string.isRequired,
+    subComponent: PropTypes.string,
     user: PropTypes.object,
+    offset: PropTypes.number,
+    tableData: PropTypes.object
   }
 
   constructor (props) {
@@ -49,14 +57,6 @@ export default class EntityDetails extends Component {
       }
     }
   }
-
-  // componentWillReceiveProps (nextProps) {
-  //   // forceUpdate()
-  // }
-  // shouldComponentUpdate (nextProps) {
-  //   // component is updating!!!
-  //   return !shallowEqual(nextProps.activeEntity, this.props.activeEntity) || nextProps.entityEdited !== this.props.entityEdited || nextProps.activeEntityId !== this.props.activeEntityId
-  // }
   handleClick (field) {
     this.setState({ [field]: !this.state[field] })
   }
@@ -64,8 +64,6 @@ export default class EntityDetails extends Component {
     this.setState({ [field]: !this.state[field] })
   }
   render () {
-    // const routes = ['test', 'Route 123', 'Route 456', 'Route 1', 'Route 10']
-    // console.log(this.state)
     const approveGtfsDisabled = this.props.project && this.props.feedSource && this.props.user && !this.props.user.permissions.hasFeedPermission(this.props.project.id, this.props.feedSource.id, 'approve-gtfs')
     const styles = reactCSS({
       'default': {
@@ -89,8 +87,8 @@ export default class EntityDetails extends Component {
           right: '0',
           bottom: '0',
           left: '0'
-        },
-      },
+        }
+      }
     })
     let entity = this.props.activeEntity
 
@@ -107,9 +105,6 @@ export default class EntityDetails extends Component {
       backgroundColor: '#F2F2F2',
       paddingRight: '5px',
       paddingLeft: '5px'
-    }
-    const rowStyle = {
-      cursor: 'pointer'
     }
 
     let zones = {}
@@ -143,15 +138,15 @@ export default class EntityDetails extends Component {
     })
     let validationErrors = []
     const getInput = (row, field, currentValue, index) => {
-      const editorField = field.displayName || field.name //.split(/_(.+)?/)[1]
+      const editorField = field.displayName || field.name // .split(/_(.+)?/)[1]
       let isNotValid
-      const standardLabel = <ControlLabel>{toSentenceCase(editorField.split(/_(.+)?/)[1])} <span style={{fontWeight: 'normal'}}>({editorField})</span></ControlLabel>
+      // const standardLabel = <ControlLabel>{toSentenceCase(editorField.split(/_(.+)?/)[1])} <span style={{fontWeight: 'normal'}}>({editorField})</span></ControlLabel>
       const basicLabel = field.helpContent
           ? <OverlayTrigger placement='right' overlay={<Tooltip id='tooltip'>{field.helpContent}</Tooltip>}>
               <ControlLabel><small>{editorField}{field.required ? ' *' : ''}</small></ControlLabel>
             </OverlayTrigger>
           : <ControlLabel><small>{editorField}{field.required ? ' *' : ''}</small></ControlLabel>
-      switch(field.inputType) {
+      switch (field.inputType) {
         case 'ID':
           isNotValid = field.required && !currentValue
           let indices = []
@@ -322,7 +317,7 @@ export default class EntityDetails extends Component {
               {basicLabel}
               <Select
                 placeholder='Select zone ID...'
-                clearable={true}
+                clearable
                 noResultsText={`No zones found. Specify zones in stop.`}
                 key={Math.random()}
                 value={currentValue}
@@ -331,7 +326,6 @@ export default class EntityDetails extends Component {
                   let val = input ? input.value : null
                   props[field.name] = val
                   this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-
                 }}
                 filterOptions={(options, filter, values) => {
                   // Filter already selected values
@@ -348,7 +342,7 @@ export default class EntityDetails extends Component {
                   }
 
                   // Append Addition option
-                  if (filteredOptions.length == 0) {
+                  if (filteredOptions.length === 0) {
                     filteredOptions.push({
                       label: <span><strong>Create new zone</strong>: {filter}</span>,
                       value: filter,
@@ -425,7 +419,7 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
             {basicLabel}
             <FormControl
@@ -504,7 +498,6 @@ export default class EntityDetails extends Component {
             mode: 'date',
             dateTime: currentValue ? +moment(currentValue) : defaultValue,
             onChange: (millis) => {
-              let date = moment(+millis)
               let props = {}
               props[field.name] = +millis
               this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
@@ -517,7 +510,7 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
             {basicLabel}
             <div style={{position: 'relative'}}>
@@ -543,7 +536,7 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
             {basicLabel}
             {
@@ -579,7 +572,7 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
             {basicLabel}
             <FormControl
@@ -587,7 +580,7 @@ export default class EntityDetails extends Component {
               type='number'
               min={0}
               step={1}
-              onChange={(value) => {
+              onChange={(evt) => {
                 let props = {}
                 props[field.name] = evt.target.value
                 this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
@@ -600,14 +593,14 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
             {basicLabel}
             <FormControl
               value={currentValue}
               type='number'
               min={0}
-              onChange={(value) => {
+              onChange={(evt) => {
                 let props = {}
                 props[field.name] = evt.target.value
                 this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
@@ -616,29 +609,30 @@ export default class EntityDetails extends Component {
             </FormGroup>
           )
         case 'DAY_OF_WEEK_BOOLEAN':
-          return ([
-            <span key={`dow-label`}>
-              {editorField === 'monday'
-                ? <div className='col-xs-12'><ControlLabel>Days of service</ControlLabel></div> : null
-              }
-            </span>
-            ,
-            <span key={`${editorField}`} className='col-xs-3'>
-              <Checkbox
-                inline
-                checked={this.state[editorField] === 1 || currentValue === 1}
-                onChange={(evt) => {
-                  console.log(evt.target.checked)
-                  let props = {}
-                  currentValue = evt.target.checked ? 1 : 0
-                  props[field.name] = currentValue
-                  this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-                }}
-              >
-                {toSentenceCase(editorField.substr(0, 3))}
-              </Checkbox>
-              {'     '}
-            </span>]
+          return (
+            [
+              <span key={`dow-label`}>
+                {editorField === 'monday'
+                  ? <div className='col-xs-12'><ControlLabel>Days of service</ControlLabel></div> : null
+                }
+              </span>,
+              <span key={`${editorField}`} className='col-xs-3'>
+                <Checkbox
+                  inline
+                  checked={this.state[editorField] === 1 || currentValue === 1}
+                  onChange={(evt) => {
+                    console.log(evt.target.checked)
+                    let props = {}
+                    currentValue = evt.target.checked ? 1 : 0
+                    props[field.name] = currentValue
+                    this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
+                  }}
+                >
+                  {toSentenceCase(editorField.substr(0, 3))}
+                </Checkbox>
+                {'     '}
+              </span>
+            ]
           )
         case 'DROPDOWN':
           // isNotValid = field.required && (currentValue === null || typeof currentValue === 'undefined')
@@ -704,13 +698,13 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
               {basicLabel}
               <Select
                 placeholder='Select agency...'
-                clearable={true}
-                value={agency ? {value: currentValue, label: agency.agency_name}: {value: currentValue}}
+                clearable
+                value={agency ? {value: currentValue, label: agency.agency_name} : {value: currentValue}}
                 onChange={(input) => {
                   console.log(input)
                   let props = {}
@@ -718,16 +712,15 @@ export default class EntityDetails extends Component {
                   props[field.name] = val
                   this.setState({[editorField]: val})
                   this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-
                 }}
                 options={this.props.tableData.agency
                   ? this.props.tableData.agency.map(agency => {
-                      return {
-                        value: agency.id,
-                        label: agency.agency_name,
-                        agency
-                      }
-                    })
+                    return {
+                      value: agency.id,
+                      label: agency.agency_name,
+                      agency
+                    }
+                  })
                   : []
               }
               />
@@ -747,7 +740,7 @@ export default class EntityDetails extends Component {
             <FormGroup
               controlId={`${editorField}`}
               className={`col-xs-${field.columnWidth}`}
-              /*validationState={this.getValidationState()}*/
+              // validationState={this.getValidationState()}
             >
             {basicLabel}
             <VirtualizedEntitySelect
@@ -784,7 +777,7 @@ export default class EntityDetails extends Component {
       'SATURDAY',
       'SUNDAY',
       'NO_SERVICE',
-      'CUSTOM',
+      'CUSTOM'
     ]
 
     const fareRulesForm = this.state.editFareRules && this.props.activeEntity
@@ -879,65 +872,58 @@ export default class EntityDetails extends Component {
                     : rule.contains_id
                     ? <Select
                         placeholder='Select zone which the itinerary passes through...'
-                        clearable={true}
+                        clearable
                         noResultsText={`No zones found. Specify zones in stop.`}
                         key={Math.random()}
-                        value={typeof rule.contains_id === 'string' ? {value: rule.contains_id, label: `${rule.contains_id} zone (${zones[rule.contains_id] ? zones[rule.contains_id].length : 0} stops)`}  : null}
+                        value={typeof rule.contains_id === 'string'
+                          ? {value: rule.contains_id, label: `${rule.contains_id} zone (${zones[rule.contains_id] ? zones[rule.contains_id].length : 0} stops)`}
+                          : null
+                        }
                         onChange={(input) => {
                           console.log(input)
                           let rules = [...this.props.activeEntity.fareRules]
                           rules[index].zone_id = input ? input.value : null
                           this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
-                          // let props = {}
-                          // props[field.name] = input.value
-                          // this.setState({[editorField]: input.value})
-                          // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-
                         }}
                         options={zoneOptions}
                       />
                     : rule.origin_id || rule.destination_id
-                    ? [<Select
+                    ? [
+                      <Select
                         placeholder='Select origin zone...'
-                        clearable={true}
+                        clearable
                         noResultsText={`No zones found. Specify zones in stop.`}
                         key={Math.random()}
-                        value={typeof rule.origin_id === 'string' ? {value: rule.origin_id, label: `${rule.origin_id} zone (${zones[rule.origin_id] ? zones[rule.origin_id].length : 0} stops)`}  : null}
+                        value={typeof rule.origin_id === 'string'
+                          ? {value: rule.origin_id, label: `${rule.origin_id} zone (${zones[rule.origin_id] ? zones[rule.origin_id].length : 0} stops)`}
+                          : null
+                        }
                         onChange={(input) => {
                           console.log(input)
                           let rules = [...this.props.activeEntity.fareRules]
                           rules[index].origin_id = input ? input.value : null
                           this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
-                          // let props = {}
-                          // props[field.name] = input.value
-                          // this.setState({[editorField]: input.value})
-                          // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-
+                        }}
+                        options={zoneOptions}
+                      />,
+                      <Select
+                        placeholder='Select destination zone...'
+                        clearable
+                        noResultsText={`No zones found. Specify zones in stop.`}
+                        key={Math.random()}
+                        value={typeof rule.destination_id === 'string'
+                          ? {value: rule.destination_id, label: `${rule.destination_id} zone (${zones[rule.destination_id] ? zones[rule.destination_id].length : 0} stops)`}
+                          : null
+                        }
+                        onChange={(input) => {
+                          console.log(input)
+                          let rules = [...this.props.activeEntity.fareRules]
+                          rules[index].destination_id = input ? input.value : null
+                          this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                         }}
                         options={zoneOptions}
                       />
-                      ,
-                      <Select
-                          placeholder='Select destination zone...'
-                          clearable={true}
-                          noResultsText={`No zones found. Specify zones in stop.`}
-                          key={Math.random()}
-                          value={typeof rule.destination_id === 'string' ? {value: rule.destination_id, label: `${rule.destination_id} zone (${zones[rule.destination_id] ? zones[rule.destination_id].length : 0} stops)`}  : null}
-                          onChange={(input) => {
-                            console.log(input)
-                            let rules = [...this.props.activeEntity.fareRules]
-                            rules[index].destination_id = input ? input.value : null
-                            this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
-                            // let props = {}
-                            // props[field.name] = input.value
-                            // this.setState({[editorField]: input.value})
-                            // this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-
-                          }}
-                          options={zoneOptions}
-                        />
                     ]
-
                     : null
                   }
                 </Panel>
@@ -951,7 +937,7 @@ export default class EntityDetails extends Component {
           <FormGroup
             controlId={`name`}
             className={`col-xs-12`}
-            /*validationState={this.getValidationState()}*/
+            // validationState={this.getValidationState()}
           >
             <ControlLabel>Exception name</ControlLabel>
             <FormControl
@@ -964,7 +950,7 @@ export default class EntityDetails extends Component {
           <FormGroup
             controlId={`schedule`}
             className={`col-xs-12`}
-            /*validationState={this.getValidationState()}*/
+            // validationState={this.getValidationState()}
           >
             <ControlLabel>Run the following schedule:</ControlLabel>
             <FormControl componentClass='select'
@@ -990,28 +976,27 @@ export default class EntityDetails extends Component {
             ? <FormGroup
                 controlId={`custom`}
                 className={`col-xs-12`}
-                /*validationState={this.getValidationState()}*/
+                // validationState={this.getValidationState()}
               >
                 <ControlLabel>Select calendar to run:</ControlLabel>
                 <Select
                   placeholder='Select calendar...'
-                  clearable={true}
-                  multi={true}
+                  clearable
+                  multi
                   value={this.props.activeEntity && this.props.activeEntity.customSchedule}
                   onChange={(input) => {
                     console.log(input)
                     let val = input ? input.map(i => i.value) : null
                     this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {customSchedule: val})
-
                   }}
                   options={this.props.tableData.calendar
                     ? this.props.tableData.calendar.map(calendar => {
-                        return {
-                          value: calendar.id,
-                          label: calendar.description,
-                          calendar
-                        }
-                      })
+                      return {
+                        value: calendar.id,
+                        label: calendar.description,
+                        calendar
+                      }
+                    })
                     : []
                 }
                 />
@@ -1021,7 +1006,7 @@ export default class EntityDetails extends Component {
           <FormGroup
             controlId={`exception-dates`}
             className={`col-xs-12`}
-            /*validationState={this.getValidationState()}*/
+            // validationState={this.getValidationState()}
           >
           <ControlLabel>On these dates:</ControlLabel>
           {this.props.activeEntity && this.props.activeEntity.dates.length
@@ -1101,7 +1086,7 @@ export default class EntityDetails extends Component {
               table.fields.map((field, colIndex) => {
                 // get editor field by splitting on first underscore
                 const editorField = field.name // .split(/_(.+)?/)[1]
-              const validationIssue = this.props.validation
+                const validationIssue = this.props.validation
                 ? this.props.validation.find(v =>
                     (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
                 : null
@@ -1140,7 +1125,7 @@ export default class EntityDetails extends Component {
           >
             Route details
           </NavItem>
-          <OverlayTrigger placement='bottom' overlay={<Tooltip id="tooltip">A route&rsquo;s trip patterns show where it goes.</Tooltip>}>
+          <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>A route&rsquo;s trip patterns show where it goes.</Tooltip>}>
           <NavItem
             eventKey={'trippattern'}
             disabled={!entity || entity.id === 'new'}
@@ -1208,7 +1193,12 @@ export default class EntityDetails extends Component {
             bsSize='small'
             disabled={!this.props.entityEdited}
             onClick={(e) => {
-              this.props.resetActiveEntity(entity, this.props.activeComponent)
+              if (this.props.subComponent === 'trippattern') {
+                let pattern = entity.tripPatterns.find(p => p.id === this.props.activeSubEntity)
+                this.props.resetActiveEntity(pattern, 'trippattern')
+              } else {
+                this.props.resetActiveEntity(entity, this.props.activeComponent)
+              }
               let stateUpdate = {}
               for (var key in this.state) {
                 stateUpdate[key] = {$set: null}
@@ -1227,12 +1217,7 @@ export default class EntityDetails extends Component {
             onClick={(e) => {
               if (this.props.subComponent === 'trippattern') {
                 this.props.saveActiveEntity('trippattern')
-                // if (this.props.activeEntity.id === 'new') {
-                //   this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, entity, 'trippattern')
-                // }
-
-              }
-              else {
+              } else {
                 this.props.saveActiveEntity(this.props.activeComponent)
               }
             }}

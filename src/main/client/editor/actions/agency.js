@@ -28,7 +28,7 @@ export function saveAgency (feedId, agency) {
       feedId: agency.feedId,
 
       // gtfs spec
-      gtfsAgencyId: agency.agency_id,
+      agencyId: agency.agency_id,
       lang: agency.agency_lang,
       name: agency.agency_name,
       phone: agency.agency_phone,

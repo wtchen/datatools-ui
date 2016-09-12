@@ -1,13 +1,16 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, Button, ButtonGroup, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
-import ll from 'lonlng'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import { getConfigProperty } from '../../common/util/config'
-import PatternStopsTable from './PatternStopsTable'
-import { polyline as getPolyline } from '../../scenario-editor/utils/valhalla'
+import PatternStopContainer from './PatternStopContainer'
 import MinuteSecondInput from './MinuteSecondInput'
+
+import { getEntityName } from '../util/gtfs'
+import VirtualizedEntitySelect from './VirtualizedEntitySelect'
+import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
+import ll from 'lonlng'
 
 const DEFAULT_SPEED = 20 // km/hr
 
@@ -32,7 +35,18 @@ export default class TripPatternList extends Component {
       // dwellTime: 0 // seconds
     }
   }
-
+  async extendPatternToStop (pattern, endPoint, stop) {
+    let newShape = await getPolyline([endPoint, stop])
+    if (newShape) {
+      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ...newShape]}})
+      this.props.saveActiveEntity('trippattern')
+      return true
+    } else {
+      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ll.toCoordinates(stop)]}})
+      this.props.saveActiveEntity('trippattern')
+      return false
+    }
+  }
   componentWillReceiveProps (nextProps) {
   }
   shouldComponentUpdate (nextProps) {
@@ -100,6 +114,13 @@ export default class TripPatternList extends Component {
             backgroundColor: activeColor,
             paddingTop: 5,
             paddingBottom: 5
+          }
+          const cardStyle = {
+            border: '1px dashed gray',
+            padding: '0.5rem 0.5rem',
+            marginBottom: '.5rem',
+            backgroundColor: '#f2f2f2',
+            cursor: 'pointer'
           }
           const isActive = activePatternId && pattern.id === activePatternId
           const timetableOptions = [
@@ -318,9 +339,18 @@ export default class TripPatternList extends Component {
                         }
                         Stops
                       </h4>
-                      <PatternStopsTable
+                      {/* List of pattern stops */}
+                      <div className='pull-left' style={{width: '50%'}}>
+                           <p style={{marginBottom: '0px'}}>Stop sequence</p>
+                      </div>
+                      <div className='pull-right' style={{width: '50%'}}>
+                           <p style={{marginBottom: '0px'}} className='text-right'>Travel time</p>
+                      </div>
+                      <div className='clearfix'></div>
+                      <PatternStopContainer
                         stops={this.props.stops}
-                        pattern={activePattern}
+                        cardStyle={cardStyle}
+                        activePattern={activePattern}
                         updateActiveEntity={this.props.updateActiveEntity}
                         saveActiveEntity={this.props.saveActiveEntity}
                         editSettings={this.props.editSettings}
@@ -328,6 +358,83 @@ export default class TripPatternList extends Component {
                         activeComponent={this.props.activeComponent}
                         toggleEditSetting={this.props.toggleEditSetting}
                       />
+                      {/* Add stop selector */}
+                      {this.props.editSettings.addStops
+                        ? <div style={cardStyle}>
+                            <VirtualizedEntitySelect
+                              value={this.props.entity ? {value: this.props.entity.id, label: getEntityName(this.props.activeComponent, this.props.entity), entity: this.props.entity} : null}
+                              component={'stop'}
+                              entities={this.props.stops}
+                              onChange={(input) => {
+                                let patternStops = [...activePattern.patternStops]
+                                let stop = input.entity
+                                let coordinates = activePattern.shape && activePattern.shape.coordinates
+                                let newStop = {stopId: stop.id, defaultDwellTime: 0, defaultTravelTime: 0}
+                                // if adding stop to end
+                                if (typeof index === 'undefined') {
+                                  // if shape coordinates already exist, just extend them
+                                  if (coordinates) {
+                                    let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
+                                    this.extendPatternToStop(activePattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
+                                    .then(() => {
+                                      patternStops.push(newStop)
+                                      this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                      this.props.saveActiveEntity('trippattern')
+                                    })
+                                  }
+                                  // if shape coordinates do not exist, add pattern stop and get shape between stops (if multiple stops exist)
+                                  else {
+                                    patternStops.push(newStop)
+                                    if (patternStops.length > 1) {
+                                      let previousStop = this.props.stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
+                                      getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], this.props.editSettings.followStreets)
+                                      .then(geojson => {
+                                        this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
+                                        this.props.saveActiveEntity('trippattern')
+                                      })
+                                    }
+                                    else {
+                                      this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                      this.props.saveActiveEntity('trippattern')
+                                    }
+                                  }
+
+                                  // if not following roads
+                                  // updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}})
+                                }
+                                // if adding stop in middle
+                                else {
+                                  // patternStops.splice(index, 0, newStop)
+                                  // updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                                  // saveActiveEntity('trippattern')
+                                }
+                                // TODO: add strategy for stop at beginning
+                              }}
+                            />
+                            <div style={{marginTop: '5px'}} className='text-center'>
+                              <Button
+                                bsSize='small'
+                                bsStyle='default'
+                                onClick={() => {
+                                  this.props.toggleEditSetting('addStops')
+                                }}
+                              >
+                                <Icon name='times'/> Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        : <div style={cardStyle}>
+                            <p
+                              style={{width: '100%', margin: '0px'}}
+                              onClick={() => {
+                                this.props.toggleEditSetting('addStops')
+                              }}
+                              className='small'
+                            >
+                              <Icon name='plus'/> Add stop
+                            </p>
+                          </div>
+                      }
                       <Form>
                         <FormGroup className={`col-xs-4`} bsSize='small'>
                           <ControlLabel><small>Dwell time</small></ControlLabel>

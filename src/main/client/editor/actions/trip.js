@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setErrorMessage } from '../../manager/actions/status'
 
 //// TRIP
 
@@ -54,20 +55,34 @@ export function savingTrips (feedId, pattern, calendarId, trips) {
 
 export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
   return function (dispatch, getState) {
+    let errorCount = 0
+    let errorIndexes = []
     dispatch(savingTrips(feedId, pattern, calendarId, trips))
-    Promise.all(trips.map(trip => {
-      const method = trip.id !== 'new' ? 'put' : 'post'
-      const url = trip.id !== 'new'
+    return Promise.all(trips.filter(t => t).map((trip, index) => {
+      const tripExists = trip.id !== 'new' && trip.id !== null
+      const method = tripExists ? 'put' : 'post'
+      const url = tripExists
         ? `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
         : `/api/manager/secure/trip?feedId=${feedId}`
-      trip.id = trip.id === 'new' ? null : trip.id
+      trip.id = tripExists ? trip.id : null
       return secureFetch(url, getState(), method, trip)
-        .then(res => res.json())
+        .then(res => {
+          if (res.status >= 300) {
+            errorCount++
+            errorIndexes.push(index)
+            return null
+          } else {
+            return res.json()
+          }
+        })
     }))
     .then(trips => {
       // console.log(trips)
+      if (errorCount) {
+        dispatch(setErrorMessage(`Unknown error encountered while saving trips.  Could not save ${errorCount} trips`))
+      }
       dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
-      // return trips
+      return errorIndexes
     })
     // return result
   }
@@ -89,7 +104,17 @@ export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
 
 export function deletingTrips (feedId, pattern, calendarId, trips) {
   return {
-    type: 'DELETING_TRIPS',
+    type: 'DELETING_TRIPS_FOR_CALENDAR',
+    feedId,
+    pattern,
+    calendarId,
+    trips
+  }
+}
+
+export function deletedTrips (feedId, pattern, calendarId, trips) {
+  return {
+    type: 'DELETED_TRIPS_FOR_CALENDAR',
     feedId,
     pattern,
     calendarId,
@@ -99,15 +124,27 @@ export function deletingTrips (feedId, pattern, calendarId, trips) {
 
 export function deleteTripsForCalendar (feedId, pattern, calendarId, trips) {
   return function (dispatch, getState) {
+    let errorCount = 0
     dispatch(deletingTrips(feedId, pattern, calendarId, trips))
-    Promise.all(trips.map(trip => {
+    return Promise.all(trips.map(trip => {
       const url = `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
       return secureFetch(url, getState(), 'delete', trip)
-        .then(res => res.json())
+        .then(res => {
+          if (res.status >= 300) {
+            errorCount++
+            return null
+          } else {
+            return res.json()
+          }
+        })
     }))
     .then(trips => {
       // console.log(trips)
+      if (errorCount) {
+        dispatch(setErrorMessage(`Unknown error encountered while deleting trips.  Could not delete ${errorCount} trips`))
+      }
       dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
+      // dispatch(deletedTrips(feedId, pattern, calendarId, trips))
       // return trips
     })
     // return result

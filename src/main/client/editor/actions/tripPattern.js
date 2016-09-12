@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setErrorMessage } from '../../manager/actions/status'
 import { setActiveGtfsEntity } from './editor'
 
 //// TRIP PATTERNS
@@ -129,6 +130,14 @@ export function deleteTripPattern (feedId, tripPattern) {
   }
 }
 
+export function savedTripPattern (feedId, tripPattern) {
+  return {
+    type: 'SAVED_TRIP_PATTERN',
+    feedId,
+    tripPattern
+  }
+}
+
 export function saveTripPattern (feedId, tripPattern) {
   return function (dispatch, getState) {
     const method = tripPattern.id !== 'new' ? 'put' : 'post'
@@ -139,9 +148,15 @@ export function saveTripPattern (feedId, tripPattern) {
       : `/api/manager/secure/trippattern?feedId=${feedId}`
     data.id = tripPattern.id === 'new' ? null : tripPattern.id
     return secureFetch(url, getState(), method, data)
-      .then(res => res.json())
+      .then(res => {
+        if (res.status >= 300) {
+          dispatch(setErrorMessage('Error saving trip pattern'))
+          return dispatch(fetchTripPatternsForRoute(feedId, routeId))
+        }
+        return res.json()
+      })
       .then(tp => {
-        // dispatch(receiveTripPattern(feedId, tripPattern))
+        dispatch(savedTripPattern(feedId, tripPattern))
         return dispatch(fetchTripPatternsForRoute(feedId, routeId))
           .then((tripPatterns) => {
             if (tripPattern.id === 'new') {

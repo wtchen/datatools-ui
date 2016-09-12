@@ -8,11 +8,19 @@ export default class MinuteSecondInput extends Component {
     onChange: PropTypes.func,
     style: PropTypes.object
   }
-
   constructor (props) {
     super(props)
     this.state = {
       seconds: typeof this.props.seconds === 'undefined' ? '' : this.props.seconds
+    }
+  }
+  componentWillReceiveProps (nextProps) {
+    console.log(nextProps)
+    if (typeof nextProps.seconds !== 'undefined' && this.state.seconds !== nextProps.seconds) {
+      this.setState({
+        seconds: nextProps.seconds,
+        string: this.convertSecondsToString(nextProps.seconds)
+      })
     }
   }
   onChange (value) {
@@ -22,7 +30,8 @@ export default class MinuteSecondInput extends Component {
     }
     else {
       this.setState({seconds, string: value})
-      this.props.onChange(seconds)
+      if (typeof this.props.onChange !== 'undefined')
+        this.props.onChange(seconds)
     }
   }
   convertSecondsToString (seconds) {

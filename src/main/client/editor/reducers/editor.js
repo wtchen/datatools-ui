@@ -52,7 +52,7 @@ const defaultState = {
   validation: null
 }
 const editor = (state = defaultState, action) => {
-  let stateUpdate, key, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState
+  let stateUpdate, key, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, patternIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState
   switch (action.type) {
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
@@ -156,6 +156,12 @@ const editor = (state = defaultState, action) => {
           actions: {$push: [action.type]}
         }
       })
+    case 'RECEIVED_ROUTES_SHAPEFILE':
+      return update(state, {
+        mapState: {
+          routesGeojson: {$set: action.geojson}
+        }
+      })
     case 'CREATE_GTFS_ENTITY':
       if (action.component === 'trippattern') {
         activeEntity = {
@@ -234,14 +240,14 @@ const editor = (state = defaultState, action) => {
       switch (action.component) {
         case 'trippattern':
           routeIndex = state.tableData.route.findIndex(r => r.id === action.entity.routeId)
-          // activeEntity = Object.assign({}, state.tableData.route[routeIndex])
           patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.entity.id)
           activeEntity = Object.assign({}, state.tableData.route[routeIndex].tripPatterns[patternIndex])
           return update(state, {
             active: {
-              entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
-              edited: {$set: false}
-            },
+              // entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
+              subEntity: {$set: activeEntity},
+              patternEdited: {$set: false}
+            }
           })
         case 'feedinfo':
           activeEntity = Object.assign({}, state.tableData[action.component])
@@ -249,7 +255,7 @@ const editor = (state = defaultState, action) => {
             active: {
               entity: {$set: activeEntity},
               edited: {$set: false}
-            },
+            }
           })
         default:
           activeEntity = state.tableData[action.component].find(e => e.id === action.entity.id)
@@ -259,6 +265,15 @@ const editor = (state = defaultState, action) => {
               edited: {$set: false}
             },
           })
+      }
+    case 'SAVED_TRIP_PATTERN':
+      if (action.tripPattern.id == state.active.subEntityId) {
+        stateUpdate = {
+          active: {
+            patternEdited: {$set: false}
+          }
+        }
+        return update(state, stateUpdate)
       }
     case 'UPDATE_ACTIVE_GTFS_ENTITY':
       switch (action.component) {
@@ -270,9 +285,10 @@ const editor = (state = defaultState, action) => {
           }
           stateUpdate = {
             active: {
-              entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
-              edited: {$set: true}
-            },
+              // entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
+              subEntity: {$set: activeEntity},
+              patternEdited: {$set: true}
+            }
           }
           if (action.props && 'shape' in action.props) {
             // add previous coordinates to history
@@ -559,7 +575,7 @@ const editor = (state = defaultState, action) => {
       }
     case 'RECEIVE_TRIPS_FOR_CALENDAR':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.pattern.routeId)
-      let patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.pattern.id)
+      patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.pattern.id)
       if (state.active.entity.id === action.pattern.routeId) {
         return update(state, {
           tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
@@ -571,6 +587,21 @@ const editor = (state = defaultState, action) => {
           tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
         })
       }
+    // case 'DELETED_TRIPS_FOR_CALENDAR':
+    //   routeIndex = state.tableData.route.findIndex(r => r.id === action.pattern.routeId)
+    //   patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.pattern.id)
+    //   let tripIndex = state.tableData.route[routeIndex].tripPatterns[patternIndex][action.calendarId].findIndex(t => t.)
+    //   if (state.active.entity.id === action.pattern.routeId) {
+    //     return update(state, {
+    //       tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
+    //       active: {entity: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}
+    //     })
+    //   }
+    //   else {
+    //     return update(state, {
+    //       tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
+    //     })
+    //   }
     case 'RECEIVE_STOPS':
       const stops = action.stops ? action.stops.map(mapStop) : []
       var tree = rbush(9, ['[0]', '[1]', '[0]', '[1]'])
