@@ -126,6 +126,12 @@ export function updateTargetForSubscription (profile, target, subscriptionType) 
   }
 }
 
+export function unsubscribeAll (profile) {
+  return function (dispatch, getState) {
+    return dispatch(updateUserData(profile, {subscriptions: []}))
+  }
+}
+
 // server call
 export function updateUserData (user, userData) {
   return function (dispatch, getState) {
