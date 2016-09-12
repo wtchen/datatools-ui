@@ -32,7 +32,6 @@ export default class SelectFileModal extends React.Component {
   }
 
   ok () {
-
     if(this.props.onConfirm) {
       if (this.props.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
         this.close()

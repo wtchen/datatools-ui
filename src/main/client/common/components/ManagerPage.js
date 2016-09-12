@@ -12,7 +12,7 @@ import ActiveSidebarNavItem from '../containers/ActiveSidebarNavItem'
 import PageContent from '../containers/PageContent'
 import ManagerNavbar from '../containers/ManagerNavbar'
 
-import { getConfigProperty } from '../util/config'
+import { getConfigProperty, isModuleEnabled } from '../util/config'
 
 export default class ManagerPage extends Component {
   static propTypes = {
@@ -53,6 +53,22 @@ export default class ManagerPage extends Component {
             onClick={() => browserHistory.push(`/admin`) } />
           <ActiveSidebarNavItem icon='globe' label='Explore'
             onClick={() => browserHistory.push(`/`) } />*/}
+          {isModuleEnabled('alerts')
+            ? <ActiveSidebarNavItem
+                icon='exclamation-circle'
+                label='Alerts'
+                onClick={() => browserHistory.push(`/alerts`) }
+              />
+            : null
+          }
+          {isModuleEnabled('sign_config')
+            ? <ActiveSidebarNavItem
+                icon='television'
+                label='eTID Config'
+                onClick={() => browserHistory.push(`/signs`) }
+              />
+            : null
+          }
         </ActiveSidebar>
         <PageContent>
             {/*<ManagerNavbar breadcrumbs={this.props.breadcrumbs}/>*/}
