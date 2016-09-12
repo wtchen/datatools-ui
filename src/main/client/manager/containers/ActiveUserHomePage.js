@@ -9,6 +9,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
     projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id)) : [],
+    project: ownProps.routeParams.projectId && state.projects.all ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId) : null
   }
 }
 

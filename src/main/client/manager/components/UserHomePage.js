@@ -32,12 +32,24 @@ export default class UserHomePage extends Component {
   render () {
     const messages = getComponentMessages('UserHomePage')
     const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
-
+    const renderFeedItems = (p, fs) => {
+      const feedName = `${p.name} / ${fs.name}`
+      return (
+        <ListGroupItem key={fs.id} bsStyle={fs.isPublic ? 'default' : 'warning'}>
+          <Link title={feedName} to={`feed/${fs.id}`}>
+            <Icon className='icon-link' name={fs.isPublic ? 'database' : 'lock'}/>
+            <span style={{ fontSize: 16, fontWeight: 500 }}>
+              {feedName.length > 33 ? `${feedName.substr(0, 33)}...` : feedName}
+            </span>
+          </Link>
+        </ListGroupItem>
+      )
+    }
     const visibleProjects = this.props.projects.filter((project) => {
           if (project.isCreating) return true // projects actively being created are always visible
           return project.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
         }).sort(defaultSorter)
-    const activeProject = visibleProjects.length > 0 ? visibleProjects[0] : null
+    const activeProject = this.props.project
     const sortByDate = (a, b) => {
       if (a.date < b.date) return 1
       if (a.date > b.date) return -1
@@ -91,16 +103,16 @@ export default class UserHomePage extends Component {
                     <div><Badge className='text-muted'>
                       {this.props.user.permissions.isApplicationAdmin()
                         ? 'Application admin'
-                        : 'Standard plan'
+                        : 'Standard user'
                       }
                     </Badge></div>
                     <div style={{ marginTop: 15 }}>
                       <ButtonToolbar className='pull-right'>
-                        <Button bsStyle='primary' bsSize='small'
-                          onClick={() => { browserHistory.push('/settings/profile') }}
-                        >
-                          <Icon name='cog' /> Manage Account
-                        </Button>
+                        <LinkContainer to='/settings/profile'>
+                          <Button bsStyle='primary' bsSize='small'>
+                            <Icon name='cog' /> Manage account
+                          </Button>
+                        </LinkContainer>
                         {this.props.user.permissions.isApplicationAdmin()
                           ? <LinkContainer to='/admin/users'>
                               <Button bsStyle='default' bsSize='small'>
@@ -120,24 +132,41 @@ export default class UserHomePage extends Component {
                   : null
                 }
                 <DropdownButton
-                  title={visibleProjects.length > 0
-                    ? <span><Icon name='folder-open-o'/> {visibleProjects[0].name}</span>
+                  title={activeProject
+                    ? <span><Icon name='folder-open-o'/> {activeProject.name}</span>
                     : <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>
                   }
-                  onSelect={(eventKey) => {
-                    this.props.setActiveProject(eventKey)
-                  }}
+                  // onSelect={(eventKey) => {
+                  //   this.props.setActiveProject(eventKey)
+                  // }}
                 >
+                  {activeProject
+                    ? [
+                      <LinkContainer key='home-link' to={`/home/`}>
+                        <MenuItem>
+                          <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>
+                        </MenuItem>
+                      </LinkContainer>,
+                      <MenuItem key='divider' divider/>
+                    ]
+                    : null
+                  }
                   {visibleProjects.length > 0
                     ? visibleProjects.map((project, index) => {
-                      if (index !== 0)
+                      if (activeProject && project.id === activeProject.id) {
+                        return null
+                      }
                       return (
-                        <MenuItem key={project.id} eventKey={project.id}><Icon name='folder-o'/> {project.name}</MenuItem>
+                        <LinkContainer to={`/home/${project.id}`}>
+                          <MenuItem key={project.id} eventKey={project.id}>
+                            <Icon name='folder-o'/> {project.name}
+                          </MenuItem>
+                        </LinkContainer>
                       )
                     })
                     : null
                   }
-                  <MenuItem divider />
+                  {activeProject && visibleProjects.length > 1 || !activeProject ? <MenuItem divider /> : null}
                   <LinkContainer to='/settings/organizations'><MenuItem><Icon name='users'/> Manage organizations</MenuItem></LinkContainer>
                   <MenuItem divider />
                   <MenuItem><Icon name='plus'/> Create organization</MenuItem>
@@ -171,21 +200,12 @@ export default class UserHomePage extends Component {
                         href="#">Private</Button>
                     </ButtonGroup>
                   </ListGroupItem>
-                  {this.props.projects && this.props.projects.map(p => {
-                    return p.feedSources && p.feedSources.map(fs => {
-                      const feedName = `${p.name} / ${fs.name}`
-                      return (
-                        <ListGroupItem key={fs.id} bsStyle={fs.isPublic ? 'default' : 'warning'}>
-                          <Link title={feedName} to={`feed/${fs.id}`}>
-                            <Icon className='icon-link' name={fs.isPublic ? 'database' : 'lock'}/>
-                            <span style={{ fontSize: 16, fontWeight: 500 }}>
-                              {feedName.length > 33 ? `${feedName.substr(0, 33)}...` : feedName}
-                            </span>
-                          </Link>
-                        </ListGroupItem>
-                      )
-                    })
-                  })}
+                  {activeProject && activeProject.feedSources
+                    ? activeProject.feedSources.map(fs => renderFeedItems(activeProject, fs))
+                    : this.props.projects && this.props.projects.map(p => {
+                        return p.feedSources && p.feedSources.map(fs => renderFeedItems(p, fs))
+                      })
+                  }
                 </ListGroup>
               </Panel>
             </Col>
