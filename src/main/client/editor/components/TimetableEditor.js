@@ -1,21 +1,32 @@
 import React, {Component, PropTypes} from 'react'
-import { InputGroup, Table, Checkbox, ListGroup, Nav, NavItem, ListGroupItem, Button, ButtonGroup, DropdownButton, MenuItem, ButtonToolbar, Collapse, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import { InputGroup, Checkbox, Nav, NavItem, NavDropdown, MenuItem, Button, Form, FormControl } from 'react-bootstrap'
+import Icon from 'react-fa'
+import clone from 'clone'
+import ReactDOM from 'react-dom'
 import moment from 'moment'
+import truncate from 'truncate'
 import update from 'react-addons-update'
 import objectPath from 'object-path'
 
-import EditableTextField from '../../common/components/EditableTextField'
 import EditableCell from '../../common/components/EditableCell'
+import HourMinuteInput from './HourMinuteInput'
 
 export default class TimetableEditor extends Component {
+  static propTypes = {
+    route: PropTypes.object,
+    activePatternId: PropTypes.string,
+    activeScheduleId: PropTypes.string,
+    feedSource: PropTypes.object,
+    saveTripsForCalendar: PropTypes.func
+  }
   constructor (props) {
     super(props)
     this.state = {
       activeCell: null, // 'rowNum-colNum', e.g. 0-1
       // rows: [{block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}],
       edited: [],
-      selected: []
+      selected: [],
+      offsetSeconds: 0
     }
   }
   updateDimensions () {
@@ -34,11 +45,11 @@ export default class TimetableEditor extends Component {
     let selectIndex = this.state.selected.indexOf(rowIndex)
     console.log(selectIndex)
     if (selectIndex === -1) {
-      let stateUpdate = { selected: { $push: [rowIndex] }}
+      let stateUpdate = { selected: { $push: [rowIndex] } }
       this.setState(update(this.state, stateUpdate))
     }
     else {
-      let stateUpdate = {selected: { $splice: [[selectIndex, 1]] }}
+      let stateUpdate = { selected: { $splice: [[selectIndex, 1]] } }
       this.setState(update(this.state, stateUpdate))
     }
   }
@@ -49,35 +60,80 @@ export default class TimetableEditor extends Component {
     let stateUpdate = { edited: { $push: [rowIndex] }, data: {$set: newRows} }
     this.setState(update(this.state, stateUpdate))
   }
-  addNewRow () {
-    let newRow = Object.assign({}, this.state.data[this.state.data.length - 1])
-    for (var i = 0; i < columns.length; i++) {
+  addNewRow (columns, blank = false) {
+    const activePattern = this.props.route && this.props.route.tripPatterns ? this.props.route.tripPatterns.find(p => p.id === this.props.activePatternId) : null
+
+    // set blank to true if there are no rows to clone
+    blank = blank || this.state.data.length === 0
+    let newRow = blank ? {} : clone(this.state.data[this.state.data.length - 1]) || {}
+
+    // set starting time for first arrival
+    let cumulativeTravelTime = blank ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
+    cumulativeTravelTime += this.state.offsetSeconds
+
+    for (let i = 0; i < activePattern.patternStops.length; i++) {
+      let stop = activePattern.patternStops[i]
+      // if stopTime null/undefined, set as new object
+      if (!objectPath.get(newRow, `stopTimes.${i}`)) {
+        objectPath.set(newRow, `stopTimes.${i}`, {})
+      }
+      console.log(objectPath.get(newRow, `stopTimes.${i}`))
+      objectPath.set(newRow, `stopTimes.${i}.stopId`, stop.stopId)
+      cumulativeTravelTime += +stop.defaultTravelTime
+      objectPath.set(newRow, `stopTimes.${i}.arrivalTime`, cumulativeTravelTime)
+      cumulativeTravelTime += +stop.defaultDwellTime
+      objectPath.set(newRow, `stopTimes.${i}.departureTime`, cumulativeTravelTime)
+    }
+    for (let i = 0; i < columns.length; i++) {
       let col = columns[i]
       if (/TIME/.test(col.type)) {
-        objectPath.set(newRow, col.key, 0)
-      }
-      else {
-        objectPath.set(newRow, col.key, null)
+        // TODO: add default travel/dwell times to new rows
+        // objectPath.ensureExists(newRow, col.key, 0)
+      } else {
+        objectPath.ensureExists(newRow, col.key, null)
       }
     }
+    // important: set id to "new"
     objectPath.set(newRow, 'id', 'new')
+    objectPath.set(newRow, 'gtfsTripId', null)
+    objectPath.set(newRow, 'useFrequency', activePattern.useFrequency)
+    objectPath.set(newRow, 'feedId', this.props.feedSource.id)
+    objectPath.set(newRow, 'patternId', activePattern.id)
+    objectPath.set(newRow, 'calendarId', this.props.activeScheduleId)
     let newRows = [...this.state.data, newRow]
-    // newRows.push(newRow)
-    this.setState({data: newRows, activeCell: `${newRows.length - 1}-${0}` })
+    let stateUpdate = {
+      data: {$set: newRows},
+      activeCell: {$set: `${newRows.length - 1}-${0}`},
+      edited: { $push: [this.state.data.length] }
+    }
+    this.setState(update(this.state, stateUpdate))
   }
   removeSelectedRows (feedSourceId, pattern, scheduleId) {
     let splice = []
     let removed = []
-    let trips = []
-    for (var i = 0; i < this.state.selected.length; i++) {
-      // this.state.selected[i]
-      // splice.push([this.state.selected[i], 1])
+    let tripsToDelete = []
+    let newRows = [...this.state.data]
+    let selectedDescending = this.state.selected.sort((a,b) => {
+      return b - a
+    })
+    // loop over selected array in descending order to ensure that splice operates on indexes in reverse
+    for (var i = 0; i < selectedDescending.length; i++) {
+      let rowIndex = selectedDescending[i]
+
       // removed.push([this.state.selected[i], 1])
-      trips.push(this.state.data[this.state.selected[i]])
+      let row = newRows[rowIndex]
+      if (row.id === 'new') {
+        splice.push([rowIndex, 1])
+      } else {
+        tripsToDelete.push(row)
+      }
     }
-    this.props.deleteTripsForCalendar(feedSourceId, pattern, scheduleId, trips)
+    if (tripsToDelete.length > 0) {
+      this.props.deleteTripsForCalendar(feedSourceId, pattern, scheduleId, tripsToDelete)
+    }
+    console.log(splice)
     let stateUpdate = {
-      // data: {$splice: splice},
+      data: {$splice: splice},
       selected: {$set: []}
     }
     this.setState(update(this.state, stateUpdate))
@@ -87,7 +143,19 @@ export default class TimetableEditor extends Component {
     const activePattern = nextProps.route && nextProps.route.tripPatterns ? nextProps.route.tripPatterns.find(p => p.id === nextProps.activePatternId) : null
     const activeSchedule = nextProps.tableData.calendar ? nextProps.tableData.calendar.find(c => c.id === nextProps.activeScheduleId) : null
     const trips = activePattern && activeSchedule ? activePattern[nextProps.activeScheduleId] : []
-    const sortedTrips = trips ? trips.sort((a, b) => {
+    // add unsaved trips to list of trips received
+    if (this.state.edited.length > 0) {
+      for (var i = 0; i < this.state.edited.length; i++) {
+        let rowIndex = this.state.edited[i]
+        let trip = this.state.data[rowIndex]
+        if (trip) {
+          trips.push(trip)
+        }
+      }
+    }
+    const sortedTrips = trips ? trips
+      .filter(t => t.useFrequency === activePattern.useFrequency) // filter out based on useFrequency
+      .sort((a, b) => {
       // if(a.isCreating && !b.isCreating) return -1
       // if(!a.isCreating && b.isCreating) return 1
       if(a.stopTimes[0].departureTime < b.stopTimes[0].departureTime) return -1
@@ -98,7 +166,7 @@ export default class TimetableEditor extends Component {
     const calendars = nextProps.tableData.calendar
     this.setState({
       data: sortedTrips, // tripRows
-      edited: [],
+      // edited: [],
       hideDepartureTimes: false
     })
   }
@@ -150,23 +218,73 @@ export default class TimetableEditor extends Component {
       return false
     }
   }
-  handlePastedRows (rows, rowIndex, colIndex, columns) {
+  offsetRows (rowIndexes, offsetAmount, columns) {
+    let newRows = [...this.state.data]
+    let editedRows = []
+    console.log(`Offsetting ${rowIndexes.length} rows by ${offsetAmount} seconds`)
+    for (var i = 0; i < rowIndexes.length; i++) {
+      let row = newRows[rowIndexes[i]]
+      editedRows.push(rowIndexes[i])
+      for (var j = 0; j < columns.length; j++) {
+        let col = columns[j]
+        let path = `${rowIndexes[i]}.${col.key}`
+        if (/TIME/.test(col.type)) {
+          let currentVal = objectPath.get(newRows, path)
+          let newVal = currentVal + offsetAmount % 86399 // ensure seconds does not exceed 24 hours
+          objectPath.set(newRows, path, newVal)
+        }
+      }
+    }
+    let stateUpdate = {
+      data: {$set: newRows},
+      edited: {$push: editedRows}
+    }
+    this.setState(update(this.state, stateUpdate))
+  }
+  handlePastedRows (pastedRows, rowIndex, colIndex, columns) {
     let newRows = [...this.state.data]
     let date = moment().startOf('day').format('YYYY-MM-DD')
     let editedRows = []
-    for (var i = 0; i < rows.length; i++) {
+    for (var i = 0; i < pastedRows.length; i++) {
       editedRows.push(i)
-      // TODO: fix handlePaste to accommodate new rows objects
-      for (var j = 0; j < rows[0].length; j++) {
+      // TODO: fix handlePaste to accommodate new pastedRows objects
+      for (var j = 0; j < pastedRows[0].length; j++) {
         let path = `${rowIndex + i}.${columns[colIndex + j].key}`
         if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
-          let newValue = moment(date + 'T' + rows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
+          let newValue = moment(date + 'T' + pastedRows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
           objectPath.set(newRows, path, newValue)
         }
       }
     }
     let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
     this.setState(update(this.state, stateUpdate))
+  }
+  saveEditedTrips (activePattern, activeScheduleId) {
+    let trips = []
+    let tripIndexes = []
+    for (var i = 0; i < this.state.edited.length; i++) {
+      let rowIndex = this.state.edited[i]
+      if (tripIndexes.indexOf(rowIndex) === -1) {
+        let trip = this.state.data[rowIndex]
+        if (trip) {
+          trips.push(trip)
+          tripIndexes.push(rowIndex)
+        }
+      }
+    }
+
+    this.props.saveTripsForCalendar(this.props.feedSource.id, activePattern, activeScheduleId, trips)
+    .then((errorIndexes) => {
+      console.log(errorIndexes)
+      let edited = []
+      for (var i = 0; i < errorIndexes.length; i++) {
+        edited.push(this.state.edited[errorIndexes[i]])
+      }
+      let stateUpdate = {
+        edited: {$set: edited}
+      }
+      this.setState(update(this.state, stateUpdate))
+    })
   }
   isDataValid (col, value, previousValue) {
     if (/TIME/.test(col.type)) {
@@ -181,7 +299,10 @@ export default class TimetableEditor extends Component {
       return value
     }
     else {
-      if (value && value >= 0)
+      if (value === 0) {
+        return moment().startOf('day').seconds(value).format('HH:mm:ss')
+      }
+      else if (value && value > 0)
         return moment().startOf('day').seconds(value).format('HH:mm:ss')
       else {
         return ''
@@ -263,6 +384,7 @@ export default class TimetableEditor extends Component {
           })
         })
       }
+      // columns added if using freqency schedule type
       else {
         columns.push({
           name: 'Start time',
@@ -290,9 +412,9 @@ export default class TimetableEditor extends Component {
     const tableType = !activePattern
       ? ''
       : activePattern.useFrequency
-      ? 'Editing frequencies for'
-      : 'Editing timetables for'
-    const headerText = <span>{tableType} {activePattern ? activePattern.name : <Icon spin name='refresh' />}</span>
+      ? 'Frequencies for'
+      : 'Timetables for'
+    const headerText = <span>{tableType} {activePattern ? <span title={activePattern.name}>{truncate(activePattern.name, 20)}</span> : <Icon spin name='refresh' />}</span>
     return (
       <div
         style={panelStyle}
@@ -320,47 +442,34 @@ export default class TimetableEditor extends Component {
           }
           {'  '}
           <InputGroup>
-            <FormControl style={{width: '40px'}} type='text' />
+            <HourMinuteInput
+              ref='offsetInput'
+              style={{width: '65px'}}
+              onChange={(seconds) => {
+                this.setState({offsetSeconds: seconds})
+              }}
+            />
             <InputGroup.Button>
-              <Button>
+              <Button
+                // disabled={this.state.selected.length === 0}
+                onClick={() => {
+                  if (this.state.selected.length > 0) {
+                    this.offsetRows(this.state.selected, this.state.offsetSeconds, columns)
+                  }
+                  // if no rows selected, offset last row
+                  else {
+                    this.offsetRows([this.state.data.length - 1], this.state.offsetSeconds, columns)
+                  }
+
+                }}
+              >
                 Offset
               </Button>
             </InputGroup.Button>
           </InputGroup>
           {'  '}
           <Button
-            onClick={() => {
-              let newRow = {} // Object.assign({}, this.state.data[this.state.data.length - 1])
-              let cumulativeTravelTime = 0
-              for (var i = 0; i < activePattern.patternStops.length; i++) {
-                let stop = activePattern.patternStops[i]
-                console.log(stop)
-
-                objectPath.ensureExists(newRow, `stopTimes.${i}.stopId`, stop.stopId)
-
-                cumulativeTravelTime += stop.defaultTravelTime
-                objectPath.ensureExists(newRow, `stopTimes.${i}.arrivalTime`, cumulativeTravelTime)
-                cumulativeTravelTime += stop.defaultDwellTime
-                objectPath.ensureExists(newRow, `stopTimes.${i}.departureTime`, cumulativeTravelTime)
-              }
-              for (var i = 0; i < columns.length; i++) {
-                let col = columns[i]
-                if (/TIME/.test(col.type)) {
-                  // TODO: add default travel/dwell times to new rows
-                  // objectPath.ensureExists(newRow, col.key, 0)
-                }
-                else {
-                  objectPath.ensureExists(newRow, col.key, null)
-                }
-              }
-              objectPath.ensureExists(newRow, 'id', 'new')
-              objectPath.ensureExists(newRow, 'feedId', feedSource.id)
-              objectPath.ensureExists(newRow, 'patternId', activePattern.id)
-              objectPath.ensureExists(newRow, 'calendarId', activeScheduleId)
-              let newRows = [...this.state.data, newRow]
-              // newRows.push(newRow)
-              this.setState({data: newRows, activeCell: `${newRows.length - 1}-${0}` })
-            }}
+            onClick={() => this.addNewRow(columns)}
             bsStyle='default'
           >
             <Icon name='plus'/> New trip
@@ -395,16 +504,7 @@ export default class TimetableEditor extends Component {
           <Button
             disabled={this.state.edited.length === 0}
             onClick={() => {
-              let trips = []
-              let tripIndexes = []
-              for (var i = 0; i < this.state.edited.length; i++) {
-                let rowIndex = this.state.edited[i]
-                if (tripIndexes.indexOf(rowIndex) === -1) {
-                  trips.push(this.state.data[rowIndex])
-                  tripIndexes.push(rowIndex)
-                }
-              }
-              this.props.saveTripsForCalendar(feedSource.id, activePattern, activeScheduleId, trips)
+              this.saveEditedTrips(activePattern, activeScheduleId)
             }}
             bsStyle='primary'
           >
@@ -440,6 +540,13 @@ export default class TimetableEditor extends Component {
             })
             : null
           }
+          <NavDropdown eventKey="4" title="More..." id="nav-dropdown">
+            <MenuItem eventKey="4.1">Action</MenuItem>
+            <MenuItem eventKey="4.2">Another action</MenuItem>
+            <MenuItem eventKey="4.3">Something else here</MenuItem>
+            <MenuItem divider />
+            <MenuItem eventKey="4.4">Separated link</MenuItem>
+          </NavDropdown>
           <NavItem
             eventKey={'scheduleexception'}
             onClick={() => {
@@ -464,21 +571,19 @@ export default class TimetableEditor extends Component {
               >
                 <tr>
                   <th>
+                    {/* Select all checkbox */}
                     <input
                       ref='check-all'
                       type='checkbox'
-                      checked={this.state.selected[0] === '*'}
-                      // onChange={(e) => {
-                      //   console.log(e.checked)
-                      // }}
+                      checked={this.state.selected.length && this.state.selected.length === this.state.data.length}
                       onClick={(e) => {
-                        console.log(e.checked)
-                        if (this.state.selected[0] === '*') {
-                          this.setState({selected: []})
+                        let selected = []
+                        if (this.state.selected.length !== this.state.data.length) {
+                          for (let i = 0; i < this.state.data.length; i++) {
+                            selected.push(i)
+                          }
                         }
-                        else {
-                          this.setState({selected: ['*']})
-                        }
+                        this.setState({selected})
                       }}
                     />
                   </th>
@@ -515,6 +620,9 @@ export default class TimetableEditor extends Component {
                       </td>
                       {columns.map((col, colIndex) => {
                         let val = objectPath.get(row, col.key)
+                        if (col.key === 'gtfsTripId' && val === null) {
+                          val = objectPath.get(row, 'id') !== 'new' ? objectPath.get(row, 'id') : null
+                        }
                         rowValues.push(val)
                         let cellStyle = {
                           width: '60px',
