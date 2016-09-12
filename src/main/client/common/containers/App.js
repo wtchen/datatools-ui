@@ -4,6 +4,7 @@ import { Router, Route, browserHistory } from 'react-router'
 
 import { checkExistingLogin, login } from '../../manager/actions/user'
 import { checkJobStatus } from '../../manager/actions/status'
+import { isModuleEnabled } from '../util/config'
 
 // import NoAccessScreen from '../components/NoAccessScreen'
 import ActiveFeedSourceViewer from '../../manager/containers/ActiveFeedSourceViewer'
@@ -89,12 +90,6 @@ class App extends React.Component {
       <Route path='/home(/:projectId)' component={ActiveUserHomePage} onEnter={requireAuth} />,
       <Route path='/' component={ActivePublicFeedsViewer} onEnter={checkLogin} />,
       <Route path='/public/feed/:feedSourceId(/version/:feedVersionIndex)' component={ActivePublicFeedSourceViewer} onEnter={checkLogin} />,
-      <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,
-      <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />,
-      <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />,
-      <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />,
-      <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />,
-      <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />,
       <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />,
       <Route path='/project/:projectId(/:subpage)(/:subsubpage)' component={ActiveProjectViewer} onEnter={requireAuth} />,
       // <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />,
@@ -105,8 +100,27 @@ class App extends React.Component {
       <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />,
       <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />,
       <Route path='/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)' component={ActiveGtfsTableEditor} onEnter={requireAuth} />,
-      <Route path='*' component={PageNotFound} />,
+      <Route path='*' component={PageNotFound} />
     ]
+
+    // register routes if alerts module enabled
+    if (isModuleEnabled('alerts')) {
+      routes.unshift(
+        <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,
+        <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />,
+        <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />
+      )
+    }
+
+    // register routes if sign_config module enabled
+    if (isModuleEnabled('sign_config')) {
+      routes.unshift(
+        <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />,
+        <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />,
+        <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />
+      )
+    }
+
     return (
       <Router history={this.props.history}>
         {routes}
