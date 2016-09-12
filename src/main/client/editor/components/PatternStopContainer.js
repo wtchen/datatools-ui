@@ -8,7 +8,6 @@ import HTML5Backend from 'react-dnd-html5-backend'
 
 import { getEntityName } from '../util/gtfs'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
-import PatternStopRow from './PatternStopRow'
 import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
 import ll from 'lonlng'
 
