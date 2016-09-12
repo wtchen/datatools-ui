@@ -126,6 +126,11 @@ class FeedSourceTableRow extends Component {
           />
           {' '}
           {!fs.isPublic ? <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/> : null}
+          {' '}
+          {fs.editedSinceSnapshot
+            ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' name='circle'/>
+            : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' name='circle'/>
+          }
           </h4>
         }
         key={fs.id}

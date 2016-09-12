@@ -130,11 +130,15 @@ export default class FeedVersionNavigator extends Component {
                     </ButtonGroup>
                   }
                   <ButtonToolbar className='pull-right'>
-                    <Button bsStyle='primary'>Deploy feed</Button>
+                    <Button
+                      // bsStyle='primary'
+                    >
+                      <Icon name='globe'/> Deploy feed
+                    </Button>
                     {isModuleEnabled('editor')
                       ? <Button
                           // disabled={editGtfsDisabled} // || !fs.latestValidation}
-                          bsStyle='info'
+                          // bsStyle='info'
                           onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
                           <Glyphicon glyph='pencil' /> Edit feed
                         </Button>

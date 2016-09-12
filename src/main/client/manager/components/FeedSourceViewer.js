@@ -297,6 +297,11 @@ export default class FeedSourceViewer extends Component {
                 {' '}/{' '}
                 <Link to={`/feed/${fs.id}`}>{fs.name}</Link>{' '}
                 {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/>}
+                {' '}
+                {fs.editedSinceSnapshot
+                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' name='circle'/>
+                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' name='circle'/>
+                }
                 <ButtonToolbar
                   className={`pull-right`}
                 >
@@ -463,7 +468,7 @@ export default class FeedSourceViewer extends Component {
 
             {isModuleEnabled('editor')
               ? <Tab eventKey='snapshots'
-                  title={<span><Icon className='icon-link' name='camera' /><span className='hidden-xs'>Snapshots </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
+                  title={<span><Icon className='icon-link' name='pencil-square-o' /><span className='hidden-xs'>{getComponentMessages('EditorFeedSourcePanel').title} </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
                 >
                   <ActiveEditorFeedSourcePanel feedSource={fs} />
                 </Tab>

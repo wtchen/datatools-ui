@@ -140,7 +140,11 @@ export default class FeedVersionViewer extends Component {
             </Col>
             <Col xs={12} sm={9}>
               {!this.props.versionSection
-                ? <Panel bsStyle='info' header={versionHeader}>
+                ? <Panel
+                    bsStyle='info'
+                    header={versionHeader}
+                    footer={<span><Icon name='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }</span>}
+                  >
                     <ListGroup hover fill>
                         <ListGroupItem
                           style={{
@@ -192,9 +196,6 @@ export default class FeedVersionViewer extends Component {
                             </Col>
                           </Row>
                         </ListGroupItem>
-                        <ListGroupItem>
-                          <Icon name='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }
-                        </ListGroupItem>
                     </ListGroup>
                   </Panel>
                 : this.props.versionSection === 'issues'
@@ -238,7 +239,8 @@ class VersionButtonToolbar extends Component {
       <ButtonToolbar className='pull-right'>
 
         {/* "Download Feed" Button */}
-        <Button bsStyle='primary'
+        <Button
+          bsStyle='primary'
           disabled={!this.props.hasVersions}
           onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
         >

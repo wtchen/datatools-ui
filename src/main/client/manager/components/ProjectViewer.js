@@ -239,7 +239,7 @@ export default class ProjectViewer extends Component {
                 </Col>
                 <Col xs={12} sm={3}>
                   <Panel header={<h3>What is a feed source?</h3>}>
-                    A feed source defines lorem ipsum...
+                    A feed source defines the location or upstream source of a GTFS feed. GTFS can be populated via automatic fetch, directly editing or uploading a zip file.
                   </Panel>
                 </Col>
               </Row>
