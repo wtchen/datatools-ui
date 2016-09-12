@@ -67,7 +67,9 @@ ProjectViewer:
     createFirst: Create first feed source!
     update: Fetch all
 EditorFeedSourcePanel:
+  title: Snapshots
   version: Version
+  publish: Publish
   createFromScratch: Create GTFS from Scratch
   loadLatest: Load latest for editing
   of: of
@@ -76,7 +78,7 @@ EditorFeedSourcePanel:
   date: Date
   name: Name
   download: Download
-  restore: Restore
+  restore: Make active
   load: Load for Editing
   confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
   feed: Feed
@@ -133,10 +135,13 @@ GtfsValidationExplorer:
     count: Count
 GtfsValidationViewer:
   title: Validation Results
-  routeIssues: Route Issues
-  stopIssues: Stop Issues
-  tripIssues: Trip Issues
-  shapeIssues: Shape Issues
+  issues:
+    routes: Route issues
+    stops: Stop issues
+    trips: Trip issues
+    shapes: Shape issues
+    stop_times: Stop times issues
+    other: Other issues
   noResults: No validation results to show.
   explorer: Validation Explorer
 ResultTable:
@@ -288,6 +293,9 @@ UserSettings:
 WatchButton:
   watch: Watch
   unwatch: Unwatch
+StarButton:
+  star: Star
+  unstar: Unstar
 TimezoneSelect:
   placeholder: Select timezone...
 LanguageSelect:
