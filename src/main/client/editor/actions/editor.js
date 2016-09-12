@@ -1,5 +1,6 @@
 import JSZip from 'jszip'
 import faker from 'faker'
+import shp from 'shpjs'
 
 import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
 import { componentList, subComponentList, subSubComponentList } from '../util/gtfs'
@@ -100,6 +101,10 @@ export function settingActiveGtfsEntity (feedSourceId, component, entityId, subC
 
 export function setActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
   return function (dispatch, getState) {
+    // TODO: figure out a good way to handle route changes without confirm window
+    // if (getState().editor.active.edited && !window.confirm('You have unsaved changes. Discard changes?')) {
+    //   return false
+    // }
     let previousFeedSourceId = getState().editor.feedSourceId
     if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
       dispatch(clearGtfsContent())
@@ -639,6 +644,38 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     })
   }
 }
+
+// MAP ACTIONS
+
+function receivedRoutesShapefile (feedSource, geojson) {
+  return {
+    type: 'RECEIVED_ROUTES_SHAPEFILE',
+    feedSource,
+    geojson
+  }
+}
+
+export function displayRoutesShapefile (feedSource, file) {
+  return function (dispatch, getState) {
+    // JSZip.loadAsync(file).then((zip) => {
+    //   console.log(zip)
+    //   shp(zip).then(geojson => {
+    //     console.log(geojson)
+    //   })
+    // })
+    let reader = new FileReader()
+    reader.onload = e => {
+      let arrayBuff = reader.result
+      shp(arrayBuff).then(geojson => {
+        console.log(geojson)
+        geojson.key = Math.random()
+        dispatch(receivedRoutesShapefile(feedSource, geojson))
+      })
+    }
+    reader.readAsArrayBuffer(file)
+  }
+}
+
 
 // PUBLISH ACTIONS
 

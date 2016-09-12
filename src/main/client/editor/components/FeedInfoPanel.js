@@ -5,6 +5,7 @@ import { browserHistory } from 'react-router'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import CreateSnapshotModal from './CreateSnapshotModal'
+import SelectFileModal from '../../common/components/SelectFileModal.js'
 import { gtfsIcons } from '../util/gtfs'
 
 export default class FeedInfoPanel extends Component {
@@ -23,11 +24,27 @@ export default class FeedInfoPanel extends Component {
       right: 5
     }
   }
-
+  showUploadFileModal (feedSource) {
+    this.refs.selectFileModal.open({
+      title: 'Upload route shapefile',
+      body: 'Select a zipped shapefile to display on map:',
+      onConfirm: (files) => {
+        let nameArray = files[0].name.split('.')
+        if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
+          return false
+        }
+        else {
+          this.props.displayRoutesShapefile(feedSource, files[0])
+          return true
+        }
+      },
+      errorMessage: 'Uploaded file must be a valid zip file (.zip).'
+    })
+  }
   render () {
     let { feedSource, feedInfo } = this.props
     if (!feedInfo) return null
-    let panelWidth = 340
+    let panelWidth = 370
     // let panelHeight = '100px'
     let panelStyle = {
       // backgroundColor: 'white',
@@ -50,6 +67,7 @@ export default class FeedInfoPanel extends Component {
 
     return (
       <ReactCSSTransitionGroup transitionName={`slide-${this.state.right > 0 ? 'right' : 'left'}`} transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+      <SelectFileModal ref='selectFileModal'/>
       <div style={panelStyle}>
         <CreateSnapshotModal ref='snapshotModal'
           onOkClicked={(name, comment) => {
@@ -86,6 +104,11 @@ export default class FeedInfoPanel extends Component {
               <MenuItem eventKey='1'><Icon name='reply'/> Back to project</MenuItem>
               <MenuItem eventKey='2'><Icon name='reply'/> Back to feed source</MenuItem>
             </DropdownButton>
+            <Button
+              onClick={() => this.showUploadFileModal(feedSource)}
+            >
+              <Icon name='upload'/>
+            </Button>
             {/* Add entity dropdown */}
             <DropdownButton pullRight dropup title={<span><Icon name='plus'/></span>}
               id='add-entity-dropdown'

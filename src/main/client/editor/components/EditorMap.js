@@ -1,5 +1,5 @@
 import React from 'react'
-import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, LayersControl } from 'react-leaflet'
+import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, LayersControl, GeoJson } from 'react-leaflet'
 import { divIcon, Browser } from 'leaflet'
 import { Button, Dropdown, OverlayTrigger, Tooltip, ButtonToolbar, Row, Col, ButtonGroup, Form, MenuItem, SplitButton, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
@@ -50,10 +50,14 @@ export default class EditorMap extends React.Component {
     window.removeEventListener('resize', () => this.updateDimensions())
   }
   componentWillReceiveProps (nextProps) {
+    if (nextProps.offset !== this.props.offset) {
+      this.updateDimensions()
+    }
     if (nextProps.editSettings.controlPoints && nextProps.editSettings.controlPoints.length && !shallowEqual(nextProps.editSettings.controlPoints, this.props.editSettings.controlPoints)) {
       this.setState({controlPoints: nextProps.editSettings.controlPoints[nextProps.editSettings.controlPoints.length - 1]})
     }
     if (nextProps.zoomToTarget && !shallowEqual(nextProps.zoomToTarget, this.props.zoomToTarget)) {
+      // this.updateDimensions()
       this.setState({zoomToTarget: true})
     }
   }
@@ -62,6 +66,7 @@ export default class EditorMap extends React.Component {
     const shouldUpdate =
             !shallowEqual(nextState, this.state) ||
             this.props.hidden !== nextProps.hidden ||
+            !shallowEqual(nextProps.mapState.routesGeojson, this.props.mapState.routesGeojson) ||
             (nextProps.activeComponent === 'stop' || nextProps.activeComponent === 'route') && nextProps.activeEntityId !== this.props.activeEntityId ||
             nextProps.activeEntity && this.props.activeEntity && nextProps.activeEntity.tripPatterns && !this.props.activeEntity.tripPatterns ||
             !shallowEqual(nextProps.feedSource, this.props.feedSource) ||
@@ -1159,6 +1164,13 @@ export default class EditorMap extends React.Component {
         </LayersControl>
         {
           this.getMapComponents(this.props.activeComponent, this.props.entities, this.props.activeEntity, this.props.activeSubEntity)
+        }
+        {this.props.mapState.routesGeojson
+          ? <GeoJson
+              key={this.props.mapState.routesGeojson.key}
+              data={this.props.mapState.routesGeojson}
+            />
+          : null
         }
       </Map>
     )
