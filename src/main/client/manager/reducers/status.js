@@ -75,12 +75,16 @@ const config = (state = {
       return update(state, {message: {$set: 'Loading stops...'}})
     case 'REQUESTING_ROUTES':
       return update(state, {message: {$set: 'Loading routes...'}})
+    case 'REQUESTING_TRIPS_FOR_CALENDAR':
+      return update(state, {message: {$set: 'Loading trips...'}})
     case 'CREATING_SNAPSHOT':
       return update(state, {message: {$set: 'Creating snapshot...'}})
     case 'DELETING_SNAPSHOT':
       return update(state, {message: {$set: 'Deleting snapshot...'}})
     case 'DELETING_AGENCY':
       return update(state, {message: {$set: 'Deleting agency...'}})
+    case 'DELETING_TRIPS_FOR_CALENDAR':
+      return update(state, {message: {$set: 'Deleting trips...'}})
     case 'RESTORING_SNAPSHOT':
       return update(state, {message: {$set: 'Restoring snapshot...'}})
     case 'RENAMING_FEEDVERSION':
@@ -160,6 +164,8 @@ const config = (state = {
     case 'RECEIVE_STOPS':
     case 'RECEIVE_ROUTE':
     case 'RECEIVE_ROUTES':
+    case 'DELETED_TRIPS_FOR_CALENDAR':
+    case 'RECEIVE_TRIPS_FOR_CALENDAR':
     case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
       return update(state, {message: {$set: null}})
     default:
