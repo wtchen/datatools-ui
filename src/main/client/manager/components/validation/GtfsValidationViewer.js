@@ -33,39 +33,30 @@ export default class GtfsValidationViewer extends React.Component {
     )
 
     let report = null
+    let files = ['routes', 'stops', 'trips', 'shapes', 'stop_times']
     let errors = {}
     result && result.errors.map(error => {
+      let key = files.indexOf(error.file) !== -1 ? error.file : 'other'
       if (!errors[error.file]) {
-        errors[error.file] = []
+        errors[key] = []
       }
-      errors[error.file].push(error)
+      errors[key].push(error)
     })
     if (result && errors) { // && result.loadStatus === 'SUCCESS') {
       report = (
         <div>
-          <ResultTable
-            title={getMessage(messages, 'routeIssues')}
-            invalidValues={errors.routes}
-          />
-
-          <ResultTable
-            title={getMessage(messages, 'stopIssues')}
-            invalidValues={errors.stops}
-          />
-
-          <ResultTable
-            title={getMessage(messages, 'tripIssues')}
-            invalidValues={errors.trips}
-          />
-
-          <ResultTable
-            title={getMessage(messages, 'shapeIssues')}
-            invalidValues={errors.shapes}
-          />
-
+          {files.map(file => {
+            return (
+              <ResultTable
+                title={getMessage(messages, `issues.${file}`)}
+                key={`${file}-issues-table`}
+                invalidValues={errors[file]}
+              />
+            )
+          })}
           <ResultTable
             title={'Other issues'}
-            invalidValues={errors.null}
+            invalidValues={errors.other}
           />
         </div>
       )
@@ -126,9 +117,9 @@ class ResultTable extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.invalidValues.map(val => {
+            {this.props.invalidValues.map((val, index) => {
               return (
-                <tr>
+                <tr key={`${index}-issue-row`}>
                   <td style={breakWordStyle}>{val.errorType}</td>
                   <td style={breakWordStyle}>{val.priority}</td>
                   <td style={breakWordStyle}>{val.affectedEntityId}</td>
