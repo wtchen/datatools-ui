@@ -2,6 +2,7 @@ package com.conveyal.datatools.manager;
 
 import com.conveyal.datatools.manager.auth.Auth0Connection;
 
+import com.conveyal.datatools.manager.controllers.DumpController;
 import com.conveyal.datatools.manager.controllers.api.*;
 
 import com.conveyal.datatools.manager.extensions.ExternalFeedResource;
@@ -77,6 +78,10 @@ public class DataManager {
         GtfsApiController.register(apiPrefix);
         RegionController.register(apiPrefix);
         NoteController.register(apiPrefix);
+        if ("true".equals(getConfigPropertyAsText("modules.dump.enabled"))) {
+            DumpController.register("/");
+        }
+
 
         if ("true".equals(getConfigPropertyAsText("modules.gtfsplus.enabled"))) {
             GtfsPlusController.register(apiPrefix);
