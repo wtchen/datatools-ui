@@ -12,6 +12,7 @@ import ConfirmModal from '../../common/components/ConfirmModal'
 import SelectFileModal from '../../common/components/SelectFileModal'
 import WatchButton from '../../common/containers/WatchButton'
 import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
+import { isValidZipFile } from '../../common/util/util'
 
 export default class FeedSourceTable extends Component {
 
@@ -279,12 +280,11 @@ class FeedSourceDropdown extends Component {
         title='Upload Feed'
         body='Select a GTFS feed to upload:'
         onConfirm={(files) => {
-          let nameArray = files[0].name.split('.')
-          if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
-            return false
-          } else {
+          if (isValidZipFile(files[0])) {
             this.props.uploadFeed(fs, files[0])
             return true
+          } else {
+            return false
           }
         }}
         errorMessage='Uploaded file must be a valid zip file (.zip).'

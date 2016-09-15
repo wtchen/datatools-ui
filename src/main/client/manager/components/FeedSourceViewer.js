@@ -14,7 +14,7 @@ import Breadcrumbs from '../../common/components/Breadcrumbs'
 import EditableTextField from '../../common/components/EditableTextField'
 import WatchButton from '../../common/containers/WatchButton'
 import StarButton from '../../common/containers/StarButton'
-import { retrievalMethodString } from '../../common/util/util'
+import { isValidZipFile, retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable from './ExternalPropertiesTable'
 import ActiveFeedVersionNavigator from '../containers/ActiveFeedVersionNavigator'
 import NotesViewer from './NotesViewer'
@@ -105,12 +105,11 @@ export default class FeedSourceViewer extends Component {
       title: 'Upload Feed',
       body: 'Select a GTFS feed (.zip) to upload:',
       onConfirm: (files) => {
-        let nameArray = files[0].name.split('.')
-        if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
-          return false
-        } else {
-          this.props.uploadFeedClicked(this.props.feedSource, files[0])
+        if (isValidZipFile(files[0])) {
+          this.props.uploadFeed(this.props.feedSource, files[0])
           return true
+        } else {
+          return false
         }
       },
       errorMessage: 'Uploaded file must be a valid zip file (.zip).'

@@ -106,13 +106,12 @@ export function generateRandomColor () {
 //
 //   return resultnum
 // }
-export function idealTextColor(bgColor) {
+export function idealTextColor (bgColor) {
+  var nThreshold = 105
+  var components = getRGBComponents(bgColor)
+  var bgDelta = (components.R * 0.299) + (components.G * 0.587) + (components.B * 0.114)
 
-   var nThreshold = 105
-   var components = getRGBComponents(bgColor)
-   var bgDelta = (components.R * 0.299) + (components.G * 0.587) + (components.B * 0.114)
-
-   return ((255 - bgDelta) < nThreshold) ? '000000' : 'FFFFFF'
+  return ((255 - bgDelta) < nThreshold) ? '000000' : 'FFFFFF'
 }
 
 function getRGBComponents(color) {
@@ -144,3 +143,10 @@ function getRGBComponents(color) {
 //   allowRedirectBack: false,
 //   wrapperDisplayName: 'UserIsAdmin'
 // })
+
+export function isValidZipFile (file) {
+  let nameArray = file.name.split('.')
+  return ((file.type === 'application/zip' ||
+            file.type === 'application/x-zip-compressed') &&
+          nameArray[nameArray.length - 1] === 'zip')
+}
