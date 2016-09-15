@@ -172,9 +172,9 @@ export function saveActiveGtfsEntity (component, optionalEntity) {
         dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveAgency(feedId, entity))
       case 'trippattern':
-        let route = getState().editor.active.entity
-        let patternId = getState().editor.active.subEntityId
-        entity = optionalEntity || route.tripPatterns.find(p => p.id === patternId)
+        // let route = getState().editor.active.entity
+        // let patternId = getState().editor.active.subEntityId
+        entity = optionalEntity || getState().editor.active.subEntity // route.tripPatterns.find(p => p.id === patternId)
         feedId = entity.feedId || getState().editor.active.feedSourceId
         dispatch(savingActiveGtfsEntity(component, entity))
         return dispatch(saveTripPattern(feedId, entity))
@@ -337,7 +337,7 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
         dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, 'new'))
       }
       else {
-        console.log('setting after create')
+        console.log('setting after create', feedSourceId, component, 'new')
         dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
       }
     }
