@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # load the database to a fresh server
-# usage: load.py dump.json http://localhost:9000
+# usage: loadLegacy.py dump.json http://localhost:9000
 
 from sys import argv
 import urllib2
