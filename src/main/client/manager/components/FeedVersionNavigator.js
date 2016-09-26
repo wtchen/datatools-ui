@@ -75,17 +75,16 @@ export default class FeedVersionNavigator extends Component {
             this.props.deleteFeedSource(fs)
           }}
         />
-
         <SelectFileModal ref='uploadModal'
           title='Upload Feed'
           body='Select a GTFS feed to upload:'
           onConfirm={(files) => {
-            let nameArray = files[0].name.split('.')
-            if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
-              return false
-            } else {
+            console.log(files[0].type)
+            if (isValidZipFile(files[0])) {
               this.props.uploadFeed(fs, files[0])
               return true
+            } else {
+              return false
             }
           }}
           errorMessage='Uploaded file must be a valid zip file (.zip).'

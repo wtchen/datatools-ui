@@ -280,7 +280,6 @@ class FeedSourceDropdown extends Component {
         title='Upload Feed'
         body='Select a GTFS feed to upload:'
         onConfirm={(files) => {
-          console.log(files[0].type)
           if (isValidZipFile(files[0])) {
             this.props.uploadFeed(fs, files[0])
             return true

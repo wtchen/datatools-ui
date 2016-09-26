@@ -100,21 +100,21 @@ export default class FeedSourceViewer extends Component {
     })
   }
 
-  showUploadFeedModal () {
-    this.refs.page.showSelectFileModal({
-      title: 'Upload Feed',
-      body: 'Select a GTFS feed (.zip) to upload:',
-      onConfirm: (files) => {
-        if (isValidZipFile(files[0])) {
-          this.props.uploadFeed(this.props.feedSource, files[0])
-          return true
-        } else {
-          return false
-        }
-      },
-      errorMessage: 'Uploaded file must be a valid zip file (.zip).'
-    })
-  }
+  // showUploadFeedModal () {
+  //   this.refs.page.showSelectFileModal({
+  //     title: 'Upload Feed',
+  //     body: 'Select a GTFS feed (.zip) to upload:',
+  //     onConfirm: (files) => {
+  //       if (isValidZipFile(files[0])) {
+  //         this.props.uploadFeed(this.props.feedSource, files[0])
+  //         return true
+  //       } else {
+  //         return false
+  //       }
+  //     },
+  //     errorMessage: 'Uploaded file must be a valid zip file (.zip).'
+  //   })
+  // }
 
   render () {
     const fs = this.props.feedSource
