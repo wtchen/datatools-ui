@@ -4,8 +4,8 @@ import { browserHistory } from 'react-router'
 import Icon from 'react-fa'
 
 import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
+import { isValidZipFile } from '../../common/util/util'
 import FeedVersionViewer from './FeedVersionViewer'
-import EditableTextField from '../../common/components/EditableTextField'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import SelectFileModal from '../../common/components/SelectFileModal'
 
