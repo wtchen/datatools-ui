@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # load the database to a fresh server
 # usage: load.py dump.json http://localhost:9000
+# validation: curl -X POST http://localhost:9000/validateAll (add force=true query param to force validation)
 
 from sys import argv
 import urllib2
@@ -21,5 +22,5 @@ opener = urllib2.build_opener()
 try:
     opener.open(req)
 except urllib2.URLError, e:
-    print e.code
+    print e.reason
     print e.read()
