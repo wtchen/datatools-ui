@@ -1,10 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import moment from 'moment'
-import { Grid, Row, Col, Button, Table, Input, Panel, Checkbox, ListGroup, ListGroupItem, Glyphicon, Badge, ButtonInput, ControlLabel } from 'react-bootstrap'
+import { Grid, Row, Col, Button, Panel, Checkbox, ListGroup, ListGroupItem, ControlLabel } from 'react-bootstrap'
 import { Link } from 'react-router'
 import Icon from 'react-fa'
 import { LinkContainer } from 'react-router-bootstrap'
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import ManagerPage from '../../common/components/ManagerPage'
@@ -63,7 +61,8 @@ export default class UserAccount extends Component {
                   </div>
       },
       {
-        id: 'account'
+        id: 'account',
+        hidden: getConfigProperty('modules.enterprise.enabled')
       },
       {
         id: 'organizations'
@@ -145,7 +144,8 @@ export default class UserAccount extends Component {
         </div>
       },
       {
-        id: 'billing'
+        id: 'billing',
+        hidden: getConfigProperty('modules.enterprise.enabled')
       }
     ]
     const activeSection = accountSections.find(section => section.id === this.props.activeComponent)
@@ -186,7 +186,7 @@ export default class UserAccount extends Component {
                     if (project.hidden) return null
 
                     return (
-                      <LinkContainer key={project.id} to={`/project/${project.id}`}>
+                      <LinkContainer key={project.id} to={`/project/${project.id}/settings`}>
                         <ListGroupItem active={this.props.projectId === project.id}>
                           {project.name}
                         </ListGroupItem>
