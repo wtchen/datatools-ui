@@ -1,5 +1,6 @@
 import update from 'react-addons-update'
 import { getConfigProperty } from '../../common/util/config'
+import { defaultSorter } from '../../common/util/util'
 
 const projects = (state = {
   isFetching: false,
@@ -13,6 +14,8 @@ const projects = (state = {
   switch (action.type) {
     case 'SET_PROJECT_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
+    case 'SET_PROJECT_VISIBILITY_FILTER':
+      return update(state, {filter: {filter: {$set: action.filter}}})
     case 'CREATE_PROJECT':
       projects = [{
         isCreating: true,
@@ -122,6 +125,7 @@ const projects = (state = {
       else {
         feeds = action.feedSources
       }
+      feeds = feeds.sort(defaultSorter)
       if (state.active && action.projectId === state.active.id) {
         return update(state,
         {

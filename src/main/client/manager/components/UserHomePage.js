@@ -17,7 +17,11 @@ export default class UserHomePage extends Component {
     projects: PropTypes.array,
 
     onComponentMount: PropTypes.func,
-    logoutHandler: PropTypes.func
+    logoutHandler: PropTypes.func,
+
+    visibilityFilter: PropTypes.object,
+    searchTextChanged: PropTypes.func,
+    visibilityFilterChanged: PropTypes.func
   }
   constructor (props) {
     super(props)
@@ -32,6 +36,22 @@ export default class UserHomePage extends Component {
   render () {
     const messages = getComponentMessages('UserHomePage')
     const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
+    const feedVisibilityFilter = (feed) => {
+      let visible = feed.name.toLowerCase().indexOf((this.props.visibilityFilter.searchText || '').toLowerCase()) !== -1
+      switch (this.props.visibilityFilter.filter) {
+        case 'ALL':
+          return visible
+        case 'STARRED':
+          return [].indexOf(feed.id) !== -1 // check userMetaData
+        case 'PUBLIC':
+          return feed.isPublic
+        case 'PRIVATE':
+          return !feed.isPublic
+        default:
+          return visible
+      }
+      // if (feed.isCreating) return true // feeds actively being created are always visible
+    }
     const renderFeedItems = (p, fs) => {
       const feedName = `${p.name} / ${fs.name}`
       return (
@@ -45,10 +65,7 @@ export default class UserHomePage extends Component {
         </ListGroupItem>
       )
     }
-    const visibleProjects = this.props.projects.filter((project) => {
-          if (project.isCreating) return true // projects actively being created are always visible
-          return project.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
-        }).sort(defaultSorter)
+    const visibleProjects = this.props.projects.sort(defaultSorter)
     const activeProject = this.props.project
     const sortByDate = (a, b) => {
       if (a.date < b.date) return 1
@@ -65,11 +82,11 @@ export default class UserHomePage extends Component {
               {/* Top Welcome Box */}
               <Jumbotron style={{ padding: 30 }}>
                 <h2>Welcome to {getConfigProperty('application.title')}!</h2>
-                <p>This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+                <p>Manage, edit, validate and deploy your data in a streamlined workflow.</p>
                 <p>
                   <ButtonToolbar>
-                  <Button bsStyle='primary' bsSize='large'><Icon name='info-circle' /> Take a Tour</Button>
-                  <Button bsStyle='default' bsSize='large' onClick={() => browserHistory.push('/')}><Icon name='globe' /> Explore feeds</Button>
+                  <Button bsStyle='primary' bsSize='large' href={getConfigProperty('application.docs_url')}><Icon name='info-circle' /> Take a Tour</Button>
+                  <LinkContainer to='/'><Button bsStyle='default' bsSize='large'><Icon name='globe' /> Explore feeds</Button></LinkContainer>
                   </ButtonToolbar>
                 </p>
               </Jumbotron>
@@ -169,7 +186,7 @@ export default class UserHomePage extends Component {
                   {activeProject && visibleProjects.length > 1 || !activeProject ? <MenuItem divider /> : null}
                   <LinkContainer to='/settings/organizations'><MenuItem><Icon name='users'/> Manage organizations</MenuItem></LinkContainer>
                   <MenuItem divider />
-                  <MenuItem><Icon name='plus'/> Create organization</MenuItem>
+                  <LinkContainer to='/project'><MenuItem><Icon name='plus'/> Create organization</MenuItem></LinkContainer>
                 </DropdownButton>
               </div>
               {/* Starred Feeds Panel */}
@@ -182,28 +199,31 @@ export default class UserHomePage extends Component {
                     />
                     <ButtonGroup style={{marginTop: 10}} justified>
                       <Button
-                        active
+                        active={this.props.visibilityFilter.filter === 'ALL' || !this.props.visibilityFilter.filter}
                         onClick={() => this.props.visibilityFilterChanged('ALL')}
                         bsSize='xsmall'
-                        href="#">All</Button>
+                        href='#'>All</Button>
                       <Button
-                        onClick={() => this.props.visibilityFilterChanged('PUBLISHED')}
+                        active={this.props.visibilityFilter.filter === 'STARRED'}
+                        onClick={() => this.props.visibilityFilterChanged('STARRED')}
                         bsSize='xsmall'
-                        href="#">Starred</Button>
+                        href='#'>Starred</Button>
                       <Button
-                        onClick={() => this.props.visibilityFilterChanged('PUBLISHED')}
+                        active={this.props.visibilityFilter.filter === 'PUBLIC'}
+                        onClick={() => this.props.visibilityFilterChanged('PUBLIC')}
                         bsSize='xsmall'
-                        href="#">Public</Button>
+                        href='#'>Public</Button>
                       <Button
-                        onClick={() => this.props.visibilityFilterChanged('PUBLISHED')}
+                        active={this.props.visibilityFilter.filter === 'PRIVATE'}
+                        onClick={() => this.props.visibilityFilterChanged('PRIVATE')}
                         bsSize='xsmall'
-                        href="#">Private</Button>
+                        href='#'>Private</Button>
                     </ButtonGroup>
                   </ListGroupItem>
                   {activeProject && activeProject.feedSources
-                    ? activeProject.feedSources.map(fs => renderFeedItems(activeProject, fs))
+                    ? activeProject.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(activeProject, fs))
                     : this.props.projects && this.props.projects.map(p => {
-                        return p.feedSources && p.feedSources.map(fs => renderFeedItems(p, fs))
+                        return p.feedSources && p.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(p, fs))
                       })
                   }
                 </ListGroup>
@@ -255,7 +275,7 @@ function renderRecentActivity (item) {
           </div>
           <div style={innerContainerStyle}>
             <div style={dateStyle}>{moment(item.date).fromNow()}</div>
-            <div><a href="#"><b>{item.userName}</b></a> commented on feed <a href="#"><b>{item.targetName}</b></a>:</div>
+            <div><a href='#'><b>{item.userName}</b></a> commented on feed <a href='#'><b>{item.targetName}</b></a>:</div>
             <div style={commentStyle}><i>{item.body}</i></div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import moment from 'moment'
 import { Tabs, Tab, Grid, Row, Label, Col, Button, InputGroup, Table, FormControl, Glyphicon, ButtonToolbar, Panel, DropdownButton, MenuItem } from 'react-bootstrap'
+import { sentence as toSentenceCase } from 'change-case'
 import Icon from 'react-fa'
 import { browserHistory, Link } from 'react-router'
 import { shallowEqual } from 'react-pure-render'
@@ -18,7 +19,11 @@ import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage, 
 export default class ProjectViewer extends Component {
   static propTypes = {
     project: PropTypes.object,
-    onComponentMount: PropTypes.func
+    onComponentMount: PropTypes.func,
+
+    visibilityFilter: PropTypes.object,
+    visibilityFilterChanged: PropTypes.func,
+    searchTextChanged: PropTypes.func,
   }
   constructor (props) {
     super(props)
@@ -68,7 +73,19 @@ export default class ProjectViewer extends Component {
     const filteredFeedSources = this.props.project.feedSources
       ? this.props.project.feedSources.filter(feedSource => {
           if(feedSource.isCreating) return true // feeds actively being created are always visible
-          return feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1 : '[unnamed project]'
+          let visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((this.props.visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
+          switch (this.props.visibilityFilter.filter) {
+            case 'ALL':
+              return visible
+            case 'STARRED':
+              return [].indexOf(feedSource.id) !== -1 // check userMetaData
+            case 'PUBLIC':
+              return feedSource.isPublic
+            case 'PRIVATE':
+              return !feedSource.isPublic
+            default:
+              return visible
+          }
         }).sort(defaultSorter)
       : []
     const projectsHeader = (
@@ -78,9 +95,15 @@ export default class ProjectViewer extends Component {
             <DropdownButton
               componentClass={InputGroup.Button}
               id='input-dropdown-addon'
-              title='Filter'
+              title={this.props.visibilityFilter.filter ? toSentenceCase(this.props.visibilityFilter.filter) : 'Filter'}
+              onSelect={(key) => {
+                this.props.visibilityFilterChanged(key)
+              }}
             >
-              <MenuItem key='1'>Item</MenuItem>
+              <MenuItem eventKey='ALL'>All</MenuItem>
+              <MenuItem eventKey='STARRED'>Starred</MenuItem>
+              <MenuItem eventKey='PUBLIC'>Public</MenuItem>
+              <MenuItem eventKey='PRIVATE'>Private</MenuItem>
             </DropdownButton>
             <FormControl
               placeholder={getMessage(messages, 'feeds.search')}

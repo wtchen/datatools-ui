@@ -6,3 +6,10 @@ export const setVisibilitySearchText = (text) => {
     text
   }
 }
+
+export const setVisibilityFilter = (filter) => {
+  return {
+    type: 'SET_PROJECT_VISIBILITY_FILTER',
+    filter
+  }
+}

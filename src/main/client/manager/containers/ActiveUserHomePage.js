@@ -4,12 +4,14 @@ import UserHomePage from '../components/UserHomePage'
 import { getRecentActivity, logout } from '../actions/user'
 import { fetchProjects } from '../actions/projects'
 import { fetchProjectFeeds } from '../actions/feeds'
+import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibilityFilter'
 
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
     projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id)) : [],
-    project: ownProps.routeParams.projectId && state.projects.all ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId) : null
+    project: ownProps.routeParams.projectId && state.projects.all ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId) : null,
+    visibilityFilter: state.projects.filter
   }
 }
 
@@ -24,7 +26,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       })
     },
-    logoutHandler: () => { dispatch(logout()) }
+    logoutHandler: () => { dispatch(logout()) },
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
+    visibilityFilterChanged: (filter) => dispatch(setVisibilityFilter(filter))
   }
 }
 

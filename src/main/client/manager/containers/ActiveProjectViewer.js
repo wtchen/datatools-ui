@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import ProjectViewer from '../components/ProjectViewer'
 
-import { setVisibilitySearchText } from '../actions/visibilityFilter'
+import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibilityFilter'
 import {
   fetchProject,
   deleteProject,
@@ -36,7 +36,7 @@ const mapStateToProps = (state, ownProps) => {
     project: state.projects.all
       ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId)
       : null,
-    visibilitySearchText: state.projects.filter.searchText,
+    visibilityFilter: state.projects.filter,
     activeComponent: ownProps.routeParams.subpage,
     activeSubComponent: ownProps.routeParams.subsubpage,
     user: state.user,
@@ -81,6 +81,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },
     updateDeployment: (deployment, changes) => { dispatch(updateDeployment(deployment, changes)) },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
+    visibilityFilterChanged: (filter) => dispatch(setVisibilityFilter(filter)),
     uploadFeed: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     fetchFeed: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     deleteFeedSource: (feedSource) => { dispatch(deleteFeedSource(feedSource)) },
