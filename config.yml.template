@@ -25,6 +25,8 @@ mapbox:
   access_token: MAPBOX_ACCESS_TOKEN
   map_id: conveyal.ie3o67m0
 modules:
+  enterprise:
+    enabled: false
   editor:
     enabled: true
   legacy_editor:
@@ -33,13 +35,10 @@ modules:
   alerts:
     enabled: false
     use_extension: mtc
-    url: /alerts
   sign_config:
     enabled: false
-    url: /signs
   user_admin:
     enabled: true
-    url: /admin
   validator:
     enabled: true
   deployment:
