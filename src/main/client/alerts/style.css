@@ -1,6 +1,5 @@
 @import url('~react-select/dist/react-select.css');
 @import url('~react-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css');
-@import url('~react-datetime/css/react-datetime.css');
 
 .leaflet-top,
 .leaflet-bottom {
