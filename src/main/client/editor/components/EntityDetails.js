@@ -945,7 +945,7 @@ export default class EntityDetails extends Component {
       allExceptions.push(this.props.activeEntity)
     }
     for (let i = 0; i < allExceptions.length; i++) {
-      allExceptions[i].dates.map(d => {
+      allExceptions[i].dates && allExceptions[i].dates.map(d => {
         if (typeof dateMap[moment(d).format('YYYYMMDD')] === 'undefined') {
           dateMap[moment(d).format('YYYYMMDD')] = []
         }
