@@ -932,12 +932,26 @@ export default class EntityDetails extends Component {
             })}
         </div>
       : null
-    const existingDates = this.props.tableData.scheduleexception && this.props.tableData.scheduleexception.map(se => se.dates.map(d => moment(d).format('YYYYMMDD'))) || []
-    // TODO: need to account for dates already applied to this exception
-    if (this.props.activeEntity && this.props.activeEntity.id === 'new') {
-      existingDates.push(this.props.activeEntity.dates)
+    let dateMap = {}
+    let allExceptions = []
+    if (this.props.tableData.scheduleexception) {
+      allExceptions = [...this.props.tableData.scheduleexception]
     }
-    const exceptionDates = [].concat.apply([], existingDates)
+    if (this.props.activeEntity) {
+      let exceptionIndex = allExceptions.findIndex(se => se.id === this.props.activeEntity.id)
+      if (exceptionIndex !== -1) {
+        allExceptions.splice(exceptionIndex, 1)
+      }
+      allExceptions.push(this.props.activeEntity)
+    }
+    for (let i = 0; i < allExceptions.length; i++) {
+      allExceptions[i].dates.map(d => {
+        if (typeof dateMap[moment(d).format('YYYYMMDD')] === 'undefined') {
+          dateMap[moment(d).format('YYYYMMDD')] = []
+        }
+        dateMap[moment(d).format('YYYYMMDD')].push(allExceptions[i].id)
+      })
+    }
     const scheduleExceptionForm = this.props.activeComponent === 'scheduleexception'
       ? <div>
         <Form>
@@ -1076,8 +1090,9 @@ export default class EntityDetails extends Component {
           {this.props.activeEntity && this.props.activeEntity.dates.length
             ? this.props.activeEntity.dates.map((date, index) => {
               let isNotValid = false
+              const dateString = moment(+date).format('YYYYMMDD')
               // check if date already exists in this or other exceptions
-              if (exceptionDates && exceptionDates.indexOf(moment(+date).format('YYYYMMDD')) !== -1) {
+              if (dateMap[dateString] && dateMap[dateString].length > 1) {
                 validationErrors.push({field: `dates-${index}`, invalid: true})
                 isNotValid = true
               }
