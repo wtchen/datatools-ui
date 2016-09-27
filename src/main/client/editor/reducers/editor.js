@@ -472,6 +472,8 @@ const editor = (state = defaultState, action) => {
           exemplar: se.exemplar,
           dates: se.dates,
           customSchedule: se.customSchedule,
+          addedService: se.addedService,
+          removedService: se.removedService
 
           // gtfs spec props
           // gtfs_prop: se.gtfs_prop

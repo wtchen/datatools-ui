@@ -133,6 +133,8 @@ export function saveScheduleException (feedId, scheduleException) {
       exemplar: scheduleException.exemplar,
       dates: scheduleException.dates,
       customSchedule: scheduleException.customSchedule,
+      removedService: scheduleException.removedService,
+      addedService: scheduleException.addedService
 
       // gtfs spec props
       // gtfs_prop: scheduleException.gtfs_prop

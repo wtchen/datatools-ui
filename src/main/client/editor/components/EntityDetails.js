@@ -136,7 +136,7 @@ export default class EntityDetails extends Component {
         label: `${key} zone (${zones[key] ? zones[key].length : 0} stops)`
       }
     })
-    let validationErrors = []
+    const validationErrors = []
     const getInput = (row, field, currentValue, index) => {
       const editorField = field.displayName || field.name // .split(/_(.+)?/)[1]
       let isNotValid
@@ -777,7 +777,8 @@ export default class EntityDetails extends Component {
       'SATURDAY',
       'SUNDAY',
       'NO_SERVICE',
-      'CUSTOM'
+      'CUSTOM',
+      'SWAP'
     ]
 
     const fareRulesForm = this.state.editFareRules && this.props.activeEntity
@@ -931,6 +932,12 @@ export default class EntityDetails extends Component {
             })}
         </div>
       : null
+    const existingDates = this.props.tableData.scheduleexception && this.props.tableData.scheduleexception.map(se => se.dates.map(d => moment(d).format('YYYYMMDD'))) || []
+    // TODO: need to account for dates already applied to this exception
+    if (this.props.activeEntity && this.props.activeEntity.id === 'new') {
+      existingDates.push(this.props.activeEntity.dates)
+    }
+    const exceptionDates = [].concat.apply([], existingDates)
     const scheduleExceptionForm = this.props.activeComponent === 'scheduleexception'
       ? <div>
         <Form>
@@ -1003,6 +1010,63 @@ export default class EntityDetails extends Component {
               </FormGroup>
             : null
           }
+          {this.props.activeEntity && this.props.activeEntity.exemplar === 'SWAP'
+            ? <FormGroup
+                controlId={`custom`}
+                className={`col-xs-12`}
+                // validationState={this.getValidationState()}
+              >
+                <ControlLabel>Select calendars to add:</ControlLabel>
+                <Select
+                  placeholder='Select calendar...'
+                  clearable
+                  multi
+                  value={this.props.activeEntity && this.props.activeEntity.addedService}
+                  onChange={(input) => {
+                    console.log(input)
+                    let val = input ? input.map(i => i.value) : null
+                    this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {addedService: val})
+                  }}
+                  options={this.props.tableData.calendar
+                    ? this.props.tableData.calendar
+                      .filter(cal => !this.props.activeEntity.removedService || this.props.activeEntity.removedService.indexOf(cal.id) === -1)
+                      .map(calendar => {
+                        return {
+                          value: calendar.id,
+                          label: calendar.description,
+                          calendar
+                        }
+                      })
+                    : []
+                }
+                />
+                <ControlLabel>Select calendars to remove:</ControlLabel>
+                <Select
+                  placeholder='Select calendar...'
+                  clearable
+                  multi
+                  value={this.props.activeEntity && this.props.activeEntity.removedService}
+                  onChange={(input) => {
+                    console.log(input)
+                    let val = input ? input.map(i => i.value) : null
+                    this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {removedService: val})
+                  }}
+                  options={this.props.tableData.calendar
+                    ? this.props.tableData.calendar
+                      .filter(cal => !this.props.activeEntity.addedService || this.props.activeEntity.addedService.indexOf(cal.id) === -1)
+                      .map(calendar => {
+                        return {
+                          value: calendar.id,
+                          label: calendar.description,
+                          calendar
+                        }
+                      })
+                    : []
+                }
+                />
+              </FormGroup>
+            : null
+          }
           <FormGroup
             controlId={`exception-dates`}
             className={`col-xs-12`}
@@ -1011,6 +1075,12 @@ export default class EntityDetails extends Component {
           <ControlLabel>On these dates:</ControlLabel>
           {this.props.activeEntity && this.props.activeEntity.dates.length
             ? this.props.activeEntity.dates.map((date, index) => {
+              let isNotValid = false
+              // check if date already exists in this or other exceptions
+              if (exceptionDates && exceptionDates.indexOf(moment(+date).format('YYYYMMDD')) !== -1) {
+                validationErrors.push({field: `dates-${index}`, invalid: true})
+                isNotValid = true
+              }
               let dateTimeProps = {
                 mode: 'date',
                 dateTime: date ? +moment(date) : +moment(),
@@ -1037,6 +1107,10 @@ export default class EntityDetails extends Component {
                     }}
                   ><Icon name='times'/></Button>
                   <DateTimeField key={`date-${index}`} mode='date' {...dateTimeProps}/>
+                  {isNotValid
+                    ? <small>{moment(+date).format('MM/DD/YYYY')} appears in another schedule exception. Please choose another date.</small>
+                    : null
+                  }
                 </div>
               )
             }
