@@ -104,7 +104,7 @@ const gtfsplus = (state = {
         }
       )
 
-    case 'RECEIVE_GTFS_ENTITIES':
+    case 'RECEIVE_GTFS_PLUS_ENTITIES':
       const getType = function (entity) {
         if(entity.hasOwnProperty('route_id')) return 'route'
         if(entity.hasOwnProperty('stop_id')) return 'stop'

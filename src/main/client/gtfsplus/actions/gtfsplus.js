@@ -164,7 +164,7 @@ export function uploadGtfsPlusFeed (feedVersionId, file) {
 
 export function receiveGtfsEntities (gtfsEntities) {
   return {
-    type: 'RECEIVE_GTFS_ENTITIES',
+    type: 'RECEIVE_GTFS_PLUS_ENTITIES',
     gtfsEntities
   }
 }
