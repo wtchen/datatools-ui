@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react'
-
 import { Row, ButtonGroup, Button, FormControl, FormGroup } from 'react-bootstrap'
-import AlertPreview from './AlertPreview'
 import Icon from 'react-fa'
+
+import AlertPreview from './AlertPreview'
 
 export default class AlertsList extends Component {
   static propTypes = {
