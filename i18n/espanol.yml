@@ -50,7 +50,7 @@ ProjectViewer:
   mergeFeeds: Merge Feeds
   feeds:
     title: Feed Sources
-    search: Search by feed source name
+    search: Search by name
     table:
       name: Name
       public: Public?
@@ -116,7 +116,7 @@ ResultTable:
   description: Description
 DeploymentViewer:
   versions: Feed Versions
-  search: Search by feed source name
+  search: Search by name
   download: Download
   noServers: No servers defined
   addFeedSource: Add Feed Source
