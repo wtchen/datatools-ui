@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Icon } from 'react-fa'
+import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
 export default class SidebarNavItem extends Component {
 
@@ -49,27 +50,31 @@ export default class SidebarNavItem extends Component {
       fontWeight: 'bold',
       marginLeft: 30
     }
-
-    return (
-      <div style={containerStyle}
-        onMouseEnter={() => this.toggleHover()} onMouseLeave={() => this.toggleHover()}
-        onClick={() => this.props.onClick()}
-      >
-
-          {this.props.image
-            ? <div style={imageContainerStyle}>
-                <img width={40} height={40} src={this.props.image}/>
-              </div>
-            : <div style={iconContainerStyle}>
-                <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'/>
-              </div>
-          }
-        {this.props.expanded
-          ? <div style={labelStyle}>{this.props.label}</div>
-          : null
-        }
-        <div style={{ clear: 'both' }} />
-      </div>
-    )
+    const icon = this.props.image
+      ? <div style={imageContainerStyle}>
+          <img width={40} height={40} src={this.props.image}/>
+        </div>
+      : <div style={iconContainerStyle}>
+          <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'/>
+        </div>
+    const tooltip = <Tooltip id={this.props.label}>{this.props.label}</Tooltip>
+    return this.props.expanded
+      ? <div style={containerStyle}
+          onMouseEnter={() => this.toggleHover()} onMouseLeave={() => this.toggleHover()}
+          onClick={() => this.props.onClick()}
+        >
+          {icon}
+          <div style={labelStyle}>{this.props.label}</div>
+          <div style={{ clear: 'both' }} />
+        </div>
+    : <OverlayTrigger overlay={this.props.expanded ? null : tooltip}>
+        <div style={containerStyle}
+          onMouseEnter={() => this.toggleHover()} onMouseLeave={() => this.toggleHover()}
+          onClick={() => this.props.onClick()}
+        >
+          {icon}
+          <div style={{ clear: 'both' }} />
+        </div>
+      </OverlayTrigger>
   }
 }
