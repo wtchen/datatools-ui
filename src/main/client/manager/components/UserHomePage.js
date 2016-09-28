@@ -1,14 +1,13 @@
 import React, {Component, PropTypes} from 'react'
-import { Grid, Row, Col, Panel, Button, ButtonToolbar, ButtonGroup, Jumbotron, Glyphicon, Badge, FormControl, ListGroup, ListGroupItem, OverlayTrigger, Popover, DropdownButton, MenuItem } from 'react-bootstrap'
+import { Grid, Row, Col, Panel, Button, ButtonToolbar, ButtonGroup, Jumbotron, Badge, FormControl, ListGroup, ListGroupItem, DropdownButton, MenuItem } from 'react-bootstrap'
 import Icon from 'react-fa'
-import { browserHistory, Link } from 'react-router'
+import { Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
 
 import ManagerPage from '../../common/components/ManagerPage'
-import EditableTextField from '../../common/components/EditableTextField'
 import { getConfigProperty, getComponentMessages, getMessage } from '../../common/util/config'
-import defaultSorter from '../../common/util/util'
+import { defaultSorter, getProfileLink } from '../../common/util/util'
 
 export default class UserHomePage extends Component {
 
@@ -275,7 +274,7 @@ function renderRecentActivity (item) {
           </div>
           <div style={innerContainerStyle}>
             <div style={dateStyle}>{moment(item.date).fromNow()}</div>
-            <div><a href='#'><b>{item.userName}</b></a> commented on feed <a href='#'><b>{item.targetName}</b></a>:</div>
+            <div><a href={getProfileLink(item.userName)}><b>{item.userName}</b></a> commented on feed <Link to={`feed/${item.targetId}`}><b>{item.targetName}</b></Link>:</div>
             <div style={commentStyle}><i>{item.body}</i></div>
           </div>
         </div>

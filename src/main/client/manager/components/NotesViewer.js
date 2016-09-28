@@ -6,6 +6,7 @@ import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar, Media }
 
 import WatchButton from '../../common/containers/WatchButton'
 import { getComponentMessages, getMessage } from '../../common/util/config'
+import { getProfileLink } from '../../common/util/util'
 
 export default class NotesViewer extends Component {
 
@@ -31,7 +32,7 @@ export default class NotesViewer extends Component {
   }
   render () {
     const messages = getComponentMessages('NotesViewer')
-
+    const userLink = this.props.user ? <a href={getProfileLink(this.props.user.profile.email)}>{this.props.user.profile.email}</a> : 'Unknown user'
     const isWatchingComments = this.props.feedSource
       ? this.props.user.subscriptions.hasFeedSubscription(this.props.feedSource.projectId, this.props.feedSource.id, 'feed-commented-on')
       : false
@@ -66,7 +67,14 @@ export default class NotesViewer extends Component {
                       <img width={64} height={64} src={`${gravatar.url(note.userEmail, {protocol: 'https', s: '100'})}`} alt={note.userEmail}/>
                     </Media.Left>
                     <Media.Body>
-                      <Panel className='comment-panel' header={<Media.Heading>{note.userEmail} <small title={moment(note.date).format('h:MMa, MMM. DD YYYY')}>commented {moment(note.date).fromNow()}</small></Media.Heading>}>
+                      <Panel
+                        className='comment-panel'
+                        header={
+                          <Media.Heading>
+                            <a href={getProfileLink(this.props.user.profile.email)}>{this.props.user.profile.email}</a> <small title={moment(note.date).format('h:MMa, MMM. DD YYYY')}>commented {moment(note.date).fromNow()}</small>
+                          </Media.Heading>
+                        }
+                      >
                       <p>{note.body || '(no content)'}</p>
                       </Panel>
                     </Media.Body>
@@ -84,7 +92,7 @@ export default class NotesViewer extends Component {
               <img width={64} height={64} src={this.props.user ? this.props.user.profile.picture : ''}/>
             </Media.Left>
             <Media.Body>
-              <Panel className='comment-panel' header={<Media.Heading>{this.props.user ? this.props.user.profile.email : ''}</Media.Heading>}>
+              <Panel className='comment-panel' header={<Media.Heading>{userLink}</Media.Heading>}>
                 <FormControl
                   ref='newNoteBody'
                   componentClass='textarea'

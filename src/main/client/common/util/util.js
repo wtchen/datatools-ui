@@ -2,6 +2,7 @@ import { UserAuthWrapper } from 'redux-auth-wrapper'
 import { routerActions, push } from 'react-router-redux'
 import fetch from 'isomorphic-fetch'
 import { setErrorMessage } from '../../manager/actions/status'
+import gravatar from 'gravatar'
 
 export function defaultSorter(a, b) {
   if(a.isCreating && !b.isCreating) return -1
@@ -154,4 +155,8 @@ export function isValidZipFile (file) {
       file.type === 'application/x-zip-compressed'
     ) && nameArray[nameArray.length - 1] === 'zip'
   )
+}
+
+export function getProfileLink (email) {
+  return gravatar.profile_url(email, {format: 'html'})
 }
