@@ -15,7 +15,6 @@ export default class MinuteSecondInput extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    console.log(nextProps)
     if (typeof nextProps.seconds !== 'undefined' && this.state.seconds !== nextProps.seconds) {
       this.setState({
         seconds: nextProps.seconds,
@@ -27,11 +26,11 @@ export default class MinuteSecondInput extends Component {
     let seconds = this.convertStringToSeconds(value)
     if (seconds === this.state.seconds) {
       this.setState({string: value})
-    }
-    else {
+    } else {
       this.setState({seconds, string: value})
-      if (typeof this.props.onChange !== 'undefined')
+      if (typeof this.props.onChange !== 'undefined') {
         this.props.onChange(seconds)
+      }
     }
   }
   convertSecondsToString (seconds) {
@@ -44,14 +43,11 @@ export default class MinuteSecondInput extends Component {
     console.log(minuteSecond)
     if (!isNaN(minuteSecond[0]) && !isNaN(minuteSecond[1])) {
       return Math.abs(+minuteSecond[0]) * 60 + Math.abs(+minuteSecond[1])
-    }
-    else if (isNaN(minuteSecond[0])) {
+    } else if (isNaN(minuteSecond[0])) {
       return Math.abs(+minuteSecond[1])
-    }
-    else if (isNaN(minuteSecond[1])) {
+    } else if (isNaN(minuteSecond[1])) {
       return Math.abs(+minuteSecond[0] * 60)
-    }
-    else {
+    } else {
       return 0
     }
   }
