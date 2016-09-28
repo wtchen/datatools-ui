@@ -109,6 +109,7 @@ export default class GtfsEditor extends Component {
   }
 
   render () {
+    console.log(this.props.currentPattern && this.props.currentPattern.shape)
     const feedSource = this.props.feedSource
     const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
 
@@ -153,7 +154,7 @@ export default class GtfsEditor extends Component {
           right: 0,
           top: 0
         }}>
-          {this.props.subSubComponent === 'timetable'
+          {this.props.subSubComponent === 'timetable' && this.props.activeEntity
             ? <TimetableEditor
                 feedSource={feedSource}
                 route={this.props.activeEntity}

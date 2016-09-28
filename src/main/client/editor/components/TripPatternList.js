@@ -26,7 +26,8 @@ export default class TripPatternList extends Component {
     activeEntity: PropTypes.object,
     feedSource: PropTypes.object,
     activeComponent: PropTypes.string.isRequired,
-    activeSubEntity: PropTypes.string.isRequired
+    activeSubEntity: PropTypes.string,
+    currentPattern: PropTypes.object
   }
   constructor (props) {
     super(props)
@@ -81,7 +82,7 @@ export default class TripPatternList extends Component {
     if (!activeEntity.tripPatterns) {
       return <Icon spin name='refresh' />
     }
-    const activePattern = activeEntity.tripPatterns.find(p => p.id === activePatternId)
+    const activePattern = this.props.currentPattern // activeEntity.tripPatterns.find(p => p.id === activePatternId)
     const sidePadding = '5px'
     let panelWidth = '300px'
     let panelStyle = {
@@ -302,7 +303,7 @@ export default class TripPatternList extends Component {
                           <MenuItem eventKey={activePattern.useFrequency ? 'timetables' : 'frequencies'}>{activePattern.useFrequency ? timetableOptions[0] : timetableOptions[1]}</MenuItem>
                         </DropdownButton>
                         <Button
-                          disabled={activePatternId === 'new' || (activePattern && activePattern.patternStops.length === 0)}
+                          disabled={activePatternId === 'new' || (activePattern && activePattern.patternStops && activePattern.patternStops.length === 0)}
                           onClick={() => {
                             if (showTimetable) this.props.setActiveEntity(feedSource.id, 'route', activeEntity, 'trippattern', pattern)
                             else this.props.setActiveEntity(feedSource.id, 'route', activeEntity, 'trippattern', pattern, 'timetable')

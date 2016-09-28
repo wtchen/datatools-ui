@@ -17,7 +17,8 @@ export default class TimetableEditor extends Component {
     activePatternId: PropTypes.string,
     activeScheduleId: PropTypes.string,
     feedSource: PropTypes.object,
-    saveTripsForCalendar: PropTypes.func
+    saveTripsForCalendar: PropTypes.func,
+    tableData: PropTypes.object
   }
   constructor (props) {
     super(props)

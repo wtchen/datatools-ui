@@ -109,7 +109,7 @@ const editor = (state = defaultState, action) => {
           coordinates = state.editSettings.coordinatesHistory[lastCoordinatesIndex]
           if (coordinates) {
             stateUpdate.active = {
-              entity: {tripPatterns: {[patternIndex]: {shape: {coordinates: {$set: coordinates}}}}}
+              subEntity: {shape: {coordinates: {$set: coordinates}}}
             }
           }
           break
@@ -119,7 +119,7 @@ const editor = (state = defaultState, action) => {
           coordinates = state.editSettings.coordinatesHistory[lastCoordinatesIndex]
           if (coordinates) {
             stateUpdate.active = {
-              entity: {tripPatterns: {[patternIndex]: {shape: {coordinates: {$set: coordinates}}}}}
+              subEntity: {shape: {coordinates: {$set: coordinates}}}
             }
           }
           break

@@ -66,6 +66,7 @@ const mapStateToProps = (state, ownProps) => {
     : state.editor.active && state.editor.active.entity && activeComponent === 'feedinfo'
     ? state.editor.active.entity
     : null
+  const currentPattern = state.editor.active && state.editor.active.subEntity
   // const activeSubEntity = state.editor.active && state.editor.active.subEntity && state.editor.active.subEntity.id === activeEntityId
   // ? state.editor.active.subEntity
   // : state.editor.active && state.editor.active.subEntity && activeComponent === 'feedinfo'
@@ -78,24 +79,16 @@ const mapStateToProps = (state, ownProps) => {
     ? state.editor.active.patternEdited
     : state.editor.active && state.editor.active.edited
 
-  // const isEditingGeometry = state.editor.editSettings.editGeometry
-  // const isAddingStops = state.editor.editSettings.addStops
-  // const isFollowingStreets = state.editor.editSettings.followStreets
-  // const isSnappingToStops = state.editor.editSettings.snapToStops
-  // const isHidingStops = state.editor.editSettings.hideStops
   const controlPoints = state.editor.editSettings.controlPoints && state.editor.editSettings.controlPoints.length
     ? state.editor.editSettings.controlPoints[state.editor.editSettings.controlPoints.length - 1]
     : []
-  // const editActions = state.editor.editSettings.actions
-  // const coordinatesHistory = state.editor.editSettings.coordinatesHistory
   const editSettings = state.editor.editSettings
-  // const mapZoom = state.editor.mapState.zoom
-  // const mapBounds = state.editor.mapState.bounds
   const mapState = state.editor.mapState
   const stopTree = state.editor.stopTree
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   const entities = state.editor.tableData[activeComponent]
   let user = state.user
+
   // find the containing project
   let project = state.projects.all
     ? state.projects.all.find(p => {
@@ -131,21 +124,13 @@ const mapStateToProps = (state, ownProps) => {
     activeEntity,
     activeEntityId,
     activeSubEntity,
+    currentPattern,
     // activeSubEntityId,
     activeSubSubEntity,
     editSettings,
     mapState,
     stopTree,
-    // isAddingStops,
-    // isEditingGeometry,
-    // isFollowingStreets,
-    // isSnappingToStops,
-    // isHidingStops,
     controlPoints,
-    // coordinatesHistory,
-    // editActions,
-    // mapZoom,
-    // mapBounds
     sidebarExpanded: state.ui.sidebarExpanded
   }
 }
