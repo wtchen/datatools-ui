@@ -11,6 +11,8 @@ import objectPath from 'object-path'
 import EditableCell from '../../common/components/EditableCell'
 import HourMinuteInput from './HourMinuteInput'
 
+const DT_FORMATS = ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']
+
 export default class TimetableEditor extends Component {
   static propTypes = {
     route: PropTypes.object,
@@ -61,15 +63,12 @@ export default class TimetableEditor extends Component {
     let stateUpdate = { edited: { $push: [rowIndex] }, data: {$set: newRows} }
     this.setState(update(this.state, stateUpdate))
   }
-  addNewRow (columns, blank = false) {
+  constructNewRow (columns, toClone = null) {
     const activePattern = this.props.route && this.props.route.tripPatterns ? this.props.route.tripPatterns.find(p => p.id === this.props.activePatternId) : null
-
-    // set blank to true if there are no rows to clone
-    blank = blank || this.state.data.length === 0
-    let newRow = blank ? {} : clone(this.state.data[this.state.data.length - 1]) || {}
+    let newRow = toClone ? clone(toClone) || {} : {}
 
     // set starting time for first arrival
-    let cumulativeTravelTime = blank ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
+    let cumulativeTravelTime = !toClone ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
     cumulativeTravelTime += this.state.offsetSeconds
 
     for (let i = 0; i < activePattern.patternStops.length; i++) {
@@ -78,7 +77,6 @@ export default class TimetableEditor extends Component {
       if (!objectPath.get(newRow, `stopTimes.${i}`)) {
         objectPath.set(newRow, `stopTimes.${i}`, {})
       }
-      console.log(objectPath.get(newRow, `stopTimes.${i}`))
       objectPath.set(newRow, `stopTimes.${i}.stopId`, stop.stopId)
       cumulativeTravelTime += +stop.defaultTravelTime
       objectPath.set(newRow, `stopTimes.${i}.arrivalTime`, cumulativeTravelTime)
@@ -87,7 +85,7 @@ export default class TimetableEditor extends Component {
     }
     for (let i = 0; i < columns.length; i++) {
       let col = columns[i]
-      if (/TIME/.test(col.type)) {
+      if (this.isTimeFormat(col.type)) {
         // TODO: add default travel/dwell times to new rows
         // objectPath.ensureExists(newRow, col.key, 0)
       } else {
@@ -101,6 +99,16 @@ export default class TimetableEditor extends Component {
     objectPath.set(newRow, 'feedId', this.props.feedSource.id)
     objectPath.set(newRow, 'patternId', activePattern.id)
     objectPath.set(newRow, 'calendarId', this.props.activeScheduleId)
+
+    return newRow
+  }
+  addNewRow (columns, blank = false) {
+    // set blank to true if there are no rows to clone
+    blank = blank || this.state.data.length === 0
+
+    let clone = blank ? null : this.state.data[this.state.data.length - 1]
+    let newRow = this.constructNewRow(columns, clone)
+
     let newRows = [...this.state.data, newRow]
     let stateUpdate = {
       data: {$set: newRows},
@@ -229,7 +237,7 @@ export default class TimetableEditor extends Component {
       for (var j = 0; j < columns.length; j++) {
         let col = columns[j]
         let path = `${rowIndexes[i]}.${col.key}`
-        if (/TIME/.test(col.type)) {
+        if (this.isTimeFormat(col.type)) {
           let currentVal = objectPath.get(newRows, path)
           let newVal = currentVal + offsetAmount % 86399 // ensure seconds does not exceed 24 hours
           objectPath.set(newRows, path, newVal)
@@ -242,18 +250,33 @@ export default class TimetableEditor extends Component {
     }
     this.setState(update(this.state, stateUpdate))
   }
+  parseTime (timeString) {
+    const date = moment().startOf('day').format('YYYY-MM-DD')
+    return moment(date + 'T' + timeString, DT_FORMATS).diff(date, 'seconds')
+  }
   handlePastedRows (pastedRows, rowIndex, colIndex, columns) {
     let newRows = [...this.state.data]
-    let date = moment().startOf('day').format('YYYY-MM-DD')
     let editedRows = []
+
+    // iterate over rows in pasted selection
     for (var i = 0; i < pastedRows.length; i++) {
       editedRows.push(i)
-      // TODO: fix handlePaste to accommodate new pastedRows objects
+
+      // iterate over number of columns in pasted selection
       for (var j = 0; j < pastedRows[0].length; j++) {
         let path = `${rowIndex + i}.${columns[colIndex + j].key}`
-        if (typeof newRows[i + rowIndex] !== 'undefined' && typeof objectPath.get(newRows, path) !== 'undefined') {
-          let newValue = moment(date + 'T' + pastedRows[i][j], ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']).diff(date, 'seconds')
-          objectPath.set(newRows, path, newValue)
+
+        // construct new row if it doesn't exist
+        if (typeof newRows[i + rowIndex] === 'undefined' || typeof objectPath.get(newRows, path) === 'undefined') {
+          newRows.push(this.constructNewRow(columns))
+        }
+        let newValue = this.parseTime(pastedRows[i][j])
+        objectPath.set(newRows, path, newValue)
+
+        // if departure times are hidden, paste into adjacent time column
+        let adjacentPath = `${rowIndex + i}.${columns[colIndex + j + 2].key}`
+        if (this.state.hideDepartureTimes && this.isTimeFormat(columns[colIndex + j].type) && typeof objectPath.get(newRows, adjacentPath) !== 'undefined') {
+          objectPath.set(newRows, adjacentPath, newValue)
         }
       }
     }
@@ -287,8 +310,11 @@ export default class TimetableEditor extends Component {
       this.setState(update(this.state, stateUpdate))
     })
   }
+  isTimeFormat (type) {
+    return /TIME/.test(type)
+  }
   isDataValid (col, value, previousValue) {
-    if (/TIME/.test(col.type)) {
+    if (this.isTimeFormat(col.type)) {
       return value && value >= 0 && value < previousValue
     }
     else {
@@ -296,7 +322,7 @@ export default class TimetableEditor extends Component {
     }
   }
   getCellRenderer (col, value) {
-    if (!/TIME/.test(col.type)) {
+    if (!this.isTimeFormat(col.type)) {
       return value
     }
     else {
@@ -642,6 +668,7 @@ export default class TimetableEditor extends Component {
                             ref={`cell-${rowIndex}-${colIndex}`}
                             onChange={(value) => {
                               this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
+
                               // set departure time value if departure times are hidden
                               if (this.state.hideDepartureTimes && columns[colIndex + 1] && columns[colIndex + 1].type === 'DEPARTURE_TIME') {
                                 this.setCellValue(value, rowIndex, `${rowIndex}.${columns[colIndex + 1].key}`)
@@ -655,11 +682,11 @@ export default class TimetableEditor extends Component {
                             onDown={(evt) => this._onDown(evt, rowIndex, colIndex)}
                             duplicateLeft={(evt) => this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)}
                             handlePastedRows={(rows) => this.handlePastedRows(rows, rowIndex, colIndex, columns)}
-                            invalidData={/TIME/.test(col.type) && val >= 0 && val < previousValue}
+                            invalidData={this.isTimeFormat(col.type) && val >= 0 && val < previousValue}
                             isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
                             isFocused={false}
                             placeholder={col.placeholder}
-                            renderTime={/TIME/.test(col.type)}
+                            renderTime={this.isTimeFormat(col.type)}
                             cellRenderer={(value) => this.getCellRenderer(col, value)}
                             data={val}
                             style={cellStyle}
