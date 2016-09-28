@@ -8,9 +8,10 @@ application:
     gtfs_s3_bucket: bucket-name
   port: 4000
   title: Data Manager
-  logo: http://gtfs-assets-dev.conveyal.com/data_manager.png
+  logo: http://gtfs-assets-dev.conveyal.com/data_manager.png # defaults to src/main/client/assets/application_logo.png
   active_project: project-id
   notifications_enabled: false
+  public_url: http://localhost:9000
   docs_url: http://docs.example.com
   changelog_url: https://changelog.example.com
   support_email: support@example.com
