@@ -4,6 +4,8 @@ import { Grid, Row, Col, Button, Glyphicon, ButtonToolbar, DropdownButton, MenuI
 import { browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
+import { getConfigProperty } from '../../common/util/config'
+
 export default class PublicHeader extends Component {
 
   static propTypes = {
@@ -49,7 +51,7 @@ export default class PublicHeader extends Component {
             }
 
             {/* "Create Account" Button (only show if no active user) */}
-            {this.props.username
+            {this.props.username || getConfigProperty('modules.enterprise.enabled')
               ? null
               : <Button bsStyle='success' onClick={() => { browserHistory.push('/signup') }}>
                   <Glyphicon glyph='plus'/> Create Account
