@@ -1,18 +1,216 @@
 import React, {Component, PropTypes} from 'react'
-import { InputGroup, Checkbox, Nav, NavItem, NavDropdown, MenuItem, Button, Form, FormControl } from 'react-bootstrap'
+import { InputGroup, Checkbox, Nav, NavItem, NavDropdown, MenuItem, Button, Form } from 'react-bootstrap'
 import Icon from 'react-fa'
 import clone from 'clone'
-import ReactDOM from 'react-dom'
 import moment from 'moment'
 import truncate from 'truncate'
 import update from 'react-addons-update'
 import objectPath from 'object-path'
+import ReactDataGrid from 'react-data-grid'
+// import ReactDataGridPlugins from 'react-data-grid/dist/react-data-grid.ui-plugins'
+import faker from 'faker'
+import 'react-data-grid/themes/react-data-grid.css'
 
 import EditableCell from '../../common/components/EditableCell'
 import HourMinuteInput from './HourMinuteInput'
 
 const DT_FORMATS = ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']
 
+  faker.locale = 'en_GB';
+
+  function createFakeRowObjectData(/*number*/ index) {
+    return {
+      id: 'id_' + index,
+      avartar: faker.image.avatar(),
+      county: faker.address.county(),
+      email: faker.internet.email(),
+      title: faker.name.prefix(),
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      street: faker.address.streetName(),
+      zipCode: faker.address.zipCode(),
+      date: faker.date.past().toLocaleDateString(),
+      bs: faker.company.bs(),
+      catchPhrase: faker.company.catchPhrase(),
+      companyName: faker.company.companyName(),
+      words: faker.lorem.words(),
+      sentence: faker.lorem.sentence()
+    };
+  }
+
+  function createRows(numberOfRows) {
+    var rows = [];
+    for (var i = 0; i < numberOfRows; i++) {
+      rows[i] = createFakeRowObjectData(i);
+    }
+    return rows;
+  }
+
+  var counties = [{id : 0, title : 'Bedfordshire'}, { id : 1, title : 'Berkshire'}, { id : 2, title : 'Buckinghamshire'}, { id : 3, title : 'Cambridgeshire'}, { id : 4, title : 'Cheshire'}, { id : 5, title :'Cornwall'}, {id : 6, title : 'Cumbria, (Cumberland)'}, {id : 7, title : 'Derbyshire'}, { id : 8, title :'Devon'}, { id : 9, title :'Dorset'},
+   { id : 10, title :'Durham'},
+   { id : 11, title :'Essex'},
+   { id : 12, title :'Gloucestershire'},
+   { id : 13, title :'Hampshire'},
+   { id : 14, title :'Hertfordshire'},
+   { id : 15, title :'Huntingdonshire'},
+   { id : 16, title :'Kent'},
+   { id : 17, title :'Lancashire'},
+   { id : 18, title :'Leicestershire'},
+   { id : 19, title :'Lincolnshire'},
+   { id : 20, title :'Middlesex'},
+   { id : 21, title :'Norfolk'},
+   { id : 22, title :'Northamptonshire'},
+   { id : 23, title :'Northumberland'},
+   { id : 24, title :'Nottinghamshire'},
+   { id : 25, title :'Northamptonshire'},
+   { id : 26, title :'Oxfordshire'},
+   { id : 27, title :'Northamptonshire'},
+   { id : 28, title :'Rutland'},
+   { id : 29, title :'Shropshire'},
+   { id : 30, title :'Somerset'},
+   { id : 31, title :'Staffordshire'},
+   { id : 32, title :'Suffolk'},
+   { id : 33, title :'Surrey'},
+   { id : 34, title :'Sussex'},
+   { id : 35, title :'Warwickshire'},
+   { id : 36, title :'Westmoreland'},
+   { id : 37, title :'Wiltshire'},
+   { id : 38, title :'Worcestershire'},
+   { id : 39, title :'Yorkshire'}]
+
+  var titles = ['Dr.', 'Mr.', 'Mrs.', 'Miss', 'Ms.'];
+
+  var cols = [
+    {
+      key: 'id',
+      name: 'ID',
+      width : 80,
+      resizable: true
+    },
+    {
+      key: 'avartar',
+      name: 'Avartar',
+      width : 60,
+      // formatter : ReactDataGridPlugins.Formatters.ImageFormatter,
+      resizable : true,
+      // headerRenderer: <ReactDataGridPlugins.Formatters.ImageFormatter value={faker.image.cats()} />
+    },
+    {
+      key: 'county',
+      name: 'County',
+      // editor: <AutoCompleteEditor options={counties}/>,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'title',
+      name: 'Title',
+      // editor : <DropDownEditor options={titles}/>,
+      width : 200,
+      resizable: true,
+      events: {
+        onDoubleClick: function() {
+           console.log("The user double clicked on title column");
+        }
+      }
+    },
+    {
+      key: 'firstName',
+      name: 'First Name',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'lastName',
+      name: 'Last Name',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'email',
+      name: 'Email',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'street',
+      name: 'Street',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'zipCode',
+      name: 'ZipCode',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'date',
+      name: 'Date',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'bs',
+      name: 'bs',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'catchPhrase',
+      name: 'Catch Phrase',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'companyName',
+      name: 'Company Name',
+      editable:true,
+      width : 200,
+      resizable: true
+    },
+    {
+      key: 'sentence',
+      name: 'Sentence',
+      editable:true,
+      width : 200,
+      resizable: true
+    }
+  ];
+let columns = [
+  {
+    name: 'Block ID',
+    width: 30,
+    key: 'blockId',
+    type: 'TEXT',
+    placeholder: '300',
+    editable: true
+  },
+  {
+    name: 'Trip ID',
+    width: 300,
+    key: 'gtfsTripId',
+    type: 'TEXT',
+    placeholder: '12345678',
+    editable: true
+  },
+  {
+    name: 'Trip Headsign',
+    width: 300,
+    key: 'tripHeadsign',
+    type: 'TEXT',
+    placeholder: 'Destination via Transfer Center',
+    editable: true
+  }
+]
 export default class TimetableEditor extends Component {
   static propTypes = {
     route: PropTypes.object,
@@ -26,11 +224,57 @@ export default class TimetableEditor extends Component {
     super(props)
     this.state = {
       activeCell: null, // 'rowNum-colNum', e.g. 0-1
-      // rows: [{block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}],
+      // data: [{block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}],
       edited: [],
       selected: [],
-      offsetSeconds: 0
+      offsetSeconds: 0,
     }
+  }
+  getColumns () {
+    var clonedColumns = clone(columns)
+    // clonedColumns[2].events = {
+    //   onClick: function (ev, args) {
+    //     var idx = args.idx
+    //     var rowIdx = args.rowIdx
+    //     this.refs.grid.openCellEditor(rowIdx, idx)
+    //   }.bind(this)
+    // }
+
+    return clonedColumns
+  }
+
+  handleGridRowsUpdated (updatedRowData) {
+    var rows = this.state.data
+
+    for (var i = updatedRowData.fromRow; i <= updatedRowData.toRow; i++) {
+      var rowToUpdate = rows[i]
+      var updatedRow = update(rowToUpdate, {$merge: updatedRowData.updated})
+      rows[i] = updatedRow
+    }
+
+    this.setState({data: rows})
+  }
+
+  handleAddRow (e) {
+    var newRow = {
+      value: e.newRowIndex,
+      userStory: '',
+      developer : '',
+      epic : ''
+    }
+    var rows = update(this.state.data, {$push: [newRow]})
+    this.setState({data: rows})
+  }
+
+  getRowAt (index) {
+    if (index < 0 || index > this.state.data.length) {
+      return undefined
+    }
+    return this.state.data[index]
+  }
+
+  getSize () {
+    return this.state.data ? this.state.data.length : 0
   }
   updateDimensions () {
     this.setState({width: window.innerWidth, height: window.innerHeight})
@@ -40,6 +284,10 @@ export default class TimetableEditor extends Component {
   }
   componentDidMount () {
     window.addEventListener('resize', () => this.updateDimensions())
+    // Editors = ReactDataGridPlugins.Editors
+    // Toolbar = ReactDataGridPlugins.Toolbar
+    // AutoCompleteEditor = ReactDataGridPlugins.Editors.AutoComplete
+    // DropDownEditor = ReactDataGridPlugins.Editors.DropDownEditor
   }
   componentWillUnmount () {
     window.removeEventListener('resize', () => this.updateDimensions())
@@ -183,14 +431,14 @@ export default class TimetableEditor extends Component {
     return true
   }
   // rowGetter (rowIdx) {
-  //   return this.state ? this.state.rows[rowIdx] : {block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}
+  //   return this.state ? this.state.data[rowIdx] : {block: 0, gtfsTripId: 'trp', tripHeadsign: 'trip'}
   // }
-  // handleRowUpdated (e) {
-  //   //merge updated row with current row and rerender by setting state
-  //   var rows = this.state.rows;
-  //   Object.assign(rows[e.rowIdx], e.updated);
-  //   this.setState({rows:rows});
-  // }
+  handleRowUpdated (e) {
+    //merge updated row with current row and rerender by setting state
+    var rows = this.state.data;
+    Object.assign(rows[e.rowIdx], e.updated);
+    this.setState({data:rows});
+  }
   _onDown (evt, rowIndex, colIndex) {
       if (rowIndex + 1 <= this.state.data.length - 1) {
         this.setState({activeCell: `${rowIndex + 1}-${colIndex}`})
@@ -365,29 +613,6 @@ export default class TimetableEditor extends Component {
       width: `${headerWidth}px`,
       paddingRight: '10px'
     }
-    const columns = [
-      {
-        name: 'Block ID',
-        width: 30,
-        key: 'blockId',
-        type: 'TEXT',
-        placeholder: '300'
-      },
-      {
-        name: 'Trip ID',
-        width: 300,
-        key: 'gtfsTripId',
-        type: 'TEXT',
-        placeholder: '12345678'
-      },
-      {
-        name: 'Trip Headsign',
-        width: 300,
-        key: 'tripHeadsign',
-        type: 'TEXT',
-        placeholder: 'Destination via Transfer Center'
-      },
-    ]
     if (activePattern && activePattern.patternStops) {
       if (!activePattern.useFrequency) {
         activePattern.patternStops.map((ps, index) => {
@@ -401,13 +626,15 @@ export default class TimetableEditor extends Component {
             colSpan: '2',
             hidden: false,
             type: 'ARRIVAL_TIME',
-            placeholder: 'HH:MM:SS'
+            placeholder: 'HH:MM:SS',
+            editable: true
           })
           columns.push({
             key: `stopTimes.${index}.departureTime`,
             hidden: this.state.hideDepartureTimes,
             type: 'DEPARTURE_TIME',
-            placeholder: 'HH:MM:SS'
+            placeholder: 'HH:MM:SS',
+            editable: true
           })
         })
       }
@@ -418,21 +645,24 @@ export default class TimetableEditor extends Component {
           width: 100,
           key: 'startTime',
           type: 'TIME',
-          placeholder: 'HH:MM:SS'
+          placeholder: 'HH:MM:SS',
+          editable: true
         })
         columns.push({
           name: 'End time',
           width: 100,
           key: 'endTime',
           type: 'TIME',
-          placeholder: 'HH:MM:SS'
+          placeholder: 'HH:MM:SS',
+          editable: true
         })
         columns.push({
           name: 'Headway',
           width: 60,
           key: 'headway',
           type: 'MINUTES',
-          placeholder: '15 (min)'
+          placeholder: '15 (min)',
+          editable: true
         })
       }
     }
@@ -442,6 +672,127 @@ export default class TimetableEditor extends Component {
       ? 'Frequencies for'
       : 'Timetables for'
     const headerText = <span>{tableType} {activePattern ? <span title={activePattern.name}>{truncate(activePattern.name, 20)}</span> : <Icon spin name='refresh' />}</span>
+    const reactDataGrid = <ReactDataGrid
+      ref='grid'
+      enableCellSelect={true}
+      columns={this.getColumns()}
+      rowGetter={(i) => this.getRowAt(i)}
+      rowsCount={this.getSize()}
+      onGridRowsUpdated={(data) => this.handleGridRowsUpdated(data)}
+      enableRowSelect={true}
+      rowHeight={50}
+      minHeight={600}
+      rowScrollTimeout={200}
+    />
+    const table = <table
+        className='handsontable'
+      >
+        <thead
+        >
+          <tr>
+            <th>
+              {/* Select all checkbox */}
+              <input
+                ref='check-all'
+                type='checkbox'
+                checked={this.state.selected.length && this.state.selected.length === this.state.data.length}
+                onClick={(e) => {
+                  let selected = []
+                  if (this.state.selected.length !== this.state.data.length) {
+                    for (let i = 0; i < this.state.data.length; i++) {
+                      selected.push(i)
+                    }
+                  }
+                  this.setState({selected})
+                }}
+              />
+            </th>
+            {columns.map(c => {
+              if (!c.name) return null
+              return (
+                <th
+                  style={{width: `${c.width}px`}}
+                  title={c.title ? c.title : c.name}
+                  colSpan={c.colSpan && !this.state.hideDepartureTimes ? c.colSpan : '1'}
+                >
+                  {c.name}
+                </th>
+              )
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          {this.state.data
+            ? this.state.data.map((row, rowIndex) => {
+              let rowValues = []
+              let rowCheckedColor = '#F3FAF6'
+              let rowIsChecked = this.state.selected[0] === '*' && this.state.selected.indexOf(rowIndex) === -1 || this.state.selected[0] !== '*' && this.state.selected.indexOf(rowIndex) !== -1
+              return (
+                <tr style={{margin: 0, padding: 0}}>
+                <td ref={`check-${rowIndex}`}>
+                  <input
+                    type='checkbox'
+                    checked={rowIsChecked}
+                    onClick={(e) => {
+                      this.toggleRowSelection(rowIndex)
+                    }}
+                  />
+                </td>
+                {columns.map((col, colIndex) => {
+                  let val = objectPath.get(row, col.key)
+                  if (col.key === 'gtfsTripId' && val === null) {
+                    val = objectPath.get(row, 'id') !== 'new' ? objectPath.get(row, 'id') : null
+                  }
+                  rowValues.push(val)
+                  let cellStyle = {
+                    width: '60px',
+                    color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000'
+                  }
+                  if (rowIsChecked) {
+                    cellStyle.backgroundColor = rowCheckedColor
+                  }
+                  let previousValue = rowValues[colIndex - 1]
+
+                  // if departure times are hidden do not display cell
+                  if (col.hidden) return null
+
+                  return (
+                    <EditableCell
+                      ref={`cell-${rowIndex}-${colIndex}`}
+                      onChange={(value) => {
+                        this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
+
+                        // set departure time value if departure times are hidden
+                        if (this.state.hideDepartureTimes && columns[colIndex + 1] && columns[colIndex + 1].type === 'DEPARTURE_TIME') {
+                          this.setCellValue(value, rowIndex, `${rowIndex}.${columns[colIndex + 1].key}`)
+                        }
+                      }}
+                      key={`cell-${rowIndex}-${colIndex}`}
+                      onRowSelect={(evt) => this.toggleRowSelection(rowIndex)}
+                      onLeft={(evt) => this._onLeft(evt, rowIndex, colIndex)}
+                      onRight={(evt) => this._onRight(evt, rowIndex, colIndex, columns)}
+                      onUp={(evt) => this._onUp(evt, rowIndex, colIndex)}
+                      onDown={(evt) => this._onDown(evt, rowIndex, colIndex)}
+                      duplicateLeft={(evt) => this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)}
+                      handlePastedRows={(rows) => this.handlePastedRows(rows, rowIndex, colIndex, columns)}
+                      invalidData={this.isTimeFormat(col.type) && val >= 0 && val < previousValue}
+                      isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
+                      isFocused={false}
+                      placeholder={col.placeholder}
+                      renderTime={this.isTimeFormat(col.type)}
+                      cellRenderer={(value) => this.getCellRenderer(col, value)}
+                      data={val}
+                      style={cellStyle}
+                    />
+                  )
+                })}
+                </tr>
+              )
+            })
+            : null
+          }
+        </tbody>
+      </table>
     return (
       <div
         style={panelStyle}
@@ -591,115 +942,9 @@ export default class TimetableEditor extends Component {
         style={{marginTop: '125px'}}
       >
         {activeSchedule
-          ? <table
-              className='handsontable'
-            >
-              <thead
-              >
-                <tr>
-                  <th>
-                    {/* Select all checkbox */}
-                    <input
-                      ref='check-all'
-                      type='checkbox'
-                      checked={this.state.selected.length && this.state.selected.length === this.state.data.length}
-                      onClick={(e) => {
-                        let selected = []
-                        if (this.state.selected.length !== this.state.data.length) {
-                          for (let i = 0; i < this.state.data.length; i++) {
-                            selected.push(i)
-                          }
-                        }
-                        this.setState({selected})
-                      }}
-                    />
-                  </th>
-                  {columns.map(c => {
-                    if (!c.name) return null
-                    return (
-                      <th
-                        style={{width: `${c.width}px`}}
-                        title={c.title ? c.title : c.name}
-                        colSpan={c.colSpan && !this.state.hideDepartureTimes ? c.colSpan : '1'}
-                      >
-                        {c.name}
-                      </th>
-                    )
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.data
-                  ? this.state.data.map((row, rowIndex) => {
-                    let rowValues = []
-                    let rowCheckedColor = '#F3FAF6'
-                    let rowIsChecked = this.state.selected[0] === '*' && this.state.selected.indexOf(rowIndex) === -1 || this.state.selected[0] !== '*' && this.state.selected.indexOf(rowIndex) !== -1
-                    return (
-                      <tr style={{margin: 0, padding: 0}}>
-                      <td ref={`check-${rowIndex}`}>
-                        <input
-                          type='checkbox'
-                          checked={rowIsChecked}
-                          onClick={(e) => {
-                            this.toggleRowSelection(rowIndex)
-                          }}
-                        />
-                      </td>
-                      {columns.map((col, colIndex) => {
-                        let val = objectPath.get(row, col.key)
-                        if (col.key === 'gtfsTripId' && val === null) {
-                          val = objectPath.get(row, 'id') !== 'new' ? objectPath.get(row, 'id') : null
-                        }
-                        rowValues.push(val)
-                        let cellStyle = {
-                          width: '60px',
-                          color: col.type === 'DEPARTURE_TIME' ? '#aaa' : '#000'
-                        }
-                        if (rowIsChecked) {
-                          cellStyle.backgroundColor = rowCheckedColor
-                        }
-                        let previousValue = rowValues[colIndex - 1]
-
-                        // if departure times are hidden do not display cell
-                        if (col.hidden) return null
-
-                        return (
-                          <EditableCell
-                            ref={`cell-${rowIndex}-${colIndex}`}
-                            onChange={(value) => {
-                              this.setCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
-
-                              // set departure time value if departure times are hidden
-                              if (this.state.hideDepartureTimes && columns[colIndex + 1] && columns[colIndex + 1].type === 'DEPARTURE_TIME') {
-                                this.setCellValue(value, rowIndex, `${rowIndex}.${columns[colIndex + 1].key}`)
-                              }
-                            }}
-                            key={`cell-${rowIndex}-${colIndex}`}
-                            onRowSelect={(evt) => this.toggleRowSelection(rowIndex)}
-                            onLeft={(evt) => this._onLeft(evt, rowIndex, colIndex)}
-                            onRight={(evt) => this._onRight(evt, rowIndex, colIndex, columns)}
-                            onUp={(evt) => this._onUp(evt, rowIndex, colIndex)}
-                            onDown={(evt) => this._onDown(evt, rowIndex, colIndex)}
-                            duplicateLeft={(evt) => this.setCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)}
-                            handlePastedRows={(rows) => this.handlePastedRows(rows, rowIndex, colIndex, columns)}
-                            invalidData={this.isTimeFormat(col.type) && val >= 0 && val < previousValue}
-                            isEditing={this.state.activeCell === `${rowIndex}-${colIndex}` }
-                            isFocused={false}
-                            placeholder={col.placeholder}
-                            renderTime={this.isTimeFormat(col.type)}
-                            cellRenderer={(value) => this.getCellRenderer(col, value)}
-                            data={val}
-                            style={cellStyle}
-                          />
-                        )
-                      })}
-                      </tr>
-                    )
-                  })
-                  : null
-                }
-              </tbody>
-            </table>
+          ?
+            // table
+            reactDataGrid
           : <p className='lead text-center'>
               Choose a calendar to edit timetables or
               {' '}
