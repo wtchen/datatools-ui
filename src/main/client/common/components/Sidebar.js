@@ -9,6 +9,8 @@ import SidebarPopover from './SidebarPopover'
 import JobMonitor from './JobMonitor'
 import { getComponentMessages, getMessage } from '../util/config'
 
+import icon from '../../assets/application_icon.png'
+
 export default class Sidebar extends Component {
 
   static propTypes = {
@@ -58,12 +60,12 @@ export default class Sidebar extends Component {
       left: 10,
       cursor: 'pointer'
     }
-
+    const LOGO_SIZE = 30
     const logoIconStyle = {
       float: 'left',
-      background: '#bbb',
-      width: 30,
-      height: 30,
+      // background: '#bbb',
+      width: LOGO_SIZE,
+      height: LOGO_SIZE,
       fontSize: 24,
       fontWeight: 'bold',
       textAlign: 'center',
@@ -87,7 +89,7 @@ export default class Sidebar extends Component {
         <div style={logoContainerStyle}
           onClick={() => { browserHistory.push('/home') }}
         >
-          <div style={logoIconStyle}>G</div>
+          <div style={logoIconStyle}><img height={LOGO_SIZE} width={LOGO_SIZE} src={icon}/></div>
           {this.props.expanded
             ? <div style={logoLabelStyle}>GTFS Data<br/>Manager</div>
             : null
