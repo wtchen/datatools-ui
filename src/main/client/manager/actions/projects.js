@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
+import { updateGtfsFilter } from '../../gtfs/actions/filter'
 import { setErrorMessage, startJobMonitor } from './status'
 import { fetchProjectFeeds, updateFeedSource } from './feeds'
 // Bulk Project Actions
