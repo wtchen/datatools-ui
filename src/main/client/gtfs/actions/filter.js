@@ -41,10 +41,17 @@ export function updateGtfsFilter (activeProject, user) {
   }
 }
 
-export const setPermissionFilter = (permission) => {
+export const updatePermissionFilter = (permission) => {
   return {
-    type: 'SET_GTFS_PERMISSION_FILTER',
+    type: 'UPDATE_GTFS_PERMISSION_FILTER',
     permission
+  }
+}
+
+export const updateDateTimeFilter = (props) => {
+  return {
+    type: 'UPDATE_GTFS_DATETIME_FILTER',
+    props
   }
 }
 

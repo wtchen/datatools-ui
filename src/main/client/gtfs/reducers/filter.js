@@ -1,16 +1,30 @@
 import update from 'react-addons-update'
+import moment from 'moment'
 
 const gtfsFilter = (state = {
   allFeeds: [],
   activeFeeds: [],
   loadedFeeds: [],
-  permissionFilter: 'view-feed'
+  permissionFilter: 'view-feed',
+  dateTimeFilter: {
+    date: moment().format('YYYY-MM-DD'),
+    from: 0,
+    to: 86399
+  }
 }, action) => {
   // console.log(action)
-  let activeFeeds
+  let activeFeeds, dateTimeFilter
   switch (action.type) {
-    case 'SET_GTFS_PERMISSION_FILTER':
+    case 'UPDATE_GTFS_PERMISSION_FILTER':
       return update(state, {permissionFilter: {$set: action.permission}})
+    case 'UPDATE_GTFS_DATETIME_FILTER':
+      dateTimeFilter = {...state.dateTimeFilter}
+      for (let key in action.props) {
+        dateTimeFilter[key] = action.props[key]
+      }
+      return update(state, {
+        dateTimeFilter: {$set: dateTimeFilter}
+      })
     case 'UPDATE_GTFS_FILTER':
       let userFeeds = []
       if (action.user.permissions.isProjectAdmin(action.activeProject.id)) {
