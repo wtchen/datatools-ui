@@ -24,7 +24,7 @@ const agencyCompare = function(a, b) {
 const mapStateToProps = (state, ownProps) => {
   return {
     sign: state.activeSign,
-    activeFeeds: state.gtfsFilter.activeFeeds,
+    activeFeeds: state.gtfs.filter.activeFeeds,
     project: state.projects.active,
     user: state.user,
     editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-etid'),

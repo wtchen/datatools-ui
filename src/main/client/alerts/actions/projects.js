@@ -1,6 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 
-import { updateGtfsFilter } from '../../gtfs/actions/gtfsFilter'
+import { updateGtfsFilter } from '../../gtfs/actions/filter'
 import { fetchRtdAlerts } from './alerts'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
 import { setActiveProject } from '../../manager/actions/projects'

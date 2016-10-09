@@ -10,8 +10,8 @@ import '../style.css'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    activeFeeds: state.gtfsFilter.activeFeeds,
-    allFeeds: state.gtfsFilter.allFeeds,
+    activeFeeds: state.gtfs.filter.activeFeeds,
+    allFeeds: state.gtfs.filter.allFeeds,
     alerts: state.alerts.all,
     user: state.user,
     project: state.projects.active
