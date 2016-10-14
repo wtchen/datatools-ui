@@ -35,7 +35,7 @@ export default class UserHomePage extends Component {
   componentWillReceiveProps (nextProps) {
     const nextId = objectPath.get(nextProps, 'project.id')
     const id = objectPath.get(this.props, 'project.id')
-    if (nextId && nextId !== id) {
+    if (nextId && nextId !== id && !nextProps.project.feedSources) {
       this.props.fetchProjectFeeds(nextProps.project.id)
     }
   }
@@ -231,7 +231,7 @@ export default class UserHomePage extends Component {
                   </ListGroupItem>
                   {activeProject && activeProject.feedSources
                     ? activeProject.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(activeProject, fs))
-                    : <ListGroupItem><p className='lead text-center'>Choose a project to view feed sources</p></ListGroupItem>
+                    : <ListGroupItem><p className='lead text-center'>Choose a project to view feeds</p></ListGroupItem>
                       // this.props.projects && this.props.projects.map(p => {
                       //   return p.feedSources && p.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(p, fs))
                       // })
