@@ -40,6 +40,9 @@ export function secureFetch (url, state, method, payload, raw) {
   }
   if (payload) opts.body = JSON.stringify(payload)
   return fetch(url, opts)
+    .catch(err => {
+      console.log(err)
+    })
     // .then(res => {
     //   // if raw response is requested
     //   if (raw) return res
