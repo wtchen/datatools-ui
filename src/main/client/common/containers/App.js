@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Router, Route, browserHistory } from 'react-router'
 
@@ -26,29 +26,35 @@ import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor
 import ActiveGtfsEditor from '../../editor/containers/ActiveGtfsEditor'
 import ActiveGtfsTableEditor from '../../editor/containers/ActiveGtfsTableEditor'
 
-import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
-import ActiveGtfsValidationExplorer from '../../manager/containers/validation/ActiveGtfsValidationExplorer'
+// import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
+// import ActiveGtfsValidationExplorer from '../../manager/containers/validation/ActiveGtfsValidationExplorer'
 
 require('../style.css')
 
 // import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
-class App extends React.Component {
-
+class App extends Component {
+  static propTypes = {
+    checkExistingLogin: PropTypes.func,
+    user: PropTypes.object,
+    login: PropTypes.func,
+    history: PropTypes.object
+  }
   constructor (props) {
     super(props)
   }
 
   componentDidMount () {
     // set up status checkLogin
-    /*setInterval(() => {
+    /* setInterval(() => {
       console.log('status check!', this.props.user);
       this.props.checkJobStatus()
-    }, 5000)*/
+    }, 5000) */
   }
 
   render () {
     const requireAuth = (nextState, replace, callback) => {
+      console.log(nextState)
       this.props.checkExistingLogin()
       .then((action) => {
         if (this.props.user.profile === null) {
@@ -74,56 +80,54 @@ class App extends React.Component {
         console.log('requiring admin')
         if (this.props.user.profile === null || !this.props.user.permissions.isApplicationAdmin()) {
           browserHistory.push('/')
-          // this.props.login({closable: false}, callback)
-          // .then(() => {
-          //   callback()
-          // })
         } else {
           callback()
         }
       })
     }
     const routes = [
-      <Route path='/settings(/:subpage)(/:projectId)' component={ActiveUserAccount} onEnter={requireAuth} />,
-      <Route path='/admin(/:subpage)' component={ActiveUserAdmin} onEnter={requireAdmin} />,
-      <Route path='/signup' component={ActiveSignupPage} onEnter={checkLogin} />,
-      <Route path='/home(/:projectId)' component={ActiveUserHomePage} onEnter={requireAuth} />,
-      <Route path='/' component={ActivePublicFeedsViewer} onEnter={checkLogin} />,
-      <Route path='/public/feed/:feedSourceId(/version/:feedVersionIndex)' component={ActivePublicFeedSourceViewer} onEnter={checkLogin} />,
-      <Route path='/project' component={ActiveProjectsList} onEnter={requireAuth} />,
-      <Route path='/project/:projectId(/:subpage)(/:subsubpage)' component={ActiveProjectViewer} onEnter={requireAuth} />,
-      // <Route path='/feed/:feedSourceId/validation/:feedVersionIndex' component={ActiveGtfsValidationExplorer} onEnter={requireAuth} />,
-      <Route path='/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)(/:subsubcomponent)(/:subsubentity)' component={ActiveGtfsEditor} onEnter={requireAuth} />,
-      <Route path='/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)(/:subsubpage)' component={ActiveFeedSourceViewer} onEnter={requireAuth} />,
-      <Route path='/feed/:feedSourceId/:feedVersionId' component={ActiveGtfsValidationMap} onEnter={requireAuth} />,
+      {path: '/settings(/:subpage)(/:projectId)', component: ActiveUserAccount, onEnter: requireAuth},
+      {path: '/admin(/:subpage)', component: ActiveUserAdmin, onEnter: requireAdmin},
+      {path: '/signup', component: ActiveSignupPage, onEnter: checkLogin},
+      {path: '/home(/:projectId)', component: ActiveUserHomePage, onEnter: requireAuth},
+      {path: '/', component: ActivePublicFeedsViewer, onEnter: checkLogin},
+      {path: '/public/feed/:feedSourceId(/version/:feedVersionIndex)', component: ActivePublicFeedSourceViewer, onEnter: checkLogin},
+      {path: '/project', component: ActiveProjectsList, onEnter: requireAuth},
+      {path: '/project/:projectId(/:subpage)(/:subsubpage)', component: ActiveProjectViewer, onEnter: requireAuth},
+      {
+        path: '/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)(/:subsubcomponent)(/:subsubentity)',
+        component: ActiveGtfsEditor,
+        onEnter: requireAuth
+      },
+      {path: '/feed/:feedSourceId(/version/:feedVersionIndex)(/:subpage)(/:subsubpage)', component: ActiveFeedSourceViewer, onEnter: requireAuth},
 
-      <Route path='/deployment/:deploymentId' component={ActiveDeploymentViewer} onEnter={requireAuth} />,
-      <Route path='/gtfsplus/:feedSourceId/:feedVersionId' component={ActiveGtfsPlusEditor} onEnter={requireAuth} />,
-      <Route path='/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)' component={ActiveGtfsTableEditor} onEnter={requireAuth} />,
-      <Route path='*' component={PageNotFound} />
+      {path: '/deployment/:deploymentId', component: ActiveDeploymentViewer, onEnter: requireAuth},
+      {path: '/gtfsplus/:feedSourceId/:feedVersionId', component: ActiveGtfsPlusEditor, onEnter: requireAuth},
+      {path: '/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)', component: ActiveGtfsTableEditor, onEnter: requireAuth},
+      {path: '*', component: PageNotFound}
     ]
 
     // register routes if alerts module enabled
     if (isModuleEnabled('alerts')) {
       routes.unshift(
-        <Route path='alerts' component={MainAlertsViewer} onEnter={requireAuth} />,
-        <Route path='alerts/new' component={ActiveAlertEditor} onEnter={requireAuth} />,
-        <Route path='alerts/alert/:alertId' component={ActiveAlertEditor} onEnter={requireAuth} />
+        {path: 'alerts', component: MainAlertsViewer, onEnter: requireAuth},
+        {path: 'alerts/new', component: ActiveAlertEditor, onEnter: requireAuth},
+        {path: 'alerts/alert/:alertId', component: ActiveAlertEditor, onEnter: requireAuth},
       )
     }
 
     // register routes if sign_config module enabled
     if (isModuleEnabled('sign_config')) {
       routes.unshift(
-        <Route path='signs' component={MainSignsViewer} onEnter={requireAuth} />,
-        <Route path='signs/new' component={ActiveSignEditor} onEnter={requireAuth} />,
-        <Route path='signs/sign/:signId' component={ActiveSignEditor} onEnter={requireAuth} />
+        {path: 'signs', component: MainSignsViewer, onEnter: requireAuth},
+        {path: 'signs/new', component: ActiveSignEditor, onEnter: requireAuth},
+        {path: 'signs/sign/:signId', component: ActiveSignEditor, onEnter: requireAuth},
       )
     }
 
     return (
       <Router history={this.props.history}>
-        {routes}
+        {routes.map((r, i) => (<Route {...r} key={i} />))}
       </Router>
     )
   }
