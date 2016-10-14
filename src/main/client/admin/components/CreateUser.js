@@ -1,13 +1,18 @@
-import React  from 'react'
+import React, { Component, PropTypes } from 'react'
 import { Button, Modal, FormControl, ControlLabel, FormGroup, Glyphicon } from 'react-bootstrap'
 import ReactDOM from 'react-dom'
 
-import UserSettings  from './UserSettings'
+import UserSettings from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
 import { getComponentMessages, getMessage } from '../../common/util/config'
 
-export default class CreateUser extends React.Component {
+export default class CreateUser extends Component {
+  static propTypes = {
+    projects: PropTypes.array,
 
+    createUser: PropTypes.func,
+    fetchProjectFeeds: PropTypes.func
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -53,11 +58,11 @@ export default class CreateUser extends React.Component {
             <Modal.Title>Create User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <FormGroup controlId="formControlsEmail">
+            <FormGroup controlId='formControlsEmail'>
               <ControlLabel>Email Address</ControlLabel>
               <FormControl ref='email' type='email' placeholder='Enter email' />
             </FormGroup>
-            <FormGroup controlId="formControlsPassword">
+            <FormGroup controlId='formControlsPassword'>
               <ControlLabel>Password</ControlLabel>
               <FormControl ref='password' type='password' />
             </FormGroup>

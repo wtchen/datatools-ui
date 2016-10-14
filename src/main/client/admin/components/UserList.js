@@ -1,7 +1,6 @@
 import React, { PropTypes, Component} from 'react'
 import ReactDOM from 'react-dom'
-import { LinkContainer } from 'react-router-bootstrap'
-import { Panel, Grid, Row, Col, Button, Label, ButtonGroup, InputGroup, FormControl, Glyphicon, Image, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Panel, Row, Col, Button, Label, ButtonGroup, InputGroup, FormControl, Glyphicon, Image, ListGroup, ListGroupItem } from 'react-bootstrap'
 import Icon from 'react-fa'
 
 import CreateUser from './CreateUser'

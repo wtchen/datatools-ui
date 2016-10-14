@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { Row, Col, Checkbox, Panel, SplitButton, MenuItem, Label, ButtonGroup, Button } from 'react-bootstrap'
 import update from 'react-addons-update'
 import ReactDOM from 'react-dom'
@@ -6,25 +6,27 @@ import ReactDOM from 'react-dom'
 import allPermissions from './permissions'
 import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
-export default class UserSettings extends React.Component {
-
+export default class UserSettings extends Component {
+  static propTypes = {
+    fetchProjectFeeds: PropTypes.func,
+    permissions: PropTypes.object,
+    projects: PropTypes.array
+  }
   constructor (props) {
     super(props)
     this.state = {
       appAdminChecked: this.props.permissions.isApplicationAdmin(),
       currentProjectIndex: 0,
-      projectSettings: {},
+      projectSettings: {}
     }
-
     this.props.projects.forEach((project, i) => {
       let access = 'none'
       let defaultFeeds = []
       let permissions = []
-      if(this.props.permissions.hasProject(project.id)) {
-        if(this.props.permissions.isProjectAdmin(project.id)) {
+      if (this.props.permissions.hasProject(project.id)) {
+        if (this.props.permissions.isProjectAdmin(project.id)) {
           access = 'admin'
-        }
-        else {
+        } else {
           access = 'custom'
           let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
           permissions = projectPermissions.map((p) => { return p.type })
@@ -34,9 +36,8 @@ export default class UserSettings extends React.Component {
       this.state.projectSettings[project.id] = { access, defaultFeeds, permissions }
     })
   }
-
   getSettings () {
-    if(this.state.appAdminChecked) {
+    if (this.state.appAdminChecked) {
       return {
         permissions: [{
           type: 'administer-application'
@@ -82,10 +83,25 @@ export default class UserSettings extends React.Component {
   }
 
   projectSelected (key) {
-    let currentProject = this.props.projects[key]
     this.setState({
       currentProjectIndex: key
     })
+    // this.props.projects.forEach((project, i) => {
+    //   let access = 'none'
+    //   let defaultFeeds = []
+    //   let permissions = []
+    //   if (this.props.permissions.hasProject(project.id)) {
+    //     if (this.props.permissions.isProjectAdmin(project.id)) {
+    //       access = 'admin'
+    //     } else {
+    //       access = 'custom'
+    //       let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
+    //       permissions = projectPermissions.map((p) => { return p.type })
+    //       defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
+    //     }
+    //   }
+    //   this.state.projectSettings[project.id] = { access, defaultFeeds, permissions }
+    // })
   }
 
   appAdminClicked (value) {
@@ -96,17 +112,17 @@ export default class UserSettings extends React.Component {
   }
 
   projectAccessUpdated (projectId, newAccess) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { access : newAccess } } } }
+    var stateUpdate = {projectSettings: {[projectId]: {$merge: {access: newAccess}}}}
     this.setState(update(this.state, stateUpdate))
   }
 
   projectFeedsUpdated (projectId, newFeeds) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { defaultFeeds : newFeeds } } } }
+    var stateUpdate = {projectSettings: {[projectId]: {$merge: {defaultFeeds: newFeeds}}}}
     this.setState(update(this.state, stateUpdate))
   }
 
   projectPermissionsUpdated (projectId, newPermissions) {
-    var stateUpdate = { projectSettings: { [projectId]: { $merge : { permissions : newPermissions } } } }
+    var stateUpdate = {projectSettings: {[projectId]: {$merge: {permissions: newPermissions}}}}
     this.setState(update(this.state, stateUpdate))
   }
 
@@ -115,7 +131,7 @@ export default class UserSettings extends React.Component {
     let currentProject = this.props.projects[this.state.currentProjectIndex]
 
     const getProjectLabel = (access) => {
-      switch(access) {
+      switch (access) {
         case 'none': return <Label>{getMessage(messages, 'project.noAccess')}</Label>
         case 'admin': return <Label bsStyle='primary'>{getMessage(messages, 'project.admin')}</Label>
         case 'custom': return <Label bsStyle='success'>{getMessage(messages, 'project.custom')}</Label>
@@ -134,8 +150,9 @@ export default class UserSettings extends React.Component {
           >
             {this.props.projects.map((project, i) => {
               let settings = this.state.projectSettings[project.id]
-              if (typeof settings !== 'undefined')
+              if (typeof settings !== 'undefined') {
                 return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
+              }
             })}
           </SplitButton>
         </h3>
@@ -143,6 +160,7 @@ export default class UserSettings extends React.Component {
       >
       <div></div>
       {this.props.projects.map((project, i) => {
+        if (i !== this.state.currentProjectIndex) return null
         let settings = this.state.projectSettings[project.id]
         return <ProjectSettings
           project={project}
@@ -181,7 +199,7 @@ export default class UserSettings extends React.Component {
   }
 }
 
-class ProjectSettings extends React.Component {
+class ProjectSettings extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -189,8 +207,14 @@ class ProjectSettings extends React.Component {
     }
   }
   static propTypes = {
-    project: React.PropTypes.object.isRequired,
-    settings: React.PropTypes.object.isRequired
+    project: PropTypes.object.isRequired,
+    settings: PropTypes.object.isRequired,
+    visible: PropTypes.bool,
+
+    fetchProjectFeeds: PropTypes.func,
+    projectAccessUpdated: PropTypes.func,
+    projectFeedsUpdated: PropTypes.func,
+    projectPermissionsUpdated: PropTypes.func
   }
   componentWillMount () {
     if (!this.props.project.feedSources) {
@@ -209,7 +233,7 @@ class ProjectSettings extends React.Component {
     let selectedFeeds = []
     this.props.project.feedSources.forEach((feed) => {
       var checkbox = this['feed-' + feed.id]
-      if(checkbox.checked) selectedFeeds.push(feed.id)
+      if (checkbox.checked) selectedFeeds.push(feed.id)
     })
     this.props.projectFeedsUpdated(this.props.project.id, selectedFeeds)
   }
@@ -218,13 +242,12 @@ class ProjectSettings extends React.Component {
     let selectedPermissions = []
     allPermissions.forEach((permission) => {
       var checkbox = this['permission-' + permission.type]
-      if(checkbox.checked) selectedPermissions.push(permission.type)
+      if (checkbox.checked) selectedPermissions.push(permission.type)
     })
     this.props.projectPermissionsUpdated(this.props.project.id, selectedPermissions)
   }
 
   render () {
-    let lookup = {}
     const messages = getComponentMessages('UserSettings')
 
     let feedSources = this.props.project.feedSources
@@ -245,17 +268,23 @@ class ProjectSettings extends React.Component {
                 <Button
                   active={this.props.settings.access === 'none'}
                   onClick={this.setAccess.bind(this, 'none')}
-                >{getMessage(messages, 'project.noAccess')}</Button>
+                >
+                  {getMessage(messages, 'project.noAccess')}
+                </Button>
 
                 <Button
                   active={this.props.settings.access === 'admin'}
                   onClick={this.setAccess.bind(this, 'admin')}
-                >{getMessage(messages, 'project.admin')}</Button>
+                >
+                  {getMessage(messages, 'project.admin')}
+                </Button>
 
                 <Button
                   active={this.props.settings.access === 'custom'}
                   onClick={this.setAccess.bind(this, 'custom')}
-                >{getMessage(messages, 'project.custom')}</Button>
+                >
+                  {getMessage(messages, 'project.custom')}
+                </Button>
               </ButtonGroup>
             </Col>
           </Row>

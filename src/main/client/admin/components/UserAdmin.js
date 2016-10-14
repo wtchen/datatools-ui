@@ -11,21 +11,31 @@ import { getComponentMessages, getMessage } from '../../common/util/config'
 export default class UserAdmin extends Component {
   static propTypes = {
     user: PropTypes.user,
-    onComponentMount: PropTypes.func
+    
+    onComponentMount: PropTypes.func,
+    setUserPermission: PropTypes.func,
+    createUser: PropTypes.func,
+    saveUser: PropTypes.func,
+    deleteUser: PropTypes.func,
+    setPage: PropTypes.func,
+    userSearch: PropTypes.func,
+    fetchProjectFeeds: PropTypes.func,
+
+    admin: PropTypes.object,
+    activeComponent: PropTypes.string,
+    projects: PropTypes.array
+
   }
   constructor (props) {
     super(props)
   }
-
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
   isAdmin () {
     var appAdmin = this.props.user && this.props.user.permissions && this.props.user.permissions.isApplicationAdmin()
     return appAdmin
   }
-
   render () {
     const messages = getComponentMessages('UserAdmin')
     return (
