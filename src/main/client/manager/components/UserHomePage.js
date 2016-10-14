@@ -4,6 +4,7 @@ import Icon from 'react-fa'
 import { Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
+import objectPath from 'object-path'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import { getConfigProperty, getComponentMessages, getMessage } from '../../common/util/config'
@@ -14,9 +15,11 @@ export default class UserHomePage extends Component {
   static propTypes = {
     user: PropTypes.object,
     projects: PropTypes.array,
+    project: PropTypes.object,
 
     onComponentMount: PropTypes.func,
     logoutHandler: PropTypes.func,
+    fetchProjectFeeds: PropTypes.func,
 
     visibilityFilter: PropTypes.object,
     searchTextChanged: PropTypes.func,
@@ -28,6 +31,13 @@ export default class UserHomePage extends Component {
   }
   componentWillMount () {
     this.props.onComponentMount(this.props)
+  }
+  componentWillReceiveProps (nextProps) {
+    const nextId = objectPath.get(nextProps, 'project.id')
+    const id = objectPath.get(this.props, 'project.id')
+    if (nextId && nextId !== id) {
+      this.props.fetchProjectFeeds(nextProps.project.id)
+    }
   }
   componentWillUnmount () {
     this.setState({showLoading: true})
@@ -221,9 +231,10 @@ export default class UserHomePage extends Component {
                   </ListGroupItem>
                   {activeProject && activeProject.feedSources
                     ? activeProject.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(activeProject, fs))
-                    : this.props.projects && this.props.projects.map(p => {
-                        return p.feedSources && p.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(p, fs))
-                      })
+                    : <ListGroupItem><p className='lead text-center'>Choose a project to view feed sources</p></ListGroupItem>
+                      // this.props.projects && this.props.projects.map(p => {
+                      //   return p.feedSources && p.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(p, fs))
+                      // })
                   }
                 </ListGroup>
               </Panel>

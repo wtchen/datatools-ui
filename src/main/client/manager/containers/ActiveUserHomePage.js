@@ -16,16 +16,21 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const activeProjectId = ownProps.routeParams.projectId
   return {
     onComponentMount: (props) => {
       dispatch(getRecentActivity(props.user))
       dispatch(fetchProjects())
       .then(projects => {
-        for (var i = 0; i < projects.length; i++) {
-          dispatch(fetchProjectFeeds(projects[i].id))
+        if (activeProjectId) {
+          dispatch(fetchProjectFeeds(activeProjectId))
         }
+        // for (var i = 0; i < projects.length; i++) {
+        //   dispatch(fetchProjectFeeds(projects[i].id))
+        // }
       })
     },
+    fetchProjectFeeds: (projectId) => { dispatch(fetchProjectFeeds(projectId)) },
     logoutHandler: () => { dispatch(logout()) },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
     visibilityFilterChanged: (filter) => dispatch(setVisibilityFilter(filter))
