@@ -3,11 +3,13 @@ import {decode as decodePolyline} from 'polyline'
 import ll, {isEqual as coordinatesAreEqual} from 'lonlng'
 import lineString from 'turf-linestring'
 
+import { getConfigProperty } from '../../common/util/config'
+
 export async function route (points) {
   if (points.length < 2) {
     return null
   }
-  const MAPZEN_TURN_BY_TURN_KEY = DT_CONFIG['MAPZEN_TURN_BY_TURN_KEY']
+  const MAPZEN_TURN_BY_TURN_KEY = getConfigProperty('MAPZEN_TURN_BY_TURN_KEY')
   const locations = points.map(p => (
     {lon: p.lng, lat: p.lat}
   ))
