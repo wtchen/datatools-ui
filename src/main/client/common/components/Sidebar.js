@@ -58,6 +58,7 @@ export default class Sidebar extends Component {
       position: 'fixed',
       top: 10,
       left: 10,
+      // left: 0,
       cursor: 'pointer'
     }
     const LOGO_SIZE = 30

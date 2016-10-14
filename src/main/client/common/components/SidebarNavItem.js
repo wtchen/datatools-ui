@@ -26,7 +26,9 @@ export default class SidebarNavItem extends Component {
     const containerStyle = {
       marginBottom: 20,
       cursor: 'pointer',
-      color: this.props.active ? '#0ff' : this.state.hover ? '#fff' : '#ccc'
+      color: this.props.active ? '#fff' : this.state.hover ? '#fff' : '#ccc',
+      // backgroundColor: this.props.active ? '#bbb' : 'rgba(0,0,0,0)',
+      // padding: 5
     }
 
     const iconContainerStyle = {
