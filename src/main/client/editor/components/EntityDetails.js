@@ -3,6 +3,7 @@ import { Checkbox, Radio, Button, ButtonToolbar, Form, FormControl, FormGroup, C
 import {Icon, IconStack} from 'react-fa'
 import reactCSS from 'reactcss'
 import validator from 'validator'
+import { shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 import { sentence as toSentenceCase } from 'change-case'
 import DateTimeField from 'react-bootstrap-datetimepicker'
@@ -14,7 +15,7 @@ import update from 'react-addons-update'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
-import TripPatternList from './TripPatternList'
+import ActiveTripPatternList from '../containers/ActiveTripPatternList'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import { getEntityName, gtfsIcons, getEntityBounds } from '../util/gtfs'
 import { getConfigProperty } from '../../common/util/config'
@@ -22,28 +23,36 @@ import { getConfigProperty } from '../../common/util/config'
 export default class EntityDetails extends Component {
 
   static propTypes = {
-    feedSource: PropTypes.object.isRequired,
-    project: PropTypes.object.isRequired,
-    entities: PropTypes.array.isRequired,
-    activeEntity: PropTypes.object.isRequired,
+    feedSource: PropTypes.object,
+    project: PropTypes.object,
+    entities: PropTypes.array,
+    activeEntity: PropTypes.object,
+
+    mapState: PropTypes.object,
+
     activeEntityId: PropTypes.string.isRequired,
     width: PropTypes.number.isRequired,
 
     setActiveEntity: PropTypes.func.isRequired,
+    saveActiveEntity: PropTypes.func.isRequired,
     resetActiveEntity: PropTypes.func.isRequired,
     updateActiveEntity: PropTypes.func.isRequired,
     deleteEntity: PropTypes.func.isRequired,
-    newEntityClicked: PropTypes.func.isRequired,
+    newGtfsEntity: PropTypes.func.isRequired,
     uploadBrandingAsset: PropTypes.func,
     fieldEdited: PropTypes.func,
     gtfsEntitySelected: PropTypes.func,
     getGtfsEntity: PropTypes.func,
+    showConfirmModal: PropTypes.func,
+    updateMapSetting: PropTypes.func,
 
     activeComponent: PropTypes.string.isRequired,
-    subComponent: PropTypes.string,
+    subEntityId: PropTypes.string,
     user: PropTypes.object,
     offset: PropTypes.number,
-    tableData: PropTypes.object
+    tableData: PropTypes.object,
+    entityEdited: PropTypes.bool,
+    subComponent: PropTypes.string
   }
 
   constructor (props) {
@@ -63,7 +72,18 @@ export default class EntityDetails extends Component {
   handleClose (field) {
     this.setState({ [field]: !this.state[field] })
   }
+  shouldComponentUpdate (nextProps) {
+    return !shallowEqual(nextProps.feedSource, this.props.feedSource) ||
+    !shallowEqual(nextProps.subComponent, this.props.subComponent) ||
+    !shallowEqual(nextProps.subEntityId, this.props.subEntityId) ||
+    !shallowEqual(nextProps.mapState.target, this.props.mapState.target) ||
+    !shallowEqual(nextProps.entities, this.props.entities) ||
+    !shallowEqual(nextProps.activeEntity, this.props.activeEntity) ||
+    !shallowEqual(nextProps.activeEntityId, this.props.activeEntityId) ||
+    !shallowEqual(nextProps.width, this.props.width)
+  }
   render () {
+    // console.log(this.props)
     const approveGtfsDisabled = this.props.project && this.props.feedSource && this.props.user && !this.props.user.permissions.hasFeedPermission(this.props.project.id, this.props.feedSource.id, 'approve-gtfs')
     const styles = reactCSS({
       'default': {
@@ -1146,55 +1166,30 @@ export default class EntityDetails extends Component {
         </Form>
       </div>
       : null
-    // const approveRouteForm = (
-    //   <FormGroup>
-    //     <ControlLabel>Status</ControlLabel>
-    //     <FormControl
-    //       componentClass='select'
-    //       onChange={(evt) => {
-    //         let props = {}
-    //         props.status = evt.target.value
-    //         this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, props)
-    //       }}
-    //     >
-    //       <option></option>
-    //     </FormControl>
-    //   </FormGroup>
-    // )
     const entityForm = this.props.activeComponent === 'scheduleexception'
       ? null
       : (
         <div>
           <Form>
-            {
-              // this.props.activeComponent === 'route'
-              // ? approveRouteForm
-              // : null
-            }
-            {
-              table.fields.map((field, colIndex) => {
-                // get editor field by splitting on first underscore
-                const editorField = field.name // .split(/_(.+)?/)[1]
-                const validationIssue = this.props.validation
-                ? this.props.validation.find(v =>
-                    (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
-                : null
+            {table.fields.map((field, colIndex) => {
+              // get editor field by splitting on first underscore
+              const editorField = field.name // .split(/_(.+)?/)[1]
+              // const validationIssue = this.props.validation
+              //   ? this.props.validation.find(v =>
+              //       (v.rowIndex === data.origRowIndex && v.fieldName === field.name))
+              //   : null
 
-              const tooltip = validationIssue ? (
-                <Tooltip>{validationIssue.description}</Tooltip>
-              ) : null
+              // const tooltip = validationIssue
+              //   ? <Tooltip>{validationIssue.description}</Tooltip>
+              //   : null
 
               return entity
-                ? getInput(rowIndex, field, entity[editorField], (rowIndex * table.fields.length) + colIndex + 1)
+                ? <div key={`${field.name}-${colIndex}`}>{getInput(rowIndex, field, entity[editorField], (rowIndex * table.fields.length) + colIndex + 1)}</div>
                 : null
-            })}
+            })
+            }
             <p className='col-xs-12'>* = field is required</p>
           </Form>
-          {
-            // this.props.activeComponent === 'fare'
-            // ? <h4>Fare rules</h4>
-            // : null
-          }
       </div>
     )
     let entityName = this.props.activeComponent === 'feedinfo' ? 'Feed Info' : getEntityName(this.props.activeComponent, entity)
@@ -1253,7 +1248,7 @@ export default class EntityDetails extends Component {
         </Nav>
       : null
     const header = (
-    <h5 style={{width: '100%',  minHeight: '30px'}}>
+    <h5 style={{width: '100%', minHeight: '30px'}}>
       <ButtonToolbar
         className='pull-right'
       >
@@ -1261,13 +1256,15 @@ export default class EntityDetails extends Component {
           ? <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>Zoom to {this.props.activeComponent}</Tooltip>}>
               <Button
                 bsSize='small'
-                disabled={entity && this.props.mapState.target === entity.id}
+                disabled={entity && !this.props.subComponent
+                  ? this.props.mapState.target === entity.id
+                  : this.props.mapState.target === this.props.subEntityId
+                }
                 onClick={(e) => {
-                  if (this.props.activeSubEntity) {
-                    let pattern = entity.tripPatterns.find(p => p.id === this.props.activeSubEntity)
-                    this.props.updateMapSetting({bounds: getEntityBounds(pattern), target: this.props.activeSubEntity})
-                  }
-                  else {
+                  if (this.props.subEntityId) {
+                    let pattern = entity.tripPatterns.find(p => p.id === this.props.subEntityId)
+                    this.props.updateMapSetting({bounds: getEntityBounds(pattern), target: this.props.subEntityId})
+                  } else {
                     this.props.updateMapSetting({bounds: getEntityBounds(entity), target: entity.id})
                   }
                 }}
@@ -1283,7 +1280,7 @@ export default class EntityDetails extends Component {
             disabled={!this.props.entityEdited}
             onClick={(e) => {
               if (this.props.subComponent === 'trippattern') {
-                let pattern = entity.tripPatterns.find(p => p.id === this.props.activeSubEntity)
+                let pattern = entity.tripPatterns.find(p => p.id === this.props.subComponent)
                 this.props.resetActiveEntity(pattern, 'trippattern')
               } else {
                 this.props.resetActiveEntity(entity, this.props.activeComponent)
@@ -1323,7 +1320,7 @@ export default class EntityDetails extends Component {
         : iconName
         ? <IconStack>
             <Icon name='square' stack='2x' />
-            <Icon name={iconName} inverse={true} stack='1x' />
+            <Icon name={iconName} inverse stack='1x' />
           </IconStack>
         // schedule exception icon if no icon founds
         : <IconStack>
@@ -1356,7 +1353,7 @@ export default class EntityDetails extends Component {
               </h1>
             </div>
           : [
-          <div
+            <div
               style={{height: '100px'}}
               key='details-header'
             >
@@ -1366,16 +1363,15 @@ export default class EntityDetails extends Component {
                 : null
               }
               {validationErrors.length > 0
-                ? <small bsStyle='danger' className='pull-right'>Fix validation issues before saving</small>
+                ? <small className='pull-right text-danger'>Fix validation issues before saving</small>
                 : null
               }
               {subNav}
-            </div>
-            ,
+            </div>,
             <div key='details-body' style={{height: '80%', overflowY: 'scroll'}}>
               {this.props.subComponent === 'trippattern'
-                ? <TripPatternList
-                    {...this.props}
+                ? <ActiveTripPatternList
+                    showConfirmModal={this.props.showConfirmModal}
                   />
                 : this.state.editFareRules
                 ? fareRulesForm

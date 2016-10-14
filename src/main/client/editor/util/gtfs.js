@@ -1,11 +1,14 @@
 import along from 'turf-along'
 import lineDistance from 'turf-line-distance'
 import { latLngBounds } from 'leaflet'
-import { extent } from 'turf-extent'
 
 export const componentList = ['route', 'stop', 'fare', 'feedinfo', 'calendar', 'scheduleexception', 'agency']
 export const subComponentList = ['trippattern']
 export const subSubComponentList = ['timetable']
+
+export const isNew = (entity) => {
+  return entity.id === 'new' || typeof entity.id === 'undefined'
+}
 
 export const getEntityBounds = (entity, offset = 0.005) => {
   if (!entity) return null
@@ -41,36 +44,38 @@ export const getEntityName = (component, entity) => {
   if (!entity) {
     return '[Unnamed]'
   }
-  let entName = component === 'agency'
-    ? 'agency_name'
-    : component === 'route'
+  let nameKey =
+      'route_id' in entity
     ? 'route_short_name'
-    : component === 'stop'
+    : 'agency_name' in entity
+    ? 'agency_name'
+    : 'stop_id' in entity
     ? 'stop_name'
-    : component === 'calendar'
+    : 'service_id' in entity
     ? 'description'
-    : component === 'fare'
+    : 'fare_id' in entity
     ? 'fare_id'
-    : component === 'scheduleexception'
+    : 'exemplar' in entity // schedule exception
     ? 'name'
     : null
-  switch (component) {
-    case 'stop':
+  // if (nameKey !== 'stop_name') console.log(nameKey)
+  switch (nameKey) {
+    case 'stop_name':
       return entity.stop_name && entity.stop_code
         ? `${entity.stop_name} (${entity.stop_code})`
         : entity.stop_name && entity.stop_id
         ? `${entity.stop_name} (${entity.stop_id})`
-        : entity.stop_name
-    case 'route':
+        : entity.stop_name || '[no name]'
+    case 'route_short_name':
       return entity.route_short_name && entity.route_long_name && entity.route_short_name !== '""' && entity.route_long_name !== '""'
         ? `${entity.route_short_name} - ${entity.route_long_name}`
         : entity.route_short_name && entity.route_short_name !== '""'
         ? entity.route_short_name
         : entity.route_long_name && entity.route_long_name !== '""'
         ? entity.route_long_name
-        : entity.route_id
+        : entity.route_id || '[no name]'
     default:
-      return entity[entName]
+      return entity[nameKey] || '[no name]'
   }
 }
 
@@ -172,4 +177,88 @@ export function getRouteName (route) {
   }
 
   return name
+}
+
+export const stopToGtfs = (s) => {
+  return {
+    // datatools props
+    id: s.id,
+    feedId: s.feedId,
+    bikeParking: s.bikeParking,
+    carParking: s.carParking,
+    pickupType: s.pickupType,
+    dropOffType: s.dropOffType,
+
+    // gtfs spec props
+    stop_code: s.stopCode,
+    stop_name: s.stopName,
+    stop_desc: s.stopDesc,
+    stop_lat: s.lat,
+    stop_lon: s.lon,
+    zone_id: s.zoneId,
+    stop_url: s.stopUrl,
+    location_type: s.locationType,
+    parent_station: s.parentStation,
+    stop_timezone: s.stopTimezone,
+    wheelchair_boarding: s.wheelchairBoarding,
+    stop_id: s.gtfsStopId
+  }
+}
+
+export const stopFromGtfs = (stop) => {
+  return {
+    gtfsStopId: stop.stop_id,
+    stopCode: stop.stop_code,
+    stopName: stop.stop_name,
+    stopDesc: stop.stop_desc,
+    lat: stop.stop_lat,
+    lon: stop.stop_lon,
+    zoneId: stop.zone_id,
+    stopUrl: stop.stop_url,
+    locationType: stop.location_type,
+    parentStation: stop.parent_station,
+    stopTimezone: stop.stop_timezone,
+    wheelchairBoarding: stop.wheelchair_boarding,
+    bikeParking: stop.bikeParking,
+    carParking: stop.carParking,
+    pickupType: stop.pickupType,
+    dropOffType: stop.dropOffType,
+    feedId: stop.feedId,
+    id: isNew(stop) ? null : stop.id,
+  }
+}
+
+export const agencyToGtfs = ent => {
+  return {
+    // datatools props
+    id: ent.id,
+    feedId: ent.feedId,
+    agencyBrandingUrl: ent.agencyBrandingUrl,
+
+    // gtfs spec props
+    agency_id: ent.agencyId,
+    agency_name: ent.name,
+    agency_url: ent.url,
+    agency_timezone: ent.timezone,
+    agency_lang: ent.lang,
+    agency_phone: ent.phone,
+    agency_fare_url: ent.agencyFareUrl,
+    agency_email: ent.email
+  }
+}
+
+export const gtfsSort = (a, b) => {
+  const radix = 10
+  var aName = getEntityName(null, a)
+  var bName = getEntityName(null, b)
+  if (a.isCreating && !b.isCreating) return -1
+  if (!a.isCreating && b.isCreating) return 1
+  if (!isNaN(parseInt(aName, radix)) && !isNaN(parseInt(bName, radix)) && !isNaN(+aName) && !isNaN(+bName)) {
+    if (parseInt(aName, radix) < parseInt(bName, radix)) return -1
+    if (parseInt(aName, radix) > parseInt(bName, radix)) return 1
+    return 0
+  }
+  if (aName.toLowerCase() < bName.toLowerCase()) return -1
+  if (aName.toLowerCase() > bName.toLowerCase()) return 1
+  return 0
 }

@@ -2,7 +2,7 @@ import { secureFetch } from '../../common/util/util'
 import { setErrorMessage } from '../../manager/actions/status'
 import { setActiveGtfsEntity } from './editor'
 
-//// TRIP PATTERNS
+// TRIP PATTERNS
 
 export function requestingTripPatterns (feedId) {
   return {
@@ -19,6 +19,14 @@ export function receiveTripPatterns (feedId, tripPatterns) {
   }
 }
 
+export function receiveTripPattern (feedId, tripPattern) {
+  return {
+    type: 'RECEIVE_TRIP_PATTERNS',
+    feedId,
+    tripPattern
+  }
+}
+
 export function fetchTripPatterns (feedId) {
   return function (dispatch, getState) {
     dispatch(requestingTripPatternsForRoute(feedId))
@@ -31,6 +39,22 @@ export function fetchTripPatterns (feedId) {
       .then(tripPatterns => {
         dispatch(receiveTripPatterns(feedId, tripPatterns))
         return tripPatterns
+      })
+  }
+}
+
+export function fetchTripPattern (feedId, tripPatternId) {
+  return function (dispatch, getState) {
+    dispatch(requestingTripPatternsForRoute(feedId))
+    const url = `/api/manager/secure/trippattern/${tripPatternId}?feedId=${feedId}`
+    return secureFetch(url, getState())
+      .then(res => {
+        if (res.status >= 300) return null
+        return res.json()
+      })
+      .then(tp => {
+        dispatch(receiveTripPattern(feedId, tp))
+        return tp
       })
   }
 }
@@ -156,14 +180,12 @@ export function saveTripPattern (feedId, tripPattern) {
         return res.json()
       })
       .then(tp => {
-        dispatch(savedTripPattern(feedId, tripPattern))
-        return dispatch(fetchTripPatternsForRoute(feedId, routeId))
-          .then((tripPatterns) => {
-            if (tripPattern.id === 'new') {
-              dispatch(setActiveGtfsEntity(feedId, 'route', routeId, 'trippattern', tp.id))
-            }
-            return tp
-          })
+        dispatch(savedTripPattern(feedId, tp))
+        console.log(tripPattern.id)
+        if (tripPattern.id === 'new') {
+          dispatch(setActiveGtfsEntity(feedId, 'route', routeId, 'trippattern', tp.id))
+        }
+        return tp
         // return tripPattern
       })
   }

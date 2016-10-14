@@ -1,7 +1,8 @@
 import { secureFetch } from '../../common/util/util'
 import { setActiveGtfsEntity } from './editor'
+import { isNew, stopFromGtfs } from '../util/gtfs'
 
-//// STOPS
+// STOPS
 
 export function savingStop (feedId, stop) {
   return {
@@ -22,40 +23,29 @@ export function receiveStop (feedId, stop) {
 export function saveStop (feedId, stop) {
   return function (dispatch, getState) {
     dispatch(savingStop(feedId, stop))
-    const method = stop.id !== 'new' ? 'put' : 'post'
-    const url = stop.id !== 'new'
+    const method = !isNew(stop) ? 'put' : 'post'
+    const url = !isNew(stop)
       ? `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
       : `/api/manager/secure/stop?feedId=${feedId}`
-    const data = {
-      gtfsStopId: stop.stop_id,
-      stopCode: stop.stop_code,
-      stopName: stop.stop_name,
-      stopDesc: stop.stop_desc,
-      lat: stop.stop_lat,
-      lon: stop.stop_lon,
-      zoneId: stop.zone_id,
-      stopUrl: stop.stop_url,
-      locationType: stop.location_type,
-      parentStation: stop.parent_station,
-      stopTimezone: stop.stop_timezone,
-      wheelchairBoarding: stop.wheelchair_boarding,
-      bikeParking: stop.bikeParking,
-      carParking: stop.carParking,
-      pickupType: stop.pickupType,
-      dropOffType: stop.dropOffType,
-      feedId: stop.feedId,
-      id: stop.id === 'new' ? null : stop.id,
-    }
+    const data = stopFromGtfs(stop)
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
       .then(s => {
-        return dispatch(fetchStops(feedId))
-        .then(() => {
-          if (stop.id === 'new') {
-            dispatch(setActiveGtfsEntity(feedId, 'stop', s.id))
-          }
-          return s
-        })
+        dispatch(receiveStop(feedId, s))
+        // only set active if stop.id === 'new', if id is undefined, do not set active entity
+        if (stop.id === 'new') {
+          dispatch(setActiveGtfsEntity(feedId, 'stop', s.id))
+        }
+        return s
+
+        // return dispatch(fetchStops(feedId))
+        // .then(() => {
+        //   // only set active if stop.id === 'new', if id is undefined, do not set active entity
+        //   if (stop.id === 'new') {
+        //     dispatch(setActiveGtfsEntity(feedId, 'stop', s.id))
+        //   }
+        //   return s
+        // })
       })
   }
 }
@@ -90,8 +80,9 @@ export function fetchStops (feedId) {
 
 export function fetchStopsForTripPattern (feedId, tripPatternId) {
   return function (dispatch, getState) {
-    if (tripPatternId === 'new' || tripPatternId === null)
+    if (tripPatternId === 'new' || tripPatternId === null) {
       return []
+    }
     dispatch(requestingStops(feedId))
     const url = `/api/manager/secure/stop?feedId=${feedId}&patternId=${tripPatternId}`
     return secureFetch(url, getState())

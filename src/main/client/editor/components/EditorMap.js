@@ -14,6 +14,7 @@ import lineSlice from 'turf-line-slice'
 import pointOnLine from 'turf-point-on-line'
 
 import { generateUID } from '../../common/util/util'
+import { stopToGtfs } from '../util/gtfs'
 import { getUserMetadataProperty } from '../../common/util/user'
 import { getConfigProperty } from '../../common/util/config'
 // import CircleMarkerWithLabel from './CircleMarkerWithLabel'
@@ -22,12 +23,14 @@ import MinuteSecondInput from './MinuteSecondInput'
 // import StopMarkersLayer from './StopMarkersLayer'
 import StopLayer from '../../scenario-editor/components/StopLayer'
 import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
+import { reverseEsri as reverse } from '../../scenario-editor/utils/reverse'
 
 export default class EditorMap extends Component {
   static propTypes = {
-    activeSubEntity: PropTypes.string,
+    subEntityId: PropTypes.string,
     activeEntityId: PropTypes.string,
     activeComponent: PropTypes.string,
+    subComponent: PropTypes.string,
     currentPattern: PropTypes.object,
 
     stops: PropTypes.array,
@@ -37,7 +40,7 @@ export default class EditorMap extends Component {
     mapState: PropTypes.object,
     feedSource: PropTypes.object,
     feedInfo: PropTypes.object,
-    zoomToTarget: PropTypes.bool,
+    zoomToTarget: PropTypes.string,
 
     entities: PropTypes.array,
     activeEntity: PropTypes.object,
@@ -49,7 +52,7 @@ export default class EditorMap extends Component {
     saveActiveEntity: PropTypes.func,
     setActiveEntity: PropTypes.func,
     updateControlPoint: PropTypes.func,
-    newEntityClicked: PropTypes.func,
+    newGtfsEntity: PropTypes.func,
 
     updateMapSetting: PropTypes.func,
     addControlPoint: PropTypes.func,
@@ -114,7 +117,7 @@ export default class EditorMap extends Component {
             !shallowEqual(nextProps.tripPatterns, this.props.tripPatterns) ||
             !shallowEqual(nextProps.zoomToTarget, this.props.zoomToTarget) ||
             !shallowEqual(nextProps.editSettings, this.props.editSettings) ||
-            !shallowEqual(nextProps.activeSubEntity, this.props.activeSubEntity) ||
+            !shallowEqual(nextProps.subEntityId, this.props.subEntityId) ||
             !shallowEqual(nextProps.currentPattern, this.props.currentPattern) ||
             // nextProps.activeComponent === 'stop' && this.props.mapState.zoom !== nextProps.mapState.zoom ||
             nextProps.activeComponent === 'stop' && this.props.activeEntity && nextProps.activeEntity && (this.props.activeEntity.stop_lon !== nextProps.activeEntity.stop_lon || this.props.activeEntity.stop_lat !== nextProps.activeEntity.stop_lat) ||
@@ -132,33 +135,36 @@ export default class EditorMap extends Component {
     const precision = 100000000 // eight decimal places is accurate up to 1.1 meters
     return {stop_lat: Math.round(latlng.lat * precision) / precision, stop_lon: Math.round(latlng.lng % 180 * precision) / precision}
   }
-  async extendPatternToStop (pattern, endPoint, stop) {
-    let newShape = await getPolyline([endPoint, stop])
-    if (newShape) {
-      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ...newShape]}})
-      this.props.saveActiveEntity('trippattern')
-      return true
-    } else {
-      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: [...pattern.shape.coordinates, ll.toCoordinates(stop)]}})
-      this.props.saveActiveEntity('trippattern')
-      return false
+  async extendPatternToPoint (pattern, endPoint, newEndPoint) {
+    let newShape = await getPolyline([endPoint, newEndPoint])
+
+    // get single coordinate if polyline fails
+    if (!newShape) {
+      newShape = ll.toCoordinates(newEndPoint)
     }
+    const updatedShape = {type: 'LineString', coordinates: [...pattern.shape.coordinates, ...newShape]}
+    this.props.updateActiveEntity(pattern, 'trippattern', {shape: updatedShape})
+    await this.props.saveActiveEntity('trippattern')
+    return updatedShape
   }
   async addStopToPattern (pattern, stop, index) {
     let patternStops = [...pattern.patternStops]
 
     let coordinates = pattern.shape && pattern.shape.coordinates
     let newStop = {stopId: stop.id, defaultDwellTime: 0, defaultTravelTime: 0}
-    // if adding stop to end
-    if (typeof index === 'undefined') {
+    // if adding stop to end, also a proxy for extending pattern to point
+    if (typeof index === 'undefined' || index === null) {
       // if shape coordinates already exist, just extend them
       if (coordinates) {
         let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
-        this.extendPatternToStop(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
+        patternStops.push(newStop)
+        this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+        // this.props.saveActiveEntity('trippattern')
+        this.extendPatternToPoint(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
         .then(() => {
-          patternStops.push(newStop)
-          this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
-          this.props.saveActiveEntity('trippattern')
+          // patternStops.push(newStop)
+          // this.props.updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
+          // this.props.saveActiveEntity('trippattern')
         })
       } else { // if shape coordinates do not exist, add pattern stop and get shape between stops (if multiple stops exist)
         patternStops.push(newStop)
@@ -225,7 +231,23 @@ export default class EditorMap extends Component {
     // clear timer
     if (timer) clearInterval(timer)
   }
-  mapRightClicked (e) {
+  async constructStop (latlng) {
+    let stopLatLng = this.getStopLatLng(latlng)
+    let result = await reverse(latlng)
+    console.log(result)
+    let stop_id = generateUID()
+    let stop_name = `New Stop (${stop_id})`
+    if (result && result.address) {
+      stop_name = result.address.Address
+    }
+    return {
+      stop_id,
+      stop_name,
+      feedId: this.props.feedSource.id,
+      ...stopLatLng
+    }
+  }
+  async mapRightClicked (e) {
     if (this.props.activeComponent === 'stop') {
       // if newly created stop is selected
       let stopLatLng = this.getStopLatLng(e.latlng)
@@ -233,12 +255,8 @@ export default class EditorMap extends Component {
         this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, stopLatLng)
         this.refs[this.props.activeEntity.id].leafletElement.setLatLng(e.latlng)
       } else if (this.props.entities && this.props.entities.findIndex(e => e.id === 'new') === -1) {
-        this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent,
-          {
-            stop_id: generateUID(),
-            ...stopLatLng
-          }
-        )
+        const stop = await this.constructStop(e.latlng)
+        this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent, stop)
       }
     }
   }
@@ -279,8 +297,19 @@ export default class EditorMap extends Component {
     // remove controlPoint
     this.props.removeControlPoint(index)
   }
+  async addStopAtPoint (latlng, addToPattern = false, index) {
+    // create stop
+    const stop = await this.constructStop(latlng)
+    const s = await this.props.newGtfsEntity(this.props.feedSource.id, 'stop', stop, true)
+    const gtfsStop = stopToGtfs(s)
+    // add stop to end of pattern
+    if (addToPattern) {
+      await this.addStopToPattern(this.props.currentPattern, gtfsStop, index)
+    }
+    return gtfsStop
+  }
   async mapClicked (e) {
-    // console.log(e.latlng)
+    // TODO: replace with spatial tree
     if (this.props.activeComponent === 'stop') {
       // find stop based on latlng
       let selectedStop = this.props.entities.find(stop => Math.round(stop.stop_lat * 1000) / 1000 === Math.round(e.latlng.lat * 1000) / 1000 && Math.round(stop.stop_lon * 1000) / 1000 === Math.round(e.latlng.lng * 1000) / 1000)
@@ -291,6 +320,60 @@ export default class EditorMap extends Component {
         } else {
           this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, selectedStop)
         }
+      }
+    }
+
+    if (this.props.subComponent === 'trippattern' && this.props.editSettings.editGeometry) {
+      switch (this.props.editSettings.onMapClick) {
+        case 'NO_ACTION':
+          break
+        case 'ADD_STOP_AT_CLICK':
+          this.addStopAtPoint(e.latlng, true)
+          break
+        case 'ADD_STOPS_AT_INTERSECTIONS':
+          // extend pattern to click point
+
+          // get intersections from OSRM
+
+          // add stops at intersections (using afterIntersection, intersectionStep, distanceFromIntersection)
+
+          break
+        case 'ADD_STOPS_AT_INTERVAL':
+          // create first stop if none exist
+          if (this.props.currentPattern.patternStops.length === 0) {
+            this.addStopAtPoint(e.latlng, true)
+          } else {
+            let coordinates = this.props.currentPattern.shape && this.props.currentPattern.shape.coordinates
+            let patternStops = [...this.props.currentPattern.patternStops]
+            let initialDistance = lineDistance(this.props.currentPattern.shape, 'meters')
+
+            // extend pattern to click point
+            let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
+            const updatedShape = await this.extendPatternToPoint(this.props.currentPattern, endPoint, e.latlng)
+            let totalDistance = lineDistance(this.props.currentPattern.shape, 'meters')
+            let diff = totalDistance - initialDistance
+            let numIntervals = diff / this.props.editSettings.stopInterval
+            for (var i = 1; i < numIntervals; i++) {
+              let stopDistance = initialDistance + i * this.props.editSettings.stopInterval
+
+              // add stops along shape at interval (stopInterval)
+              let position = along(updatedShape, stopDistance, 'meters')
+              let stopLatlng = ll.toLatlng(position.geometry.coordinates)
+              console.log(stopLatlng)
+
+              // pass patternStops.length as index to ensure pattern not extended to locaton
+              const newStop = await this.addStopAtPoint(stopLatlng, true, patternStops.length)
+
+              // add new stop to array
+              patternStops.push(newStop)
+            }
+            // update and save all new stops to pattern
+            // this.props.updateActiveEntity(this.props.currentPattern, 'trippattern', {patternStops: patternStops})
+            // this.props.saveActiveEntity('trippattern')
+          }
+          break
+        default:
+          break
       }
     }
   }
@@ -427,7 +510,7 @@ export default class EditorMap extends Component {
         }
         const circleIcon = divIcon({
           className: '',
-          iconSize: [24, 24],
+          // iconSize: [24, 24],
           html: `<i class="fa fa-times"/>`
         })
         let endPoint
@@ -442,11 +525,11 @@ export default class EditorMap extends Component {
               {route && route.tripPatterns
                 ? route.tripPatterns
                   .map(tp => {
-                    const isActive = this.props.activeSubEntity === tp.id
+                    const isActive = this.props.subEntityId === tp.id
                     let pattern = isActive ? this.props.currentPattern : tp
                     const latLngs = pattern.shape ? pattern.shape.coordinates.map(c => ([c[1], c[0]])) : []
                     // skip pattern if latlngs don't exist or some other pattern is active
-                    if (!latLngs || !isActive && this.props.activeSubEntity) {
+                    if (!latLngs || !isActive && this.props.subEntityId) {
                       return null
                     }
                     beginPoint = latLngs[0]
@@ -546,7 +629,7 @@ export default class EditorMap extends Component {
                 }
                 const timesIcon = divIcon({
                   className: '',
-                  iconSize: [24, 24],
+                  // iconSize: [24, 24],
                   html: `<i class="fa ${iconType}" style="color: ${color}"/>`
                 })
                 return (
@@ -611,7 +694,9 @@ export default class EditorMap extends Component {
               {this.props.stops.length && this.props.currentPattern && !this.props.editSettings.hideStops
                 ? this.props.currentPattern.patternStops && this.props.currentPattern.patternStops.map((s, index) => {
                   const stop = this.props.stops.find(ps => ps.id === s.stopId)
-                  if (!stop) return null
+                  if (!stop
+                    // || this.props.mapState.zoom <= 11 && index > 0 && index < this.props.currentPattern.patternStops.length - 1
+                  ) return null
                   const patternStopIcon = divIcon({
                     html: `<span title="${index + 1}. ${stop.stop_name}" class="fa-stack">
                             <i class="fa fa-circle fa-stack-2x"></i>
@@ -860,22 +945,14 @@ export default class EditorMap extends Component {
         if (this.props.activeEntity && results.findIndex(r => r[2].id === this.props.activeEntity.id) === -1) {
           results.push([0, 0, this.props.activeEntity])
         }
-        console.log(results)
+        // console.log(results)
         const outOfZoom = !this.props.drawStops
-        console.log(this.props.mapState.bounds, paddedBounds)
+        // console.log(this.props.mapState.bounds, paddedBounds)
         return [
           results ? results.map(result => {
             const stop = result[2]
             const isActive = this.props.activeEntity && this.props.activeEntity.id === stop.id
             const busIcon = divIcon({
-              // html: `<span class="fa-stack bus-stop-icon">
-              //         <i class="fa fa-circle fa-stack-2x bus-stop-icon-bg" style="color: blue"></i>
-              //         <i class="fa fa-stack-1x fa-bus bus-stop-icon-fg"></i>
-              //       </span>`,
-              // html: `<span class="fa-stack">
-              //         <i class="fa fa-circle fa-stack-2x"></i>
-              //         <strong class="fa-stack-1x fa-inverse calendar-text">${index + 1}</strong>
-              //       </span>`,
               html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon" style="opacity: 0.6">
                       <i class="fa fa-circle fa-stack-2x" style="color: #ffffff"></i>
                       <i class="fa fa-bus fa-stack-1x" style="color: #000000"></i>
@@ -952,6 +1029,7 @@ export default class EditorMap extends Component {
   }
 
   render () {
+    // console.log(this.props)
     const mapLayers = [
       {
         name: 'Streets',
@@ -1042,7 +1120,7 @@ export default class EditorMap extends Component {
           </LayersControl.Overlay>
         </LayersControl>
         {
-          this.getMapComponents(this.props.activeComponent, this.props.activeEntity, this.props.activeSubEntity)
+          this.getMapComponents(this.props.activeComponent, this.props.activeEntity, this.props.subEntityId)
         }
         {this.props.mapState.routesGeojson
           ? <GeoJson

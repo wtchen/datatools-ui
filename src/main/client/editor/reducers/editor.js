@@ -1,40 +1,22 @@
 import update from 'react-addons-update'
 import rbush from 'rbush'
+import clone from 'clone'
 import polyUtil from 'polyline-encoded'
-import { getControlPoints, getEntityBounds } from '../util/gtfs'
+import { getControlPoints, getEntityBounds, stopToGtfs, agencyToGtfs, gtfsSort } from '../util/gtfs'
 import { latLngBounds } from 'leaflet'
+import { CLICK_OPTIONS } from '../util'
 
-const mapStop = (s) => {
-  return {
-    // datatools props
-    id: s.id,
-    feedId: s.feedId,
-    bikeParking: s.bikeParking,
-    carParking: s.carParking,
-    pickupType: s.pickupType,
-    dropOffType: s.dropOffType,
-
-    // gtfs spec props
-    stop_code: s.stopCode,
-    stop_name: s.stopName,
-    stop_desc: s.stopDesc,
-    stop_lat: s.lat,
-    stop_lon: s.lon,
-    zone_id: s.zoneId,
-    stop_url: s.stopUrl,
-    location_type: s.locationType,
-    parent_station: s.parentStation,
-    stop_timezone: s.stopTimezone,
-    wheelchair_boarding: s.wheelchairBoarding,
-    stop_id: s.gtfsStopId
-  }
-}
 const defaultState = {
   feedSourceId: null,
   active: {},
   editSettings: {
     editGeometry: false,
     followStreets: true,
+    onMapClick: CLICK_OPTIONS[0],
+    stopInterval: 400,
+    distanceFromIntersection: 5,
+    afterIntersection: true,
+    intersectionStep: 2,
     snapToStops: true,
     addStops: false,
     hideStops: false,
@@ -70,19 +52,19 @@ const editor = (state = defaultState, action) => {
       return update(state, {
         mapState: {$set: mapState}
       })
-    case 'TOGGLE_EDIT_SETTING':
+    case 'UPDATE_EDIT_SETTING':
       if (action.setting === 'editGeometry' && !state.editSettings.editGeometry) {
         controlPoints = getControlPoints(state.active.subEntity, state.editSettings.snapToStops)
         return update(state, {
           editSettings: {
-            [action.setting]: {$set: !state.editSettings[action.setting]},
+            [action.setting]: {$set: action.value},
             controlPoints: {$set: [controlPoints]}
           }
         })
       } else {
         return update(state, {
           editSettings: {
-            [action.setting]: {$set: !state.editSettings[action.setting]}
+            [action.setting]: {$set: action.value}
           }
         })
       }
@@ -175,12 +157,11 @@ const editor = (state = defaultState, action) => {
         return update(newState || state, {
           tableData: {route: {[routeIndex]: {tripPatterns: {$unshift: [activeEntity]}}}},
           active: {
-            entity: {tripPatterns: {$unshift: [activeEntity]}},
+            entity: {tripPatterns: {$unshift: [activeEntity]}}
             // edited: {$set: typeof action.props !== 'undefined'}
           }
         })
-      }
-      else {
+      } else {
         activeEntity = {
           isCreating: true,
           name: '',
@@ -189,13 +170,13 @@ const editor = (state = defaultState, action) => {
           ...action.props
         }
         // if tableData's component array is undefined, add it
-        if(!state.tableData[action.component]) {
+        if (!state.tableData[action.component]) {
           newState = update(state, {
             tableData: {[action.component]: {$set: []}}
           })
         }
         return update(newState || state, {
-          tableData: {[action.component]: {$unshift: [activeEntity]}},
+          tableData: {[action.component]: {$unshift: [activeEntity]}}
           // active: {
           //   entity: {$set: activeEntity},
           //   edited: {$set: typeof action.props !== 'undefined'}
@@ -204,13 +185,13 @@ const editor = (state = defaultState, action) => {
       }
     case 'SETTING_ACTIVE_GTFS_ENTITY':
       activeEntity = action.component === 'feedinfo'
-        ? Object.assign({}, state.tableData[action.component])
+        ? clone(state.tableData[action.component])
         : state.tableData[action.component] && action.entityId
-        ? Object.assign({}, state.tableData[action.component].find(e => e.id === action.entityId))
+        ? clone(state.tableData[action.component].find(e => e.id === action.entityId))
         : null
       switch (action.subComponent) {
         case 'trippattern':
-          activeSubEntity = activeEntity && activeEntity.tripPatterns ? Object.assign({}, activeEntity.tripPatterns.find(p => p.id === action.subEntityId)) : null
+          activeSubEntity = activeEntity && activeEntity.tripPatterns ? clone(activeEntity.tripPatterns.find(p => p.id === action.subEntityId)) : null
           controlPoints = getControlPoints(activeSubEntity, state.editSettings.snapToStops)
           coordinates = activeSubEntity && activeSubEntity.shape && activeSubEntity.shape.coordinates
           break
@@ -224,13 +205,13 @@ const editor = (state = defaultState, action) => {
         component: action.component,
         subComponent: action.subComponent,
         subSubComponent: action.subSubComponent,
-        edited: activeEntity && activeEntity.id === 'new',
+        edited: activeEntity && activeEntity.id === 'new'
       }
       stateUpdate = {
         editSettings: {
-          controlPoints: {$set: controlPoints},
+          controlPoints: {$set: controlPoints}
         },
-        active: {$set: active},
+        active: {$set: active}
       }
       if (coordinates) {
         stateUpdate.coordinatesHistory = {$set: [coordinates]}
@@ -239,12 +220,10 @@ const editor = (state = defaultState, action) => {
     case 'RESET_ACTIVE_GTFS_ENTITY':
       switch (action.component) {
         case 'trippattern':
-          routeIndex = state.tableData.route.findIndex(r => r.id === action.entity.routeId)
-          patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.entity.id)
-          activeEntity = Object.assign({}, state.tableData.route[routeIndex].tripPatterns[patternIndex])
+          patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
+          activeEntity = Object.assign({}, state.active.entity.tripPatterns[patternIndex])
           return update(state, {
             active: {
-              // entity: {tripPatterns: {[patternIndex]: {$set: activeEntity}}},
               subEntity: {$set: activeEntity},
               patternEdited: {$set: false}
             }
@@ -263,23 +242,46 @@ const editor = (state = defaultState, action) => {
             active: {
               entity: {$set: activeEntity},
               edited: {$set: false}
-            },
+            }
           })
       }
     case 'SAVED_TRIP_PATTERN':
-      if (action.tripPattern.id == state.active.subEntityId) {
+      routeIndex = state.tableData.route.findIndex(r => r.id === action.tripPattern.routeId)
+      patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.tripPattern.id)
+      stateUpdate = {active: {}}
+
+      // if pattern is active
+      if (action.tripPattern.id === state.active.subEntityId) {
+        // set controlPoints initially and then whenever isSnappingToStops changes
+        controlPoints = getControlPoints(action.tripPattern, state.editSettings.snapToStops)
+
         stateUpdate = {
           active: {
+            subEntity: {$set: action.tripPattern},
             patternEdited: {$set: false}
-          }
+          },
+          editSettings: {controlPoints: {$set: [controlPoints]}}
         }
-        return update(state, stateUpdate)
       }
+      // if not active, but present in active route
+      if (patternIndex !== -1) {
+        stateUpdate.tableData = {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$set: action.tripPattern}}}}}
+        stateUpdate.active.entity = {tripPatterns: {[patternIndex]: {$set: action.tripPattern}}}
+      } else if (action.tripPattern.routeId === state.active.entity.id) { // if pattern is entirely new
+        const patterns = clone(state.active.entity.tripPatterns)
+        patterns.push(action.tripPattern)
+        return update(state, {
+          tableData: {route: {[routeIndex]: {tripPatterns: {$push: [action.tripPattern]}}}},
+          // active: {entity: {tripPatterns: {$push: [action.tripPattern]}}}
+          active: {entity: {tripPatterns: {$set: patterns}}}
+        })
+      }
+      return update(state, stateUpdate)
     case 'UPDATE_ACTIVE_GTFS_ENTITY':
       switch (action.component) {
         case 'trippattern':
           patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
-          activeEntity = Object.assign({}, state.active.entity.tripPatterns[patternIndex])
+          activeEntity = Object.assign({}, state.active.subEntity)
           for (key in action.props) {
             activeEntity[key] = action.props[key]
           }
@@ -293,9 +295,9 @@ const editor = (state = defaultState, action) => {
           if (action.props && 'shape' in action.props) {
             // add previous coordinates to history
             // stateUpdate.editSettings = {coordinatesHistory: {$push: [action.props.shape.coordinates]}}
-            coordinates = state.active.entity.tripPatterns[patternIndex].shape && state.active.entity.tripPatterns[patternIndex].shape.coordinates
+            coordinates = state.active.subEntity.shape && state.active.subEntity.shape.coordinates
             if (coordinates)
-              stateUpdate.editSettings = {coordinatesHistory: {$push: [state.active.entity.tripPatterns[patternIndex].shape.coordinates]}}
+              stateUpdate.editSettings = {coordinatesHistory: {$push: [coordinates]}}
           }
           return update(state, stateUpdate)
         // case 'feedinfo':
@@ -323,25 +325,9 @@ const editor = (state = defaultState, action) => {
           })
       }
     case 'RECEIVE_AGENCIES':
-      const agencies = action.agencies.map(ent => {
-        return {
-          // datatools props
-          id: ent.id,
-          feedId: ent.feedId,
-          agencyBrandingUrl: ent.agencyBrandingUrl,
-
-          // gtfs spec props
-          agency_id: ent.agencyId,
-          agency_name: ent.name,
-          agency_url: ent.url,
-          agency_timezone: ent.timezone,
-          agency_lang: ent.lang,
-          agency_phone: ent.phone,
-          agency_fare_url: ent.agencyFareUrl,
-          agency_email: ent.email,
-        }
-      })
-      agencyIndex = state.active.entity && action.agencies.findIndex(a => a.id === state.active.entity.id)
+      const agencies = action.agencies.map(agencyToGtfs)
+      agencies.sort(gtfsSort)
+      agencyIndex = state.active.entity && agencies.findIndex(a => a.id === state.active.entity.id)
       if (agencyIndex !== -1) {
         return update(state, {
           tableData: {agency: {$set: agencies}},
@@ -373,7 +359,8 @@ const editor = (state = defaultState, action) => {
           transfer_duration: fare.transferDuration,
         }
       })
-      fareIndex = state.active.entity && action.fares.findIndex(f => f.id === state.active.entity.id)
+      fares.sort(gtfsSort)
+      fareIndex = state.active.entity && fares.findIndex(f => f.id === state.active.entity.id)
       if (fareIndex !== -1) {
         return update(state, {
           tableData: {fare: {$set: fares}},
@@ -390,21 +377,21 @@ const editor = (state = defaultState, action) => {
     case 'RECEIVE_FEED_INFO':
       const feedInfo = action.feedInfo
         ? {
-            // datatools props
-            id: action.feedInfo.id,
-            color: action.feedInfo.color,
-            defaultLat: action.feedInfo.defaultLat,
-            defaultLon: action.feedInfo.defaultLon,
-            defaultRouteType: action.feedInfo.defaultRouteType,
+          // datatools props
+          id: action.feedInfo.id,
+          color: action.feedInfo.color,
+          defaultLat: action.feedInfo.defaultLat,
+          defaultLon: action.feedInfo.defaultLon,
+          defaultRouteType: action.feedInfo.defaultRouteType,
 
-            // gtfs spec props
-            feed_end_date: action.feedInfo.feedEndDate,
-            feed_start_date: action.feedInfo.feedStartDate,
-            feed_lang: action.feedInfo.feedLang,
-            feed_publisher_name: action.feedInfo.feedPublisherName,
-            feed_publisher_url: action.feedInfo.feedPublisherUrl,
-            feed_version: action.feedInfo.feedVersion,
-          }
+          // gtfs spec props
+          feed_end_date: action.feedInfo.feedEndDate,
+          feed_start_date: action.feedInfo.feedStartDate,
+          feed_lang: action.feedInfo.feedLang,
+          feed_publisher_name: action.feedInfo.feedPublisherName,
+          feed_publisher_url: action.feedInfo.feedPublisherUrl,
+          feed_version: action.feedInfo.feedVersion
+        }
         : null
       let mapState = {...state.mapState}
       if (feedInfo && feedInfo.defaultLon && feedInfo.defaultLat) {
@@ -448,7 +435,8 @@ const editor = (state = defaultState, action) => {
           end_date: c.endDate,
         }
       }) : null
-      calendarIndex = state.active.entity && action.calendars.findIndex(c => c.id === state.active.entity.id)
+      calendars.sort(gtfsSort)
+      calendarIndex = state.active.entity && calendars.findIndex(c => c.id === state.active.entity.id)
       if (calendarIndex !== -1) {
         return update(state, {
           tableData: {calendar: {$set: calendars}},
@@ -494,9 +482,6 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_ROUTES':
-      // feedTableData = state.tableData[action.feedId]
-      // if (!feedTableData)
-      //   feedTableData = {}
       const routes = action.routes ? action.routes.map(r => {
         return {
           // datatools props
@@ -518,8 +503,9 @@ const editor = (state = defaultState, action) => {
           route_id: r.gtfsRouteId
         }
       }) : []
+      routes.sort(gtfsSort)
       // feedTableData.route = routes
-      routeIndex = state.active.entity && action.routes.findIndex(r => r.id === state.active.entity.id)
+      routeIndex = state.active.entity && routes.findIndex(r => r.id === state.active.entity.id)
       if (routeIndex !== -1) {
         let followStreets = routes[routeIndex] ? routes[routeIndex].route_type === 3 || routes[routeIndex].route_type === 0 : true
         return update(state, {
@@ -557,8 +543,7 @@ const editor = (state = defaultState, action) => {
       // set controlPoints initially and then whenever isSnappingToStops changes
       if (activePattern) {
         controlPoints = getControlPoints(activePattern, state.editSettings.snapToStops)
-      }
-      else {
+      } else {
         controlPoints = []
       }
       if (state.active.entity.id === action.routeId) {
@@ -605,10 +590,11 @@ const editor = (state = defaultState, action) => {
     //     })
     //   }
     case 'RECEIVE_STOPS':
-      const stops = action.stops ? action.stops.map(mapStop) : []
-      var tree = rbush(9, ['[0]', '[1]', '[0]', '[1]'])
+      const stops = action.stops ? action.stops.map(stopToGtfs) : []
+      stops.sort(gtfsSort)
+      const tree = rbush(9, ['[0]', '[1]', '[0]', '[1]'])
       tree.load(stops.map(s => ([s.stop_lon, s.stop_lat, s])))
-      stopIndex = state.active.entity && action.stops.findIndex(s => s.id === state.active.entity.id)
+      stopIndex = state.active.entity && stops.findIndex(s => s.id === state.active.entity.id)
       if (stopIndex !== -1) {
         return update(state, {
           tableData: {stop: {$set: stops}},
@@ -625,28 +611,28 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_STOP':
-      const stop = mapStop(action.stop)
-      console.log(stop)
+      const stop = stopToGtfs(action.stop)
       let stopIndex = state.tableData.stop.findIndex(s => s.id === stop.id)
+
+      // TODO: handle adding to rbush tree
+      // TODO: updated sort with stops array
 
       // if stop is active, update active entity
       if (stop.id === state.active.entityId && stopIndex !== -1) {
         stateUpdate = {
-          tableData: {stop: {[stopIndex]: {$merge: stop}}},
-          active: {entity: {$set: stop}},
-          edited: {$set: false},
+          tableData: {stop: {[stopIndex]: {$set: stop}}},
+          active: {
+            entity: {$set: stop},
+            edited: {$set: false}
+          }
         }
-      }
-      else if (stopIndex === -1) {
+      } else if (stopIndex === -1) {
         stateUpdate = {
-          tableData: {stop: {$unshift: [stop]}},
-          edited: {$set: false},
+          tableData: {stop: {$push: [stop]}}
         }
-      }
-      else {
+      } else {
         stateUpdate = {
-          tableData: {stop: {[stopIndex]: {$merge: stop}}},
-          edited: {$set: false},
+          tableData: {stop: {[stopIndex]: {$set: stop}}}
         }
       }
       return update(state, stateUpdate)
@@ -689,7 +675,7 @@ const editor = (state = defaultState, action) => {
             })
             return mappedEntities
           case 'stop':
-            return action.entities.map(mapStop)
+            return action.entities.map(stopToGtfs)
           case 'calendar':
             return action.entities.map(ent => {
               return {

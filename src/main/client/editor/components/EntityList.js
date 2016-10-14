@@ -1,11 +1,10 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
+import { Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 import { FlexTable, FlexColumn } from 'react-virtualized'
-import { PureComponent, shallowEqual } from 'react-pure-render'
+import { shallowEqual } from 'react-pure-render'
 import 'react-virtualized/styles.css'
 
-import EntityDetails from './EntityDetails'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import GtfsTable from './GtfsTable'
 import { getEntityName } from '../util/gtfs'
@@ -22,7 +21,7 @@ export default class EntityList extends Component {
     setActiveEntity: PropTypes.func.isRequired,
     updateActiveEntity: PropTypes.func.isRequired,
     deleteEntity: PropTypes.func.isRequired,
-    newEntityClicked: PropTypes.func.isRequired,
+    newGtfsEntity: PropTypes.func.isRequired,
     activeComponent: PropTypes.string.isRequired
   }
 
@@ -38,7 +37,12 @@ export default class EntityList extends Component {
     }
   }
   shouldComponentUpdate (nextProps) {
-    return !shallowEqual(nextProps, this.props)
+    // simply running shallowEqual on all props does not give us the performance we need here
+    // (especially with many, many stops)
+    return !shallowEqual(nextProps.entities, this.props.entities) ||
+    !shallowEqual(nextProps.activeEntityId, this.props.activeEntityId) ||
+    !shallowEqual(nextProps.activeComponent, this.props.activeComponent) ||
+    !shallowEqual(nextProps.feedSource, this.props.feedSource)
   }
   _getRowStyle (index, list) {
     const activeColor = '#F2F2F2'
@@ -79,6 +83,7 @@ export default class EntityList extends Component {
   //
   // }
   render () {
+    // console.log(this.props)
     const sidePadding = '5px'
     let panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
     let panelStyle = {
@@ -91,24 +96,11 @@ export default class EntityList extends Component {
       paddingRight: '0px',
       paddingLeft: sidePadding
     }
-    const sortedEntities = this.props.entities && this.props.entities.sort((a, b) => {
-      var aName = getEntityName(this.props.activeComponent, a)
-      var bName = getEntityName(this.props.activeComponent, b)
-      if (a.isCreating && !b.isCreating) return -1
-      if (!a.isCreating && b.isCreating) return 1
-      if (!isNaN(parseInt(aName)) && !isNaN(parseInt(bName)) && !isNaN(+aName) && !isNaN(+bName)) {
-        if (parseInt(aName) < parseInt(bName)) return -1
-        if (parseInt(aName) > parseInt(bName)) return 1
-        return 0
-      }
-      if (aName.toLowerCase() < bName.toLowerCase()) return -1
-      if (aName.toLowerCase() > bName.toLowerCase()) return 1
-      return 0
-    })
+    const entArray = this.props.entities
     const activeEntity = this.props.activeEntity
     let activeIndex
-    const list = sortedEntities && sortedEntities.length ? sortedEntities.map((entity, index) =>
-      {
+    const list = entArray && entArray.length
+      ? entArray.map((entity, index) => {
         if (activeEntity && entity.id === activeEntity.id) {
           activeIndex = index
         }
@@ -161,7 +153,7 @@ export default class EntityList extends Component {
           bsSize='small'
           disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
           onClick={() => {
-            this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent)
+            this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
           }}
         >
           <Icon name='plus'/> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
@@ -176,7 +168,7 @@ export default class EntityList extends Component {
           ref="activeTable"
           feedSource={this.props.feedSource}
           table={activeTable}
-          tableData={sortedEntities || []}
+          tableData={entArray || []}
           newRowClicked={this.props.newRowClicked}
           saveRowClicked={this.props.saveRowClicked}
           deleteRowClicked={this.props.deleteRowClicked}
@@ -185,7 +177,7 @@ export default class EntityList extends Component {
             this.props.gtfsEntitySelected(type, entity)
           }}
           getGtfsEntity={(type, id) => {
-            return sortedEntities.find(ent => ent.id === id)
+            return entArray.find(ent => ent.id === id)
             // return this.props.gtfsEntityLookup[`${type}_${id}`]
           }}
           showHelpClicked={(tableId, fieldName) => {
@@ -290,7 +282,7 @@ export default class EntityList extends Component {
                   bsSize='small'
                   disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
                   onClick={() => {
-                    this.props.newEntityClicked(this.props.feedSource.id, this.props.activeComponent)
+                    this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
                   }}
                 >
                   <Icon name='plus'/> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
@@ -343,7 +335,7 @@ export default class EntityList extends Component {
           ? <VirtualizedEntitySelect
               value={this.props.activeEntity && this.props.activeEntity.id}
               component={this.props.activeComponent}
-              entities={sortedEntities}
+              entities={entArray}
               onChange={(value) => {
                 if (!value) {
                   this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
-import { Row, Col, Button, Collapse, Form, FormGroup, ControlLabel, Checkbox } from 'react-bootstrap'
+import { Row, Col, Button, Collapse, FormGroup, ControlLabel, Checkbox } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 
 import { getEntityName } from '../util/gtfs'
@@ -84,11 +84,11 @@ export default class PatternStopCard extends Component {
     else this.props.setActiveStop(null)
   }
   render () {
-    const { isDragging, connectDragSource, connectDropTarget, stop, index, patternStop, cumulativeTravelTime, setActiveStop, updateActiveEntity, saveActiveEntity, activePattern } = this.props
+    const { isDragging, connectDragSource, connectDropTarget, stop, index, patternStop, cumulativeTravelTime, updateActiveEntity, saveActiveEntity, activePattern } = this.props
     const opacity = isDragging ? 0 : 1
     let stopIsActive = this.props.activeStop === this.props.id
     let stopName = getEntityName('stop', stop)
-    let stopNameParts = stopName.split(/(\band\b|&|@|:)+/i)
+    let stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:)+/i) : null
     let abbreviatedStopName = stopNameParts && stopNameParts.length === 3 && stop.stop_name.length > 20
       ? `${stopNameParts[0].substr(0, 10).trim()}... ${stopNameParts[2].substr(0, 10).trim()}`
       : stop.stop_name

@@ -12,14 +12,14 @@ import {
   saveFeedInfo,
   deleteFeedInfo,
   updateFeedInfo,
-  createFeedInfo,
+  createFeedInfo
 } from '../actions/feedInfo'
 import {
   fetchAgencies,
   fetchAgency,
   saveAgency,
   deleteAgency,
-  updateAgency,
+  updateAgency
 } from '../actions/agency'
 import {
   fetchStops,
@@ -27,35 +27,35 @@ import {
   saveStop,
   deleteStop,
   updateStop,
-  fetchStopsForTripPattern,
+  fetchStopsForTripPattern
 } from '../actions/stop'
 import {
   fetchRoutes,
   fetchRoute,
   saveRoute,
   deleteRoute,
-  updateRoute,
+  updateRoute
 } from '../actions/route'
 import {
   fetchFares,
   fetchFare,
   saveFare,
   deleteFare,
-  updateFare,
+  updateFare
 } from '../actions/fare'
 import {
   fetchTripPatternsForRoute,
   fetchTripPattern,
   saveTripPattern,
   deleteTripPattern,
-  updateTripPattern,
+  updateTripPattern
 } from '../actions/tripPattern'
 import {
   fetchTripsForCalendar,
   fetchTrip,
   saveTrip,
   deleteTrip,
-  updateTrip,
+  updateTrip
 } from '../actions/trip'
 import {
   fetchCalendars,
@@ -67,13 +67,14 @@ import {
   fetchScheduleException,
   saveScheduleException,
   deleteScheduleException,
-  updateScheduleException,
+  updateScheduleException
 } from '../actions/calendar'
 
-export function toggleEditSetting (setting) {
+export function updateEditSetting (setting, value) {
   return {
-    type: 'TOGGLE_EDIT_SETTING',
-    setting
+    type: 'UPDATE_EDIT_SETTING',
+    setting,
+    value
   }
 }
 
@@ -102,9 +103,9 @@ export function settingActiveGtfsEntity (feedSourceId, component, entityId, subC
 export function setActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
   return function (dispatch, getState) {
     // TODO: figure out a good way to handle route changes without confirm window
-    // if (getState().editor.active.edited && !window.confirm('You have unsaved changes. Discard changes?')) {
-    //   return false
-    // }
+    if (getState().editor.active.edited && !window.confirm('You have unsaved changes. Discard changes?')) {
+      return false
+    }
     let previousFeedSourceId = getState().editor.feedSourceId
     if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
       dispatch(clearGtfsContent())
@@ -112,25 +113,18 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     if (getState().editor.editGeometry) {
       dispatch(toggleEditGeometry())
     }
-    let url = entityId && subEntityId && subSubComponent && subSubEntityId
-      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}/${subSubEntityId}`
-      : entityId && subEntityId && subSubComponent
-      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/${subSubComponent}`
-      : entityId && subEntityId
-      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}`
-      : entityId && subComponent
-      ? `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}`
-      : entityId
-      ? `/feed/${feedSourceId}/edit/${component}/${entityId}`
-      : component
-      ? `/feed/${feedSourceId}/edit/${component}`
-      : `/feed/${feedSourceId}/edit/`
+    const pathItems = ['feed', feedSourceId, 'edit', component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId].filter(item => item)
+    let url = '/' + pathItems.join('/')
+    // console.log(url)
+    // ensure component is valid
     if (component && componentList.indexOf(component) === -1) {
       url = `/feed/${feedSourceId}/edit/`
     }
+    // ensure subComponent is valid
     else if (subComponent && subComponentList.indexOf(subComponent) === -1) {
       url = `/feed/${feedSourceId}/edit/${component}/${entityId}/`
     }
+    // ensure subSubComponent is valid
     else if (subSubComponent && subSubComponentList.indexOf(subSubComponent) === -1) {
       url = `/feed/${feedSourceId}/edit/${component}/${entityId}/${subComponent}/${subEntityId}/`
     }
@@ -320,7 +314,7 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
       props = generateProps(component)
     }
     if (save) {
-      dispatch(saveActiveGtfsEntity(component, props))
+      return dispatch(saveActiveGtfsEntity(component, props))
       // .then((entity) => {
       //   if (props && 'routeId' in props) {
       //     dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, entity.id))

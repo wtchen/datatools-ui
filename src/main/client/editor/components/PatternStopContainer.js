@@ -3,21 +3,11 @@ import update from 'react/lib/update'
 import { shallowEqual } from 'react-pure-render'
 import PatternStopCard from './PatternStopCard'
 import { DropTarget, DragDropContext } from 'react-dnd'
-import Scrollzone from 'react-dnd-scrollzone'
 import HTML5Backend from 'react-dnd-html5-backend'
-
-import { getEntityName } from '../util/gtfs'
-import VirtualizedEntitySelect from './VirtualizedEntitySelect'
-import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
-import ll from 'lonlng'
 
 /*  This component and its child components (Card.js) are based on the react-dnd sortable
     example found here: http://gaearon.github.io/react-dnd/examples-sortable-cancel-on-drop-outside.html
 */
-const scrollStyle = {
-  // overflowX: 'scroll',
-  overflowY: 'scroll',
-}
 const cardTarget = {
   drop () {
   }
@@ -28,7 +18,12 @@ const cardTarget = {
 }))
 export default class PatternStopContainer extends Component {
   static propTypes = {
-    connectDropTarget: PropTypes.func.isRequired
+    connectDropTarget: PropTypes.func.isRequired,
+    activePattern: PropTypes.object.isRequired,
+    updateActiveEntity: PropTypes.func,
+    saveActiveEntity: PropTypes.func,
+    stops: PropTypes.array,
+    cardStyle: PropTypes.object
   }
   constructor (props) {
     super(props)
@@ -47,7 +42,7 @@ export default class PatternStopContainer extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.activePattern.patternStops && !shallowEqual(nextProps.activePattern.patternStops, this.props.activePattern.patternStops)){
+    if (nextProps.activePattern.patternStops && !shallowEqual(nextProps.activePattern.patternStops, this.props.activePattern.patternStops)) {
       this.setState({cards: nextProps.activePattern.patternStops.map(this.addUniqueId)})
     }
   }
@@ -59,7 +54,7 @@ export default class PatternStopContainer extends Component {
     this.props.saveActiveEntity('trippattern')
   }
   moveCard (id, atIndex) {
-    const { card, index } = this.findCard(id);
+    const { card, index } = this.findCard(id)
     this.setState(update(this.state, {
       cards: {
         $splice: [
@@ -67,7 +62,7 @@ export default class PatternStopContainer extends Component {
           [atIndex, 0, card]
         ]
       }
-    }));
+    }))
   }
 
   findCard (id) {
@@ -87,9 +82,6 @@ export default class PatternStopContainer extends Component {
     let cumulativeTravelTime = 0
     return connectDropTarget(
       <div>
-      {
-        /*<Scrollzone style={scrollStyle}>*/
-      }
         {cards.map((card, i) => {
           if (!card) {
             return null
@@ -117,9 +109,6 @@ export default class PatternStopContainer extends Component {
             />
           )
         })}
-      {
-        /*</Scrollzone>*/
-      }
       </div>
     )
   }

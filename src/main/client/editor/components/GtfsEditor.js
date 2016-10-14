@@ -42,13 +42,13 @@ export default class GtfsEditor extends Component {
     resetActiveEntity: PropTypes.func,
     deleteEntity: PropTypes.func,
     cloneEntity: PropTypes.func,
-    newEntityClicked: PropTypes.func,
+    newGtfsEntity: PropTypes.func,
 
     sidebarExpanded: PropTypes.bool,
 
     activeEntity: PropTypes.object,
     activeEntityId: PropTypes.string,
-    activeSubEntity: PropTypes.string,
+    subEntityId: PropTypes.string,
     activeSubSubEntity: PropTypes.string,
     activeComponent: PropTypes.string,
     subSubComponent: PropTypes.string
@@ -92,9 +92,9 @@ export default class GtfsEditor extends Component {
     if (nextProps.subSubComponent && nextProps.activeSubSubEntity && !shallowEqual(nextProps.activeSubSubEntity, this.props.activeSubSubEntity)) {
       switch (nextProps.subSubComponent) {
         case 'timetable':
-          console.log(nextProps.activeSubEntity)
+          console.log(nextProps.subEntityId)
           console.log(nextProps.activeSubSubEntity)
-          let pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.activeSubEntity)
+          let pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.subEntityId)
           // fetch trips if they haven't been fetched
           if (!pattern[nextProps.activeSubSubEntity]) {
             this.props.fetchTripsForCalendar(nextProps.feedSource.id, pattern, nextProps.activeSubSubEntity)
@@ -109,7 +109,7 @@ export default class GtfsEditor extends Component {
   }
 
   render () {
-    console.log(this.props.currentPattern && this.props.currentPattern.shape)
+    // console.log(this.props)
     const feedSource = this.props.feedSource
     const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
 
@@ -154,12 +154,12 @@ export default class GtfsEditor extends Component {
           right: 0,
           top: 0
         }}>
-          {this.props.subSubComponent === 'timetable' && this.props.activeEntity
+          {this.props.subSubComponent === 'timetable' // && this.props.activeEntity
             ? <TimetableEditor
                 feedSource={feedSource}
                 route={this.props.activeEntity}
                 showConfirmModal={(props) => this.showConfirmModal(props)}
-                activePatternId={this.props.activeSubEntity}
+                activePatternId={this.props.subEntityId}
                 activeScheduleId={this.props.activeSubSubEntity}
                 setActiveEntity={this.props.setActiveEntity}
                 tableData={this.props.tableData}
@@ -184,9 +184,10 @@ export default class GtfsEditor extends Component {
                 cloneEntity={this.props.cloneEntity}
                 updateActiveEntity={this.props.updateActiveEntity}
                 deleteEntity={this.props.deleteEntity}
-                newEntityClicked={this.props.newEntityClicked}
-                entities={this.props.entities}
+                newGtfsEntity={this.props.newGtfsEntity}
                 showConfirmModal={(props) => this.showConfirmModal(props)}
+
+                entities={this.props.entities}
                 activeEntityId={this.props.activeEntityId}
                 activeComponent={this.props.activeComponent}
                 feedSource={this.props.feedSource}
@@ -208,7 +209,7 @@ export default class GtfsEditor extends Component {
             hidden={this.props.subSubComponent === 'timetable'}
             stops={this.props.tableData.stop || []}
             showConfirmModal={(props) => this.showConfirmModal(props)}
-            drawStops={this.props.mapState.zoom > 14}
+            drawStops={this.props.mapState.zoom > 14} // && (this.props.activeComponent === 'stop' || this.props.editSettings.addStops)}
             zoomToTarget={this.props.mapState.target}
             sidebarExpanded={this.props.sidebarExpanded}
             {...this.props}

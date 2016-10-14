@@ -91,7 +91,10 @@ export default class FeedInfoPanel extends Component {
               </Button>
             </OverlayTrigger>
             {/* Navigation dropdown */}
-            <DropdownButton dropup title={<span title={`Editing ${feedSource && feedSource.name}`}>Editing {feedName}</span>} id='navigation-dropdown'
+            <DropdownButton
+              dropup
+              title={<span title={`Editing ${feedSource && feedSource.name}`}>Editing {feedName}</span>}
+              id='navigation-dropdown'
               onSelect={key => {
                 switch (key) {
                   case '1':
@@ -110,7 +113,9 @@ export default class FeedInfoPanel extends Component {
               <Icon name='upload'/>
             </Button>
             {/* Add entity dropdown */}
-            <DropdownButton pullRight dropup title={<span><Icon name='plus'/></span>}
+            <DropdownButton
+              pullRight dropup
+              title={<span><Icon name='plus'/></span>}
               id='add-entity-dropdown'
               onSelect={key => {
                 console.log(key)
@@ -130,6 +135,7 @@ export default class FeedInfoPanel extends Component {
               <Dropdown
                 dropup
                 pullRight
+                id='snapshot-dropdown'
                 onSelect={key => {
                   let snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
                   this.props.showConfirmModal({
