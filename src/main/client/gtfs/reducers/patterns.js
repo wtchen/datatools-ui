@@ -38,7 +38,7 @@ export default function reducer (state = defaultState, action) {
         }
       })
     case 'FETCH_GRAPHQL_PATTERNS_FULFILLED':
-      let allRoutes = action.data.routes
+      let allRoutes = action.data ? action.data.routes : []
       let allPatterns = []
 
       for (let i = 0; i < allRoutes.length; i++) {

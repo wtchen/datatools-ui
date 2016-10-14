@@ -6,12 +6,13 @@ export const feed = `
 query feedQuery($feedId: [String]) {
   feeds (feed_id: $feedId) {
     feed_id,
-    feed_publisher_name,
-    feed_publisher_url,
-    feed_lang,
-    feed_version,
-    route_count,
-    stop_count
+    # feed_publisher_name,
+    # feed_publisher_url,
+    # feed_lang,
+    # feed_version,
+    # route_count,
+    # stop_count,
+    mergedBuffer
   }
 }
 `
@@ -31,7 +32,7 @@ query routeQuery($feedId: [String]) {
 `
 
 export const patterns = `
-query patternsQuery($feedId: [String], $routeId: [String]) {
+query patternsQuery($feedId: [String], $routeId: [String], $date: String, $from: Long, $to: Long) {
   routes (feed_id: $feedId, route_id: $routeId) {
     route_id,
     route_short_name,
@@ -39,8 +40,13 @@ query patternsQuery($feedId: [String], $routeId: [String]) {
     patterns {
       pattern_id,
       name,
+      geometry,
       stop_count,
-      trip_count
+      trip_count,
+      stats(date: $date, from: $from, to: $to){
+        headway,
+        avgSpeed
+      },
     }
   }
 }
@@ -107,17 +113,17 @@ export const stopsFiltered = (feedId, routeId, patternId, date, from, to) => {
       stop_desc,
       stop_lon,
       stop_lat,
-      ${date && hasFrom && hasTo
-        ? `
+       ${date && hasFrom && hasTo
+          ? `
           stats(date: $date, from: $from, to: $to){
             headway,
             tripCount
           },
-#           transferPerformance(date: $date, from: $from, to: $to){
-#             fromRoute,
-#             toRoute,
-#             bestCase
-#           },
+          # transferPerformance(date: $date, from: $from, to: $to){
+          #   fromRoute,
+          #   toRoute,
+          #   bestCase
+          # },
           `
         : ''}
       # zone_id,

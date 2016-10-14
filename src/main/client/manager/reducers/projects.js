@@ -179,8 +179,8 @@ const projects = (state = {
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
       let versionSort = (a, b) => {
-        if(a.version < b.version) return -1
-        if(a.version > b.version) return 1
+        if (a.version < b.version) return -1
+        if (a.version > b.version) return 1
         return 0
       }
       return update(state,

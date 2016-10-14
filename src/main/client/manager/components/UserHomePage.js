@@ -55,7 +55,7 @@ export default class UserHomePage extends Component {
       const feedName = `${p.name} / ${fs.name}`
       return (
         <ListGroupItem key={fs.id} bsStyle={fs.isPublic ? 'default' : 'warning'}>
-          <Link title={feedName} to={`feed/${fs.id}`}>
+          <Link title={feedName} to={`/feed/${fs.id}`}>
             <Icon className='icon-link' name={fs.isPublic ? 'database' : 'lock'}/>
             <span style={{ fontSize: 16, fontWeight: 500 }}>
               {feedName.length > 33 ? `${feedName.substr(0, 33)}...` : feedName}
@@ -274,7 +274,7 @@ function renderRecentActivity (item) {
           </div>
           <div style={innerContainerStyle}>
             <div style={dateStyle}>{moment(item.date).fromNow()}</div>
-            <div><a href={getProfileLink(item.userName)}><b>{item.userName}</b></a> commented on feed <Link to={`feed/${item.targetId}`}><b>{item.targetName}</b></Link>:</div>
+            <div><a href={getProfileLink(item.userName)}><b>{item.userName}</b></a> commented on feed <Link to={`/feed/${item.targetId}`}><b>{item.targetName}</b></Link>:</div>
             <div style={commentStyle}><i>{item.body}</i></div>
           </div>
         </div>

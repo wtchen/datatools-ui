@@ -1,21 +1,29 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Image, Button, Panel, Label, Tabs, Tab, Glyphicon, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Row, Col, Image, Button, Panel, Label, Tabs, Tab, Glyphicon, FormControl, ButtonGroup, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
 import Icon from 'react-fa'
 import numeral from 'numeral'
 
 import EditableTextField from '../../common/components/EditableTextField'
+import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
-import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
+import { getComponentMessages, getMessage, getConfigProperty, isModuleEnabled } from '../../common/util/config'
 
-import Feed from './reporter/containers/Feed'
+// import Feed from './reporter/containers/Feed'
 import Patterns from './reporter/containers/Patterns'
 import Routes from './reporter/containers/Routes'
 import Stops from './reporter/containers/Stops'
+import GtfsValidationSummary from './validation/GtfsValidationSummary'
+import TripsChart from './validation/TripsChart'
+import ActiveDateTimeFilter from './reporter/containers/ActiveDateTimeFilter'
 
 const dateFormat = 'MMM. DD, YYYY'
 const timeFormat = 'h:MMa'
-
+const MAP_HEIGHTS = [200, 400]
+const ISO_BANDS = []
+for (var i = 0; i < 24; i++) {
+  ISO_BANDS.push(300 * (i + 1))
+}
 export default class FeedVersionReport extends Component {
 
   static propTypes = {
@@ -32,12 +40,17 @@ export default class FeedVersionReport extends Component {
     // notesRequested: PropTypes.func,
     // fetchValidationResult: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
+    fetchValidationResult: PropTypes.func,
     // downloadFeedClicked: PropTypes.func,
     // loadFeedVersionForEditing: PropTypes.func
   }
   constructor (props) {
     super(props)
-    this.state = {tab: 'feed'}
+    this.state = {
+      tab: 'feed',
+      mapHeight: MAP_HEIGHTS[0],
+      isochroneBand: 60 * 60
+    }
   }
   getVersionDateLabel (version) {
     const now = +moment()
@@ -56,15 +69,6 @@ export default class FeedVersionReport extends Component {
 
     if (!version) return <p>{getMessage(messages, 'noVersionsExist')}</p>
 
-    const fsCenter = version.validationSummary && version.validationSummary.bounds
-      ? `${(version.validationSummary.bounds.east + version.validationSummary.bounds.west) / 2},${(version.validationSummary.bounds.north + version.validationSummary.bounds.south) / 2}`
-      : null
-    const fsOverlay = fsCenter
-      ? `pin-l-bus(${fsCenter})/`
-      : ''
-    const mapUrl = fsCenter
-      ? `https://api.mapbox.com/v4/mapbox.light/${fsOverlay}${fsCenter},6/1000x800@2x.png?access_token=${getConfigProperty('mapbox.access_token')}`
-      : ''
     const versionHeader = (
       <div>
       <h4
@@ -110,19 +114,33 @@ export default class FeedVersionReport extends Component {
         <ListGroup fill>
             <ListGroupItem
               style={{
-                maxHeight: '200px',
+                maxHeight: `${this.state.mapHeight}px`,
                 overflowY: 'hidden',
                 padding: '0px'
               }}
               >
-              <Image
-                style={{
-                  position: 'relative',
-                  top: '50%',
-                  transform: 'translateY(-30%)'
-                }}
-                responsive
-                src={mapUrl}
+              <ButtonGroup bsSize='small' style={{position: 'absolute', zIndex: 1000, right: 5, top: 5}}>
+                <Button active={this.state.mapHeight === MAP_HEIGHTS[0]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[0]})}>Slim</Button>
+                <Button active={this.state.mapHeight === MAP_HEIGHTS[1]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[1]})}>Large</Button>
+              </ButtonGroup>
+              <ActiveGtfsMap
+                ref='map'
+                version={this.props.version}
+                feeds={[this.props.version.feedSource]}
+                disableRefresh
+                disableScroll
+                disablePopup
+                showBounds={this.state.tab === 'feed' || this.state.tab === 'accessibility'}
+                showIsochrones={this.state.tab === 'accessibility'}
+                isochroneBand={this.state.isochroneBand}
+                // onStopClick={this.props.onStopClick}
+                // onRouteClick={this.props.onRouteClick}
+                // newEntityId={this.props.newEntityId}
+                // searchFocus={this.state.searchFocus}
+                // entities={this.state.searching}
+                // popupAction={this.props.popupAction}
+                height={this.state.mapHeight}
+                width='100%'
               />
             </ListGroupItem>
             <ListGroupItem
@@ -141,9 +159,14 @@ export default class FeedVersionReport extends Component {
             <ListGroupItem>
             <Tabs
               activeKey={this.state.tab}
-              onSelect={(key) => this.selectTab(key)}
+              onSelect={(key) => {
+                if (this.state.tab !== key) {
+                  this.selectTab(key)
+                }
+              }}
               id='uncontrolled-tab-example'
               bsStyle='pills'
+              unmountOnExit
             >
               <Tab eventKey={'feed'} title='Summary'>
                 <Row>
@@ -164,6 +187,13 @@ export default class FeedVersionReport extends Component {
                     <p style={{marginBottom: '0px'}}>{getMessage(messages, 'stopTimesCount')}</p>
                   </Col>
                 </Row>
+                {
+                /*<Feed
+                  version={this.props.version}
+                  selectTab={(key) => this.selectTab(key)}
+                  tableOptions={tableOptions}
+                />*/
+              }
               </Tab>
               <Tab eventKey={'routes'} title='Routes'>
                 <Routes
@@ -186,6 +216,58 @@ export default class FeedVersionReport extends Component {
                   tableOptions={tableOptions}
                 />
               </Tab>
+              {isModuleEnabled('validator')
+                ? [
+                <Tab eventKey={'validation'} title='Validation'>
+                  <GtfsValidationSummary
+                    version={this.props.version}
+                    key='validation'
+                    feedVersionIndex={this.props.feedVersionIndex}
+                    fetchValidationResult={() => { this.props.fetchValidationResult(this.props.version) }}
+                  />
+                </Tab>,
+                <Tab eventKey={'accessibility'} title='Accessibility' key='accessibility'>
+                  <div>
+                    <Row>
+                      <Col xs={12}>
+                        <p className='lead text-center'>Click on map above to show travel shed for this feed.</p>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col md={6} mdOffset={3} xs={12}>
+                        <FormControl
+                          componentClass='select'
+                          onChange={(evt) => this.setState({isochroneBand: +evt.target.value})}
+                          bsSize='large'
+                          value={this.state.isochroneBand}
+                        >
+                          {ISO_BANDS.map(v => {
+                            return (
+                              <option value={v}>{v / 60} minutes</option>
+                            )
+                          })}
+                        </FormControl>
+                      </Col>
+                    </Row>
+                    <ActiveDateTimeFilter
+                      version={this.props.version}
+                    />
+                  </div>
+                </Tab>,
+                <Tab eventKey={'timeline'} title='Timeline' key='timeline'>
+                  <Row>
+                    <Col xs={12}>
+                      <p className='lead text-center'>Number of trips per date of service.</p>
+                    </Col>
+                  </Row>
+                  <TripsChart
+                    validationResult={this.props.version.validationResult}
+                    fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
+                  />
+                </Tab>
+              ]
+              : null
+            }
             </Tabs>
             </ListGroupItem>
         </ListGroup>

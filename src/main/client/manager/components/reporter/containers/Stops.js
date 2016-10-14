@@ -20,9 +20,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const feedId = ownProps.version.feedSource.id
   return {
     onComponentMount: (initialProps) => {
-      // if(!initialProps.routes.fetchStatus.fetched) {
-      //   dispatch(fetchRoutes(feedId))
-      // }
+      if (!initialProps.routes.fetchStatus.fetched) {
+        dispatch(fetchRoutes(feedId))
+      }
       // if(!initialProps.patterns.fetchStatus.fetched) {
       //   dispatch(fetchPatterns(feedId, null))
       // }

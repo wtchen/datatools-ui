@@ -2,10 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PatternLayout from '../components/PatternLayout'
-import { fetchPatterns, patternRouteFilterChange } from '../../../../gtfs/actions/patterns'
+import { patternRouteFilterChange, patternDateTimeFilterChange } from '../../../../gtfs/actions/patterns'
 import { stopPatternFilterChange } from '../../../../gtfs/actions/stops'
 import { fetchRoutes } from '../../../../gtfs/actions/routes'
-
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -18,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const feedId = ownProps.version.feedSource.id
   return {
     onComponentMount: (initialProps) => {
-      if(!initialProps.routes.fetchStatus.fetched) {
+      if (!initialProps.routes.fetchStatus.fetched) {
         dispatch(fetchRoutes(feedId))
       }
       // if(!initialProps.patterns.fetchStatus.fetched) {
@@ -31,7 +30,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     viewStops: (row) => {
       dispatch(stopPatternFilterChange(feedId, row))
       ownProps.selectTab('stops')
-    }
+    },
+    patternDateTimeFilterChange: (props) => {
+      dispatch(patternDateTimeFilterChange(feedId, props))
+    },
   }
 }
 

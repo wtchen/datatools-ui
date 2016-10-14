@@ -35,7 +35,7 @@ export default class GtfsValidationExplorer extends Component {
     }
   }
 
-  render() {
+  render () {
     const version = this.props.version
     const messages = getComponentMessages('GtfsValidationExplorer')
 

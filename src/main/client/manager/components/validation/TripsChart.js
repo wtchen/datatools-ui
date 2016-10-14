@@ -1,25 +1,43 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
 // import rd3 from 'rd3'
 
-export default class TripsChart extends React.Component {
+import Loading from '../../../common/components/Loading'
 
+export default class TripsChart extends Component {
+  static propTypes = {
+    validationResult: PropTypes.object,
+    fetchValidationResult: PropTypes.func
+  }
+  componentWillMount () {
+    if (!this.props.validationResult) {
+      this.props.fetchValidationResult()
+    }
+  }
   render () {
-    const data = Object.keys(this.props.data).map(key => [key, this.props.data[key]])
-    const graphHeight = 400
+    if (!this.props.validationResult) {
+      return <Loading/>
+    }
+    const tripsPerDate = this.props.validationResult.tripsPerDate
+    const data = Object.keys(tripsPerDate).map(key => [key, tripsPerDate[key]])
+    const graphHeight = 300
     const spacing = 8
-    const leftMargin = 50, bottomMargin = 50
-    const svgWidth = leftMargin + data.length * spacing, svgHeight = graphHeight + bottomMargin
+    const leftMargin = 50
+    const bottomMargin = 50
+    const svgWidth = leftMargin + data.length * spacing
+    const svgHeight = graphHeight + bottomMargin
     const maxTrips = Math.max.apply(Math, data.map(d => d[1]))
-    const yAxisMax = Math.ceil(maxTrips / 1000) * 1000;
+    const yAxisMax = Math.ceil(maxTrips / 100) * 100
+    console.log(maxTrips, yAxisMax)
 
     const yAxisPeriod = maxTrips > 1000 ? 1000 : 100
-    const yAxisLabels = [];
+    const yAxisLabels = []
     for (var i = yAxisPeriod; i <= yAxisMax; i += yAxisPeriod) {
-       yAxisLabels.push(i);
+      yAxisLabels.push(i)
     }
     return (
-      <div style={{
+      <div
+        style={{
           width: '100%',
           height: `${svgHeight}px`,
           overflowX: 'scroll',
@@ -37,23 +55,24 @@ export default class TripsChart extends React.Component {
                 stroke='gray'
                 strokesvgWidth={1}
               />
-              <text x={0} y={y-2} fill='gray'>
+              <text x={0} y={y - 2} fill='gray'>
                 {l}
               </text>
             </g>
           })}
           {data.map((d, index) => {
-              const dow = moment(d[0]).day()
-              const x = leftMargin + spacing/2 + index * spacing
+            const dow = moment(d[0]).day()
+            const x = leftMargin + spacing / 2 + index * spacing
 
-              // generate the bar for this date
-              return <g key={index}>
+            // generate the bar for this date
+            return (
+              <g key={index}>
                 <line
                   x1={x} y1={graphHeight - d[1] / yAxisMax * graphHeight}
                   x2={x} y2={graphHeight}
-                  stroke={dow === 0 ? 'red'
-                          : dow === 6 ? 'green'
-                          : 'blue'}
+                  stroke={dow === 0 ? '#fc8d62'
+                          : dow === 6 ? '#66c2a5'
+                          : '#8da0cb'}
                   strokeWidth={7}
                 />
                 {index % 14 === 0 /* label the date every 14 days */
@@ -66,8 +85,9 @@ export default class TripsChart extends React.Component {
                   : null
                 }
               </g>
-            })
+            )
           }
+        )}
           <line x1={0} y1={graphHeight} x2={svgWidth} y2={graphHeight} stroke='black' strokeWidth={2} />
         </svg>
       </div>

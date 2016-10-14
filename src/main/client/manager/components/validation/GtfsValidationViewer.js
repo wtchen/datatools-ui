@@ -65,18 +65,6 @@ export default class GtfsValidationViewer extends React.Component {
     }
 
     return <div>
-      <p>
-        {isModuleEnabled('validator')
-          ? <Button
-              onClick={() => browserHistory.push(`/feed/${this.props.version.feedSource.id}/validation/${this.props.version.version}`)}
-              bsSize='large'
-              bsStyle='primary'
-            >
-              {getMessage(messages, 'explorer')}
-            </Button>
-          : null
-        }
-      </p>
       {report}
     </div>
   }

@@ -1,7 +1,6 @@
 import fetch from 'isomorphic-fetch'
 
 import { compose, stopsFiltered } from '../../gtfs/util/graphql'
-import { updateDateTimeFilter } from './filter'
 import { fetchPatterns } from './patterns'
 
 function fetchingStops (feedId, routeId, patternId, date, from, to) {
@@ -10,6 +9,16 @@ function fetchingStops (feedId, routeId, patternId, date, from, to) {
     feedId,
     routeId,
     patternId, date, from, to
+  }
+}
+
+function errorFetchingStops (feedId, routeId, patternId, date, from, to) {
+  return {
+    type: 'FETCH_GRAPHQL_STOPS_REJECTED',
+    feedId,
+    routeId,
+    patternId,
+    date, from, to
   }
 }
 
@@ -27,14 +36,21 @@ export function fetchStopsWithFilters (feedId) {
   return function (dispatch, getState) {
     const state = getState()
     const {date, from, to} = state.gtfs.filter.dateTimeFilter
-    const {routeFilter, patternFilter} = state.gtfs.stops
-    dispatch(fetchingStops(feedId, routeFilter, patternFilter, date, from, to))
-    return fetch(compose(stopsFiltered(feedId, routeFilter, patternFilter, date, from, to), {feedId, routeFilter, patternFilter, date, from, to}))
+    const routeId = state.gtfs.stops.routeFilter
+    const patternId = state.gtfs.stops.patternFilter
+    if (!routeId && !patternId) {
+      return dispatch(receiveStops(feedId, routeId, patternId, {stops: []}))
+    }
+    dispatch(fetchingStops(feedId, routeId, patternId, date, from, to))
+    return fetch(compose(stopsFiltered(feedId, routeId, patternId, date, from, to), {feedId, routeId, patternId, date, from, to}))
       .then((response) => {
+        if (response.status >= 300) {
+          return dispatch(errorFetchingStops(feedId, routeId, patternId, date, from, to))
+        }
         return response.json()
       })
       .then(json => {
-        dispatch(receiveStops(feedId, routeFilter, patternFilter, json))
+        dispatch(receiveStops(feedId, routeId, patternId, json))
       })
   }
 }
@@ -68,7 +84,6 @@ export function updateStopPatternFilter (patternId) {
 
 export function stopDateTimeFilterChange (feedId, props) {
   return function (dispatch, getState) {
-    dispatch(updateDateTimeFilter(props))
     dispatch(fetchStopsWithFilters(feedId))
   }
 }

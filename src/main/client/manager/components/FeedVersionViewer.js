@@ -156,7 +156,8 @@ export class VersionButtonToolbar extends Component {
 
         {/* "Delete Version" Button */}
         {!this.props.isPublic
-          ? <Button bsStyle='danger'
+          ? <Button
+              bsStyle='danger'
               disabled={this.props.deleteDisabled || !this.props.hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
               onClick={(evt) => {
                 this.refs.confirm.open({
@@ -166,7 +167,8 @@ export class VersionButtonToolbar extends Component {
                 })
               }}
             >
-              <Glyphicon glyph='trash' /><span className='hidden-xs'> {getMessage(messages, 'delete')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'version')}</span>
+              <Glyphicon glyph='trash' />
+              <span className='hidden-xs'> {getMessage(messages, 'delete')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'version')}</span>
             </Button>
           : null
         }

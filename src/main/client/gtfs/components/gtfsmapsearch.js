@@ -1,15 +1,12 @@
-import React, { PropTypes } from 'react'
-
+import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
-
 import { Button } from 'react-bootstrap'
-
 import { PureComponent, shallowEqual } from 'react-pure-render'
 
 import GtfsMap from './gtfsmap'
 import GtfsSearch from './gtfssearch'
 
-export default class GtfsMapSearch extends React.Component {
+export default class GtfsMapSearch extends Component {
 
   constructor(props) {
     super(props)
@@ -112,6 +109,8 @@ export default class GtfsMapSearch extends React.Component {
         patterns={this.state.patterns}
         entities={this.state.searching}
         popupAction={this.props.popupAction}
+        width='555px'
+        height={400}
       />
     </div>
     )

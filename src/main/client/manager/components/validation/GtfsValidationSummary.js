@@ -1,21 +1,36 @@
-import React from 'react'
-import { Panel, Table, Glyphicon, Button } from 'react-bootstrap'
-import { browserHistory } from 'react-router'
+import React, { Component, PropTypes } from 'react'
+import { Table, Glyphicon, Button } from 'react-bootstrap'
+import Icon from 'react-fa'
+// import { connect } from 'react-redux'
+import { LinkContainer } from 'react-router-bootstrap'
 
-export default class GtfsValidationSummary extends React.Component {
+import Loading from '../../../common/components/Loading'
 
+export default class GtfsValidationSummary extends Component {
+  static propTypes = {
+    version: PropTypes.object,
+    feedVersionIndex: PropTypes.number,
+    fetchValidationResult: PropTypes.func
+  }
   constructor (props) {
     super(props)
     this.state = { expanded: false }
   }
-
-  componentWillReceiveProps (nextProps) {
-    if(!nextProps.validationResult) this.setState({ expanded: false })
+  componentWillMount () {
+    if (!this.props.version.validationResult) {
+      this.props.fetchValidationResult()
+    }
   }
-
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.version.validationResult) {
+      this.setState({ expanded: false })
+    }
+  }
   render () {
-
-    const result = this.props.validationResult
+    const result = this.props.version.validationResult
+    if (!result) {
+      return <Loading/>
+    }
     let errors = {}
     result && result.errors.map(error => {
       if (!errors[error.file]) {
@@ -23,14 +38,6 @@ export default class GtfsValidationSummary extends React.Component {
       }
       errors[error.file].push(error)
     })
-    const header = (
-      <h3 onClick={() => {
-        if(!result) this.props.fetchValidationResult()
-        this.setState({ expanded: !this.state.expanded })
-      }}>
-        <Glyphicon glyph='check' /> Validation Results
-      </h3>
-    )
 
     let report = null
     const tableStyle = {
@@ -75,6 +82,16 @@ export default class GtfsValidationSummary extends React.Component {
     return (
       <div>
         {report}
+        <LinkContainer to={`/feed/${this.props.version.feedSource.id}/version/${this.props.feedVersionIndex}/issues`}>
+          <Button
+            block
+            bsStyle='primary'
+            bsSize='large'
+            style={{marginTop: '20px'}}
+          >
+            <Icon name='file-text-o'/> View full validation report
+          </Button>
+        </LinkContainer>
       </div>
     )
   }
@@ -121,3 +138,5 @@ class ResultTable extends React.Component {
     )
   }
 }
+
+// export default connect()(GtfsValidationSummary)

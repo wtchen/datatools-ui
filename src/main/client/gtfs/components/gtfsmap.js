@@ -1,30 +1,38 @@
-import React, { PropTypes } from 'react'
-
+import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
-
 import { Button } from 'react-bootstrap'
-import { Browser } from 'leaflet'
-
-import { Map, Marker, Popup, TileLayer, GeoJson } from 'react-leaflet'
+import { shallowEqual } from 'react-pure-render'
+import { divIcon, Browser } from 'leaflet'
+import { Map, Marker, Popup, TileLayer, GeoJson, FeatureGroup, Rectangle } from 'react-leaflet'
+import { MdTimeline } from 'react-icons/lib/md'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
 import { getFeedsBounds } from '../../common/util/geo'
 import { getConfigProperty } from '../../common/util/config'
 
-export default class GtfsMap extends React.Component {
+const colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a']
+
+export default class GtfsMap extends Component {
   static propTypes = {
     searchFocus: PropTypes.bool,
     bounds: PropTypes.array,
     feeds: PropTypes.array,
-    entities: PropTypes.array,
-    position: PropTypes.array,
-    stops: PropTypes.array,
+    version: PropTypes.object,
+
     onStopClick: PropTypes.func,
     onRouteClick: PropTypes.func,
     onZoomChange: PropTypes.func,
     popupAction: PropTypes.func,
     newEntityId: PropTypes.string,
-    patterns: PropTypes.array
+
+    entities: PropTypes.array,
+    position: PropTypes.array,
+    stops: PropTypes.array,
+    patterns: PropTypes.array,
+    routes: PropTypes.array,
+
+    width: PropTypes.string, // % or px
+    height: PropTypes.number // only px
   }
   constructor (props) {
     super(props)
@@ -41,65 +49,155 @@ export default class GtfsMap extends React.Component {
   }
 
   componentDidMount () {
+    console.log('map mount')
+    this.resetMap()
   }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.feeds.length !== this.props.feeds.length && this.refs.map) {
-      this.refreshGtfsElements(nextProps.feeds)
+  resetMap () {
+    setTimeout(() => {
+      this.refs.map.leafletElement.invalidateSize()
+      this.refs.map.leafletElement.fitBounds(this.getBounds())
+    }, 500)
+  }
+  mapClicked (e) {
+    if (this.props.showIsochrones) {
+      this.fetchIsochrones(e.latlng)
     }
+  }
+  componentWillReceiveProps (nextProps) {
+    if (!this.props.disableRefresh) {
+      if (nextProps.feeds.length !== this.props.feeds.length && this.refs.map) {
+        this.refreshGtfsElements(nextProps.feeds)
+      }
 
-    if (nextProps.entities !== this.props.entities && this.refs.map) {
-      this.refreshGtfsElements(nextProps.feeds, nextProps.entities)
+      if (nextProps.entities !== this.props.entities && this.refs.map) {
+        this.refreshGtfsElements(nextProps.feeds, nextProps.entities)
+      }
     }
 
     // handle stop: panning to
     if (nextProps && nextProps.position !== this.props.position) {
       this.refs.map.leafletElement.panTo(nextProps.position)
     }
-  }
 
-  render () {
-    var mapStyle = {
-      height: '400px',
-      width: '555px'
+    if (nextProps.height !== this.props.height || nextProps.width !== this.props.width) {
+      this.resetMap()
     }
+
+    // recalculate isochrone if date/time changes
+    if (!shallowEqual(nextProps.dateTime, this.props.dateTime)) {
+      this.state.lastClicked && this.props.showIsochrones && this.fetchIsochrones(this.state.lastClicked)
+    }
+  }
+  getBounds () {
     let bounds = getFeedsBounds(this.props.feeds)
     bounds = bounds && bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
+    return bounds
+  }
+  fetchIsochrones (latlng) {
+    const center = this.refs.map.leafletElement.getCenter()
+    this.props.fetchIsochrones(this.props.version, latlng.lat, latlng.lng, center.lat, center.lng)
+    this.setState({ lastClicked: latlng })
+  }
+  getIsochroneColor (time) {
+    return time ? 'blue' : 'red'
+  }
+  renderIsochrones () {
+    let comps = []
+    const bandTime = this.props.isochroneBand || 60 * 60
+    if (this.props.version && this.props.version.isochrones) {
+      comps = this.props.version.isochrones.features.map((iso, index) => {
+        if (iso.properties.time !== bandTime) return null
+        return (
+          <GeoJson
+            key={Math.random()}
+            data={{type: 'MultiPolygon', coordinates: iso.geometry.coordinates}}
+            color={'blue'}
+            style={(feature) => {
+              return {
+                color: this.getIsochroneColor(iso.properties.time),
+              }
+            }}
+          />
+        )
+      })
+    }
 
+    if(this.state && this.state.lastClicked) {
+      comps.push(
+        <Marker
+          key='marker'
+          position={this.state.lastClicked}
+          draggable
+          onDragEnd={(e) => {
+            this.fetchIsochrones(e.target.getLatLng())
+          }}
+        />
+      )
+    }
+
+    return comps
+  }
+  render () {
+    console.log(this.props)
+    var mapStyle = {
+      width: this.props.width, // % or px
+      height: `${this.props.height}px` // only px
+    }
+    let bounds = this.getBounds()
     const layerAddHandler = (e) => {
       // handle pattern: opening popup and fitting bounds
       if (e.layer.feature && e.layer.feature.properties.patternId) {
         this.refs.map.leafletElement.fitBounds(e.layer.getBounds())
-        e.layer.openPopup()
+        if (!this.props.disablePopup) {
+          e.layer.openPopup()
+        }
       }
     }
-
     return (
     <div>
       <Map
         ref='map'
         style={mapStyle}
         bounds={bounds}
-        onZoomEnd={(e) => {
-          this.props.onZoomChange(e)
-          this.refs.map && this.refreshGtfsElements()
-        }}
-        onMoveEnd={() => this.refs.map && this.refreshGtfsElements()}
+        scrollWheelZoom={!this.props.disableScroll}
+        onClick={(e) => this.mapClicked(e)}
+        // onZoomEnd={(e) => {
+        //   this.props.onZoomChange && this.props.onZoomChange(e)
+        //   this.refs.map && !this.props.disableRefresh && this.refreshGtfsElements()
+        // }}
+        // onMoveEnd={() => this.refs.map && !this.props.disableRefresh && this.refreshGtfsElements()}
         onLayerAdd={layerAddHandler}
         className='Gtfs-Map'
-        >
+      >
         <TileLayer
           url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}${Browser.retina ? '@2x' : ''}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
           attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
         />
+        {this.props.showBounds
+          ? <Rectangle
+              bounds={bounds}
+              fillOpacity={0}
+            />
+          : null
+        }
+        <FeatureGroup>
         {this.props.stops ? this.props.stops.map((stop, index) => {
           if (stop) {
+            const busIcon = divIcon({
+              html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon" style="opacity: 0.6">
+                      <i class="fa fa-circle fa-stack-2x" style="color: #ffffff"></i>
+                      <i class="fa fa-bus fa-stack-1x" style="color: #000000"></i>
+                    </span>`,
+              className: '',
+              iconSize: [24, 24],
+            })
             return (
               <Marker
                 ref={`marker-${stop.stop_id}`}
-                onAdd={(e) => {
-                  e.target.openPopup()
-                }}
+                icon={busIcon}
+                // onAdd={(e) => {
+                //   e.target.openPopup()
+                // }}
                 position={[stop.stop_lat, stop.stop_lon]}
                 key={`marker-${stop.stop_id}`}
                 >
@@ -116,87 +214,36 @@ export default class GtfsMap extends React.Component {
                       </li>
                       {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
                     </ul>
-                    <Button href='#' onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
-                  </div>
-                </Popup>
-              </Marker>
-            )
-          }
-        })
-        : null
-      }
-        {this.state.stops ? this.state.stops.map((stop, index) => {
-          if (stop) {
-            return (
-              <Marker
-                position={[stop.stop_lat, stop.stop_lon]}
-                key={`marker-${stop.stop_id}`}
-                >
-                <Popup>
-                  <div>
-                    <h3>{stop.stop_name}</h3>
-                    <ul>
-                      <li><strong>ID:</strong> {stop.stop_id}</li>
-                      <li><strong>Agency:</strong>{' '}
-                      {// TODO: change this back to feedName
-                        stop.feed_id
-                        // getFeed(this.props.feeds, stop.feed_id).name
-                      }
-                      </li>
-                      {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
-                    </ul>
-                    <Button href='#' onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>{this.props.popupAction} {stop.stop_id}</Button>
-                  </div>
-                </Popup>
-              </Marker>
-            )
-          }
-        })
-        : null
-        }
-        {this.state.patterns ? this.state.patterns.map((pattern, index) => {
-          if (pattern) {
-            const route = pattern.associatedRoutes[0]
-            const routeName = route.route_short_name !== null ? route.route_short_name : route.route_long_name
-            return (
-              <GeoJson
-                key={pattern.pattern_id}
-                color={route.route_color !== null ? '#' + route.route_color : 'blue' }
-                data={{type: 'LineString', coordinates: pattern.geometry.coordinates}}
-              >
-                <Popup>
-                  <div>
-                    <h3>{routeName}</h3>
-                    <ul>
-                      <li><strong>ID:</strong> {route.route_id}</li>
-                      <li><strong>Agency:</strong>{' '}
-                      {// TODO: change this back to feedName
-                        route.feed_id
-                        // getFeed(this.props.feeds, route.feed_id).name
-                      }
-                      </li>
-                    </ul>
-                    {this.props.onRouteClick
-                      ? <Button href='#' onClick={() => this.props.onRouteClick(route, getFeed(this.props.feeds, route.feed_id), this.props.newEntityId)}>{this.props.popupAction} {route.route_id}</Button>
-                      : <p>[Must add stops first]</p>
+                    {this.props.onStopClick
+                      ? <Button href='#' onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>
+                          {this.props.popupAction} {stop.stop_id}
+                        </Button>
+                      : null
                     }
-
                   </div>
                 </Popup>
-              </GeoJson>
+              </Marker>
             )
           }
         })
         : null
       }
+      </FeatureGroup>
+      <FeatureGroup>
         {this.props.patterns ? this.props.patterns.map((pattern, index) => {
           if (pattern) {
-            const route = pattern.associatedRoutes[0]
+            console.log(pattern)
+            const route = this.props.routes.find(r => r.route_id === pattern.route_id)
             const routeName = route.route_short_name !== null ? route.route_short_name : route.route_long_name
             const popup = (
               <Popup>
                 <div>
-                  <h3>{routeName}</h3>
+                  <h3>
+                  <MdTimeline/>
+                  {
+                    pattern.name // routeName
+                  }
+                  </h3>
                   <ul>
                     <li><strong>ID:</strong> {route.route_id}</li>
                     <li><strong>Agency:</strong>{' '}
@@ -215,9 +262,9 @@ export default class GtfsMap extends React.Component {
             )
             return (
               <GeoJson
-                color={route.route_color !== null ? '#' + route.route_color : 'blue' }
+                color={colors[index % (colors.length - 1)]}
                 key={pattern.pattern_id}
-                data={{type: 'LineString', coordinates: pattern.geometry.coordinates}}
+                data={pattern.geometry}
                 onEachFeature={(feature, layer) => {
                   layer.feature.properties.route = route
                   layer.feature.properties.patternId = pattern.pattern_id
@@ -233,6 +280,8 @@ export default class GtfsMap extends React.Component {
         })
         : null
       }
+      </FeatureGroup>
+      {this.props.showIsochrones && this.renderIsochrones()}
       </Map>
     </div>
     )

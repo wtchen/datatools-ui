@@ -41,11 +41,12 @@ export default function reducer(state=defaultState, action) {
             fetching: false,
             error: true
           }
-        }
+        },
+        data: []
       })
       break
     case 'FETCH_GRAPHQL_FEED_FULFILLED':
-      let feedData = action.payload.data.feeds[0],
+      let feedData = action.data.feeds[0],
         feedStats = []
       const feedKeys = Object.keys(feedData)
       for (let i = 0; i < feedKeys.length; i++) {

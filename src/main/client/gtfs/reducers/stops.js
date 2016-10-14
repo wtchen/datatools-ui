@@ -28,6 +28,17 @@ export default function reducer (state = defaultState, action) {
           data: {$set: []}
         }
       )
+    case 'FETCH_GRAPHQL_STOPS_REJECTED':
+      return update(state, {
+        fetchStatus: {
+          $set: {
+            fetched: false,
+            fetching: false,
+            error: true
+          },
+          data: {$set: []}
+        }
+      })
     case 'FETCH_GRAPHQL_STOPS_FULFILLED':
       let allRoutes = action.data.routes || []
       let allPatterns = []
@@ -46,19 +57,6 @@ export default function reducer (state = defaultState, action) {
           for (let k = 0; k < pattern.stops.length; k++) {
             let stop = pattern.stops[k]
             allStops.push(stop)
-          }
-        }
-      }
-
-      for (let i = 0; i < allStops.length; i++) {
-        if (allStops[i].stats) {
-          for (let key in allStops[i].stats) {
-            allStops[i][key] = allStops[i].stats[key]
-          }
-        }
-        if (allStops[i].transferPerformance) {
-          for (let key in allStops[i].transferPerformance) {
-            allStops[i][key] = allStops[i].transferPerformance[key]
           }
         }
       }

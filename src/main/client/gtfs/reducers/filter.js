@@ -6,10 +6,11 @@ const gtfsFilter = (state = {
   activeFeeds: [],
   loadedFeeds: [],
   permissionFilter: 'view-feed',
+  version: null,
   dateTimeFilter: {
     date: moment().format('YYYY-MM-DD'),
-    from: 0,
-    to: 86399
+    from: 60 * 60 * 6,
+    to: 60 * 60 * 9
   }
 }, action) => {
   // console.log(action)

@@ -17,7 +17,7 @@ function receiveRoutes (feedId, data) {
 
 export function fetchRoutes (feedId) {
   return function (dispatch, getState) {
-    dispatch(fetchingRoutes())
+    dispatch(fetchingRoutes(feedId))
     return fetch(compose(routes, { feedId: feedId }))
       .then((response) => {
         return response.json()

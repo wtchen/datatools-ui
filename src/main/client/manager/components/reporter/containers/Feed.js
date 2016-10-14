@@ -4,20 +4,18 @@ import { connect } from 'react-redux'
 import { fetchFeed } from '../../../../gtfs/actions/feed'
 import FeedLayout from '../components/FeedLayout'
 
-
 const mapStateToProps = (state, ownProps) => {
   return {
-    feed: state.feed
+    feed: state.gtfs.feed
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const feedId = ownProps.version.feedSource.id
   return {
     onComponentMount: (initialProps) => {
-      console.log('feed mount')
-      if(!initialProps.feed.fetchStatus.fetched) {
-        console.log('do dispatch fetch feed')
-        dispatch(fetchFeed())
+      if (!initialProps.feed.fetchStatus.fetched) {
+        dispatch(fetchFeed(feedId))
       }
     }
   }

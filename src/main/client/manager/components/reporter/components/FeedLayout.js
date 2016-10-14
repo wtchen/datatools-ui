@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { PropTypes, Component } from 'react'
 import { Grid, Alert } from 'react-bootstrap'
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 
 import Loading from '../../../../common/components/Loading'
 
 
-export default class FeedLayout extends React.Component {
+export default class FeedLayout extends Component {
 
   static propTypes = {}
   componentWillMount () {
@@ -15,10 +15,9 @@ export default class FeedLayout extends React.Component {
   render () {
     return (
 
-      <Grid>
+      <div>
 
-        {(this.props.feed.fetchStatus.fetching ||
-          !this.props.feed.fetchStatus.fetched) &&
+        {this.props.feed.fetchStatus.fetching &&
           <Loading />
         }
 
@@ -40,7 +39,7 @@ export default class FeedLayout extends React.Component {
           </BootstrapTable>
         }
 
-      </Grid>
+      </div>
     )
   }
 }

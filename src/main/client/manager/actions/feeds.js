@@ -1,3 +1,5 @@
+import qs from 'qs'
+
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, fetchProjectWithFeeds } from './projects'
 import { setErrorMessage, startJobMonitor } from './status'
@@ -440,10 +442,16 @@ export function receiveFeedVersionIsochrones (feedSource, feedVersion, isochrone
   }
 }
 
-export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon) {
+export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon, date, fromTime, toTime) {
   return function (dispatch, getState) {
+    if (typeof date === 'undefined' || typeof fromTime === 'undefined' || typeof toTime === 'undefined') {
+      date = getState().gtfs.filter.dateTimeFilter.date
+      fromTime = getState().gtfs.filter.dateTimeFilter.from
+      toTime = getState().gtfs.filter.dateTimeFilter.to
+    }
     dispatch(requestingFeedVersionIsochrones())
-    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`
+    const params = {fromLat, fromLon, toLat, toLon, date, fromTime, toTime}
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?${qs.stringify(params)}`
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(isochrones => {
