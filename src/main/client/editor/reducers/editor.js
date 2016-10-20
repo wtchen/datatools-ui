@@ -1,9 +1,9 @@
 import update from 'react-addons-update'
 import rbush from 'rbush'
 import clone from 'clone'
-import polyUtil from 'polyline-encoded'
 import { getControlPoints, getEntityBounds, stopToGtfs, agencyToGtfs, gtfsSort } from '../util/gtfs'
 import { latLngBounds } from 'leaflet'
+import ll from 'lonlng'
 import { CLICK_OPTIONS } from '../util'
 
 const defaultState = {
@@ -507,11 +507,15 @@ const editor = (state = defaultState, action) => {
       // feedTableData.route = routes
       routeIndex = state.active.entity && routes.findIndex(r => r.id === state.active.entity.id)
       if (routeIndex !== -1) {
-        let followStreets = routes[routeIndex] ? routes[routeIndex].route_type === 3 || routes[routeIndex].route_type === 0 : true
+        let activeRoute = routes[routeIndex]
+        if (state.active.entity && state.active.entity.tripPatterns) {
+          activeRoute.tripPatterns = clone(state.active.entity.tripPatterns)
+        }
+        let followStreets = activeRoute ? activeRoute.route_type === 3 || activeRoute.route_type === 0 : true
         return update(state, {
           tableData: {route: {$set: routes}},
           active: {
-            entity: {$set: routes[routeIndex]},
+            entity: {$set: activeRoute},
             edited: {$set: false}
           },
           editSettings: {
@@ -529,7 +533,7 @@ const editor = (state = defaultState, action) => {
           Object.keys(action.tripPatterns).map(key => {
             return {
               id: key,
-              latLngs: action.tripPatterns[key].shape ? polyUtil.decode(action.tripPatterns[key].shape) : null
+              latLngs: action.tripPatterns[key].shape ? (action.tripPatterns[key].shape.coordinates.map(c => ll.fromCoordinates(c))) : null
             }
           })
         }
@@ -817,8 +821,8 @@ const editor = (state = defaultState, action) => {
 
     case 'RECEIVE_GTFSEDITOR_VALIDATION':
       const validationTable = {}
-      for(const issue of action.validationIssues) {
-        if(!(issue.tableId in validationTable)) {
+      for (const issue of action.validationIssues) {
+        if (!(issue.tableId in validationTable)) {
           validationTable[issue.tableId] = []
         }
         validationTable[issue.tableId].push(issue)

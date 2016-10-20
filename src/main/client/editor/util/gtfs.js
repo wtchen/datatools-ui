@@ -74,6 +74,8 @@ export const getEntityName = (component, entity) => {
         : entity.route_long_name && entity.route_long_name !== '""'
         ? entity.route_long_name
         : entity.route_id || '[no name]'
+      case 'description':
+        return `${entity.service_id} (${entity.description})`
     default:
       return entity[nameKey] || '[no name]'
   }

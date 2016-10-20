@@ -1,5 +1,4 @@
 import JSZip from 'jszip'
-import faker from 'faker'
 import shp from 'shpjs'
 
 import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
@@ -273,6 +272,16 @@ export function cloneGtfsEntity (feedSourceId, component, entityId, save) {
   }
 }
 
+export function newGtfsEntities (feedSourceId, component, propsArray, save) {
+  return function (dispatch, getState) {
+    Promise.all(propsArray.map(props => {
+      return dispatch(newGtfsEntity(feedSourceId, component, props, save))
+    })).then(results => {
+      return results
+    })
+  }
+}
+
 export function newGtfsEntity (feedSourceId, component, props, save) {
   return function (dispatch, getState) {
     if (!props) {
@@ -285,7 +294,7 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
               route_id: generateUID(),
               agency_id: agency ? agency.id : null,
               route_short_name: generateRandomInt(1, 300),
-              route_long_name: faker.address.streetName(),
+              route_long_name: null,
               route_color: color,
               route_text_color: idealTextColor(color),
               route_type: getState().editor.tableData.feedinfo && getState().editor.tableData.feedinfo.defaultRouteType !== null ? getState().editor.tableData.feedinfo.defaultRouteType : 3,
@@ -294,7 +303,7 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
             let stopId = generateUID()
             return {
               stop_id: stopId,
-              stop_name: faker.address.streetName(),
+              stop_name: null,
               stop_lat: 0,
               stop_lon: 0,
               // route_color: color,
@@ -315,15 +324,6 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
     }
     if (save) {
       return dispatch(saveActiveGtfsEntity(component, props))
-      // .then((entity) => {
-      //   if (props && 'routeId' in props) {
-      //     dispatch(setActiveGtfsEntity(feedSourceId, 'route', props.routeId, component, entity.id))
-      //   }
-      //   else {
-      //     console.log('setting after save')
-      //     dispatch(setActiveGtfsEntity(feedSourceId, component, entity.id))
-      //   }
-      // })
     } else {
       dispatch(createGtfsEntity(feedSourceId, component, props))
       if (props && 'routeId' in props) {
@@ -335,7 +335,6 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
         dispatch(setActiveGtfsEntity(feedSourceId, component, 'new'))
       }
     }
-
   }
 }
 

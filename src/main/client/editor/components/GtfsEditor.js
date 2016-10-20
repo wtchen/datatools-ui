@@ -43,6 +43,7 @@ export default class GtfsEditor extends Component {
     deleteEntity: PropTypes.func,
     cloneEntity: PropTypes.func,
     newGtfsEntity: PropTypes.func,
+    setTutorialHidden: PropTypes.func,
 
     sidebarExpanded: PropTypes.bool,
 
@@ -214,9 +215,10 @@ export default class GtfsEditor extends Component {
             sidebarExpanded={this.props.sidebarExpanded}
             {...this.props}
           />
-          {!this.props.activeComponent
+          {!this.props.activeComponent && !this.props.hideTutorial
             ? <EditorHelpModal
                 show
+                setTutorialHidden={this.props.setTutorialHidden}
               />
             : null
           }

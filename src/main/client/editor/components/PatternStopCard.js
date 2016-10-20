@@ -128,7 +128,15 @@ export default class PatternStopCard extends Component {
                 {/* Remove from pattern button */}
                 <Row>
                   <Col xs={6}>
-                    <Checkbox>
+                    <Checkbox
+                      checked={stop.timepoint}
+                      onChange={() => {
+                        let patternStops = [...activePattern.patternStops]
+                        patternStops[index].timepoint = !stop.timepoint
+                        updateActiveEntity(activePattern, 'trippattern', {patternStops})
+                        saveActiveEntity('trippattern')
+                      }}
+                    >
                       Timepoint?
                     </Checkbox>
                   </Col>

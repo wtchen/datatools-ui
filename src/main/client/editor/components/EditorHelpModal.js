@@ -8,10 +8,14 @@ export default class EditorHelpModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      showModal: this.props.show
+      showModal: this.props.show,
+      hideTutorial: this.props.hideTutorial
     }
   }
   close () {
+    if (this.state.hideTutorial !== this.props.hideTutorial) {
+      this.props.setTutorialHidden(!this.props.hideTutorial)
+    }
     this.setState({ showModal: false })
   }
   open () {
@@ -55,7 +59,14 @@ export default class EditorHelpModal extends Component {
           </Carousel>
         </Modal.Body>
         <Modal.Footer>
-          <small className='pull-left'><Checkbox>Do not show when editor opens</Checkbox></small>
+          <small className='pull-left'>
+            <Checkbox
+              checked={this.state.hideTutorial}
+              onChange={() => this.setState({hideTutorial: !this.state.hideTutorial})}
+            >
+              Do not show when editor opens
+            </Checkbox>
+          </small>
           <Button onClick={() => this.close()}>Close</Button>
         </Modal.Footer>
       </Modal>

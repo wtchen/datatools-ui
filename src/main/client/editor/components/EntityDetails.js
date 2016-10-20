@@ -72,8 +72,9 @@ export default class EntityDetails extends Component {
   handleClose (field) {
     this.setState({ [field]: !this.state[field] })
   }
-  shouldComponentUpdate (nextProps) {
-    return !shallowEqual(nextProps.feedSource, this.props.feedSource) ||
+  shouldComponentUpdate (nextProps, nextState) {
+    return !shallowEqual(nextState, this.state) || // for color picker
+    !shallowEqual(nextProps.feedSource, this.props.feedSource) ||
     !shallowEqual(nextProps.subComponent, this.props.subComponent) ||
     !shallowEqual(nextProps.subEntityId, this.props.subEntityId) ||
     !shallowEqual(nextProps.mapState.target, this.props.mapState.target) ||
@@ -83,7 +84,6 @@ export default class EntityDetails extends Component {
     !shallowEqual(nextProps.width, this.props.width)
   }
   render () {
-    // console.log(this.props)
     const approveGtfsDisabled = this.props.project && this.props.feedSource && this.props.user && !this.props.user.permissions.hasFeedPermission(this.props.project.id, this.props.feedSource.id, 'approve-gtfs')
     const styles = reactCSS({
       'default': {

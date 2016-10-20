@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react'
 import { Button, ButtonGroup, DropdownButton, Dropdown, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import Icon from 'react-fa'
 import { browserHistory } from 'react-router'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 import CreateSnapshotModal from './CreateSnapshotModal'
 import SelectFileModal from '../../common/components/SelectFileModal.js'
@@ -66,7 +65,7 @@ export default class FeedInfoPanel extends Component {
       : 'Unnamed'
 
     return (
-      <ReactCSSTransitionGroup transitionName={`slide-${this.state.right > 0 ? 'right' : 'left'}`} transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+      <div>
       <SelectFileModal ref='selectFileModal'/>
       <div style={panelStyle}>
         <CreateSnapshotModal ref='snapshotModal'
@@ -177,7 +176,7 @@ export default class FeedInfoPanel extends Component {
             }
           </ButtonGroup>
       </div>
-      </ReactCSSTransitionGroup>
+      </div>
     )
   }
 }

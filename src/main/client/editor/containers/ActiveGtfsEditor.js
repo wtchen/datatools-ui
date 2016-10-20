@@ -12,6 +12,7 @@ import {
 } from '../actions/stop'
 import {
   fetchTripPatternsForRoute,
+  fetchTripPatterns,
   undoActiveTripPatternEdits,
   updateControlPoint,
   addControlPoint,
@@ -25,6 +26,7 @@ import {
 import {
   setActiveGtfsEntity,
   newGtfsEntity,
+  newGtfsEntities,
   cloneGtfsEntity,
   updateEditSetting,
   updateMapSetting,
@@ -44,6 +46,7 @@ import {
 } from '../actions/editor'
 import { updateUserMetadata } from '../../manager/actions/user'
 import { findProjectByFeedSource } from '../../manager/util'
+import { setTutorialHidden } from '../../manager/actions/ui'
 
 const mapStateToProps = (state, ownProps) => {
   const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
@@ -91,6 +94,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     tableData: state.editor.tableData,
+    hideTutorial: state.ui.hideTutorial,
     tripPatterns: state.editor.tripPatterns,
     // gtfsEntityLookup: state.editor.gtfsEntityLookup,
     // validation: state.editor.validation,
@@ -254,6 +258,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     newGtfsEntity: (feedSourceId, component, props, save) => {
       return dispatch(newGtfsEntity(feedSourceId, component, props, save))
     },
+    newGtfsEntities: (feedSourceId, component, propsArray, save) => {
+      return dispatch(newGtfsEntities(feedSourceId, component, propsArray, save))
+    },
 
     // ENTITY-SPECIFIC FUNCTIONS
     uploadBrandingAsset: (feedSourceId, entityId, component, file) => {
@@ -268,6 +275,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     clearGtfsContent: () => { dispatch(clearGtfsContent()) },
     fetchTripPatternsForRoute: (feedSourceId, routeId) => { dispatch(fetchTripPatternsForRoute(feedSourceId, routeId)) },
+    fetchTripPatterns: (feedSourceId) => { dispatch(fetchTripPatterns(feedSourceId)) },
     fetchStopsForTripPattern: (feedSourceId, tripPatternId) => { dispatch(fetchStopsForTripPattern(feedSourceId, tripPatternId)) },
     fetchStops: (feedSourceId) => { dispatch(fetchStops(feedSourceId)) },
     fetchTripsForCalendar: (feedSourceId, pattern, calendarId) => { dispatch(fetchTripsForCalendar(feedSourceId, pattern, calendarId)) },
@@ -276,7 +284,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
     addControlPoint: (controlPoint, index) => { dispatch(addControlPoint(controlPoint, index)) },
     removeControlPoint: (index) => { dispatch(removeControlPoint(index)) },
-    updateControlPoint: (index, point, distance) => { dispatch(updateControlPoint(index, point, distance)) }
+    updateControlPoint: (index, point, distance) => { dispatch(updateControlPoint(index, point, distance)) },
+
+    // EDITOR UI
+    setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) },
   }
 }
 

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Table, Button, ButtonGroup, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
+import { Table, Button, ButtonGroup, Alert, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
 import {Icon} from 'react-fa'
 import { sentence as toSentenceCase } from 'change-case'
 import Rcslider from 'rc-slider'
@@ -93,7 +93,6 @@ export default class TripPatternList extends Component {
     this.props.saveActiveEntity('trippattern')
   }
   render () {
-    // console.log(this.props)
     const { feedSource, activeEntity } = this.props
     const activePatternId = this.props.subEntityId
     if (!activeEntity.tripPatterns) {
@@ -252,7 +251,7 @@ export default class TripPatternList extends Component {
                               })
                             }}
                           >
-                            <span><Icon name='times'/> Delete</span>
+                            <span><Icon name='trash'/> Delete</span>
                           </Button>,
                           <Button
                             style={{marginBottom: '5px'}}
@@ -280,8 +279,8 @@ export default class TripPatternList extends Component {
                       }
                       {this.props.editSettings.editGeometry
                         ? <FormGroup className='col-xs-12'>
-                            <ControlLabel>Edit settings</ControlLabel>
-                            <Checkbox checked={this.props.editSettings.followStreets} onChange={() => this.props.updateEditSetting('followStreets', !this.props.editSettings.followStreets)}>
+                            <ControlLabel style={{marginTop: '5px'}}>Edit settings</ControlLabel>
+                            <Checkbox style={{marginTop: '0px'}} checked={this.props.editSettings.followStreets} onChange={() => this.props.updateEditSetting('followStreets', !this.props.editSettings.followStreets)}>
                               Snap to streets
                             </Checkbox>
                             <Checkbox checked={this.props.editSettings.snapToStops} onChange={() => this.props.updateEditSetting('snapToStops', !this.props.editSettings.snapToStops)}>
@@ -290,7 +289,7 @@ export default class TripPatternList extends Component {
                             <Checkbox checked={!this.props.editSettings.hideStops} onChange={() => this.props.updateEditSetting('hideStops', !this.props.editSettings.hideStops)}>
                               Show stops
                             </Checkbox>
-                            <ControlLabel>Edit mode</ControlLabel>
+                            <ControlLabel>Editing mode</ControlLabel>
                             <FormControl
                               componentClass='select'
                               value={this.props.editSettings.onMapClick}
@@ -349,6 +348,12 @@ export default class TripPatternList extends Component {
                                   />
                                   <span> intersections</span>
                                 </Form>
+                              : null
+                            }
+                            {this.props.editSettings.onMapClick.includes('ADD_')
+                              ? <Alert bsStyle='warning' style={{marginTop: '30px'}}>
+                                  <small><strong>Warning!</strong> This editing mode creates new stops. Unless no existing stops are nearby, this mode is not recommended.</small>
+                                </Alert>
                               : null
                             }
                           </FormGroup>
@@ -607,11 +612,13 @@ export default class TripPatternList extends Component {
                   onClick={() => {
                     this.props.showConfirmModal({
                       title: `Delete trip pattern?`,
-                      body: `Are you sure you want to delete this trip pattern?`,
+                      body: `Are you sure you want to delete this trip pattern? This will delete all trips associated with this pattern.`,
                       onConfirm: () => {
                         this.props.deleteEntity(feedSource.id, 'trippattern', activePattern.id, activePattern.routeId)
                         this.props.setActiveEntity(feedSource.id, 'route', activeEntity, 'trippattern')
-                      }
+                      },
+                      confirmButtonStyle: 'danger',
+                      confirmButtonText: 'Delete pattern',
                     })
                   }}
                 >
