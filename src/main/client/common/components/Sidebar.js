@@ -150,12 +150,20 @@ export default class Sidebar extends Component {
         close={() => closePopover()}
       >
         <div>
-          <Checkbox ref='showLabelsCheckbox' checked={this.props.expanded}
+          <Checkbox
+            ref='showLabelsCheckbox'
+            checked={this.props.expanded}
             onClick={() => { this.props.setSidebarExpanded(!this.props.expanded) }}
           >
             Show Sidebar Labels
           </Checkbox>
-
+          <Checkbox
+            ref='showTutorialCheckbox'
+            checked={this.props.hideTutorial}
+            onClick={() => { this.props.setTutorialHidden(!this.props.hideTutorial) }}
+          >
+            Hide editor tutorial
+          </Checkbox>
         </div>
       </SidebarPopover>
 
