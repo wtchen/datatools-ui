@@ -12,6 +12,7 @@ export default class SelectFileModal extends React.Component {
   }
 
   close () {
+    if (this.props.onClose) this.props.onClose()
     this.setState({
       showModal: false
     })
@@ -24,6 +25,7 @@ export default class SelectFileModal extends React.Component {
         title: props.title,
         body: props.body,
         onConfirm: props.onConfirm,
+        onClose: props.onClose,
         errorMessage: props.errorMessage
       })
     } else {
