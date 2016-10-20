@@ -11,6 +11,7 @@ export default class ConfirmModal extends React.Component {
   }
 
   close () {
+    if (this.props.onClose) this.props.onClose()
     this.setState({
       showModal: false
     })
@@ -23,7 +24,10 @@ export default class ConfirmModal extends React.Component {
         showModal: true,
         title: props.title,
         body: props.body,
-        onConfirm: props.onConfirm
+        onConfirm: props.onConfirm,
+        onClose: props.onClose,
+        confirmButtonStyle: props.confirmButtonStyle,
+        confirmButtonText: props.confirmButtonText,
       })
     } else {
       this.setState({ showModal: true })
@@ -48,7 +52,12 @@ export default class ConfirmModal extends React.Component {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button onClick={() => this.ok()}>OK</Button>
+          <Button
+            onClick={() => this.ok()}
+            bsStyle={this.state.confirmButtonStyle ? this.state.confirmButtonStyle : 'default'}
+          >
+            {this.state.confirmButtonText ? this.state.confirmButtonText : 'OK'}
+          </Button>
           <Button onClick={() => this.close()}>Cancel</Button>
         </Modal.Footer>
       </Modal>
