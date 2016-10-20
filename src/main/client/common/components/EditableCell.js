@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
-import ContentEditable from 'react-contenteditable'
 import moment from 'moment'
 
 export default class EditableCell extends Component {
