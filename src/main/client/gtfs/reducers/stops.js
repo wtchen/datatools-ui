@@ -15,6 +15,8 @@ const defaultState = {
 
 export default function reducer (state = defaultState, action) {
   switch (action.type) {
+    case 'SET_ACTIVE_FEEDVERSION':
+      return defaultState
     case 'FETCH_GRAPHQL_STOPS':
       return update(state,
         {

@@ -119,11 +119,13 @@ export const stopsFiltered = (feedId, routeId, patternId, date, from, to) => {
             headway,
             tripCount
           },
-          # transferPerformance(date: $date, from: $from, to: $to){
-          #   fromRoute,
-          #   toRoute,
-          #   bestCase
-          # },
+          transferPerformance(date: $date, from: $from, to: $to){
+            fromRoute,
+            toRoute,
+            bestCase,
+            worstCase,
+            typicalCase
+          },
           `
         : ''}
       # zone_id,

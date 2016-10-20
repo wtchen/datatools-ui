@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
-import { Button } from 'react-bootstrap'
+import moment from 'moment'
+import { Button, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
 import { divIcon, Browser } from 'leaflet'
 import { Map, Marker, Popup, TileLayer, GeoJson, FeatureGroup, Rectangle } from 'react-leaflet'
-import { MdTimeline } from 'react-icons/lib/md'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
 import { getFeedsBounds } from '../../common/util/geo'
@@ -55,7 +55,7 @@ export default class GtfsMap extends Component {
   resetMap () {
     setTimeout(() => {
       this.refs.map.leafletElement.invalidateSize()
-      this.refs.map.leafletElement.fitBounds(this.getBounds())
+      // this.refs.map.leafletElement.fitBounds(this.getBounds())
     }, 500)
   }
   mapClicked (e) {
@@ -89,7 +89,13 @@ export default class GtfsMap extends Component {
     }
   }
   getBounds () {
-    let bounds = getFeedsBounds(this.props.feeds)
+    let bounds
+    if (this.props.feeds) {
+      bounds = getFeedsBounds(this.props.feeds)
+    }
+    else if (this.props.version) {
+      bounds = this.props.version.validationSummary.bounds
+    }
     bounds = bounds && bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
     return bounds
   }
@@ -112,6 +118,7 @@ export default class GtfsMap extends Component {
             key={Math.random()}
             data={{type: 'MultiPolygon', coordinates: iso.geometry.coordinates}}
             color={'blue'}
+            opacity={0}
             style={(feature) => {
               return {
                 color: this.getIsochroneColor(iso.properties.time),
@@ -203,17 +210,38 @@ export default class GtfsMap extends Component {
                 >
                 <Popup>
                   <div>
-                    <h3>{stop.stop_name}</h3>
-                    <ul>
-                      <li><strong>ID:</strong> {stop.stop_id}</li>
-                      <li><strong>Agency:</strong>{' '}
-                        {// TODO: change this back to feedName
-                          stop.feed_id
-                          // getFeed(this.props.feeds, stop.feed_id).name
-                        }
-                      </li>
-                      {stop.stop_desc && <li><strong>Desc:</strong> {stop.stop_desc}</li>}
-                    </ul>
+                    <p><strong>{stop.stop_name} ({stop.stop_id})</strong></p>
+                    {stop.transferPerformance && stop.transferPerformance.length
+                      ? <div>
+                          <ControlLabel>Transfer performance</ControlLabel>
+                          <FormControl
+                            componentClass='select'
+                            defaultValue={0}
+                            onChange={(evt) => {
+                              let state = {}
+                              state[stop.stop_id] = +evt.target.value
+                              this.setState(state)}
+                            }
+                          >
+                            {stop.transferPerformance
+                              // .sort((a, b) => {
+                              //
+                              // })
+                              .map((summary, index) => {
+                                const fromRoute = this.props.routes.find(r => r.route_id === summary.fromRoute)
+                                const toRoute = this.props.routes.find(r => r.route_id === summary.toRoute)
+                                return <option value={index}>{fromRoute.route_short_name} to {toRoute.route_short_name}</option>
+                              })
+                            }
+                          </FormControl>
+                          <ul className='list-unstyled' style={{marginTop: '5px'}}>
+                            <li><strong>Typical case: {moment.duration(stop.transferPerformance[this.state[stop.stop_id] || 0].typicalCase, 'seconds').humanize()}</strong></li>
+                            <li>Best case: {moment.duration(stop.transferPerformance[this.state[stop.stop_id] || 0].bestCase, 'seconds').humanize()}</li>
+                            <li>Worst case: {moment.duration(stop.transferPerformance[this.state[stop.stop_id] || 0].worstCase, 'seconds').humanize()}</li>
+                          </ul>
+                        </div>
+                      : <p>No transfers found</p>
+                    }
                     {this.props.onStopClick
                       ? <Button href='#' onClick={() => this.props.onStopClick(stop, getFeed(this.props.feeds, stop.feed_id), this.props.newEntityId)}>
                           {this.props.popupAction} {stop.stop_id}
@@ -232,18 +260,19 @@ export default class GtfsMap extends Component {
       <FeatureGroup>
         {this.props.patterns ? this.props.patterns.map((pattern, index) => {
           if (pattern) {
-            console.log(pattern)
+//            console.log(pattern)
             const route = this.props.routes.find(r => r.route_id === pattern.route_id)
             const routeName = route.route_short_name !== null ? route.route_short_name : route.route_long_name
             const popup = (
               <Popup>
                 <div>
-                  <h3>
-                  <MdTimeline/>
+                  <p>
+                  <strong>
                   {
                     pattern.name // routeName
                   }
-                  </h3>
+                  </strong>
+                  </p>
                   <ul>
                     <li><strong>ID:</strong> {route.route_id}</li>
                     <li><strong>Agency:</strong>{' '}

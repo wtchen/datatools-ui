@@ -16,6 +16,8 @@ const gtfsFilter = (state = {
   // console.log(action)
   let activeFeeds, dateTimeFilter
   switch (action.type) {
+    case 'SET_ACTIVE_FEEDVERSION':
+      return update(state, {version: {$set: action.feedVersion ? action.feedVersion.id : null}})
     case 'UPDATE_GTFS_PERMISSION_FILTER':
       return update(state, {permissionFilter: {$set: action.permission}})
     case 'UPDATE_GTFS_DATETIME_FILTER':
