@@ -28,6 +28,7 @@ export function fetchProjectFeeds (projectId) {
       .then(response => response.json())
       .then(feedSources => {
         dispatch(receiveFeedSources(projectId, feedSources))
+        return feedSources
       })
   }
 }
@@ -266,6 +267,13 @@ export function receiveFeedVersions (feedSource, feedVersions) {
     type: 'RECEIVE_FEEDVERSIONS',
     feedSource,
     feedVersions
+  }
+}
+
+export function setActiveVersion (feedVersion) {
+  return {
+    type: 'SET_ACTIVE_FEEDVERSION',
+    feedVersion
   }
 }
 
