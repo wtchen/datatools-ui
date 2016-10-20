@@ -41,6 +41,7 @@ export default class FeedSourceTable extends Component {
   }
 
   render () {
+    console.log(this.state)
     const messages = getComponentMessages('ProjectViewer')
 
     const hover = <FeedSourceDropdown
@@ -51,6 +52,7 @@ export default class FeedSourceTable extends Component {
       deleteFeedSource={(fs) => this.props.deleteFeedSource(fs)}
       uploadFeed={(fs, file) => this.props.uploadFeed(fs, file)}
       fetchFeed={(fs) => this.props.fetchFeed(fs)}
+      setHold={(fs) => this.setState({holdFeedSource: fs})}
     />
 
     return (
@@ -67,6 +69,8 @@ export default class FeedSourceTable extends Component {
                 saveFeedSource={this.props.saveFeedSource}
                 hoverComponent={hover}
                 onHover={(fs) => this.setState({activeFeedSource: fs})}
+                active={this.state.activeFeedSource && this.state.activeFeedSource.id === feedSource.id}
+                hold={this.state.holdFeedSource && this.state.holdFeedSource.id === feedSource.id}
               />
             })
           : <ListGroupItem className='text-center'>
@@ -88,7 +92,9 @@ class FeedSourceTableRow extends Component {
 
     updateFeedSourceProperty: PropTypes.func,
     saveFeedSource: PropTypes.func,
-    onHover: PropTypes.func
+    onHover: PropTypes.func,
+    active: PropTypes.bool,
+    hold: PropTypes.bool
   }
 
   constructor (props) {
@@ -100,10 +106,11 @@ class FeedSourceTableRow extends Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    return !shallowEqual(nextProps.feedSource, this.props.feedSource) || this.state.hovered !== nextState.hovered
+    return !shallowEqual(nextProps.feedSource, this.props.feedSource) || this.props.active !== nextProps.active
   }
 
   render () {
+    console.log('row', this.state)
     const fs = this.props.feedSource
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
@@ -137,19 +144,17 @@ class FeedSourceTableRow extends Component {
         key={fs.id}
         // bsStyle={fs.isPublic ? 'default' : 'warning'}
         onMouseEnter={() => {
-          if (!this.state.hovered) {
-            this.setState({ hovered: true })
             this.props.onHover(fs)
-          }
         }}
         onMouseLeave={() => {
-          if (this.state.hovered) this.setState({ hovered: false })
+          if (!this.props.hold)
+            this.props.onHover(false)
         }}
       >
         <span
           className='pull-right'
           style={{marginTop: '-20px'}}
-        >{this.state.hovered
+        >{this.props.active
           ? this.props.hoverComponent
           : null
         }
@@ -193,7 +198,7 @@ class FeedSourceTableRow extends Component {
           }
         }}
         onMouseLeave={() => {
-          if (this.state.hovered) this.setState({ hovered: false })
+          if (!this.props.active && this.state.hovered) this.setState({ hovered: false })
         }}
       >
         <td className='col-md-4'>
@@ -259,7 +264,15 @@ class FeedSourceDropdown extends Component {
     fetchFeed: PropTypes.func,
     uploadFeed: PropTypes.func
   }
-
+  deleteFeed () {
+    this.props.setHold(this.props.feedSource)
+    this.refs['deleteModal'].open()
+    // this.setState({keepActive: true})
+  }
+  uploadFeed () {
+    this.props.setHold(this.props.feedSource)
+    this.refs['uploadModal'].open()
+  }
   render () {
     const fs = this.props.feedSource
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
@@ -274,6 +287,9 @@ class FeedSourceDropdown extends Component {
           console.log('OK, deleting')
           this.props.deleteFeedSource(fs)
         }}
+        onClose={() => {
+          this.props.setHold(false)
+        }}
       />
 
       <SelectFileModal ref='uploadModal'
@@ -282,10 +298,14 @@ class FeedSourceDropdown extends Component {
         onConfirm={(files) => {
           if (isValidZipFile(files[0])) {
             this.props.uploadFeed(fs, files[0])
+            this.props.setHold(false)
             return true
           } else {
             return false
           }
+        }}
+        onClose={() => {
+          this.props.setHold(false)
         }}
         errorMessage='Uploaded file must be a valid zip file (.zip).'
       />
@@ -298,11 +318,11 @@ class FeedSourceDropdown extends Component {
           console.log(key)
           switch (key) {
             case 'delete':
-              return this.refs['deleteModal'].open()
+              return this.deleteFeed()
             case 'fetch':
               return this.props.fetchFeed(fs)
             case 'upload':
-              return this.refs['uploadModal'].open()
+              return this.uploadFeed()
             case 'deploy':
               return this.props.createDeploymentFromFeedSource(fs)
             case 'public':

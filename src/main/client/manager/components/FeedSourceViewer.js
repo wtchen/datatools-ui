@@ -1,31 +1,22 @@
 import React, {Component, PropTypes} from 'react'
-import fetch from 'isomorphic-fetch'
 import Icon from 'react-fa'
 import Helmet from 'react-helmet'
 import { sentence as toSentenceCase } from 'change-case'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Grid, Row, Col, ListGroup, ListGroupItem, Well, Button, Table, Image, Badge, Panel, Label, Glyphicon, ButtonToolbar, ButtonGroup, Tabs, Tab, FormControl, InputGroup, ControlLabel, FormGroup, Checkbox, DropdownButton, MenuItem } from 'react-bootstrap'
+import { Grid, Row, Col, ListGroup, ListGroupItem, Button, Badge, Panel, Glyphicon, ButtonToolbar, Tabs, Tab, FormControl, InputGroup, ControlLabel, FormGroup, Checkbox } from 'react-bootstrap'
 import { Link, browserHistory } from 'react-router'
 import moment from 'moment'
 import numeral from 'numeral'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Breadcrumbs from '../../common/components/Breadcrumbs'
-import EditableTextField from '../../common/components/EditableTextField'
 import WatchButton from '../../common/containers/WatchButton'
 import StarButton from '../../common/containers/StarButton'
-import { isValidZipFile, retrievalMethodString } from '../../common/util/util'
 import ExternalPropertiesTable from './ExternalPropertiesTable'
 import ActiveFeedVersionNavigator from '../containers/ActiveFeedVersionNavigator'
 import NotesViewer from './NotesViewer'
 import ActiveEditorFeedSourcePanel from '../../editor/containers/ActiveEditorFeedSourcePanel'
 import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
-
-const retrievalMethods = [
-  'FETCHED_AUTOMATICALLY',
-  'MANUALLY_UPLOADED',
-  'PRODUCED_IN_HOUSE'
-]
 
 export default class FeedSourceViewer extends Component {
 
@@ -40,7 +31,9 @@ export default class FeedSourceViewer extends Component {
     activeComponent: PropTypes.string,
     activeSubComponent: PropTypes.string,
 
+    componentDidUpdate: PropTypes.func,
     createDeployment: PropTypes.func,
+    deleteFeedSource: PropTypes.func,
     deleteFeedVersionConfirmed: PropTypes.func,
     downloadFeedClicked: PropTypes.func,
     externalPropertyChanged: PropTypes.func,
@@ -63,14 +56,12 @@ export default class FeedSourceViewer extends Component {
     super(props)
     this.state = {}
   }
-
   componentWillMount () {
     this.props.onComponentMount(this.props)
     // this.setState({willMount: true})
   }
   componentDidMount () {
     this.setState({didMount: true})
-
   }
   componentDidUpdate (prevProps) {
     this.props.componentDidUpdate(prevProps, this.props)
@@ -90,31 +81,16 @@ export default class FeedSourceViewer extends Component {
     }
     return numeral(avg || 0).format('0 b')
   }
-  deleteFeedVersion (feedSource, feedVersion) {
+  confirmDeleteFeedSource (feedSource) {
     this.refs['page'].showConfirmModal({
-      title: 'Delete Feed Version?',
-      body: 'Are you sure you want to delete this version?',
+      title: 'Delete Feed Source?',
+      body: 'Are you sure you want to delete this feed source? This action cannot be undone and all feed versions will be deleted.',
       onConfirm: () => {
-        this.props.deleteFeedVersionConfirmed(feedSource, feedVersion)
+        this.props.deleteFeedSource(feedSource)
+        .then(() => browserHistory.push(`/project/${feedSource.projectId}`))
       }
     })
   }
-
-  // showUploadFeedModal () {
-  //   this.refs.page.showSelectFileModal({
-  //     title: 'Upload Feed',
-  //     body: 'Select a GTFS feed (.zip) to upload:',
-  //     onConfirm: (files) => {
-  //       if (isValidZipFile(files[0])) {
-  //         this.props.uploadFeed(this.props.feedSource, files[0])
-  //         return true
-  //       } else {
-  //         return false
-  //       }
-  //     },
-  //     errorMessage: 'Uploaded file must be a valid zip file (.zip).'
-  //   })
-  // }
 
   render () {
     const fs = this.props.feedSource
@@ -158,15 +134,6 @@ export default class FeedSourceViewer extends Component {
     const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
     const dateFormat = getConfigProperty('application.date_format')
     const autoFetchFeed = fs.retrievalMethod === 'FETCHED_AUTOMATICALLY'
-    const fsCenter = fs.latestValidation && fs.latestValidation.bounds
-      ? `${(fs.latestValidation.bounds.east + fs.latestValidation.bounds.west) / 2},${(fs.latestValidation.bounds.north + fs.latestValidation.bounds.south) / 2}`
-      : null
-    const fsOverlay = fsCenter
-      ? `pin-l-bus(${fsCenter})/`
-      : ''
-    const mapUrl = fsCenter
-      ? `https://api.mapbox.com/v4/mapbox.light/${fsOverlay}${fsCenter},6/1000x400@2x.png?access_token=${getConfigProperty('mapbox.access_token')}`
-      : ''
     const resourceType = this.props.activeComponent === 'settings' && this.props.activeSubComponent && this.props.activeSubComponent.toUpperCase()
     const activeTab = ['settings', 'comments', 'snapshots'].indexOf(this.props.activeComponent) === -1 || typeof this.props.routeParams.feedVersionIndex !== 'undefined'
       ? ''
@@ -188,7 +155,7 @@ export default class FeedSourceViewer extends Component {
                   />
                   <InputGroup.Button>
                     <Button
-                      disabled={!this.state.name || this.state.name === fs.name}
+                      disabled={!this.state.name || this.state.name === fs.name} // disable if no change or no value.
                       onClick={() => {
                         this.props.feedSourcePropertyChanged(fs, 'name', this.state.name)
                         .then(() => this.setState({name: null}))
@@ -220,7 +187,7 @@ export default class FeedSourceViewer extends Component {
                   />
                   <InputGroup.Button>
                     <Button
-                      disabled={!this.state.url || this.state.url === fs.url}
+                      disabled={this.state.url === fs.url} // disable if no change.
                       onClick={() => {
                         this.props.feedSourcePropertyChanged(fs, 'url', this.state.url)
                         .then(() => this.setState({url: null}))
@@ -246,7 +213,7 @@ export default class FeedSourceViewer extends Component {
               <p>This feed source is currently {fs.isPublic ? 'public' : 'private'}.</p>
             </ListGroupItem>
             <ListGroupItem>
-              <Button className='pull-right' bsStyle='danger'><Icon name='trash'/> Delete feed source</Button>
+              <Button onClick={() => this.confirmDeleteFeedSource(fs)} className='pull-right' bsStyle='danger'><Icon name='trash'/> Delete feed source</Button>
               <h4>Delete this feed source.</h4>
               <p>Once you delete a feed source, it cannot be recovered.</p>
             </ListGroupItem>
