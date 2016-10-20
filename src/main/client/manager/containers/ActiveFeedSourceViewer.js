@@ -10,6 +10,7 @@ import {
   downloadFeedViaToken,
   fetchFeedSourceAndProject,
   fetchFeedSource,
+  deleteFeedSource,
   fetchFeedVersions,
   fetchNotesForFeedSource,
   fetchNotesForFeedVersion,
@@ -47,25 +48,10 @@ const mapStateToProps = (state, ownProps) => {
     feedSource = null
   }
   let isFetching = state.projects.isFetching
-  /*let feedVersionIndex
-  let routeVersionIndex = +ownProps.routeParams.feedVersionIndex
-  let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
-  if (feedSource && typeof feedSource.feedVersions !== 'undefined') {
-    if ((hasVersionIndex && isNaN(routeVersionIndex)) || routeVersionIndex > feedSource.feedVersions.length || routeVersionIndex < 0) {
-      console.log(`version index ${routeVersionIndex} is invalid`)
-      // cannot use browserHistory.push in middle of state transition
-      // browserHistory.push(`/feed/${feedSourceId}`)
-      window.location.href = `/feed/${feedSourceId}`
-    } else {
-      feedVersionIndex = hasVersionIndex
-        ? routeVersionIndex
-        : feedSource.feedVersions.length
-    }
-  }*/
+
   return {
     feedSource,
     feedSourceId,
-    //feedVersionIndex,
     activeComponent: ownProps.routeParams.subpage,
     activeSubComponent: ownProps.routeParams.subsubpage,
     project,
@@ -86,7 +72,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadFeedVersionForEditing: (feedVersion) => {
       dispatch(loadFeedVersionForEditing(feedVersion))
     },
-    deleteFeedVersionConfirmed: (feedSource, feedVersion) => {
+    deleteFeedVersion: (feedSource, feedVersion) => {
       dispatch(deleteFeedVersion(feedSource, feedVersion))
     },
     downloadFeedClicked: (feedVersion) => { dispatch(downloadFeedViaToken(feedVersion)) },
@@ -151,6 +137,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
     fetchFeed: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
+    deleteFeedSource: (feedSource) => { return dispatch(deleteFeedSource(feedSource)) },
     updateUserSubscription: (profile, target, subscriptionType) => { dispatch(updateTargetForSubscription(profile, target, subscriptionType)) },
     uploadFeed: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) },
     fetchValidationResult: (feedSource, feedVersion) => {

@@ -24,17 +24,18 @@ export default class FeedVersionNavigator extends Component {
     loadFeedVersionForEditing: PropTypes.func,
     newNotePostedForVersion: PropTypes.func,
     notesRequestedForVersion: PropTypes.func,
-    fetchValidationResult: PropTypes.func
+    fetchValidationResult: PropTypes.func,
+    setVersionIndex: PropTypes.func
   }
-
   constructor (props) {
     super(props)
     this.state = {}
   }
-
   componentWillReceiveProps (nextProps) {
+    if (nextProps.feedVersionIndex !== this.props.feedVersionIndex && nextProps.feedSource && nextProps.feedSource.feedVersions) {
+      this.props.setVersionIndex(nextProps.feedSource, nextProps.feedVersionIndex, false)
+    }
   }
-
   render () {
     console.log(this.props)
     const versionTitleStyle = {
@@ -103,7 +104,7 @@ export default class FeedVersionNavigator extends Component {
                       {/* Previous Version Button */}
                       <Button href='#'
                         disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex - 2]}
-                        onClick={() => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${this.props.feedVersionIndex - 1}`)}
+                        onClick={() => this.props.setVersionIndex(fs, this.props.feedVersionIndex - 1)}
                       >
                         <Glyphicon glyph='arrow-left' />
                       </Button>
@@ -111,7 +112,11 @@ export default class FeedVersionNavigator extends Component {
                       {/* Version Selector Dropdown */}
                       <DropdownButton href='#' id='versionSelector'
                         title={`${getMessage(messages, 'version')} ${this.props.feedVersionIndex} ${getMessage(messages, 'of')} ${versions.length}`}
-                        onSelect={(key) => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${key}`)}
+                        onSelect={(key) => {
+                          if (key !== this.props.feedVersionIndex) {
+                            this.props.setVersionIndex(fs, key)
+                          }
+                        }}
                       >
                         {versions.map((version, k) => {
                           k = k + 1
@@ -122,7 +127,7 @@ export default class FeedVersionNavigator extends Component {
                       {/* Next Version Button */}
                       <Button href='#'
                         disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex]}
-                        onClick={() => browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${this.props.feedVersionIndex + 1}`)}
+                        onClick={() => this.props.setVersionIndex(fs, this.props.feedVersionIndex + 1)}
                       >
                         <Glyphicon glyph='arrow-right' />
                       </Button>

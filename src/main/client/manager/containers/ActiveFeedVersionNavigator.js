@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import FeedVersionNavigator from '../components/FeedVersionNavigator'
 
@@ -8,7 +9,8 @@ import {
   fetchNotesForFeedVersion,
   fetchValidationResult,
   postNoteForFeedVersion,
-  renameFeedVersion
+  renameFeedVersion,
+  setActiveVersion
 } from '../actions/feeds'
 
 import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
@@ -24,7 +26,8 @@ const mapStateToProps = (state, ownProps) => {
         routeVersionIndex > ownProps.feedSource.feedVersions.length ||
         routeVersionIndex < 0) {
       console.log(`version index ${routeVersionIndex} is invalid`)
-      // cannot use browserHistory.push in middle of state transition
+
+      // CANNOT use browserHistory.push in middle of state transition
       // browserHistory.push(`/feed/${feedSourceId}`)
       window.location.href = `/feed/${ownProps.feedSource.id}`
     } else {
@@ -41,7 +44,15 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
+  const publicPrefix = ownProps.isPublic ? '/public' : ''
   return {
+    setVersionIndex: (fs, index, push = true) => {
+      dispatch(setActiveVersion(fs.feedVersions[index - 1]))
+
+      if (push) {
+        browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${index}`)
+      }
+    },
     loadFeedVersionForEditing: (feedVersion) => {
       dispatch(loadFeedVersionForEditing(feedVersion))
     },

@@ -35,7 +35,7 @@ export default class FeedVersionViewer extends Component {
     const version = this.props.version
     const messages = getComponentMessages('FeedVersionViewer')
 
-    if (!version) return <p>{getMessage(messages, 'noVersionsExist')}</p>
+    if (!version) return <p className='text-center lead'>{getMessage(messages, 'noVersionsExist')}</p>
 
     if (this.props.listView) {
       // List view of feed versions

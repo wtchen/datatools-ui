@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Image, Button, Panel, Label, Tabs, Tab, Glyphicon, FormControl, ButtonGroup, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Row, Col, Image, Button, Panel, ControlLabel, Label, Tabs, Tab, Glyphicon, FormControl, ButtonGroup, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
 import Icon from 'react-fa'
 import numeral from 'numeral'
-
+import Rcslider from 'rc-slider'
 import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
@@ -103,7 +103,8 @@ export default class FeedVersionReport extends Component {
       // maxHeight: '500px',
       pagination: true,
       options: {
-        paginationShowsTotal: true
+        paginationShowsTotal: true,
+        sizePerPageList: [10, 20, 50, 100]
       }
     }
     return <Panel
@@ -126,7 +127,7 @@ export default class FeedVersionReport extends Component {
               <ActiveGtfsMap
                 ref='map'
                 version={this.props.version}
-                feeds={[this.props.version.feedSource]}
+//                feeds={[this.props.version.feedSource]}
                 disableRefresh
                 disableScroll
                 disablePopup
@@ -234,19 +235,24 @@ export default class FeedVersionReport extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <Col md={6} mdOffset={3} xs={12}>
-                        <FormControl
-                          componentClass='select'
-                          onChange={(evt) => this.setState({isochroneBand: +evt.target.value})}
-                          bsSize='large'
-                          value={this.state.isochroneBand}
-                        >
-                          {ISO_BANDS.map(v => {
-                            return (
-                              <option value={v}>{v / 60} minutes</option>
-                            )
-                          })}
-                        </FormControl>
+                      <Col md={6} mdOffset={3} xs={12} style={{marginBottom: '20px'}}>
+                        <ControlLabel>Travel time</ControlLabel>
+                        <Rcslider
+                          min={5}
+                          max={120}
+                          defaultValue={this.state.isochroneBand / 60}
+                          onChange={(value) => this.setState({isochroneBand: value * 60})}
+                          step={5}
+                          marks={{
+                            15: '¼ hour',
+                            30: '½ hour',
+                            60: <strong>1 hour</strong>,
+                            120: '2 hours'
+                          }}
+                          tipFormatter={(value) => {
+                            return `${value} minutes`
+                          }}
+                        />
                       </Col>
                     </Row>
                     <ActiveDateTimeFilter
