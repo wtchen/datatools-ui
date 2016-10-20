@@ -1,10 +1,8 @@
-import { UserAuthWrapper } from 'redux-auth-wrapper'
-import { routerActions, push } from 'react-router-redux'
 import fetch from 'isomorphic-fetch'
 import { setErrorMessage } from '../../manager/actions/status'
 import gravatar from 'gravatar'
 
-export function defaultSorter(a, b) {
+export function defaultSorter (a, b) {
   if(a.isCreating && !b.isCreating) return -1
   if(!a.isCreating && b.isCreating) return 1
   if(a.name.toLowerCase() < b.name.toLowerCase()) return -1

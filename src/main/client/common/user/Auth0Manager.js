@@ -14,7 +14,7 @@ export default class Auth0Manager {
   constructor (props) {
     this.props = props
     this.lock = new Auth0Lock(props.client_id, props.domain)
-    this.auth0 = new Auth0({clientID: props.client_id, domain: props.domain})
+    // this.auth0 = new Auth0({clientID: props.client_id, domain: props.domain})
   }
 
   loggedIn () {
@@ -43,10 +43,9 @@ export default class Auth0Manager {
       // redirect to "targetUrl" if any
       let newLocation = hash.state || ''
       browserHistory.push(newLocation)
-
     } else {
       // check if logged in elsewhere via SSO
-      this.auth0.getSSOData((err, data) => {
+      this.lock.$auth0.getSSOData((err, data) => {
         if (!err && data.sso) {
           // there is! redirect to Auth0 for SSO
           this.lock.$auth0.signin({
