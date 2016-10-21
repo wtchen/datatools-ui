@@ -107,6 +107,17 @@ export default class GtfsMap extends Component {
   getIsochroneColor (time) {
     return time ? 'blue' : 'red'
   }
+  renderTransferPerformance (transferPerformance) {
+    console.log(transferPerformance)
+    if (!transferPerformance)
+      return <p>No transfers found</p>
+    return (
+    <ul className='list-unstyled' style={{marginTop: '5px'}}>
+      <li><strong>Typical case: {moment.duration(transferPerformance.typicalCase, 'seconds').humanize()}</strong></li>
+      <li>Best case: {moment.duration(transferPerformance.bestCase, 'seconds').humanize()}</li>
+      <li>Worst case: {moment.duration(transferPerformance.worstCase, 'seconds').humanize()}</li>
+    </ul>)
+  }
   renderIsochrones () {
     let comps = []
     const bandTime = this.props.isochroneBand || 60 * 60
@@ -145,7 +156,7 @@ export default class GtfsMap extends Component {
     return comps
   }
   render () {
-    console.log(this.props)
+    console.log(this.props, this.state)
     var mapStyle = {
       width: this.props.width, // % or px
       height: `${this.props.height}px` // only px
@@ -234,11 +245,7 @@ export default class GtfsMap extends Component {
                               })
                             }
                           </FormControl>
-                          <ul className='list-unstyled' style={{marginTop: '5px'}}>
-                            <li><strong>Typical case: {moment.duration(stop.transferPerformance[this.state[stop.stop_id] || 0].typicalCase, 'seconds').humanize()}</strong></li>
-                            <li>Best case: {moment.duration(stop.transferPerformance[this.state[stop.stop_id] || 0].bestCase, 'seconds').humanize()}</li>
-                            <li>Worst case: {moment.duration(stop.transferPerformance[this.state[stop.stop_id] || 0].worstCase, 'seconds').humanize()}</li>
-                          </ul>
+                          {this.renderTransferPerformance(stop.transferPerformance[this.state[stop.stop_id] || 0])}
                         </div>
                       : <p>No transfers found</p>
                     }
