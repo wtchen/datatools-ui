@@ -392,7 +392,22 @@ const editor = (state = defaultState, action) => {
           feed_publisher_url: action.feedInfo.feedPublisherUrl,
           feed_version: action.feedInfo.feedVersion
         }
-        : null
+        : {
+          // datatools props
+          id: null,
+          color: null,
+          defaultLat: null,
+          defaultLon: null,
+          defaultRouteType: null,
+
+          // gtfs spec props
+          feed_end_date: null,
+          feed_start_date: null,
+          feed_lang: null,
+          feed_publisher_name: null,
+          feed_publisher_url: null,
+          feed_version: null
+        }
       let mapState = {...state.mapState}
       if (feedInfo && feedInfo.defaultLon && feedInfo.defaultLat) {
         mapState.bounds = getEntityBounds([feedInfo.defaultLon, feedInfo.defaultLat], 0.5)
