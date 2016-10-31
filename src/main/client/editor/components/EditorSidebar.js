@@ -17,28 +17,31 @@ export default class EditorSidebar extends Component {
     feedInfo: PropTypes.object,
     setActiveEntity: PropTypes.func
   }
-
+  isActive (item, component) {
+    return component === item.id || component === 'scheduleexception' && item.id === 'calendar'
+  }
   render () {
     const { activeComponent, feedSource, setActiveEntity } = this.props
 
     return (
       <ActiveSidebar>
-        <ActiveSidebarNavItem ref='backNav'
-          icon='reply' label='Back to Feed'
-          onClick={() => browserHistory.push(`/feed/${feedSource.id}`) } />
+        <ActiveSidebarNavItem
+          ref='backNav'
+          icon='home'
+          label='Back to Feed'
+          link={feedSource ? `/feed/${feedSource.id}` : `/home`}
+        />
         {gtfsIcons.map(item => {
           return item.hideSidebar
             ? null
             : <ActiveSidebarNavItem key={item.id}
                 icon={item.icon} label={item.label}
-                active={activeComponent === item.id || activeComponent === 'scheduleexception' && item.id === 'calendar'}
-                onClick={() => {
-                  if (activeComponent === item.id) {
-                    browserHistory.push(`/feed/${feedSource.id}/edit/`)
-                  } else {
-                    setActiveEntity(feedSource.id, item.id)
-                  }
-                }}
+                active={this.isActive(item, activeComponent)}
+                link={!feedSource
+                  ? '/home'
+                  : activeComponent === item.id
+                  ? `/feed/${feedSource.id}/edit/`
+                  : `/feed/${feedSource.id}/edit/${item.id}`}
               />
         })}
       </ActiveSidebar>
