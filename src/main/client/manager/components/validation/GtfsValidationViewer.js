@@ -101,6 +101,7 @@ class ResultTable extends React.Component {
               <th>{getMessage(messages, 'problemType')}</th>
               <th>{getMessage(messages, 'priority')}</th>
               <th>{getMessage(messages, 'affectedIds')}</th>
+              <th>{getMessage(messages, 'line')}</th>
               <th className='col-md-6'>{getMessage(messages, 'description')}</th>
             </tr>
           </thead>
@@ -111,6 +112,7 @@ class ResultTable extends React.Component {
                   <td style={breakWordStyle}>{val.errorType}</td>
                   <td style={breakWordStyle}>{val.priority}</td>
                   <td style={breakWordStyle}>{val.affectedEntityId}</td>
+                  <td style={breakWordStyle}>{val.line}</td>
                   <td className='col-md-4' style={breakWordStyle}>{val.message}</td>
                 </tr>
               )
