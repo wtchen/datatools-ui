@@ -102,9 +102,9 @@ export function settingActiveGtfsEntity (feedSourceId, component, entityId, subC
 export function setActiveGtfsEntity (feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId) {
   return function (dispatch, getState) {
     // TODO: figure out a good way to handle route changes without confirm window
-    if (getState().editor.active.edited && !window.confirm('You have unsaved changes. Discard changes?')) {
-      return false
-    }
+    // if (getState().editor.active.edited && !window.confirm('You have unsaved changes. Discard changes?')) {
+    //   return false
+    // }
     let previousFeedSourceId = getState().editor.feedSourceId
     if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
       dispatch(clearGtfsContent())

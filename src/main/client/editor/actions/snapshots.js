@@ -53,6 +53,7 @@ export function restoreSnapshot (feedSource, snapshot) {
         return response.json()
       }).then((stops) => {
         dispatch(restoredSnapshot(snapshot.name))
+        dispatch(fetchSnapshots(feedSource))
         dispatch(clearGtfsContent())
         dispatch(fetchBaseGtfs(feedSource.id))
       })

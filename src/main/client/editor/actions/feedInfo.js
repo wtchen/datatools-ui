@@ -33,9 +33,11 @@ export function fetchFeedInfo (feedId) {
       .then(res => res.json())
       .then(feedInfo => {
         dispatch(receiveFeedInfo(feedInfo))
-        if (!feedInfo) {
-          dispatch(setActiveGtfsEntity(feedId, 'feedinfo'))
-        }
+        // TODO: should we force users to create feed info?
+        // probably not because it's not a required table
+        // if (!feedInfo) {
+        //   dispatch(setActiveGtfsEntity(feedId, 'feedinfo'))
+        // }
       })
   }
 }
