@@ -92,7 +92,7 @@ export default class DatatoolsNavbar extends Component {
     )
 
     const navBarStyle = {
-      left: this.props.sidebarExpanded ? 150 : 50,
+      left: this.props.sidebarExpanded ? 130 : 50,
       height: '40px'
     }
 

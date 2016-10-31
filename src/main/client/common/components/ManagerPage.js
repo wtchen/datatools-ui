@@ -16,7 +16,7 @@ import { getConfigProperty, isModuleEnabled } from '../util/config'
 
 export default class ManagerPage extends Component {
   static propTypes = {
-    children: PropTypes.object
+    // children: PropTypes.object
   }
   constructor (props) {
     super(props)
@@ -33,7 +33,9 @@ export default class ManagerPage extends Component {
   showSelectFileModal (props) {
     this.refs.selectFileModal.open(props)
   }
-
+  isActive (path) {
+    return window.location.pathname.split('/')[1] === path
+  }
   render () {
     return (
       <div>
@@ -47,17 +49,18 @@ export default class ManagerPage extends Component {
         <SelectFileModal ref='selectFileModal'/>
         <CurrentStatusModal ref='statusModal'/>
         <ActiveSidebar>
-          {/* <ActiveSidebarNavItem icon='home' label='Home'
-            onClick={() => browserHistory.push(`/project`) } />
-          <ActiveSidebarNavItem icon='users' label='Users'
-            onClick={() => browserHistory.push(`/admin`) } />
-          <ActiveSidebarNavItem icon='globe' label='Explore'
-            onClick={() => browserHistory.push(`/`) } />*/}
+          <ActiveSidebarNavItem
+            icon='home'
+            label='Home'
+            link={`/home`}
+            active={this.isActive('home') || this.isActive('feed') || this.isActive('project')}
+          />
           {isModuleEnabled('alerts')
             ? <ActiveSidebarNavItem
                 icon='exclamation-circle'
                 label='Alerts'
-                onClick={() => browserHistory.push(`/alerts`) }
+                link={`/alerts`}
+                active={this.isActive('alerts')}
               />
             : null
           }
@@ -65,7 +68,8 @@ export default class ManagerPage extends Component {
             ? <ActiveSidebarNavItem
                 icon='television'
                 label='eTID Config'
-                onClick={() => browserHistory.push(`/signs`) }
+                link={`/signs`}
+                active={this.isActive('signs')}
               />
             : null
           }
