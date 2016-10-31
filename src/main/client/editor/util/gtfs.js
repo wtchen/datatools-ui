@@ -165,6 +165,15 @@ export const getControlPoints = (pattern, snapToStops) => {
   return controlPoints
 }
 
+export function getRouteNameAlerts (route) {
+  let routeName = route.route_short_name && route.route_long_name
+    ? `${route.route_short_name} - ${route.route_long_name}`
+    : route.route_long_name ? route.route_long_name
+    : route.route_short_name ? route.route_short_name
+    : null
+  return routeName
+}
+
 export function getRouteName (route) {
   let name = ''
   if(route.route_short_name) {
@@ -177,7 +186,9 @@ export function getRouteName (route) {
   if(route.route_long_name) {
     name += route.route_long_name
   }
-
+  if (route.route_id && !route.route_long_name && !route.route_short_name) {
+    name += route.route_id
+  }
   return name
 }
 
