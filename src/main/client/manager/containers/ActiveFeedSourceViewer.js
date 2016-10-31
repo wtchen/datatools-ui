@@ -82,8 +82,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
       return dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
     },
-    feedVersionRenamed: (feedSource, feedVersion, name) => {
-      dispatch(renameFeedVersion(feedSource, feedVersion, name))
+    feedVersionRenamed: (feedVersion, name) => {
+      dispatch(renameFeedVersion(feedVersion, name))
     },
     gtfsPlusDataRequested: (feedVersion) => {
       dispatch(downloadGtfsPlusFeed(feedVersion.id))

@@ -10,7 +10,9 @@ import {
   fetchValidationResult,
   postNoteForFeedVersion,
   renameFeedVersion,
-  setActiveVersion
+  setActiveVersion,
+  publishFeedVersion,
+  fetchFeedSource
 } from '../actions/feeds'
 
 import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
@@ -76,7 +78,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     fetchValidationResult: (feedVersion, isPublic) => {
       dispatch(fetchValidationResult(feedVersion, isPublic))
-    }
+    },
+    publishFeedVersion: (feedVersion) => {
+      dispatch(publishFeedVersion(feedVersion))
+      // .then(() => {
+      //   dispatch(fetchFeedSource(feedVersion.feedSource.id, true, true))
+      // })
+    },
   }
 }
 
