@@ -158,6 +158,7 @@ export default class UserHomePage extends Component {
                   : null
                 }
                 <DropdownButton
+                  id='context-dropdown'
                   title={activeProject
                     ? <span><Icon name='folder-open-o'/> {activeProject.name}</span>
                     : <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>

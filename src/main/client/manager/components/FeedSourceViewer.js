@@ -138,7 +138,7 @@ export default class FeedSourceViewer extends Component {
     const activeTab = ['settings', 'comments', 'snapshots'].indexOf(this.props.activeComponent) === -1 || typeof this.props.routeParams.feedVersionIndex !== 'undefined'
       ? ''
       : this.props.activeComponent
-    console.log(this.props.activeComponent, this.props.routeParams.feedVersionIndex)
+    // console.log(this.props.activeComponent, this.props.routeParams.feedVersionIndex)
     const activeSettings = !resourceType
       ? <Col xs={7}>
         <Panel header={<h3>Settings</h3>}>
@@ -246,7 +246,6 @@ export default class FeedSourceViewer extends Component {
           <Row
             style={{
               backgroundColor: '#F5F5F5',
-              // backgroundImage: `url("${mapUrl}")`,
               margin: '-40px',
               paddingTop: '40px',
               marginBottom: '-64px',

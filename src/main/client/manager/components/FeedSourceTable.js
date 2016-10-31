@@ -41,7 +41,6 @@ export default class FeedSourceTable extends Component {
   }
 
   render () {
-    console.log(this.state)
     const messages = getComponentMessages('ProjectViewer')
 
     const hover = <FeedSourceDropdown
@@ -110,7 +109,6 @@ class FeedSourceTableRow extends Component {
   }
 
   render () {
-    console.log('row', this.state)
     const fs = this.props.feedSource
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
@@ -148,7 +146,7 @@ class FeedSourceTableRow extends Component {
         }}
         onMouseLeave={() => {
           if (!this.props.hold)
-            this.props.onHover(false)
+            this.props.onHover(null)
         }}
       >
         <span
@@ -315,7 +313,6 @@ class FeedSourceDropdown extends Component {
         bsStyle='default'
         bsSize='small'
         onSelect={key => {
-          console.log(key)
           switch (key) {
             case 'delete':
               return this.deleteFeed()

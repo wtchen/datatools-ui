@@ -63,7 +63,7 @@ export default class ProjectSettings extends Component {
           <Panel header={<h4>{getMessage(messages, 'title')}</h4>}>
             <ListGroup fill>
               <ListGroupItem>
-              <FormGroup inline>
+              <FormGroup>
                 <ControlLabel>Organization name</ControlLabel>
                 <InputGroup>
                   <FormControl

@@ -180,6 +180,7 @@ export default class FeedVersionNavigator extends Component {
           <Col xs={12}>
             <FeedVersionViewer
               isPublic={this.props.isPublic}
+              feedSource={fs}
               version={version}
               feedVersionIndex={this.props.feedVersionIndex}
               versionSection={this.props.versionSection || null}

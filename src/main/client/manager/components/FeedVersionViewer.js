@@ -16,6 +16,7 @@ export default class FeedVersionViewer extends Component {
 
   static propTypes = {
     version: PropTypes.object,
+    feedSource: PropTypes.object,
     versions: PropTypes.array,
     feedVersionIndex: PropTypes.number,
     versionSection: PropTypes.string,
@@ -27,7 +28,6 @@ export default class FeedVersionViewer extends Component {
     newNotePosted: PropTypes.func,
     notesRequested: PropTypes.func,
     fetchValidationResult: PropTypes.func,
-    feedVersionRenamed: PropTypes.func,
     downloadFeedClicked: PropTypes.func,
     loadFeedVersionForEditing: PropTypes.func
   }
@@ -68,6 +68,7 @@ export default class FeedVersionViewer extends Component {
             <Col xs={12} sm={9}>
               {!this.props.versionSection
                 ? <FeedVersionReport
+                    isPublished={version.id === this.props.feedSource.publishedVersionId}
                     {...this.props}
                   />
                 : this.props.versionSection === 'issues'
@@ -110,12 +111,7 @@ export class VersionButtonToolbar extends Component {
 
     isPublic: PropTypes.bool,
     hasVersions: PropTypes.bool,
-    // listView: PropTypes.bool,
 
-    // newNotePosted: PropTypes.func,
-    // notesRequested: PropTypes.func,
-    // fetchValidationResult: PropTypes.func,
-    feedVersionRenamed: PropTypes.func,
     downloadFeedClicked: PropTypes.func,
     deleteFeedVersionConfirmed: PropTypes.func,
     loadFeedVersionForEditing: PropTypes.func
@@ -184,6 +180,21 @@ class VersionSectionSelector extends Component {
     feedVersionIndex: PropTypes.number,
     versionSection: PropTypes.string
   }
+  renderIssuesLabel (version) {
+    const color = version.validationSummary.loadStatus !== 'SUCCESS'
+      ? 'danger'
+      : version.validationSummary.errorCount
+      ? 'warning'
+      : 'success'
+    const text = version.validationSummary.loadStatus !== 'SUCCESS'
+      ? 'critical error'
+      : version.validationSummary.errorCount
+    return (
+      <Label bsStyle={color}>
+        {text}
+      </Label>
+    )
+  }
   render () {
     const { version } = this.props
     return (
@@ -193,7 +204,7 @@ class VersionSectionSelector extends Component {
             <ListGroupItem><Icon name='info-circle'/> Version summary</ListGroupItem>
           </LinkContainer>
           <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/issues`} active={this.props.versionSection === 'issues'}>
-            <ListGroupItem><Icon name='exclamation-triangle'/> Validation issues <Label bsStyle={version.validationSummary.errorCount ? 'warning' : 'success'}>{version.validationSummary.errorCount}</Label>
+            <ListGroupItem><Icon name='exclamation-triangle'/> Validation issues {this.renderIssuesLabel(version)}
           </ListGroupItem></LinkContainer>
           {isModuleEnabled('gtfsplus')
             ? <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/gtfsplus`} active={this.props.versionSection === 'gtfsplus'}>
