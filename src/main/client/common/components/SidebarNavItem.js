@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Icon } from 'react-fa'
+import { Link } from 'react-router'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
 export default class SidebarNavItem extends Component {
@@ -10,7 +11,8 @@ export default class SidebarNavItem extends Component {
     icon: PropTypes.string,
     label: PropTypes.string,
     onClick: PropTypes.func,
-    image: PropTypes.string
+    image: PropTypes.string,
+    link: PropTypes.string
   }
 
   constructor (props) {
@@ -23,12 +25,21 @@ export default class SidebarNavItem extends Component {
   }
 
   render () {
+    const activeColor = this.props.active ? '#fff' : this.state.hover ? '#fff' : '#ccc'
     const containerStyle = {
-      marginBottom: 20,
+      paddingTop: 10,
+      paddingBottom: 10,
+      paddingRight: this.props.expanded ? 10 : 10,
+      paddingLeft: 10,
+      marginTop: 5,
+      marginBottom: 5,
+      marginLeft: -15,
       cursor: 'pointer',
-      color: this.props.active ? '#fff' : this.state.hover ? '#fff' : '#ccc',
-      // backgroundColor: this.props.active ? '#bbb' : 'rgba(0,0,0,0)',
-      // padding: 5
+      color: activeColor,
+      borderLeft: this.props.active ? '4px solid #2889CA' : '4px solid rgba(0,0,0,0)',
+      textDecoration: 'none',
+      borderRight: this.props.active ? '5px solid rgba(0,0,0,0)' : '5px solid rgba(0,0,0,0)',
+      backgroundColor: this.props.active ? '#313131' : 'rgba(0,0,0,0)',
     }
 
     const iconContainerStyle = {
@@ -50,6 +61,8 @@ export default class SidebarNavItem extends Component {
 
     const labelStyle = {
       fontWeight: 'bold',
+      marginTop: 3,
+      fontSize: 12,
       marginLeft: 30
     }
     const icon = this.props.image
@@ -60,23 +73,34 @@ export default class SidebarNavItem extends Component {
           <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'/>
         </div>
     const tooltip = <Tooltip id={this.props.label}>{this.props.label}</Tooltip>
+    let containerProps = {
+      onMouseEnter: () => this.toggleHover(),
+      onMouseLeave: () => this.toggleHover(),
+    }
+    if (!this.props.link) {
+      containerProps.onClick = () => this.props.onClick()
+    }
+    const container = (
+      <div style={containerStyle}
+        {...containerProps}
+      >
+        {icon}
+        {this.props.expanded
+          ? <div style={labelStyle}>{this.props.label}</div>
+          : null
+        }
+        <div style={{ clear: 'both' }} />
+      </div>
+    )
+    const navItem = this.props.link
+      ? <Link to={this.props.link} style={{textDecoration: 'none'}}>
+          {container}
+        </Link>
+      : container
     return this.props.expanded
-      ? <div style={containerStyle}
-          onMouseEnter={() => this.toggleHover()} onMouseLeave={() => this.toggleHover()}
-          onClick={() => this.props.onClick()}
-        >
-          {icon}
-          <div style={labelStyle}>{this.props.label}</div>
-          <div style={{ clear: 'both' }} />
-        </div>
-    : <OverlayTrigger overlay={this.props.expanded ? null : tooltip}>
-        <div style={containerStyle}
-          onMouseEnter={() => this.toggleHover()} onMouseLeave={() => this.toggleHover()}
-          onClick={() => this.props.onClick()}
-        >
-          {icon}
-          <div style={{ clear: 'both' }} />
-        </div>
-      </OverlayTrigger>
+      ? navItem
+      : <OverlayTrigger overlay={this.props.expanded ? null : tooltip}>
+          {navItem}
+        </OverlayTrigger>
   }
 }

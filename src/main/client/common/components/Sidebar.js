@@ -7,9 +7,10 @@ import Icon from 'react-fa'
 import SidebarNavItem from './SidebarNavItem'
 import SidebarPopover from './SidebarPopover'
 import JobMonitor from './JobMonitor'
-import { getComponentMessages, getMessage } from '../util/config'
+import { getComponentMessages, getMessage, getConfigProperty } from '../util/config'
 
 import icon from '../../assets/application_icon.png'
+import longIcon from '../../assets/application_logo.png'
 
 export default class Sidebar extends Component {
 
@@ -48,10 +49,10 @@ export default class Sidebar extends Component {
     const messages = getComponentMessages('DatatoolsNavbar')
 
     const navbarStyle = {
-      width: this.props.expanded ? 150 : 50,
+      width: this.props.expanded ? 130 : 50,
       height: '100%',
       position: 'fixed',
-      borderRadius: 0
+      borderRadius: 0,
     }
 
     const logoContainerStyle = {
@@ -75,34 +76,44 @@ export default class Sidebar extends Component {
 
     const logoLabelStyle = {
       marginLeft: 40,
+      marginTop: 6,
       lineHeight: '95%',
       color: '#bbb',
-      fontSize: 16
+      fontSize: 13,
+      fontWeight: 'bold'
     }
-
+    const expandedIcon = <div style={logoIconStyle}><img height={50} src={getConfigProperty('application.logo') ? getConfigProperty('application.logo') : longIcon}/></div>
     const closePopover = () => this.setState({visiblePopover: null})
-
+    const brand = (
+      <Link to='/home'>
+        <div
+          style={logoContainerStyle}
+        >
+          <div style={logoIconStyle}><img height={LOGO_SIZE} width={LOGO_SIZE} src={icon}/></div>
+          {this.props.expanded
+            ? <div style={logoLabelStyle}>GTFS Data<br/>Manager</div> // TODO: replace with long icon
+            : null
+          }
+          <div style={{ clear: 'both' }} />
+        </div>
+      </Link>
+    )
     return <div>
       <Navbar
         inverse
         style={navbarStyle}
       >
-        <div style={logoContainerStyle}
-          onClick={() => { browserHistory.push('/home') }}
-        >
-          <div style={logoIconStyle}><img height={LOGO_SIZE} width={LOGO_SIZE} src={icon}/></div>
-          {this.props.expanded
-            ? <div style={logoLabelStyle}>GTFS Data<br/>Manager</div>
-            : null
-          }
-          <div style={{ clear: 'both' }} />
-        </div>
+        {brand}
 
+        {/* Top nav */}
         <div style={{ position: 'absolute', top: 60 }}>
           {this.props.children}
         </div>
 
-        <div style={{ position: 'absolute', bottom: 10 }}>
+        {/* Bottom nav */}
+        <div
+          style={{ position: 'absolute', bottom: 10 }}
+        >
           <SidebarNavItem ref='jobNav' expanded={this.props.expanded}
             icon='bell' label='Job Monitor'
             onClick={() => this.navSelected('job')} />
@@ -126,7 +137,9 @@ export default class Sidebar extends Component {
       />
 
       {/* User Popover */}
-      <SidebarPopover target={this.refs.userNav} title={this.props.username}
+      <SidebarPopover
+        target={this.refs.userNav}
+        title={this.props.username}
         expanded={this.props.expanded}
         visible={() => this.state.visiblePopover === 'user' }
         close={() => closePopover()}
@@ -153,14 +166,14 @@ export default class Sidebar extends Component {
           <Checkbox
             ref='showLabelsCheckbox'
             checked={this.props.expanded}
-            onClick={() => { this.props.setSidebarExpanded(!this.props.expanded) }}
+            onChange={() => { this.props.setSidebarExpanded(!this.props.expanded) }}
           >
             Show Sidebar Labels
           </Checkbox>
           <Checkbox
             ref='showTutorialCheckbox'
             checked={this.props.hideTutorial}
-            onClick={() => { this.props.setTutorialHidden(!this.props.hideTutorial) }}
+            onChange={() => { this.props.setTutorialHidden(!this.props.hideTutorial) }}
           >
             Hide editor tutorial
           </Checkbox>
