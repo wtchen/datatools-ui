@@ -62,7 +62,7 @@ export default class UserAccount extends Component {
       },
       {
         id: 'account',
-        hidden: getConfigProperty('modules.enterprise.enabled')
+        hidden: !getConfigProperty('modules.enterprise.enabled')
       },
       {
         id: 'organizations'
@@ -145,7 +145,7 @@ export default class UserAccount extends Component {
       },
       {
         id: 'billing',
-        hidden: getConfigProperty('modules.enterprise.enabled')
+        hidden: !getConfigProperty('modules.enterprise.enabled')
       }
     ]
     const activeSection = accountSections.find(section => section.id === this.props.activeComponent)
