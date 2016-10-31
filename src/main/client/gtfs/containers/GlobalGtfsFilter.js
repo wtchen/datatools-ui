@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       let filter = initialProps.permissionFilter || 'view-feed'
-      dispatch(updatePermissionFilter(filter))
+      // dispatch(updatePermissionFilter(filter))
       if (initialProps.project && initialProps.user)
         dispatch(updateGtfsFilter(initialProps.project, initialProps.user))
     },

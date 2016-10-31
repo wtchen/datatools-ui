@@ -1,10 +1,11 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-
-import { Grid, Row, Col, ButtonGroup, Button, FormControl, ControlLabel, FormGroup, Panel, Glyphicon } from 'react-bootstrap'
+import { sentence as toSentenceCase } from 'change-case'
+import { Grid, Row, Col, Label, ButtonGroup, Button, FormControl, ControlLabel, FormGroup, Panel, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 
 import ManagerPage from '../../common/components/ManagerPage'
+import Loading from '../../common/components/Loading'
 import AffectedEntity from './AffectedEntity'
 import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
@@ -15,7 +16,7 @@ import { browserHistory } from 'react-router'
 
 import moment from 'moment'
 
-var causes = [
+const causes = [
   'UNKNOWN_CAUSE',
   'TECHNICAL_PROBLEM',
   'STRIKE',
@@ -30,7 +31,7 @@ var causes = [
   'OTHER_CAUSE'
 ]
 
-var effects = [
+const effects = [
   'UNKNOWN_EFFECT',
   'NO_SERVICE',
   'REDUCED_SERVICE',
@@ -46,12 +47,50 @@ export default class AlertEditor extends React.Component {
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
+  renderServicesHeader (entities) {
+    const counts = [
+      {
+        singular: 'agency',
+        plural: 'agencies',
+        count: entities.filter(e => e.type === 'AGENCY').length,
+      },
+      {
+        singular: 'route',
+        plural: 'routes',
+        count: entities.filter(e => e.type === 'ROUTE').length,
+      },
+      {
+        singular: 'stop',
+        plural: 'stops',
+        count: entities.filter(e => e.type === 'STOP').length,
+      },
+      {
+        singular: 'mode',
+        plural: 'modes',
+        count: entities.filter(e => e.type === 'MODE').length,
+      },
+    ]
+    return (
+      <span>
+        <b>Affected Service</b>{counts.map(c => {
+          return c.count
+            ? <span key={c.singular}> <Label
+                bsStyle={c.singular === 'agency' || c.singular === 'mode' ? 'warning' : 'default'}
+              >
+                {`${c.count} ${c.count > 1 ? c.plural : c.singular}`}
+              </Label> </span>
+            : null
+        })}
+      </span>
+    )
+  }
   render () {
-    console.log('AlertEditor')
-    console.log(this.props.alert)
     if (!this.props.alert) {
-      return <ManagerPage/>
+      return (
+        <ManagerPage>
+          <Loading/>
+        </ManagerPage>
+      )
     }
     var compare = function (a, b) {
       var aName = a.shortName || a.name
@@ -207,7 +246,7 @@ export default class AlertEditor extends React.Component {
                         value={this.props.alert.cause}
                       >
                         {causes.map((cause) => {
-                          return <option value={cause}>{cause}</option>
+                          return <option key={cause} value={cause}>{toSentenceCase(cause.replace('_', ' '))}</option>
                         })}
                       </FormControl>
                     </FormGroup>
@@ -221,7 +260,7 @@ export default class AlertEditor extends React.Component {
                         value={this.props.alert.effect}
                       >
                         {effects.map((effect) => {
-                          return <option value={effect}>{effect}</option>
+                          return <option key={effect} value={effect}>{toSentenceCase(effect.replace('_', ' '))}</option>
                         })}
                       </FormControl>
                     </FormGroup>
@@ -254,55 +293,60 @@ export default class AlertEditor extends React.Component {
                 </Row>
                 <Row>
                   <Col xs={12}>
-                    <Panel header={<b>Affected Service</b>}>
-                      <Row>
-                        <Col xs={12}>
-                          <Row style={{marginBottom: '15px'}}>
-                            <Col xs={5}>
-                              <Button style={{marginRight: '5px'}} onClick={(evt) => {
-                                console.log('editable feeds', sortedFeeds)
-                                this.props.onAddEntityClick('AGENCY', sortedFeeds[0], null, newEntityId)
-                              }}>
-                                Add Agency
-                              </Button>
-                              <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0], newEntityId)}>
-                                Add Mode
-                              </Button>
-                            </Col>
-                            <Col xs={7}>
-                              <GtfsSearch
-                                feeds={this.props.activeFeeds}
-                                placeholder='Add stop/route'
-                                limit={100}
-                                entities={['stops', 'routes']}
-                                clearable={true}
-                                onChange={(evt) => {
-                                  console.log('we need to add this entity to the store', evt)
-                                  if (typeof evt !== 'undefined' && evt !== null){
-                                    if (evt.stop){
-                                      this.props.onAddEntityClick('STOP', evt.stop, evt.agency, newEntityId)
-                                    }
-                                    else if (evt.route)
-                                      this.props.onAddEntityClick('ROUTE', evt.route, evt.agency, newEntityId)
+                    {/* Affected Service panel */}
+                    <Panel
+                      header={this.renderServicesHeader(this.props.alert.affectedEntities)}
+                    >
+                      <ListGroup fill>
+                      <ListGroupItem>
+                        <Row>
+                          <Col xs={5}>
+                            <Button style={{marginRight: '5px'}} onClick={(evt) => {
+                              console.log('editable feeds', sortedFeeds)
+                              this.props.onAddEntityClick('AGENCY', sortedFeeds[0], null, newEntityId)
+                            }}>
+                              Add Agency
+                            </Button>
+                            <Button onClick={(evt) => this.props.onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0], newEntityId)}>
+                              Add Mode
+                            </Button>
+                          </Col>
+                          <Col xs={7}>
+                            <GtfsSearch
+                              feeds={this.props.activeFeeds}
+                              placeholder='Add stop/route'
+                              limit={100}
+                              entities={['stops', 'routes']}
+                              clearable={true}
+                              onChange={(evt) => {
+                                console.log('we need to add this entity to the store', evt)
+                                if (typeof evt !== 'undefined' && evt !== null){
+                                  if (evt.stop){
+                                    this.props.onAddEntityClick('STOP', evt.stop, evt.agency, newEntityId)
                                   }
-                                }}
-                              />
-                            </Col>
-                          </Row>
+                                  else if (evt.route)
+                                    this.props.onAddEntityClick('ROUTE', evt.route, evt.agency, newEntityId)
+                                }
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                      </ListGroupItem>
                           {this.props.alert.affectedEntities
                             .sort((a, b) => b.id - a.id) // reverse sort by entity id
                             .map((entity) => {
-                            return <AffectedEntity
-                              entity={entity}
-                              key={entity.id}
-                              activeFeeds={this.props.activeFeeds}
-                              feeds={sortedFeeds}
-                              onDeleteEntityClick={this.props.onDeleteEntityClick}
-                              entityUpdated={this.props.entityUpdated}
-                            />
+                            return (
+                              <AffectedEntity
+                                entity={entity}
+                                key={entity.id}
+                                activeFeeds={this.props.activeFeeds}
+                                feeds={sortedFeeds}
+                                onDeleteEntityClick={this.props.onDeleteEntityClick}
+                                entityUpdated={this.props.entityUpdated}
+                              />
+                            )
                           })}
-                        </Col>
-                      </Row>
+                      </ListGroup>
                     </Panel>
                   </Col>
                 </Row>
@@ -324,7 +368,6 @@ export default class AlertEditor extends React.Component {
                   newEntityId={newEntityId}
                 />
               </Col>
-
             </Row>
           </Grid>
         </ManagerPage>

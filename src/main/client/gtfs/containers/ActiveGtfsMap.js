@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import GtfsMap from '../components/gtfsmap'
+import GtfsMap from '../components/GtfsMap'
 import { fetchPatterns } from '../actions/patterns'
+import { clearGtfsElements, refreshGtfsElements } from '../actions/general'
 import { fetchStops, stopPatternFilterChange, stopRouteFilterChange, stopDateTimeFilterChange } from '../actions/stops'
 import { fetchRoutes } from '../actions/routes'
+import { updateMapState } from '../actions/filter'
 import { fetchFeedVersionIsochrones } from '../../manager/actions/feeds'
 
 
@@ -19,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const feedId = ownProps.version.id.replace('.zip', '')
+  const feedId = ownProps.version && ownProps.version.id.replace('.zip', '')
   return {
     onComponentMount: (initialProps) => {
       // if(!initialProps.routes.fetchStatus.fetched) {
@@ -28,6 +30,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // if(!initialProps.patterns.fetchStatus.fetched) {
       //   dispatch(fetchPatterns(feedId, null))
       // }
+    },
+    updateMapState: (props) => {
+      dispatch(updateMapState(props))
+    },
+    clearGtfsElements: () => {
+      dispatch(clearGtfsElements())
+    },
+    refreshGtfsElements: (feedIds, entities) => {
+      dispatch(refreshGtfsElements(feedIds, entities))
     },
     stopRouteFilterChange: (newValue) => {
       dispatch(stopRouteFilterChange(feedId, newValue))

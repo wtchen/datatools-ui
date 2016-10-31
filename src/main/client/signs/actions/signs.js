@@ -1,5 +1,6 @@
 import { browserHistory } from 'react-router'
 import fetch from 'isomorphic-fetch'
+import { fetchStopsAndRoutes } from  '../../gtfs/actions/general'
 import { getSignConfigUrl, getDisplaysUrl, getFeedId } from '../../common/util/modules'
 
 // signs management action
@@ -82,6 +83,13 @@ export const requestRtdSigns = () => {
   }
 }
 
+export const requestGtfsEntities = (feedIds, routeids, stopIds) => {
+  return {
+    type: 'REQUEST_SIGN_GTFS_ENTITIES',
+    feedIds, routeids, stopIds
+  }
+}
+
 export const receivedGtfsEntities = (gtfsObjects, gtfsSigns) => {
   return {
     type: 'RECEIVED_SIGN_GTFS_ENTITIES',
@@ -120,7 +128,7 @@ export function fetchRtdDisplays () {
     }).then((displays) => {
       // console.log(displays)
       dispatch(receivedRtdDisplays(displays, getState().projects.active))
-    })
+    }).catch(error => console.log(error))
   }
 }
 
@@ -133,21 +141,7 @@ export function fetchRtdSigns () {
       dispatch(receivedRtdSigns(signs, getState().projects.active))
       dispatch(fetchRtdDisplays())
     }).then(() => {
-      let feed = getState().projects.active
-      const fetchFunctions = getState().signs.entities.map((entity) => {
-        return fetchEntity(entity, feed)
-      })
-      return Promise.all(fetchFunctions)
-      .then((results) => {
-        console.log('got entities', results)
-        let newEntities = getState().signs.entities
-        for (var i = 0; i < newEntities.length; i++) {
-          newEntities[i].gtfs = results[i]
-        }
-        dispatch(receivedGtfsEntities(newEntities, getState().signs.all))
-      }).then((error) => {
-        console.log('error', error)
-      })
+      return dispatch(fetchStopsAndRoutes(getState().signs.entities, 'SIGNS'))
     })
   }
 }
@@ -164,23 +158,6 @@ export function editSign (sign) {
     dispatch(updateActiveSign(sign))
     browserHistory.push('/signs/sign/' + sign.id)
   }
-}
-
-export function fetchEntity (entity, activeProject) {
-  const feed = activeProject.feedSources.find(f => getFeedId(f) === entity.entity.AgencyId)
-  const feedId = getFeedId(feed)
-  const url = entity.type === 'stop'
-    ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}`
-    : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
-  return fetch(url)
-  .then((response) => {
-    return response.json()
-  })
-  .then((object) => {
-    return object
-  }).catch((error) => {
-    // console.log('caught', error)
-  })
 }
 
 export const createDisplay = (name) => {
@@ -219,7 +196,7 @@ export function saveDisplay (display, user) {
       body: JSON.stringify(display)
     }).then((res) => {
       console.log('status='+res.status)
-    })
+    }).catch(error => console.log(error))
   // }
 }
 
@@ -282,6 +259,6 @@ export function saveSign (sign) {
         browserHistory.push('/signs')
         dispatch(fetchRtdSigns())
       })
-    })
+    }).catch(error => console.log(error))
   }
 }

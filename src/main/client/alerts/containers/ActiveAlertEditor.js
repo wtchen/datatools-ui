@@ -35,12 +35,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       const alertId = initialProps.location.pathname.split('/alert/')[1]
-      console.log(alertId)
       if (initialProps.alert)
         return
 
       if (!alertId) {
-        console.log('alert', initialProps.alert)
         dispatch(fetchProjects())
         .then((activeProject) => {
           if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')){
@@ -52,16 +50,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
       else {
-        console.log('need to set active alert')
         dispatch(fetchProjects())
         .then((activeProject) => {
-          console.log('done fetching projects')
           if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')){
             console.log('cannot create alert!')
             browserHistory.push('/alerts')
             return
           }
-          console.log('getting', alertId)
           dispatch(setActiveAlert(+alertId))
         })
       }

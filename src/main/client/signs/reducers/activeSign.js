@@ -4,7 +4,6 @@ const activeSign = (state = null, action) => {
   let entities, foundIndex, displayIndex
   switch (action.type) {
     case 'UPDATE_ACTIVE_SIGN':
-      console.log('update active sign', action.sign)
       return update(state, {$set: action.sign})
     case 'CREATE_SIGN':
     case 'EDIT_SIGN':
@@ -13,7 +12,6 @@ const activeSign = (state = null, action) => {
     case 'SET_ACTIVE_SIGN_TITLE':
       return update(state, {title: {$set: action.title}})
     case 'SET_ACTIVE_SIGN_DESCRIPTION':
-      console.log(action)
       return update(state, {description: {$set: action.description}})
     case 'SET_ACTIVE_SIGN_URL':
       return update(state, {url: {$set: action.url}})
@@ -80,14 +78,11 @@ const activeSign = (state = null, action) => {
     case 'UPDATE_DISPLAYS':
       return update(state, {displays: {$set: action.displays}})
     case 'TOGGLE_CONFIG_FOR_DISPLAY':
-      console.log('TOGGLE_CONFIG_FOR_DISPLAY', action)
       displayIndex = state.displays.findIndex(d => d.Id === action.display.Id)
       switch (action.configType) {
         case 'DRAFT':
-          console.log('changing draft id', action.configId)
           return update(state, {displays: {[displayIndex]: {$merge: {DraftDisplayConfigurationId: action.configId}}}})
         case 'PUBLISHED':
-          console.log('changing pub id', action.configId)
           // if setting published config to new value (not null), set draft config to null
           // if (action.configId)
           //   return update(state, {displays: {[displayIndex]: {$merge: {PublishedDisplayConfigurationId: action.configId, DraftDisplayConfigurationId: null}}}})
@@ -97,7 +92,6 @@ const activeSign = (state = null, action) => {
       }
       return state
     case 'UPDATE_ACTIVE_SIGN_ENTITY':
-      console.log('update entity', action.entity, action.field, action.value)
       foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
       if (foundIndex !== -1) {
         switch (action.field) {
@@ -158,13 +152,8 @@ const activeSign = (state = null, action) => {
             ]
             return update(state, {affectedEntities: {$set: entities}})
           case 'ROUTES':
-            console.log(action)
-            // let routeId = action.value !== null ? action.value.route_id : null
             updatedEntity = update(action.entity, {
               route: {$set: action.value},
-              // route_id: {$set: routeId},
-              // agency: {$set: action.agency},
-              // TODO: update agency id from feed id?
             })
             entities = [
               ...state.affectedEntities.slice(0, foundIndex),

@@ -72,10 +72,13 @@ export default class SignPreview extends React.Component {
           <span className='pull-right'>{publishedLabel} {this.props.sign.published ? 'Published' : 'Draft'}</span>
         </p>
         <p>Stops:&nbsp;
-        {this.props.sign.affectedEntities ? this.props.sign.affectedEntities.map(e =>
-          {
-            return e.stop ? (<span>{e.stop.stop_name} <Label bsStyle='primary'>{e.route.length} routes</Label></span>) : e.stop_id
-          }) : ''
+        {this.props.sign.affectedEntities
+          ? this.props.sign.affectedEntities.map((e, index) => {
+            return e.stop
+              ? (<span key={index}>{e.stop.stop_name} <Label bsStyle='primary'>{e.route.length} routes</Label></span>)
+              : e.stop_id
+          })
+          : ''
         }
         </p>
         <p>

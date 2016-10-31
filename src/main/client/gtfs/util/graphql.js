@@ -1,3 +1,4 @@
+// variable names/keys must match those specified in GraphQL schema
 export function compose (query, variables) {
   return `/api/manager/graphql?query=${encodeURIComponent(query)}&variables=${encodeURIComponent(JSON.stringify(variables))}`
 }
@@ -90,6 +91,67 @@ query allStopsQuery($feedId: [String]) {
     }
   }
 }
+`
+
+export const patternsAndStopsForBoundingBox = (feedId, entities, max_lat, max_lon, min_lat, min_lon) => `
+  query patternsAndStopsGeo($feedId: [String], $max_lat: Float, $max_lon: Float, $min_lat: Float, $min_lon: Float){
+     ${entities.indexOf('routes') !== -1
+      ?  `patterns(feed_id: $feedId, max_lat: $max_lat, max_lon: $max_lon, min_lat: $min_lat, min_lon: $min_lon){
+         pattern_id,
+         geometry,
+         name,
+         route{
+           route_id,
+           route_short_name,
+           route_long_name,
+           route_color,
+           feed{
+             feed_id
+           },
+         }
+       },`
+      : ''
+     }
+    ${entities.indexOf('stops') !== -1
+      ? `stops(feed_id: $feedId, max_lat: $max_lat, max_lon: $max_lon, min_lat: $min_lat, min_lon: $min_lon){
+          stop_id,
+          stop_code,
+          stop_name,
+          stop_desc,
+          stop_lat,
+          stop_lon,
+          feed{
+            feed_id
+          }
+        }`
+      : ''
+    }
+  }
+`
+
+// for use in entity fetching for signs / alerts
+export const stopsAndRoutes = (feedId, routeId, stopId) => `
+  query routeStopQuery($feedId: [String], ${routeId ? '$routeId: [String],' : ''}, ${stopId ? '$stopId: [String],' : ''}){
+    feeds(feed_id: $feedId){
+      feed_id,
+      ${stopId
+        ? `stops (stop_id: $stopId){
+            stop_id,
+            stop_name,
+            stop_code
+          },`
+        : ''
+      }
+      ${routeId
+        ? `routes(route_id: $routeId){
+            route_id,
+            route_short_name,
+            route_long_name,
+          },`
+        : ''
+      }
+    }
+  }
 `
 
 // TODO: add back in patternId filter

@@ -1,7 +1,7 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 
-import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon } from 'react-bootstrap'
+import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import DisplaySelector from './DisplaySelector'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -43,7 +43,6 @@ export default class SignEditor extends React.Component {
       ? 1 + this.props.sign.affectedEntities.map(e => e.id).reduce((initial, current) => initial > current ? initial : current)
       : 1
 
-    console.log('displays', this.props.sign.displays)
     return (
       <ManagerPage ref='page'>
       <Helmet
@@ -215,17 +214,20 @@ export default class SignEditor extends React.Component {
             </Col>
 
             <Col xs={12} sm={6}>
-              <GlobalGtfsFilter
-                permissionFilter='edit-etid'
-              />
+              <Row>
+                <Col xs={12}>
+                  <GlobalGtfsFilter
+                    permissionFilter='edit-etid'
+                  />
+                </Col>
+              </Row>
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.editorStopClick}
-                newEntityId={newEntityId}
                 popupAction='Add'
+                newEntityId={newEntityId}
               />
             </Col>
-
           </Row>
         </Grid>
       </ManagerPage>

@@ -1,3 +1,5 @@
+import clone from 'clone'
+
 import modes from '../modes'
 import update from 'react-addons-update'
 import { getFeedId } from '../../common/util/modules'
@@ -11,12 +13,17 @@ const alerts = (state = {
     filter: 'ACTIVE'
   }
 }, action) => {
-  let foundIndex
+  let foundIndex, alerts, entities
   switch (action.type) {
     case 'SET_ALERT_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
     case 'SET_ALERT_VISIBILITY_FILTER':
       return update(state, {filter: {filter: {$set: action.filter}}})
+    case 'SET_ALERT_SORT':
+      return update(state, {filter: {sort: {$set: action.sort}}})
+    case 'SET_ALERT_AGENCY_FILTER':
+      return update(state, {filter: {feedId: {$set: action.feedId}}})
+
     case 'DELETE_ALERT':
 
     case 'REQUEST_RTD_ALERTS':
@@ -28,12 +35,32 @@ const alerts = (state = {
           filter: 'ACTIVE'
         }
       }
-    case 'RECEIVED_ALERT_GTFS_ENTITIES':
-      let index = 0
-      for (var i = 0; i < action.gtfsObjects.length; i++) {
-        let ent = action.gtfsObjects[i]
-        if (typeof ent.gtfs !== 'undefined'  && action.gtfsAlerts){
-          let alert = action.gtfsAlerts.find(a => a.id === ent.entity.AlertId)
+    case 'RECEIVED_GTFS_STOPS_AND_ROUTES':
+      if (action.module !== 'ALERTS') {
+        return state
+      }
+      entities = state.entities
+      alerts = clone(state.all)
+      // for those entities we requested, assign the gtfs data to the saved entities
+      for (var i = 0; i < entities.length; i++) {
+        let feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
+        if (feed) {
+          let gtfs = entities[i].type === 'stop'
+            ? feed.stops.find(s => s.stop_id === entities[i].entity.StopId)
+            : entities[i].type === 'route'
+            ? feed.routes.find(s => s.route_id === entities[i].entity.RouteId)
+            : null
+          if (gtfs) {
+            gtfs.feed_id = feed.feed_id
+          }
+          entities[i].gtfs = gtfs
+        }
+      }
+      // iterate over processed gtfs entities
+      for (var i = 0; i < entities.length; i++) {
+        let ent = entities[i]
+        if (ent.gtfs && alerts){
+          let alert = alerts.find(a => a.id === ent.entity.AlertId)
           let selectedEnt = alert.affectedEntities.find(e => e.id === ent.entity.Id)
           selectedEnt[ent.type] = ent.gtfs
         }
@@ -41,7 +68,7 @@ const alerts = (state = {
 
       return {
         isFetching: false,
-        all: action.gtfsAlerts,
+        all: alerts,
         entities: [],
         filter: {
           searchText: null,
@@ -51,8 +78,7 @@ const alerts = (state = {
 
     case 'RECEIVED_RTD_ALERTS':
       const entityList = []
-      console.log(action.rtdAlerts)
-      let alerts = action.rtdAlerts
+      alerts = action.rtdAlerts
       for (var i = 0; i < alerts.length; i++) {
         let action = alerts[i]
         if (typeof action !== 'undefined' && action.ServiceAlertEntities && action.ServiceAlertEntities.length > 0){
@@ -68,8 +94,6 @@ const alerts = (state = {
           }
         }
       }
-      console.log('entityList', entityList)
-
       const allAlerts = action.rtdAlerts ? action.rtdAlerts.map((rtdAlert) => {
         //let activeIndex = action.projects.findIndex(p => p.id == config.activeProjectId)
         let project = action.activeProject // action.projects[activeIndex]
@@ -114,9 +138,6 @@ const alerts = (state = {
               entity.mode = typeof mode !== 'undefined' ? mode : modes.find(m => m.gtfsType === 0)
               entity.type = 'MODE'
             }
-
-
-
             return entity
           })
         }

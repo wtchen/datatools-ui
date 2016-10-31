@@ -5,6 +5,11 @@ const gtfsFilter = (state = {
   allFeeds: [],
   activeFeeds: [],
   loadedFeeds: [],
+  typeFilter: ['stops', 'routes'],
+  map: {
+    bounds: [],
+    zoom: null,
+  },
   permissionFilter: 'view-feed',
   version: null,
   dateTimeFilter: {
@@ -18,6 +23,8 @@ const gtfsFilter = (state = {
   switch (action.type) {
     case 'SET_ACTIVE_FEEDVERSION':
       return update(state, {version: {$set: action.feedVersion ? action.feedVersion.id : null}})
+    case 'UPDATE_GTFS_MAP_STATE':
+      return update(state, {map: {$set: action.props}})
     case 'UPDATE_GTFS_PERMISSION_FILTER':
       return update(state, {permissionFilter: {$set: action.permission}})
     case 'UPDATE_GTFS_DATETIME_FILTER':

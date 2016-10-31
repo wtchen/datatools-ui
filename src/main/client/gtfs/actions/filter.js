@@ -16,6 +16,13 @@ export const updateLoadedFeeds = (loadedFeeds) => {
   }
 }
 
+export function updateMapState (props) {
+  return {
+    type: 'UPDATE_GTFS_MAP_STATE',
+    props
+  }
+}
+
 export function updateGtfsFilter (activeProject, user) {
   return function (dispatch, getState) {
     dispatch(updatingGtfsFilter(activeProject, user))
@@ -34,7 +41,6 @@ export function updateGtfsFilter (activeProject, user) {
         // }
         // else {
           let feeds = feedIds.map(id => getFeed(activeFeeds, id)).filter(n => n)
-          console.log(feeds)
           dispatch(updateLoadedFeeds(feeds))
         // }
       })

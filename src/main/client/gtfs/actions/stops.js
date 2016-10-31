@@ -3,7 +3,7 @@ import fetch from 'isomorphic-fetch'
 import { compose, stopsFiltered } from '../../gtfs/util/graphql'
 import { fetchPatterns } from './patterns'
 
-function fetchingStops (feedId, routeId, patternId, date, from, to) {
+export function fetchingStops (feedId, routeId, patternId, date, from, to) {
   return {
     type: 'FETCH_GRAPHQL_STOPS',
     feedId,
@@ -12,7 +12,13 @@ function fetchingStops (feedId, routeId, patternId, date, from, to) {
   }
 }
 
-function errorFetchingStops (feedId, routeId, patternId, date, from, to) {
+export function clearStops () {
+  return {
+    type: 'CLEAR_GRAPHQL_STOPS',
+  }
+}
+
+export function errorFetchingStops (feedId, routeId, patternId, date, from, to) {
   return {
     type: 'FETCH_GRAPHQL_STOPS_REJECTED',
     feedId,
@@ -22,7 +28,7 @@ function errorFetchingStops (feedId, routeId, patternId, date, from, to) {
   }
 }
 
-function receiveStops (feedId, routeId, patternId, data) {
+export function receiveStops (feedId, routeId, patternId, data) {
   return {
     type: 'FETCH_GRAPHQL_STOPS_FULFILLED',
     feedId,

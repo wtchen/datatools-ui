@@ -40,6 +40,7 @@ export default class GtfsFilter extends React.Component {
           <DropdownButton
             bsStyle='default'
             bsSize='small'
+            id='gtfs-feed-filter'
             title={activeAndLoadedFeeds.length === 0 ? 'No feeds selected'
               : activeAndLoadedFeeds.length < 3 ? `Searching ${activeAndLoadedFeeds.map(feed => feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name).join(' and ')}`
               : `Searching ${activeAndLoadedFeeds.length} feeds`}
@@ -67,7 +68,7 @@ export default class GtfsFilter extends React.Component {
                       }
                       className='pull-right'
                     >
-                      {disabled ? 'loading'
+                      {disabled ? 'pending'
                         : activeFeeds.indexOf(feed) === -1 ? 'off' : 'on'
                       }
                     </Label>

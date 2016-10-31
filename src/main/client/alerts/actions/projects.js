@@ -26,7 +26,6 @@ export function fetchProjects () {
     return secureFetch('/api/manager/secure/project', getState())
       .then(response => response.json())
       .then((projects) => {
-        console.log('received projects', projects)
         dispatch(receiveProjects(projects))
         if (getState().projects.active) {
           project = getState().projects.active
@@ -38,7 +37,6 @@ export function fetchProjects () {
         return dispatch(fetchProjectFeeds(project.id))
       })
       .then(() => {
-        console.log('updating filter')
         dispatch(updateGtfsFilter(getState().projects.active, getState().user))
         return dispatch(fetchRtdAlerts())
       })

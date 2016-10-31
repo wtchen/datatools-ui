@@ -1,4 +1,6 @@
 import update from 'react-addons-update'
+import clone from 'clone'
+
 import { getFeedId } from '../../common/util/modules'
 
 const signs = (state = {
@@ -10,7 +12,7 @@ const signs = (state = {
     filter: 'ALL'
   }
 }, action) => {
-  let foundIndex
+  let foundIndex, signs, entities
   switch (action.type) {
     case 'SET_SIGN_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
@@ -35,22 +37,37 @@ const signs = (state = {
           filter: 'ALL'
         }
       }
-    case 'RECEIVED_SIGN_GTFS_ENTITIES':
-      let index = 0
-      for (var i = 0; i < action.gtfsObjects.length; i++) {
-        let ent = action.gtfsObjects[i]
-        // console.log(ent.gtfs)
-        if (action.gtfsSigns) {
-          let sign = action.gtfsSigns.find(a => a.id === ent.entity.DisplayConfigurationId)
-          console.log(sign)
-          console.log(ent)
-          let selectedEnt =
-            sign.affectedEntities.find(e => e.agencyAndStop === ent.entity.agencyAndStop) // ||
-            // sign.affectedEntities.find(e => e.agency_id === ent.entity.AgencyId && ent.stop_id === ent.entity.StopId)
-          console.log(selectedEnt)
+    case 'RECEIVED_GTFS_STOPS_AND_ROUTES':
+      if (action.module !== 'SIGNS') {
+        return state
+      }
+      entities = state.entities
+      signs = clone(state.all)
+      // for those entities we requested, assign the gtfs data to the saved entities
+      for (var i = 0; i < entities.length; i++) {
+        let feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
+        if (feed) {
+          let gtfs = entities[i].type === 'stop'
+            ? feed.stops.find(s => s.stop_id === entities[i].entity.StopId)
+            : entities[i].type === 'route'
+            ? feed.routes.find(s => s.route_id === entities[i].entity.RouteId)
+            : null
+          if (gtfs) {
+            gtfs.feed_id = feed.feed_id
+          }
+          entities[i].gtfs = gtfs
+        }
+      }
+      // iterate over processed gtfs entities
+      for (var i = 0; i < entities.length; i++) {
+        let ent = entities[i]
+        if (ent.gtfs && signs){
+          let sign = signs.find(s => s.id === ent.entity.DisplayConfigurationId)
+          let selectedEnt = sign && sign.affectedEntities.find(e => e.agencyAndStop === ent.entity.agencyAndStop)
           if (selectedEnt && ent.type === 'stop'){
             selectedEnt.stop = ent.gtfs
           }
+          // route is an array for signs
           if (ent.type === 'route'){
             let route = ent.gtfs ? ent.gtfs : ent.entity
             selectedEnt.route.push(route)
@@ -60,7 +77,7 @@ const signs = (state = {
 
       return {
         isFetching: false,
-        all: action.gtfsSigns,
+        all: signs,
         entities: [],
         filter: {
           searchText: null,
@@ -68,7 +85,6 @@ const signs = (state = {
         }
       }
     case 'RECEIVED_RTD_DISPLAYS':
-      console.log('got displays', state, action.rtdDisplays)
       // let signIndex = state.all.find
       if (state.all !== null) {
         let displayMap = {}
@@ -78,7 +94,6 @@ const signs = (state = {
           if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId)
             continue
           count++
-          console.log(d)
           if (d.DraftDisplayConfigurationId) {
             if (displayMap[d.DraftDisplayConfigurationId] && displayMap[d.DraftDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.DraftDisplayConfigurationId].push(d)
@@ -96,20 +111,16 @@ const signs = (state = {
             }
           }
         }
-        console.log(count)
-        console.log('display map', displayMap)
         let newSigns = state.all.map(s => {
           s.displays = displayMap[s.id] ? displayMap[s.id] : []
           return s
         })
-        console.log(newSigns)
         return update(state, {all: {$set: newSigns}})
       }
       return state
     case 'RECEIVED_RTD_SIGNS':
       const entityList = []
-      console.log(action.rtdSigns)
-      let signs = action.rtdSigns
+      signs = action.rtdSigns
       for (var i = 0; i < signs.length; i++) {
         let action = signs[i]
         if (typeof action !== 'undefined' && action.DisplayConfigurationDetails && action.DisplayConfigurationDetails.length > 0) {
@@ -125,8 +136,6 @@ const signs = (state = {
           }
         }
       }
-      console.log('entityList', entityList)
-
       const allSigns = action.rtdSigns.map((rtdSign) => {
         let project = action.activeProject
         let details = rtdSign.DisplayConfigurationDetails || []

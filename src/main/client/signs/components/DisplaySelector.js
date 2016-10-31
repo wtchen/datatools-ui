@@ -161,7 +161,6 @@ export default class DisplaySelector extends React.Component {
           return response.json()
         })
         .then((displays) => {
-          console.log(displays)
           const displayOptions = displays !== null && displays.length > 0 ? displays.map(display => ({display, value: display.Id, label: display.DisplayTitle, location: display.LocationDescription })) : []
           return { options: displayOptions }
         })

@@ -1,14 +1,27 @@
 import fetch from 'isomorphic-fetch'
 import { compose, routes } from '../../gtfs/util/graphql'
 
-function fetchingRoutes (feedId) {
+export function fetchingRoutes (feedId) {
   return {
     type: 'FETCH_GRAPHQL_ROUTES',
     feedId
   }
 }
 
-function receiveRoutes (feedId, data) {
+export function clearRoutes () {
+  return {
+    type: 'CLEAR_GRAPHQL_ROUTES',
+  }
+}
+
+export function errorFetchingRoutes (feedId, data) {
+  return {
+    type: 'FETCH_GRAPHQL_ROUTES_REJECTED',
+    data
+  }
+}
+
+export function receiveRoutes (feedId, data) {
   return {
     type: 'FETCH_GRAPHQL_ROUTES_FULFILLED',
     data

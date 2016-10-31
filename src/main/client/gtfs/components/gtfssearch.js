@@ -32,11 +32,10 @@ export default class GtfsSearch extends React.Component {
     return <span style={{ color: 'black' }}>{option.stop ? <Glyphicon glyph="map-marker" /> : <Glyphicon glyph="option-horizontal" />} {option.label} <Label>{option.agency ? option.agency.name : ''}</Label> {option.link}</span>
   }
   onChange (value) {
-    // if (typeof value !== 'undefined')
-      this.setState({value})
+    this.props.onChange && this.props.onChange(value)
+    this.setState({value})
   }
   render() {
-    console.log('render search feeds', this.props.feeds)
     const getRouteName = (route) => {
       let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
         route.route_long_name ? route.route_long_name :
@@ -76,7 +75,6 @@ export default class GtfsSearch extends React.Component {
     }
     const getRoutes = (input) => {
       const feedIds = this.props.feeds.map(getFeedId)
-      console.log(feedIds)
 
       if (!feedIds.length) return []
 
@@ -123,13 +121,6 @@ export default class GtfsSearch extends React.Component {
         return options
       })
     }
-    const handleChange = (input) => {
-      console.log(input)
-      this.onChange(input)
-      this.props.onChange(input)
-      console.log(this.state)
-    }
-
     const onFocus = (input) => {
       // clear options to onFocus to ensure only valid route/stop combinations are selected
       this.refs.gtfsSelect.loadOptions('')
@@ -137,20 +128,21 @@ export default class GtfsSearch extends React.Component {
 
     const placeholder = 'Begin typing to search for ' + this.props.entities.join(' or ') + '...'
     return (
-    <Select.Async
-      ref='gtfsSelect'
-      tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
-      cache={false}
-      onFocus={onFocus}
-      filterOptions={true}
-      multi={this.props.multi !== null ? this.props.multi : false}
-      minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
-      clearable={this.props.clearable}
-      placeholder={this.props.placeholder || placeholder}
-      loadOptions={getOptions}
-      value={this.state.value}
-      optionRenderer={this.renderOption}
-      onChange={handleChange} />
+      <Select.Async
+        ref='gtfsSelect'
+        tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
+        cache={false}
+        onFocus={onFocus}
+        filterOptions={true}
+        multi={this.props.multi !== null ? this.props.multi : false}
+        minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
+        clearable={this.props.clearable}
+        placeholder={this.props.placeholder || placeholder}
+        loadOptions={getOptions}
+        value={this.state.value}
+        optionRenderer={this.renderOption}
+        onChange={(value) => this.onChange(value)}
+      />
     )
   }
 }

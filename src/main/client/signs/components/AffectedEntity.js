@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 
 import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Label } from 'react-bootstrap'
 
@@ -6,7 +6,7 @@ import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import { getFeed } from '../../common/util/modules'
 
-export default class AffectedEntity extends React.Component {
+export default class AffectedEntity extends Component {
   constructor (props) {
     super(props)
   }
@@ -24,15 +24,16 @@ export default class AffectedEntity extends React.Component {
       }
       let labelComponents = []
       const stopName = entity.stop
-        ? <span>{entity.stop.stop_name} ({entity.stop.stop_id}) <Label>{agencyName}</Label></span>
-        : entity.stop_id
+        ? <span key='stop-name'>{entity.stop.stop_name} ({entity.stop.stop_id}) <Label>{agencyName}</Label></span>
+        : <span key='stop-id'>entity.stop_id</span>
       labelComponents.push(stopName)
 
-      const routes = entity.route ? <span> for {entity.route.length} routes</span>
-                    : entity.route_id ? <span> for {entity.route_id.length} routes</span>
-                    : <span>[add routes]</span>
+      const routes = entity.route
+        ? <span key='for-routes'> for {entity.route.length} routes</span>
+        : entity.route_id
+        ? <span key='for-routes'> for {entity.route_id}</span>
+        : <span key='add-routes'>[add routes]</span>
       labelComponents.push(routes)
-      console.log(stopName)
       return (
         <span>
         {labelComponents ? labelComponents.map(l => (l)) : null}
@@ -61,10 +62,8 @@ export default class AffectedEntity extends React.Component {
             paddingLeft: '30px'
           }
           let selectedFeeds = [this.props.entity.agency] || this.props.activeFeeds
-          console.log(selectedFeeds)
           let selectedRoute = this.props.entity.route
           let selectedStop = this.props.entity.stop
-          console.log(selectedStop)
           switch (this.props.entity.type) {
             case 'STOP':
               return (
@@ -98,12 +97,11 @@ export default class AffectedEntity extends React.Component {
   }
 }
 
-class RouteSelector extends React.Component {
+class RouteSelector extends Component {
   constructor (props) {
     super(props)
   }
   render () {
-    console.log('render route ent', this.props.route)
     const getRouteName = (route) => {
       let routeName = route.route_short_name && route.route_long_name
         ? `${route.route_short_name} - ${route.route_long_name}`
@@ -113,10 +111,8 @@ class RouteSelector extends React.Component {
         : null
       return routeName
     }
-    var routes = []
     const feed = this.props.route ? getFeed(this.props.feeds, this.props.route.feed_id) : null
     const agencyName = feed ? feed.name : 'Unknown agency'
-
     return (
       <div>
         <GtfsSearch
@@ -128,13 +124,13 @@ class RouteSelector extends React.Component {
           clearable={this.props.clearable}
           entities={['routes']}
           onChange={(evt) => {
-            console.log(evt)
             if (evt) {
               let routes = evt.map(e => e.route)
               this.props.entityUpdated(this.props.entity, 'ROUTES', routes)
             }
-            else if (evt == null)
+            else {
               this.props.entityUpdated(this.props.entity, 'ROUTES', [])
+            }
           }}
           value={
             this.props.route
@@ -147,15 +143,14 @@ class RouteSelector extends React.Component {
   }
 }
 
-class StopSelector extends React.Component {
+class StopSelector extends Component {
   constructor (props) {
     super(props)
   }
   render () {
-    console.log('render stop ent', this.props.stop)
     var stops = []
     const feed = this.props.stop ? getFeed(this.props.feeds, this.props.stop.feed_id) : null
-    const agencyName = feed ? feed.name : 'Unkown agency'
+    const agencyName = feed ? feed.name : 'Unknown agency'
     return (
       <div>
         <GtfsSearch

@@ -41,6 +41,17 @@ export default function reducer (state = defaultState, action) {
           data: {$set: []}
         }
       })
+    case 'RECEIVED_GTFS_ELEMENTS':
+      return update(state, {
+        fetchStatus: {
+          $set: {
+            fetched: true,
+            fetching: false,
+            error: false
+          }
+        },
+        data: {$set: action.stops}
+      })
     case 'FETCH_GRAPHQL_STOPS_FULFILLED':
       let allRoutes = action.data.routes || []
       let allPatterns = []

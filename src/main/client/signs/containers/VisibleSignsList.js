@@ -8,6 +8,7 @@ import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibil
 import SignsList from '../components/SignsList'
 
 import { getFeedsForPermission } from '../../common/util/permissions'
+import { FILTERS } from '../util'
 
 const getVisibleSigns = (signs, visibilityFilter) => {
   if (!signs) return []
@@ -21,19 +22,27 @@ const getVisibleSigns = (signs, visibilityFilter) => {
       return visibleSigns.filter(sign => sign.published)
     case 'DRAFT':
       return visibleSigns.filter(sign => !sign.published)
+    default:
+      return visibleSigns
   }
   return visibleSigns
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log('all signs', state.signs.all)
   // if (state.projects.active !== null && state.projects.active.feeds !== null )
+  let filterCounts = {}
+  if (!state.signs.isFetching) {
+    FILTERS.map(f => {
+      filterCounts[f] = getVisibleSigns(state.signs.all, {filter: f}).length
+    })
+  }
   return {
     isFetching: state.signs.isFetching,
     signs: getVisibleSigns(state.signs.all, state.signs.filter),
     visibilityFilter: state.signs.filter,
     editableFeeds: getFeedsForPermission(state.projects.active, state.user, 'edit-etid'),
-    publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-etid')
+    publishableFeeds: getFeedsForPermission(state.projects.active, state.user, 'approve-etid'),
+    filterCounts
   }
 }
 

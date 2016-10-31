@@ -43,9 +43,13 @@ export default class SignsViewer extends React.Component {
               <VisibleSignsList />
             </Col>
             <Col xs={12} sm={6}>
-              <GlobalGtfsFilter
-                permissionFilter='edit-etid'
-              />
+              <Row>
+                <Col xs={12}>
+                  <GlobalGtfsFilter
+                    permissionFilter='edit-etid'
+                  />
+                </Col>
+              </Row>
               <GtfsMapSearch
                 feeds={this.props.activeFeeds}
                 onStopClick={this.props.onStopClick}

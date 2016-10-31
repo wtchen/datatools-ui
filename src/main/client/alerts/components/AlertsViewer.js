@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-
+import Icon from 'react-fa'
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -32,10 +32,14 @@ export default class AlertsViewer extends React.Component {
         <Grid>
           <Row>
             <Col xs={12}>
-              <CreateAlert
-                disabled={createDisabled}
-                createAlert={this.props.createAlert}
-              />
+              <h2>
+                <Icon name='exclamation-circle'/> Service Alerts
+                <CreateAlert
+                  style={{marginTop: '-8px'}}
+                  disabled={createDisabled}
+                  createAlert={this.props.createAlert}
+                />
+              </h2>
             </Col>
           </Row>
           <Row>

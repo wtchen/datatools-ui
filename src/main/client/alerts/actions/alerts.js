@@ -1,6 +1,8 @@
 import { push } from 'react-router-redux'
 import { browserHistory } from 'react-router'
+import clone from 'clone'
 
+import { fetchStopsAndRoutes } from  '../../gtfs/actions/general'
 import { secureFetch } from '../../common/util/util'
 import { getAlertsUrl, getFeedId } from '../../common/util/modules'
 import { setErrorMessage } from '../../manager/actions/status'
@@ -112,15 +114,6 @@ export const requestRtdAlerts = () => {
   }
 }
 
-export const receivedGtfsEntities = (gtfsObjects, gtfsAlerts) => {
-  return {
-    type: 'RECEIVED_ALERT_GTFS_ENTITIES',
-    gtfsObjects,
-    gtfsAlerts
-  }
-}
-
-
 export const receivedRtdAlerts = (rtdAlerts, activeProject) => {
   return {
     type: 'RECEIVED_RTD_ALERTS',
@@ -148,70 +141,10 @@ export function fetchRtdAlerts () {
     }).then((alerts) => {
       return dispatch(receivedRtdAlerts(alerts, getState().projects.active))
     }).then(() => {
-      let feed = getState().projects.active
-      const fetchFunctions = getState().alerts.entities.map((entity) => {
-          return fetchEntity(entity, feed)
-      })
-      return Promise.all(fetchFunctions)
-      .then((results) => {
-        let newEntities = getState().alerts.entities
-        for (var i = 0; i < newEntities.length; i++) {
-          newEntities[i].gtfs = results[i]
-        }
-        dispatch(receivedGtfsEntities(newEntities, getState().alerts.all))
-      }).then((error) => {
-        console.log('error', error)
-      })
-
+      return dispatch(fetchStopsAndRoutes(getState().alerts.entities, 'ALERTS'))
     })
   }
 }
-// TODO: implement method for single alert fetch
-// export const requestRtdAlert = () => {
-//   return {
-//     type: 'REQUEST_RTD_ALERT',
-//   }
-// }
-//
-// export const receivedRtdAlert = (rtdAlerts, activeProject) => {
-//   return {
-//     type: 'RECEIVED_RTD_ALERT',
-//     rtdAlerts,
-//     activeProject
-//   }
-// }
-//
-// export function fetchRtdAlert(alertId) {
-//   return function (dispatch, getState) {
-//     dispatch(requestRtdAlert())
-//     return fetch(getAlertsUrl() + '/' + alertId).then((res) => {
-//       return res.json()
-//     }).then((alert) => {
-//       const project = getState().projects.active
-//       return dispatch(receivedRtdAlerts([alert], project))
-//     }).then(() => {
-//       let feed = getState().projects.active
-//       const fetchFunctions = getState().alerts.entities.map((entity) => {
-//           return fetchEntity(entity, feed)
-//       })
-//       return Promise.all(fetchFunctions)
-//       .then((results) => {
-//         let newEntities = getState().alerts.entities
-//         for (var i = 0; i < newEntities.length; i++) {
-//           newEntities[i].gtfs = results[i]
-//         }
-//         const alerts = getState().alerts.all
-//         const alert = alerts.find(a => a.id === +alertId)
-//         dispatch(receivedGtfsEntities(newEntities, alerts))
-//         console.log('this alert', alert)
-//         dispatch(updateActiveAlert(alert))
-//       }).then((error) => {
-//         console.log('error', error)
-//       })
-//
-//     })
-//   }
-// }
 
 export const updateActiveAlert = (alert) => {
   return {
@@ -228,7 +161,6 @@ export function editAlert(alert) {
 }
 
 export function fetchEntity(entity, activeProject) {
-  console.log()
   const feed = activeProject.feedSources.find(f => getFeedId(f) === entity.entity.AgencyId)
   const feedId = getFeedId(feed)
   const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
@@ -258,7 +190,6 @@ export function saveAlert(alert) {
       StartDateTime: alert.start/1000 || 0,
       EndDateTime: alert.end/1000 || 0,
       ServiceAlertEntities: alert.affectedEntities.map((entity) => {
-        console.log('ent', entity)
         return {
           Id: entity.id,
           AlertId: alert.id,
@@ -273,7 +204,6 @@ export function saveAlert(alert) {
         }
       })
     }
-
     console.log('saving', alert.id, json)
     const url = getAlertsUrl() + (alert.id < 0 ? '' : '/' + alert.id)
     const method = alert.id < 0 ? 'post' : 'put'

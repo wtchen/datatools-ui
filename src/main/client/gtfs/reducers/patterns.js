@@ -29,6 +29,17 @@ export default function reducer (state = defaultState, action) {
           data: {$set: []}
         }
       )
+    // case 'CLEAR_GRAPHQL_PATTERNS':
+    //   return update(state, {
+    //     fetchStatus: {
+    //       $set: {
+    //         fetched: false,
+    //         fetching: false,
+    //         error: false
+    //       },
+    //       data: {$set: []}
+    //     }
+    //   })
     case 'FETCH_GRAPHQL_PATTERNS_REJECTED':
       return update(state, {
         fetchStatus: {
@@ -38,6 +49,17 @@ export default function reducer (state = defaultState, action) {
             error: true
           }
         }
+      })
+    case 'RECEIVED_GTFS_ELEMENTS':
+      return update(state, {
+        fetchStatus: {
+          $set: {
+            fetched: true,
+            fetching: false,
+            error: false
+          }
+        },
+        data: {$set: action.patterns}
       })
     case 'FETCH_GRAPHQL_PATTERNS_FULFILLED':
       let allRoutes = action.data ? action.data.routes : []

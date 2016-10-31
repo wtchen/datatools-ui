@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import { Row, ButtonGroup, Button, FormControl, FormGroup } from 'react-bootstrap'
+import { Row, ButtonGroup, Button, FormControl, FormGroup, Badge } from 'react-bootstrap'
 import Icon from 'react-fa'
+import { sentence as toSentenceCase } from 'change-case'
 
 import SignPreview from './SignPreview'
+import { FILTERS } from '../util'
 
 export default class SignsList extends Component {
   static propTypes = {
@@ -43,18 +45,16 @@ export default class SignsList extends Component {
         </Row>
         <Row>
           <ButtonGroup justified>
-            <Button
-              bsStyle={this.props.visibilityFilter.filter === 'ALL' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('ALL')}
-              href='#'>All</Button>
-            <Button
-              bsStyle={this.props.visibilityFilter.filter === 'PUBLISHED' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('PUBLISHED')}
-              href='#'>Published</Button>
-            <Button
-              bsStyle={this.props.visibilityFilter.filter === 'DRAFT' ? 'primary' : 'default'}
-              onClick={() => this.props.visibilityFilterChanged('DRAFT')}
-              href='#'>Draft</Button>
+            {FILTERS.map(f => (
+              <Button
+                active={this.props.visibilityFilter.filter === f}
+                onClick={() => this.props.visibilityFilterChanged(f)}
+                href='#'
+                key={f}
+              >
+                {toSentenceCase(f)} <Badge style={{backgroundColor: '#babec0'}}>{this.props.filterCounts[f]}</Badge>
+              </Button>
+            ))}
           </ButtonGroup>
           <div className='form-group'>&nbsp;</div>
         </Row>
@@ -74,7 +74,7 @@ export default class SignsList extends Component {
               onDeleteClick={this.props.onDeleteClick}
             />
           })
-          : <p className='lead text-center'>No alerts found.</p>
+          : <p className='lead text-center'>No signs found.</p>
         }
         </Row>
       </div>

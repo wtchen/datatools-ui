@@ -4,7 +4,6 @@ const activeAlert = (state = null, action) => {
   let entities, foundIndex, updatedEntity
   switch (action.type) {
     case 'UPDATE_ACTIVE_ALERT_ALERT':
-      console.log('update active alert', action.alert)
     case 'CREATE_ALERT':
     case 'EDIT_ALERT':
       return action.alert

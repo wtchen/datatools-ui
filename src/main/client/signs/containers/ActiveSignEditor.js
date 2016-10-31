@@ -36,15 +36,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       const signId = initialProps.location.pathname.split('/sign/')[1]
-      console.log(signId)
       if (initialProps.sign)
         return
 
       if (!signId) {
-        console.log('sign', initialProps.sign)
         dispatch(fetchProjects())
         .then((activeProject) => {
-          console.log('done fetching projects')
           if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')){
             console.log('cannot create sign!')
             browserHistory.push('/signs')
@@ -54,16 +51,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
       else {
-        console.log('need to set active sign')
         dispatch(fetchProjects())
         .then((activeProject) => {
-          console.log('done fetching projects')
           if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')){
             console.log('cannot create sign!')
             browserHistory.push('/signs')
             return
           }
-          console.log('getting', signId)
           dispatch(setActiveSign(+signId))
         })
       }

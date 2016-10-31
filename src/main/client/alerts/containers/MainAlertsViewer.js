@@ -21,9 +21,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
-      console.log(initialProps)
       if (!initialProps.alerts || initialProps.alerts.length === 0 || !initialProps.project.feedSources) {
-        console.log('fetching projects...')
         dispatch(fetchProjects())
       }
 

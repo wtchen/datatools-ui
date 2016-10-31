@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 
 import { compose, patterns } from '../../gtfs/util/graphql'
 
-function fetchingPatterns (feedId, routeId) {
+export function fetchingPatterns (feedId, routeId) {
   return {
     type: 'FETCH_GRAPHQL_PATTERNS',
     feedId,
@@ -10,14 +10,20 @@ function fetchingPatterns (feedId, routeId) {
   }
 }
 
-function errorFetchingPatterns (feedId, data) {
+export function clearPatterns () {
+  return {
+    type: 'CLEAR_GRAPHQL_PATTERNS',
+  }
+}
+
+export function errorFetchingPatterns (feedId, data) {
   return {
     type: 'FETCH_GRAPHQL_PATTERNS_REJECTED',
     data
   }
 }
 
-function receivePatterns (feedId, data) {
+export function receivePatterns (feedId, data) {
   return {
     type: 'FETCH_GRAPHQL_PATTERNS_FULFILLED',
     data

@@ -11,6 +11,7 @@ export default class CreateAlert extends React.Component {
       <Button
         bsStyle='primary'
         bsSize='large'
+        style={this.props.style}
         disabled={this.props.disabled != null ? this.props.disabled : false}
         onClick={this.props.createAlert}
         className='pull-right'
