@@ -3,6 +3,7 @@ package com.conveyal.datatools.manager.controllers;
 import com.conveyal.datatools.manager.auth.Auth0UserProfile;
 import com.conveyal.datatools.manager.auth.Auth0Users;
 import com.conveyal.datatools.manager.models.Deployment;
+import com.conveyal.datatools.manager.models.ExternalFeedSourceProperty;
 import com.conveyal.datatools.manager.models.FeedSource;
 import com.conveyal.datatools.manager.models.FeedVersion;
 import com.conveyal.datatools.manager.models.JsonViews;
@@ -43,6 +44,7 @@ public class DumpController {
         public Collection<Note> notes;
         //        public Collection<Auth0UserProfile> users;
         public Collection<Deployment> deployments;
+        public Collection<ExternalFeedSourceProperty> externalProperties;
     }
 
     private static JsonManager<DatabaseState> json =
@@ -56,6 +58,7 @@ public class DumpController {
         db.notes = Note.getAll();
 //        db.users = Auth0Users.getAll();
         db.deployments = Deployment.getAll();
+        db.externalProperties = ExternalFeedSourceProperty.getAll();
 
         return db;
     }
@@ -112,6 +115,12 @@ public class DumpController {
             Map.Entry<String, JsonNode> entry = fieldsIter.next();
             switch(entry.getKey()) {
                 case "feedCollections":
+                    for(int i=0; i< entry.getValue().size(); i++) {
+                        loadLegacyProject(entry.getValue().get(i));
+                    }
+                    Project.commit();
+                    break;
+                case "projects":
                     for(int i=0; i< entry.getValue().size(); i++) {
                         loadLegacyProject(entry.getValue().get(i));
                     }
