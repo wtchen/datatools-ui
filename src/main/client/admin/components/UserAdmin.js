@@ -11,7 +11,7 @@ import { getComponentMessages, getMessage } from '../../common/util/config'
 export default class UserAdmin extends Component {
   static propTypes = {
     user: PropTypes.user,
-    
+
     onComponentMount: PropTypes.func,
     setUserPermission: PropTypes.func,
     createUser: PropTypes.func,
@@ -64,8 +64,8 @@ export default class UserAdmin extends Component {
                     <ListGroup fill>
                       <LinkContainer to='/admin/users'><ListGroupItem>User management</ListGroupItem></LinkContainer>
                       <LinkContainer to='/admin/logs'><ListGroupItem>Application logs</ListGroupItem></LinkContainer>
-                      <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>
-                      <LinkContainer to='/admin/regions'><ListGroupItem>Regions</ListGroupItem></LinkContainer>
+                      {/*<LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>
+                      <LinkContainer to='/admin/regions'><ListGroupItem>Regions</ListGroupItem></LinkContainer>*/}
                     </ListGroup>
                   </Panel>
                 </Col>
