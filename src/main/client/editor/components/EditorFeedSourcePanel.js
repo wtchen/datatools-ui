@@ -34,6 +34,13 @@ export default class EditorFeedSourcePanel extends Component {
     const currentSnapshot = this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
        ? this.props.feedSource.editorSnapshots.find(s => s.current)
        : null
+   const activeSnapshots = this.props.feedSource.editorSnapshots
+      ? this.props.feedSource.editorSnapshots.filter(s => s.current)
+      : []
+    const inactiveSnapshots = this.props.feedSource.editorSnapshots
+       ? this.props.feedSource.editorSnapshots.filter(s => !s.current)
+       : []
+    console.log(inactiveSnapshots)
     return (
       <Row>
         <ConfirmModal ref='confirmLoad' />
@@ -52,9 +59,9 @@ export default class EditorFeedSourcePanel extends Component {
                 </Panel>
                 <Panel bsStyle='warning' header={<h3>Inactive snapshots</h3>}>
                   <ListGroup fill>
-                    {this.props.feedSource.editorSnapshots.length === 1
+                    {inactiveSnapshots.length === 0
                       ? <ListGroupItem>No other snapshots</ListGroupItem>
-                      : this.props.feedSource.editorSnapshots.map(s => {
+                      : inactiveSnapshots.map(s => {
                           return (
                             <SnapshotItem snapshot={s} {...this.props}/>
                           )
@@ -113,10 +120,15 @@ class SnapshotItem extends Component {
       <ListGroupItem header={snapshot.name}>
         <p>
           <ButtonToolbar className='pull-right' style={{marginTop: '-20px'}}>
-            <Button bsStyle='primary'
+            <Button
+              bsStyle='primary'
+              disabled={snapshot.current}
               onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
             >
-              <Glyphicon glyph='pencil' /> {getMessage(messages, 'restore')}
+              {snapshot.current
+                ? <span><Icon name='check-circle'/> {getMessage(messages, 'active')}</span>
+                : <span><Glyphicon glyph='pencil' /> {getMessage(messages, 'restore')}</span>
+              }
             </Button>
             {
             // <Button bsStyle='success'>
@@ -134,7 +146,7 @@ class SnapshotItem extends Component {
               <Icon name='trash' /> {getMessage(messages, 'delete')}
             </Button>
           </ButtonToolbar>
-          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon name='clock-o'/> {moment(snapshot.snapshotTime).fromNow()}</span>
+          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon name='clock-o'/> created {moment(snapshot.snapshotTime).fromNow()}</span>
         </p>
       </ListGroupItem>
     )
