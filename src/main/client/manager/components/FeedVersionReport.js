@@ -7,7 +7,7 @@ import Rcslider from 'rc-slider'
 import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
-import { getComponentMessages, getMessage, getConfigProperty, isModuleEnabled } from '../../common/util/config'
+import { getComponentMessages, getMessage, getConfigProperty, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 
 // import Feed from './reporter/containers/Feed'
 import Patterns from './reporter/containers/Patterns'
@@ -41,6 +41,7 @@ export default class FeedVersionReport extends Component {
     // fetchValidationResult: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
     fetchValidationResult: PropTypes.func,
+    publishFeedVersion: PropTypes.func,
     // downloadFeedClicked: PropTypes.func,
     // loadFeedVersionForEditing: PropTypes.func
   }
@@ -49,7 +50,7 @@ export default class FeedVersionReport extends Component {
     this.state = {
       tab: 'feed',
       mapHeight: MAP_HEIGHTS[0],
-      isochroneBand: 60 * 60
+      isochroneBand: 60 * 60,
     }
   }
   getVersionDateLabel (version) {
@@ -62,6 +63,17 @@ export default class FeedVersionReport extends Component {
   }
   selectTab (tab) {
     this.setState({tab})
+  }
+  renderIsochroneMessage (version) {
+    if (version.isochrones && version.isochrones.features) {
+      return 'Move marker or change date/time to recalculate travel shed.'
+    }
+    else if (version.isochrones) {
+      return 'Reading transport network, please try again later.'
+    }
+    else {
+      return 'Click on map above to show travel shed for this feed.'
+    }
   }
   render () {
     const version = this.props.version
@@ -127,19 +139,13 @@ export default class FeedVersionReport extends Component {
               <ActiveGtfsMap
                 ref='map'
                 version={this.props.version}
-//                feeds={[this.props.version.feedSource]}
                 disableRefresh
                 disableScroll
                 disablePopup
+                renderTransferPerformance
                 showBounds={this.state.tab === 'feed' || this.state.tab === 'accessibility'}
                 showIsochrones={this.state.tab === 'accessibility'}
                 isochroneBand={this.state.isochroneBand}
-                // onStopClick={this.props.onStopClick}
-                // onRouteClick={this.props.onRouteClick}
-                // newEntityId={this.props.newEntityId}
-                // searchFocus={this.state.searchFocus}
-                // entities={this.state.searching}
-                // popupAction={this.props.popupAction}
                 height={this.state.mapHeight}
                 width='100%'
               />
@@ -188,6 +194,19 @@ export default class FeedVersionReport extends Component {
                     <p style={{marginBottom: '0px'}}>{getMessage(messages, 'stopTimesCount')}</p>
                   </Col>
                 </Row>
+                {isExtensionEnabled('mtc')
+                  ? <Button
+                      disabled={this.props.isPublished}
+                      bsStyle={this.props.isPublished ? 'success' : 'warning'}
+                      onClick={() => this.props.publishFeedVersion(version)}
+                    >
+                      {this.props.isPublished
+                        ? <span><Icon name='check-circle'/> Published</span>
+                        : <span>Publish to MTC</span>
+                      }
+                    </Button>
+                  : null
+                }
                 {
                 /*<Feed
                   version={this.props.version}
@@ -231,7 +250,10 @@ export default class FeedVersionReport extends Component {
                   <div>
                     <Row>
                       <Col xs={12}>
-                        <p className='lead text-center'>Click on map above to show travel shed for this feed.</p>
+                        {/* isochrone message */}
+                        <p className='lead text-center'>
+                          {this.renderIsochroneMessage(this.props.version)}
+                        </p>
                       </Col>
                     </Row>
                     <Row>
