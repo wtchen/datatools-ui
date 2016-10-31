@@ -8,7 +8,7 @@ import { getComponentMessages, getMessage, getConfigProperty } from '../util/con
 class WatchButton extends Component {
   static propTypes = {
     dispatch: PropTypes.func,
-    isWatching: PropTypes.string,
+    isWatching: PropTypes.bool,
     user: PropTypes.object,
     target: PropTypes.string,
     subscriptionType: PropTypes.string,
