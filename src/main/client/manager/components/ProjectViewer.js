@@ -59,7 +59,13 @@ export default class ProjectViewer extends Component {
       errorMessage: 'Uploaded file must be a valid zip file (.zip).'
     })
   }
-
+  shouldComponentUpdate (newProps) {
+    if (!shallowEqual(newProps, this.props)) {
+      return true
+    } else {
+      return false
+    }
+  }
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
@@ -122,7 +128,7 @@ export default class ProjectViewer extends Component {
           </Button>
           <ButtonToolbar>
           {isExtensionEnabled('transitland') || isExtensionEnabled('transitfeeds') || isExtensionEnabled('mtc')
-            ? <DropdownButton bsStyle='success' title={<span><Icon name='refresh'/> Sync</span>}>
+            ? <DropdownButton id='sync-dropdown' bsStyle='success' title={<span><Icon name='refresh'/> Sync</span>}>
                 {isExtensionEnabled('transitland')
                   ? <MenuItem
                       bsStyle='primary'
@@ -169,7 +175,6 @@ export default class ProjectViewer extends Component {
               bsStyle='default'
               disabled={projectEditDisabled}
               onClick={() => {
-                console.log(this.props.project)
                 this.props.updateAllFeeds(this.props.project)
               }}
             >
