@@ -150,7 +150,7 @@ export default class GtfsEditor extends Component {
         />
         <div style={{
           position: 'fixed',
-          left: this.props.sidebarExpanded ? 150 : 50,
+          left: this.props.sidebarExpanded ? 130 : 50,
           bottom: 0,
           right: 0,
           top: 0

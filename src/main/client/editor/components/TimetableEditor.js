@@ -357,7 +357,7 @@ export default class TimetableEditor extends Component {
       paddingLeft: '5px',
     }
 
-    const headerWidth = this.state.width - (this.props.sidebarExpanded ? 150 : 50)
+    const headerWidth = this.state.width - (this.props.sidebarExpanded ? 130 : 50)
     const headerStyle = {
       position: 'fixed',
       zIndex: 1000,
