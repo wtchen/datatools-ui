@@ -65,7 +65,8 @@ export default class UserAccount extends Component {
         hidden: !getConfigProperty('modules.enterprise.enabled')
       },
       {
-        id: 'organizations'
+        id: 'organizations',
+        hidden: !getConfigProperty('modules.enterprise.enabled')
       },
       {
         id: 'notifications',
