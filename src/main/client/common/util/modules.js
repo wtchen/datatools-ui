@@ -2,6 +2,7 @@ import { getConfigProperty } from './config'
 
 export const getFeed = (feeds, id) => {
   // console.log(feeds, id)
+  // TODO: move use_extension to extension enabled??
   const useMtc = getConfigProperty('modules.gtfsapi.use_extension') === 'mtc'
   const feed = feeds ? feeds.find(f => useMtc ? f.externalProperties.MTC.AgencyId === id : f.id === id) : null
   return feed
