@@ -226,7 +226,15 @@ const projects = (state = {
           }
         }
       )
-
+    case 'PUBLISHED_FEEDVERSION':
+      projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
+      sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
+      versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
+      return update(state,
+        {all: {[projectIndex]: {feedSources: {[sourceIndex]: {publishedVersionId: {
+          $set: action.feedVersion.id
+        }}}}}}
+      )
     case 'RECEIVE_VALIDATION_RESULT':
       projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
@@ -239,19 +247,9 @@ const projects = (state = {
       //   result[error.file].push(error)
       // })
       return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {feedVersions:
-                  {[versionIndex]:
-                    {$merge: {validationResult: action.validationResult}}
-                  }
-                }
-              }
-            }
-          }
-        }
+        {all: {[projectIndex]: {feedSources: {[sourceIndex]: {feedVersions: {
+          [versionIndex]: {$merge: {validationResult: action.validationResult}}
+        }}}}}}
       )
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)

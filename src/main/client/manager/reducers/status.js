@@ -147,6 +147,7 @@ const config = (state = {
     case 'RECEIVE_FEEDSOURCES':
     case 'RECEIVE_FEEDSOURCE':
     case 'RECEIVE_FEEDVERSIONS':
+    case 'RECEIVE_FEEDVERSION':
     case 'RECEIVE_FETCH_FEED_FOR_PROJECT':
     case 'RECEIVE_PUBLIC_FEEDS':
     case 'RECEIVE_VALIDATION_RESULT':
