@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { fetchFeedVersion } from './feeds'
+import { fetchFeedVersion, fetchFeedSource } from './feeds'
 import { fetchSnapshots } from '../../editor/actions/snapshots'
 
 export function setErrorMessage (message) {
@@ -121,11 +121,19 @@ export function setJobMonitorVisible (visible) {
   }
 }
 
+export function handlingFinishedJob (job) {
+  return {
+    type: 'HANDLING_FINISHED_JOB',
+    job
+  }
+}
+
 export function handleFinishedJob (job) {
   return function (dispatch, getState) {
+    dispatch(handlingFinishedJob(job))
     switch (job.type) {
       case 'VALIDATE_FEED':
-        dispatch(fetchFeedVersion(job.feedVersionId))
+        dispatch(fetchFeedSource(job.feedVersion.feedSource.id, true))
         break
       case 'PROCESS_SNAPSHOT':
         dispatch(fetchSnapshots(job.feedVersion.feedSource))

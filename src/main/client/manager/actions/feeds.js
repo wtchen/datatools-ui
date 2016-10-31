@@ -145,7 +145,7 @@ export function receiveFeedSource (feedSource) {
   }
 }
 
-export function fetchFeedSource (feedSourceId, fetchVersions) {
+export function fetchFeedSource (feedSourceId, withVersions = false, withSnapshots = false) {
   return function (dispatch, getState) {
     console.log('fetchFeedSource', feedSourceId)
     dispatch(requestingFeedSource())
@@ -166,7 +166,8 @@ export function fetchFeedSource (feedSourceId, fetchVersions) {
         }
         console.log('got feedSource', feedSource)
         dispatch(receiveFeedSource(feedSource))
-        if(fetchVersions) dispatch(fetchFeedVersions(feedSource))
+        if (withVersions) dispatch(fetchFeedVersions(feedSource))
+        if (withSnapshots) dispatch(fetchSnapshots(feedSource))
         return feedSource
       })
   }
@@ -317,6 +318,31 @@ export function fetchFeedVersion (feedVersionId) {
   }
 }
 
+export function publishingFeedVersion (feedVersion) {
+  return {
+    type: 'PUBLISHING_FEEDVERSION',
+    feedVersion
+  }
+}
+
+export function publishedFeedVersion (feedVersion) {
+  return {
+    type: 'PUBLISHED_FEEDVERSION',
+    feedVersion
+  }
+}
+
+export function publishFeedVersion (feedVersion) {
+  return function (dispatch, getState) {
+    dispatch(publishingFeedVersion(feedVersion))
+    const url = `/api/manager/secure/feedversion/${feedVersion.id}/publish`
+    return secureFetch(url, getState(), 'post')
+      .then(response => response.json())
+      .then(version => {
+        return dispatch(publishedFeedVersion(version))
+      })
+  }
+}
 
 export function fetchPublicFeedVersions (feedSource) {
   return function (dispatch, getState) {
@@ -461,7 +487,15 @@ export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat
     const params = {fromLat, fromLon, toLat, toLon, date, fromTime, toTime}
     const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?${qs.stringify(params)}`
     return secureFetch(url, getState())
-      .then(response => response.json())
+      .then(res => {
+        console.log(res.status)
+        if (res.status === 202) {
+          // dispatch(setStatus)
+          console.log("building network")
+          return []
+        }
+        return res.json()
+      })
       .then(isochrones => {
         console.log('received isochrones ', isochrones)
         dispatch(receiveFeedVersionIsochrones(feedVersion.feedSource, feedVersion, isochrones))
@@ -511,13 +545,13 @@ export function renamingFeedVersion () {
   }
 }
 
-export function renameFeedVersion (feedSource, feedVersion, name) {
+export function renameFeedVersion (feedVersion, name) {
   return function (dispatch, getState) {
     dispatch(renamingFeedVersion())
     const url = `/api/manager/secure/feedversion/${feedVersion.id}/rename?name=${name}`
     return secureFetch(url, getState(), 'put')
       .then((res) => {
-        dispatch(fetchFeedVersions(feedSource))
+        dispatch(fetchFeedVersion(feedVersion.id))
       })
   }
 }
