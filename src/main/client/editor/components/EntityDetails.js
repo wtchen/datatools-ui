@@ -30,7 +30,7 @@ export default class EntityDetails extends Component {
 
     mapState: PropTypes.object,
 
-    activeEntityId: PropTypes.string.isRequired,
+    activeEntityId: PropTypes.string,
     width: PropTypes.number.isRequired,
 
     setActiveEntity: PropTypes.func.isRequired,
