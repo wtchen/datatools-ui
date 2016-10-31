@@ -121,6 +121,7 @@ ResultTable:
   problemType: Problem Type
   priority: Priority
   affectedIds: Affected ID(s)
+  line: Line
   description: Description
 DeploymentViewer:
   versions: Feed Versions

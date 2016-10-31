@@ -78,6 +78,7 @@ EditorFeedSourcePanel:
   date: Date
   name: Name
   download: Download
+  active: Active
   restore: Make active
   load: Load for Editing
   confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
@@ -148,6 +149,7 @@ ResultTable:
   problemType: Problem Type
   priority: Priority
   affectedIds: Affected ID(s)
+  line: Line
   description: Description
 DeploymentViewer:
   versions: Feed Versions
