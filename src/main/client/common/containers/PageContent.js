@@ -21,7 +21,7 @@ class Content extends Component {
     return (
       <div style={{
         position: 'fixed',
-        left: this.props.sidebarExpanded ? 150 : 50,
+        left: this.props.sidebarExpanded ? 130 : 50,
         right: 0,
         bottom: 0,
         top: 0,

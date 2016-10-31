@@ -1103,7 +1103,7 @@ export default class EditorMap extends Component {
       ? this.refs.map.leafletElement.getBounds()
       : feedSourceBounds
 
-    let mapWidth = this.state.width - this.props.offset - (this.props.sidebarExpanded ? 150 : 50)
+    let mapWidth = this.state.width - this.props.offset - (this.props.sidebarExpanded ? 130 : 50)
 
     const mapStyle = {
       height: '100%',
