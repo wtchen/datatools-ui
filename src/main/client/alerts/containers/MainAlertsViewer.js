@@ -6,8 +6,6 @@ import AlertsViewer from '../components/AlertsViewer'
 import { createAlert } from '../actions/alerts'
 import { fetchProjects } from '../actions/projects'
 
-import '../style.css'
-
 const mapStateToProps = (state, ownProps) => {
   return {
     activeFeeds: state.gtfs.filter.activeFeeds,

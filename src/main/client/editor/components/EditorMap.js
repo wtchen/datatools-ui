@@ -3,7 +3,7 @@ import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, Lay
 import { divIcon, Browser } from 'leaflet'
 import { Button, Dropdown, OverlayTrigger, Tooltip, Row, Col, ButtonGroup, MenuItem, SplitButton, FormGroup, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import ll from 'lonlng'
 import lineString from 'turf-linestring'
 import bearing from 'turf-bearing'

@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, Button, ButtonToolbar } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { ListGroupItem, Row, Col, ButtonGroup, Button, Glyphicon, FormControl, Label, Collapse } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import modes from '../modes'

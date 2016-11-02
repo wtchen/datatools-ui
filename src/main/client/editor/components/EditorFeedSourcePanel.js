@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Panel, Row, Col, Table, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import moment from 'moment'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import ConfirmModal from '../../common/components/ConfirmModal'
 import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'

@@ -1,2 +1,4 @@
-export activeAlert from './activeAlert'
-export alerts from './alerts'
+module.exports = {
+  activeAlert: require('./activeAlert'),
+  alerts: require('./alerts')
+}

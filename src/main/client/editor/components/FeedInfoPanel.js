@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Button, ButtonGroup, DropdownButton, Dropdown, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { browserHistory } from 'react-router'
 
 import CreateSnapshotModal from './CreateSnapshotModal'

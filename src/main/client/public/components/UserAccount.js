@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Grid, Row, Col, Button, Panel, Checkbox, ListGroup, ListGroupItem, ControlLabel } from 'react-bootstrap'
 import { Link } from 'react-router'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import EditableTextField from '../../common/components/EditableTextField'

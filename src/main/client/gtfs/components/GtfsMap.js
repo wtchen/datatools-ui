@@ -5,7 +5,7 @@ import { Button, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
 import { divIcon, Browser } from 'leaflet'
 import { Map, Marker, Popup, TileLayer, GeoJson, FeatureGroup, Rectangle } from 'react-leaflet'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
 import { getFeedsBounds } from '../../common/util/geo'

@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import { Row, Col, Button, Collapse, FormGroup, ControlLabel, Checkbox } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 
 import { getEntityName } from '../util/gtfs'
 import MinuteSecondInput from './MinuteSecondInput'
@@ -43,14 +43,7 @@ const cardTarget = {
   }
 }
 
-@DropTarget('card', cardTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))
-@DragSource('card', cardSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-}))
-export default class PatternStopCard extends Component {
+class PatternStopCard extends Component {
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
@@ -200,3 +193,8 @@ export default class PatternStopCard extends Component {
     ))
   }
 }
+
+const dropTargetCollect = (connect) => ({connectDropTarget: connect.dropTarget()})
+const dragSourceCollect = (connect, monitor) => ({connectDragSource: connect.dragSource(), isDragging: monitor.isDragging()})
+
+export default DropTarget('card', cardTarget, dropTargetCollect)(DragSource('card', cardSource, dragSourceConnect)(PatternStopCard))

@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Grid, Row, Col, Panel, Button, ButtonToolbar, ButtonGroup, Jumbotron, Badge, FormControl, ListGroup, ListGroupItem, DropdownButton, MenuItem } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'

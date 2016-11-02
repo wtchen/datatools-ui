@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Button, Table, Checkbox, Glyphicon, Dropdown, MenuItem, Panel, ListGroupItem, ListGroup } from 'react-bootstrap'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Icon, IconStack } from 'react-fa'
+import { Icon, IconStack } from '@conveyal/woonerf'
 import { shallowEqual } from 'react-pure-render'
 
 import EditableTextField from '../../common/components/EditableTextField'

@@ -5,9 +5,8 @@ import { isTokenExpired } from '../util/jwtHelper'
 import UserPermissions from './UserPermissions'
 import { getConfigProperty } from '../util/config'
 
-// import '../../assets/mtc_manager_logo.png'
-
-import icon from '../../assets/application_logo.png'
+// TODO: Fix PNG import
+const icon = "" // import icon from '../../assets/application_logo.png'
 
 export default class Auth0Manager {
 

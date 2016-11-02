@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, Button, ButtonGroup, Alert, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { sentence as toSentenceCase } from 'change-case'
 import Rcslider from 'rc-slider'
 
@@ -13,8 +13,6 @@ import { CLICK_OPTIONS } from '../util'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
 import ll from 'lonlng'
-
-import 'rc-slider/assets/index.css'
 
 const DEFAULT_SPEED = 20 // km/hr
 

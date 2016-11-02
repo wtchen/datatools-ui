@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Row, Col, Button, Panel, Label, Glyphicon, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
 import { LinkContainer } from 'react-router-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
 import GtfsValidationExplorer from './validation/GtfsValidationExplorer'

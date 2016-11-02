@@ -2,15 +2,16 @@ import React, { Component, PropTypes } from 'react'
 import { Navbar, Button, ButtonToolbar, Checkbox } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import { Link } from 'react-router'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import SidebarNavItem from './SidebarNavItem'
 import SidebarPopover from './SidebarPopover'
 import JobMonitor from './JobMonitor'
 import { getComponentMessages, getMessage, getConfigProperty } from '../util/config'
 
-import icon from '../../assets/application_icon.png'
-import longIcon from '../../assets/application_logo.png'
+// TODO: Fix PNG import
+const icon = "" // import icon from '../../assets/application_icon.png'
+const longIcon = "" // import longIcon from '../../assets/application_logo.png'
 
 export default class Sidebar extends Component {
 

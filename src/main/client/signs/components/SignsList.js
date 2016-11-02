@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Row, ButtonGroup, Button, FormControl, FormGroup, Badge } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { sentence as toSentenceCase } from 'change-case'
 
 import SignPreview from './SignPreview'

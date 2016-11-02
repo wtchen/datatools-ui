@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import { Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { FlexTable, FlexColumn } from 'react-virtualized'
 import { shallowEqual } from 'react-pure-render'
-import 'react-virtualized/styles.css'
 
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import GtfsTable from './GtfsTable'

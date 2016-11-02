@@ -6,7 +6,7 @@ import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
 import { shallowEqual } from 'react-pure-render'
 import { LinkContainer } from 'react-router-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import { Row, Col, Button, Panel, Glyphicon, Form, Tabs, Tab, Radio, Checkbox, FormGroup, InputGroup, ControlLabel, FormControl, ListGroup, ListGroupItem } from 'react-bootstrap'
 import TimezoneSelect from '../../common/components/TimezoneSelect'

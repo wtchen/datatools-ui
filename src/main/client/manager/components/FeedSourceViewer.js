@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import Helmet from 'react-helmet'
 import { sentence as toSentenceCase } from 'change-case'
 import { LinkContainer } from 'react-router-bootstrap'

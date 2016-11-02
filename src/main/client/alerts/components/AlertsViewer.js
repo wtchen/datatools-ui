@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
 import ManagerPage from '../../common/components/ManagerPage'

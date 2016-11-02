@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Row, Col, Image, Button, Panel, ControlLabel, Label, Tabs, Tab, Glyphicon, FormControl, ButtonGroup, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import numeral from 'numeral'
 import Rcslider from 'rc-slider'
 import EditableTextField from '../../common/components/EditableTextField'

@@ -1,1 +1,3 @@
-export admin from './admin'
+module.exports = {
+  admin: require('./admin')
+}

@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Checkbox, Radio, Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel, Nav, NavItem, Tooltip, OverlayTrigger, Panel } from 'react-bootstrap'
-import {Icon, IconStack} from 'react-fa'
+import {Icon, IconStack} from '@conveyal/woonerf'
 import reactCSS from 'reactcss'
 import validator from 'validator'
 import { shallowEqual } from 'react-pure-render'

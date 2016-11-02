@@ -1,5 +1,7 @@
-export user from './user'
-export projects from './projects'
-export status from './status'
-export languages from './languages'
-export ui from './ui'
+module.exports = {
+  user: require('./user'),
+  projects: require('./projects'),
+  status: require('./status'),
+  languages: require('./languages'),
+  ui: require('./ui')
+}

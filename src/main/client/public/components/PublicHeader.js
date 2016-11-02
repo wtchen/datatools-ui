@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { Grid, Row, Col, Button, Glyphicon, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'

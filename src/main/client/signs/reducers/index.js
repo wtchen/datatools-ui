@@ -1,2 +1,4 @@
-export activeSign from './activeSign'
-export signs from './signs'
+module.exports = {
+  activeSign: require('./activeSign'),
+  signs: require('./signs')
+}

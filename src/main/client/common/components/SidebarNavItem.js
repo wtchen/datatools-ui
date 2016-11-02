@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Icon } from 'react-fa'
+import { Icon } from '@conveyal/woonerf'
 import { Link } from 'react-router'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 

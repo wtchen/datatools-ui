@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 import { isValidZipFile } from '../../common/util/util'

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Table, Glyphicon, Button } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 // import { connect } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
 

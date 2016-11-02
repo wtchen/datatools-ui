@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { updateStar } from '../../manager/actions/user'
 import { connect } from 'react-redux'
-import { Icon } from 'react-fa'
+import { Icon } from '@conveyal/woonerf'
 
 import { getComponentMessages, getMessage } from '../util/config'
 

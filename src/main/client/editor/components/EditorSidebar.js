@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Nav, NavItem, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { shallowEqual } from 'react-pure-render'
 
 import { gtfsIcons } from '../util/gtfs'

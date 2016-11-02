@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { InputGroup, Checkbox, Nav, NavItem, NavDropdown, MenuItem, Button, Form, FormControl } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import clone from 'clone'
 import ReactDOM from 'react-dom'
 import moment from 'moment'

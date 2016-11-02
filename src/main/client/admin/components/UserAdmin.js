@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { Grid, Row, Col, Panel, ListGroup, ListGroupItem, Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import Helmet from 'react-helmet'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'

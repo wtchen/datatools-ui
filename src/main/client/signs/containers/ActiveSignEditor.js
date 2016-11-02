@@ -12,8 +12,6 @@ import SignEditor from '../components/SignEditor'
 import { browserHistory } from 'react-router'
 import { getFeedsForPermission } from '../../common/util/permissions'
 
-import '../style.css'
-
 const agencyCompare = function(a, b) {
   if (a.name < b.name)
     return -1;

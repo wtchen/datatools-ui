@@ -3,7 +3,7 @@ import Helmet from 'react-helmet'
 import moment from 'moment'
 import { Tabs, Tab, Grid, Row, Label, Col, Button, InputGroup, Table, FormControl, Glyphicon, ButtonToolbar, Panel, DropdownButton, MenuItem } from 'react-bootstrap'
 import { sentence as toSentenceCase } from 'change-case'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 import { browserHistory, Link } from 'react-router'
 import { shallowEqual } from 'react-pure-render'
 

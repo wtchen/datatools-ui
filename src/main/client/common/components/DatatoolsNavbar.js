@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon, OverlayTrigger, Popover, ProgressBar, Button, Badge } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { browserHistory, Link } from 'react-router'
-import { Icon } from 'react-fa'
+import { Icon } from '@conveyal/woonerf'
 
 import Breadcrumbs from './Breadcrumbs'
 import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../util/config'

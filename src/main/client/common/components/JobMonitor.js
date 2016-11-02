@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { ProgressBar, Button } from 'react-bootstrap'
-import { Icon } from 'react-fa'
+import { Icon } from '@conveyal/woonerf'
 import truncate from 'truncate'
 
 import SidebarPopover from './SidebarPopover'

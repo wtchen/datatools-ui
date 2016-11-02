@@ -1,7 +1,7 @@
 import React, { PropTypes, Component} from 'react'
 import ReactDOM from 'react-dom'
 import { Panel, Row, Col, Button, Label, ButtonGroup, InputGroup, FormControl, Glyphicon, Image, ListGroup, ListGroupItem } from 'react-bootstrap'
-import Icon from 'react-fa'
+import Icon from '@conveyal/woonerf'
 
 import CreateUser from './CreateUser'
 import UserSettings from './UserSettings'

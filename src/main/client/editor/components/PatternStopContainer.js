@@ -12,11 +12,8 @@ const cardTarget = {
   drop () {
   }
 }
-@DragDropContext(HTML5Backend)
-@DropTarget('card', cardTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))
-export default class PatternStopContainer extends Component {
+
+class PatternStopContainer extends Component {
   static propTypes = {
     connectDropTarget: PropTypes.func.isRequired,
     activePattern: PropTypes.object.isRequired,
@@ -113,3 +110,6 @@ export default class PatternStopContainer extends Component {
     )
   }
 }
+
+// TODO: Verify correct order
+export default DrapDropContext(HTML5Backend)(DropTarget('card', cardTarget, (connect) => ({connectDropTarget: connect.dropTarget()}))(PatternStopContainer))
