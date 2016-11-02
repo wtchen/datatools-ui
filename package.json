@@ -13,7 +13,8 @@
     "build": "webpack",
     "build-min": "WEBPACK_MINIFY=true npm run build",
     "dev-server": "WEBPACK_DEV_SERVER=true webpack-dev-server",
-    "dev-server-min": "WEBPACK_MINIFY=true npm run dev-server"
+    "dev-server-min": "WEBPACK_MINIFY=true npm run dev-server",
+    "prestart": "yarn"
   },
   "dependencies": {
     "array-unique": "^0.2.1",
