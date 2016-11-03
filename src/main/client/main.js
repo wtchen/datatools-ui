@@ -16,11 +16,11 @@ if (config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
 }
 config.modules.editor.spec = require('../../../gtfs.yml')
 
-var lang = {
-  english: require('../../../i18n/english.yml'),
-  espanol: require('../../../i18n/espanol.yml'),
-  francais: require('../../../i18n/francais.yml')
-}
+const lang = [
+  require('../../../i18n/english.yml'),
+  require('../../../i18n/espanol.yml'),
+  require('../../../i18n/francais.yml')
+]
 
 // is an array containing all the matching modules
 config.messages = {}

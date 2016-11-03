@@ -1,3 +1,4 @@
+import Auth0Lock from 'auth0-lock'
 import fetch from 'isomorphic-fetch'
 import { browserHistory } from 'react-router'
 

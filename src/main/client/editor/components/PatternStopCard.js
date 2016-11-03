@@ -100,24 +100,24 @@ class PatternStopCard extends Component {
             if (e.keyCode === 13) {
               this.handleClick(stopIsActive)
             }
-          }}
-        >
-        <div className='pull-left'>
-          <p style={{margin: '0px'}} title={titleStopName}><Icon fixedWidth name={stopIsActive ? 'caret-down' : 'caret-right'}/>{fullStopName.length > 25 ? fullStopName.substr(0, 25) + '...' : fullStopName}</p>
-        </div>
-        <div className='pull-right'>
-          <p style={{margin: '0px'}} className='text-right'>
-             <span>{Math.round(cumulativeTravelTime / 60)} (+{Math.round(patternStop.defaultTravelTime / 60)}{patternStop.defaultDwellTime > 0 ? ` +${Math.round(patternStop.defaultDwellTime / 60)}` : ''})</span>
-             {'    '}
-             <span style={{cursor: '-webkit-grab', color: 'black'}}><Icon name='bars'/></span>
-          </p>
-        </div>
-        <div className='clearfix'></div>
+          }}>
+          <div className='pull-left'>
+            <p style={{margin: '0px'}} title={titleStopName}><Icon fixedWidth name={stopIsActive ? 'caret-down' : 'caret-right'} />{fullStopName.length > 25 ? fullStopName.substr(0, 25) + '...' : fullStopName}</p>
+          </div>
+          <div className='pull-right'>
+            <p style={{margin: '0px'}} className='text-right'>
+              <span>{Math.round(cumulativeTravelTime / 60)} (+{Math.round(patternStop.defaultTravelTime / 60)}{patternStop.defaultDwellTime > 0 ? ` +${Math.round(patternStop.defaultDwellTime / 60)}` : ''})</span>
+              {'    '}
+              <span style={{cursor: '-webkit-grab', color: 'black'}} ><Icon name='bars' /></span>
+            </p>
+          </div>
+          <div className='clearfix' />
         </div>
         {/* Collapsible interior div */}
         <Collapse in={stopIsActive}>
           {stopIsActive
-            ? <div>
+            ? (
+              <div>
                 {/* Remove from pattern button */}
                 <Row>
                   <Col xs={6}>
@@ -146,7 +146,7 @@ class PatternStopCard extends Component {
                         saveActiveEntity('trippattern')
                       }}
                     >
-                      <Icon name='trash'/> Remove
+                      <Icon name='trash' /> Remove
                     </Button>
                   </Col>
                 </Row>
@@ -186,7 +186,8 @@ class PatternStopCard extends Component {
                   </Col>
                 </Row>
               </div>
-            : <div></div>
+            )
+            : <div />
           }
         </Collapse>
       </div>
@@ -197,4 +198,4 @@ class PatternStopCard extends Component {
 const dropTargetCollect = (connect) => ({connectDropTarget: connect.dropTarget()})
 const dragSourceCollect = (connect, monitor) => ({connectDragSource: connect.dragSource(), isDragging: monitor.isDragging()})
 
-export default DropTarget('card', cardTarget, dropTargetCollect)(DragSource('card', cardSource, dragSourceConnect)(PatternStopCard))
+export default DropTarget('card', cardTarget, dropTargetCollect)(DragSource('card', cardSource, dragSourceCollect)(PatternStopCard))
