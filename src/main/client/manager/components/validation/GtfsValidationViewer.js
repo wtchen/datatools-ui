@@ -1,7 +1,7 @@
 import React from 'react'
 import { Panel, Table, Glyphicon, Button, Badge } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 
 import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage } from '../../../common/util/config'
 

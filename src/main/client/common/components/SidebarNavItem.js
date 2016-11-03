@@ -70,7 +70,7 @@ export default class SidebarNavItem extends Component {
           <img width={40} height={40} src={this.props.image}/>
         </div>
       : <div style={iconContainerStyle}>
-          <Icon name={this.props.icon} size='lg' style={iconStyle} ref='icon'/>
+          <Icon type={this.props.icon} size='lg' style={iconStyle} ref='icon'/>
         </div>
     const tooltip = <Tooltip id={this.props.label}>{this.props.label}</Tooltip>
     let containerProps = {

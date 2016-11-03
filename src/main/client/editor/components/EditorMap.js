@@ -764,7 +764,7 @@ export default class EditorMap extends Component {
                                     this.props.saveActiveEntity('trippattern')
                                   }}
                                 >
-                                  <Icon name='floppy-o'/>
+                                  <Icon type='floppy-o'/>
                                 </Button>
                                 <OverlayTrigger overlay={<Tooltip>Edit stop</Tooltip>}>
                                 <Button
@@ -772,7 +772,7 @@ export default class EditorMap extends Component {
                                     this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
                                   }}
                                 >
-                                  <Icon name='pencil'/>
+                                  <Icon type='pencil'/>
                                 </Button>
                                 </OverlayTrigger>
                                 <OverlayTrigger overlay={<Tooltip>Remove from pattern</Tooltip>}>
@@ -782,7 +782,7 @@ export default class EditorMap extends Component {
                                     this.removeStopFromPattern(this.props.currentPattern, stop, index)
                                   }}
                                 >
-                                  <Icon name='trash'/>
+                                  <Icon type='trash'/>
                                 </Button>
                                 </OverlayTrigger>
                                 <Dropdown
@@ -798,7 +798,7 @@ export default class EditorMap extends Component {
                                       this.addStopToPattern(this.props.currentPattern, stop)
                                     }}
                                   >
-                                    <Icon name='plus'/>
+                                    <Icon type='plus'/>
                                   </Button>
                                   <Dropdown.Toggle bsStyle='success'/>
                                   <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
@@ -912,7 +912,7 @@ export default class EditorMap extends Component {
                           <div>
                             <h5>{stop.stop_name}</h5>
                             <SplitButton
-                              title={<span><Icon name='plus'/> Add stop</span>}
+                              title={<span><Icon type='plus'/> Add stop</span>}
                               id={`split-button-basic-${i}`}
                               bsStyle='success'
                               onSelect={(key) => {

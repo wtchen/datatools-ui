@@ -1,3 +1,4 @@
+import {Icon} from '@conveyal/woonerf'
 import React, { Component } from 'react'
 import { Button, Glyphicon, MenuItem } from 'react-bootstrap'
 import { updateTargetForSubscription } from '../../manager/actions/user'
@@ -6,7 +7,7 @@ import { connect } from 'react-redux'
 import { getComponentMessages, getMessage, getConfigProperty } from '../util/config'
 import WatchButton from './WatchButton'
 
-export default class FeedSourceActionButton extends Component {
+class FeedSourceActionButton extends Component {
   render () {
     return (
       <Dropdown
@@ -61,7 +62,7 @@ export default class FeedSourceActionButton extends Component {
           }
           <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
           <MenuItem divider />
-          <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
+          <MenuItem disabled={disabled} eventKey='delete'><Icon type='trash'/> Delete</MenuItem>
         </Dropdown.Menu>
       </Dropdown>
     )

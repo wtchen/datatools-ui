@@ -1,5 +1,5 @@
-import React  from 'react'
-import { Modal, Button, Glyphicon } from 'react-bootstrap'
+import React from 'react'
+import { Modal, Button } from 'react-bootstrap'
 
 export default class InfoModal extends React.Component {
 
@@ -20,7 +20,7 @@ export default class InfoModal extends React.Component {
     this.setState({
       showModal: true,
       title: props.title,
-      body: props.body,
+      body: props.body
     })
   }
 

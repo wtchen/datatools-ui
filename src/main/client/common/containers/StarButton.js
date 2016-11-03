@@ -16,8 +16,8 @@ class StarButton extends React.Component {
         dispatch(updateStar(user.profile, target, !isStarred))
       }}>
         {isStarred
-          ? <span><Icon name='star-o'/> {getMessage(messages, 'unstar')}</span>
-          : <span><Icon name='star'/> {getMessage(messages, 'star')}</span>
+          ? <span><Icon type='star-o'/> {getMessage(messages, 'unstar')}</span>
+          : <span><Icon type='star'/> {getMessage(messages, 'star')}</span>
         }
       </Button>
     )

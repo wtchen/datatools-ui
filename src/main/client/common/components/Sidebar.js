@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { Navbar, Button, ButtonToolbar, Checkbox } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import { Link } from 'react-router'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 
 import SidebarNavItem from './SidebarNavItem'
 import SidebarPopover from './SidebarPopover'
@@ -153,7 +153,7 @@ export default class Sidebar extends Component {
           <Button bsSize='small' bsStyle='info' onClick={() => {
             this.setState({ visiblePopover: null })
             this.props.logoutHandler()
-          }}><Icon name='sign-out'/> Log out</Button>
+          }}><Icon type='sign-out'/> Log out</Button>
         </ButtonToolbar>
       </SidebarPopover>
 

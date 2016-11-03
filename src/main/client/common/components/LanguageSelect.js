@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react'
+import {Icon} from '@conveyal/woonerf'
+import React from 'react'
 import fetch from 'isomorphic-fetch'
-import { Glyphicon, Label, FormControl } from 'react-bootstrap'
+import {Label, FormControl} from 'react-bootstrap'
 import { PureComponent, shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 
@@ -28,7 +29,7 @@ export default class LanguageSelect extends React.Component {
     }
   }
   renderOption (option) {
-    return <span style={{ color: 'black' }}>{option.region ? <Glyphicon glyph="globe" /> : <Glyphicon glyph="option-horizontal" />} {option.label} {option.link}</span>
+    return <span style={{ color: 'black' }}>{option.region ? <Icon type="globe" /> : <Icon type="option-horizontal" />} {option.label} {option.link}</span>
   }
   onChange (value) {
     this.setState({value})

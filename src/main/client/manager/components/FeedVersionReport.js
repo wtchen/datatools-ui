@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Row, Col, Image, Button, Panel, ControlLabel, Label, Tabs, Tab, Glyphicon, FormControl, ButtonGroup, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 import numeral from 'numeral'
 import Rcslider from 'rc-slider'
 import EditableTextField from '../../common/components/EditableTextField'
@@ -104,7 +104,7 @@ export default class FeedVersionReport extends Component {
           {...this.props}
         />
       </h4>
-      <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}><Icon name='clock-o'/> Version published {moment(version.updated).fromNow()}</small>
+      <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}><Icon type='clock-o'/> Version published {moment(version.updated).fromNow()}</small>
       </div>
     )
     const tableOptions = {
@@ -122,7 +122,7 @@ export default class FeedVersionReport extends Component {
     return <Panel
         bsStyle='info'
         header={versionHeader}
-        footer={<span><Icon name='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }</span>}
+        footer={<span><Icon type='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }</span>}
       >
         <ListGroup fill>
             <ListGroupItem
@@ -161,7 +161,7 @@ export default class FeedVersionReport extends Component {
                 </h4>
               }
             >
-              <Icon name='calendar'/> {getMessage(messages, 'validDates')}
+              <Icon type='calendar'/> {getMessage(messages, 'validDates')}
             </ListGroupItem>
             <ListGroupItem>
             <Tabs
@@ -201,7 +201,7 @@ export default class FeedVersionReport extends Component {
                       onClick={() => this.props.publishFeedVersion(version)}
                     >
                       {this.props.isPublished
-                        ? <span><Icon name='check-circle'/> Published</span>
+                        ? <span><Icon type='check-circle'/> Published</span>
                         : <span>Publish to MTC</span>
                       }
                     </Button>

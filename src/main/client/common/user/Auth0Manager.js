@@ -25,7 +25,7 @@ export default class Auth0Manager {
 
   getToken () {
     // Retrieves the user token from localStorage
-    return localStorage.getItem('userToken')
+    return window.localStorage.getItem('userToken')
   }
 
   checkExistingLogin () {

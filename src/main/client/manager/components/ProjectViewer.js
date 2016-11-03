@@ -3,7 +3,7 @@ import Helmet from 'react-helmet'
 import moment from 'moment'
 import { Tabs, Tab, Grid, Row, Label, Col, Button, InputGroup, Table, FormControl, Glyphicon, ButtonToolbar, Panel, DropdownButton, MenuItem } from 'react-bootstrap'
 import { sentence as toSentenceCase } from 'change-case'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 import { browserHistory, Link } from 'react-router'
 import { shallowEqual } from 'react-pure-render'
 
@@ -128,7 +128,7 @@ export default class ProjectViewer extends Component {
           </Button>
           <ButtonToolbar>
           {isExtensionEnabled('transitland') || isExtensionEnabled('transitfeeds') || isExtensionEnabled('mtc')
-            ? <DropdownButton id='sync-dropdown' bsStyle='success' title={<span><Icon name='refresh'/> Sync</span>}>
+            ? <DropdownButton id='sync-dropdown' bsStyle='success' title={<span><Icon type='refresh'/> Sync</span>}>
                 {isExtensionEnabled('transitland')
                   ? <MenuItem
                       bsStyle='primary'
@@ -178,7 +178,7 @@ export default class ProjectViewer extends Component {
                 this.props.updateAllFeeds(this.props.project)
               }}
             >
-              <Icon name='cloud-download' /> {getMessage(messages, 'feeds.update')}
+              <Icon type='cloud-download' /> {getMessage(messages, 'feeds.update')}
             </Button>
             <Button
               bsStyle='primary'
@@ -232,10 +232,10 @@ export default class ProjectViewer extends Component {
                 </ButtonToolbar>
               </h3>
               <ul className='list-unstyled list-inline small' style={{marginBottom: '0px'}}>
-                <li><Icon name='map-marker'/> {this.props.project.defaultLocationLon ? `${this.props.project.defaultLocationLat}, ${this.props.project.defaultLocationLon}` : 'n/a'}</li>
-                <li><Icon name='cloud-download'/> {this.props.project.autoFetchFeeds ? `${this.props.project.autoFetchHour}:${this.props.project.autoFetchMinute < 10 ? '0' + this.props.project.autoFetchMinute : this.props.project.autoFetchMinute}` : 'Auto fetch disabled'}</li>
+                <li><Icon type='map-marker'/> {this.props.project.defaultLocationLon ? `${this.props.project.defaultLocationLat}, ${this.props.project.defaultLocationLon}` : 'n/a'}</li>
+                <li><Icon type='cloud-download'/> {this.props.project.autoFetchFeeds ? `${this.props.project.autoFetchHour}:${this.props.project.autoFetchMinute < 10 ? '0' + this.props.project.autoFetchMinute : this.props.project.autoFetchMinute}` : 'Auto fetch disabled'}</li>
                 {/*
-                  <li><Icon name='file-archive-o'/> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>
+                  <li><Icon type='file-archive-o'/> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>
                 */}
               </ul>
             </Col>

@@ -6,7 +6,7 @@ import DateTimeField from 'react-bootstrap-datetimepicker'
 import update from 'react-addons-update'
 import { shallowEqual } from 'react-pure-render'
 import { LinkContainer } from 'react-router-bootstrap'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 
 import { Row, Col, Button, Panel, Glyphicon, Form, Tabs, Tab, Radio, Checkbox, FormGroup, InputGroup, ControlLabel, FormControl, ListGroup, ListGroupItem } from 'react-bootstrap'
 import TimezoneSelect from '../../common/components/TimezoneSelect'
@@ -253,7 +253,7 @@ export default class ProjectSettings extends Component {
           <Panel bsStyle='danger' header={<h3>Danger zone</h3>}>
             <ListGroup fill>
               <ListGroupItem>
-                <Button onClick={() => this.props.deleteProject(project)} className='pull-right' bsStyle='danger'><Icon name='trash'/> Delete organization</Button>
+                <Button onClick={() => this.props.deleteProject(project)} className='pull-right' bsStyle='danger'><Icon type='trash'/> Delete organization</Button>
                 <h4>Delete this organization.</h4>
                 <p>Once you delete an organization, the organization and all feed sources it contains cannot be recovered.</p>
               </ListGroupItem>

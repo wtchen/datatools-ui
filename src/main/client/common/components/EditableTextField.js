@@ -1,6 +1,7 @@
+import {Icon} from '@conveyal/woonerf'
 import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
-import { Form, FormControl, InputGroup, FormGroup, Glyphicon, Button } from 'react-bootstrap'
+import { Form, FormControl, InputGroup, FormGroup, Button } from 'react-bootstrap'
 import { Link } from 'react-router'
 
 export default class EditableTextField extends Component {
@@ -82,12 +83,10 @@ export default class EditableTextField extends Component {
           onClick={(evt) => {
             evt.preventDefault()
             this.save()
-          }}
-        >
-        <Glyphicon
-          glyph='ok'
-          style={iconStyle}
-        />
+          }}>
+        <Icon
+          type='ok'
+          style={iconStyle} />
         </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
       </InputGroup.Button>
     )
@@ -131,12 +130,10 @@ export default class EditableTextField extends Component {
                       ref='editButton'
                       tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
                       onClick={() => this.edit()}
-                      disabled={this.props.disabled !== null ? this.props.disabled : false}
-                    >
-                      <Glyphicon
+                      disabled={this.props.disabled !== null ? this.props.disabled : false}>
+                      <Icon
                         style={iconStyle}
-                        glyph={ 'pencil' }
-                      />
+                        type='pencil' />
                     </Button>
                   </span>
               }

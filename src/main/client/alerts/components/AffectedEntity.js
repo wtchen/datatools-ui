@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { ListGroupItem, Row, Col, ButtonGroup, Button, Glyphicon, FormControl, Label, Collapse } from 'react-bootstrap'
-import Icon from '@conveyal/woonerf'
+import { ListGroupItem, Row, Col, Button, FormControl, Collapse } from 'react-bootstrap'
+import {Icon} from '@conveyal/woonerf'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 import modes from '../modes'
@@ -22,8 +22,7 @@ export default class AffectedEntity extends React.Component {
     let agencyName = ''
     if (typeof entity.agency !== 'undefined' && entity.agency !== null) {
       agencyName = entity.agency.name
-    }
-    else if (typeof entity.stop !== 'undefined' && entity.stop !== null) {
+    } else if (typeof entity.stop !== 'undefined' && entity.stop !== null) {
       const feed = getFeed(this.props.feeds, entity.stop.feed_id)
       agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
     }
@@ -37,7 +36,7 @@ export default class AffectedEntity extends React.Component {
         case 'AGENCY' :
           return (
             <span>
-              {agencyName}<br/>
+              {agencyName}<br />
               <small style={{marginLeft: '18px'}}>Note: this selection will apply to all stops and routes for {agencyName}.</small>
             </span>
           )
@@ -46,13 +45,13 @@ export default class AffectedEntity extends React.Component {
           if (routeName) {
             summary += ` for ${routeName}`
           }
-          return <span><Glyphicon glyph="map-marker" /> {summary}</span>
+          return <span><Icon type="map-marker" /> {summary}</span>
         case 'ROUTE' :
           summary = routeName
           if (stopName) {
             summary += ` at ${stopName}`
           }
-          return <span><Glyphicon glyph="option-horizontal" /> {summary}</span>
+          return <span><Icon type="option-horizontal" /> {summary}</span>
         case 'MODE' :
           summary = val.name
           if (stopName) {
@@ -60,7 +59,7 @@ export default class AffectedEntity extends React.Component {
           }
           return (
             <span>
-              {type}: {summary}<br/>
+              {type}: {summary}<br />
               <small style={{marginLeft: '18px'}}>Note: this selection will apply to all {val.name.toLowerCase()} routes{stopName && ` stopping at ${stopName}`}.</small>
             </span>
           )
@@ -74,7 +73,7 @@ export default class AffectedEntity extends React.Component {
       >
         <Col xs={10}>
           <h5>
-            <Icon fixedWidth name={this.state.active ? 'caret-down' : 'caret-right'}/>
+            <Icon type={this.state.active ? 'caret-down' : 'caret-right'} />
             {this.getEntitySummary(this.props.entity)}
           </h5>
         </Col>
@@ -83,9 +82,8 @@ export default class AffectedEntity extends React.Component {
             bsSize='small'
             className='pull-right'
             style={{marginTop: '5px'}}
-            onClick={() => this.props.onDeleteEntityClick(this.props.entity)}
-          >
-            <Glyphicon glyph='remove' />
+            onClick={() => this.props.onDeleteEntityClick(this.props.entity)}>
+            <Icon type='remove' />
           </Button>
         </Col>
       </Row>
@@ -287,8 +285,8 @@ class RouteSelector extends React.Component {
             this.props.route
             ? {
                 route: this.props.route,
-                'value': this.props.route.route_id,
-                'label': `${getRouteNameAlerts(this.props.route)} (${agencyName})`
+                value: this.props.route.route_id,
+                label: `${getRouteNameAlerts(this.props.route)} (${agencyName})`
               }
             : ''
           }

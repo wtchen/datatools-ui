@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { Grid, Row, Col, Panel, ListGroup, ListGroupItem, Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import Helmet from 'react-helmet'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
@@ -52,7 +52,7 @@ export default class UserAdmin extends Component {
                   Back to dashboard
                 </Button>
               </LinkContainer>
-              <Icon name='cog'/> {getMessage(messages, 'title')}
+              <Icon type='cog'/> {getMessage(messages, 'title')}
             </h2>
           </Col>
         </Row>
@@ -96,9 +96,8 @@ export default class UserAdmin extends Component {
                         <Button
                           bsStyle='danger'
                           bsSize='large'
-                          href='https://manage.auth0.com/#/logs'
-                        >
-                          <Icon name='star'/> View application logs on Auth0.com
+                          href='https://manage.auth0.com/#/logs'>
+                          <Icon type='star'/> View application logs on Auth0.com
                         </Button>
                       </p>
                     : null
@@ -110,11 +109,8 @@ export default class UserAdmin extends Component {
                   ? <p>{getMessage(messages, 'noAccess')}</p>
                   : <h1
                       className='text-center'
-                      style={{
-                        marginTop: '150px'
-                      }}
-                    >
-                      <Icon size='5x' spin name='refresh' />
+                      style={{marginTop: '150px'}}>
+                      <Icon className='fa-spin fa-5x' type='refresh' />
                     </h1>
                 }
               </div>

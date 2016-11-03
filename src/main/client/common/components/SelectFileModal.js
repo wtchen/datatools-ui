@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, Button, FormControl, Glyphicon } from 'react-bootstrap'
+import { Modal, Button, FormControl } from 'react-bootstrap'
 import ReactDOM from 'react-dom'
 
 export default class SelectFileModal extends React.Component {

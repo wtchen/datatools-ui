@@ -1,6 +1,7 @@
+import {Icon} from '@conveyal/woonerf'
 import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
-import { Glyphicon, Popover } from 'react-bootstrap'
+import { Popover } from 'react-bootstrap'
 
 export default class SidebarPopover extends Component {
 
@@ -74,11 +75,10 @@ export default class SidebarPopover extends Component {
 
     const title = (<div>
       <span>{this.props.title}</span>
-      <Glyphicon glyph='remove'
+      <Icon type='remove'
         className='pull-right'
         style={{ cursor: 'pointer' }}
-        onClick={() => this.props.close() }
-      />
+        onClick={() => this.props.close() } />
     </div>)
 
     return (

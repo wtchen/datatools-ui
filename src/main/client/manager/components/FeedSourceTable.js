@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Button, Table, Checkbox, Glyphicon, Dropdown, MenuItem, Panel, ListGroupItem, ListGroup } from 'react-bootstrap'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Icon, IconStack } from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 import { shallowEqual } from 'react-pure-render'
 
 import EditableTextField from '../../common/components/EditableTextField'
@@ -57,7 +57,7 @@ export default class FeedSourceTable extends Component {
     return (
       <ListGroup fill>
         {this.props.isFetching
-          ? <ListGroupItem className='text-center'><Icon size='2x' spin name='refresh' /></ListGroupItem>
+          ? <ListGroupItem className='text-center'><Icon className='fa-2x fa-spin' type='refresh' /></ListGroupItem>
           : this.props.feedSources.length
           ? this.props.feedSources.map((feedSource) => {
               return <FeedSourceTableRow key={feedSource.id}
@@ -73,7 +73,7 @@ export default class FeedSourceTable extends Component {
               />
             })
           : <ListGroupItem className='text-center'>
-              <Button bsStyle='success' onClick={() => this.props.onNewFeedSourceClick()}><Icon name='plus'/> {getMessage(messages, 'feeds.createFirst')}</Button>
+              <Button bsStyle='success' onClick={() => this.props.onNewFeedSourceClick()}><Icon type='plus'/> {getMessage(messages, 'feeds.createFirst')}</Button>
             </ListGroupItem>
           }
       </ListGroup>
@@ -163,25 +163,25 @@ class FeedSourceTableRow extends Component {
           : <li style={{minWidth: '200px'}}>No versions exist yet.</li>
         }
           {fs.latestValidation && fs.latestValidation.errorCount > 0
-            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-warning'><Icon name='exclamation-triangle'/> {fs.latestValidation.errorCount}</li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-warning'><Icon type='exclamation-triangle'/> {fs.latestValidation.errorCount}</li>
             : fs.latestValidation
             ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' name='check'/></li>
             : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' name='circle-o'/></li>
           }
           {fs.latestValidation && fs.latestValidation.endDate < +moment()
-            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-danger'><Icon name='calendar-times-o'/></li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-danger'><Icon type='calendar-times-o'/></li>
             : fs.latestValidation
             ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' name='calendar-check-o'/></li>
             : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' name='calendar-o'/></li>
           }
           {isModuleEnabled('deployment') && fs.deployable
-            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-success'><Icon name='map'/></li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-success'><Icon type='map'/></li>
             : isModuleEnabled('deployment')
-            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon name='map-o'/></li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon type='map-o'/></li>
             : null
           }
           {fs.url
-            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon name='link'/></li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-muted'><Icon type='link'/></li>
             : null
           }
         </ul>
@@ -360,7 +360,7 @@ class FeedSourceDropdown extends Component {
           }
           <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
           <MenuItem divider />
-          <MenuItem disabled={disabled} eventKey='delete'><Icon name='trash'/> Delete</MenuItem>
+          <MenuItem disabled={disabled} eventKey='delete'><Icon type='trash'/> Delete</MenuItem>
         </Dropdown.Menu>
       </Dropdown>
     </div>

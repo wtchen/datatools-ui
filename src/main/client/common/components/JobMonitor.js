@@ -41,8 +41,8 @@ export default class JobMonitor extends Component {
             <div key={`retired-${job.jobId}`} style={jobContainerStyle}>
               <div style={{ float: 'left' }}>
                 {job.status && job.status.error
-                  ? <Icon className='text-warning' name='exclamation-circle'/>
-                  : <Icon className='text-success' name='check'/>
+                  ? <Icon className='text-warning' type='exclamation-circle'/>
+                  : <Icon className='text-success' type='check'/>
                 }
               </div>
               <div style={{ marginLeft: 25 }}>
@@ -52,7 +52,7 @@ export default class JobMonitor extends Component {
                     className='pull-right'
                     onClick={() => this.props.removeRetiredJob(job)}
                   >
-                    <Icon className='pull-right' name='times-circle'/>
+                    <Icon className='pull-right' type='times-circle'/>
                   </Button>
                   <strong title={job.name}>{truncate(job.name, 25)}</strong>
                 </div>
@@ -66,7 +66,7 @@ export default class JobMonitor extends Component {
               return (
                 <div key={job.jobId} style={jobContainerStyle}>
                   <div style={{ float: 'left' }}>
-                    <Icon name='spinner' pulse />
+                    <Icon type='spinner' className='fa-pulse' />
                   </div>
                   <div style={{ marginLeft: 25 }}>
                     <div>

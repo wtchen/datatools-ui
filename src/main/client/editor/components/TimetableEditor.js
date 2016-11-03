@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { InputGroup, Checkbox, Nav, NavItem, NavDropdown, MenuItem, Button, Form, FormControl } from 'react-bootstrap'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 import clone from 'clone'
 import ReactDOM from 'react-dom'
 import moment from 'moment'
@@ -441,7 +441,7 @@ export default class TimetableEditor extends Component {
       : activePattern.useFrequency
       ? 'Frequencies for'
       : 'Timetables for'
-    const headerText = <span>{tableType} {activePattern ? <span title={activePattern.name}>{truncate(activePattern.name, 20)}</span> : <Icon spin name='refresh' />}</span>
+    const headerText = <span>{tableType} {activePattern ? <span title={activePattern.name}>{truncate(activePattern.name, 20)}</span> : <Icon className='fa-spin' type='refresh' />}</span>
     return (
       <div
         style={panelStyle}
@@ -499,13 +499,13 @@ export default class TimetableEditor extends Component {
             onClick={() => this.addNewRow(columns)}
             bsStyle='default'
           >
-            <Icon name='plus'/> New trip
+            <Icon type='plus'/> New trip
           </Button>
           {'  '}
           <Button
             disabled={this.state.selected.length === 0}
           >
-            <Icon name='clone'/>
+            <Icon type='clone'/>
           </Button>
           {'  '}
           <Button
@@ -515,7 +515,7 @@ export default class TimetableEditor extends Component {
             }}
             bsStyle='danger'
           >
-            <Icon name='trash'/>
+            <Icon type='trash'/>
           </Button>
           {'  '}
           <Button
@@ -542,7 +542,7 @@ export default class TimetableEditor extends Component {
             onClick={() => {
               this.props.setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern)
             }}
-          ><Icon name='reply'/> Back to route</Button>
+          ><Icon type='reply'/> Back to route</Button>
           {' '}
           {headerText}
         </h3>
@@ -582,7 +582,7 @@ export default class TimetableEditor extends Component {
               }
             }}
           >
-            <Icon name='plus'/> Add calendar
+            <Icon type='plus'/> Add calendar
           </NavItem>
         </Nav>
       </div>

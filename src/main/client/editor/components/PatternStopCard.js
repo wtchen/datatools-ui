@@ -102,13 +102,13 @@ class PatternStopCard extends Component {
             }
           }}>
           <div className='pull-left'>
-            <p style={{margin: '0px'}} title={titleStopName}><Icon fixedWidth name={stopIsActive ? 'caret-down' : 'caret-right'} />{fullStopName.length > 25 ? fullStopName.substr(0, 25) + '...' : fullStopName}</p>
+            <p style={{margin: '0px'}} title={titleStopName}><Icon type={stopIsActive ? 'caret-down' : 'caret-right'} />{fullStopName.length > 25 ? fullStopName.substr(0, 25) + '...' : fullStopName}</p>
           </div>
           <div className='pull-right'>
             <p style={{margin: '0px'}} className='text-right'>
               <span>{Math.round(cumulativeTravelTime / 60)} (+{Math.round(patternStop.defaultTravelTime / 60)}{patternStop.defaultDwellTime > 0 ? ` +${Math.round(patternStop.defaultDwellTime / 60)}` : ''})</span>
               {'    '}
-              <span style={{cursor: '-webkit-grab', color: 'black'}} ><Icon name='bars' /></span>
+              <span style={{cursor: '-webkit-grab', color: 'black'}} ><Icon type='bars' /></span>
             </p>
           </div>
           <div className='clearfix' />
@@ -146,7 +146,7 @@ class PatternStopCard extends Component {
                         saveActiveEntity('trippattern')
                       }}
                     >
-                      <Icon name='trash' /> Remove
+                      <Icon type='trash' /> Remove
                     </Button>
                   </Col>
                 </Row>

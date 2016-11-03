@@ -94,7 +94,7 @@ export default class CalendarList extends Component {
             </tr>
           )
         })
-        : <tr><td><Icon spin name='refresh' /></td></tr>
+        : <tr><td><Icon className='fa-spin' name='refresh' /></td></tr>
       }
         </tbody>
       </Table>
@@ -176,8 +176,8 @@ export default class CalendarList extends Component {
         }}
       >
         {!this.props.tableView
-          ? <span><Icon name='table'/> Switch to table view</span>
-          : <span><Icon name='list'/> Switch to list view</span>
+          ? <span><Icon type='table' /> Switch to table view</span>
+          : <span><Icon type='list' /> Switch to list view</span>
         }
       </Button>
     )
@@ -196,20 +196,20 @@ export default class CalendarList extends Component {
                 bsSize='small'
                 disabled={!activeEntity}
               >
-                <Icon name='clone'/>
+                <Icon type='clone'/>
               </Button>
               <Button
                 bsSize='small'
                 disabled={!activeEntity}
                 bsStyle='danger'
               >
-                <Icon name='trash'/>
+                <Icon type='trash' />
               </Button>
             </ButtonToolbar>
             <Button
               bsSize='small'
             >
-              <Icon name='plus'/> New {this.props.activeComponent}
+              <Icon type='plus'/> New {this.props.activeComponent}
             </Button>
           </h3>
           {/*tableViewButton*/}

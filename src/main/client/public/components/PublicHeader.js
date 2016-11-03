@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 import { Grid, Row, Col, Button, Glyphicon, ButtonToolbar, DropdownButton, MenuItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -60,7 +60,7 @@ export default class PublicHeader extends Component {
 
             {/* "Log out" Button */}
             {this.props.username
-              ? <Button bsStyle='primary' onClick={() => this.props.logoutHandler()}><Icon name='sign-out'/> Log Out</Button>
+              ? <Button bsStyle='primary' onClick={() => this.props.logoutHandler()}><Icon type='sign-out'/> Log Out</Button>
               : null
             }
 

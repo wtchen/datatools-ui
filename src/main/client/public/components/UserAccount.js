@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Grid, Row, Col, Button, Panel, Checkbox, ListGroup, ListGroupItem, ControlLabel } from 'react-bootstrap'
 import { Link } from 'react-router'
-import Icon from '@conveyal/woonerf'
+import {Icon} from '@conveyal/woonerf'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import EditableTextField from '../../common/components/EditableTextField'
@@ -160,7 +160,7 @@ export default class UserAccount extends Component {
                 <LinkContainer className='pull-right' to={{ pathname: '/home' }}>
                   <Button>Back to dashboard</Button>
                 </LinkContainer>
-                <Icon name='user'/> My settings
+                <Icon type='user'/> My settings
               </h1>
             </Col>
           </Row>
