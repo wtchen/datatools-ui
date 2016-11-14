@@ -47,6 +47,8 @@ export const getEntityName = (component, entity) => {
   let nameKey =
       'route_id' in entity
     ? 'route_short_name'
+    : 'patternStops' in entity
+    ? 'name'
     : 'agency_name' in entity
     ? 'agency_name'
     : 'stop_id' in entity
@@ -79,6 +81,14 @@ export const getEntityName = (component, entity) => {
     default:
       return entity[nameKey] || '[no name]'
   }
+}
+
+export const getAbbreviatedStopName = (stop, maxCharactersPerWord = 10) => {
+  let stopName = getEntityName('stop', stop)
+  let stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:)+/i) : null
+  return stopNameParts && stopNameParts.length === 3 && stop.stop_name.length > maxCharactersPerWord * 2
+    ? `${stopNameParts[0].substr(0, maxCharactersPerWord).trim()}... ${stopNameParts[2].substr(0, maxCharactersPerWord).trim()}`
+    : stop.stop_name
 }
 
 export const gtfsIcons = [
@@ -241,22 +251,86 @@ export const stopFromGtfs = (stop) => {
   }
 }
 
-export const agencyToGtfs = ent => {
+export const routeToGtfs = route => {
   return {
     // datatools props
-    id: ent.id,
-    feedId: ent.feedId,
-    agencyBrandingUrl: ent.agencyBrandingUrl,
+    id: route.id,
+    feedId: route.feedId,
+    routeBrandingUrl: route.routeBrandingUrl,
+    publiclyVisible: route.publiclyVisible,
+    status: route.status,
+    numberOfTrips: route.numberOfTrips,
 
     // gtfs spec props
-    agency_id: ent.agencyId,
-    agency_name: ent.name,
-    agency_url: ent.url,
-    agency_timezone: ent.timezone,
-    agency_lang: ent.lang,
-    agency_phone: ent.phone,
-    agency_fare_url: ent.agencyFareUrl,
-    agency_email: ent.email
+    agency_id: route.agencyId,
+    route_short_name: route.routeShortName,
+    route_long_name: route.routeLongName,
+    route_desc: route.routeDesc,
+    route_type: route.gtfsRouteType,
+    route_url: route.routeUrl,
+    route_color: route.routeColor,
+    route_text_color: route.routeTextColor,
+    route_id: route.gtfsRouteId
+  }
+}
+
+export const agencyToGtfs = agency => {
+  return {
+    // datatools props
+    id: agency.id,
+    feedId: agency.feedId,
+    agencyBrandingUrl: agency.agencyBrandingUrl,
+
+    // gtfs spec props
+    agency_id: agency.agencyId,
+    agency_name: agency.name,
+    agency_url: agency.url,
+    agency_timezone: agency.timezone,
+    agency_lang: agency.lang,
+    agency_phone: agency.phone,
+    agency_fare_url: agency.agencyFareUrl,
+    agency_email: agency.email
+  }
+}
+
+export const calendarToGtfs = cal => {
+  return {
+    // datatools props
+    id: cal.id,
+    feedId: cal.feedId,
+    description: cal.description,
+    routes: cal.routes,
+    numberOfTrips: cal.numberOfTrips,
+
+    // gtfs spec props
+    service_id: cal.gtfsServiceId,
+    monday: cal.monday ? 1 : 0,
+    tuesday: cal.tuesday ? 1 : 0,
+    wednesday: cal.wednesday ? 1 : 0,
+    thursday: cal.thursday ? 1 : 0,
+    friday: cal.friday ? 1 : 0,
+    saturday: cal.saturday ? 1 : 0,
+    sunday: cal.sunday ? 1 : 0,
+    start_date: cal.startDate,
+    end_date: cal.endDate
+  }
+}
+
+export const fareToGtfs = fare => {
+  return {
+    // datatools props
+    id: fare.id,
+    feedId: fare.feedId,
+    description: fare.description,
+    fareRules: fare.fareRules,
+
+    // gtfs spec props
+    fare_id: fare.gtfsFareId,
+    price: fare.price,
+    currency_type: fare.currencyType,
+    payment_method: fare.paymentMethod,
+    transfers: fare.transfers,
+    transfer_duration: fare.transferDuration
   }
 }
 
