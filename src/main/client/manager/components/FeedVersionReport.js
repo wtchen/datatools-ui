@@ -150,18 +150,32 @@ export default class FeedVersionReport extends Component {
                 width='100%'
               />
             </ListGroupItem>
-            <ListGroupItem
-              header={
-                <h4>
-                  {`${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
-                  {' '}
-                  <small>
-                    {this.getVersionDateLabel(version)}
-                  </small>
-                </h4>
-              }
-            >
-              <Icon name='calendar'/> {getMessage(messages, 'validDates')}
+            <ListGroupItem>
+              <h4>
+                {isExtensionEnabled('mtc')
+                  ? <Button
+                    disabled={this.props.isPublished}
+                    className='pull-right'
+                    bsStyle={this.props.isPublished ? 'success' : 'warning'}
+                    onClick={() => this.props.publishFeedVersion(version)}
+                  >
+                    {this.props.isPublished
+                      ? <span><Icon name='check-circle' /> Published</span>
+                      : <span>Publish to MTC</span>
+                    }
+                  </Button>
+                  : null
+                }
+                <Icon name='calendar' /> {`Valid from ${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
+                {' '}
+                {this.getVersionDateLabel(version)}
+              </h4>
+              <p>
+                {version.validationSummary && version.validationSummary.avgDailyRevenueTime
+                  ? <span><Icon name='clock-o'/> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
+                  : null
+                }
+              </p>
             </ListGroupItem>
             <ListGroupItem>
             <Tabs
@@ -194,19 +208,6 @@ export default class FeedVersionReport extends Component {
                     <p style={{marginBottom: '0px'}}>{getMessage(messages, 'stopTimesCount')}</p>
                   </Col>
                 </Row>
-                {isExtensionEnabled('mtc')
-                  ? <Button
-                      disabled={this.props.isPublished}
-                      bsStyle={this.props.isPublished ? 'success' : 'warning'}
-                      onClick={() => this.props.publishFeedVersion(version)}
-                    >
-                      {this.props.isPublished
-                        ? <span><Icon name='check-circle'/> Published</span>
-                        : <span>Publish to MTC</span>
-                      }
-                    </Button>
-                  : null
-                }
                 {
                 /*<Feed
                   version={this.props.version}
