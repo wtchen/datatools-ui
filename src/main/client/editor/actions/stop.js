@@ -30,13 +30,14 @@ export function saveStop (feedId, stop) {
     const data = stopFromGtfs(stop)
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
-      .then(s => {
-        dispatch(receiveStop(feedId, s))
+      .then(newStop => {
+        dispatch(receiveStop(feedId, newStop))
         // only set active if stop.id === 'new', if id is undefined, do not set active entity
         if (stop.id === 'new') {
-          dispatch(setActiveGtfsEntity(feedId, 'stop', s.id))
+          dispatch(deletingStop(feedId, stop))
+          dispatch(setActiveGtfsEntity(feedId, 'stop', newStop.id))
         }
-        return s
+        return newStop
 
         // return dispatch(fetchStops(feedId))
         // .then(() => {
@@ -110,9 +111,10 @@ export function deletingStop (feedId, stop) {
 
 export function deleteStop (feedId, stop) {
   return function (dispatch, getState) {
+    console.log(stop)
     dispatch(deletingStop(feedId, stop))
     if (stop.id === 'new') {
-      return dispatch(fetchStops(feedId))
+      return // dispatch(removeStop(feedId, stop))
     }
     const url = `/api/manager/secure/stop/${stop.id}?feedId=${feedId}`
     return secureFetch(url, getState(), 'delete')
