@@ -21,20 +21,23 @@ export default class SidebarPopover extends Component {
       arrowOffset: 0
     }
   }
-
+  _onResize = () => {
+    this.setState({width: window.innerWidth, height: window.innerHeight})
+  }
+  componentWillMount () {
+    this._onResize()
+  }
   componentDidMount () {
-    window.addEventListener('resize', () => this.handleResize())
-    this.reposition()
+    window.addEventListener('resize', this._onResize)
   }
-
-  componentDidUpdate () {
+  componentWillUnmount () {
+    window.removeEventListener('resize', this._onResize)
   }
-
   componentWillReceiveProps (nextProps) {
     if (nextProps.visible()) this.reposition()
   }
 
-  handleResize () {
+  _onResize = () => {
     this.reposition()
   }
 

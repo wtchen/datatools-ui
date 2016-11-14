@@ -84,6 +84,7 @@ export default class Sidebar extends Component {
     }
     const expandedIcon = <div style={logoIconStyle}><img height={50} src={getConfigProperty('application.logo') ? getConfigProperty('application.logo') : longIcon}/></div>
     const closePopover = () => this.setState({visiblePopover: null})
+    const hasActiveJobs = this.props.jobMonitor.jobs.length > 0
     const brand = (
       <Link to='/home'>
         <div
@@ -115,7 +116,10 @@ export default class Sidebar extends Component {
           style={{ position: 'absolute', bottom: 10 }}
         >
           <SidebarNavItem ref='jobNav' expanded={this.props.expanded}
-            icon='bell' label='Job Monitor'
+            icon={hasActiveJobs ? 'refresh' : 'bell'} label='Job Monitor'
+            // active={this.props.jobMonitor.jobs.length > 0}
+            loading={hasActiveJobs}
+            finished={this.props.jobMonitor.jobs.length === 0 && this.props.jobMonitor.retired.length > 0}
             onClick={() => this.navSelected('job')} />
           <SidebarNavItem ref='userNav' expanded={this.props.expanded}
             icon='user' label='Account' image={this.props.userPicture}
