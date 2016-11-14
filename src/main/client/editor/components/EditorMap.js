@@ -72,30 +72,30 @@ export default class EditorMap extends Component {
         : []
     }
   }
-  updateDimensions () {
+  _onResize = () => {
     this.setState({width: window.innerWidth, height: window.innerHeight})
     this.refs.map && setTimeout(() => this.refs.map.leafletElement.invalidateSize(), 500)
   }
   componentWillMount () {
-    this.updateDimensions()
+    this._onResize()
     this.setState({willMount: true})
   }
   componentDidMount () {
-    window.addEventListener('resize', () => this.updateDimensions())
+    window.addEventListener('resize', this._onResize)
     this.setState({willMount: false})
   }
   componentWillUnmount () {
-    window.removeEventListener('resize', () => this.updateDimensions())
+    window.removeEventListener('resize', this._onResize)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.offset !== this.props.offset) {
-      this.updateDimensions()
+    if (nextProps.offset !== this.props.offset || nextProps.hidden !== this.props.hidden) {
+      this._onResize()
     }
     if (nextProps.editSettings.controlPoints && nextProps.editSettings.controlPoints.length && !shallowEqual(nextProps.editSettings.controlPoints, this.props.editSettings.controlPoints)) {
       this.setState({controlPoints: nextProps.editSettings.controlPoints[nextProps.editSettings.controlPoints.length - 1]})
     }
     if (nextProps.zoomToTarget && !shallowEqual(nextProps.zoomToTarget, this.props.zoomToTarget)) {
-      // this.updateDimensions()
+      // this._onResize()
       this.setState({zoomToTarget: true})
     }
   }
@@ -544,7 +544,7 @@ export default class EditorMap extends Component {
         let timer = null
         return (
           [
-            <FeatureGroup ref='patterns'>
+            <FeatureGroup ref='patterns' key='patterns'>
               {route && route.tripPatterns
                 ? route.tripPatterns
                   .map(tp => {
@@ -582,45 +582,46 @@ export default class EditorMap extends Component {
             </FeatureGroup>,
             <FeatureGroup
               ref='directionIcons'
+              key='directionIcons'
             >
-            {lengthsAlongPattern.length && this.refs[this.props.currentPattern.id] // && false
-            ? lengthsAlongPattern.map((length, index) => {
-              let distance = length[0]
-              let position = length[1]
+              {lengthsAlongPattern.length && this.refs[this.props.currentPattern.id] // && false
+              ? lengthsAlongPattern.map((length, index) => {
+                let distance = length[0]
+                let position = length[1]
 
-              let nextPosition = along(this.props.currentPattern.shape, distance + 5, 'meters')
-              const dir = position && nextPosition ? bearing(position, nextPosition) : 0
-              const cos = Math.cos(bearing * (Math.PI / 180))
-              const sin = Math.sin(bearing * (Math.PI / 180))
-              const icon = divIcon({
-                className: '',
-                iconAnchor: [50 * cos, 50 * sin],
-                iconSize: [24, 24],
-                html: `<i class="fa fa-circle"/>`
+                let nextPosition = along(this.props.currentPattern.shape, distance + 5, 'meters')
+                const dir = position && nextPosition ? bearing(position, nextPosition) : 0
+                const cos = Math.cos(bearing * (Math.PI / 180))
+                const sin = Math.sin(bearing * (Math.PI / 180))
+                const icon = divIcon({
+                  className: '',
+                  iconAnchor: [50 * cos, 50 * sin],
+                  iconSize: [24, 24],
+                  html: `<i class="fa fa-circle"/>`
+                })
+                const color = '#000'
+                const arrowIcon = divIcon({
+                  // html: `<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #ffc0ff"></i><i class="fa fa-stack-1x fa-arrow-up" style="color: ${color}; transform: rotate(${dir}deg)"></i></span>`,
+                  html: `<i class="fa fa-arrow-up" style="color: ${color}; transform: rotate(${dir}deg)"></i>`,
+                  className: ''
+                })
+                if (!position || !position.geometry || !position.geometry.coordinates) {
+                  return null
+                }
+                return (
+                  <Marker
+                    position={[position.geometry.coordinates[1], position.geometry.coordinates[0]]}
+                    icon={arrowIcon}
+                    ref={`directionIcon-${index}`}
+                    key={`directionIcon-${index}`}
+                    color='black'
+                  />
+                )
               })
-              const color = '#000'
-              const arrowIcon = divIcon({
-                // html: `<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #ffc0ff"></i><i class="fa fa-stack-1x fa-arrow-up" style="color: ${color}; transform: rotate(${dir}deg)"></i></span>`,
-                html: `<i class="fa fa-arrow-up" style="color: ${color}; transform: rotate(${dir}deg)"></i>`,
-                className: ''
-              })
-              if (!position || !position.geometry || !position.geometry.coordinates) {
-                return null
+              : null
               }
-              return (
-                <Marker
-                  position={[position.geometry.coordinates[1], position.geometry.coordinates[0]]}
-                  icon={arrowIcon}
-                  ref={`directionIcon-${index}`}
-                  key={`directionIcon-${index}`}
-                  color='black'
-                />
-              )
-            })
-            : null
-            }
             </FeatureGroup>,
-            <FeatureGroup ref='controlPoints'>
+            <FeatureGroup ref='controlPoints' key='controlPoints'>
               {this.props.stops.length && this.props.currentPattern && this.props.currentPattern.shape && this.props.editSettings.editGeometry
               ? this.state.controlPoints.map((s, index) => {
                 // don't include controlPoint on end of segment (for now) or hidden controlPoints
@@ -713,6 +714,7 @@ export default class EditorMap extends Component {
             </FeatureGroup>,
             <FeatureGroup
               ref='patternStops'
+              key='patternStops'
             >
               {this.props.stops.length && this.props.currentPattern && !this.props.editSettings.hideStops
                 ? this.props.currentPattern.patternStops && this.props.currentPattern.patternStops.map((s, index) => {
@@ -766,7 +768,7 @@ export default class EditorMap extends Component {
                                 >
                                   <Icon name='floppy-o'/>
                                 </Button>
-                                <OverlayTrigger overlay={<Tooltip>Edit stop</Tooltip>}>
+                                <OverlayTrigger overlay={<Tooltip id='edit-stop-tooltip'>Edit stop</Tooltip>}>
                                 <Button
                                   onClick={() => {
                                     this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
@@ -775,7 +777,7 @@ export default class EditorMap extends Component {
                                   <Icon name='pencil'/>
                                 </Button>
                                 </OverlayTrigger>
-                                <OverlayTrigger overlay={<Tooltip>Remove from pattern</Tooltip>}>
+                                <OverlayTrigger overlay={<Tooltip id='remove-stop-tooltip'>Remove from pattern</Tooltip>}>
                                 <Button
                                   bsStyle='danger'
                                   onClick={() => {
@@ -812,7 +814,12 @@ export default class EditorMap extends Component {
                                       }
                                       // disable adding stop to current position or directly before/after current position
                                       return (
-                                        <MenuItem disabled={index >= addIndex - 2 && index <= addIndex} value={addIndex - 1} eventKey={addIndex - 1}>
+                                        <MenuItem
+                                          disabled={index >= addIndex - 2 && index <= addIndex}
+                                          value={addIndex - 1}
+                                          key={i}
+                                          eventKey={addIndex - 1}
+                                        >
                                           {addIndex === 1 ? 'Add to beginning' : `Insert as stop #${addIndex}`}
                                         </MenuItem>
                                       )
@@ -870,6 +877,7 @@ export default class EditorMap extends Component {
             ,
             <FeatureGroup
               ref='addableStops'
+              key='addableStops'
             >
               {
                 this.props.stops.length && this.props.currentPattern && this.props.editSettings.addStops && this.props.mapState.zoom > 14
@@ -945,16 +953,6 @@ export default class EditorMap extends Component {
           ]
         )
       case 'stop':
-        // <StopMarkersLayer
-        //   stops={this.props.stops}
-        //   activeEntity={this.props.activeEntity}
-        //   feedSource={this.props.feedSource}
-        //   mapState={this.props.mapState}
-        //   setActiveEntity={this.props.setActiveEntity}
-        //   updateActiveEntity={this.props.updateActiveEntity}
-        //   entityEdited={this.props.entityEdited}
-        // />
-
         const paddedBounds = this.props.mapState.bounds.pad(0.05)
         var results = this.props.stopTree && this.props.drawStops
           ? this.props.stopTree.search({
@@ -1113,6 +1111,7 @@ export default class EditorMap extends Component {
     }
     if (this.props.hidden) {
       mapStyle.display = 'none'
+      // return null
     }
     let mapProps = {
       ref: 'map',

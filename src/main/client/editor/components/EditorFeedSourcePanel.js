@@ -67,6 +67,14 @@ export default class EditorFeedSourcePanel extends Component {
                           )
                         })
                     }
+                    {activeSnapshots.length === 0
+                      ? <ListGroupItem>No other snapshots</ListGroupItem>
+                      : activeSnapshots.map(s => {
+                          return (
+                            <SnapshotItem snapshot={s} {...this.props}/>
+                          )
+                        })
+                    }
                   </ListGroup>
                 </Panel>
               </div>
@@ -122,7 +130,7 @@ class SnapshotItem extends Component {
           <ButtonToolbar className='pull-right' style={{marginTop: '-20px'}}>
             <Button
               bsStyle='primary'
-              disabled={snapshot.current}
+              // disabled={snapshot.current}
               onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
             >
               {snapshot.current
