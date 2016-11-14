@@ -65,9 +65,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     createDeployment: (feedSource) => {
       dispatch(createDeploymentFromFeedSource(feedSource))
-      .then((deployment) => {
-        browserHistory.push(`/deployment/${deployment.id}`)
-      })
     },
     loadFeedVersionForEditing: (feedVersion) => {
       dispatch(loadFeedVersionForEditing(feedVersion))

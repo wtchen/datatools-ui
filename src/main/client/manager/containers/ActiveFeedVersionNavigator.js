@@ -14,7 +14,7 @@ import {
   publishFeedVersion,
   fetchFeedSource
 } from '../actions/feeds'
-
+import { createDeploymentFromFeedSource } from '../../manager/actions/deployments'
 import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
@@ -54,6 +54,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (push) {
         browserHistory.push(`${publicPrefix}/feed/${fs.id}/version/${index}`)
       }
+    },
+    createDeploymentFromFeedSource: (feedSource) => {
+      dispatch(createDeploymentFromFeedSource(feedSource))
+      .then((deployment) => {
+        browserHistory.push(`/deployment/${deployment.id}`)
+      })
     },
     loadFeedVersionForEditing: (feedVersion) => {
       dispatch(loadFeedVersionForEditing(feedVersion))
