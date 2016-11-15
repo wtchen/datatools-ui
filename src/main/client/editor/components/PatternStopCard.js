@@ -3,7 +3,7 @@ import { DragSource, DropTarget } from 'react-dnd'
 import { Row, Col, Button, Collapse, FormGroup, ControlLabel, Checkbox } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 
-import { getEntityName } from '../util/gtfs'
+import { getEntityName, getAbbreviatedStopName } from '../util/gtfs'
 import MinuteSecondInput from './MinuteSecondInput'
 
 const cardSource = {
@@ -81,10 +81,7 @@ class PatternStopCard extends Component {
     const opacity = isDragging ? 0 : 1
     let stopIsActive = this.props.activeStop === this.props.id
     let stopName = getEntityName('stop', stop)
-    let stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:)+/i) : null
-    let abbreviatedStopName = stopNameParts && stopNameParts.length === 3 && stop.stop_name.length > 20
-      ? `${stopNameParts[0].substr(0, 10).trim()}... ${stopNameParts[2].substr(0, 10).trim()}`
-      : stop.stop_name
+    let abbreviatedStopName = getAbbreviatedStopName(stop)
     let titleStopName = stop ? `${index + 1}. ${stopName}` : `${index + 1}. ${stop.stop_id}`
     let fullStopName = stop ? `${index + 1}. ${abbreviatedStopName}` : `${index + 1}. ${stop.stop_id}`
 
@@ -154,7 +151,7 @@ class PatternStopCard extends Component {
                 <Row>
                   <Col xs={6}>
                     <FormGroup
-                      controlId='formBasicText'
+                      controlId='defaultTravelTime'
                       bsSize='small'
                     >
                       <ControlLabel className='small'>Default travel time</ControlLabel>
@@ -170,7 +167,7 @@ class PatternStopCard extends Component {
                   </Col>
                   <Col xs={6}>
                     <FormGroup
-                      controlId='formBasicText'
+                      controlId='defaultDwellTime'
                       bsSize='small'
                     >
                       <ControlLabel className='small'>Default dwell time</ControlLabel>

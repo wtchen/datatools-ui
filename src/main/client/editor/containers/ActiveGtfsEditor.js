@@ -19,9 +19,7 @@ import {
   removeControlPoint
 } from '../actions/tripPattern'
 import {
-  fetchTripsForCalendar,
-  saveTripsForCalendar,
-  deleteTripsForCalendar
+  fetchTripsForCalendar
 } from '../actions/trip'
 import {
   setActiveGtfsEntity,
@@ -96,6 +94,7 @@ const mapStateToProps = (state, ownProps) => {
     tableData: state.editor.tableData,
     hideTutorial: state.ui.hideTutorial,
     tripPatterns: state.editor.tripPatterns,
+    timetable: state.editor.timetable,
     // gtfsEntityLookup: state.editor.gtfsEntityLookup,
     // validation: state.editor.validation,
     // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
@@ -265,12 +264,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // ENTITY-SPECIFIC FUNCTIONS
     uploadBrandingAsset: (feedSourceId, entityId, component, file) => {
       dispatch(uploadBrandingAsset(feedSourceId, entityId, component, file))
-    },
-    saveTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
-      return dispatch(saveTripsForCalendar(feedSourceId, pattern, calendarId, trips))
-    },
-    deleteTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
-      return dispatch(deleteTripsForCalendar(feedSourceId, pattern, calendarId, trips))
     },
 
     clearGtfsContent: () => { dispatch(clearGtfsContent()) },

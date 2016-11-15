@@ -18,8 +18,9 @@
 
 /* EDITOR ENTITY LIST */
 
-.entity-list-row:hover {
-  background-color: '#f5f5f5'
+.entity-list-row {
+  /*background-color: '#f5f5f5';*/
+  outline: 'none'
 }
 
 .noselect {

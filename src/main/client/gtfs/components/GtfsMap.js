@@ -158,7 +158,7 @@ export default class GtfsMap extends Component {
     if (!stop) {
       return null
     }
-    const feedId = stop.feed_id || stop.feed.feed_id
+    const feedId = stop.feed_id || stop.feed && stop.feed.feed_id
     const feed = getFeed(this.props.feeds, feedId)
     const busIcon = divIcon({
       html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon" style="opacity: 0.6">
@@ -202,14 +202,17 @@ export default class GtfsMap extends Component {
       return null
     }
     const route = pattern.route
-    const feedId = route.feed_id || route.feed.feed_id
+    const feedId = route ? route.feed_id || route.feed.feed_id : null
     const feed = getFeed(this.props.feeds, feedId)
+    const routeName = route ? getRouteName(route) : pattern.route_name
+    const routeId = route ? route.route_id : pattern.route_id
     const popup = (
       <Popup>
         <div>
+          <p><Icon name='bus'/> <strong>{routeName}</strong></p>
           <p><Icon type='bus'/> <strong>{getRouteName(route)}</strong></p>
           <ul>
-            <li><strong>ID:</strong> {route.route_id}</li>
+            <li><strong>ID:</strong> {routeId}</li>
             <li><strong>Agency:</strong>{' '}
             {// TODO: change this back to feedName
               // route.feed_id

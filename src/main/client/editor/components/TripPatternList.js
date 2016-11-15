@@ -384,7 +384,7 @@ export default class TripPatternList extends Component {
                             this.props.setActiveEntity(feedSource.id, 'route', activeEntity, 'trippattern', pattern, 'timetable')
                           }}
                         >
-                          Edit
+                          <Icon name='pencil'/> Edit
                         </Button>
                       </ButtonGroup>
                       <hr/>

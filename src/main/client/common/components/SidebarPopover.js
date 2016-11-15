@@ -17,17 +17,23 @@ export default class SidebarPopover extends Pure {
     top: 0,
     arrowOffset: 0
   }
-
-  componentDidMount () {
-    window.addEventListener('resize', () => this.handleResize())
-    this.reposition()
+  _onResize = () => {
+    this.setState({width: window.innerWidth, height: window.innerHeight})
   }
-
+  componentWillMount () {
+    this._onResize()
+  }
+  componentDidMount () {
+    window.addEventListener('resize', this._onResize)
+  }
+  componentWillUnmount () {
+    window.removeEventListener('resize', this._onResize)
+  }
   componentWillReceiveProps (nextProps) {
     if (nextProps.visible) this.reposition()
   }
 
-  handleResize () {
+  _onResize = () => {
     this.reposition()
   }
 

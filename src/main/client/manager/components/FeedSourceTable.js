@@ -340,12 +340,25 @@ class FeedSourceDropdown extends Component {
         <Dropdown.Menu>
           <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
           <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
+
+          {/* show divider only if deployments and notifications are enabled (otherwise, we don't need it) */}
           {isModuleEnabled('deployment') || getConfigProperty('application.notifications_enabled')
             ? <MenuItem divider />
             : null
           }
           {isModuleEnabled('deployment')
-            ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
+            ? <MenuItem
+                disabled={disabled || !fs.deployable || !fs.feedVersionCount}
+                title={disabled
+                  ? 'You do not have permission to deploy feed'
+                  : !fs.deployable
+                  ? 'Feed source is not deployable. Change in feed source settings.'
+                  : !fs.feedVersionCount
+                  ? 'No versions exist. Create new version to deploy feed'
+                  : 'Deploy feed source.'
+                }
+                eventKey='deploy'
+              ><Glyphicon glyph='globe'/> Deploy</MenuItem>
             : null
           }
           {getConfigProperty('application.notifications_enabled')

@@ -88,6 +88,38 @@ export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
   }
 }
 
+export function saveTripsForCalendar2 (feedId, pattern, calendarId, trips) {
+  return function (dispatch, getState) {
+    dispatch(savingTrips(feedId, pattern, calendarId, trips))
+    const tripExists = trip.id !== 'new' && trip.id !== null
+    const method = tripExists ? 'put' : 'post'
+    const url = tripExists
+      ? `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
+      : `/api/manager/secure/trip?feedId=${feedId}`
+    trip.id = tripExists ? trip.id : null
+    return secureFetch(url, getState(), method, trip)
+      .then(res => {
+        if (res.status >= 300) {
+          errorCount++
+          errorIndexes.push(index)
+          return null
+        } else {
+          return res.json()
+        }
+      })
+    .then(trips => {
+      // console.log(trips)
+      if (errorCount) {
+        dispatch(setErrorMessage(`Unknown error encountered while saving trips.  Could not save ${errorCount} trips`))
+      }
+      dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
+      return errorIndexes
+    })
+    // return result
+  }
+}
+
+
 // export function saveTrip (feedId, trip) {
 //   // return function (dispatch, getState) {
 //     // const url = `/api/manager/secure/trip/?feedId=${feedId}&patternId=${pattern.id}&calendarId=${calendarId}`
@@ -129,13 +161,10 @@ export function deleteTripsForCalendar (feedId, pattern, calendarId, trips) {
     return Promise.all(trips.map(trip => {
       const url = `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
       return secureFetch(url, getState(), 'delete', trip)
-        .then(res => {
-          if (res.status >= 300) {
-            errorCount++
-            return null
-          } else {
-            return res.json()
-          }
+        .then(res => res.json())
+        .catch(error => {
+          console.log(error)
+          errorCount++
         })
     }))
     .then(trips => {
@@ -152,6 +181,44 @@ export function deleteTripsForCalendar (feedId, pattern, calendarId, trips) {
 }
 
 
+export function updateCellValue (value, rowIndex, key) {
+  return {
+    type: 'UPDATE_TIMETABLE_CELL_VALUE',
+    value,
+    rowIndex,
+    key
+  }
+}
+
+export function toggleRowSelection (rowIndex) {
+  return {
+    type: 'TOGGLE_SINGLE_TIMETABLE_ROW_SELECTION',
+    rowIndex
+  }
+}
+export function toggleAllRows (select) {
+  return {
+    type: 'TOGGLE_ALL_TIMETABLE_ROW_SELECTION',
+    select
+  }
+}
+export function toggleDepartureTimes () {
+  return {
+    type: 'TOGGLE_DEPARTURE_TIMES'
+  }
+}
+export function setOffset (seconds) {
+  return {
+    type: 'SET_TIMETABLE_OFFSET',
+    seconds
+  }
+}
+export function addNewTrip (trip) {
+  return {
+    type: 'ADD_NEW_TRIP',
+    trip
+  }
+}
 // export function fetchTripsForCalendar (feedId, patternId, calendarId) {
 //   return function (dispatch, getState) {
 //     dispatch(requestingTripsForCalendar(feedId, patternId, calendarId))

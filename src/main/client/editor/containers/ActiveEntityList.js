@@ -4,7 +4,7 @@ import {
   newGtfsEntity,
   saveActiveGtfsEntity,
   deleteGtfsEntity,
-  getGtfsTable,
+  getGtfsTable
 } from '../actions/editor'
 import { getEntityName } from '../util/gtfs'
 

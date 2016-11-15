@@ -73,9 +73,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
     createDeploymentFromFeedSource: (feedSource) => {
       dispatch(createDeploymentFromFeedSource(feedSource))
-      .then((deployment) => {
-        browserHistory.push(`/deployment/${deployment.id}`)
-      })
     },
     onNewDeploymentClick: () => { dispatch(createDeployment(projectId)) },
     newDeploymentNamed: (name) => { dispatch(saveDeployment({ projectId, name })) },

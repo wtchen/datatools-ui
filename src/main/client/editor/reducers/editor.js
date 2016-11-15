@@ -1,10 +1,11 @@
 import update from 'react-addons-update'
 import rbush from 'rbush'
 import clone from 'clone'
-import { getControlPoints, getEntityBounds, stopToGtfs, agencyToGtfs, gtfsSort } from '../util/gtfs'
+import objectPath from 'object-path'
+import { getControlPoints, getEntityBounds, stopToGtfs, routeToGtfs, agencyToGtfs, calendarToGtfs, fareToGtfs, gtfsSort } from '../util/gtfs'
 import { latLngBounds } from 'leaflet'
 import ll from 'lonlng'
-import { CLICK_OPTIONS } from '../util'
+import { CLICK_OPTIONS, getTimetableColumns } from '../util'
 
 const defaultState = {
   feedSourceId: null,
@@ -24,6 +25,14 @@ const defaultState = {
     coordinatesHistory: [],
     actions: []
   },
+  timetable: {
+    columns: [],
+    trips: [],
+    edited: [],
+    selected: [],
+    hideDepartureTimes: false,
+    offset: null
+  },
   mapState: {
     zoom: null,
     bounds: latLngBounds([[60, 60], [-60, -20]]),
@@ -34,7 +43,7 @@ const defaultState = {
   validation: null
 }
 const editor = (state = defaultState, action) => {
-  let stateUpdate, key, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, patternIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState
+  let stateUpdate, key, newTableData, fields, rowData, mappedEntities, activeEntity, activeSubEntity, newState, routeIndex, stopIndex, patternIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, controlPoints, coordinates, mapState, activePattern, sortedTrips, columns, trips
   switch (action.type) {
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
@@ -191,9 +200,36 @@ const editor = (state = defaultState, action) => {
         : null
       switch (action.subComponent) {
         case 'trippattern':
-          activeSubEntity = activeEntity && activeEntity.tripPatterns ? clone(activeEntity.tripPatterns.find(p => p.id === action.subEntityId)) : null
+          activeSubEntity = activeEntity && activeEntity.tripPatterns
+            ? clone(activeEntity.tripPatterns.find(p => p.id === action.subEntityId))
+            : null
           controlPoints = getControlPoints(activeSubEntity, state.editSettings.snapToStops)
           coordinates = activeSubEntity && activeSubEntity.shape && activeSubEntity.shape.coordinates
+
+          // set timetable trips (if in timetable editor)
+          if (action.subSubComponent === 'timetable' && activeSubEntity) {
+            routeIndex = state.tableData.route.findIndex(r => r.id === action.entityId)
+            patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.subEntityId)
+            activePattern = clone(state.tableData.route[routeIndex].tripPatterns[patternIndex])
+            trips = clone(activePattern[action.subSubEntityId])
+            sortedTrips = trips
+              ? trips.filter(t => t.useFrequency === activePattern.useFrequency) // filter out based on useFrequency
+              .sort((a, b) => {
+                if (a.stopTimes[0].departureTime < b.stopTimes[0].departureTime) return -1
+                if (a.stopTimes[0].departureTime > b.stopTimes[0].departureTime) return 1
+                return 0
+              })
+              : []
+            columns = getTimetableColumns(activePattern, state.tableData.stop, state.timetable.hideDepartureTimes)
+            return update(state, {
+              timetable: {
+                trips: {$set: sortedTrips},
+                columns: {$set: columns},
+                edited: {$set: []},
+                selected: {$set: []}
+              }
+            })
+          }
           break
       }
       let active = {
@@ -342,23 +378,7 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_FARES':
-      const fares = action.fares.map(fare => {
-        return {
-          // datatools props
-          id: fare.id,
-          feedId: fare.feedId,
-          description: fare.description,
-          fareRules: fare.fareRules,
-
-          // gtfs spec props
-          fare_id: fare.gtfsFareId,
-          price: fare.price,
-          currency_type: fare.currencyType,
-          payment_method: fare.paymentMethod,
-          transfers: fare.transfers,
-          transfer_duration: fare.transferDuration,
-        }
-      })
+      const fares = action.fares.map(fareToGtfs)
       fares.sort(gtfsSort)
       fareIndex = state.active.entity && fares.findIndex(f => f.id === state.active.entity.id)
       if (fareIndex !== -1) {
@@ -430,26 +450,7 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_CALENDARS':
-      const calendars = action.calendars ? action.calendars.map(c => {
-        return {
-          // datatools props
-          id: c.id,
-          feedId: c.feedId,
-          description: c.description,
-
-          // gtfs spec props
-          service_id: c.gtfsServiceId,
-          monday: c.monday ? 1 : 0,
-          tuesday: c.tuesday ? 1 : 0,
-          wednesday: c.wednesday ? 1 : 0,
-          thursday: c.thursday ? 1 : 0,
-          friday: c.friday ? 1 : 0,
-          saturday: c.saturday ? 1 : 0,
-          sunday: c.sunday ? 1 : 0,
-          start_date: c.startDate,
-          end_date: c.endDate,
-        }
-      }) : null
+      const calendars = action.calendars ? action.calendars.map(calendarToGtfs) : null
       calendars.sort(gtfsSort)
       calendarIndex = state.active.entity && calendars.findIndex(c => c.id === state.active.entity.id)
       if (calendarIndex !== -1) {
@@ -497,27 +498,7 @@ const editor = (state = defaultState, action) => {
         })
       }
     case 'RECEIVE_ROUTES':
-      const routes = action.routes ? action.routes.map(r => {
-        return {
-          // datatools props
-          id: r.id,
-          feedId: r.feedId,
-          routeBrandingUrl: r.routeBrandingUrl,
-          publiclyVisible: r.publiclyVisible,
-          status: r.status,
-
-          // gtfs spec props
-          agency_id: r.agencyId,
-          route_short_name: r.routeShortName,
-          route_long_name: r.routeLongName,
-          route_desc: r.routeDesc,
-          route_type: r.gtfsRouteType,
-          route_url: r.routeUrl,
-          route_color: r.routeColor,
-          route_text_color: r.routeTextColor,
-          route_id: r.gtfsRouteId
-        }
-      }) : []
+      const routes = action.routes ? action.routes.map(routeToGtfs) : []
       routes.sort(gtfsSort)
       // feedTableData.route = routes
       routeIndex = state.active.entity && routes.findIndex(r => r.id === state.active.entity.id)
@@ -555,7 +536,7 @@ const editor = (state = defaultState, action) => {
       })
     case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.routeId)
-      let activePattern = state.active.subEntityId && action.tripPatterns.find(p => p.id === state.active.subEntityId)
+      activePattern = state.active.subEntityId && action.tripPatterns.find(p => p.id === state.active.subEntityId)
       if (routeIndex === -1) {
         return state
       }
@@ -579,13 +560,89 @@ const editor = (state = defaultState, action) => {
           tableData: {route: {[routeIndex]: {$merge: {tripPatterns: action.tripPatterns}}}}
         })
       }
+    case 'SET_TIMETABLE_OFFSET':
+      return update(state, {
+        timetable: {
+          offset: {$set: action.seconds}
+        }
+      })
+    case 'UPDATE_TIMETABLE_CELL_VALUE':
+      trips = clone(state.timetable.trips)
+      objectPath.set(trips, action.key, action.value)
+      return update(state, {
+        timetable: {
+          trips: {$set: trips},
+          edited: {$push: [action.rowIndex]}
+        }
+      })
+    case 'TOGGLE_ALL_TIMETABLE_ROW_SELECTION':
+      let selected = []
+      if (action.select) {
+        for (let i = 0; i < state.timetable.trips.length; i++) {
+          selected.push(i)
+        }
+      }
+      return update(state, {
+        timetable: {
+          selected: {$set: selected}
+        }
+      })
+    case 'TOGGLE_DEPARTURE_TIMES':
+      return update(state, {
+        timetable: {
+          hideDepartureTimes: {$set: !state.timetable.hideDepartureTimes}
+        }
+      })
+    case 'ADD_NEW_TRIP':
+      return update(state, {
+        timetable: {
+          trips: {$push: [action.trip]},
+          edited: {$push: [state.timetable.trips.length]}
+        }
+      })
+    case 'TOGGLE_SINGLE_TIMETABLE_ROW_SELECTION':
+      let selectIndex = state.timetable.selected.indexOf(action.rowIndex)
+      if (selectIndex === -1) {
+        return update(state, {
+          timetable: {
+            selected: {$push: [action.rowIndex]}
+          }
+        })
+      }
+      else {
+        return update(state, {
+          timetable: {
+            selected: {$splice: [[selectIndex, 1]]}
+          }
+        })
+      }
     case 'RECEIVE_TRIPS_FOR_CALENDAR':
       routeIndex = state.tableData.route.findIndex(r => r.id === action.pattern.routeId)
       patternIndex = state.tableData.route[routeIndex].tripPatterns.findIndex(p => p.id === action.pattern.id)
+      activePattern = clone(state.tableData.route[routeIndex].tripPatterns[patternIndex])
+      trips = clone(action.trips)
+      sortedTrips = trips
+        ? action.trips.filter(t => t.useFrequency === activePattern.useFrequency) // filter out based on useFrequency
+        .sort((a, b) => {
+          // if(a.isCreating && !b.isCreating) return -1
+          // if(!a.isCreating && b.isCreating) return 1
+          if (a.stopTimes[0].departureTime < b.stopTimes[0].departureTime) return -1
+          if (a.stopTimes[0].departureTime > b.stopTimes[0].departureTime) return 1
+          return 0
+        })
+        : []
+      columns = getTimetableColumns(activePattern, state.tableData.stop, state.timetable.hideDepartureTimes)
       if (state.active.entity.id === action.pattern.routeId) {
         return update(state, {
           tableData: {route: {[routeIndex]: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}},
-          active: {entity: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}}
+          active: {entity: {tripPatterns: {[patternIndex]: {$merge: {[action.calendarId]: action.trips}}}}},
+          timetable: {
+            trips: {$set: sortedTrips},
+            patternId: {$set: activePattern.id},
+            calendarId: {$set: action.calendarId},
+            columns: {$set: columns},
+            edited: {$set: []}
+          }
         })
       }
       else {
@@ -629,9 +686,14 @@ const editor = (state = defaultState, action) => {
           stopTree: {$set: tree}
         })
       }
+    case 'DELETING_STOP':
+      stopIndex = state.tableData.stop.findIndex(s => s.id === action.stop.id)
+      return update(state, {
+        tableData: {stop: {$splice: [[stopIndex, 1]]}}
+      })
     case 'RECEIVE_STOP':
       const stop = stopToGtfs(action.stop)
-      let stopIndex = state.tableData.stop.findIndex(s => s.id === stop.id)
+      stopIndex = state.tableData.stop.findIndex(s => s.id === stop.id)
 
       // TODO: handle adding to rbush tree
       // TODO: updated sort with stops array
@@ -662,82 +724,15 @@ const editor = (state = defaultState, action) => {
       const getMappedEntities = (entities) => {
         switch (action.tableId) {
           case 'agency':
-            return action.entities.map(ent => {
-              return {
-                id: ent.id,
-                feedId: ent.feedId,
-                agency_id: ent.agencyId,
-                agency_name: ent.name,
-                agency_url: ent.url,
-                agency_timezone: ent.timezone,
-                agency_lang: ent.lang,
-                agency_phone: ent.phone,
-                agency_fare_url: ent.fare_url,
-                agency_email: ent.email,
-              }
-            })
+            return action.entities.map(agencyToGtfs)
           case 'route':
-            mappedEntities = action.entities.map(ent => {
-              return {
-                id: ent.id,
-                feedId: ent.feedId,
-                agency_id: ent.agencyId,
-                route_short_name: ent.routeShortName,
-                route_long_name: ent.routeLongName,
-                route_desc: ent.routeDesc,
-                route_type: ent.routeTypeId,
-                route_url: ent.routeUrl,
-                route_color: ent.routeColor,
-                route_text_color: ent.routeTextColor,
-                route_id: ent.gtfsRouteId
-              }
-            })
-            return mappedEntities
+            return action.entities.map(routeToGtfs)
           case 'stop':
             return action.entities.map(stopToGtfs)
           case 'calendar':
-            return action.entities.map(ent => {
-              return {
-                service_id: ent.gtfsServiceId,
-                monday: ent.monday,
-                tuesday: ent.tuesday,
-                wednesday: ent.wednesday,
-                thursday: ent.thursday,
-                friday: ent.friday,
-                saturday: ent.saturday,
-                sunday: ent.sunday,
-                start_date: ent.startDate,
-                end_date: ent.endDate,
-                description: ent.description,
-                routes: ent.routes,
-                id: ent.id,
-                feedId: ent.feedId,
-                numberOfTrips: ent.numberOfTrips
-              }
-            })
+            return action.entities.map(calendarToGtfs)
           case 'fare':
-            return action.entities.map(ent => {
-              return ent
-              // return {
-              //   id: ent.id,
-              //   stop_id: ent.gtfsStopId,
-              //   stop_code: ent.stopCode,
-              //   stop_name: ent.stopName,
-              //   stop_desc: ent.stopDesc,
-              //   stop_lat: ent.lat,
-              //   stop_lon: ent.lon,
-              //   zone_id: ent.zoneId,
-              //   stop_url: ent.stopUrl,
-              //   location_type: ent.locationType,
-              //   parent_station: ent.parentStation,
-              //   stop_timezone: ent.stopTimezone,
-              //   wheelchair_boarding: ent.wheelchairBoarding,
-              //   bikeParking: ent.bikeParking,
-              //   carParking: ent.carParking,
-              //   pickupType: ent.pickupType,
-              //   dropOffType: ent.dropOffType,
-              // }
-            })
+            return action.entities.map(fareToGtfs) // no mapping exists for fares
           default:
             return action.entities
         }

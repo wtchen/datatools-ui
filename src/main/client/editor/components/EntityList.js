@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react'
 import { Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 import { FlexTable, FlexColumn } from 'react-virtualized'
+import Icon from 'react-fa'
+import { Table, Column } from 'react-virtualized'
 import { shallowEqual } from 'react-pure-render'
 
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
@@ -28,7 +30,18 @@ export default class EntityList extends Component {
     super(props)
     this.state = {}
   }
-
+  _onResize = () => {
+    this.setState({width: window.innerWidth, height: window.innerHeight})
+  }
+  componentWillMount () {
+    this._onResize()
+  }
+  componentDidMount () {
+    window.addEventListener('resize', this._onResize)
+  }
+  componentWillUnmount () {
+    window.removeEventListener('resize', this._onResize)
+  }
   componentWillReceiveProps (nextProps) {
     let fromIndex, toIndex
     if (nextProps.activeComponent !== this.props.activeComponent) {
@@ -39,25 +52,65 @@ export default class EntityList extends Component {
     // simply running shallowEqual on all props does not give us the performance we need here
     // (especially with many, many stops)
     return !shallowEqual(nextProps.entities, this.props.entities) ||
+    !shallowEqual(nextProps.activeEntity, this.props.activeEntity) ||
     !shallowEqual(nextProps.activeEntityId, this.props.activeEntityId) ||
     !shallowEqual(nextProps.activeComponent, this.props.activeComponent) ||
     !shallowEqual(nextProps.feedSource, this.props.feedSource)
+  }
+  _optionRenderer = ({ focusedOption, focusedOptionIndex, focusOption, key, labelKey, option, options, selectValue, style, valueArray }) => {
+    const className = ['VirtualizedSelectOption']
+    if (option === focusedOption) {
+      className.push('VirtualizedSelectFocusedOption')
+    }
+    if (option.disabled) {
+      className.push('VirtualizedSelectDisabledOption')
+    }
+    const events = option.disabled
+      ? {}
+      : {
+        onClick: () => selectValue(option),
+        onMouseOver: () => focusOption(option)
+      }
+    return (
+      <div
+        key={key}
+        className={className.join(' ')}
+        style={{
+          cursor: 'pointer',
+          ...style
+        }}
+        {...events}
+      >
+        <span
+          title={option.label}
+          style={{
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            width: this.props.width,
+            overflow: 'hidden'
+          }}
+        >
+          {option.label}
+        </span>
+      </div>
+    )
   }
   _getRowStyle (index, list) {
     const activeColor = '#F2F2F2'
     const rowStyle = {
       borderBottom: 'solid 1px #ddd',
       cursor: 'pointer',
+      outline: 'none'
     }
     const activeRowStyle = {
       backgroundColor: activeColor,
       borderBottom: 'solid 1px #ddd',
       cursor: 'pointer',
+      outline: 'none'
     }
     if (list[index] && (list[index].isActive || list[index].isSelected)) {
       return activeRowStyle
-    }
-    else {
+    } else {
       return rowStyle
     }
   }
@@ -112,41 +165,43 @@ export default class EntityList extends Component {
     : []
     let shiftKey
     const entityList = list.length
-    ? (
-        <div
-          onClick={(e) => {
-            console.log(e)
-            shiftKey = e.shiftKey
-          }}
-        >
-          <FlexTable
-            width={this.props.width - 5}
-            height={560}
-            key={`${this.props.activeComponent}-table`}
-            disableHeader={true}
-            headerHeight={20}
-            rowHeight={25}
-            scrollToIndex={activeIndex}
-            rowClassName='entity-list-row noselect'
-            rowStyle={({ index }) => this._getRowStyle(index, list)}
-            rowCount={list.length}
-            onRowClick={({ index }) => {
-              // timeout set in order to get shiftkey from div event listener
-              setTimeout(() => {
-                this._onRowClick(index, list, shiftKey)
-              }, 15)
-            }}
-            rowGetter={({ index }) => list[index]}
-          >
-            <FlexColumn
-              label='Name'
-              dataKey='name'
-              className='small entity-list-row'
-              width={this.props.width - 5}
-            />
-          </FlexTable>
-          </div>
-        )
+    ? <div
+      onClick={(e) => {
+        console.log(e)
+        shiftKey = e.shiftKey
+      }}
+      style={{outline: 'none'}}
+    >
+      <Table
+        width={this.props.width - 5}
+        height={560}
+        key={`${this.props.feedSource.id}-${this.props.activeComponent}-table`}
+        disableHeader
+        headerHeight={20}
+        rowHeight={25}
+        scrollToIndex={activeIndex}
+        rowClassName='noselect'
+        rowStyle={({ index }) => this._getRowStyle(index, list)}
+        rowCount={list.length}
+        // onRowMouseOver={}
+        // onRowMouseOut={}
+        onRowClick={({ index }) => {
+          // timeout set in order to get shiftkey from div event listener
+          setTimeout(() => {
+            this._onRowClick(index, list, shiftKey)
+          }, 15)
+        }}
+        rowGetter={({ index }) => list[index]}
+      >
+        <Column
+          label='Name'
+          dataKey='name'
+          className='small entity-list-row'
+          style={{outline: 'none'}}
+          width={this.props.width - 5}
+        />
+      </Table>
+    </div>
       : <div style={{marginTop: '20px'}} className='text-center'>
         <Button
           bsSize='small'
@@ -157,14 +212,14 @@ export default class EntityList extends Component {
         >
           <Icon type='plus'/> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
         </Button>
-        </div>
+      </div>
 
     const activeTable = getConfigProperty('modules.editor.spec')
       .find(t => t.id === this.props.activeComponent)
     const entityTable = this.props.tableView
       ? (
         <GtfsTable
-          ref="activeTable"
+          ref='activeTable'
           feedSource={this.props.feedSource}
           table={activeTable}
           tableData={entArray || []}
@@ -318,13 +373,13 @@ export default class EntityList extends Component {
           : this.props.activeComponent === 'stop' || this.props.activeComponent === 'route'
           ? <VirtualizedEntitySelect
               value={this.props.activeEntity && this.props.activeEntity.id}
+              optionRenderer={this._optionRenderer}
               component={this.props.activeComponent}
               entities={entArray}
               onChange={(value) => {
                 if (!value) {
                   this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
-                }
-                else {
+                } else {
                   this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, value.entity)
                 }
               }}

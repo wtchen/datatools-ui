@@ -62,16 +62,11 @@ export default class Auth0Manager {
   loginFromToken (token) {
     return fetch('https://' + this.props.domain + '/tokeninfo?id_token=' + token, {
       method: 'post'
-    }).then((res) => {
-      if(res.status >= 400) { // check for bad response, generally an expired token
-        // TODO: better handling of expired tokens
-        return this.loginViaLock({closable: false})
-      }
-      return res.json()
-    }).then((profile) => {
+    }).then(res => res.json()).then((profile) => {
       return constructUserObj(token, profile)
     }).catch((err) => {
       console.log('error getting profile', err)
+      return this.loginViaLock({closable: false})
     })
   }
 
@@ -99,7 +94,7 @@ export default class Auth0Manager {
 
         // initialize auto log out check
         // this.setupSingleLogout()
-
+        console.log(token, profile)
         //this.userLoggedIn(token, profile)
         resolve(constructUserObj(token, profile))
       })

@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom'
 import moment from 'moment'
 
 export default class EditableCell extends Component {
+  static propTypes = {
+    isEditing: PropTypes.bool
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -21,15 +24,15 @@ export default class EditableCell extends Component {
     })
   }
   componentWillReceiveProps (nextProps) {
-    if (this.state.data !== nextProps.data) {
+    if (this.props.data !== nextProps.data) {
+      // console.log('setting data...', nextProps.data)
       this.setState({
-        data: nextProps.data,
+        data: nextProps.data
         // edited: true
         // originalData: nextProps.data
       })
     }
     if (this.state.isEditing !== nextProps.isEditing) this.setState({isEditing: nextProps.isEditing})
-    if (this.state.isFocused !== nextProps.isFocused) this.setState({isFocused: nextProps.isFocused})
   }
   cancel () {
     this.setState({
@@ -37,17 +40,17 @@ export default class EditableCell extends Component {
       isFocused: false,
       data: this.props.data
     })
+    this.props.onStopEditing()
+  }
+  beginEditing () {
+    this.setState({isEditing: true})
   }
   handleClick (evt) {
-    // if (this.state.isFocused)
-      this.setState({isEditing: true})
-      let input = ReactDOM.findDOMNode(this.refs.cellInput)
-      if (input) {
-        input.select()
-      }
-    // else {
-      // this.setState({isFocused: true})
-    // }
+    if (this.props.isFocused) {
+      this.beginEditing()
+    } else {
+      this.props.onClick()
+    }
   }
   handleDoubleClick (evt) {
     // this.setState({isEditing: true, isFocused: false})
@@ -66,8 +69,7 @@ export default class EditableCell extends Component {
           evt.preventDefault()
           this.props.onRowSelect(evt)
           break
-        }
-        else {
+        } else {
           return true
         }
       case 79: // o
@@ -75,39 +77,37 @@ export default class EditableCell extends Component {
           evt.preventDefault()
           this.props.onRowSelect(evt)
           break
-        }
-        else {
+        } else {
           return true
         }
       case 222: // single quote
-        if (evt.shiftKey){
+        if (evt.shiftKey) {
           console.log('dupe left')
           this.props.duplicateLeft(evt)
           this.props.onRight(evt)
           return false
         }
+        break
       case 13: // Enter
         evt.preventDefault()
+        if (this.props.isFocused) {
+          this.beginEditing()
+        }
         // handle shift
-        if (evt.shiftKey){
+        if (evt.shiftKey) {
           this.save(evt)
           this.props.onUp(evt)
-        }
-        else {
+        } else {
           this.save(evt)
-          this.props.onDown(evt)
         }
         break
       case 9: // Tab
         evt.preventDefault()
         // handle shift
-        if (evt.shiftKey){
+        if (evt.shiftKey) {
           this.save(evt)
-          this.props.onLeft(evt)
-        }
-        else {
+        } else {
           this.save(evt)
-          this.props.onRight(evt)
         }
         break
       case 27: // Esc
@@ -116,28 +116,22 @@ export default class EditableCell extends Component {
       case 39: // right
         if (input.selectionStart === input.value.length) {
           this.save(evt)
-          this.props.onRight(evt)
-          break
-        }
-        else {
+          return false
+        } else {
           return true
         }
       case 37: // left
-        if (input.selectionStart === 0) {
+        if (input.selectionStart === 0 && input.selectionEnd === input.value.length) {
           this.save(evt)
-          this.props.onLeft(evt)
-          break
-        }
-        else {
+          return false
+        } else {
           return true
         }
       case 38: // up
         this.save(evt)
-        this.props.onUp(evt)
         break
       case 40: // down
         this.save(evt)
-        this.props.onDown(evt)
         break
       default:
         return true
@@ -145,29 +139,25 @@ export default class EditableCell extends Component {
   }
   save () {
     if (!this.props.renderTime) {
-      console.log(this.state.data)
       if (this.state.data !== this.state.originalData) {
-        console.log('saving data... ' + this.state.data)
         this.setState({isEditing: false})
         this.props.onChange(this.state.data)
-      }
-      else {
+        this.props.onStopEditing()
+      } else {
         this.cancel()
       }
-    }
-    else {
-      console.log('render time' + this.state.data)
+    } else {
       let date = moment().startOf('day').format('YYYY-MM-DD')
       let momentTime = moment(date + 'T' + this.state.data, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a'], true)
       let value = momentTime.diff(date, 'seconds')
+      console.log(value)
 
       // check for valid time and new value
       if (momentTime.isValid() && value !== this.state.data) {
-        console.log('saving data... ' + value)
         this.setState({data: value, isEditing: false})
         this.props.onChange(value)
-      }
-      else {
+        this.props.onStopEditing()
+      } else {
         this.cancel()
       }
     }
@@ -175,8 +165,7 @@ export default class EditableCell extends Component {
   cellRenderer (value) {
     if (this.props.cellRenderer) {
       return this.props.cellRenderer(value)
-    }
-    else {
+    } else {
       return value
     }
   }
@@ -185,12 +174,11 @@ export default class EditableCell extends Component {
   }
   handlePaste (evt) {
     let text = evt.clipboardData.getData('Text')
-    let rows = text.split(String.fromCharCode(13));
+    let rows = text.split(String.fromCharCode(13))
 
     for (var i = 0; i < rows.length; i++) {
-    	rows[i] = rows[i].split(String.fromCharCode(9))
+      rows[i] = rows[i].split(String.fromCharCode(9))
     }
-
 
     if (rows.length > 1 || rows[0].length > 1) {
       this.cancel()
@@ -198,61 +186,83 @@ export default class EditableCell extends Component {
       evt.preventDefault()
     }
   }
+  _onInputFocus (evt) {
+    evt.target.select()
+  }
   render () {
-      var cellHtml
-      var cellStyle = {
-        fontWeight: this.state.edited ? 'bold' : 'normal'
-      }
-      if (this.state.isEditing) {
-        cellHtml = (
-        <input
-          type='text'
-          ref='cellInput'
-          defaultValue={this.cellRenderer(this.state.data)}
-          placeholder={this.props.placeholder || ''}
-          onPaste={(evt) => this.handlePaste(evt)}
-          style={{
-            width: '100%',
-            height: '100%'
-          }}
-          autoFocus='true'
-          onKeyDown={(evt) => this.handleKeyDown(evt)}
-          onChange={(evt) => this.handleChange(evt)}
-          onBlur={(evt) => this.cancel(evt)}
-        />
-      )
-      }
-      else {
-        cellHtml =
-        <div
-          style={{
-            height: '100%',
-            padding: 0,
-            display: 'inline-block',
-            ...this.props.style,
-            ...cellStyle
-          }}
-        >
-          {this.cellRenderer(this.state.data)}
-        </div>
-      }
-      return (
-        <td
-          className='editable-cell small'
-          style={{
-            margin: 0,
-            padding: 0,
-            whiteSpace: 'nowrap',
-            backgroundColor: this.props.invalidData ? 'pink' : 'white',
-            border: '1px solid #ddd',
-            ...this.props.style
-          }}
-          onClick={(evt) => {
-            this.handleClick(evt)
-          }}
-        >
-          {cellHtml}
-        </td>
-      )
+    const rowCheckedColor = '#F3FAF6'
+    const focusedNotEditing = this.props.isFocused && !this.state.isEditing
+    const edgeDiff = this.props.isFocused ? 0 : 0.5
+    const divStyle = {
+      height: '100%',
+      display: 'inline-block',
+      paddingTop: `${3 + edgeDiff}px`,
+      paddingLeft: `${3 + edgeDiff}px`,
+      UserSelect: 'none',
+      userSelect: 'none',
+      fontWeight: this.state.edited ? 'bold' : 'normal'
+    }
+    const cellStyle = {
+      backgroundColor: this.props.invalidData && !this.state.isEditing
+        ? 'pink'
+        : focusedNotEditing
+        ? '#F4F4F4'
+        : this.state.isEditing
+        ? '#fff'
+        : this.props.isSelected
+        ? rowCheckedColor
+        : '#fff',
+      border: this.props.invalidData && focusedNotEditing
+        ? '2px solid red'
+        : this.props.isFocused
+        ? `2px solid #66AFA2`
+        : '1px solid #ddd',
+      margin: `${-0.5 + edgeDiff}px`,
+      padding: `${-edgeDiff}px`,
+      whiteSpace: 'nowrap',
+      cursor: 'default',
+      fontWeight: '400',
+      // fontFamily: '"Courier New", Courier, monospace',
+      color: this.props.lightText ? '#aaa' : '#000',
+      ...this.props.style
+    }
+    const cellHtml = this.state.isEditing
+      ? <input
+        type='text'
+        ref='cellInput'
+        readOnly={!this.state.isEditing}
+        defaultValue={this.cellRenderer(this.state.data)}
+        placeholder={this.props.placeholder || ''}
+        onPaste={(evt) => this.handlePaste(evt)}
+        style={{
+          width: '100%',
+          height: '100%',
+          outline: 'none',
+          margin: '1px',
+          marginLeft: '2px',
+          padding: '1px',
+          border: 0,
+          backgroundColor: 'rgba(0,0,0,0)'
+        }}
+        autoFocus='true'
+        onKeyDown={(evt) => this.handleKeyDown(evt)}
+        onChange={(evt) => this.handleChange(evt)}
+        onFocus={(evt) => this._onInputFocus(evt)}
+        onBlur={(evt) => this.cancel(evt)}
+      />
+      : <div
+        style={divStyle}
+      >
+        {this.cellRenderer(this.state.data)}
+      </div>
+    return (
+      <div
+        className='editable-cell small'
+        style={cellStyle}
+        onClick={(evt) => this.handleClick(evt)}
+      >
+        {cellHtml}
+      </div>
+    )
   }
 }

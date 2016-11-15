@@ -10,7 +10,7 @@ import EditorHelpModal from './EditorHelpModal'
 import EditorSidebar from './EditorSidebar'
 import ActiveEntityList from '../containers/ActiveEntityList'
 import EntityDetails from './EntityDetails'
-import TimetableEditor from './TimetableEditor'
+import ActiveTimetableEditor from '../containers/ActiveTimetableEditor'
 import ActiveFeedInfoPanel from '../containers/ActiveFeedInfoPanel'
 
 import { getConfigProperty } from '../../common/util/config'
@@ -156,22 +156,23 @@ export default class GtfsEditor extends Component {
           top: 0
         }}>
           {this.props.subSubComponent === 'timetable' // && this.props.activeEntity
-            ? <TimetableEditor
-                feedSource={feedSource}
-                route={this.props.activeEntity}
-                showConfirmModal={(props) => this.showConfirmModal(props)}
-                activePatternId={this.props.subEntityId}
-                activeScheduleId={this.props.activeSubSubEntity}
-                setActiveEntity={this.props.setActiveEntity}
-                tableData={this.props.tableData}
-                deleteEntity={this.props.deleteEntity}
-                updateActiveEntity={this.props.updateActiveEntity}
-                resetActiveEntity={this.props.resetActiveEntity}
-                saveActiveEntity={this.props.saveActiveEntity}
-                saveTripsForCalendar={this.props.saveTripsForCalendar}
-                deleteTripsForCalendar={this.props.deleteTripsForCalendar}
-                sidebarExpanded={this.props.sidebarExpanded}
-              />
+            ? <ActiveTimetableEditor
+              feedSource={feedSource}
+              timetable={this.props.timetable}
+              route={this.props.activeEntity}
+              showConfirmModal={(props) => this.showConfirmModal(props)}
+              activePatternId={this.props.subEntityId}
+              activeScheduleId={this.props.activeSubSubEntity}
+              setActiveEntity={this.props.setActiveEntity}
+              tableData={this.props.tableData}
+              deleteEntity={this.props.deleteEntity}
+              updateActiveEntity={this.props.updateActiveEntity}
+              resetActiveEntity={this.props.resetActiveEntity}
+              saveActiveEntity={this.props.saveActiveEntity}
+              fetchTripsForCalendar={this.props.fetchTripsForCalendar}
+              sidebarExpanded={this.props.sidebarExpanded}
+              updateCellValue={this.props.updateCellValue}
+            />
             : this.props.activeComponent === 'feedinfo'
             ? <EntityDetails
                 width={detailsWidth}
