@@ -1,3 +1,5 @@
+import { browserHistory } from 'react-router'
+
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, receiveProject } from './projects'
 import { startJobMonitor } from './status'
@@ -224,6 +226,7 @@ export function createDeploymentFromFeedSource (feedSource) {
       .then(response => response.json())
       .then(deployment => {
         console.log('created deployment', deployment)
+        browserHistory.push(`/project/${feedSource.projectId}/deployments/${deployment.id}`)
         return deployment
       })
   }
