@@ -1,8 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
-import { FlexTable, FlexColumn } from 'react-virtualized'
-import Icon from 'react-fa'
 import { Table, Column } from 'react-virtualized'
 import { shallowEqual } from 'react-pure-render'
 

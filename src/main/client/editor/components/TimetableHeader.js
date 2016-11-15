@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { InputGroup, Col, Row, Checkbox, Label, Button, Form, OverlayTrigger, Tooltip, ButtonGroup } from 'react-bootstrap'
-import Icon from 'react-fa'
 import truncate from 'truncate'
+import {Icon} from '@conveyal/woonerf'
 import Select from 'react-select'
 
 import HourMinuteInput from './HourMinuteInput'
@@ -44,10 +44,10 @@ export default class TimetableHeader extends Component {
                   onClick={() => {
                     setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern)
                   }}
-                ><Icon name='reply' />
+                ><Icon type='reply' />
                 </Button>
               </OverlayTrigger>
-              <span style={{marginLeft: '10px'}}><Icon name='calendar' /> {tableType}</span>
+              <span style={{marginLeft: '10px'}}><Icon type='calendar' /> {tableType}</span>
             </h3>
           </Col>
           <Col sm={6}>
@@ -138,14 +138,14 @@ export default class TimetableHeader extends Component {
                   onClick={() => this.props.addNewRow(false, true)}
                   bsStyle='default'
                 >
-                  <Icon name='plus' />
+                  <Icon type='plus' />
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-duplicate'>Duplicate trips</Tooltip>}>
                 <Button
                   disabled={this.props.selected.length === 0}
                 >
-                  <Icon name='clone' />
+                  <Icon type='clone' />
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-delete'>Delete trips</Tooltip>}>
@@ -156,7 +156,7 @@ export default class TimetableHeader extends Component {
                   }}
                   bsStyle='danger'
                 >
-                  <Icon name='trash' />
+                  <Icon type='trash' />
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-undo'>Undo changes</Tooltip>}>
@@ -167,7 +167,7 @@ export default class TimetableHeader extends Component {
                     // setActiveEntity(feedSource.id, 'route', route, 'trippattern', activePattern, 'timetable', activeCalendar)
                   }}
                 >
-                  <Icon name='undo' />
+                  <Icon type='undo' />
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-save'>Save changes</Tooltip>}>
@@ -178,7 +178,7 @@ export default class TimetableHeader extends Component {
                   }}
                   bsStyle='primary'
                 >
-                  <Icon name='floppy-o' />
+                  <Icon type='floppy-o' />
                 </Button>
               </OverlayTrigger>
             </ButtonGroup>
@@ -193,9 +193,9 @@ class RouteSelect extends Component {
   _render = (option) => {
     return (
       <span title={option.label}>
-        <Icon name='bus' /> {truncate(option.label, 23)}
+        <Icon type='bus' /> {truncate(option.label, 23)}
         {' '}
-        <Label title={`Route has ${option.routeTrips} trips`}><Icon name='bars' /> {option.routeTrips}</Label>
+        <Label title={`Route has ${option.routeTrips} trips`}><Icon type='bars' /> {option.routeTrips}</Label>
       </span>
     )
   }
@@ -207,7 +207,7 @@ class RouteSelect extends Component {
         component={'route'}
         valueRenderer={this._render}
         optionRenderer={this._render}
-        placeholder={<span><Icon name='bus' /> Select route...</span>}
+        placeholder={<span><Icon type='bus' /> Select route...</span>}
         options={routes && routes.map(route => ({value: route.id, label: `${getEntityName('route', route)}` || '[Unnamed]', route, routeTrips: route.numberOfTrips}))}
         clearable={false}
         entities={routes}
@@ -225,15 +225,15 @@ class PatternSelect extends Component {
     const calendarCount = Object.keys(option.pattern.tripCountByCalendar).length
     return (
       <span title={option.label}>
-        <Icon name='code-fork' /> {option.label}
+        <Icon type='code-fork' /> {option.label}
         {' '}
         <Label
           title={`Pattern has ${option.pattern.numberOfTrips} trips`}
-        ><Icon name='bars' /> {option.pattern.numberOfTrips}</Label>
+        ><Icon type='bars' /> {option.pattern.numberOfTrips}</Label>
         {' '}
         <Label
           title={`Pattern has trips for ${calendarCount} calendars`}
-        ><Icon name='calendar-o' /> {calendarCount}</Label>
+        ><Icon type='calendar-o' /> {calendarCount}</Label>
       </span>
     )
   }
@@ -246,7 +246,7 @@ class PatternSelect extends Component {
         component={'pattern'}
         valueRenderer={this._render}
         optionRenderer={this._render}
-        placeholder={<span><Icon name='code-fork' /> Select pattern...</span>}
+        placeholder={<span><Icon type='code-fork' /> Select pattern...</span>}
         options={patterns.map(pattern => ({value: pattern.id, label: `${getEntityName('pattern', pattern)}` || '[Unnamed]', pattern}))}
         onChange={(value) => {
           const pattern = value && value.pattern || {id: 'new'}
@@ -263,20 +263,20 @@ class CalendarSelect extends Component {
     const routeCount = Object.keys(option.calendar.routes).length
     return (
       <span title={`${option.label} (${option.service_id})`}>
-        <Icon name='calendar-o' /> {option.label}
+        <Icon type='calendar-o' /> {option.label}
         {' '}
         <Label
           bsStyle={patternTrips ? 'success' : 'default'}
           title={`Calendar has ${patternTrips} trips for pattern and ${option.routeTrips} for route`}
-        ><Icon name='bars' /> {patternTrips}/{option.routeTrips}</Label>
+        ><Icon type='bars' /> {patternTrips}/{option.routeTrips}</Label>
         {' '}
         <Label
           title={`Calendar has trips for ${routeCount} routes`}
-        ><Icon name='bus' /> {routeCount}</Label>
+        ><Icon type='bus' /> {routeCount}</Label>
         {' '}
         <Label
           title={`Calendar has ${option.totalTrips} trips for feed`}
-        ><Icon name='building-o' /> {option.totalTrips}</Label>
+        ><Icon type='building-o' /> {option.totalTrips}</Label>
       </span>
     )
   }
@@ -302,7 +302,7 @@ class CalendarSelect extends Component {
     return (
       <Select
         value={activeCalendar && activeCalendar.id}
-        placeholder={<span><Icon name='calendar-o' /> Select calendar...</span>}
+        placeholder={<span><Icon type='calendar-o' /> Select calendar...</span>}
         valueRenderer={this._render}
         optionRenderer={this._render}
         disabled={!activePattern || activePattern.id === 'new'}
