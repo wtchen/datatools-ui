@@ -1,4 +1,5 @@
 import qs from 'qs'
+import fetch from 'isomorphic-fetch'
 
 import { secureFetch } from '../../common/util/util'
 import { fetchProject, fetchProjectWithFeeds } from './projects'
@@ -45,12 +46,6 @@ export function fetchUserFeeds (userId) {
   }
 }
 
-function requestingPublicFeeds () {
-  return {
-    type: 'REQUESTING_PUBLIC_FEEDS'
-  }
-}
-
 function receivePublicFeeds (feeds) {
   return {
     type: 'RECEIVE_PUBLIC_FEEDS',
@@ -92,7 +87,7 @@ export function updateFeedSource (feedSource, changes) {
           console.log(res.json())
           dispatch(setErrorMessage('Error updating feed source.'))
         }
-        //return dispatch(fetchProjectFeeds(feedSource.projectId))
+        // return dispatch(fetchProjectFeeds(feedSource.projectId))
         return dispatch(fetchFeedSource(feedSource.id, true))
       })
   }
@@ -100,7 +95,7 @@ export function updateFeedSource (feedSource, changes) {
 
 export function updateExternalFeedResource (feedSource, resourceType, properties) {
   return function (dispatch, getState) {
-    console.log('updateExternalFeedResource', feedSource, resourceType, properties);
+    console.log('updateExternalFeedResource', feedSource, resourceType, properties)
     dispatch(savingFeedSource())
     const url = `/api/manager/secure/feedsource/${feedSource.id}/updateExternal?resourceType=${resourceType}`
     return secureFetch(url, getState(), 'put', properties)
@@ -109,7 +104,6 @@ export function updateExternalFeedResource (feedSource, resourceType, properties
       })
   }
 }
-
 
 export function deletingFeedSource (feedSource) {
   return {
@@ -235,11 +229,9 @@ export function runFetchFeed (feedSource) {
       .then(res => {
         if (res.status === 304) {
           dispatch(feedNotModified(feedSource, 'Feed fetch cancelled because it matches latest feed version.'))
-        }
-        else if (res.status >= 400) {
+        } else if (res.status >= 400) {
           dispatch(setErrorMessage('Error fetching feed source'))
-        }
-        else {
+        } else {
           dispatch(receivedFetchFeed(feedSource))
           dispatch(startJobMonitor())
           return res.json()
@@ -253,7 +245,7 @@ export function runFetchFeed (feedSource) {
   }
 }
 
-//**  FEED VERSION ACTIONS **//
+//*  FEED VERSION ACTIONS *//
 
 // Get all FeedVersions for FeedSource
 
@@ -291,7 +283,6 @@ export function fetchFeedVersions (feedSource, unsecured) {
       })
   }
 }
-
 
 export function requestingFeedVersion () {
   return {
@@ -358,9 +349,11 @@ export function fetchPublicFeedVersions (feedSource) {
 
 // Upload a GTFS File as a new FeedVersion
 
-export function uploadingFeed () {
+export function uploadingFeed (feedSource, file) {
   return {
-    type: 'UPLOADING_FEED'
+    type: 'UPLOADING_FEED',
+    feedSource,
+    file
   }
 }
 
@@ -381,10 +374,10 @@ export function feedNotModified (feedSource, message) {
 
 export function uploadFeed (feedSource, file) {
   return function (dispatch, getState) {
-    dispatch(uploadingFeed())
-    const url = `/api/manager/secure/feedversion?feedSourceId=${feedSource.id}`
+    dispatch(uploadingFeed(feedSource, file))
+    const url = `/api/manager/secure/feedversion?feedSourceId=${feedSource.id}&lastModified=${file.lastModified}`
 
-    var data = new FormData()
+    var data = new window.FormData()
     data.append('file', file)
 
     return fetch(url, {
@@ -394,11 +387,9 @@ export function uploadFeed (feedSource, file) {
     }).then(res => {
       if (res.status === 304) {
         dispatch(feedNotModified(feedSource, 'Feed upload cancelled because it matches latest feed version.'))
-      }
-      else if (res.status >= 400) {
+      } else if (res.status >= 400) {
         dispatch(setErrorMessage('Error uploading feed source'))
-      }
-      else {
+      } else {
         dispatch(uploadedFeed(feedSource))
         dispatch(startJobMonitor())
       }
@@ -412,15 +403,16 @@ export function uploadFeed (feedSource, file) {
 
 // Delete an existing FeedVersion
 
-export function deletingFeedVersion () {
+export function deletingFeedVersion (feedVersion) {
   return {
-    type: 'DELETING_FEEDVERSION'
+    type: 'DELETING_FEEDVERSION',
+    feedVersion
   }
 }
 
 export function deleteFeedVersion (feedVersion, changes) {
   return function (dispatch, getState) {
-    dispatch(deletingFeedVersion())
+    dispatch(deletingFeedVersion(feedVersion))
     const url = '/api/manager/secure/feedversion/' + feedVersion.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
@@ -432,9 +424,10 @@ export function deleteFeedVersion (feedVersion, changes) {
 
 // Get GTFS validation results for a FeedVersion
 
-export function requestingValidationResult () {
+export function requestingValidationResult (feedVersion) {
   return {
-    type: 'REQUESTING_VALIDATION_RESULT'
+    type: 'REQUESTING_VALIDATION_RESULT',
+    feedVersion
   }
 }
 
@@ -448,7 +441,7 @@ export function receiveValidationResult (feedVersion, validationResult) {
 
 export function fetchValidationResult (feedVersion, isPublic) {
   return function (dispatch, getState) {
-    dispatch(requestingValidationResult())
+    dispatch(requestingValidationResult(feedVersion))
     const route = isPublic ? 'public' : 'secure'
     const url = `/api/manager/${route}/feedversion/${feedVersion.id}/validation`
     return secureFetch(url, getState())
@@ -491,7 +484,7 @@ export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat
         console.log(res.status)
         if (res.status === 202) {
           // dispatch(setStatus)
-          console.log("building network")
+          console.log('building network')
           return []
         }
         return res.json()
@@ -556,7 +549,7 @@ export function renameFeedVersion (feedVersion, name) {
   }
 }
 
-//** NOTES ACTIONS **//
+//* NOTES ACTIONS *//
 
 export function requestingNotes () {
   return {

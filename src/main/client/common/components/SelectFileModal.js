@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Modal, Button, FormControl } from 'react-bootstrap'
 import ReactDOM from 'react-dom'
 
-export default class SelectFileModal extends React.Component {
+export default class SelectFileModal extends Component {
 
   constructor (props) {
     super(props)
@@ -34,23 +34,19 @@ export default class SelectFileModal extends React.Component {
   }
 
   ok () {
-    if(this.props.onConfirm) {
+    if (this.props.onConfirm) {
       if (this.props.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
         this.close()
-      }
-      else {
+      } else {
         this.setState({error: this.props.errorMessage || this.state.errorMessage})
       }
-    }
-    else if(this.state.onConfirm) {
+    } else if (this.state.onConfirm) {
       if (this.state.onConfirm(ReactDOM.findDOMNode(this.refs.fileInput).files)) {
         this.close()
-      }
-      else {
+      } else {
         this.setState({error: this.props.errorMessage || this.state.errorMessage})
       }
-    }
-    else {
+    } else {
       this.close()
     }
   }
