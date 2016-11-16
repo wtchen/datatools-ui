@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Grid, Row, Col, Panel, Button, ButtonToolbar, ButtonGroup, Jumbotron, Badge, FormControl, ListGroup, ListGroupItem, DropdownButton, MenuItem } from 'react-bootstrap'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
@@ -66,7 +66,7 @@ export default class UserHomePage extends Component {
       return (
         <ListGroupItem key={fs.id} bsStyle={fs.isPublic ? 'default' : 'warning'}>
           <Link title={feedName} to={`/feed/${fs.id}`}>
-            <Icon className='icon-link' name={fs.isPublic ? 'database' : 'lock'}/>
+            <Icon className='icon-link' type={fs.isPublic ? 'database' : 'lock'} />
             <span style={{ fontSize: 16, fontWeight: 500 }}>
               {feedName.length > 33 ? `${feedName.substr(0, 33)}...` : feedName}
             </span>
@@ -85,7 +85,7 @@ export default class UserHomePage extends Component {
     return (
       <ManagerPage ref='page'>
         <Grid fluid>
-          {this.state.showLoading ? <Icon size='5x' spin name='refresh'/> : null}
+          {this.state.showLoading ? <Icon className='fa-5x fa-spin' type='refresh' /> : null}
           <Row>
             <Col md={8} xs={12}>
               {/* Top Welcome Box */}
@@ -94,14 +94,14 @@ export default class UserHomePage extends Component {
                 <p>Manage, edit, validate and deploy your data in a streamlined workflow.</p>
                 <p>
                   <ButtonToolbar>
-                  <Button bsStyle='primary' bsSize='large' href={getConfigProperty('application.docs_url')}><Icon name='info-circle' /> Take a Tour</Button>
-                  <LinkContainer to='/'><Button bsStyle='default' bsSize='large'><Icon name='globe' /> Explore feeds</Button></LinkContainer>
+                  <Button bsStyle='primary' bsSize='large' href={getConfigProperty('application.docs_url')}><Icon type='info-circle' /> Take a Tour</Button>
+                  <LinkContainer to='/'><Button bsStyle='default' bsSize='large'><Icon type='globe' /> Explore feeds</Button></LinkContainer>
                   </ButtonToolbar>
                 </p>
               </Jumbotron>
               {/* Recent Activity List */}
                 <h3 style={{ marginTop: 0, paddingBottom: 5, borderBottom: '2px solid #ddd' }}>
-                  <Icon name='comments-o' /> Recent Activity
+                  <Icon type='comments-o' /> Recent Activity
                 </h3>
                 {this.props.user.recentActivity && this.props.user.recentActivity.length
                   ? this.props.user.recentActivity.sort(sortByDate).map(item => renderRecentActivity(item))
@@ -115,7 +115,7 @@ export default class UserHomePage extends Component {
                 <Row>
                 <Col xs={12}>
                 <h4 style={{marginTop: 0, marginBottom: 15}}>
-                  <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon name='sign-out'/> Log out</Button>
+                  <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon type='sign-out'/> Log out</Button>
                   Hello, {this.props.user.profile.nickname}.
                 </h4>
                 </Col>
@@ -125,7 +125,7 @@ export default class UserHomePage extends Component {
                     <img style={{ width: '100%', borderRadius: '50%' }} src={this.props.user.profile.picture} />
                   </Col>
                   <Col md={8}>
-                    <div className='text-muted'><Icon name='user' /> {this.props.user.profile.email}</div>
+                    <div className='text-muted'><Icon type='user' /> {this.props.user.profile.email}</div>
                     <div><Badge className='text-muted'>
                       {this.props.user.permissions.isApplicationAdmin()
                         ? 'Application admin'
@@ -136,13 +136,13 @@ export default class UserHomePage extends Component {
                       <ButtonToolbar className='pull-right'>
                         <LinkContainer to='/settings/profile'>
                           <Button bsStyle='primary' bsSize='small'>
-                            <Icon name='cog' /> Manage account
+                            <Icon type='cog' /> Manage account
                           </Button>
                         </LinkContainer>
                         {this.props.user.permissions.isApplicationAdmin()
                           ? <LinkContainer to='/admin/users'>
                               <Button bsStyle='default' bsSize='small'>
-                                <Icon name='cog' /> Admin
+                                <Icon type='cog' /> Admin
                               </Button>
                             </LinkContainer>
                           : null
@@ -160,7 +160,7 @@ export default class UserHomePage extends Component {
                 <DropdownButton
                   id='context-dropdown'
                   title={activeProject
-                    ? <span><Icon name='folder-open-o'/> {activeProject.name}</span>
+                    ? <span><Icon type='folder-open-o'/> {activeProject.name}</span>
                     : <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>
                   }
                   // onSelect={(eventKey) => {
@@ -186,7 +186,7 @@ export default class UserHomePage extends Component {
                       return (
                         <LinkContainer to={`/home/${project.id}`}>
                           <MenuItem key={project.id} eventKey={project.id}>
-                            <Icon name='folder-o'/> {project.name}
+                            <Icon type='folder-o'/> {project.name}
                           </MenuItem>
                         </LinkContainer>
                       )
@@ -194,9 +194,9 @@ export default class UserHomePage extends Component {
                     : null
                   }
                   {activeProject && visibleProjects.length > 1 || !activeProject ? <MenuItem divider /> : null}
-                  <LinkContainer to='/settings/organizations'><MenuItem><Icon name='users'/> Manage organizations</MenuItem></LinkContainer>
+                  <LinkContainer to='/settings/organizations'><MenuItem><Icon type='users'/> Manage organizations</MenuItem></LinkContainer>
                   <MenuItem divider />
-                  <LinkContainer to='/project'><MenuItem><Icon name='plus'/> Create organization</MenuItem></LinkContainer>
+                  <LinkContainer to='/project'><MenuItem><Icon type='plus'/> Create organization</MenuItem></LinkContainer>
                 </DropdownButton>
               </div>
               {/* Starred Feeds Panel */}
@@ -282,7 +282,7 @@ function renderRecentActivity (item) {
       return (
         <div style={containerStyle}>
           <div style={iconStyle}>
-            <Icon name='comment' />
+            <Icon type='comment' />
           </div>
           <div style={innerContainerStyle}>
             <div style={dateStyle}>{moment(item.date).fromNow()}</div>

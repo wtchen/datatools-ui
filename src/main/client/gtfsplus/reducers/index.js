@@ -1,1 +1,3 @@
-export gtfsplus from './gtfsplus'
+module.exports = {
+  gtfsplus: require('./gtfsplus')
+}

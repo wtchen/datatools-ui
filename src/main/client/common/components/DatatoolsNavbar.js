@@ -1,8 +1,7 @@
+import {Icon} from '@conveyal/woonerf'
 import React, {Component, PropTypes} from 'react'
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon, OverlayTrigger, Popover, ProgressBar, Button, Badge } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
-import { browserHistory, Link } from 'react-router'
-import { Icon } from 'react-fa'
+import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 
 import Breadcrumbs from './Breadcrumbs'
 import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../util/config'
@@ -34,7 +33,7 @@ export default class DatatoolsNavbar extends Component {
     } else {
       userControl = (
         <NavDropdown title={
-          <span><Glyphicon glyph='user' /> {this.props.username}</span>
+          <span><Icon type='user' /> {this.props.username}</span>
         } id='basic-nav-dropdown'>
         <MenuItem onClick={() => browserHistory.push('/account')}>{getMessage(messages, 'account')}</MenuItem>
           <MenuItem onClick={this.props.resetPassword}>{getMessage(messages, 'resetPassword')}</MenuItem>
@@ -51,7 +50,7 @@ export default class DatatoolsNavbar extends Component {
       let activeProject = this.props.projects.active
       projectControl = (
         <NavDropdown
-          title={<span><Glyphicon glyph='briefcase' /> {activeProject.name}</span>}
+          title={<span><Icon type='briefcase' /> {activeProject.name}</span>}
           id='basic-nav-dropdown'
         >
           {this.props.projects.all.map(proj => {
@@ -71,7 +70,7 @@ export default class DatatoolsNavbar extends Component {
 
     let languageControl = (
       <NavDropdown
-        title={<span><Glyphicon glyph='globe' /></span>}
+        title={<span><Icon type='globe' /></span>}
         id='basic-nav-dropdown'
       >
         {this.props.languages.all ? this.props.languages.all.map(lang => {
@@ -111,19 +110,6 @@ export default class DatatoolsNavbar extends Component {
         </Navbar.Header>
         <Navbar.Collapse>
           {this.props.breadcrumbs}
-          {/*
-          <Nav pullRight>
-            {projectControl}
-            {this.props.docsUrl
-              ? <NavItem href={this.props.docsUrl} active={this.props.docsUrl === '#'}>
-                  <Glyphicon glyph='question-sign' /> {getMessage(messages, 'guide')}
-                </NavItem>
-              : null
-            }
-            {userControl}
-            {languageControl}
-          </Nav>
-          */}
         </Navbar.Collapse>
       </Navbar>
     </div>)

@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom'
 import moment from 'moment'
 import update from 'react-addons-update'
 import objectPath from 'object-path'
-import styles from 'react-virtualized/styles.css'
 import scrollbarSize from 'dom-helpers/util/scrollbarSize'
 
 import EditableCell from '../../common/components/EditableCell'

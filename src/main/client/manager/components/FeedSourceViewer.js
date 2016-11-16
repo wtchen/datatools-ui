@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import Helmet from 'react-helmet'
 import { sentence as toSentenceCase } from 'change-case'
 import { LinkContainer } from 'react-router-bootstrap'
@@ -108,7 +108,7 @@ export default class FeedSourceViewer extends Component {
                 // alignItems: 'center',
               }}
             >
-              <Icon size='5x' spin name='refresh' />
+              <Icon className='fa-5x fa-spin' type='refresh' />
             </h1>
           </Grid>
         </ManagerPage>
@@ -144,7 +144,7 @@ export default class FeedSourceViewer extends Component {
         <Panel header={<h3>Settings</h3>}>
           <ListGroup fill>
             <ListGroupItem>
-              <FormGroup inline>
+              <FormGroup>
                 <ControlLabel>Feed source name</ControlLabel>
                 <InputGroup>
                   <FormControl
@@ -176,7 +176,7 @@ export default class FeedSourceViewer extends Component {
         <Panel header={<h3>Automatic fetch</h3>}>
           <ListGroup fill>
             <ListGroupItem>
-              <FormGroup inline>
+              <FormGroup>
                 <ControlLabel>Feed source fetch URL</ControlLabel>
                 <InputGroup>
                   <FormControl
@@ -213,7 +213,7 @@ export default class FeedSourceViewer extends Component {
               <p>This feed source is currently {fs.isPublic ? 'public' : 'private'}.</p>
             </ListGroupItem>
             <ListGroupItem>
-              <Button onClick={() => this.confirmDeleteFeedSource(fs)} className='pull-right' bsStyle='danger'><Icon name='trash'/> Delete feed source</Button>
+              <Button onClick={() => this.confirmDeleteFeedSource(fs)} className='pull-right' bsStyle='danger'><Icon type='trash'/> Delete feed source</Button>
               <h4>Delete this feed source.</h4>
               <p>Once you delete a feed source, it cannot be recovered.</p>
             </ListGroupItem>
@@ -257,15 +257,15 @@ export default class FeedSourceViewer extends Component {
           > {/*  Title + Shortcut Buttons Row */}
             <Col xs={12}>
               <h3>
-                <Icon className='icon-link' name='folder-open-o'/>
+                <Icon className='icon-link' type='folder-open-o'/>
                 <Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
                 {' '}/{' '}
                 <Link to={`/feed/${fs.id}`}>{fs.name}</Link>{' '}
-                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/>}
+                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' type='lock'/>}
                 {' '}
                 {fs.editedSinceSnapshot
-                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' name='circle'/>
-                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' name='circle'/>
+                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' type='circle'/>
+                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' type='circle'/>
                 }
                 <ButtonToolbar
                   className={`pull-right`}
@@ -282,16 +282,16 @@ export default class FeedSourceViewer extends Component {
                     target={fs.id}
                     subscriptionType='feed-updated'
                   />
-                  <Button><Icon name='thumbs-o-up'/></Button>
+                  <Button><Icon type='thumbs-o-up'/></Button>
                 </ButtonToolbar>
               </h3>
               <ul className='list-unstyled list-inline small' style={{marginBottom: '0px'}}>
-                <li><Icon name='clock-o'/> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
-                <li><Icon name='link'/> {fs.url ? fs.url : '(none)'}
+                <li><Icon type='clock-o'/> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
+                <li><Icon type='link'/> {fs.url ? fs.url : '(none)'}
                 </li>
-                {<li><Icon name='file-archive-o'/> {this.getAverageFileSize(fs.feedVersions)}</li>}
+                {<li><Icon type='file-archive-o'/> {this.getAverageFileSize(fs.feedVersions)}</li>}
               </ul>
-              {/*<li><Icon name='list-ol'/> {fs.feedVersionCount}</li><small style={{marginLeft: '30px'}}><Icon name='link'/> <a href={fs.url}>{fs.url}</a></small>*/}
+              {/*<li><Icon type='list-ol'/> {fs.feedVersionCount}</li><small style={{marginLeft: '30px'}}><Icon type='link'/> <a href={fs.url}>{fs.url}</a></small>*/}
             </Col>
           </Row>
 
@@ -301,7 +301,7 @@ export default class FeedSourceViewer extends Component {
             activeKey={activeTab}
             onSelect={(eventKey => browserHistory.push(`/feed/${fs.id}/${eventKey}`))}
           >
-            <Tab eventKey='' title={<span><Icon className='icon-link' name='database'/><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
+            <Tab eventKey='' title={<span><Icon className='icon-link' type='database'/><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
               <Row>
                 {/*<Col xs={12} sm={3}>
                   <Well bsSize='small'>
@@ -394,7 +394,7 @@ export default class FeedSourceViewer extends Component {
                   {/*<ButtonToolbar className='pull-right'>
                     <DropdownButton
                       pullRight
-                      title={<span><Icon name='plus'/> New version</span>}
+                      title={<span><Icon type='plus'/> New version</span>}
                     >
                       <MenuItem><Glyphicon glyph='upload'/> Upload</MenuItem>
                       <MenuItem><Glyphicon glyph='download'/> Fetch</MenuItem>
@@ -420,7 +420,7 @@ export default class FeedSourceViewer extends Component {
                   />
                 </Col>
                 {/* <Col xs={3}>
-                  <Panel header={<h3><Icon name='camera'/> Snapshots</h3>}>
+                  <Panel header={<h3><Icon type='camera'/> Snapshots</h3>}>
                     <ListGroup fill>
                       <ListGroupItem>
                         Snapshot 1
@@ -433,7 +433,7 @@ export default class FeedSourceViewer extends Component {
 
             {isModuleEnabled('editor')
               ? <Tab eventKey='snapshots'
-                  title={<span><Icon className='icon-link' name='pencil-square-o' /><span className='hidden-xs'>{getComponentMessages('EditorFeedSourcePanel').title} </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
+                  title={<span><Icon className='icon-link' type='pencil-square-o' /><span className='hidden-xs'>{getComponentMessages('EditorFeedSourcePanel').title} </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
                 >
                   <ActiveEditorFeedSourcePanel feedSource={fs} />
                 </Tab>
@@ -465,7 +465,7 @@ export default class FeedSourceViewer extends Component {
                   {Object.keys(fs.externalProperties || {}).map(resourceType => {
                     const resourceLowerCase = resourceType.toLowerCase()
                     return (
-                      <LinkContainer to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={this.props.activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
+                      <LinkContainer key={resourceType} to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={this.props.activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
                     )
                   })}
                   </ListGroup>

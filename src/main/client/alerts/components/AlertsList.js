@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { Row, Col, ButtonGroup, Button, FormControl, FormGroup, Badge, ControlLabel } from 'react-bootstrap'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { sentence as toSentenceCase } from 'change-case'
 
 import AlertPreview from './AlertPreview'
@@ -111,7 +111,7 @@ export default class AlertsList extends Component {
         <Row>
           <Col xs={12}>
             {this.props.isFetching
-              ? <p className='text-center'><Icon size='5x' spin name='refresh' /></p>
+              ? <p className='text-center'><Icon className='fa-5x fa-spin' type='refresh' /></p>
               : this.props.alerts.length
               ? this.props.alerts.map((alert) => {
                 return <AlertPreview

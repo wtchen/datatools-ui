@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react'
 import { Button, ButtonToolbar, Nav, NavItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { Table, Column } from 'react-virtualized'
 import { shallowEqual } from 'react-pure-render'
-import 'react-virtualized/styles.css'
 
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import GtfsTable from './GtfsTable'
@@ -163,7 +162,6 @@ export default class EntityList extends Component {
     )
     : []
     let shiftKey
-    console.log(activeEntity, activeIndex)
     const entityList = list.length
     ? <div
       onClick={(e) => {
@@ -210,7 +208,7 @@ export default class EntityList extends Component {
             this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
           }}
         >
-          <Icon name='plus' /> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
+          <Icon type='plus'/> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
         </Button>
       </div>
 
@@ -273,7 +271,7 @@ export default class EntityList extends Component {
                       // this.props.cloneEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
                     }}
                   >
-                    <Icon name='compress'/>
+                    <Icon type='compress' />
                   </Button>
                   </OverlayTrigger>
                 : null
@@ -286,7 +284,7 @@ export default class EntityList extends Component {
                   this.props.cloneEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
                 }}
               >
-                <Icon name='clone'/>
+                <Icon type='clone' />
               </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id={`delete-${this.props.activeComponent}`}>Delete {this.props.activeComponent}</Tooltip>}>
@@ -325,7 +323,7 @@ export default class EntityList extends Component {
                   }
                 }}
               >
-                <Icon name='trash'/>
+                <Icon type='trash' />
               </Button>
               </OverlayTrigger>
             </ButtonToolbar>
@@ -339,26 +337,11 @@ export default class EntityList extends Component {
                     this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
                   }}
                 >
-                  <Icon name='plus'/> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
+                  <Icon type='plus' /> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
                 </Button>
             }
           </div>
           {/* Table view button */}
-          {
-            // <Button
-            //   bsSize='xsmall'
-            //   onClick={() => {!this.props.tableView
-            //     ? browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}?table=true`)
-            //     : browserHistory.push(`/feed/${feedSource.id}/edit/${this.props.activeComponent}`)
-            //   }}
-            // >
-            //   {!this.props.tableView
-            //     ? <span><Icon name='table'/> Table view</span>
-            //     : <span><Icon name='list'/> List view</span>
-            //   }
-            // </Button>
-          }
-
         </div>
         {this.props.activeComponent === 'calendar' || this.props.activeComponent === 'scheduleexception'
           ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified activeKey={this.props.activeComponent} onSelect={this.handleSelect}>

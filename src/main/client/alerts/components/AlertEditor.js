@@ -1,7 +1,8 @@
+import {Icon} from '@conveyal/woonerf'
 import React from 'react'
 import Helmet from 'react-helmet'
 import { sentence as toSentenceCase } from 'change-case'
-import { Grid, Row, Col, Label, ButtonGroup, Button, FormControl, ControlLabel, FormGroup, Panel, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Grid, Row, Col, Label, ButtonGroup, Button, FormControl, ControlLabel, FormGroup, Panel, ListGroup, ListGroupItem } from 'react-bootstrap'
 import DateTimeField from 'react-bootstrap-datetimepicker'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -134,7 +135,7 @@ export default class AlertEditor extends React.Component {
                     (evt) => {
                     browserHistory.push('/alerts')
                   }}
-                ><Glyphicon glyph='chevron-left'/> Back</Button>
+                ><Icon type='chevron-left' /> Back</Button>
               </Col>
               <Col xs={8} sm={4} md={3}>
                 <ButtonGroup className='pull-right'>

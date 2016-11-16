@@ -1,5 +1,6 @@
+import {Icon} from '@conveyal/woonerf'
 import React, { Component, PropTypes } from 'react'
-import { Button, Modal, FormControl, ControlLabel, FormGroup, Glyphicon } from 'react-bootstrap'
+import { Button, Modal, FormControl, ControlLabel, FormGroup } from 'react-bootstrap'
 import ReactDOM from 'react-dom'
 
 import UserSettings from './UserSettings'
@@ -49,7 +50,7 @@ export default class CreateUser extends Component {
           onClick={this.open.bind(this)}
           className='pull-right'
         >
-          <Glyphicon glyph='plus' />&nbsp;
+          <Icon type='plus' />&nbsp;
           Create User
         </Button>
 

@@ -16,31 +16,31 @@ const user = (state = {
 }, action) => {
   switch (action.type) {
     case 'CHECKING_EXISTING_LOGIN':
-      return update(state, { isCheckingLogin: { $set: true }})
+      return update(state, { isCheckingLogin: { $set: true } })
     case 'NO_EXISTING_LOGIN':
-      return update(state, { isCheckingLogin: { $set: false }})
+      return update(state, { isCheckingLogin: { $set: false } })
     case 'USER_LOGGED_IN':
       return update(state, {
         isCheckingLogin: { $set: false },
         token: { $set: action.token },
         profile: { $set: action.profile },
-        permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools)},
-        subscriptions: { $set: new UserSubscriptions(action.profile.app_metadata.datatools)},
+        permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools) },
+        subscriptions: { $set: new UserSubscriptions(action.profile.app_metadata.datatools) }
       })
     case 'USER_LOGGED_OUT':
-      console.log('USER_LOGGED_OUT');
+      console.log('USER_LOGGED_OUT')
       return update(state, {
         isCheckingLogin: { $set: false },
         token: { $set: null },
         profile: { $set: null },
-        permissions: { $set: null},
-        subscriptions: { $set: null}
+        permissions: { $set: null },
+        subscriptions: { $set: null }
       })
     case 'CREATED_PUBLIC_USER':
       return update(state, {
         profile: { $set: action.profile },
-        permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools)},
-        subscriptions: { $set: new UserSubscriptions(action.profile.app_metadata.datatools)},
+        permissions: { $set: new UserPermissions(action.profile.app_metadata.datatools) },
+        subscriptions: { $set: new UserSubscriptions(action.profile.app_metadata.datatools) }
       })
     case 'RECEIVE_USER_RECENT_ACTIVITY':
       return update(state, {

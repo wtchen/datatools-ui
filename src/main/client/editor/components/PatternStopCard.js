@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { DragSource, DropTarget } from 'react-dnd'
 import { Row, Col, Button, Collapse, FormGroup, ControlLabel, Checkbox } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 
 import { getEntityName, getAbbreviatedStopName } from '../util/gtfs'
 import MinuteSecondInput from './MinuteSecondInput'
@@ -43,14 +43,7 @@ const cardTarget = {
   }
 }
 
-@DropTarget('card', cardTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))
-@DragSource('card', cardSource, (connect, monitor) => ({
-  connectDragSource: connect.dragSource(),
-  isDragging: monitor.isDragging()
-}))
-export default class PatternStopCard extends Component {
+class PatternStopCard extends Component {
   static propTypes = {
     connectDragSource: PropTypes.func.isRequired,
     connectDropTarget: PropTypes.func.isRequired,
@@ -104,24 +97,24 @@ export default class PatternStopCard extends Component {
             if (e.keyCode === 13) {
               this.handleClick(stopIsActive)
             }
-          }}
-        >
-        <div className='pull-left'>
-          <p style={{margin: '0px'}} title={titleStopName}><Icon fixedWidth name={stopIsActive ? 'caret-down' : 'caret-right'}/>{fullStopName.length > 25 ? fullStopName.substr(0, 25) + '...' : fullStopName}</p>
-        </div>
-        <div className='pull-right'>
-          <p style={{margin: '0px'}} className='text-right'>
-             <span>{Math.round(cumulativeTravelTime / 60)} (+{Math.round(patternStop.defaultTravelTime / 60)}{patternStop.defaultDwellTime > 0 ? ` +${Math.round(patternStop.defaultDwellTime / 60)}` : ''})</span>
-             {'    '}
-             <span style={{cursor: '-webkit-grab', color: 'black'}}><Icon name='bars'/></span>
-          </p>
-        </div>
-        <div className='clearfix'></div>
+          }}>
+          <div className='pull-left'>
+            <p style={{margin: '0px'}} title={titleStopName}><Icon type={stopIsActive ? 'caret-down' : 'caret-right'} />{fullStopName.length > 25 ? fullStopName.substr(0, 25) + '...' : fullStopName}</p>
+          </div>
+          <div className='pull-right'>
+            <p style={{margin: '0px'}} className='text-right'>
+              <span>{Math.round(cumulativeTravelTime / 60)} (+{Math.round(patternStop.defaultTravelTime / 60)}{patternStop.defaultDwellTime > 0 ? ` +${Math.round(patternStop.defaultDwellTime / 60)}` : ''})</span>
+              {'    '}
+              <span style={{cursor: '-webkit-grab', color: 'black'}} ><Icon type='bars' /></span>
+            </p>
+          </div>
+          <div className='clearfix' />
         </div>
         {/* Collapsible interior div */}
         <Collapse in={stopIsActive}>
           {stopIsActive
-            ? <div>
+            ? (
+              <div>
                 {/* Remove from pattern button */}
                 <Row>
                   <Col xs={6}>
@@ -150,7 +143,7 @@ export default class PatternStopCard extends Component {
                         saveActiveEntity('trippattern')
                       }}
                     >
-                      <Icon name='trash'/> Remove
+                      <Icon type='trash' /> Remove
                     </Button>
                   </Col>
                 </Row>
@@ -190,10 +183,16 @@ export default class PatternStopCard extends Component {
                   </Col>
                 </Row>
               </div>
-            : <div></div>
+            )
+            : <div />
           }
         </Collapse>
       </div>
     ))
   }
 }
+
+const dropTargetCollect = (connect) => ({connectDropTarget: connect.dropTarget()})
+const dragSourceCollect = (connect, monitor) => ({connectDragSource: connect.dragSource(), isDragging: monitor.isDragging()})
+
+export default DropTarget('card', cardTarget, dropTargetCollect)(DragSource('card', cardSource, dragSourceCollect)(PatternStopCard))

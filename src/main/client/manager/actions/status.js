@@ -92,7 +92,7 @@ function stopCurrentTimer (state) {
   if (timer) clearInterval(timer)
 }
 
-export function startJobMonitor () {
+export function startJobMonitor (showMonitor = true) {
   return function (dispatch, getState) {
     stopCurrentTimer(getState())
 
@@ -102,7 +102,12 @@ export function startJobMonitor () {
 
     timerFunction() // make an initial call right now
     const timer = setInterval(timerFunction, 2000)
-
+    if (showMonitor) {
+      console.log('showing monitor')
+      dispatch(setJobMonitorVisible(true))
+    } else {
+      console.log('not showing monitor')
+    }
     dispatch(setJobMonitorTimer(timer))
   }
 }

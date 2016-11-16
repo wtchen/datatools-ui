@@ -1,4 +1,6 @@
 import React, {Component, PropTypes} from 'react'
+import { InputGroup, Checkbox, Nav, NavItem, NavDropdown, MenuItem, Button, Form, FormControl } from 'react-bootstrap'
+import {Icon} from '@conveyal/woonerf'
 import clone from 'clone'
 import update from 'react-addons-update'
 import objectPath from 'object-path'
@@ -119,6 +121,7 @@ export default class TimetableEditor extends Component {
     this.props.toggleAllRows(false)
   }
   componentWillReceiveProps (nextProps) {
+    console.log('receiving props')
     const activePattern = nextProps.route && nextProps.route.tripPatterns ? nextProps.route.tripPatterns.find(p => p.id === nextProps.activePatternId) : null
     const activeSchedule = nextProps.tableData.calendar ? nextProps.tableData.calendar.find(c => c.id === nextProps.activeScheduleId) : null
     const trips = activePattern && activeSchedule ? activePattern[nextProps.activeScheduleId] : []

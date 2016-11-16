@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, Button, ButtonToolbar } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { browserHistory, Link } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -58,18 +58,18 @@ export default class RouteEditor extends Component {
               bsSize='small'
               bsStyle='success'
             >
-              <Icon name='plus'/>
+              <Icon type='plus'/>
             </Button>
             <Button
               bsSize='small'
             >
-              <Icon name='clone'/>
+              <Icon type='clone'/>
             </Button>
             <Button
               bsSize='small'
               bsStyle='danger'
             >
-              <Icon name='trash'/>
+              <Icon type='trash'/>
             </Button>
           </ButtonToolbar>
           Route editor

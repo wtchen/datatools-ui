@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Icon } from 'react-fa'
+import { Icon } from '@conveyal/woonerf'
 import { Link } from 'react-router'
 import { Tooltip, OverlayTrigger } from 'react-bootstrap'
 
@@ -71,17 +71,14 @@ export default class SidebarNavItem extends Component {
         </div>
       : <div style={iconContainerStyle}>
           <Icon
-            name={this.props.icon}
+            type={this.props.icon}
             size='lg'
-            spin={this.props.loading}
-            // className={this.props.loading
-            //   ? 'text-warning'
-            //   : this.props.finished
-            //   ? 'text-success'
-            //   : null
-            // }
             style={iconStyle}
             ref='icon'
+            className={this.props.loading
+              ? 'fa-spin fa-lg'
+              : 'fa-lg'
+            }
           />
         </div>
     const tooltip = <Tooltip id={this.props.label}>{this.props.label}</Tooltip>

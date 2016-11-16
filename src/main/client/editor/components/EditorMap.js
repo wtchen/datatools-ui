@@ -3,7 +3,7 @@ import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, Lay
 import { divIcon, Browser } from 'leaflet'
 import { Button, Dropdown, OverlayTrigger, Tooltip, Row, Col, ButtonGroup, MenuItem, SplitButton, FormGroup, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import ll from 'lonlng'
 import lineString from 'turf-linestring'
 import bearing from 'turf-bearing'
@@ -766,7 +766,7 @@ export default class EditorMap extends Component {
                                     this.props.saveActiveEntity('trippattern')
                                   }}
                                 >
-                                  <Icon name='floppy-o'/>
+                                  <Icon type='floppy-o'/>
                                 </Button>
                                 <OverlayTrigger overlay={<Tooltip id='edit-stop-tooltip'>Edit stop</Tooltip>}>
                                 <Button
@@ -774,7 +774,7 @@ export default class EditorMap extends Component {
                                     this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
                                   }}
                                 >
-                                  <Icon name='pencil'/>
+                                  <Icon type='pencil'/>
                                 </Button>
                                 </OverlayTrigger>
                                 <OverlayTrigger overlay={<Tooltip id='remove-stop-tooltip'>Remove from pattern</Tooltip>}>
@@ -784,7 +784,7 @@ export default class EditorMap extends Component {
                                     this.removeStopFromPattern(this.props.currentPattern, stop, index)
                                   }}
                                 >
-                                  <Icon name='trash'/>
+                                  <Icon type='trash'/>
                                 </Button>
                                 </OverlayTrigger>
                                 <Dropdown
@@ -800,7 +800,7 @@ export default class EditorMap extends Component {
                                       this.addStopToPattern(this.props.currentPattern, stop)
                                     }}
                                   >
-                                    <Icon name='plus'/>
+                                    <Icon type='plus'/>
                                   </Button>
                                   <Dropdown.Toggle bsStyle='success'/>
                                   <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
@@ -920,7 +920,7 @@ export default class EditorMap extends Component {
                           <div>
                             <h5>{stop.stop_name}</h5>
                             <SplitButton
-                              title={<span><Icon name='plus'/> Add stop</span>}
+                              title={<span><Icon type='plus'/> Add stop</span>}
                               id={`split-button-basic-${i}`}
                               bsStyle='success'
                               onSelect={(key) => {

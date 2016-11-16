@@ -12,11 +12,8 @@ const cardTarget = {
   drop () {
   }
 }
-@DragDropContext(HTML5Backend)
-@DropTarget('card', cardTarget, connect => ({
-  connectDropTarget: connect.dropTarget()
-}))
-export default class PatternStopContainer extends Component {
+
+class PatternStopContainer extends Component {
   static propTypes = {
     connectDropTarget: PropTypes.func.isRequired,
     activePattern: PropTypes.object.isRequired,
@@ -90,22 +87,22 @@ export default class PatternStopContainer extends Component {
           cumulativeTravelTime += card.defaultDwellTime + card.defaultTravelTime
           return (
             <PatternStopCard
-                  key={card.id}
-                  id={card.id}
-                  index={i}
-                  style={this.props.cardStyle}
-                  stopIsActive={false}
-                  cumulativeTravelTime={cumulativeTravelTime}
-                  stop={stop}
-                  activePattern={this.props.activePattern}
-                  updateActiveEntity={this.props.updateActiveEntity}
-                  saveActiveEntity={this.props.saveActiveEntity}
-                  patternStop={card}
-                  moveCard={this.moveCard}
-                  findCard={this.findCard}
-                  dropCard={() => this.dropCard()}
-                  activeStop={this.state.activeStop}
-                  setActiveStop={(stopKey) => this.setState({activeStop: stopKey})}
+              key={card.id}
+              id={card.id}
+              index={i}
+              style={this.props.cardStyle}
+              stopIsActive={false}
+              cumulativeTravelTime={cumulativeTravelTime}
+              stop={stop}
+              activePattern={this.props.activePattern}
+              updateActiveEntity={this.props.updateActiveEntity}
+              saveActiveEntity={this.props.saveActiveEntity}
+              patternStop={card}
+              moveCard={this.moveCard}
+              findCard={this.findCard}
+              dropCard={() => this.dropCard()}
+              activeStop={this.state.activeStop}
+              setActiveStop={(stopKey) => this.setState({activeStop: stopKey})}
             />
           )
         })}
@@ -113,3 +110,6 @@ export default class PatternStopContainer extends Component {
     )
   }
 }
+
+// TODO: Verify correct order
+export default DragDropContext(HTML5Backend)(DropTarget('card', cardTarget, (connect) => ({connectDropTarget: connect.dropTarget()}))(PatternStopContainer))

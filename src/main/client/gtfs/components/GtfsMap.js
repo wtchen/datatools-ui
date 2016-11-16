@@ -5,7 +5,7 @@ import { Button, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
 import { divIcon, Browser } from 'leaflet'
 import { Map, Marker, Popup, TileLayer, GeoJson, FeatureGroup, Rectangle } from 'react-leaflet'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
 import { getFeedsBounds } from '../../common/util/geo'
@@ -180,7 +180,7 @@ export default class GtfsMap extends Component {
         >
         <Popup>
           <div>
-            <p><Icon name='map-marker'/> <strong>{stop.stop_name} ({stop.stop_id})</strong></p>
+            <p><Icon type='map-marker'/> <strong>{stop.stop_name} ({stop.stop_id})</strong></p>
             {this.props.renderTransferPerformance && this.renderTransferPerformance(stop)}
             {this.props.onStopClick
               ? <Button
@@ -188,7 +188,7 @@ export default class GtfsMap extends Component {
                   block
                   onClick={() => this.props.onStopClick(stop, feed, this.props.newEntityId)}
                 >
-                  <Icon name='map-marker'/> {this.props.popupAction} stop
+                  <Icon type='map-marker'/> {this.props.popupAction} stop
                 </Button>
               : null
             }
@@ -209,7 +209,8 @@ export default class GtfsMap extends Component {
     const popup = (
       <Popup>
         <div>
-          <p><Icon name='bus'/> <strong>{routeName}</strong></p>
+          <p><Icon type='bus'/> <strong>{routeName}</strong></p>
+          <p><Icon type='bus'/> <strong>{getRouteName(route)}</strong></p>
           <ul>
             <li><strong>ID:</strong> {routeId}</li>
             <li><strong>Agency:</strong>{' '}
@@ -225,7 +226,7 @@ export default class GtfsMap extends Component {
                 block
                 onClick={() => this.props.onRouteClick(route, feed, this.props.newEntityId)}
               >
-                <Icon name='bus'/> {this.props.popupAction} route
+                <Icon type='bus'/> {this.props.popupAction} route
               </Button>
             : <p>[Must add stops first]</p>
           }

@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { Grid, Row, Col, Button } from 'react-bootstrap'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -33,7 +33,7 @@ export default class AlertsViewer extends React.Component {
           <Row>
             <Col xs={12}>
               <h2>
-                <Icon name='exclamation-circle'/> Service Alerts
+                <Icon type='exclamation-circle'/> Service Alerts
                 <CreateAlert
                   style={{marginTop: '-8px'}}
                   disabled={createDisabled}

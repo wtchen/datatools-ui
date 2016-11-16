@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Map, Marker, TileLayer, FeatureGroup } from 'react-leaflet'
-import { EditControl } from 'react-leaflet-draw'
+// import { EditControl } from 'react-leaflet-draw'
 
 import { getConfigProperty } from '../util/config'
 

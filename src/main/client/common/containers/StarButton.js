@@ -2,7 +2,7 @@ import React from 'react'
 import { Button } from 'react-bootstrap'
 import { updateStar } from '../../manager/actions/user'
 import { connect } from 'react-redux'
-import { Icon } from 'react-fa'
+import { Icon } from '@conveyal/woonerf'
 
 import { getComponentMessages, getMessage } from '../util/config'
 
@@ -16,8 +16,8 @@ class StarButton extends React.Component {
         dispatch(updateStar(user.profile, target, !isStarred))
       }}>
         {isStarred
-          ? <span><Icon name='star-o'/> {getMessage(messages, 'unstar')}</span>
-          : <span><Icon name='star'/> {getMessage(messages, 'star')}</span>
+          ? <span><Icon type='star-o'/> {getMessage(messages, 'unstar')}</span>
+          : <span><Icon type='star'/> {getMessage(messages, 'star')}</span>
         }
       </Button>
     )

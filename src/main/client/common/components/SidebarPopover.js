@@ -1,28 +1,25 @@
-import React, {Component, PropTypes} from 'react'
+import {Icon, Pure} from '@conveyal/woonerf'
+import React, {PropTypes} from 'react'
 import ReactDOM from 'react-dom'
-import { Glyphicon, Popover } from 'react-bootstrap'
+import {Popover} from 'react-bootstrap'
 
-export default class SidebarPopover extends Component {
-
+export default class SidebarPopover extends Pure {
   static propTypes = {
     children: PropTypes.node,
     expanded: PropTypes.bool,
     target: PropTypes.object,
     title: PropTypes.string,
-
     close: PropTypes.func,
-    visible: PropTypes.func
+    visible: PropTypes.bool.isRequired
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      top: 0,
-      arrowOffset: 0
-    }
+  state = {
+    top: 0,
+    arrowOffset: 0
   }
   _onResize = () => {
     this.setState({width: window.innerWidth, height: window.innerHeight})
+    this.reposition()
   }
   componentWillMount () {
     this._onResize()
@@ -34,13 +31,8 @@ export default class SidebarPopover extends Component {
     window.removeEventListener('resize', this._onResize)
   }
   componentWillReceiveProps (nextProps) {
-    if (nextProps.visible()) this.reposition()
+    if (nextProps.visible) this.reposition()
   }
-
-  _onResize = () => {
-    this.reposition()
-  }
-
   reposition () {
     const padding = 10 // minimum space between popover and top/bottom of screen
 
@@ -66,31 +58,37 @@ export default class SidebarPopover extends Component {
     this.setState({ top, arrowOffset })
   }
 
+  _close = () => {
+    this.props.close()
+  }
+
   render () {
     const style = {
       position: 'fixed',
       marginLeft: this.props.expanded ? 160 : 60,
       width: 276, // max from bootstrap
       top: this.state.top,
-      visibility: this.props.visible() ? 'visible' : 'hidden'
+      visibility: this.props.visible ? 'visible' : 'hidden'
     }
 
-    const title = (<div>
-      <span>{this.props.title}</span>
-      <Glyphicon glyph='remove'
-        className='pull-right'
-        style={{ cursor: 'pointer' }}
-        onClick={() => this.props.close() }
-      />
-    </div>)
+    const title = (
+      <div>
+        <span>{this.props.title}</span>
+        <Icon
+          type='remove'
+          className='pull-right'
+          style={{cursor: 'pointer'}}
+          onClick={this._close} />
+      </div>
+    )
 
     return (
-      <Popover id='ptest'
+      <Popover
+        id='ptest'
         style={style}
         ref='popover'
         title={title}
-        arrowOffsetTop={this.state.arrowOffset}
-      >
+        arrowOffsetTop={this.state.arrowOffset}>
         {this.props.children}
       </Popover>
     )

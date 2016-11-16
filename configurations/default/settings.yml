@@ -1,0 +1,3 @@
+entries:
+  - src/main/client/main.js:dist/index.js
+  - src/main/client/index.css:dist/index.css

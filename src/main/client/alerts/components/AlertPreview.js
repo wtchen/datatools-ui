@@ -1,16 +1,11 @@
+import {Icon} from '@conveyal/woonerf'
 import React from 'react'
 import moment from 'moment'
 
-import { Panel, Grid, Row, Col, ButtonGroup, Button, Glyphicon, Label } from 'react-bootstrap'
-import { Link } from 'react-router'
+import { Panel, Row, Col, ButtonGroup, Button, Label } from 'react-bootstrap'
 import { checkEntitiesForFeeds } from '../../common/util/permissions'
 
 export default class AlertPreview extends React.Component {
-
-  constructor (props) {
-    super(props)
-  }
-
   render () {
     const canPublish = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.publishableFeeds)
     const canEdit = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.editableFeeds)
@@ -25,10 +20,10 @@ export default class AlertPreview extends React.Component {
     const editButtonMessage = this.props.alert.published && deleteIsDisabled ? 'Cannot edit because alert is published'
       : !canEdit ? 'Cannot alter alerts for other agencies' : 'Edit alert'
     const publishedLabel = this.props.alert.published
-      ? <Label title='Published' bsStyle="success"><Glyphicon glyph="ok" /></Label>
-      : <Label title='Draft' bsStyle="warning"><Glyphicon glyph="pencil" /></Label>
+      ? <Label title='Published' bsStyle="success"><Icon type="ok" /></Label>
+      : <Label title='Draft' bsStyle="warning"><Icon type="pencil" /></Label>
     const entitiesLabel = this.props.alert.affectedEntities.length
-      ? <Label title={`${this.props.alert.affectedEntities.length} affected service(s)`} bsStyle="danger"><Glyphicon glyph="alert" /> {this.props.alert.affectedEntities.length}</Label>
+      ? <Label title={`${this.props.alert.affectedEntities.length} affected service(s)`} bsStyle="danger"><Icon type="alert" /> {this.props.alert.affectedEntities.length}</Label>
       : <Label>General alert</Label>
     return (
       <Panel collapsible header={
@@ -40,7 +35,7 @@ export default class AlertPreview extends React.Component {
           <Col xs={4}>
             <ButtonGroup className='pull-right'>
               <Button title={editButtonMessage} disabled={editingIsDisabled} onClick={() => this.props.onEditClick(this.props.alert)}>
-                <Glyphicon glyph="pencil" />
+                <Icon type="pencil" />
               </Button>
               <Button
                 title={deleteButtonMessage}
@@ -55,7 +50,7 @@ export default class AlertPreview extends React.Component {
                     }
                 }}
               >
-                <Glyphicon glyph="remove" />
+                <Icon type="remove" />
               </Button>
             </ButtonGroup>
           </Col>

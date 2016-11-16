@@ -1,7 +1,7 @@
 import React, { PropTypes, Component} from 'react'
 import ReactDOM from 'react-dom'
-import { Panel, Row, Col, Button, Label, ButtonGroup, InputGroup, FormControl, Glyphicon, Image, ListGroup, ListGroupItem } from 'react-bootstrap'
-import Icon from 'react-fa'
+import { Panel, Row, Col, Button, Label, ButtonGroup, InputGroup, FormControl, Image, ListGroup, ListGroupItem } from 'react-bootstrap'
+import {Icon} from '@conveyal/woonerf'
 
 import CreateUser from './CreateUser'
 import UserSettings from './UserSettings'
@@ -24,9 +24,6 @@ export default class UserList extends Component {
     saveUser: PropTypes.func,
     deleteUser: PropTypes.func,
     token: PropTypes.string
-  }
-  constructor (props) {
-    super(props)
   }
 
   userSearch () {
@@ -53,17 +50,15 @@ export default class UserList extends Component {
                 disabled={this.props.page <= 0}
                 onClick={() => {
                   this.props.setPage(this.props.page - 1)
-                }}
-              >
-                <Glyphicon glyph='arrow-left' />
+                }}>
+                <Icon type='arrow-left' />
               </Button>
               <Button
                 disabled={this.props.page >= maxPage}
                 onClick={() => {
                   this.props.setPage(this.props.page + 1)
-                }}
-              >
-                <Glyphicon glyph='arrow-right' />
+                }}>
+                <Icon type='arrow-right' />
               </Button>
             </ButtonGroup>
             {this.props.userCount > 0
@@ -74,49 +69,46 @@ export default class UserList extends Component {
         </Row>
         <Panel
           header={
-          <Row>
-            <Col xs={10} className='form-inline'>
+            <Row>
+              <Col xs={10} className='form-inline'>
                 <InputGroup ref='foo'>
                   <FormControl type='text'
                     ref='searchInput'
                     placeholder={getMessage(messages, 'search')}
                     onKeyUp={e => {
                       if (e.keyCode === 13) this.userSearch()
-                    }}
-                  />
+                    }} />
                   <InputGroup.Addon>
-                    <Glyphicon
-                      glyph='remove'
+                    <Icon
+                      type='remove'
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
                         ReactDOM.findDOMNode(this.refs.searchInput).value = ''
                         this.props.userSearch('')
-                      }}
-                    />
+                      }} />
                   </InputGroup.Addon>
                 </InputGroup>
                 <Button bsStyle='primary'
                   style={{marginLeft: '8px'}}
                   onClick={e => { this.userSearch() }}
                 >
-                  <Glyphicon glyph='search' />
+                  <Icon type='search' />
                 </Button>
-            </Col>
-            <Col xs={2}>
-              <CreateUser
-                projects={this.props.projects}
-                fetchProjectFeeds={this.props.fetchProjectFeeds}
-                createUser={this.props.createUser.bind(this)}
-              />
-            </Col>
-          </Row>
+              </Col>
+              <Col xs={2}>
+                <CreateUser
+                  projects={this.props.projects}
+                  fetchProjectFeeds={this.props.fetchProjectFeeds}
+                  createUser={this.props.createUser.bind(this)} />
+              </Col>
+            </Row>
           }
         >
           <ListGroup fill>
-          {this.props.isFetching
+            {this.props.isFetching
             ? <ListGroupItem style={{ fontSize: '18px', textAlign: 'center' }}>
-                <Icon size='2x' spin name='refresh' />
-              </ListGroupItem>
+              <Icon className='fa-2x fa-spin' type='refresh' />
+            </ListGroupItem>
             : this.props.users.map((user, i) => {
               return <UserRow
                 projects={this.props.projects}
@@ -192,35 +184,33 @@ class UserRow extends Component {
             </Col>
             <Col xs={8} sm={5} md={6}>
               <h5>{this.props.user.email} {permissions.isApplicationAdmin() ? <Label bsStyle='warning'>Admin</Label> : null}</h5>
-              <small></small>
+              <small />
             </Col>
             <Col xs={12} sm={5} md={5}>
               <Button className='pull-right' onClick={() => this.toggleExpansion()}>
-                 {this.state.isEditing
-                   ? <span><Glyphicon glyph='remove' /> Cancel</span>
-                   : <span><Glyphicon glyph='edit' /> Edit</span>
+                {this.state.isEditing
+                   ? <span><Icon type='remove' /> Cancel</span>
+                   : <span><Icon type='edit' /> Edit</span>
                  }
               </Button>
               {this.state.isEditing
                 ? <Button
-                    className='pull-right'
-                    bsStyle='primary'
-                    style={{marginRight: '5px'}}
-                    onClick={this.save.bind(this)}
-                  >
-                    <Glyphicon glyph='save' /> Save
-                  </Button>
+                  className='pull-right'
+                  bsStyle='primary'
+                  style={{marginRight: '5px'}}
+                  onClick={this.save.bind(this)}>
+                  <Icon type='save' /> Save
+                </Button>
                 : null
               }
               {this.state.isEditing
                 ? <Button
-                    className='pull-right'
-                    bsStyle='danger'
-                    style={{marginRight: '5px'}}
-                    onClick={this.delete.bind(this)}
-                  >
-                    <Glyphicon glyph='trash' /> Delete
-                  </Button>
+                  className='pull-right'
+                  bsStyle='danger'
+                  style={{marginRight: '5px'}}
+                  onClick={this.delete.bind(this)}>
+                  <Icon type='trash' /> Delete
+                </Button>
                 : null
               }
             </Col>
@@ -229,10 +219,9 @@ class UserRow extends Component {
       >
         { this.state.isEditing
           ? <UserSettings ref='userSettings'
-              projects={this.props.projects}
-              fetchProjectFeeds={this.props.fetchProjectFeeds}
-              permissions={permissions}
-            />
+            projects={this.props.projects}
+            fetchProjectFeeds={this.props.fetchProjectFeeds}
+            permissions={permissions} />
           : ''
         }
       </ListGroupItem>

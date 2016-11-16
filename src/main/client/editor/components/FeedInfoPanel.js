@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Button, ButtonGroup, DropdownButton, Dropdown, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { browserHistory } from 'react-router'
 
 import CreateSnapshotModal from './CreateSnapshotModal'
@@ -86,7 +86,7 @@ export default class FeedInfoPanel extends Component {
                   }
                 }}
               >
-                <Icon name={toolbarVisible ? 'caret-right' : 'caret-left'}/>
+                <Icon type={toolbarVisible ? 'caret-right' : 'caret-left'}/>
               </Button>
             </OverlayTrigger>
             {/* Navigation dropdown */}
@@ -103,18 +103,18 @@ export default class FeedInfoPanel extends Component {
                 }
               }}
             >
-              <MenuItem eventKey='1'><Icon name='reply'/> Back to project</MenuItem>
-              <MenuItem eventKey='2'><Icon name='reply'/> Back to feed source</MenuItem>
+              <MenuItem eventKey='1'><Icon type='reply' /> Back to project</MenuItem>
+              <MenuItem eventKey='2'><Icon type='reply' /> Back to feed source</MenuItem>
             </DropdownButton>
             <Button
               onClick={() => this.showUploadFileModal(feedSource)}
             >
-              <Icon name='upload'/>
+              <Icon type='upload'/>
             </Button>
             {/* Add entity dropdown */}
             <DropdownButton
               pullRight dropup
-              title={<span><Icon name='plus'/></span>}
+              title={<span><Icon type='plus'/></span>}
               id='add-entity-dropdown'
               onSelect={key => {
                 console.log(key)
@@ -125,7 +125,7 @@ export default class FeedInfoPanel extends Component {
                 if (!c.addable) return null
                 let name = c.id === 'scheduleexception' ? 'schedule exception' : c.id
                 return (
-                  <MenuItem key={c.id} eventKey={c.id}><Icon fixedWidth name={c.icon}/> Add {name}</MenuItem>
+                  <MenuItem key={c.id} eventKey={c.id}><Icon type={c.icon} /> Add {name}</MenuItem>
                 )
               })}
             </DropdownButton>
@@ -153,7 +153,7 @@ export default class FeedInfoPanel extends Component {
                       this.refs.snapshotModal.open()
                     }}
                   >
-                    <Icon name='camera'/>
+                    <Icon type='camera'/>
                   </Button>
                 </OverlayTrigger>
                     <Dropdown.Toggle
@@ -166,7 +166,7 @@ export default class FeedInfoPanel extends Component {
                       {this.props.feedSource && this.props.feedSource.editorSnapshots
                         ? this.props.feedSource.editorSnapshots.map(snapshot => {
                             return (
-                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon name='reply'/> Revert to {snapshot.name}</MenuItem>
+                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon type='reply'/> Revert to {snapshot.name}</MenuItem>
                             )
                           })
                         : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>

@@ -16,7 +16,6 @@
   outline: 0;
 }
 
-
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {
@@ -39,9 +38,6 @@
 .bus-stop-icon:hover {
   color: yellow;
 }
-/*.bus-stop-icon:active {
-  background-color: blue;
-}*/
 
 .bus-stop-icon-bg:hover {
   color: yellow;
@@ -53,9 +49,6 @@
 .bus-stop-icon-fg:hover {
   color: yellow;
 }
-/*.bus-stop-icon-fg:active {
-  background-color: blue;
-}*/
 
 /*Sticky footer styles*/
 
@@ -63,32 +56,57 @@
   margin: 20px 0;
 }
 
-
-
 /* ICON HELPER CLASSES */
 .icon-link {
   color: #777;
   margin-right: 10px;
 }
 
+/* SIDEBAR */
+.Sidebar {
 
+}
 
-/* NOTES VIEWER */
+.Sidebar > nav {
+  height: 100%;
+  position: fixed;
+  border-radius: 0;
+}
 
-/*.comment-panel:after {
-  content: "";
-	border: 10px solid transparent;
-	height: 0;
-  border-color: rgba(136, 183, 213, 0);
-	border-right-color: #f5f5f5;
-	width: 0;
-  position: relative;
-  left: -10px;
-  top: 0px;
-}*/
+.Sidebar .TopNav {
+  position: absolute;
+  top: 60px;
+}
 
-/* LEAFLET MAP */
-/*.leaflet-overlay-pane path,
-.leaflet-marker-icon {
-  cursor: crosshair;
-}*/
+.Sidebar .BottomNav {
+  position: absolute;
+  bottom: 10px;
+}
+
+.Sidebar .LogoContainer {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.Sidebar .LogoContainer > .Logo {
+  float: left;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 120%;
+  background-image: url(../assets/application_icon.png);
+  background-size: contain;
+}
+
+.Sidebar .LogoContainer > .LogoLabel {
+  margin-left: 40px;
+  margin-top: 6px;
+  line-height: 95%;
+  color: #bbb;
+  font-size: 13px;
+  font-weight: bold;
+}

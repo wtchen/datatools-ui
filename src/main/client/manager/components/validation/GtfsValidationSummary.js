@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Table, Glyphicon, Button } from 'react-bootstrap'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 // import { connect } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
 
@@ -89,7 +89,7 @@ export default class GtfsValidationSummary extends Component {
             bsSize='large'
             style={{marginTop: '20px'}}
           >
-            <Icon name='file-text-o'/> View full validation report
+            <Icon type='file-text-o'/> View full validation report
           </Button>
         </LinkContainer>
       </div>

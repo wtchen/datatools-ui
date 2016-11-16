@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Checkbox, Radio, Button, ButtonToolbar, Form, FormControl, FormGroup, ControlLabel, Nav, NavItem, Tooltip, OverlayTrigger, Panel } from 'react-bootstrap'
-import {Icon, IconStack} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import reactCSS from 'reactcss'
 import validator from 'validator'
 import { shallowEqual } from 'react-pure-render'
@@ -812,7 +812,7 @@ export default class EntityDetails extends Component {
               rules.unshift({fare_id: this.props.activeEntity.fare_id})
               this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
             }}
-          ><Icon name='plus'/> Add rule</Button>
+          ><Icon type='plus'/> Add rule</Button>
             {this.props.activeEntity.fareRules.map((rule, index) => {
               let ruleEntity
               if (rule.route_id) {
@@ -833,7 +833,7 @@ export default class EntityDetails extends Component {
                       rules.splice(index, 1)
                       this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {fareRules: rules})
                     }}
-                  ><Icon name='times'/></Button>
+                  ><Icon type='times'/></Button>
                   <FormGroup>
                     <Radio
                       inline
@@ -1140,7 +1140,7 @@ export default class EntityDetails extends Component {
                       dates.splice(index, 1)
                       this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {dates: dates})
                     }}
-                  ><Icon name='times'/></Button>
+                  ><Icon type='times'/></Button>
                   <DateTimeField key={`date-${index}`} mode='date' {...dateTimeProps}/>
                   {isNotValid
                     ? <small>{moment(+date).format('MM/DD/YYYY')} appears in another schedule exception. Please choose another date.</small>
@@ -1160,7 +1160,7 @@ export default class EntityDetails extends Component {
               dates.push(0)
               this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, {dates: dates})
             }}
-          ><Icon name='plus'/> Add date</Button>
+          ><Icon type='plus'/> Add date</Button>
           </div>
 
         </Form>
@@ -1269,7 +1269,7 @@ export default class EntityDetails extends Component {
                   }
                 }}
               >
-                <Icon name='search'/>
+                <Icon type='search'/>
               </Button>
             </OverlayTrigger>
           : null
@@ -1292,7 +1292,7 @@ export default class EntityDetails extends Component {
               this.setState(update(this.state, stateUpdate))
             }}
           >
-            <Icon name='undo'/>
+            <Icon type='undo'/>
           </Button>
         </OverlayTrigger>
         <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>Save changes</Tooltip>}>
@@ -1308,25 +1308,25 @@ export default class EntityDetails extends Component {
               }
             }}
           >
-            <Icon name='floppy-o'/>
+            <Icon type='floppy-o'/>
           </Button>
         </OverlayTrigger>
       </ButtonToolbar>
       {this.props.activeComponent === 'route' && entity
-        ? <IconStack>
-            <Icon name='square' style={{color: `#${entity.route_color ? entity.route_color : 'fff'}`}} stack='2x' />
-            <Icon name='bus' style={{color: `#${entity.route_text_color ? entity.route_text_color : '000'}`}} stack='1x' />
-          </IconStack>
+        ? <div className='IconStack'>
+            <Icon type='square' style={{color: `#${entity.route_color ? entity.route_color : 'fff'}`}} stack='2x' />
+            <Icon type='bus' style={{color: `#${entity.route_text_color ? entity.route_text_color : '000'}`}} stack='1x' />
+          </div>
         : iconName
-        ? <IconStack>
-            <Icon name='square' stack='2x' />
-            <Icon name={iconName} inverse stack='1x' />
-          </IconStack>
+        ? <div className='IconStack'>
+            <Icon type='square' stack='2x' />
+            <Icon type={iconName} inverse stack='1x' />
+          </div>
         // schedule exception icon if no icon founds
-        : <IconStack>
-            <Icon name='calendar' stack='1x' />
-            <Icon name='ban' className='text-danger' stack='2x' />
-          </IconStack>
+        : <div className='IconStack'>
+            <Icon type='calendar' stack='1x' />
+            <Icon type='ban' className='text-danger' stack='2x' />
+          </div>
       }
       {'  '}
       <span title={entityName}>
@@ -1349,7 +1349,7 @@ export default class EntityDetails extends Component {
                   marginTop: '150px'
                 }}
               >
-                <Icon size='5x' spin name='refresh' />
+                <Icon className='fa-5x fa-spin' type='refresh' />
               </h1>
             </div>
           : [

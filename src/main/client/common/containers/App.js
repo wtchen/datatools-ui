@@ -6,7 +6,6 @@ import { checkExistingLogin, login } from '../../manager/actions/user'
 import { checkJobStatus } from '../../manager/actions/status'
 import { isModuleEnabled } from '../util/config'
 
-// import NoAccessScreen from '../components/NoAccessScreen'
 import ActiveFeedSourceViewer from '../../manager/containers/ActiveFeedSourceViewer'
 import ActiveProjectViewer from '../../manager/containers/ActiveProjectViewer'
 import ActiveProjectsList from '../../manager/containers/ActiveProjectsList'
@@ -25,13 +24,6 @@ import PageNotFound from '../components/PageNotFound'
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 import ActiveGtfsEditor from '../../editor/containers/ActiveGtfsEditor'
 import ActiveGtfsTableEditor from '../../editor/containers/ActiveGtfsTableEditor'
-
-// import ActiveGtfsValidationMap from '../../manager/containers/validation/ActiveGtfsValidationMap'
-// import ActiveGtfsValidationExplorer from '../../manager/containers/validation/ActiveGtfsValidationExplorer'
-
-require('../style.css')
-
-// import { UserIsAuthenticated, UserIsAdmin } from '../util/util'
 
 class App extends Component {
   static propTypes = {

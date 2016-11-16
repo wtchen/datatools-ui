@@ -1,21 +1,30 @@
-import React, { PropTypes, Component } from 'react'
-import { ProgressBar, Button } from 'react-bootstrap'
-import { Icon } from 'react-fa'
+import React, {PropTypes} from 'react'
+import {ProgressBar, Button} from 'react-bootstrap'
+import {Icon, Pure} from '@conveyal/woonerf'
 import truncate from 'truncate'
 
 import SidebarPopover from './SidebarPopover'
 
-export default class JobMonitor extends Component {
-
+export default class JobMonitor extends Pure {
   static propTypes = {
     expanded: PropTypes.bool,
     jobMonitor: PropTypes.object,
     target: PropTypes.object,
-    visible: PropTypes.func,
+    visible: PropTypes.bool.isRequired,
     close: PropTypes.func,
     removeRetiredJob: PropTypes.func
   }
-
+  removeJob (job) {
+    this.props.removeRetiredJob(job)
+  }
+  componentWillReceiveProps (nextProps) {
+    // TODO: fix resizing when jobs are removed (height of popover appears to be incorrect)
+    // if (nextProps.jobMonitor.retired.length !== this.props.jobMonitor.retired.length) {
+    //   this.popover._onResize()
+    // } else if (nextProps.jobMonitor.jobs.length !== this.props.jobMonitor.jobs.length) {
+    //   this.popover._onResize()
+    // }
+  }
   render () {
     const jobContainerStyle = {
       marginBottom: 20
@@ -32,17 +41,16 @@ export default class JobMonitor extends Component {
 
     return (
       <SidebarPopover
-        ref='statusPopover'
+        ref={(SidebarPopover) => this.popover = SidebarPopover}
         title='Server Jobs'
-        {...this.props}
-      >
+        {...this.props}>
         {this.props.jobMonitor.retired.map(job => {
           return (
             <div key={`retired-${job.jobId}`} style={jobContainerStyle}>
               <div style={{ float: 'left' }}>
                 {job.status && job.status.error
-                  ? <Icon className='text-warning' name='exclamation-circle'/>
-                  : <Icon className='text-success' name='check'/>
+                  ? <Icon className='text-warning' type='exclamation-circle' />
+                  : <Icon className='text-success' type='check' />
                 }
               </div>
               <div style={{ marginLeft: 25 }}>
@@ -50,9 +58,9 @@ export default class JobMonitor extends Component {
                   <Button
                     bsStyle='link'
                     className='pull-right'
-                    onClick={() => this.props.removeRetiredJob(job)}
+                    onClick={() => this.removeJob(job)}
                   >
-                    <Icon className='pull-right' name='times-circle'/>
+                    <Icon className='pull-right' type='times-circle' />
                   </Button>
                   <strong title={job.name}>{truncate(job.name, 25)}</strong>
                 </div>
@@ -62,22 +70,20 @@ export default class JobMonitor extends Component {
           )
         })}
         {this.props.jobMonitor.jobs.length
-          ? this.props.jobMonitor.jobs.map(job => {
-              return (
-                <div key={job.jobId} style={jobContainerStyle}>
-                  <div style={{ float: 'left' }}>
-                    <Icon name='spinner' pulse />
-                  </div>
-                  <div style={{ marginLeft: 25 }}>
-                    <div>
-                      <strong>{job.name}</strong>{/* <Button bsStyle='link'><Icon className='pull-right' name='times-circle'/></Button> */}
-                    </div>
-                    <ProgressBar label={`${job.status ? job.status.percentComplete : 0}%`} active={true} now={job.status ? job.status.percentComplete : 0} style={progressBarStyle} />
-                    <div style={statusMessageStyle} >{job.status ? job.status.message : 'waiting'}</div>
-                  </div>
+          ? this.props.jobMonitor.jobs.map(job => (
+            <div key={job.jobId} style={jobContainerStyle}>
+              <div style={{ float: 'left' }}>
+                <Icon type='spinner' className='fa-pulse' />
+              </div>
+              <div style={{ marginLeft: 25 }}>
+                <div>
+                  <strong>{job.name}</strong>
                 </div>
-              )
-            })
+                <ProgressBar label={`${job.status ? job.status.percentComplete : 0}%`} active now={job.status ? job.status.percentComplete : 0} style={progressBarStyle} />
+                <div style={statusMessageStyle} >{job.status ? job.status.message : 'waiting'}</div>
+              </div>
+            </div>
+          ))
           : <p>No active jobs.</p>
         }
       </SidebarPopover>

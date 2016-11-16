@@ -1,8 +1,5 @@
 import React, {Component, PropTypes} from 'react'
 import VirtualizedSelect from 'react-virtualized-select'
-import 'react-virtualized/styles.css'
-import 'react-select/dist/react-select.css'
-import 'react-virtualized-select/styles.css'
 
 import { getEntityName } from '../util/gtfs'
 

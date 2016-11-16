@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import { Table, Button, ButtonGroup, Alert, Checkbox, DropdownButton, MenuItem, ButtonToolbar, Collapse, FormGroup, OverlayTrigger, Tooltip, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
-import {Icon} from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { sentence as toSentenceCase } from 'change-case'
 import Rcslider from 'rc-slider'
 
@@ -13,8 +13,6 @@ import { CLICK_OPTIONS } from '../util'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
 import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
 import ll from 'lonlng'
-
-import 'rc-slider/assets/index.css'
 
 const DEFAULT_SPEED = 20 // km/hr
 
@@ -141,8 +139,8 @@ export default class TripPatternList extends Component {
           }
           const isActive = activePatternId && pattern.id === activePatternId
           const timetableOptions = [
-            <span><Icon name='table'/> Use timetables</span>,
-            <span><Icon name='clock-o'/> Use frequencies</span>
+            <span><Icon type='table'/> Use timetables</span>,
+            <span><Icon type='clock-o'/> Use frequencies</span>
           ]
           const patternName = `${`${pattern.name.length > 35 ? pattern.name.substr(0, 35) + '...' : pattern.name}`} ${pattern.patternStops ? `(${pattern.patternStops.length} stops)` : ''}`
           return (
@@ -165,7 +163,7 @@ export default class TripPatternList extends Component {
                   else this.props.setActiveEntity(feedSource.id, 'route', activeEntity, 'trippattern', pattern)
                 }}
               >
-                <Icon name={isActive ? 'caret-down' : 'caret-right'}/>
+                <Icon type={isActive ? 'caret-down' : 'caret-right'}/>
                 {' '}
                 {pattern.name ? patternName : '[Unnamed]'}
               </p>
@@ -200,7 +198,7 @@ export default class TripPatternList extends Component {
                               })
                             }}
                           >
-                            <span><Icon name='check'/> Save</span>
+                            <span><Icon type='check'/> Save</span>
                           </Button>,
                           <Button
                             style={{marginBottom: '5px'}}
@@ -211,7 +209,7 @@ export default class TripPatternList extends Component {
                               this.props.undoActiveTripPatternEdits()
                             }}
                           >
-                            <span><Icon name='undo'/> Undo</span>
+                            <span><Icon type='undo'/> Undo</span>
                           </Button>,
                           <Button
                             style={{marginBottom: '5px'}}
@@ -222,7 +220,7 @@ export default class TripPatternList extends Component {
                               this.props.updateEditSetting('editGeometry', !this.props.editSettings.editGeometry)
                             }}
                           >
-                            <span><Icon name='times'/> Cancel</span>
+                            <span><Icon type='times'/> Cancel</span>
                           </Button>
                         ]
                         : [
@@ -234,7 +232,7 @@ export default class TripPatternList extends Component {
                               this.props.updateEditSetting('editGeometry', !this.props.editSettings.editGeometry)
                             }}
                           >
-                            <span><Icon name='pencil'/> Edit</span>
+                            <span><Icon type='pencil'/> Edit</span>
                           </Button>,
                           <Button
                             style={{marginBottom: '5px'}}
@@ -251,7 +249,7 @@ export default class TripPatternList extends Component {
                               })
                             }}
                           >
-                            <span><Icon name='trash'/> Delete</span>
+                            <span><Icon type='trash'/> Delete</span>
                           </Button>,
                           <Button
                             style={{marginBottom: '5px'}}
@@ -273,7 +271,7 @@ export default class TripPatternList extends Component {
                               })
                             }}
                           >
-                            <span><Icon name='map-marker'/> Create</span>
+                            <span><Icon type='map-marker'/> Create</span>
                           </Button>
                         ]
                       }
@@ -386,10 +384,10 @@ export default class TripPatternList extends Component {
                             this.props.setActiveEntity(feedSource.id, 'route', activeEntity, 'trippattern', pattern, 'timetable')
                           }}
                         >
-                          <Icon name='pencil'/> Edit
+                          <Icon type='pencil'/> Edit
                         </Button>
                       </ButtonGroup>
-                      <hr/>
+                      <hr />
                       <h4>
                         <ButtonToolbar
                           className='pull-right'
@@ -403,8 +401,8 @@ export default class TripPatternList extends Component {
                           >
                           {
                             this.props.editSettings.addStops
-                            ? <span><Icon name='times'/> Cancel</span>
-                            : <span><Icon name='plus'/> Add stop</span>
+                            ? <span><Icon type='times'/> Cancel</span>
+                            : <span><Icon type='plus'/> Add stop</span>
                           }
                           </Button>
                         </ButtonToolbar>
@@ -492,7 +490,7 @@ export default class TripPatternList extends Component {
                                   this.props.updateEditSetting('addStops', !this.props.editSettings.addStops)
                                 }}
                               >
-                                <Icon name='times'/> Cancel
+                                <Icon type='times'/> Cancel
                               </Button>
                             </div>
                           </div>
@@ -504,7 +502,7 @@ export default class TripPatternList extends Component {
                               }}
                               className='small'
                             >
-                              <Icon name='plus'/> Add stop
+                              <Icon type='plus'/> Add stop
                             </p>
                           </div>
                       }
@@ -540,7 +538,7 @@ export default class TripPatternList extends Component {
                               }}
                               bsStyle='default'
                             >
-                              <Icon name='calculator'/> Calc. times
+                              <Icon type='calculator' /> Calc. times
                             </Button>
                           </InputGroup.Button>
                         </InputGroup>
@@ -553,7 +551,7 @@ export default class TripPatternList extends Component {
             </tr>
           )
         })
-        : <tr><td><Icon spin name='refresh' /></td></tr>
+        : <tr><td><Icon className='fa-spin' type='refresh' /></td></tr>
       }
         </tbody>
       </Table>
@@ -590,7 +588,7 @@ export default class TripPatternList extends Component {
                     })
                   }}
                 >
-                  <Icon name='exchange'/>
+                  <Icon type='exchange'/>
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>Duplicate trip pattern</Tooltip>}>
@@ -601,7 +599,7 @@ export default class TripPatternList extends Component {
                     this.props.cloneEntity(feedSource.id, 'trippattern', activePattern.id, true)
                   }}
                 >
-                  <Icon name='clone'/>
+                  <Icon type='clone'/>
                 </Button>
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip'>Delete trip pattern</Tooltip>}>
@@ -622,7 +620,7 @@ export default class TripPatternList extends Component {
                     })
                   }}
                 >
-                  <Icon name='trash'/>
+                  <Icon type='trash' />
                 </Button>
               </OverlayTrigger>
             </ButtonToolbar>
@@ -633,7 +631,7 @@ export default class TripPatternList extends Component {
                 this.props.newGtfsEntity(feedSource.id, 'trippattern', {routeId: activeEntity.id, patternStops: [], name: 'New Pattern', feedId: this.props.feedSource.id, id: 'new'}, true)
               }}
             >
-              <Icon name='plus'/> New pattern
+              <Icon type='plus' /> New pattern
             </Button>
           </h3>
         </div>

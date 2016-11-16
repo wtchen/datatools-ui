@@ -5,24 +5,23 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { browserHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-// import promise from 'redux-promise'
 import createLogger from 'redux-logger'
 
 import App from './common/containers/App'
 
-import config from 'json!yaml!../../../config.yml'
+import config from '../../../config.yml'
 
 if (config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
-  config.modules.gtfsplus.spec = require('json!yaml!../../../gtfsplus.yml')
+  config.modules.gtfsplus.spec = require('../../../gtfsplus.yml')
 }
-config.modules.editor.spec = require('json!yaml!../../../gtfs.yml')
+config.modules.editor.spec = require('../../../gtfs.yml')
 
-// function to require all lang files in i18n dir
-function requireAll (requireContext) {
-  return requireContext.keys().map(requireContext)
-}
-// requires and returns all modules that match
-var lang = requireAll(require.context('json!yaml!../../../i18n', true, /.yml/))
+const lang = [
+  require('../../../i18n/english.yml'),
+  require('../../../i18n/espanol.yml'),
+  require('../../../i18n/francais.yml')
+]
+
 // is an array containing all the matching modules
 config.messages = {}
 config.messages.all = lang

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Row, ButtonGroup, Button, FormControl, FormGroup, Badge } from 'react-bootstrap'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 import { sentence as toSentenceCase } from 'change-case'
 
 import SignPreview from './SignPreview'
@@ -61,7 +61,7 @@ export default class SignsList extends Component {
         <Row>
 
         {this.props.isFetching
-          ? <p className='text-center'><Icon size='5x' spin name='refresh' /></p>
+          ? <p className='text-center'><Icon className='fa-5x fa-spin' type='refresh' /></p>
           : sortedSigns.length
           ? sortedSigns.map((sign) => {
             return <SignPreview

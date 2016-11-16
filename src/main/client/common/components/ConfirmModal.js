@@ -1,5 +1,5 @@
-import React  from 'react'
-import { Modal, Button, Glyphicon } from 'react-bootstrap'
+import React from 'react'
+import { Modal, Button } from 'react-bootstrap'
 
 export default class ConfirmModal extends React.Component {
 
@@ -18,7 +18,6 @@ export default class ConfirmModal extends React.Component {
   }
 
   open (props) {
-
     if (props) { // TODO: get rid of this, open should not accepts any props
       this.setState({
         showModal: true,
@@ -27,7 +26,7 @@ export default class ConfirmModal extends React.Component {
         onConfirm: props.onConfirm,
         onClose: props.onClose,
         confirmButtonStyle: props.confirmButtonStyle,
-        confirmButtonText: props.confirmButtonText,
+        confirmButtonText: props.confirmButtonText
       })
     } else {
       this.setState({ showModal: true })

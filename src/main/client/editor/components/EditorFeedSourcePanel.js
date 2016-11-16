@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react'
 import { Panel, Row, Col, Table, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import moment from 'moment'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 
 import ConfirmModal from '../../common/components/ConfirmModal'
 import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
@@ -63,18 +63,18 @@ export default class EditorFeedSourcePanel extends Component {
                       ? <ListGroupItem>No other snapshots</ListGroupItem>
                       : inactiveSnapshots.map(s => {
                           return (
-                            <SnapshotItem snapshot={s} {...this.props}/>
+                            <SnapshotItem key={s.id} snapshot={s} {...this.props} />
                           )
                         })
                     }
-                    {activeSnapshots.length === 0
+                    {/* activeSnapshots.length === 0
                       ? <ListGroupItem>No other snapshots</ListGroupItem>
                       : activeSnapshots.map(s => {
                           return (
                             <SnapshotItem snapshot={s} {...this.props}/>
                           )
                         })
-                    }
+                    */}
                   </ListGroup>
                 </Panel>
               </div>
@@ -84,7 +84,7 @@ export default class EditorFeedSourcePanel extends Component {
                   bsStyle='success'
                   onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}
                 >
-                  <Icon name='file'/> {getMessage(messages, 'createFromScratch')}
+                  <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
                 </Button>
                 {' '}or{' '}
                 <Button bsStyle='success'
@@ -104,7 +104,7 @@ export default class EditorFeedSourcePanel extends Component {
           }
         </Col>
         <Col xs={3}>
-          <Panel header={<h3><Icon name='camera'/> What are snapshots?</h3>}>
+          <Panel header={<h3><Icon type='camera'/> What are snapshots?</h3>}>
             <p>Snapshots are save points you can always revert back to when editing a GTFS feed.</p>
             <p>A snapshot might represent a work-in-progress, future planning scenario or even different service patterns (e.g., summer schedule markup).</p>
           </Panel>
@@ -134,7 +134,7 @@ class SnapshotItem extends Component {
               onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
             >
               {snapshot.current
-                ? <span><Icon name='check-circle'/> {getMessage(messages, 'active')}</span>
+                ? <span><Icon type='check-circle'/> {getMessage(messages, 'active')}</span>
                 : <span><Glyphicon glyph='pencil' /> {getMessage(messages, 'restore')}</span>
               }
             </Button>
@@ -151,10 +151,10 @@ class SnapshotItem extends Component {
             <Button bsStyle='danger'
               onClick={() => this.props.deleteSnapshot(feedSource, snapshot)}
             >
-              <Icon name='trash' /> {getMessage(messages, 'delete')}
+              <Icon type='trash' /> {getMessage(messages, 'delete')}
             </Button>
           </ButtonToolbar>
-          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon name='clock-o'/> created {moment(snapshot.snapshotTime).fromNow()}</span>
+          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon type='clock-o'/> created {moment(snapshot.snapshotTime).fromNow()}</span>
         </p>
       </ListGroupItem>
     )

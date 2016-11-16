@@ -1,1 +1,3 @@
-export editor from './editor'
+module.exports = {
+  editor: require('./editor')
+}

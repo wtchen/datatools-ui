@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
-import Icon from 'react-fa'
+import {Icon} from '@conveyal/woonerf'
 
 import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 import { isValidZipFile } from '../../common/util/util'
@@ -96,8 +96,8 @@ export default class FeedVersionNavigator extends Component {
           <Col xs={12} style={versionTitleStyle}>
               <ButtonToolbar>
                 <ButtonGroup>
-                  <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon name='square'/></Button>
-                  <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon name='list'/></Button>
+                  <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon type='square'/></Button>
+                  <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon type='list'/></Button>
                 </ButtonGroup>
                 {this.state.listView
                   ? null
@@ -140,7 +140,7 @@ export default class FeedVersionNavigator extends Component {
                           // disabled={editGtfsDisabled} // || !fs.latestValidation}
                           // bsStyle='info'
                           onClick={() => { this.props.createDeploymentFromFeedSource(fs) }}>
-                          <Icon name='globe'/> Deploy feed
+                          <Icon type='globe'/> Deploy feed
                         </Button>
                       : null
                     }
@@ -155,7 +155,7 @@ export default class FeedVersionNavigator extends Component {
                     }
                     <DropdownButton
                       bsStyle='success'
-                      title={<span><Icon name='plus'/> Create new version</span>} id='bg-nested-dropdown'
+                      title={<span><Icon type='plus'/> Create new version</span>} id='bg-nested-dropdown'
                       onSelect={key => {
                         console.log(key)
                         switch (key) {
