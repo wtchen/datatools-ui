@@ -131,11 +131,11 @@ class FeedSourceTableRow extends Component {
             link={`/feed/${fs.id}`}
           />
           {' '}
-          {!fs.isPublic ? <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/> : null}
+          {!fs.isPublic ? <Icon className='text-warning' title='This feed source and all its versions are private.' type='lock'/> : null}
           {' '}
           {fs.editedSinceSnapshot
-            ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' name='circle'/>
-            : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' name='circle'/>
+            ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' type='circle'/>
+            : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' type='circle'/>
           }
           </h4>
         }
@@ -165,14 +165,14 @@ class FeedSourceTableRow extends Component {
           {fs.latestValidation && fs.latestValidation.errorCount > 0
             ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-warning'><Icon type='exclamation-triangle'/> {fs.latestValidation.errorCount}</li>
             : fs.latestValidation
-            ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' name='check'/></li>
-            : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' name='circle-o'/></li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' type='check'/></li>
+            : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' type='circle-o'/></li>
           }
           {fs.latestValidation && fs.latestValidation.endDate < +moment()
             ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-danger'><Icon type='calendar-times-o'/></li>
             : fs.latestValidation
-            ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' name='calendar-check-o'/></li>
-            : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' name='calendar-o'/></li>
+            ? <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-success' type='calendar-check-o'/></li>
+            : <li style={{minWidth: '40px', textAlign: 'center'}}><Icon className='text-muted' type='calendar-o'/></li>
           }
           {isModuleEnabled('deployment') && fs.deployable
             ? <li style={{minWidth: '40px', textAlign: 'center'}} className='text-success'><Icon type='map'/></li>

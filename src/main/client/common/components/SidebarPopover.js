@@ -19,6 +19,7 @@ export default class SidebarPopover extends Pure {
   }
   _onResize = () => {
     this.setState({width: window.innerWidth, height: window.innerHeight})
+    this.reposition()
   }
   componentWillMount () {
     this._onResize()
@@ -32,11 +33,6 @@ export default class SidebarPopover extends Pure {
   componentWillReceiveProps (nextProps) {
     if (nextProps.visible) this.reposition()
   }
-
-  _onResize = () => {
-    this.reposition()
-  }
-
   reposition () {
     const padding = 10 // minimum space between popover and top/bottom of screen
 

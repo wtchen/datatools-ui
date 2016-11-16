@@ -14,7 +14,17 @@ export default class JobMonitor extends Pure {
     close: PropTypes.func,
     removeRetiredJob: PropTypes.func
   }
-
+  removeJob (job) {
+    this.props.removeRetiredJob(job)
+  }
+  componentWillReceiveProps (nextProps) {
+    // TODO: fix resizing when jobs are removed (height of popover appears to be incorrect)
+    // if (nextProps.jobMonitor.retired.length !== this.props.jobMonitor.retired.length) {
+    //   this.popover._onResize()
+    // } else if (nextProps.jobMonitor.jobs.length !== this.props.jobMonitor.jobs.length) {
+    //   this.popover._onResize()
+    // }
+  }
   render () {
     const jobContainerStyle = {
       marginBottom: 20
@@ -31,7 +41,7 @@ export default class JobMonitor extends Pure {
 
     return (
       <SidebarPopover
-        ref='statusPopover'
+        ref={(SidebarPopover) => this.popover = SidebarPopover}
         title='Server Jobs'
         {...this.props}>
         {this.props.jobMonitor.retired.map(job => {
@@ -48,7 +58,7 @@ export default class JobMonitor extends Pure {
                   <Button
                     bsStyle='link'
                     className='pull-right'
-                    onClick={() => this.props.removeRetiredJob(job)}
+                    onClick={() => this.removeJob(job)}
                   >
                     <Icon className='pull-right' type='times-circle' />
                   </Button>

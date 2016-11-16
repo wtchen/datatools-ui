@@ -63,18 +63,18 @@ export default class EditorFeedSourcePanel extends Component {
                       ? <ListGroupItem>No other snapshots</ListGroupItem>
                       : inactiveSnapshots.map(s => {
                           return (
-                            <SnapshotItem snapshot={s} {...this.props}/>
+                            <SnapshotItem key={s.id} snapshot={s} {...this.props} />
                           )
                         })
                     }
-                    {activeSnapshots.length === 0
+                    {/* activeSnapshots.length === 0
                       ? <ListGroupItem>No other snapshots</ListGroupItem>
                       : activeSnapshots.map(s => {
                           return (
                             <SnapshotItem snapshot={s} {...this.props}/>
                           )
                         })
-                    }
+                    */}
                   </ListGroup>
                 </Panel>
               </div>
@@ -84,7 +84,7 @@ export default class EditorFeedSourcePanel extends Component {
                   bsStyle='success'
                   onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}
                 >
-                  <Icon type='file'/> {getMessage(messages, 'createFromScratch')}
+                  <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
                 </Button>
                 {' '}or{' '}
                 <Button bsStyle='success'

@@ -144,7 +144,7 @@ export default class FeedSourceViewer extends Component {
         <Panel header={<h3>Settings</h3>}>
           <ListGroup fill>
             <ListGroupItem>
-              <FormGroup inline>
+              <FormGroup>
                 <ControlLabel>Feed source name</ControlLabel>
                 <InputGroup>
                   <FormControl
@@ -176,7 +176,7 @@ export default class FeedSourceViewer extends Component {
         <Panel header={<h3>Automatic fetch</h3>}>
           <ListGroup fill>
             <ListGroupItem>
-              <FormGroup inline>
+              <FormGroup>
                 <ControlLabel>Feed source fetch URL</ControlLabel>
                 <InputGroup>
                   <FormControl
@@ -257,15 +257,15 @@ export default class FeedSourceViewer extends Component {
           > {/*  Title + Shortcut Buttons Row */}
             <Col xs={12}>
               <h3>
-                <Icon className='icon-link' name='folder-open-o'/>
+                <Icon className='icon-link' type='folder-open-o'/>
                 <Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
                 {' '}/{' '}
                 <Link to={`/feed/${fs.id}`}>{fs.name}</Link>{' '}
-                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' name='lock'/>}
+                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' type='lock'/>}
                 {' '}
                 {fs.editedSinceSnapshot
-                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' name='circle'/>
-                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' name='circle'/>
+                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' type='circle'/>
+                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' type='circle'/>
                 }
                 <ButtonToolbar
                   className={`pull-right`}
@@ -301,7 +301,7 @@ export default class FeedSourceViewer extends Component {
             activeKey={activeTab}
             onSelect={(eventKey => browserHistory.push(`/feed/${fs.id}/${eventKey}`))}
           >
-            <Tab eventKey='' title={<span><Icon className='icon-link' name='database'/><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
+            <Tab eventKey='' title={<span><Icon className='icon-link' type='database'/><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
               <Row>
                 {/*<Col xs={12} sm={3}>
                   <Well bsSize='small'>
@@ -433,7 +433,7 @@ export default class FeedSourceViewer extends Component {
 
             {isModuleEnabled('editor')
               ? <Tab eventKey='snapshots'
-                  title={<span><Icon className='icon-link' name='pencil-square-o' /><span className='hidden-xs'>{getComponentMessages('EditorFeedSourcePanel').title} </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
+                  title={<span><Icon className='icon-link' type='pencil-square-o' /><span className='hidden-xs'>{getComponentMessages('EditorFeedSourcePanel').title} </span><Badge>{fs.editorSnapshots ? fs.editorSnapshots.length : 0}</Badge></span>}
                 >
                   <ActiveEditorFeedSourcePanel feedSource={fs} />
                 </Tab>
@@ -465,7 +465,7 @@ export default class FeedSourceViewer extends Component {
                   {Object.keys(fs.externalProperties || {}).map(resourceType => {
                     const resourceLowerCase = resourceType.toLowerCase()
                     return (
-                      <LinkContainer to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={this.props.activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
+                      <LinkContainer key={resourceType} to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={this.props.activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
                     )
                   })}
                   </ListGroup>

@@ -94,7 +94,7 @@ export default class CalendarList extends Component {
             </tr>
           )
         })
-        : <tr><td><Icon className='fa-spin' name='refresh' /></td></tr>
+        : <tr><td><Icon className='fa-spin' type='refresh' /></td></tr>
       }
         </tbody>
       </Table>

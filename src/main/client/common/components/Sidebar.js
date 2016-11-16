@@ -18,7 +18,8 @@ export default class Sidebar extends Pure {
     resetPassword: PropTypes.func,
     setJobMonitorVisible: PropTypes.func,
     removeRetiredJob: PropTypes.func,
-    setSidebarExpanded: PropTypes.func
+    setSidebarExpanded: PropTypes.func,
+    startJobMonitor: PropTypes.func
   }
 
   state = {
@@ -30,7 +31,10 @@ export default class Sidebar extends Pure {
       this.setState({ visiblePopover: 'job' })
     }
   }
-
+  componentWillMount () {
+    const showMonitor = false
+    // this.props.startJobMonitor(showMonitor)
+  }
   _clickChangePassword = () => {
     this.setState({visiblePopover: null})
     this.props.resetPassword()
@@ -63,6 +67,7 @@ export default class Sidebar extends Pure {
     const navbarStyle = {
       width: expanded ? 130 : 50
     }
+    const hasActiveJobs = this.props.jobMonitor.jobs.length > 0
     return (
       <div className='Sidebar'>
         <Navbar
@@ -74,7 +79,9 @@ export default class Sidebar extends Pure {
             <SidebarNavItem
               ref='jobNav'
               expanded={expanded}
-              icon='bell'
+              icon={hasActiveJobs ? 'refresh' : 'bell'}
+              loading={hasActiveJobs}
+              finished={this.props.jobMonitor.jobs.length === 0 && this.props.jobMonitor.retired.length > 0}
               label='Job Monitor'
               onClick={this._selectJob}
               />
@@ -101,7 +108,7 @@ export default class Sidebar extends Pure {
           expanded={this.props.expanded}
           visible={this.state.visiblePopover === 'job'}
           close={this._closePopover}
-          removeRetiredJob={this.props.removeRetiredJob} />s
+          removeRetiredJob={this.props.removeRetiredJob} />
         <SidebarPopover
           target={this.refs.userNav}
           title={this.props.username}

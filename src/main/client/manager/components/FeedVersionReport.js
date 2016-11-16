@@ -8,6 +8,7 @@ import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
 import { getComponentMessages, getMessage, getConfigProperty, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { getProfileLink } from '../../common/util/util'
 
 // import Feed from './reporter/containers/Feed'
 import Patterns from './reporter/containers/Patterns'
@@ -88,10 +89,10 @@ export default class FeedVersionReport extends Component {
       >
         {/* Name Display / Editor */}
         {version.validationSummary.loadStatus === 'SUCCESS' && version.validationSummary.errorCount === 0
-          ? <Icon title='Feed loaded successfully, and is error-free!' className='text-success' name='check' style={{marginRight: 10}}/>
+          ? <Icon title='Feed loaded successfully, and is error-free!' className='text-success' type='check' style={{marginRight: 10}}/>
           : version.validationSummary.errorCount > 0
-          ? <Icon title='Feed loaded successfully, but has errors.' className='text-warning' name='exclamation-triangle' style={{marginRight: 10}}/>
-          : <Icon title='Feed did not load successfully, something has gone wrong!' className='text-danger' name='times' style={{marginRight: 10}}/>
+          ? <Icon title='Feed loaded successfully, but has errors.' className='text-warning' type='exclamation-triangle' style={{marginRight: 10}}/>
+          : <Icon title='Feed did not load successfully, something has gone wrong!' className='text-danger' type='times' style={{marginRight: 10}}/>
         }
         {this.props.isPublic
           ? <span>{version.name}</span>
@@ -104,7 +105,9 @@ export default class FeedVersionReport extends Component {
           {...this.props}
         />
       </h4>
-      <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}><Icon type='clock-o'/> Version published {moment(version.updated).fromNow()}</small>
+      <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}>
+        <Icon type='clock-o' /> Version published {moment(version.updated).fromNow()} by {version.user ? <a href={getProfileLink(version.user)}><strong>{version.user}</strong></a> : '[unknown]'}
+      </small>
       </div>
     )
     const tableOptions = {
@@ -160,19 +163,19 @@ export default class FeedVersionReport extends Component {
                     onClick={() => this.props.publishFeedVersion(version)}
                   >
                     {this.props.isPublished
-                      ? <span><Icon name='check-circle' /> Published</span>
+                      ? <span><Icon type='check-circle' /> Published</span>
                       : <span>Publish to MTC</span>
                     }
                   </Button>
                   : null
                 }
-                <Icon name='calendar' /> {`Valid from ${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
+                <Icon type='calendar' /> {`Valid from ${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
                 {' '}
                 {this.getVersionDateLabel(version)}
               </h4>
               <p>
                 {version.validationSummary && version.validationSummary.avgDailyRevenueTime
-                  ? <span><Icon name='clock-o'/> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
+                  ? <span><Icon type='clock-o'/> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
                   : null
                 }
               </p>
@@ -239,7 +242,7 @@ export default class FeedVersionReport extends Component {
               </Tab>
               {isModuleEnabled('validator')
                 ? [
-                <Tab eventKey={'validation'} title='Validation'>
+                <Tab eventKey={'validation'} title='Validation' key='validation'>
                   <GtfsValidationSummary
                     version={this.props.version}
                     key='validation'

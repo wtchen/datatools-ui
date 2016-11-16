@@ -209,7 +209,7 @@ export default class GtfsMap extends Component {
     const popup = (
       <Popup>
         <div>
-          <p><Icon name='bus'/> <strong>{routeName}</strong></p>
+          <p><Icon type='bus'/> <strong>{routeName}</strong></p>
           <p><Icon type='bus'/> <strong>{getRouteName(route)}</strong></p>
           <ul>
             <li><strong>ID:</strong> {routeId}</li>

@@ -216,7 +216,7 @@ export default class ProjectViewer extends Component {
           >
             <Col xs={12}>
               <h3>
-                <Icon className='icon-link' name='folder-open-o'/><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
+                <Icon className='icon-link' type='folder-open-o'/><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
                 <ButtonToolbar
                   className={`pull-right`}
                 >

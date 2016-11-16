@@ -140,7 +140,7 @@ export default class FeedVersionNavigator extends Component {
                           // disabled={editGtfsDisabled} // || !fs.latestValidation}
                           // bsStyle='info'
                           onClick={() => { this.props.createDeploymentFromFeedSource(fs) }}>
-                          <Icon name='globe'/> Deploy feed
+                          <Icon type='globe'/> Deploy feed
                         </Button>
                       : null
                     }

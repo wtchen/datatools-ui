@@ -85,7 +85,7 @@ class ResultTable extends React.Component {
     if (!this.props.invalidValues) {
       return (
         <Panel
-          header={(<h5><Icon className='text-success' name='check' /> {this.props.title} <Badge>0</Badge></h5>)}
+          header={(<h5><Icon className='text-success' type='check' /> {this.props.title} <Badge>0</Badge></h5>)}
         >
           No issues found.
         </Panel>
@@ -93,7 +93,7 @@ class ResultTable extends React.Component {
     }
     return (
       <Panel
-        header={(<h5><Icon className='text-warning' name='exclamation-triangle' /> {this.props.title} <Badge>{this.props.invalidValues.length}</Badge></h5>)}
+        header={(<h5><Icon className='text-warning' type='exclamation-triangle' /> {this.props.title} <Badge>{this.props.invalidValues.length}</Badge></h5>)}
       >
         <Table striped style={tableStyle} fill>
           <thead>

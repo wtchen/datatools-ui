@@ -5,7 +5,7 @@ import Sidebar from '../components/Sidebar'
 import { login, logout, resetPassword } from '../../manager/actions/user'
 import { setActiveProject } from '../../manager/actions/projects'
 import { setActiveLanguage } from '../../manager/actions/languages'
-import { setJobMonitorVisible, removeRetiredJob } from '../../manager/actions/status'
+import { setJobMonitorVisible, removeRetiredJob, startJobMonitor } from '../../manager/actions/status'
 import { setSidebarExpanded, setTutorialHidden } from '../../manager/actions/ui'
 
 const mapStateToProps = (state, ownProps) => {
@@ -30,9 +30,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setActiveProject: (project) => { dispatch(setActiveProject(project)) },
     setActiveLanguage: (language) => { dispatch(setActiveLanguage(language)) },
     setJobMonitorVisible: (visible) => { dispatch(setJobMonitorVisible(visible)) },
+    startJobMonitor: (showMonitor) => { dispatch(startJobMonitor(showMonitor)) },
     removeRetiredJob: (job) => { dispatch(removeRetiredJob(job)) },
     setSidebarExpanded: (value) => { dispatch(setSidebarExpanded(value)) },
-    setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) },
+    setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) }
   }
 }
 

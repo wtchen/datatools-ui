@@ -104,7 +104,7 @@ export default class UserAccount extends Component {
                   <li>
                     {sub.type.replace('-', ' ')} &nbsp;
                       <Icon
-                        name='trash'
+                        type='trash'
                         className='text-danger'
                         style={removeIconStyle}
                         onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
@@ -125,7 +125,7 @@ export default class UserAccount extends Component {
                               : <span>{target}</span>
                             } {' '}
                             <Icon
-                              name='trash'
+                              type='trash'
                               className='text-danger'
                               style={removeIconStyle}
                               onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}

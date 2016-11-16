@@ -66,7 +66,7 @@ export default class UserHomePage extends Component {
       return (
         <ListGroupItem key={fs.id} bsStyle={fs.isPublic ? 'default' : 'warning'}>
           <Link title={feedName} to={`/feed/${fs.id}`}>
-            <Icon className='icon-link' name={fs.isPublic ? 'database' : 'lock'}/>
+            <Icon className='icon-link' type={fs.isPublic ? 'database' : 'lock'} />
             <span style={{ fontSize: 16, fontWeight: 500 }}>
               {feedName.length > 33 ? `${feedName.substr(0, 33)}...` : feedName}
             </span>
