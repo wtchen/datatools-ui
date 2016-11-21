@@ -2,6 +2,8 @@ import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
 import moment from 'moment'
 
+import { TIMETABLE_FORMATS } from '../../editor/util'
+
 export default class EditableCell extends Component {
   static propTypes = {
     isEditing: PropTypes.bool
@@ -138,6 +140,7 @@ export default class EditableCell extends Component {
     }
   }
   save () {
+    // for non-time rendering
     if (!this.props.renderTime) {
       if (this.state.data !== this.state.originalData) {
         this.setState({isEditing: false})
@@ -148,12 +151,11 @@ export default class EditableCell extends Component {
       }
     } else {
       let date = moment().startOf('day').format('YYYY-MM-DD')
-      let momentTime = moment(date + 'T' + this.state.data, ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a'], true)
-      let value = momentTime.diff(date, 'seconds')
-      console.log(value)
+      let momentTime = moment(date + 'T' + this.state.data, TIMETABLE_FORMATS, true)
+      let value = momentTime.isValid() ? momentTime.diff(date, 'seconds') : null
 
       // check for valid time and new value
-      if (momentTime.isValid() && value !== this.state.data) {
+      if ((this.state.data === '' || momentTime.isValid()) && value !== this.state.data) {
         this.setState({data: value, isEditing: false})
         this.props.onChange(value)
         this.props.onStopEditing()

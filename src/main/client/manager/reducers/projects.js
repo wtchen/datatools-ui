@@ -48,15 +48,10 @@ const projects = (state = {
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
       project = state.all[projectIndex]
       newState = null
-      console.log("adding fs to project", state.all[projectIndex]);
-
-
       // if project's deployment array is undefined, add it
-      if(!project.deployments) {
-        console.log('adding new fs array');
+      if (!project.deployments) {
         newState = update(state, {all: {[projectIndex]: {$merge: {deployments: []}}}})
       }
-
       // add new empty feed source to feedSources array
       deployment = {
         isCreating: true,
@@ -68,7 +63,7 @@ const projects = (state = {
     case 'REQUESTING_FEEDSOURCE':
     case 'REQUESTING_FEEDSOURCES':
     case 'REQUEST_PROJECTS':
-      return update(state, { isFetching: { $set: true }})
+      return update(state, { isFetching: { $set: true } })
     case 'RECEIVE_PROJECTS':
       activeProjectId = state.active ? state.active.id : getConfigProperty('application.active_project')
       activeIndex = action.projects.findIndex(p => p.id === activeProjectId)
