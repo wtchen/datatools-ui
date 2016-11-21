@@ -20,7 +20,13 @@
 
 .entity-list-row {
   /*background-color: '#f5f5f5';*/
-  outline: 'none'
+  outline: 'none';
+}
+
+/* IMPORTANT (!) for date picker to show up aligned correctly with form input */
+.bootstrap-datetimepicker-widget.dropdown-menu.bottom {
+  top: 65px !important;
+  right: 23px !important;
 }
 
 .noselect {
