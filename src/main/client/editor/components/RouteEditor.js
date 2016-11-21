@@ -58,18 +58,18 @@ export default class RouteEditor extends Component {
               bsSize='small'
               bsStyle='success'
             >
-              <Icon type='plus'/>
+              <Icon type='plus' />
             </Button>
             <Button
               bsSize='small'
             >
-              <Icon type='clone'/>
+              <Icon type='clone' />
             </Button>
             <Button
               bsSize='small'
               bsStyle='danger'
             >
-              <Icon type='trash'/>
+              <Icon type='trash' />
             </Button>
           </ButtonToolbar>
           Route editor

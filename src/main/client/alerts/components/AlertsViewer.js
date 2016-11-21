@@ -33,7 +33,7 @@ export default class AlertsViewer extends React.Component {
           <Row>
             <Col xs={12}>
               <h2>
-                <Icon type='exclamation-circle'/> Service Alerts
+                <Icon type='exclamation-circle' /> Service Alerts
                 <CreateAlert
                   style={{marginTop: '-8px'}}
                   disabled={createDisabled}

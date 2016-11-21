@@ -208,7 +208,7 @@ export default class EntityList extends Component {
             this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
           }}
         >
-          <Icon type='plus'/> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
+          <Icon type='plus' /> Create first {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
         </Button>
       </div>
 

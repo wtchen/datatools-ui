@@ -55,7 +55,7 @@ export default class ProjectsList extends React.Component {
               {getMessage(messages, 'new')}
             </Button>
             <OverlayTrigger trigger="click" placement="left" overlay={<Popover id='project-help' title={getMessage(messages, 'help.title')}>{getMessage(messages, 'help.content')}</Popover>}>
-              <Button bsStyle="link" className='pull-right'><Glyphicon glyph='question-sign'/></Button>
+              <Button bsStyle="link" className='pull-right'><Glyphicon glyph='question-sign' /></Button>
             </OverlayTrigger>
             </Col>
           </Row>

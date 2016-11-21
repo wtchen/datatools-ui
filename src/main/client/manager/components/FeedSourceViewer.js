@@ -213,7 +213,7 @@ export default class FeedSourceViewer extends Component {
               <p>This feed source is currently {fs.isPublic ? 'public' : 'private'}.</p>
             </ListGroupItem>
             <ListGroupItem>
-              <Button onClick={() => this.confirmDeleteFeedSource(fs)} className='pull-right' bsStyle='danger'><Icon type='trash'/> Delete feed source</Button>
+              <Button onClick={() => this.confirmDeleteFeedSource(fs)} className='pull-right' bsStyle='danger'><Icon type='trash' /> Delete feed source</Button>
               <h4>Delete this feed source.</h4>
               <p>Once you delete a feed source, it cannot be recovered.</p>
             </ListGroupItem>
@@ -257,15 +257,15 @@ export default class FeedSourceViewer extends Component {
           > {/*  Title + Shortcut Buttons Row */}
             <Col xs={12}>
               <h3>
-                <Icon className='icon-link' type='folder-open-o'/>
+                <Icon className='icon-link' type='folder-open-o' />
                 <Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
                 {' '}/{' '}
                 <Link to={`/feed/${fs.id}`}>{fs.name}</Link>{' '}
-                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' type='lock'/>}
+                {fs.isPublic ? null : <Icon className='text-warning' title='This feed source and all its versions are private.' type='lock' />}
                 {' '}
                 {fs.editedSinceSnapshot
-                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' type='circle'/>
-                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' type='circle'/>
+                  ? <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-warning' title='There are unpublished edits for this feed source.' type='circle' />
+                  : <Icon style={{display: 'inline-block', paddingBottom: '3px', verticalAlign: 'middle', fontSize: '50%'}} className='text-success' title='No edits since last publish.' type='circle' />
                 }
                 <ButtonToolbar
                   className={`pull-right`}
@@ -282,16 +282,16 @@ export default class FeedSourceViewer extends Component {
                     target={fs.id}
                     subscriptionType='feed-updated'
                   />
-                  <Button><Icon type='thumbs-o-up'/></Button>
+                  <Button><Icon type='thumbs-o-up' /></Button>
                 </ButtonToolbar>
               </h3>
               <ul className='list-unstyled list-inline small' style={{marginBottom: '0px'}}>
-                <li><Icon type='clock-o'/> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
-                <li><Icon type='link'/> {fs.url ? fs.url : '(none)'}
+                <li><Icon type='clock-o' /> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
+                <li><Icon type='link' /> {fs.url ? fs.url : '(none)'}
                 </li>
-                {<li><Icon type='file-archive-o'/> {this.getAverageFileSize(fs.feedVersions)}</li>}
+                {<li><Icon type='file-archive-o' /> {this.getAverageFileSize(fs.feedVersions)}</li>}
               </ul>
-              {/*<li><Icon type='list-ol'/> {fs.feedVersionCount}</li><small style={{marginLeft: '30px'}}><Icon type='link'/> <a href={fs.url}>{fs.url}</a></small>*/}
+              {/*<li><Icon type='list-ol' /> {fs.feedVersionCount}</li><small style={{marginLeft: '30px'}}><Icon type='link' /> <a href={fs.url}>{fs.url}</a></small>*/}
             </Col>
           </Row>
 
@@ -301,7 +301,7 @@ export default class FeedSourceViewer extends Component {
             activeKey={activeTab}
             onSelect={(eventKey => browserHistory.push(`/feed/${fs.id}/${eventKey}`))}
           >
-            <Tab eventKey='' title={<span><Icon className='icon-link' type='database'/><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
+            <Tab eventKey='' title={<span><Icon className='icon-link' type='database' /><span className='hidden-xs'>{getMessage(messages, 'gtfs')}</span></span>}>
               <Row>
                 {/*<Col xs={12} sm={3}>
                   <Well bsSize='small'>
@@ -376,7 +376,7 @@ export default class FeedSourceViewer extends Component {
                   {/*<Row>
                     <Col xs={12}>
                       <ButtonToolbar style={{marginBottom: '10px'}}>
-                        <Button block bsSize='large' bsStyle='info'><Glyphicon glyph='pencil'/> Edit feed</Button>
+                        <Button block bsSize='large' bsStyle='info'><Glyphicon glyph='pencil' /> Edit feed</Button>
                       </ButtonToolbar>
                     </Col>
                   </Row>
@@ -384,22 +384,22 @@ export default class FeedSourceViewer extends Component {
                     <Col xs={12}>
                       <h5>Create new version</h5>
                       <ul className='list-unstyled'>
-                        <li><Button onClick={(evt) => { this.showUploadFeedModal() }} style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='upload'/> Upload file</Button></li>
-                        <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='download'/> Fetch by URL</Button></li>
+                        <li><Button onClick={(evt) => { this.showUploadFeedModal() }} style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='upload' /> Upload file</Button></li>
+                        <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='download' /> Fetch by URL</Button></li>
                         <hr style={{marginTop: '5px', marginBottom: '5px'}}/>
-                        <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='camera'/> Load from snapshot</Button></li>
+                        <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='camera' /> Load from snapshot</Button></li>
                       </ul>
                     </Col>
                   </Row>*/}
                   {/*<ButtonToolbar className='pull-right'>
                     <DropdownButton
                       pullRight
-                      title={<span><Icon type='plus'/> New version</span>}
+                      title={<span><Icon type='plus' /> New version</span>}
                     >
-                      <MenuItem><Glyphicon glyph='upload'/> Upload</MenuItem>
-                      <MenuItem><Glyphicon glyph='download'/> Fetch</MenuItem>
+                      <MenuItem><Glyphicon glyph='upload' /> Upload</MenuItem>
+                      <MenuItem><Glyphicon glyph='download' /> Fetch</MenuItem>
                       <MenuItem divider />
-                      <MenuItem><Glyphicon glyph='camera'/> From snapshot</MenuItem>
+                      <MenuItem><Glyphicon glyph='camera' /> From snapshot</MenuItem>
                     </DropdownButton>
                   </ButtonToolbar>
                   */}
@@ -420,7 +420,7 @@ export default class FeedSourceViewer extends Component {
                   />
                 </Col>
                 {/* <Col xs={3}>
-                  <Panel header={<h3><Icon type='camera'/> Snapshots</h3>}>
+                  <Panel header={<h3><Icon type='camera' /> Snapshots</h3>}>
                     <ListGroup fill>
                       <ListGroupItem>
                         Snapshot 1

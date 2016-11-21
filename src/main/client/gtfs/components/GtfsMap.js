@@ -180,7 +180,7 @@ export default class GtfsMap extends Component {
         >
         <Popup>
           <div>
-            <p><Icon type='map-marker'/> <strong>{stop.stop_name} ({stop.stop_id})</strong></p>
+            <p><Icon type='map-marker' /> <strong>{stop.stop_name} ({stop.stop_id})</strong></p>
             {this.props.renderTransferPerformance && this.renderTransferPerformance(stop)}
             {this.props.onStopClick
               ? <Button
@@ -188,7 +188,7 @@ export default class GtfsMap extends Component {
                   block
                   onClick={() => this.props.onStopClick(stop, feed, this.props.newEntityId)}
                 >
-                  <Icon type='map-marker'/> {this.props.popupAction} stop
+                  <Icon type='map-marker' /> {this.props.popupAction} stop
                 </Button>
               : null
             }
@@ -209,8 +209,8 @@ export default class GtfsMap extends Component {
     const popup = (
       <Popup>
         <div>
-          <p><Icon type='bus'/> <strong>{routeName}</strong></p>
-          <p><Icon type='bus'/> <strong>{getRouteName(route)}</strong></p>
+          <p><Icon type='bus' /> <strong>{routeName}</strong></p>
+          <p><Icon type='bus' /> <strong>{getRouteName(route)}</strong></p>
           <ul>
             <li><strong>ID:</strong> {routeId}</li>
             <li><strong>Agency:</strong>{' '}
@@ -226,7 +226,7 @@ export default class GtfsMap extends Component {
                 block
                 onClick={() => this.props.onRouteClick(route, feed, this.props.newEntityId)}
               >
-                <Icon type='bus'/> {this.props.popupAction} route
+                <Icon type='bus' /> {this.props.popupAction} route
               </Button>
             : <p>[Must add stops first]</p>
           }

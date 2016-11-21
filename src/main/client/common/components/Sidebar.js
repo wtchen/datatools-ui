@@ -74,7 +74,9 @@ export default class Sidebar extends Pure {
           inverse
           style={navbarStyle}>
           <Brand expanded={expanded} />
-          <div className='TopNav'>{children}</div>
+          <div className='TopNav'>
+            {children}
+          </div>
           <div className='BottomNav'>
             <SidebarNavItem
               ref='jobNav'

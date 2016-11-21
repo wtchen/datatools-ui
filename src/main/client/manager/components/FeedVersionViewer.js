@@ -201,19 +201,19 @@ class VersionSectionSelector extends Component {
       <Panel>
         <ListGroup fill>
           <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}`} active={!this.props.versionSection}>
-            <ListGroupItem><Icon type='info-circle'/> Version summary</ListGroupItem>
+            <ListGroupItem><Icon type='info-circle' /> Version summary</ListGroupItem>
           </LinkContainer>
           <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/issues`} active={this.props.versionSection === 'issues'}>
-            <ListGroupItem><Icon type='exclamation-triangle'/> Validation issues {this.renderIssuesLabel(version)}
+            <ListGroupItem><Icon type='exclamation-triangle' /> Validation issues {this.renderIssuesLabel(version)}
           </ListGroupItem></LinkContainer>
           {isModuleEnabled('gtfsplus')
             ? <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/gtfsplus`} active={this.props.versionSection === 'gtfsplus'}>
-                <ListGroupItem><Icon type='plus'/> GTFS+ for this version</ListGroupItem>
+                <ListGroupItem><Icon type='plus' /> GTFS+ for this version</ListGroupItem>
               </LinkContainer>
             : null
           }
           <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/comments`} active={this.props.versionSection === 'comments'}>
-            <ListGroupItem><Glyphicon glyph='comment'/> Version comments <Label>{version.noteCount}</Label></ListGroupItem>
+            <ListGroupItem><Glyphicon glyph='comment' /> Version comments <Label>{version.noteCount}</Label></ListGroupItem>
           </LinkContainer>
         </ListGroup>
       </Panel>

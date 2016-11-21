@@ -96,8 +96,8 @@ export default class FeedVersionNavigator extends Component {
           <Col xs={12} style={versionTitleStyle}>
               <ButtonToolbar>
                 <ButtonGroup>
-                  <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon type='square'/></Button>
-                  <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon type='list'/></Button>
+                  <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon type='square' /></Button>
+                  <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon type='list' /></Button>
                 </ButtonGroup>
                 {this.state.listView
                   ? null
@@ -140,7 +140,7 @@ export default class FeedVersionNavigator extends Component {
                           // disabled={editGtfsDisabled} // || !fs.latestValidation}
                           // bsStyle='info'
                           onClick={() => { this.props.createDeploymentFromFeedSource(fs) }}>
-                          <Icon type='globe'/> Deploy feed
+                          <Icon type='globe' /> Deploy feed
                         </Button>
                       : null
                     }
@@ -155,7 +155,7 @@ export default class FeedVersionNavigator extends Component {
                     }
                     <DropdownButton
                       bsStyle='success'
-                      title={<span><Icon type='plus'/> Create new version</span>} id='bg-nested-dropdown'
+                      title={<span><Icon type='plus' /> Create new version</span>} id='bg-nested-dropdown'
                       onSelect={key => {
                         console.log(key)
                         switch (key) {
@@ -175,7 +175,7 @@ export default class FeedVersionNavigator extends Component {
                       <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
                       <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
                       <MenuItem divider />
-                      <MenuItem disabled={disabled || !fs.editorSnapshots || fs.editorSnapshots.length === 0} eventKey='snapshot'><Glyphicon glyph='camera'/> From snapshot</MenuItem>
+                      <MenuItem disabled={disabled || !fs.editorSnapshots || fs.editorSnapshots.length === 0} eventKey='snapshot'><Glyphicon glyph='camera' /> From snapshot</MenuItem>
                     </DropdownButton>
                   </ButtonToolbar>
                 </ButtonToolbar>

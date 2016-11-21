@@ -104,7 +104,7 @@ export default class EditorFeedSourcePanel extends Component {
           }
         </Col>
         <Col xs={3}>
-          <Panel header={<h3><Icon type='camera'/> What are snapshots?</h3>}>
+          <Panel header={<h3><Icon type='camera' /> What are snapshots?</h3>}>
             <p>Snapshots are save points you can always revert back to when editing a GTFS feed.</p>
             <p>A snapshot might represent a work-in-progress, future planning scenario or even different service patterns (e.g., summer schedule markup).</p>
           </Panel>
@@ -134,7 +134,7 @@ class SnapshotItem extends Component {
               onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
             >
               {snapshot.current
-                ? <span><Icon type='check-circle'/> {getMessage(messages, 'active')}</span>
+                ? <span><Icon type='check-circle' /> {getMessage(messages, 'active')}</span>
                 : <span><Glyphicon glyph='pencil' /> {getMessage(messages, 'restore')}</span>
               }
             </Button>
@@ -154,7 +154,7 @@ class SnapshotItem extends Component {
               <Icon type='trash' /> {getMessage(messages, 'delete')}
             </Button>
           </ButtonToolbar>
-          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon type='clock-o'/> created {moment(snapshot.snapshotTime).fromNow()}</span>
+          <span title={moment(snapshot.snapshotTime).format(`${dateFormat}, ${timeFormat}`)}><Icon type='clock-o' /> created {moment(snapshot.snapshotTime).fromNow()}</span>
         </p>
       </ListGroupItem>
     )

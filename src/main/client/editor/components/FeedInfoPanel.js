@@ -66,7 +66,7 @@ export default class FeedInfoPanel extends Component {
 
     return (
       <div>
-      <SelectFileModal ref='selectFileModal'/>
+      <SelectFileModal ref='selectFileModal' />
       <div style={panelStyle}>
         <CreateSnapshotModal ref='snapshotModal'
           onOkClicked={(name, comment) => {
@@ -109,12 +109,12 @@ export default class FeedInfoPanel extends Component {
             <Button
               onClick={() => this.showUploadFileModal(feedSource)}
             >
-              <Icon type='upload'/>
+              <Icon type='upload' />
             </Button>
             {/* Add entity dropdown */}
             <DropdownButton
               pullRight dropup
-              title={<span><Icon type='plus'/></span>}
+              title={<span><Icon type='plus' /></span>}
               id='add-entity-dropdown'
               onSelect={key => {
                 console.log(key)
@@ -153,7 +153,7 @@ export default class FeedInfoPanel extends Component {
                       this.refs.snapshotModal.open()
                     }}
                   >
-                    <Icon type='camera'/>
+                    <Icon type='camera' />
                   </Button>
                 </OverlayTrigger>
                     <Dropdown.Toggle
@@ -166,7 +166,7 @@ export default class FeedInfoPanel extends Component {
                       {this.props.feedSource && this.props.feedSource.editorSnapshots
                         ? this.props.feedSource.editorSnapshots.map(snapshot => {
                             return (
-                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon type='reply'/> Revert to {snapshot.name}</MenuItem>
+                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon type='reply' /> Revert to {snapshot.name}</MenuItem>
                             )
                           })
                         : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>

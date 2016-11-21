@@ -52,7 +52,7 @@ export default class UserAdmin extends Component {
                   Back to dashboard
                 </Button>
               </LinkContainer>
-              <Icon type='cog'/> {getMessage(messages, 'title')}
+              <Icon type='cog' /> {getMessage(messages, 'title')}
             </h2>
           </Col>
         </Row>
@@ -97,7 +97,7 @@ export default class UserAdmin extends Component {
                           bsStyle='danger'
                           bsSize='large'
                           href='https://manage.auth0.com/#/logs'>
-                          <Icon type='star'/> View application logs on Auth0.com
+                          <Icon type='star' /> View application logs on Auth0.com
                         </Button>
                       </p>
                     : null

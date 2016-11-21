@@ -232,8 +232,8 @@ export default class GtfsEditor extends Component {
           />
         </div>
         <CurrentStatusMessage />
-        <ConfirmModal ref='confirmModal'/>
-        <CurrentStatusModal ref='statusModal'/>
+        <ConfirmModal ref='confirmModal' />
+        <CurrentStatusModal ref='statusModal' />
       </div>
     )
   }

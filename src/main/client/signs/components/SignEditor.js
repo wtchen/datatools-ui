@@ -56,7 +56,7 @@ export default class SignEditor extends React.Component {
                   (evt) => {
                   browserHistory.push('/signs')
                 }}
-              ><Glyphicon glyph='chevron-left'/> Back</Button>
+              ><Glyphicon glyph='chevron-left' /> Back</Button>
             </Col>
             <Col xs={8} sm={4} md={3}>
               <ButtonGroup className='pull-right'>
@@ -145,7 +145,7 @@ export default class SignEditor extends React.Component {
                   }}
                 />
               </FormGroup>
-              <Panel header={<b><Glyphicon glyph='modal-window'/> Associated Displays for Sign Configuration</b>}>
+              <Panel header={<b><Glyphicon glyph='modal-window' /> Associated Displays for Sign Configuration</b>}>
                 <Row>
                   <Col xs={12}>
                     <DisplaySelector
@@ -176,7 +176,7 @@ export default class SignEditor extends React.Component {
                   </Col>
                 </Row>
               </Panel>
-              <Panel header={<b><Glyphicon glyph='th-list'/> Stops/Routes for Sign Configuration</b>}>
+              <Panel header={<b><Glyphicon glyph='th-list' /> Stops/Routes for Sign Configuration</b>}>
                 <Row>
                   <Col xs={12}>
                     <Row style={{marginBottom: '15px'}}>

@@ -125,7 +125,7 @@ export default class FeedVersionReport extends Component {
     return <Panel
         bsStyle='info'
         header={versionHeader}
-        footer={<span><Icon type='file-archive-o'/> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }</span>}
+        footer={<span><Icon type='file-archive-o' /> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }</span>}
       >
         <ListGroup fill>
             <ListGroupItem
@@ -175,7 +175,7 @@ export default class FeedVersionReport extends Component {
               </h4>
               <p>
                 {version.validationSummary && version.validationSummary.avgDailyRevenueTime
-                  ? <span><Icon type='clock-o'/> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
+                  ? <span><Icon type='clock-o' /> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
                   : null
                 }
               </p>

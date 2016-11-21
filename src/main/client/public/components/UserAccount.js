@@ -160,7 +160,7 @@ export default class UserAccount extends Component {
                 <LinkContainer className='pull-right' to={{ pathname: '/home' }}>
                   <Button>Back to dashboard</Button>
                 </LinkContainer>
-                <Icon type='user'/> My settings
+                <Icon type='user' /> My settings
               </h1>
             </Col>
           </Row>

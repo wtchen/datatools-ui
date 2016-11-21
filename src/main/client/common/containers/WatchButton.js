@@ -27,8 +27,8 @@ class WatchButton extends Component {
             onClick={() => dispatch(updateTargetForSubscription(user.profile, target, subscriptionType)) }
           >
           {
-            isWatching ? <span><Glyphicon glyph='eye-close'/> {getMessage(messages, 'unwatch')}</span>
-            : <span><Glyphicon glyph='eye-open'/> {getMessage(messages, 'watch')}</span>
+            isWatching ? <span><Glyphicon glyph='eye-close' /> {getMessage(messages, 'unwatch')}</span>
+            : <span><Glyphicon glyph='eye-open' /> {getMessage(messages, 'watch')}</span>
           }
         </MenuItem>
       )
@@ -38,8 +38,8 @@ class WatchButton extends Component {
             onClick={() => dispatch(updateTargetForSubscription(user.profile, target, subscriptionType)) }
           >
             {
-              isWatching ? <span><Glyphicon glyph='eye-close'/> {getMessage(messages, 'unwatch')}</span>
-              : <span><Glyphicon glyph='eye-open'/> {getMessage(messages, 'watch')}</span>
+              isWatching ? <span><Glyphicon glyph='eye-close' /> {getMessage(messages, 'unwatch')}</span>
+              : <span><Glyphicon glyph='eye-open' /> {getMessage(messages, 'watch')}</span>
             }
           </Button>
       )

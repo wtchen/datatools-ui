@@ -19,7 +19,7 @@ export default class PublicHeader extends Component {
 
   render () {
     const userDropdown = <DropdownButton bsStyle='info'
-        title={<span><Glyphicon glyph='user'/> {this.props.username}</span>}
+        title={<span><Glyphicon glyph='user' /> {this.props.username}</span>}
       >
         <MenuItem onClick={() => browserHistory.push('/settings/profile')}>My Account</MenuItem>
         <MenuItem onClick={() => this.props.resetPassword()}>Change Password</MenuItem>
@@ -46,7 +46,7 @@ export default class PublicHeader extends Component {
                   </Button>
                 </LinkContainer>
               : <Button bsStyle='primary' onClick={() => this.props.loginHandler()}>
-                  <Glyphicon glyph='log-in'/> Log In
+                  <Glyphicon glyph='log-in' /> Log In
                 </Button>
             }
 
@@ -54,13 +54,13 @@ export default class PublicHeader extends Component {
             {this.props.username || getConfigProperty('modules.enterprise.enabled')
               ? null
               : <Button bsStyle='success' onClick={() => { browserHistory.push('/signup') }}>
-                  <Glyphicon glyph='plus'/> Create Account
+                  <Glyphicon glyph='plus' /> Create Account
                 </Button>
             }
 
             {/* "Log out" Button */}
             {this.props.username
-              ? <Button bsStyle='primary' onClick={() => this.props.logoutHandler()}><Icon type='sign-out'/> Log Out</Button>
+              ? <Button bsStyle='primary' onClick={() => this.props.logoutHandler()}><Icon type='sign-out' /> Log Out</Button>
               : null
             }
 

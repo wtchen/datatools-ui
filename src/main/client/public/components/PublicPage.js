@@ -32,8 +32,8 @@ export default class PublicPage extends React.Component {
         <ActivePublicHeader />
         {this.props.children}
         <CurrentStatusMessage />
-        <ConfirmModal ref='confirmModal'/>
-        <SelectFileModal ref='selectFileModal'/>
+        <ConfirmModal ref='confirmModal' />
+        <SelectFileModal ref='selectFileModal' />
       </div>
     )
   }

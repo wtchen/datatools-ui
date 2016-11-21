@@ -89,7 +89,7 @@ export default class GtfsValidationSummary extends Component {
             bsSize='large'
             style={{marginTop: '20px'}}
           >
-            <Icon type='file-text-o'/> View full validation report
+            <Icon type='file-text-o' /> View full validation report
           </Button>
         </LinkContainer>
       </div>

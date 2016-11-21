@@ -38,7 +38,7 @@ class FeedSourceActionButton extends Component {
         >
           <Glyphicon glyph='pencil' /> Edit
         </Button>
-        <Dropdown.Toggle bsStyle='default'/>
+        <Dropdown.Toggle bsStyle='default' />
         <Dropdown.Menu>
           <MenuItem disabled={disabled  || !fs.url} eventKey='update'><Glyphicon glyph='refresh' /> Update</MenuItem>
           <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
@@ -47,7 +47,7 @@ class FeedSourceActionButton extends Component {
             : null
           }
           {isModuleEnabled('deployment')
-            ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe'/> Deploy</MenuItem>
+            ? <MenuItem disabled={disabled || !fs.deployable} eventKey='deploy'><Glyphicon glyph='globe' /> Deploy</MenuItem>
             : null
           }
           {getConfigProperty('application.notifications_enabled')
@@ -60,9 +60,9 @@ class FeedSourceActionButton extends Component {
               />
             : null
           }
-          <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link'/> View public page</MenuItem>
+          <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link' /> View public page</MenuItem>
           <MenuItem divider />
-          <MenuItem disabled={disabled} eventKey='delete'><Icon type='trash'/> Delete</MenuItem>
+          <MenuItem disabled={disabled} eventKey='delete'><Icon type='trash' /> Delete</MenuItem>
         </Dropdown.Menu>
       </Dropdown>
     )

@@ -169,7 +169,7 @@ export default class ProjectSettings extends Component {
                           })
                         }}
                       >
-                        <Glyphicon glyph='map-marker'/>
+                        <Glyphicon glyph='map-marker' />
                       </Button>
                     </InputGroup.Button>
                   </InputGroup>
@@ -221,7 +221,7 @@ export default class ProjectSettings extends Component {
                           })
                         }}
                       >
-                        <Glyphicon glyph='fullscreen'/>
+                        <Glyphicon glyph='fullscreen' />
                       </Button>
                     </InputGroup.Button>
                   }
@@ -253,7 +253,7 @@ export default class ProjectSettings extends Component {
           <Panel bsStyle='danger' header={<h3>Danger zone</h3>}>
             <ListGroup fill>
               <ListGroupItem>
-                <Button onClick={() => this.props.deleteProject(project)} className='pull-right' bsStyle='danger'><Icon type='trash'/> Delete organization</Button>
+                <Button onClick={() => this.props.deleteProject(project)} className='pull-right' bsStyle='danger'><Icon type='trash' /> Delete organization</Button>
                 <h4>Delete this organization.</h4>
                 <p>Once you delete an organization, the organization and all feed sources it contains cannot be recovered.</p>
               </ListGroupItem>
@@ -431,7 +431,7 @@ export default class ProjectSettings extends Component {
                   this.setState(update(this.state, stateUpdate))
                 }}
               >
-                <Glyphicon glyph='plus'/> {getMessage(messages, 'deployment.servers.new')}
+                <Glyphicon glyph='plus' /> {getMessage(messages, 'deployment.servers.new')}
               </Button>
               {getMessage(messages, 'deployment.servers.title')}
             </h4>
@@ -460,7 +460,7 @@ export default class ProjectSettings extends Component {
                         this.setState(update(this.state, stateUpdate))
                       }}
                     >
-                      Remove <Glyphicon glyph='remove'/>
+                      Remove <Glyphicon glyph='remove' />
                     </Button>
                     <FormGroup>
                       <ControlLabel>{getMessage(messages, 'deployment.servers.name')}</ControlLabel>
@@ -591,7 +591,7 @@ export default class ProjectSettings extends Component {
       <Col xs={12} sm={7}>
         {activeSettingsPanel}
       </Col>
-      <MapModal ref='mapModal'/>
+      <MapModal ref='mapModal' />
       </Row>
 
     )
