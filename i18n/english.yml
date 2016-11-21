@@ -265,7 +265,7 @@ UserHomePage:
   title: Projects
   noProjects: You currently do not have any projects.
   createFirst: Create my first project
-  search: Search projects
+  search: Search feeds
   table:
     name: Project Name
   new: New Project
