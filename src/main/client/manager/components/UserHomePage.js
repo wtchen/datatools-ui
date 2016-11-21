@@ -115,7 +115,7 @@ export default class UserHomePage extends Component {
                 <Row>
                 <Col xs={12}>
                 <h4 style={{marginTop: 0, marginBottom: 15}}>
-                  <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon type='sign-out'/> Log out</Button>
+                  <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon type='sign-out' /> Log out</Button>
                   Hello, {this.props.user.profile.nickname}.
                 </h4>
                 </Col>
@@ -160,7 +160,7 @@ export default class UserHomePage extends Component {
                 <DropdownButton
                   id='context-dropdown'
                   title={activeProject
-                    ? <span><Icon type='folder-open-o'/> {activeProject.name}</span>
+                    ? <span><Icon type='folder-open-o' /> {activeProject.name}</span>
                     : <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>
                   }
                   // onSelect={(eventKey) => {
@@ -186,7 +186,7 @@ export default class UserHomePage extends Component {
                       return (
                         <LinkContainer to={`/home/${project.id}`}>
                           <MenuItem key={project.id} eventKey={project.id}>
-                            <Icon type='folder-o'/> {project.name}
+                            <Icon type='folder-o' /> {project.name}
                           </MenuItem>
                         </LinkContainer>
                       )
@@ -194,9 +194,9 @@ export default class UserHomePage extends Component {
                     : null
                   }
                   {activeProject && visibleProjects.length > 1 || !activeProject ? <MenuItem divider /> : null}
-                  <LinkContainer to='/settings/organizations'><MenuItem><Icon type='users'/> Manage organizations</MenuItem></LinkContainer>
+                  <LinkContainer to='/settings/organizations'><MenuItem><Icon type='users' /> Manage organizations</MenuItem></LinkContainer>
                   <MenuItem divider />
-                  <LinkContainer to='/project'><MenuItem><Icon type='plus'/> Create organization</MenuItem></LinkContainer>
+                  <LinkContainer to='/project'><MenuItem><Icon type='plus' /> Create organization</MenuItem></LinkContainer>
                 </DropdownButton>
               </div>
               {/* Starred Feeds Panel */}

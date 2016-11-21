@@ -14,29 +14,29 @@ import { fetchDeployment,
 import { fetchProjectFeeds } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
-  let deploymentId = ownProps.routeParams.deploymentId
+  // let deploymentId = ownProps.routeParams.deploymentId
   let user = state.user
-  let project = state.projects.all
-    ? state.projects.all.find(p => {
-        if (!p.deployments) return false
-        return (p.deployments.findIndex(dep => dep.id === deploymentId) !== -1)
-      })
-    : null
+  // let project = state.projects.all
+  //   ? state.projects.all.find(p => {
+  //       if (!p.deployments) return false
+  //       return (p.deployments.findIndex(dep => dep.id === deploymentId) !== -1)
+  //     })
+  //   : null
 
-  let deployment
-  if (project) {
-    deployment = project.deployments.find(dep => dep.id === deploymentId)
-  }
+  // let deployment
+  // if (project) {
+  //   deployment = project.deployments.find(dep => dep.id === deploymentId)
+  // }
 
   return {
-    deployment,
-    project,
+    // deployment,
+    // project,
     user
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const deploymentId = ownProps.routeParams.deploymentId
+  const deploymentId = ownProps.deployment && ownProps.deployment.id
   return {
     onComponentMount: (initialProps) => {
       if (initialProps.user.profile === null) {
@@ -61,7 +61,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // },
     // deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
     // searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
-    getDeploymentStatus: (deployment, target) => {dispatch(fetchDeploymentStatus(deployment, target))},
+    getDeploymentStatus: (deployment, target) => { dispatch(fetchDeploymentStatus(deployment, target)) },
     updateVersionForFeedSource: (deployment, feedSource, feedVersion) => {
       let feedVersions = [...deployment.feedVersions]
       let index = feedVersions.findIndex(v => v.feedSource.id === feedSource.id)
@@ -78,7 +78,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       let index = feedVersions.findIndex(v => v.id === feedVersion.id)
       feedVersions.splice(index, 1)
       dispatch(updateDeployment(deployment, {feedVersions}))
-    },
+    }
   }
 }
 

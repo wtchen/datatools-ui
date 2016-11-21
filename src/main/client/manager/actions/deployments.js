@@ -168,7 +168,7 @@ export function fetchDeploymentTargets () {
 export function createDeployment (projectId) {
   return {
     type: 'CREATE_DEPLOYMENT',
-    projectId,
+    projectId
   }
 }
 

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import UserHomePage from '../components/UserHomePage'
 import { getRecentActivity, logout } from '../actions/user'
@@ -16,14 +17,20 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const activeProjectId = ownProps.routeParams.projectId
+  let activeProjectId = ownProps.routeParams.projectId
   return {
     onComponentMount: (props) => {
       dispatch(getRecentActivity(props.user))
       dispatch(fetchProjects())
       .then(projects => {
+        if (!activeProjectId) {
+          const userProjectIds = props.user && Object.keys(props.user.permissions.projectLookup)
+          activeProjectId = userProjectIds && userProjectIds[0]
+        }
+        console.log(activeProjectId)
         if (activeProjectId) {
           dispatch(fetchProjectFeeds(activeProjectId))
+          .then(() => browserHistory.push(`/home/${activeProjectId}`))
         }
         // for (var i = 0; i < projects.length; i++) {
         //   dispatch(fetchProjectFeeds(projects[i].id))
