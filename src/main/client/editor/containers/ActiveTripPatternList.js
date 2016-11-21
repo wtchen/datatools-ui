@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
   const mapState = state.editor.mapState
   const editSettings = state.editor.editSettings
   const stops = state.editor.tableData.stop
-  const currentPattern = state.editor.active.subEntity
+  const activePattern = state.editor.active.subEntity
 
   const feedSourceId = state.editor.active.feedSourceId
   // find the containing project
@@ -28,17 +28,17 @@ const mapStateToProps = (state, ownProps) => {
 
   const activeEntity = state.editor.active.entity
   // const subSubComponent = state.editor.active.subSubComponent
-  const subEntityId = state.editor.active.subEntityId
+  const activePatternId = state.editor.active.subEntityId
 
   return {
     mapState,
     editSettings,
     stops,
-    currentPattern,
+    activePattern,
     feedSource,
     activeEntity,
     // subSubComponent,
-    subEntityId
+    activePatternId
   }
 }
 

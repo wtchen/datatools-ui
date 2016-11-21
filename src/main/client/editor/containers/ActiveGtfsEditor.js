@@ -61,7 +61,7 @@ const mapStateToProps = (state, ownProps) => {
     : state.editor.active && state.editor.active.entity && activeComponent === 'feedinfo'
     ? state.editor.active.entity
     : null
-  const currentPattern = state.editor.active && state.editor.active.subEntity
+  const activePattern = state.editor.active && state.editor.active.subEntity
   // const subEntityId = state.editor.active && state.editor.active.subEntity && state.editor.active.subEntity.id === activeEntityId
   // ? state.editor.active.subEntity
   // : state.editor.active && state.editor.active.subEntity && activeComponent === 'feedinfo'
@@ -112,7 +112,7 @@ const mapStateToProps = (state, ownProps) => {
     activeEntity,
     activeEntityId,
     subEntityId,
-    currentPattern,
+    activePattern,
     // subEntityIdId,
     activeSubSubEntity,
     editSettings,

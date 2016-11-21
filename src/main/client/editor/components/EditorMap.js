@@ -117,7 +117,7 @@ export default class EditorMap extends Component {
             !shallowEqual(nextProps.zoomToTarget, this.props.zoomToTarget) ||
             !shallowEqual(nextProps.editSettings, this.props.editSettings) ||
             !shallowEqual(nextProps.subEntityId, this.props.subEntityId) ||
-            !shallowEqual(nextProps.currentPattern, this.props.currentPattern) ||
+            !shallowEqual(nextProps.currentPattern, this.props.activePattern) ||
             // nextProps.activeComponent === 'stop' && this.props.mapState.zoom !== nextProps.mapState.zoom ||
             nextProps.activeComponent === 'stop' && this.props.activeEntity && nextProps.activeEntity && (this.props.activeEntity.stop_lon !== nextProps.activeEntity.stop_lon || this.props.activeEntity.stop_lat !== nextProps.activeEntity.stop_lat) ||
             nextProps.activeEntityId !== this.props.activeEntityId ||
@@ -212,14 +212,14 @@ export default class EditorMap extends Component {
     this.props.saveActiveEntity('trippattern')
   }
   handleControlPointDragEnd (e, timer, controlPointRef, controlPointIndex) {
-    let patternGeojson = this.refs[this.props.currentPattern.id].leafletElement.toGeoJSON()
+    let patternGeojson = this.refs[this.props.activePattern.id].leafletElement.toGeoJSON()
 
     // snap control point to line
     let controlPointLocation = e.target.toGeoJSON()
     let snapPoint = pointOnLine(patternGeojson, controlPointLocation)
     this.refs[controlPointRef].leafletElement.setLatLng(ll.toLatlng(snapPoint.geometry.coordinates))
 
-    this.props.updateActiveEntity(this.props.currentPattern, 'trippattern', {shape: {type: 'LineString', coordinates: patternGeojson.geometry.coordinates}})
+    this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {shape: {type: 'LineString', coordinates: patternGeojson.geometry.coordinates}})
 
     if (typeof controlPointIndex !== 'undefined') {
       let lineSegment = lineSlice(point(patternGeojson.geometry.coordinates[0]), snapPoint, patternGeojson)
@@ -315,7 +315,7 @@ export default class EditorMap extends Component {
     const gtfsStop = stopToGtfs(s)
     // add stop to end of pattern
     if (addToPattern) {
-      await this.addStopToPattern(this.props.currentPattern, gtfsStop, index)
+      await this.addStopToPattern(this.props.activePattern, gtfsStop, index)
     }
     return gtfsStop
   }
@@ -353,12 +353,12 @@ export default class EditorMap extends Component {
           break
         case 'ADD_STOPS_AT_INTERVAL':
           // create first stop if none exist
-          if (this.props.currentPattern.patternStops.length === 0) {
+          if (this.props.activePattern.patternStops.length === 0) {
             this.addStopAtPoint(e.latlng, true)
           } else {
-            let coordinates = this.props.currentPattern.shape && this.props.currentPattern.shape.coordinates
-            let patternStops = [...this.props.currentPattern.patternStops]
-            let initialDistance = lineDistance(this.props.currentPattern.shape, 'meters')
+            let coordinates = this.props.activePattern.shape && this.props.activePattern.shape.coordinates
+            let patternStops = [...this.props.activePattern.patternStops]
+            let initialDistance = lineDistance(this.props.activePattern.shape, 'meters')
 
             // extend pattern to click point
             let endPoint
@@ -367,8 +367,8 @@ export default class EditorMap extends Component {
             } else {
               endPoint = {lng: patternStops[0].stop_lon, lat: patternStops[0].stop_lat}
             }
-            const updatedShape = await this.extendPatternToPoint(this.props.currentPattern, endPoint, e.latlng)
-            let totalDistance = lineDistance(this.props.currentPattern.shape, 'meters')
+            const updatedShape = await this.extendPatternToPoint(this.props.activePattern, endPoint, e.latlng)
+            let totalDistance = lineDistance(this.props.activePattern.shape, 'meters')
             let distanceAdded = totalDistance - initialDistance
             let numIntervals = distanceAdded / this.props.editSettings.stopInterval
             const latlngList = []
@@ -391,7 +391,7 @@ export default class EditorMap extends Component {
             // patternStops = [...patternStops, ...newStops.map(s => this.stopToStopTime(s))]
 
             // update and save all new stops to pattern
-            this.props.updateActiveEntity(this.props.currentPattern, 'trippattern', {patternStops: patternStops})
+            this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
             this.props.saveActiveEntity('trippattern')
           }
           break
@@ -419,7 +419,7 @@ export default class EditorMap extends Component {
   }
   async handlePatternEdit (controlPointRef, begin, end) {
     let followRoad = this.props.editSettings.followStreets // !e.originalEvent.shiftKey
-    let leafletPattern = this.refs[this.props.currentPattern.id].leafletElement
+    let leafletPattern = this.refs[this.props.activePattern.id].leafletElement
     let originalLatLngs
     let originalEndPoint
     let from, to
@@ -442,7 +442,7 @@ export default class EditorMap extends Component {
       originalEndPoint = originalLatLngs[originalLatLngs.length - 1]
       from = [originalEndPoint.lng, originalEndPoint.lat]
     } else { // otherwise use the original endpoint
-      originalLatLngs = this.props.currentPattern.shape.coordinates.map(c => ([c[1], c[0]]))
+      originalLatLngs = this.props.activePattern.shape.coordinates.map(c => ([c[1], c[0]]))
       originalEndPoint = originalLatLngs[originalLatLngs.length - 1]
       from = [originalEndPoint[1], originalEndPoint[0]] // [latLngs[latLngs.length - 1].lng, latLngs[latLngs.length - 1].lat]
       to = [markerLatLng.lng, markerLatLng.lat]
@@ -505,7 +505,7 @@ export default class EditorMap extends Component {
         let route = entity
         let bounds = this.refs.map && this.refs.map.leafletElement.getBounds()
         // get intervals along path for arrow icons
-        let patternLength = this.props.currentPattern && this.props.currentPattern.shape ? lineDistance(this.props.currentPattern.shape, 'meters') : 0
+        let patternLength = this.props.activePattern && this.props.activePattern.shape ? lineDistance(this.props.activePattern.shape, 'meters') : 0
         let zoom = this.refs.map ? this.refs.map.leafletElement.getZoom() : 11
         let iconInterval = zoom > 15
                       ? 200
@@ -524,7 +524,7 @@ export default class EditorMap extends Component {
         let lengthsAlongPattern = []
         for (var i = 0; i < Math.floor(patternLength / iconInterval); i++) {
           let distance = i ? iconInterval * i : iconInterval / 2
-          let position = along(this.props.currentPattern.shape, distance, 'meters')
+          let position = along(this.props.activePattern.shape, distance, 'meters')
           if (!bounds) continue
           if (position.geometry.coordinates[1] > bounds.getNorth() || position.geometry.coordinates[1] < bounds.getSouth() || position.geometry.coordinates[0] > bounds.getEast() || position.geometry.coordinates[0] < bounds.getWest()) {
             continue
@@ -549,7 +549,7 @@ export default class EditorMap extends Component {
                 ? route.tripPatterns
                   .map(tp => {
                     const isActive = this.props.subEntityId === tp.id
-                    let pattern = isActive ? this.props.currentPattern : tp
+                    let pattern = isActive ? this.props.activePattern : tp
                     const latLngs = pattern.shape ? pattern.shape.coordinates.map(c => ([c[1], c[0]])) : []
                     // skip pattern if latlngs don't exist or some other pattern is active
                     if (!latLngs || !isActive && this.props.subEntityId) {
@@ -584,12 +584,12 @@ export default class EditorMap extends Component {
               ref='directionIcons'
               key='directionIcons'
             >
-              {lengthsAlongPattern.length && this.refs[this.props.currentPattern.id] // && false
+              {lengthsAlongPattern.length && this.refs[this.props.activePattern.id] // && false
               ? lengthsAlongPattern.map((length, index) => {
                 let distance = length[0]
                 let position = length[1]
 
-                let nextPosition = along(this.props.currentPattern.shape, distance + 5, 'meters')
+                let nextPosition = along(this.props.activePattern.shape, distance + 5, 'meters')
                 const dir = position && nextPosition ? bearing(position, nextPosition) : 0
                 const cos = Math.cos(bearing * (Math.PI / 180))
                 const sin = Math.sin(bearing * (Math.PI / 180))
@@ -622,7 +622,7 @@ export default class EditorMap extends Component {
               }
             </FeatureGroup>,
             <FeatureGroup ref='controlPoints' key='controlPoints'>
-              {this.props.stops.length && this.props.currentPattern && this.props.currentPattern.shape && this.props.editSettings.editGeometry
+              {this.props.stops.length && this.props.activePattern && this.props.activePattern.shape && this.props.editSettings.editGeometry
               ? this.state.controlPoints.map((s, index) => {
                 // don't include controlPoint on end of segment (for now) or hidden controlPoints
                 if (s.stopId && this.props.editSettings.snapToStops) {
@@ -640,7 +640,7 @@ export default class EditorMap extends Component {
 
                 let begin = prevControlPoint
                           ? prevControlPoint.point
-                          : along(this.props.currentPattern.shape, 0, 'meters')
+                          : along(this.props.activePattern.shape, 0, 'meters')
                 let end
                 if (nextControlPoint) {
                   end = nextControlPoint.point
@@ -679,7 +679,7 @@ export default class EditorMap extends Component {
                       console.log('control point clicked', e)
                       // only remove controlPoint if it's not based on pattern stop (i.e., has permanent prop)
                       if (!s.permanent) {
-                        this.removeControlPoint(this.props.currentPattern, index, begin, end)
+                        this.removeControlPoint(this.props.activePattern, index, begin, end)
                       }
                     }}
                     color='black'
@@ -689,14 +689,14 @@ export default class EditorMap extends Component {
               })
               : null
               }
-              {beginPoint && this.props.editSettings.editGeometry && this.props.currentPattern
+              {beginPoint && this.props.editSettings.editGeometry && this.props.activePattern
               ? <Marker
                   position={beginPoint}
                   icon={circleIcon}
                   ref='controlPointBegin'
                   draggable
                   onDragStart={(e) => {
-                    let beginStop = this.props.stops.find(s => s.id === this.props.currentPattern.patternStops[0].stopId)
+                    let beginStop = this.props.stops.find(s => s.id === this.props.activePattern.patternStops[0].stopId)
                     let begin = point([beginStop.stop_lon, beginStop.stop_lat])
                     const timerFunction = () => {
                       this.handlePatternEdit('controlPointBegin', null, begin)
@@ -716,11 +716,11 @@ export default class EditorMap extends Component {
               ref='patternStops'
               key='patternStops'
             >
-              {this.props.stops.length && this.props.currentPattern && !this.props.editSettings.hideStops
-                ? this.props.currentPattern.patternStops && this.props.currentPattern.patternStops.map((s, index) => {
+              {this.props.stops.length && this.props.activePattern && !this.props.editSettings.hideStops
+                ? this.props.activePattern.patternStops && this.props.activePattern.patternStops.map((s, index) => {
                   const stop = this.props.stops.find(ps => ps.id === s.stopId)
                   if (!stop
-                    // || this.props.mapState.zoom <= 11 && index > 0 && index < this.props.currentPattern.patternStops.length - 1
+                    // || this.props.mapState.zoom <= 11 && index > 0 && index < this.props.activePattern.patternStops.length - 1
                   ) return null
                   const patternStopIcon = divIcon({
                     html: `<span title="${index + 1}. ${stop.stop_name}" class="fa-stack">
@@ -748,8 +748,8 @@ export default class EditorMap extends Component {
                       // onClick={(e) => {
                       //
                       // }}
-                      ref={`${this.props.currentPattern.id}-${s.stopId}-${index}`}
-                      key={`${this.props.currentPattern.id}-${s.stopId}-${index}`}
+                      ref={`${this.props.activePattern.id}-${s.stopId}-${index}`}
+                      key={`${this.props.activePattern.id}-${s.stopId}-${index}`}
                     >
                       <Popup>
                         <div
@@ -781,7 +781,7 @@ export default class EditorMap extends Component {
                                 <Button
                                   bsStyle='danger'
                                   onClick={() => {
-                                    this.removeStopFromPattern(this.props.currentPattern, stop, index)
+                                    this.removeStopFromPattern(this.props.activePattern, stop, index)
                                   }}
                                 >
                                   <Icon type='trash'/>
@@ -790,26 +790,26 @@ export default class EditorMap extends Component {
                                 <Dropdown
                                   id={`split-button-basic-${i}`}
                                   onSelect={(key) => {
-                                    this.addStopToPattern(this.props.currentPattern, stop, key)
+                                    this.addStopToPattern(this.props.activePattern, stop, key)
                                   }}
                                 >
                                   <Button
                                     bsStyle='success'
-                                    disabled={index >= this.props.currentPattern.patternStops.length - 2}
+                                    disabled={index >= this.props.activePattern.patternStops.length - 2}
                                     onClick={(e) => {
-                                      this.addStopToPattern(this.props.currentPattern, stop)
+                                      this.addStopToPattern(this.props.activePattern, stop)
                                     }}
                                   >
                                     <Icon type='plus'/>
                                   </Button>
                                   <Dropdown.Toggle bsStyle='success'/>
                                   <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
-                                    <MenuItem disabled={index >= this.props.currentPattern.patternStops.length - 2} value={this.props.currentPattern.patternStops.length} eventKey={this.props.currentPattern.patternStops.length}>
+                                    <MenuItem disabled={index >= this.props.activePattern.patternStops.length - 2} value={this.props.activePattern.patternStops.length} eventKey={this.props.activePattern.patternStops.length}>
                                       Add to end (default)
                                     </MenuItem>
-                                    {this.props.currentPattern.patternStops && this.props.currentPattern.patternStops.map((stop, i) => {
-                                      let addIndex = this.props.currentPattern.patternStops.length - i
-                                      if (index === this.props.currentPattern.patternStops.length - 1 && index === addIndex - 1) {
+                                    {this.props.activePattern.patternStops && this.props.activePattern.patternStops.map((stop, i) => {
+                                      let addIndex = this.props.activePattern.patternStops.length - i
+                                      if (index === this.props.activePattern.patternStops.length - 1 && index === addIndex - 1) {
                                         return null
                                       }
                                       // disable adding stop to current position or directly before/after current position
@@ -840,9 +840,9 @@ export default class EditorMap extends Component {
                               <MinuteSecondInput
                                 seconds={s.defaultTravelTime}
                                 onChange={(value) => {
-                                  let patternStops = [...this.props.currentPattern.patternStops]
+                                  let patternStops = [...this.props.activePattern.patternStops]
                                   patternStops[index].defaultTravelTime = value
-                                  this.props.updateActiveEntity(this.props.currentPattern, 'trippattern', {patternStops: patternStops})
+                                  this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
                                 }}
                               />
                               </FormGroup>
@@ -858,9 +858,9 @@ export default class EditorMap extends Component {
                               <MinuteSecondInput
                                 seconds={s.defaultDwellTime}
                                 onChange={(evt) => {
-                                  let patternStops = [...this.props.currentPattern.patternStops]
+                                  let patternStops = [...this.props.activePattern.patternStops]
                                   patternStops[index].defaultDwellTime = +evt.target.value
-                                  this.props.updateActiveEntity(this.props.currentPattern, 'trippattern', {patternStops: patternStops})
+                                  this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
                                 }}
                               />
                               </FormGroup>
@@ -880,7 +880,7 @@ export default class EditorMap extends Component {
               key='addableStops'
             >
               {
-                this.props.stops.length && this.props.currentPattern && this.props.editSettings.addStops && this.props.mapState.zoom > 14
+                this.props.stops.length && this.props.activePattern && this.props.editSettings.addStops && this.props.mapState.zoom > 14
                 ? this.props.stops
                   .filter(stop => {
                     if (!bounds) return false
@@ -893,7 +893,7 @@ export default class EditorMap extends Component {
                   })
                   .map((stop, index) => {
                     if (!stop) return null
-                    let patternStop = this.props.currentPattern.patternStops.find(ps => ps.stopId === stop.id)
+                    let patternStop = this.props.activePattern.patternStops.find(ps => ps.stopId === stop.id)
                     if (patternStop) return null
                     const color = 'blue'
                     const busIcon = divIcon({
@@ -924,17 +924,17 @@ export default class EditorMap extends Component {
                               id={`split-button-basic-${i}`}
                               bsStyle='success'
                               onSelect={(key) => {
-                                this.addStopToPattern(this.props.currentPattern, stop, key)
+                                this.addStopToPattern(this.props.activePattern, stop, key)
                               }}
                               onClick={(e) => {
-                                this.addStopToPattern(this.props.currentPattern, stop)
+                                this.addStopToPattern(this.props.activePattern, stop)
                               }}
                             >
-                              <MenuItem value={this.props.currentPattern.patternStops.length} eventKey={this.props.currentPattern.patternStops.length}>
+                              <MenuItem value={this.props.activePattern.patternStops.length} eventKey={this.props.activePattern.patternStops.length}>
                                 Add to end (default)
                               </MenuItem>
-                              {this.props.currentPattern.patternStops && this.props.currentPattern.patternStops.map((stop, i) => {
-                                let index = this.props.currentPattern.patternStops.length - i
+                              {this.props.activePattern.patternStops && this.props.activePattern.patternStops.map((stop, i) => {
+                                let index = this.props.activePattern.patternStops.length - i
                                 return (
                                   <MenuItem value={index - 1} eventKey={index - 1}>
                                     {index === 1 ? 'Add to beginning' : `Insert as stop #${index}`}
