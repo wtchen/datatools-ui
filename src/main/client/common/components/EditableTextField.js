@@ -85,7 +85,7 @@ export default class EditableTextField extends Component {
             this.save()
           }}>
         <Icon
-          type='ok'
+          type='check'
           style={iconStyle} />
         </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
       </InputGroup.Button>
@@ -93,51 +93,56 @@ export default class EditableTextField extends Component {
     const displayValue = this.props.maxLength !== null && this.state.value && this.state.value.length > this.props.maxLength
           ? this.state.value.substr(0, this.props.maxLength) + '...'
           : this.state.value
+    const style = {
+      ...this.props.style
+    }
+    if (this.props.inline) {
+      style.display = 'inline-block'
+    }
     return (
-      <div style={this.props.inline ? {display: 'inline-block'} : {}}>
+      <div style={style}>
         {this.state.isEditing
           ? <Form inline={this.props.inline}>
-              <FormGroup>
-                <InputGroup>
-                  <FormControl
-                    ref='input'
-                    type={this.props.type ? this.props.type.toLowerCase() : 'text'}
-                    min={this.props.min != null ? this.props.min : null}
-                    step={this.props.step != null ? this.props.step : null}
-                    placeholder={this.props.placeholder ? this.props.placeholder : ''}
-                    autoFocus='true'
-                    onKeyDown={(e) => this.handleKeyDown(e)}
-                    onFocus={(e) => e.target.select()}
-                    defaultValue={ this.state.value }
-                  />
-                  {saveButton}
-                </InputGroup>
-              </FormGroup>
-            </Form>
-
+            <FormGroup>
+              <InputGroup>
+                <FormControl
+                  ref='input'
+                  type={this.props.type ? this.props.type.toLowerCase() : 'text'}
+                  min={this.props.min != null ? this.props.min : null}
+                  step={this.props.step != null ? this.props.step : null}
+                  placeholder={this.props.placeholder ? this.props.placeholder : ''}
+                  autoFocus='true'
+                  onKeyDown={(e) => this.handleKeyDown(e)}
+                  onFocus={(e) => e.target.select()}
+                  defaultValue={this.state.value}
+                />
+                {saveButton}
+              </InputGroup>
+            </FormGroup>
+          </Form>
           : <span
-              title={this.state.value}
-            >
-              {this.props.link
-                ? <Link to={this.props.link}>{displayValue}</Link>
-                : displayValue || '(none)'
-              }
-              {this.props.hideEditButton
-                ? null
-                : <span>
-                    {'  '}
-                    <Button bsStyle='link'
-                      ref='editButton'
-                      tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
-                      onClick={() => this.edit()}
-                      disabled={this.props.disabled !== null ? this.props.disabled : false}>
-                      <Icon
-                        style={iconStyle}
-                        type='pencil' />
-                    </Button>
-                  </span>
-              }
-            </span>
+            title={this.state.value}
+          >
+            {this.props.link
+              ? <Link to={this.props.link}>{displayValue}</Link>
+              : displayValue || '(none)'
+            }
+            {this.props.hideEditButton
+              ? null
+              : <span>
+                {'  '}
+                <Button bsStyle='link'
+                  ref='editButton'
+                  tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
+                  onClick={() => this.edit()}
+                  disabled={this.props.disabled !== null ? this.props.disabled : false}>
+                  <Icon
+                    style={iconStyle}
+                    type='pencil' />
+                </Button>
+              </span>
+            }
+          </span>
         }
       </div>
     )
