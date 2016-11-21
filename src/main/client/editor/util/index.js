@@ -1,6 +1,8 @@
 import { getAbbreviatedStopName } from '../util/gtfs'
 
 export const CLICK_OPTIONS = ['DRAG_HANDLES', 'ADD_STOP_AT_CLICK', 'ADD_STOPS_AT_INTERVAL', 'ADD_STOPS_AT_INTERSECTIONS']
+export const YEAR_FORMAT = 'YYYY-MM-DD'
+export const TIMETABLE_FORMATS = ['HH:mm:ss', 'h:mm:ss a', 'h:mm:ssa', 'h:mm a', 'h:mma', 'h:mm', 'HHmm', 'hmm', 'HH:mm'].map(format => `YYYY-MM-DDT${format}`)
 
 export function isTimeFormat (type) {
   return /TIME/.test(type)

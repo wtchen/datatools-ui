@@ -8,9 +8,7 @@ import scrollbarSize from 'dom-helpers/util/scrollbarSize'
 
 import EditableCell from '../../common/components/EditableCell'
 import Loading from '../../common/components/Loading'
-import { isTimeFormat } from '../util'
-
-const DT_FORMATS = ['YYYY-MM-DDTHH:mm:ss', 'YYYY-MM-DDTh:mm:ss a', 'YYYY-MM-DDTh:mm a']
+import { isTimeFormat, TIMETABLE_FORMATS } from '../util'
 
 export default class Timetable extends Component {
   static propTypes = {
@@ -52,7 +50,7 @@ export default class Timetable extends Component {
   }
   parseTime (timeString) {
     const date = moment().startOf('day').format('YYYY-MM-DD')
-    return moment(date + 'T' + timeString, DT_FORMATS).diff(date, 'seconds')
+    return moment(date + 'T' + timeString, TIMETABLE_FORMATS).diff(date, 'seconds')
   }
   handlePastedRows (pastedRows, rowIndex, colIndex) {
     let newRows = [...this.props.data]
@@ -105,6 +103,10 @@ export default class Timetable extends Component {
   handleCellClick (rowIndex, columnIndex) {
     this.setState({scrollToColumn: columnIndex, scrollToRow: rowIndex})
   }
+  cellValueInvalid (col, value, previousValue) {
+    // TRUE if value is invalid
+    return isTimeFormat(col.type) && value >= 0 && value < previousValue
+  }
   _cellRenderer ({ columnIndex, key, rowIndex, scrollToColumn, scrollToRow, style }) {
     const isFocused = columnIndex === scrollToColumn && rowIndex === scrollToRow
     const isEditing = this.state.activeCell === `${rowIndex}-${columnIndex}`
@@ -121,7 +123,7 @@ export default class Timetable extends Component {
       val = objectPath.get(this.props.data[rowIndex], 'id') !== 'new' ? objectPath.get(this.props.data[rowIndex], 'id') : null
     }
     let previousValue = previousCol && row && objectPath.get(row, previousCol.key)
-    const isInvalid = isTimeFormat(col.type) && val >= 0 && val < previousValue
+    const isInvalid = isTimeFormat(col.type) && val >= 0 && val < previousValue && val !== null
     return (
       <EditableCell
         key={key}
@@ -211,6 +213,10 @@ export default class Timetable extends Component {
         } else {
           this.setState({activeCell: null})
         }
+        break
+      case 8: // DELETE
+        // TODO: add delete cell value
+        // this.props.updateCellValue('', rowIndex, `${scrollToRow}.${col.key}`)
         break
       case 67:
         // handle copy
@@ -343,7 +349,6 @@ export default class Timetable extends Component {
                                   columnWidth={columnWidth}
                                   columnCount={1}
                                   scrollTop={scrollTop}
-                                  className={styles.LeftSideGrid}
                                   height={height - scrollbarSize()}
                                   rowHeight={rowHeight}
                                   rowCount={this.props.data.length}
@@ -360,7 +365,6 @@ export default class Timetable extends Component {
                               }}>
                                 {/* Top Header Row */}
                                 <Grid
-                                  // className={styles.HeaderGrid}
                                   style={{overflowX: 'hidden', overflowY: 'hidden', outline: 'none'}}
                                   columnWidth={this._getColumnHeaderWidth}
                                   columnCount={columnHeaderCount} // this.props.columns.length

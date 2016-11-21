@@ -6,23 +6,21 @@ export const componentList = ['route', 'stop', 'fare', 'feedinfo', 'calendar', '
 export const subComponentList = ['trippattern']
 export const subSubComponentList = ['timetable']
 
-export const isNew = (entity) => {
+export function isNew (entity) {
   return entity.id === 'new' || typeof entity.id === 'undefined'
 }
 
-export const getEntityBounds = (entity, offset = 0.005) => {
+export function getEntityBounds (entity, offset = 0.005) {
   if (!entity) return null
 
   // [lng, lat]
   if (entity.constructor === Array) {
     return latLngBounds([[entity[1] + offset, entity[0] - offset], [entity[1] - offset, entity[0] + offset]])
-  }
-  // stop
-  else if (typeof entity.stop_lat !== 'undefined') {
+  } else if (typeof entity.stop_lat !== 'undefined') {
+    // stop
     return latLngBounds([[entity.stop_lat + offset, entity.stop_lon - offset], [entity.stop_lat - offset, entity.stop_lon + offset]])
-  }
-  // route
-  else if (typeof entity.tripPatterns !== 'undefined') {
+  } else if (typeof entity.tripPatterns !== 'undefined') {
+    // route
     let coordinates = []
     entity.tripPatterns.map(pattern => {
       if (pattern.shape && pattern.shape.coordinates) {
@@ -33,14 +31,13 @@ export const getEntityBounds = (entity, offset = 0.005) => {
       }
     })
     return latLngBounds(coordinates)
-  }
-  // trip pattern
-  else if (typeof entity.shape !== 'undefined') {
+  } else if (typeof entity.shape !== 'undefined') {
+    // trip pattern
     return latLngBounds(entity.shape.coordinates.map(c => ([c[1], c[0]])))
   }
 }
 
-export const getEntityName = (component, entity) => {
+export function getEntityName (component, entity) {
   if (!entity) {
     return '[Unnamed]'
   }
@@ -76,16 +73,16 @@ export const getEntityName = (component, entity) => {
         : entity.route_long_name && entity.route_long_name !== '""'
         ? entity.route_long_name
         : entity.route_id || '[no name]'
-      case 'description':
-        return `${entity.service_id} (${entity.description})`
+    case 'description':
+      return `${entity.service_id} (${entity.description})`
     default:
       return entity[nameKey] || '[no name]'
   }
 }
 
-export const getAbbreviatedStopName = (stop, maxCharactersPerWord = 10) => {
+export function getAbbreviatedStopName (stop, maxCharactersPerWord = 10) {
   let stopName = getEntityName('stop', stop)
-  let stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:)+/i) : null
+  let stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:|\+)+/i) : null
   return stopNameParts && stopNameParts.length === 3 && stop.stop_name.length > maxCharactersPerWord * 2
     ? `${stopNameParts[0].substr(0, maxCharactersPerWord).trim()}... ${stopNameParts[2].substr(0, maxCharactersPerWord).trim()}`
     : stop.stop_name
@@ -143,7 +140,7 @@ export const gtfsIcons = [
   }
 ]
 
-export const getControlPoints = (pattern, snapToStops) => {
+export function getControlPoints (pattern, snapToStops) {
   if (!pattern) {
     return []
   }
@@ -186,23 +183,23 @@ export function getRouteNameAlerts (route) {
 
 export function getRouteName (route) {
   let name = ''
-  if(route.route_short_name) {
+  if (route && route.route_short_name) {
     name += route.route_short_name
-    if(route.route_long_name) {
+    if (route.route_long_name) {
       name += ' - '
     }
   }
 
-  if(route.route_long_name) {
+  if (route && route.route_long_name) {
     name += route.route_long_name
   }
-  if (route.route_id && !route.route_long_name && !route.route_short_name) {
+  if (route && route.route_id && !route.route_long_name && !route.route_short_name) {
     name += route.route_id
   }
   return name
 }
 
-export const stopToGtfs = (s) => {
+export function stopToGtfs (s) {
   return {
     // datatools props
     id: s.id,
@@ -228,7 +225,7 @@ export const stopToGtfs = (s) => {
   }
 }
 
-export const stopFromGtfs = (stop) => {
+export function stopFromGtfs (stop) {
   return {
     gtfsStopId: stop.stop_id,
     stopCode: stop.stop_code,
@@ -247,11 +244,11 @@ export const stopFromGtfs = (stop) => {
     pickupType: stop.pickupType,
     dropOffType: stop.dropOffType,
     feedId: stop.feedId,
-    id: isNew(stop) ? null : stop.id,
+    id: isNew(stop) ? null : stop.id
   }
 }
 
-export const routeToGtfs = route => {
+export function routeToGtfs (route) {
   return {
     // datatools props
     id: route.id,
@@ -274,7 +271,7 @@ export const routeToGtfs = route => {
   }
 }
 
-export const agencyToGtfs = agency => {
+export function agencyToGtfs (agency) {
   return {
     // datatools props
     id: agency.id,
@@ -293,7 +290,7 @@ export const agencyToGtfs = agency => {
   }
 }
 
-export const calendarToGtfs = cal => {
+export function calendarToGtfs (cal) {
   return {
     // datatools props
     id: cal.id,
@@ -316,7 +313,7 @@ export const calendarToGtfs = cal => {
   }
 }
 
-export const fareToGtfs = fare => {
+export function fareToGtfs (fare) {
   return {
     // datatools props
     id: fare.id,
@@ -334,7 +331,7 @@ export const fareToGtfs = fare => {
   }
 }
 
-export const gtfsSort = (a, b) => {
+export function gtfsSort (a, b) {
   const radix = 10
   var aName = getEntityName(null, a)
   var bName = getEntityName(null, b)
