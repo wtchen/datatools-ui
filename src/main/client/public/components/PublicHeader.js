@@ -42,7 +42,7 @@ export default class PublicHeader extends Component {
             {this.props.username
               ? <LinkContainer to='/home'>
                   <Button>
-                    <span><img height={20} width={20} src={this.props.userPicture}/> My dashboard</span>
+                    <span><img height={20} width={20} src={this.props.userPicture} /> My dashboard</span>
                   </Button>
                 </LinkContainer>
               : <Button bsStyle='primary' onClick={() => this.props.loginHandler()}>

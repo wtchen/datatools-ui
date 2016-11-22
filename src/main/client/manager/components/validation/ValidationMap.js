@@ -12,7 +12,7 @@ export default class ValidationMap extends React.Component {
   }
 
   initializeMap() {
-    if(this.mapInitialized || this.props.initialized) return
+    if (this.mapInitialized || this.props.initialized) return
     const leafletMap = this.getMap().leafletElement
     leafletMap.invalidateSize()
     const summary = this.props.version.validationSummary
@@ -42,7 +42,7 @@ export default class ValidationMap extends React.Component {
         style={mapStyle}
         bounds={bounds}
         onClick={(e) => this.mapClicked(e)}
-        scrollWheelZoom={true}
+        scrollWheelZoom
       >
         <TileLayer
           url='https://api.tiles.mapbox.com/v4/conveyal.ie3o67m0/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiY29udmV5YWwiLCJhIjoiMDliQURXOCJ9.9JWPsqJY7dGIdX777An7Pw'

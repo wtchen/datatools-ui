@@ -98,11 +98,11 @@ export default class AlertEditor extends React.Component {
       var bName = b.shortName || b.name
 
       // return 511 Staff as first in list to avoid 511 Emergency being first in list
-      if(/511 Staff/.test(aName)) return -1
-      if(/511 Staff/.test(bName)) return 1
+      if (/511 Staff/.test(aName)) return -1
+      if (/511 Staff/.test(bName)) return 1
 
-      if(aName < bName) return -1
-      if(aName > bName) return 1
+      if (aName < bName) return -1
+      if (aName > bName) return 1
       return 0
     }
     const canPublish = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.publishableFeeds)
@@ -145,23 +145,23 @@ export default class AlertEditor extends React.Component {
                     disabled={editingIsDisabled}
                     onClick={(evt) => {
                       console.log('times', this.props.alert.end, this.props.alert.start);
-                      if(!this.props.alert.title) {
+                      if (!this.props.alert.title) {
                         alert('You must specify an alert title')
                         return
                       }
-                      if(!this.props.alert.end || !this.props.alert.start) {
+                      if (!this.props.alert.end || !this.props.alert.start) {
                         alert('Alert must have a start and end date')
                         return
                       }
-                      if(this.props.alert.end < this.props.alert.start) {
+                      if (this.props.alert.end < this.props.alert.start) {
                         alert('Alert end date cannot be before start date')
                         return
                       }
-                      if(moment(this.props.alert.end).isBefore(moment())) {
+                      if (moment(this.props.alert.end).isBefore(moment())) {
                         alert('Alert end date cannot be before the current date')
                         return
                       }
-                      if(this.props.alert.affectedEntities.length === 0) {
+                      if (this.props.alert.affectedEntities.length === 0) {
                         alert('You must specify at least one affected entity')
                         return
                       }
@@ -318,7 +318,7 @@ export default class AlertEditor extends React.Component {
                               placeholder='Add stop/route'
                               limit={100}
                               entities={['stops', 'routes']}
-                              clearable={true}
+                              clearable
                               onChange={(evt) => {
                                 console.log('we need to add this entity to the store', evt)
                                 if (typeof evt !== 'undefined' && evt !== null){

@@ -27,15 +27,15 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
     visibleAlerts = visibleAlerts.sort((a, b) => {
       var aValue = visibilityFilter.sort.type === 'title' ? a[visibilityFilter.sort.type].toUpperCase() : a[visibilityFilter.sort.type]
       var bValue = visibilityFilter.sort.type === 'title' ? b[visibilityFilter.sort.type].toUpperCase() : b[visibilityFilter.sort.type]
-      if(aValue < bValue) return visibilityFilter.sort.direction === 'asc' ? -1 : 1
-      if(aValue > bValue) return visibilityFilter.sort.direction === 'asc' ? 1 : -1
+      if (aValue < bValue) return visibilityFilter.sort.direction === 'asc' ? -1 : 1
+      if (aValue > bValue) return visibilityFilter.sort.direction === 'asc' ? 1 : -1
       return 0
     })
   }
   else {
     visibleAlerts.sort((a,b) => {
-      if(a.id < b.id) return -1
-      if(a.id > b.id) return 1
+      if (a.id < b.id) return -1
+      if (a.id > b.id) return 1
       return 0
     })
   }

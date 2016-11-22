@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Row, Col, Image, Button, Panel, ControlLabel, Label, Tabs, Tab, Glyphicon, FormControl, ButtonGroup, ButtonToolbar, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Row, Col, Button, Panel, ControlLabel, Label, Tabs, Tab, ButtonGroup, ListGroup, ListGroupItem } from 'react-bootstrap'
 import moment from 'moment'
 import {Icon} from '@conveyal/woonerf'
 import numeral from 'numeral'
@@ -7,7 +7,7 @@ import Rcslider from 'rc-slider'
 import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
-import { getComponentMessages, getMessage, getConfigProperty, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { getComponentMessages, getMessage, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 import { getProfileLink } from '../../common/util/util'
 
 // import Feed from './reporter/containers/Feed'
@@ -31,27 +31,18 @@ export default class FeedVersionReport extends Component {
     version: PropTypes.object,
     versions: PropTypes.array,
     feedVersionIndex: PropTypes.number,
-    // versionSection: PropTypes.string,
-
     isPublic: PropTypes.bool,
     hasVersions: PropTypes.bool,
-    // listView: PropTypes.bool,
-
-    // newNotePosted: PropTypes.func,
-    // notesRequested: PropTypes.func,
-    // fetchValidationResult: PropTypes.func,
     feedVersionRenamed: PropTypes.func,
     fetchValidationResult: PropTypes.func,
-    publishFeedVersion: PropTypes.func,
-    // downloadFeedClicked: PropTypes.func,
-    // loadFeedVersionForEditing: PropTypes.func
+    publishFeedVersion: PropTypes.func
   }
   constructor (props) {
     super(props)
     this.state = {
       tab: 'feed',
       mapHeight: MAP_HEIGHTS[0],
-      isochroneBand: 60 * 60,
+      isochroneBand: 60 * 60
     }
   }
   getVersionDateLabel (version) {
@@ -68,11 +59,9 @@ export default class FeedVersionReport extends Component {
   renderIsochroneMessage (version) {
     if (version.isochrones && version.isochrones.features) {
       return 'Move marker or change date/time to recalculate travel shed.'
-    }
-    else if (version.isochrones) {
+    } else if (version.isochrones) {
       return 'Reading transport network, please try again later.'
-    }
-    else {
+    } else {
       return 'Click on map above to show travel shed for this feed.'
     }
   }
@@ -84,30 +73,30 @@ export default class FeedVersionReport extends Component {
 
     const versionHeader = (
       <div>
-      <h4
-        style={{margin: '0px'}}
-      >
-        {/* Name Display / Editor */}
-        {version.validationSummary.loadStatus === 'SUCCESS' && version.validationSummary.errorCount === 0
-          ? <Icon title='Feed loaded successfully, and is error-free!' className='text-success' type='check' style={{marginRight: 10}}/>
-          : version.validationSummary.errorCount > 0
-          ? <Icon title='Feed loaded successfully, but has errors.' className='text-warning' type='exclamation-triangle' style={{marginRight: 10}}/>
-          : <Icon title='Feed did not load successfully, something has gone wrong!' className='text-danger' type='times' style={{marginRight: 10}}/>
-        }
-        {this.props.isPublic
-          ? <span>{version.name}</span>
-          : <EditableTextField inline value={version.name}
+        <h4
+          style={{margin: '0px'}}
+        >
+          {/* Name Display / Editor */}
+          {version.validationSummary.loadStatus === 'SUCCESS' && version.validationSummary.errorCount === 0
+            ? <Icon title='Feed loaded successfully, and is error-free!' className='text-success' type='check' style={{marginRight: 10}} />
+            : version.validationSummary.errorCount > 0
+            ? <Icon title='Feed loaded successfully, but has errors.' className='text-warning' type='exclamation-triangle' style={{marginRight: 10}} />
+            : <Icon title='Feed did not load successfully, something has gone wrong!' className='text-danger' type='times' style={{marginRight: 10}} />
+          }
+          {this.props.isPublic
+            ? <span>{version.name}</span>
+            : <EditableTextField inline value={version.name}
               disabled={this.props.isPublic}
               onChange={(value) => this.props.feedVersionRenamed(version, value)}
             />
-        }
-        <VersionButtonToolbar
-          {...this.props}
-        />
-      </h4>
-      <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}>
-        <Icon type='clock-o' /> Version published {moment(version.updated).fromNow()} by {version.user ? <a href={getProfileLink(version.user)}><strong>{version.user}</strong></a> : '[unknown]'}
-      </small>
+          }
+          <VersionButtonToolbar
+            {...this.props}
+          />
+        </h4>
+        <small title={moment(version.updated).format(dateFormat + ', ' + timeFormat)}>
+          <Icon type='clock-o' /> Version published {moment(version.updated).fromNow()} by {version.user ? <a href={getProfileLink(version.user)}><strong>{version.user}</strong></a> : '[unknown]'}
+        </small>
       </div>
     )
     const tableOptions = {
@@ -122,65 +111,66 @@ export default class FeedVersionReport extends Component {
         sizePerPageList: [10, 20, 50, 100]
       }
     }
-    return <Panel
+    return (
+      <Panel
         bsStyle='info'
         header={versionHeader}
         footer={<span><Icon type='file-archive-o' /> {numeral(version.fileSize || 0).format('0 b')} zip file last modified at {version.fileTimestamp ? moment(version.fileTimestamp).format(timeFormat + ', ' + dateFormat) : 'N/A' }</span>}
       >
         <ListGroup fill>
-            <ListGroupItem
-              style={{
-                maxHeight: `${this.state.mapHeight}px`,
-                overflowY: 'hidden',
-                padding: '0px'
-              }}
-              >
-              <ButtonGroup bsSize='small' style={{position: 'absolute', zIndex: 1000, right: 5, top: 5}}>
-                <Button active={this.state.mapHeight === MAP_HEIGHTS[0]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[0]})}>Slim</Button>
-                <Button active={this.state.mapHeight === MAP_HEIGHTS[1]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[1]})}>Large</Button>
-              </ButtonGroup>
-              <ActiveGtfsMap
-                ref='map'
-                version={this.props.version}
-                disableRefresh
-                disableScroll
-                disablePopup
-                renderTransferPerformance
-                showBounds={this.state.tab === 'feed' || this.state.tab === 'accessibility'}
-                showIsochrones={this.state.tab === 'accessibility'}
-                isochroneBand={this.state.isochroneBand}
-                height={this.state.mapHeight}
-                width='100%'
-              />
-            </ListGroupItem>
-            <ListGroupItem>
-              <h4>
-                {isExtensionEnabled('mtc')
-                  ? <Button
-                    disabled={this.props.isPublished}
-                    className='pull-right'
-                    bsStyle={this.props.isPublished ? 'success' : 'warning'}
-                    onClick={() => this.props.publishFeedVersion(version)}
-                  >
-                    {this.props.isPublished
-                      ? <span><Icon type='check-circle' /> Published</span>
-                      : <span>Publish to MTC</span>
-                    }
-                  </Button>
-                  : null
-                }
-                <Icon type='calendar' /> {`Valid from ${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
-                {' '}
-                {this.getVersionDateLabel(version)}
-              </h4>
-              <p>
-                {version.validationSummary && version.validationSummary.avgDailyRevenueTime
-                  ? <span><Icon type='clock-o' /> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
-                  : null
-                }
-              </p>
-            </ListGroupItem>
-            <ListGroupItem>
+          <ListGroupItem
+            style={{
+              maxHeight: `${this.state.mapHeight}px`,
+              overflowY: 'hidden',
+              padding: '0px'
+            }}
+            >
+            <ButtonGroup bsSize='small' style={{position: 'absolute', zIndex: 1000, right: 5, top: 5}}>
+              <Button active={this.state.mapHeight === MAP_HEIGHTS[0]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[0]})}>Slim</Button>
+              <Button active={this.state.mapHeight === MAP_HEIGHTS[1]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[1]})}>Large</Button>
+            </ButtonGroup>
+            <ActiveGtfsMap
+              ref='map'
+              version={this.props.version}
+              disableRefresh
+              disableScroll
+              disablePopup
+              renderTransferPerformance
+              showBounds={this.state.tab === 'feed' || this.state.tab === 'accessibility'}
+              showIsochrones={this.state.tab === 'accessibility'}
+              isochroneBand={this.state.isochroneBand}
+              height={this.state.mapHeight}
+              width='100%'
+            />
+          </ListGroupItem>
+          <ListGroupItem>
+            <h4>
+              {isExtensionEnabled('mtc')
+                ? <Button
+                  disabled={this.props.isPublished}
+                  className='pull-right'
+                  bsStyle={this.props.isPublished ? 'success' : 'warning'}
+                  onClick={() => this.props.publishFeedVersion(version)}
+                >
+                  {this.props.isPublished
+                    ? <span><Icon type='check-circle' /> Published</span>
+                    : <span>Publish to MTC</span>
+                  }
+                </Button>
+                : null
+              }
+              <Icon type='calendar' /> {`Valid from ${moment(version.validationSummary.startDate).format(dateFormat)} to ${moment(version.validationSummary.endDate).format(dateFormat)}`}
+              {' '}
+              {this.getVersionDateLabel(version)}
+            </h4>
+            <p>
+              {version.validationSummary && version.validationSummary.avgDailyRevenueTime
+                ? <span><Icon type='clock-o' /> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
+                : null
+              }
+            </p>
+          </ListGroupItem>
+          <ListGroupItem>
             <Tabs
               activeKey={this.state.tab}
               onSelect={(key) => {
@@ -211,13 +201,6 @@ export default class FeedVersionReport extends Component {
                     <p style={{marginBottom: '0px'}}>{getMessage(messages, 'stopTimesCount')}</p>
                   </Col>
                 </Row>
-                {
-                /*<Feed
-                  version={this.props.version}
-                  selectTab={(key) => this.selectTab(key)}
-                  tableOptions={tableOptions}
-                />*/
-              }
               </Tab>
               <Tab eventKey={'routes'} title='Routes'>
                 <Routes
@@ -227,11 +210,11 @@ export default class FeedVersionReport extends Component {
                 />
               </Tab>
               <Tab eventKey={'patterns'} title='Patterns'>
-              <Patterns
-                version={this.props.version}
-                selectTab={(key) => this.selectTab(key)}
-                tableOptions={tableOptions}
-              />
+                <Patterns
+                  version={this.props.version}
+                  selectTab={(key) => this.selectTab(key)}
+                  tableOptions={tableOptions}
+                />
               </Tab>
               <Tab eventKey={'stops'} title='Stops'>
                 <Stops
@@ -301,8 +284,9 @@ export default class FeedVersionReport extends Component {
               : null
             }
             </Tabs>
-            </ListGroupItem>
+          </ListGroupItem>
         </ListGroup>
       </Panel>
+    )
   }
 }

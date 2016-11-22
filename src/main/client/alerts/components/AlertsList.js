@@ -31,8 +31,8 @@ export default class AlertsList extends Component {
     var compare = function (a, b) {
       var aName = a.shortName || a.name
       var bName = b.shortName || b.name
-      if(aName < bName) return -1
-      if(aName > bName) return 1
+      if (aName < bName) return -1
+      if (aName > bName) return 1
       return 0
     }
    let sortedFeeds = this.props.editableFeeds.sort(compare)

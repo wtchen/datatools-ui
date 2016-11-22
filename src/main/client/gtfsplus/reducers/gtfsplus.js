@@ -36,7 +36,7 @@ const gtfsplus = (state = {
       let newTableData = {}
       for(let i = 0; i < action.filenames.length; i++) {
         const lines = action.fileContent[i].split(/\r\n|\r|\n/g)
-        if(lines.length < 2) continue
+        if (lines.length < 2) continue
         console.log(lines[0])
         const fields = lines[0].split(',')
         console.log(fields)
@@ -61,7 +61,7 @@ const gtfsplus = (state = {
 
     case 'ADD_GTFSPLUS_ROW':
       // create this table if it doesn't already exist
-      if(!(action.tableId in state.tableData)) {
+      if (!(action.tableId in state.tableData)) {
         return update(state,
           {tableData:
             {$merge: {[action.tableId]: [action.rowData]} }
@@ -106,8 +106,8 @@ const gtfsplus = (state = {
 
     case 'RECEIVE_GTFS_PLUS_ENTITIES':
       const getType = function (entity) {
-        if(entity.hasOwnProperty('route_id')) return 'route'
-        if(entity.hasOwnProperty('stop_id')) return 'stop'
+        if (entity.hasOwnProperty('route_id')) return 'route'
+        if (entity.hasOwnProperty('stop_id')) return 'stop'
       }
 
       const newLookupEntries = {}
@@ -126,7 +126,7 @@ const gtfsplus = (state = {
     case 'RECEIVE_GTFSPLUS_VALIDATION':
       const validationTable = {}
       for(const issue of action.validationIssues) {
-        if(!(issue.tableId in validationTable)) {
+        if (!(issue.tableId in validationTable)) {
           validationTable[issue.tableId] = []
         }
         validationTable[issue.tableId].push(issue)

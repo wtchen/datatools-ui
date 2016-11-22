@@ -57,7 +57,7 @@ export default class TimezoneSelect extends React.Component {
       cache={false}
       style={{marginBottom: '20px'}}
       onFocus={onFocus}
-      filterOptions={true}
+      filterOptions
       minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
       clearable={this.props.clearable}
       placeholder={this.props.placeholder || placeholder}

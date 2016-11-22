@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Map, Marker, Popup, Polyline, TileLayer, FeatureGroup, ZoomControl, LayersControl, GeoJson } from 'react-leaflet'
 import { divIcon, Browser } from 'leaflet'
-import { Button, Dropdown, OverlayTrigger, Tooltip, Row, Col, ButtonGroup, MenuItem, SplitButton, FormGroup, ControlLabel } from 'react-bootstrap'
+import { MenuItem, SplitButton } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
 import {Icon} from '@conveyal/woonerf'
 import ll from 'lonlng'
@@ -17,7 +17,7 @@ import { generateUID } from '../../common/util/util'
 import { stopToGtfs } from '../util/gtfs'
 import { getUserMetadataProperty } from '../../common/util/user'
 import { getConfigProperty } from '../../common/util/config'
-import MinuteSecondInput from './MinuteSecondInput'
+import PatternStopPopup from './PatternStopPopup'
 // import StopMarkersLayer from './StopMarkersLayer'
 import StopLayer from '../../scenario-editor/components/StopLayer'
 import {polyline as getPolyline, getSegment} from '../../scenario-editor/utils/valhalla'
@@ -236,15 +236,14 @@ export default class EditorMap extends Component {
   async constructStop (latlng) {
     let stopLatLng = this.getStopLatLng(latlng)
     let result = await reverse(latlng)
-    console.log(result)
-    let stop_id = generateUID()
-    let stop_name = `New Stop (${stop_id})`
+    let stopId = generateUID()
+    let stopName = `New Stop (${stopId})`
     if (result && result.address) {
-      stop_name = result.address.Address
+      stopName = result.address.Address
     }
     return {
-      stop_id,
-      stop_name,
+      stop_id: stopId,
+      stop_name: stopName,
       feedId: this.props.feedSource.id,
       ...stopLatLng
     }
@@ -536,7 +535,6 @@ export default class EditorMap extends Component {
           // iconSize: [24, 24],
           html: `<i class="fa fa-times"/>`
         })
-        let endPoint
         let beginPoint
         if (!route) {
           return null
@@ -556,8 +554,6 @@ export default class EditorMap extends Component {
                       return null
                     }
                     beginPoint = latLngs[0]
-                    endPoint = latLngs[latLngs.length - 1]
-
                     let lineColor = this.props.activeEntity.route_color && this.props.editSettings.editGeometry
                       ? '#F3F315' // yellow if editing
                       : this.props.activeEntity.route_color // otherwise, use route color if it exists
@@ -591,14 +587,6 @@ export default class EditorMap extends Component {
 
                 let nextPosition = along(this.props.activePattern.shape, distance + 5, 'meters')
                 const dir = position && nextPosition ? bearing(position, nextPosition) : 0
-                const cos = Math.cos(bearing * (Math.PI / 180))
-                const sin = Math.sin(bearing * (Math.PI / 180))
-                const icon = divIcon({
-                  className: '',
-                  iconAnchor: [50 * cos, 50 * sin],
-                  iconSize: [24, 24],
-                  html: `<i class="fa fa-circle"/>`
-                })
                 const color = '#000'
                 const arrowIcon = divIcon({
                   // html: `<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #ffc0ff"></i><i class="fa fa-stack-1x fa-arrow-up" style="color: ${color}; transform: rotate(${dir}deg)"></i></span>`,
@@ -628,15 +616,8 @@ export default class EditorMap extends Component {
                 if (s.stopId && this.props.editSettings.snapToStops) {
                   return null
                 }
-                let nextStop
                 let prevControlPoint = this.state.controlPoints[index - 1]
                 let nextControlPoint = this.state.controlPoints[index + 1]
-
-                for (var i = index + 1; i < this.state.controlPoints.length; i++) {
-                  if (this.state.controlPoints[i].stopId) {
-                    nextStop = this.state.controlPoints[i]
-                  }
-                }
 
                 let begin = prevControlPoint
                           ? prevControlPoint.point
@@ -683,32 +664,31 @@ export default class EditorMap extends Component {
                       }
                     }}
                     color='black'
-                  >
-                  </Marker>
+                  />
                 )
               })
               : null
               }
               {beginPoint && this.props.editSettings.editGeometry && this.props.activePattern
               ? <Marker
-                  position={beginPoint}
-                  icon={circleIcon}
-                  ref='controlPointBegin'
-                  draggable
-                  onDragStart={(e) => {
-                    let beginStop = this.props.stops.find(s => s.id === this.props.activePattern.patternStops[0].stopId)
-                    let begin = point([beginStop.stop_lon, beginStop.stop_lat])
-                    const timerFunction = () => {
-                      this.handlePatternEdit('controlPointBegin', null, begin)
-                    }
-                    timerFunction()
-                    timer = setInterval(timerFunction, 1000)
-                  }}
-                  onDragEnd={(e) => {
-                    this.handleControlPointDragEnd(e, timer, 'controlPointBegin')
-                  }}
-                  color='black'
-                />
+                position={beginPoint}
+                icon={circleIcon}
+                ref='controlPointBegin'
+                draggable
+                onDragStart={(e) => {
+                  let beginStop = this.props.stops.find(s => s.id === this.props.activePattern.patternStops[0].stopId)
+                  let begin = point([beginStop.stop_lon, beginStop.stop_lat])
+                  const timerFunction = () => {
+                    this.handlePatternEdit('controlPointBegin', null, begin)
+                  }
+                  timerFunction()
+                  timer = setInterval(timerFunction, 1000)
+                }}
+                onDragEnd={(e) => {
+                  this.handleControlPointDragEnd(e, timer, 'controlPointBegin')
+                }}
+                color='black'
+              />
               : null
               }
             </FeatureGroup>,
@@ -727,11 +707,6 @@ export default class EditorMap extends Component {
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <strong class="fa-stack-1x fa-inverse calendar-text">${index + 1}</strong>
                           </span>`,
-                    // html: `<span class="fa-stack fa-3x">
-                    //         <i class="fa fa-bus fa-stack-2x" style="background-color: white"></i>
-                    //         <strong class="fa-stack-1x fa-inverse calendar-text">27</strong>
-                    //       </span>`,
-                    // html: `<i class="fa fa-bus" style="color: ${color} border: 10px solid white"></i>`,
                     className: '',
                     iconSize: [24, 24]
                   })
@@ -740,133 +715,19 @@ export default class EditorMap extends Component {
                       position={[stop.stop_lat, stop.stop_lon]}
                       style={{cursor: 'move'}}
                       icon={patternStopIcon}
-                      // label={`${index + 1} - ${stop.stop_name}`}
-                      // labelOptions={{
-                      //   // noHide: true,
-                      //   direction: 'right'
-                      // }}
-                      // onClick={(e) => {
-                      //
-                      // }}
                       ref={`${this.props.activePattern.id}-${s.stopId}-${index}`}
                       key={`${this.props.activePattern.id}-${s.stopId}-${index}`}
                     >
                       <Popup>
-                        <div
-                          style={{minWidth: '200px'}}
-                        >
-                          <h5>{index + 1}. {stop.stop_name}</h5>
-                          <Row>
-                            <Col xs={12}>
-                              <ButtonGroup className='pull-right'>
-                                <Button
-                                  bsStyle='primary'
-                                  disabled={!this.props.entityEdited}
-                                  onClick={() => {
-                                    this.props.saveActiveEntity('trippattern')
-                                  }}
-                                >
-                                  <Icon type='floppy-o' />
-                                </Button>
-                                <OverlayTrigger overlay={<Tooltip id='edit-stop-tooltip'>Edit stop</Tooltip>}>
-                                <Button
-                                  onClick={() => {
-                                    this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
-                                  }}
-                                >
-                                  <Icon type='pencil' />
-                                </Button>
-                                </OverlayTrigger>
-                                <OverlayTrigger overlay={<Tooltip id='remove-stop-tooltip'>Remove from pattern</Tooltip>}>
-                                <Button
-                                  bsStyle='danger'
-                                  onClick={() => {
-                                    this.removeStopFromPattern(this.props.activePattern, stop, index)
-                                  }}
-                                >
-                                  <Icon type='trash' />
-                                </Button>
-                                </OverlayTrigger>
-                                <Dropdown
-                                  id={`split-button-basic-${i}`}
-                                  onSelect={(key) => {
-                                    this.addStopToPattern(this.props.activePattern, stop, key)
-                                  }}
-                                >
-                                  <Button
-                                    bsStyle='success'
-                                    disabled={index >= this.props.activePattern.patternStops.length - 2}
-                                    onClick={(e) => {
-                                      this.addStopToPattern(this.props.activePattern, stop)
-                                    }}
-                                  >
-                                    <Icon type='plus' />
-                                  </Button>
-                                  <Dropdown.Toggle bsStyle='success' />
-                                  <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
-                                    <MenuItem disabled={index >= this.props.activePattern.patternStops.length - 2} value={this.props.activePattern.patternStops.length} eventKey={this.props.activePattern.patternStops.length}>
-                                      Add to end (default)
-                                    </MenuItem>
-                                    {this.props.activePattern.patternStops && this.props.activePattern.patternStops.map((stop, i) => {
-                                      let addIndex = this.props.activePattern.patternStops.length - i
-                                      if (index === this.props.activePattern.patternStops.length - 1 && index === addIndex - 1) {
-                                        return null
-                                      }
-                                      // disable adding stop to current position or directly before/after current position
-                                      return (
-                                        <MenuItem
-                                          disabled={index >= addIndex - 2 && index <= addIndex}
-                                          value={addIndex - 1}
-                                          key={i}
-                                          eventKey={addIndex - 1}
-                                        >
-                                          {addIndex === 1 ? 'Add to beginning' : `Insert as stop #${addIndex}`}
-                                        </MenuItem>
-                                      )
-                                    })}
-                                  </Dropdown.Menu>
-                                </Dropdown>
-                              </ButtonGroup>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col xs={6}>
-                              <FormGroup
-                                controlId="formBasicText"
-                                // style={{width: '40%'}}
-                                /*validationState={this.getValidationState()}*/
-                              >
-                              <ControlLabel>Travel time</ControlLabel>
-                              <MinuteSecondInput
-                                seconds={s.defaultTravelTime}
-                                onChange={(value) => {
-                                  let patternStops = [...this.props.activePattern.patternStops]
-                                  patternStops[index].defaultTravelTime = value
-                                  this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
-                                }}
-                              />
-                              </FormGroup>
-                              </Col>
-                              <Col xs={6}>
-                              <FormGroup
-                                controlId="formBasicText"
-                                xs={6}
-                                // style={{width: '40%'}}
-                                /*validationState={this.getValidationState()}*/
-                              >
-                              <ControlLabel>Dwell time</ControlLabel>
-                              <MinuteSecondInput
-                                seconds={s.defaultDwellTime}
-                                onChange={(evt) => {
-                                  let patternStops = [...this.props.activePattern.patternStops]
-                                  patternStops[index].defaultDwellTime = +evt.target.value
-                                  this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
-                                }}
-                              />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                        </div>
+                        <PatternStopPopup
+                          {...this.props}
+                          index={index}
+                          addStopToPattern={this.addStopToPattern}
+                          removeStopFromPattern={this.removeStopFromPattern}
+                          stop={stop}
+                          i={i}
+                          patternStop={s}
+                        />
                       </Popup>
                     </Marker>
                   )
@@ -886,8 +747,7 @@ export default class EditorMap extends Component {
                     if (!bounds) return false
                     if (stop.stop_lat > bounds.getNorth() || stop.stop_lat < bounds.getSouth() || stop.stop_lon > bounds.getEast() || stop.stop_lon < bounds.getWest()) {
                       return false
-                    }
-                    else {
+                    } else {
                       return true
                     }
                   })
@@ -903,7 +763,7 @@ export default class EditorMap extends Component {
                             </span>`,
                       // html: `<i class="fa fa-bus" style="color: ${color} border: 10px solid white"></i>`,
                       className: '',
-                      iconSize: [24, 24],
+                      iconSize: [24, 24]
                     })
                     return (
                       <Marker
@@ -979,7 +839,7 @@ export default class EditorMap extends Component {
                       <i class="fa fa-bus fa-stack-1x" style="color: #000000"></i>
                     </span>`,
               className: '',
-              iconSize: [24, 24],
+              iconSize: [24, 24]
             })
             const activeBusIcon = divIcon({
               html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon">
@@ -1015,35 +875,16 @@ export default class EditorMap extends Component {
                 }}
                 onClick={(e) => {
                   // set active entity
-                  if (!isActive)
+                  if (!isActive) {
                     this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
+                  }
                 }}
-              >
-              </Marker>
+              />
             )
             return marker
           })
           : null
         ]
-      default:
-        return null
-    }
-  }
-
-  getBounds (component, entities) {
-    switch (component) {
-      // case 'route':
-      //   return entities.map(route => {
-      //     return (
-      //       null
-      //     )
-      //   })
-      // case 'stop':
-      //   return entities.map(stop => {
-      //     return (
-      //       null
-      //     )
-      //   })
       default:
         return null
     }
@@ -1054,7 +895,6 @@ export default class EditorMap extends Component {
     }
   }
   render () {
-    // console.log(this.props)
     const mapLayers = [
       {
         name: 'Streets',
@@ -1090,7 +930,7 @@ export default class EditorMap extends Component {
         />
       }
     ]
-    const { feedSource, activeComponent, activeEntity } = this.props
+    const { feedSource } = this.props
     const offset = 0.005
     let feedSourceBounds = feedSource && feedSource.latestValidation && feedSource.latestValidation.bounds
       ? [[feedSource.latestValidation.bounds.north + offset, feedSource.latestValidation.bounds.west - offset], [feedSource.latestValidation.bounds.south - offset, feedSource.latestValidation.bounds.east + offset]]
@@ -1111,7 +951,6 @@ export default class EditorMap extends Component {
     }
     if (this.props.hidden) {
       mapStyle.display = 'none'
-      // return null
     }
     let mapProps = {
       ref: 'map',
@@ -1157,9 +996,9 @@ export default class EditorMap extends Component {
         }
         {this.props.mapState.routesGeojson
           ? <GeoJson
-              key={this.props.mapState.routesGeojson.key}
-              data={this.props.mapState.routesGeojson}
-            />
+            key={this.props.mapState.routesGeojson.key}
+            data={this.props.mapState.routesGeojson}
+          />
           : null
         }
       </Map>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Map, Marker, Popup, TileLayer, FeatureGroup } from 'react-leaflet'
+import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
 import { Button } from 'react-bootstrap'
 
 import { getFeedsBounds } from '../../common/util/geo'
@@ -22,14 +22,6 @@ export default class FeedsMap extends React.Component {
       width: '100%'
     }
     let feeds = []
-    const feedsArray = this.props.projects.map(p => {
-      if (p.feedSources) {
-        return p.feedSources.map(f => {
-          feeds.push(f)
-          return f
-        })
-      }
-    })
     const getFeedLocation = (bounds) => {
       if (!bounds) return null
       let lngEast = bounds.east ? bounds.east : bounds.west // check for 0 values
@@ -40,8 +32,6 @@ export default class FeedsMap extends React.Component {
       // return averaged location
       return [(latNorth + latSouth) / 2, (lngWest + lngEast) / 2]
     }
-    console.log(feeds.filter(feed => feed.latestValidation))
-    let position = [this.state.lat, this.state.lng];
     if (feeds.length === 0) {
       return (
         <Map
@@ -61,10 +51,6 @@ export default class FeedsMap extends React.Component {
     let bounds = getFeedsBounds(feeds)
 
     let markers = []
-    // let markerCluster =
-    //   <MarkerCluster
-    //     markers={markers}
-    //   />
     feeds.map(feed => {
       if (feed.latestValidation && feed.latestValidation.bounds) {
         markers.push(
@@ -77,10 +63,7 @@ export default class FeedsMap extends React.Component {
         )
       }
     })
-    console.log(bounds)
     bounds = bounds && bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
-    console.log(bounds)
-    console.log(markers)
     return (
       <Map
         ref='feedsMap'

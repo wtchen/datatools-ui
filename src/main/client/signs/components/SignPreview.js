@@ -1,16 +1,9 @@
 import React from 'react'
-import moment from 'moment'
 
-import { Panel, Grid, Row, Col, ButtonGroup, Button, Glyphicon, Label } from 'react-bootstrap'
-import { Link } from 'react-router'
+import { Panel, Row, Col, ButtonGroup, Button, Glyphicon, Label } from 'react-bootstrap'
 import { checkEntitiesForFeeds } from '../../common/util/permissions'
 
 export default class SignPreview extends React.Component {
-
-  constructor (props) {
-    super(props)
-  }
-
   render () {
     const canPublish = checkEntitiesForFeeds(this.props.sign.affectedEntities, this.props.publishableFeeds)
     const canEdit = checkEntitiesForFeeds(this.props.sign.affectedEntities, this.props.editableFeeds)
@@ -24,12 +17,12 @@ export default class SignPreview extends React.Component {
 
     const editButtonMessage = this.props.sign.published && deleteIsDisabled ? 'Cannot edit because sign is published'
       : !canEdit ? 'Cannot alter signs for other agencies' : 'Edit sign'
-      const publishedLabel = this.props.sign.published
-        ? <Label title='Published' bsStyle="success"><Glyphicon glyph="ok" /></Label>
-        : <Label title='Draft' bsStyle="warning"><Glyphicon glyph="pencil" /></Label>
-      const displaysLabel = this.props.sign.displays
-        ? <Label title={`${this.props.sign.displays.length} associated display(s)`} bsStyle="default"><Glyphicon glyph="modal-window" /> {this.props.sign.displays.length}</Label>
-        : <Label title={`0 associated display(s)`} bsStyle="default"><Glyphicon glyph="modal-window" /> 0</Label>
+    const publishedLabel = this.props.sign.published
+      ? <Label title='Published' bsStyle='success'><Glyphicon glyph='ok' /></Label>
+      : <Label title='Draft' bsStyle='warning'><Glyphicon glyph='pencil' /></Label>
+    const displaysLabel = this.props.sign.displays
+      ? <Label title={`${this.props.sign.displays.length} associated display(s)`} bsStyle='default'><Glyphicon glyph='modal-window' /> {this.props.sign.displays.length}</Label>
+      : <Label title={`0 associated display(s)`} bsStyle='default'><Glyphicon glyph='modal-window' /> 0</Label>
     return (
       <Panel collapsible header={
         <Row>
@@ -47,11 +40,11 @@ export default class SignPreview extends React.Component {
                 disabled={deleteIsDisabled}
                 onClick={
                   (evt) => {
-                    let r = confirm('Are you sure you want to delete this sign configuration?')
-                    if (r == true) {
-                        this.props.onDeleteClick(this.props.sign)
+                    let r = window.confirm('Are you sure you want to delete this sign configuration?')
+                    if (r) {
+                      this.props.onDeleteClick(this.props.sign)
                     } else {
-                        return
+                      return
                     }
                     // this.props.showConfirmModal({
                     //   title: 'Delete Configuration #' + this.props.sign.id + '?',
@@ -60,7 +53,8 @@ export default class SignPreview extends React.Component {
                     //     this.props.onDeleteClick(this.props.sign)
                     //   }
                     // })
-                }}
+                  }
+                }
               >
                 <Glyphicon glyph='remove' />
               </Button>
@@ -72,17 +66,17 @@ export default class SignPreview extends React.Component {
           <span className='pull-right'>{publishedLabel} {this.props.sign.published ? 'Published' : 'Draft'}</span>
         </p>
         <p>Stops:&nbsp;
-        {this.props.sign.affectedEntities
-          ? this.props.sign.affectedEntities.map((e, index) => {
-            return e.stop
-              ? (<span key={index}>{e.stop.stop_name} <Label bsStyle='primary'>{e.route.length} routes</Label></span>)
-              : e.stop_id
-          })
-          : ''
-        }
+          {this.props.sign.affectedEntities
+            ? this.props.sign.affectedEntities.map((e, index) => {
+              return e.stop
+                ? (<span key={index}>{e.stop.stop_name} <Label bsStyle='primary'>{e.route.length} routes</Label></span>)
+                : e.stop_id
+            })
+            : ''
+          }
         </p>
         <p>
-        <span className='pull-right'>{displaysLabel} associated display(s)</span>
+          <span className='pull-right'>{displaysLabel} associated display(s)</span>
         </p>
       </Panel>
     )

@@ -64,7 +64,7 @@ export default class ManagerPage extends Component {
           }
         </ActiveSidebar>
         <PageContent>
-          {/* <ManagerNavbar breadcrumbs={this.props.breadcrumbs}/> */}
+          {/* <ManagerNavbar breadcrumbs={this.props.breadcrumbs} /> */}
           <div
             style={{
               padding: '20px',

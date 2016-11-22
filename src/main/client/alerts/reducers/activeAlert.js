@@ -54,7 +54,7 @@ const activeAlert = (state = null, action) => {
     case 'UPDATE_ACTIVE_ALERT_ENTITY':
       console.log('update entity', action.entity, action.field, action.value)
       foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
-      if(foundIndex !== -1) {
+      if (foundIndex !== -1) {
         switch (action.field) {
           case 'TYPE':
             updatedEntity = update(action.entity, {
@@ -148,7 +148,7 @@ const activeAlert = (state = null, action) => {
       return state
     case 'DELETE_ACTIVE_ALERT_AFFECTED_ENTITY':
       foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
-      if(foundIndex !== -1) {
+      if (foundIndex !== -1) {
         entities = [
           ...state.affectedEntities.slice(0, foundIndex),
           ...state.affectedEntities.slice(foundIndex + 1)

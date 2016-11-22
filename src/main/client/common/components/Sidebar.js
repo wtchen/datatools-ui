@@ -32,7 +32,7 @@ export default class Sidebar extends Pure {
     }
   }
   componentWillMount () {
-    const showMonitor = false
+    // const showMonitor = false
     // this.props.startJobMonitor(showMonitor)
   }
   _clickChangePassword = () => {

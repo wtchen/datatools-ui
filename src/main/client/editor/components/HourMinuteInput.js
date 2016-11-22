@@ -19,11 +19,11 @@ export default class HourMinuteInput extends Component {
     let seconds = this.convertStringToSeconds(value)
     if (seconds === this.state.seconds) {
       this.setState({string: value})
-    }
-    else {
+    } else {
       this.setState({seconds, string: value})
-      if (typeof this.props.onChange !== 'undefined')
+      if (typeof this.props.onChange !== 'undefined') {
         this.props.onChange(seconds)
+      }
     }
   }
   convertSecondsToString (seconds) {
@@ -37,17 +37,14 @@ export default class HourMinuteInput extends Component {
     // if both hours and minutes are present
     if (!isNaN(hourMinute[0]) && !isNaN(hourMinute[1])) {
       return Math.abs(+hourMinute[0]) * 60 * 60 + Math.abs(+hourMinute[1]) * 60
-    }
-    // if less than one hour
-    else if (isNaN(hourMinute[0])) {
+    } else if (isNaN(hourMinute[0])) {
+      // if less than one hour
       return Math.abs(+hourMinute[1]) * 60
-    }
-    // if minutes are not present
-    else if (isNaN(hourMinute[1])) {
+    } else if (isNaN(hourMinute[1])) {
+      // if minutes are not present
       return Math.abs(+hourMinute[0]) * 60 * 60
-    }
-    // if no input
-    else {
+    } else {
+      // if no input
       return 0
     }
   }

@@ -44,7 +44,7 @@ export default class UserHomePage extends Component {
   }
   render () {
     const messages = getComponentMessages('UserHomePage')
-    const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
+    // const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const feedVisibilityFilter = (feed) => {
       let visible = feed.name.toLowerCase().indexOf((this.props.visibilityFilter.searchText || '').toLowerCase()) !== -1
       switch (this.props.visibilityFilter.filter) {
@@ -94,31 +94,30 @@ export default class UserHomePage extends Component {
                 <p>Manage, edit, validate and deploy your data in a streamlined workflow.</p>
                 <p>
                   <ButtonToolbar>
-                  <Button bsStyle='primary' bsSize='large' href={getConfigProperty('application.docs_url')}><Icon type='info-circle' /> Take a Tour</Button>
-                  <LinkContainer to='/'><Button bsStyle='default' bsSize='large'><Icon type='globe' /> Explore feeds</Button></LinkContainer>
+                    <Button bsStyle='primary' bsSize='large' href={getConfigProperty('application.docs_url')}><Icon type='info-circle' /> Take a Tour</Button>
+                    <LinkContainer to='/'><Button bsStyle='default' bsSize='large'><Icon type='globe' /> Explore feeds</Button></LinkContainer>
                   </ButtonToolbar>
                 </p>
               </Jumbotron>
               {/* Recent Activity List */}
-                <h3 style={{ marginTop: 0, paddingBottom: 5, borderBottom: '2px solid #ddd' }}>
-                  <Icon type='comments-o' /> Recent Activity
-                </h3>
-                {this.props.user.recentActivity && this.props.user.recentActivity.length
-                  ? this.props.user.recentActivity.sort(sortByDate).map(item => renderRecentActivity(item))
-                  : <span>No Recent Activity for your subscriptions.</span>
-                }
-              </Col>
-
+              <h3 style={{ marginTop: 0, paddingBottom: 5, borderBottom: '2px solid #ddd' }}>
+                <Icon type='comments-o' /> Recent Activity
+              </h3>
+              {this.props.user.recentActivity && this.props.user.recentActivity.length
+                ? this.props.user.recentActivity.sort(sortByDate).map(item => renderRecentActivity(item))
+                : <span>No Recent Activity for your subscriptions.</span>
+              }
+            </Col>
             <Col md={4} xs={12}>
               {/* User Account Info Panel */}
               <Panel>
                 <Row>
-                <Col xs={12}>
-                <h4 style={{marginTop: 0, marginBottom: 15}}>
-                  <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon type='sign-out' /> Log out</Button>
-                  Hello, {this.props.user.profile.nickname}.
-                </h4>
-                </Col>
+                  <Col xs={12}>
+                    <h4 style={{marginTop: 0, marginBottom: 15}}>
+                      <Button className='pull-right' bsSize='small' onClick={() => this.props.logoutHandler()}><Icon type='sign-out' /> Log out</Button>
+                      Hello, {this.props.user.profile.nickname}.
+                    </h4>
+                  </Col>
                 </Row>
                 <Row>
                   <Col xs={4}>
@@ -141,10 +140,10 @@ export default class UserHomePage extends Component {
                         </LinkContainer>
                         {this.props.user.permissions.isApplicationAdmin()
                           ? <LinkContainer to='/admin/users'>
-                              <Button bsStyle='default' bsSize='small'>
-                                <Icon type='cog' /> Admin
-                              </Button>
-                            </LinkContainer>
+                            <Button bsStyle='default' bsSize='small'>
+                              <Icon type='cog' /> Admin
+                            </Button>
+                          </LinkContainer>
                           : null
                         }
                       </ButtonToolbar>
@@ -161,7 +160,7 @@ export default class UserHomePage extends Component {
                   id='context-dropdown'
                   title={activeProject
                     ? <span><Icon type='folder-open-o' /> {activeProject.name}</span>
-                    : <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>
+                    : <span><img height={20} width={20} src={this.props.user.profile.picture} /> {this.props.user.profile.nickname}</span>
                   }
                   // onSelect={(eventKey) => {
                   //   this.props.setActiveProject(eventKey)
@@ -171,10 +170,10 @@ export default class UserHomePage extends Component {
                     ? [
                       <LinkContainer key='home-link' to={`/home/`}>
                         <MenuItem>
-                          <span><img height={20} width={20} src={this.props.user.profile.picture}/> {this.props.user.profile.nickname}</span>
+                          <span><img height={20} width={20} src={this.props.user.profile.picture} /> {this.props.user.profile.nickname}</span>
                         </MenuItem>
                       </LinkContainer>,
-                      <MenuItem key='divider' divider/>
+                      <MenuItem key='divider' divider />
                     ]
                     : null
                   }

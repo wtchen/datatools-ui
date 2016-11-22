@@ -31,10 +31,10 @@ export default class FeedLayout extends Component {
 
           <BootstrapTable
             data={this.props.feed.data}
-            striped={true}
-            hover={true}
+            striped
+            hover
           >
-            <TableHeaderColumn dataField='statName' isKey={true}>Statistic</TableHeaderColumn>
+            <TableHeaderColumn dataField='statName' isKey>Statistic</TableHeaderColumn>
             <TableHeaderColumn dataField='statValue'>Value</TableHeaderColumn>
           </BootstrapTable>
         }

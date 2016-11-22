@@ -305,8 +305,7 @@ export default class EntityList extends Component {
                       }
                     })
                     // this.props.deleteEntity(this.props.feedSource.id, this.props.activeComponent, activeEntity.id)
-                  }
-                  else {
+                  } else {
                     this.props.showConfirmModal({
                       title: `Delete ${+this.state.toIndex - +this.state.fromindex} ${this.props.activeComponent}s?`,
                       body: `Are you sure you want to delete these ${this.state.toIndex - this.state.fromindex} ${this.props.activeComponent}s?`,
@@ -331,57 +330,56 @@ export default class EntityList extends Component {
               this.props.activeComponent === 'stop'
               ? <span className='small'>Right-click map for new stop</span>
               : <Button
-                  bsSize='small'
-                  disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
-                  onClick={() => {
-                    this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
-                  }}
-                >
-                  <Icon type='plus' /> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
-                </Button>
+                bsSize='small'
+                disabled={this.props.entities && this.props.entities.findIndex(e => e.id === 'new') !== -1}
+                onClick={() => {
+                  this.props.newGtfsEntity(this.props.feedSource.id, this.props.activeComponent)
+                }}
+              ><Icon type='plus' /> New {this.props.activeComponent === 'scheduleexception' ? 'exception' : this.props.activeComponent}
+              </Button>
             }
           </div>
           {/* Table view button */}
         </div>
         {this.props.activeComponent === 'calendar' || this.props.activeComponent === 'scheduleexception'
           ? <Nav style={{marginBottom: '5px'}} bsStyle='pills' justified activeKey={this.props.activeComponent} onSelect={this.handleSelect}>
-              <NavItem
-                eventKey={'calendar'}
-                onClick={() => {
-                  if (this.props.activeComponent !== 'calendar') {
-                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/calendar`)
-                    this.props.setActiveEntity(this.props.feedSource.id, 'calendar')
-                  }
-                }}
-              >
-                Calendars
-              </NavItem>
-              <NavItem
-                eventKey={'scheduleexception'}
-                onClick={() => {
-                  if (this.props.activeComponent !== 'scheduleexception') {
-                    // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
-                    this.props.setActiveEntity(this.props.feedSource.id, 'scheduleexception')
-                  }
-                }}
-              >
-                Exceptions
-              </NavItem>
-            </Nav>
-          : this.props.activeComponent === 'stop' || this.props.activeComponent === 'route'
-          ? <VirtualizedEntitySelect
-              value={this.props.activeEntity && this.props.activeEntity.id}
-              optionRenderer={this._optionRenderer}
-              component={this.props.activeComponent}
-              entities={entArray}
-              onChange={(value) => {
-                if (!value) {
-                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
-                } else {
-                  this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, value.entity)
+            <NavItem
+              eventKey={'calendar'}
+              onClick={() => {
+                if (this.props.activeComponent !== 'calendar') {
+                  // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/calendar`)
+                  this.props.setActiveEntity(this.props.feedSource.id, 'calendar')
                 }
               }}
-            />
+            >
+              Calendars
+            </NavItem>
+            <NavItem
+              eventKey={'scheduleexception'}
+              onClick={() => {
+                if (this.props.activeComponent !== 'scheduleexception') {
+                  // browserHistory.push(`/feed/${this.props.feedSource.id}/edit/scheduleexception`)
+                  this.props.setActiveEntity(this.props.feedSource.id, 'scheduleexception')
+                }
+              }}
+            >
+              Exceptions
+            </NavItem>
+          </Nav>
+          : this.props.activeComponent === 'stop' || this.props.activeComponent === 'route'
+          ? <VirtualizedEntitySelect
+            value={this.props.activeEntity && this.props.activeEntity.id}
+            optionRenderer={this._optionRenderer}
+            component={this.props.activeComponent}
+            entities={entArray}
+            onChange={(value) => {
+              if (!value) {
+                this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent)
+              } else {
+                this.props.setActiveEntity(this.props.feedSource.id, this.props.activeComponent, value.entity)
+              }
+            }}
+          />
           : null
         }
         {!this.props.tableView

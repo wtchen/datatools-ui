@@ -8,10 +8,7 @@ import {
   updateFeedSource,
   runFetchFeed,
   fetchFeedVersions,
-  uploadFeed,
-  fetchPublicFeedSource,
-  receiveFeedVersions,
-  fetchPublicFeedVersions
+  uploadFeed
 } from '../../manager/actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
@@ -20,9 +17,9 @@ const mapStateToProps = (state, ownProps) => {
   // find the containing project
   let project = state.projects.all
     ? state.projects.all.find(p => {
-        if (!p.feedSources) return false
-        return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
-      })
+      if (!p.feedSources) return false
+      return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
+    })
     : null
 
   let feedSource
@@ -51,13 +48,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           console.log('fetch versions')
           dispatch(fetchFeedVersions(feedSource, unsecured))
         })
-      }
-      else if(!initialProps.feedSource.versions) {
+      } else if (!initialProps.feedSource.versions) {
         dispatch(fetchFeedVersions(initialProps.feedSource, unsecured))
       }
     },
     feedSourcePropertyChanged: (feedSource, propName, newValue) => {
-      dispatch(updateFeedSource(feedSource, { [propName] : newValue }))
+      dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
     },
     updateFeedClicked: (feedSource) => { dispatch(runFetchFeed(feedSource)) },
     uploadFeedClicked: (feedSource, file) => { dispatch(uploadFeed(feedSource, file)) }

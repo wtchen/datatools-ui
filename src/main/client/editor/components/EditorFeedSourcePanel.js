@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import { Panel, Row, Col, Table, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
+import { Panel, Row, Col, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
 import moment from 'moment'
 import {Icon} from '@conveyal/woonerf'
@@ -18,25 +18,19 @@ export default class EditorFeedSourcePanel extends Component {
     deleteSnapshot: PropTypes.func.isRequired,
     loadFeedVersionForEditing: PropTypes.func.isRequired
   }
-
   componentWillMount () {
     this.props.getSnapshots(this.props.feedSource)
   }
-
   constructor (props) {
     super(props)
     this.state = { expanded: false }
   }
-
   render () {
     const messages = getComponentMessages('EditorFeedSourcePanel')
     const hasVersions = this.props.feedSource && this.props.feedSource.feedVersions && this.props.feedSource.feedVersions.length > 0
     const currentSnapshot = this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
        ? this.props.feedSource.editorSnapshots.find(s => s.current)
        : null
-   const activeSnapshots = this.props.feedSource.editorSnapshots
-      ? this.props.feedSource.editorSnapshots.filter(s => s.current)
-      : []
     const inactiveSnapshots = this.props.feedSource.editorSnapshots
        ? this.props.feedSource.editorSnapshots.filter(s => !s.current)
        : []
@@ -47,60 +41,52 @@ export default class EditorFeedSourcePanel extends Component {
         <Col xs={9}>
           {this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
             ? <div>
-                <Panel bsStyle='success' header={<h3>Active snapshot</h3>}>
-                  {currentSnapshot
-                    ? <ListGroup fill>
-                        <SnapshotItem snapshot={currentSnapshot} {...this.props}/>
-                      </ListGroup>
-                    : <ListGroup fill>
-                        <ListGroupItem>No active snapshot</ListGroupItem>
-                      </ListGroup>
-                  }
-                </Panel>
-                <Panel bsStyle='warning' header={<h3>Inactive snapshots</h3>}>
-                  <ListGroup fill>
-                    {inactiveSnapshots.length === 0
-                      ? <ListGroupItem>No other snapshots</ListGroupItem>
-                      : inactiveSnapshots.map(s => {
-                          return (
-                            <SnapshotItem key={s.id} snapshot={s} {...this.props} />
-                          )
-                        })
-                    }
-                    {/* activeSnapshots.length === 0
-                      ? <ListGroupItem>No other snapshots</ListGroupItem>
-                      : activeSnapshots.map(s => {
-                          return (
-                            <SnapshotItem snapshot={s} {...this.props}/>
-                          )
-                        })
-                    */}
+              <Panel bsStyle='success' header={<h3>Active snapshot</h3>}>
+                {currentSnapshot
+                  ? <ListGroup fill>
+                    <SnapshotItem snapshot={currentSnapshot} {...this.props} />
                   </ListGroup>
-                </Panel>
-              </div>
+                  : <ListGroup fill>
+                    <ListGroupItem>No active snapshot</ListGroupItem>
+                  </ListGroup>
+                }
+              </Panel>
+              <Panel bsStyle='warning' header={<h3>Inactive snapshots</h3>}>
+                <ListGroup fill>
+                  {inactiveSnapshots.length === 0
+                    ? <ListGroupItem>No other snapshots</ListGroupItem>
+                    : inactiveSnapshots.map(s => {
+                      return (
+                        <SnapshotItem key={s.id} snapshot={s} {...this.props} />
+                      )
+                    })
+                  }
+                </ListGroup>
+              </Panel>
+            </div>
             : <div>
-                <p>No snapshots loaded.</p>
-                <Button
-                  bsStyle='success'
-                  onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}
-                >
-                  <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
-                </Button>
-                {' '}or{' '}
-                <Button bsStyle='success'
-                    disabled={!hasVersions}
-                    onClick={(evt) => {
-                      let version = this.props.feedSource.feedVersions[this.props.feedSource.feedVersions.length - 1]
-                      this.refs.confirmLoad.open({
-                        title: getMessage(messages, 'load'),
-                        body: getMessage(messages, 'confirmLoad'),
-                        onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
-                      })
-                    }}
-                  >
-                    <Glyphicon glyph='pencil' /> {getMessage(messages, 'loadLatest')}
-                  </Button>
-              </div>
+              <p>No snapshots loaded.</p>
+              <Button
+                bsStyle='success'
+                onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}
+              >
+                <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
+              </Button>
+              {' '}or{' '}
+              <Button bsStyle='success'
+                disabled={!hasVersions}
+                onClick={(evt) => {
+                  let version = this.props.feedSource.feedVersions[this.props.feedSource.feedVersions.length - 1]
+                  this.refs.confirmLoad.open({
+                    title: getMessage(messages, 'load'),
+                    body: getMessage(messages, 'confirmLoad'),
+                    onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
+                  })
+                }}
+              >
+                <Glyphicon glyph='pencil' /> {getMessage(messages, 'loadLatest')}
+              </Button>
+            </div>
           }
         </Col>
         <Col xs={3}>

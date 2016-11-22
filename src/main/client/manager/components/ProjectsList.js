@@ -26,7 +26,7 @@ export default class ProjectsList extends React.Component {
     const messages = getComponentMessages('ProjectsList')
     const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const visibleProjects = this.props.projects.filter((project) => {
-      if(project.isCreating) return true // projects actively being created are always visible
+      if (project.isCreating) return true // projects actively being created are always visible
       return project.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
     }).sort(defaultSorter)
 
@@ -80,7 +80,7 @@ export default class ProjectsList extends React.Component {
                               value={project.name}
                               disabled={disabled}
                               onChange={(value) => {
-                                if(project.isCreating) this.props.newProjectNamed(value)
+                                if (project.isCreating) this.props.newProjectNamed(value)
                                 else this.props.projectNameChanged(project, value)
                               }}
                               link={`/project/${project.id}`}

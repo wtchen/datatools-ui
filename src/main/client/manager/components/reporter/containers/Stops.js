@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.routes.fetchStatus.fetched) {
         dispatch(fetchRoutes(feedId))
       }
-      // if(!initialProps.patterns.fetchStatus.fetched) {
+      // if (!initialProps.patterns.fetchStatus.fetched) {
       //   dispatch(fetchPatterns(feedId, null))
       // }
     },

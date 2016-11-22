@@ -1,7 +1,7 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 
-import { Grid, Row, Col, ButtonGroup, Button, Input, Panel, Glyphicon, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import { Grid, Row, Col, ButtonGroup, Button, Panel, Glyphicon, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import DisplaySelector from './DisplaySelector'
 
 import ManagerPage from '../../common/components/ManagerPage'
@@ -13,8 +13,6 @@ import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
 import { checkEntitiesForFeeds } from '../../common/util/permissions'
 import { browserHistory } from 'react-router'
 
-import moment from 'moment'
-
 export default class SignEditor extends React.Component {
   componentWillMount () {
     this.props.onComponentMount(this.props)
@@ -23,7 +21,7 @@ export default class SignEditor extends React.Component {
   render () {
     // console.log('SignEditor')
     if (!this.props.sign) {
-      return <ManagerPage/>
+      return <ManagerPage />
     }
 
     const canPublish = checkEntitiesForFeeds(this.props.sign.affectedEntities, this.props.publishableFeeds)
@@ -45,17 +43,14 @@ export default class SignEditor extends React.Component {
 
     return (
       <ManagerPage ref='page'>
-      <Helmet
-        title={this.props.sign.id > 0 ? `eTID Config ${this.props.sign.id}` : 'New eTID Config'}
-      />
+        <Helmet
+          title={this.props.sign.id > 0 ? `eTID Config ${this.props.sign.id}` : 'New eTID Config'}
+        />
         <Grid>
           <Row>
             <Col xs={4} sm={8} md={9}>
               <Button
-                onClick={
-                  (evt) => {
-                  browserHistory.push('/signs')
-                }}
+                onClick={(evt) => browserHistory.push('/signs')}
               ><Glyphicon glyph='chevron-left' /> Back</Button>
             </Col>
             <Col xs={8} sm={4} md={3}>
@@ -65,33 +60,33 @@ export default class SignEditor extends React.Component {
                   bsStyle='default'
                   disabled={editingIsDisabled}
                   onClick={(evt) => {
-                    console.log('times', this.props.sign.end, this.props.sign.start);
-                    // if(moment(this.props.sign.end).isBefore(moment())) {
+                    console.log('times', this.props.sign.end, this.props.sign.start)
+                    // if (moment(this.props.sign.end).isBefore(moment())) {
                     //   alert('Sign end date cannot be before the current date')
                     //   return
                     // }
-                    if(!this.props.sign.title) {
-                      alert('You must specify a name for the sign configuration')
+                    if (!this.props.sign.title) {
+                      window.alert('You must specify a name for the sign configuration')
                       return
                     }
                     // check for no entities
-                    if(this.props.sign.affectedEntities.length === 0) {
-                      alert('You must specify at least one stop')
+                    if (this.props.sign.affectedEntities.length === 0) {
+                      window.alert('You must specify at least one stop')
                       return
                     }
                     // check for entities without routes
                     for (var i = 0; i < this.props.sign.affectedEntities.length; i++) {
                       let ent = this.props.sign.affectedEntities[i]
                       if (!ent.route || ent.route.length === 0) {
-                        alert('You must specify at least one route for ' + ent.stop.stop_name)
+                        window.alert('You must specify at least one route for ' + ent.stop.stop_name)
                         return
                       }
                     }
                     // check for published displays for unpublished config
-                    for (var i = 0; i < this.props.sign.displays.length; i++) {
+                    for (let i = 0; i < this.props.sign.displays.length; i++) {
                       let disp = this.props.sign.displays[i]
                       if (disp.PublishedDisplayConfigurationId === this.props.sign.id && !this.props.sign.published) {
-                        alert('Published displays may not be associated with an unpublished sign configuration.')
+                        window.alert('Published displays may not be associated with an unpublished sign configuration.')
                         return
                       }
                     }
@@ -111,21 +106,14 @@ export default class SignEditor extends React.Component {
                   title={deleteButtonMessage}
                   bsStyle='danger'
                   disabled={deleteIsDisabled}
-                  onClick={
-                    (evt) => {
-                      // let r = confirm('Are you sure you want to delete this sign configuration?')
-                      // if (r == true) {
-                      //     this.props.onDeleteClick(this.props.sign)
-                      // } else {
-                      //     return
-                      // }
-                      this.refs.page.showConfirmModal({
-                        title: 'Delete Configuration #' + this.props.sign.id + '?',
-                        body: <p>Are you sure you want to delete <strong>Sign Configuration {this.props.sign.id}</strong>?</p>,
-                        onConfirm: () => {
-                          this.props.onDeleteClick(this.props.sign)
-                        }
-                      })
+                  onClick={(evt) => {
+                    this.refs.page.showConfirmModal({
+                      title: 'Delete Configuration #' + this.props.sign.id + '?',
+                      body: <p>Are you sure you want to delete <strong>Sign Configuration {this.props.sign.id}</strong>?</p>,
+                      onConfirm: () => {
+                        this.props.onDeleteClick(this.props.sign)
+                      }
+                    })
                   }}
                 >Delete</Button>
               </ButtonGroup>
@@ -162,14 +150,10 @@ export default class SignEditor extends React.Component {
                       placeholder='Click to add displays, or enter a new display name...'
                       sign={this.props.sign}
                       label='List of Signs'
-                      clearable={true}
+                      clearable
                       toggleConfigForDisplay={this.props.toggleConfigForDisplay}
                       onChange={(evt) => {
-                        console.log('we need to add this sign to the draft config', evt)
-                        // if (typeof evt !== 'undefined' && evt !== null){
-                            this.props.updateDisplays(evt.map(s => s.display))
-                        // }
-
+                        this.props.updateDisplays(evt.map(s => s.display))
                       }}
                       value={this.props.sign.displays ? this.props.sign.displays.map(d => ({'display': d, 'value': d.Id, 'label': <span><strong>{d.DisplayTitle}</strong> {d.LocationDescription}</span>})) : ''}
                     />
@@ -186,9 +170,8 @@ export default class SignEditor extends React.Component {
                           placeholder='Click to add stops...'
                           limit={100}
                           entities={['stops']}
-                          clearable={true}
+                          clearable
                           onChange={(evt) => {
-                            console.log('we need to add this entity to the store', evt)
                             if (typeof evt !== 'undefined' && evt !== null) {
                               this.props.onAddEntityClick('STOP', evt.stop, evt.agency, newEntityId)
                             }
@@ -199,15 +182,16 @@ export default class SignEditor extends React.Component {
                     {this.props.sign.affectedEntities
                       .sort((a, b) => b.id - a.id) // reverse sort by entity id
                       .map((entity) => {
-                      return <AffectedEntity
-                        entity={entity}
-                        key={entity.id}
-                        activeFeeds={this.props.activeFeeds}
-                        feeds={this.props.editableFeeds}
-                        onDeleteEntityClick={this.props.onDeleteEntityClick}
-                        entityUpdated={this.props.entityUpdated}
-                      />
-                    })}
+                        return <AffectedEntity
+                          entity={entity}
+                          key={entity.id}
+                          activeFeeds={this.props.activeFeeds}
+                          feeds={this.props.editableFeeds}
+                          onDeleteEntityClick={this.props.onDeleteEntityClick}
+                          entityUpdated={this.props.entityUpdated}
+                        />
+                      }
+                    )}
                   </Col>
                 </Row>
               </Panel>

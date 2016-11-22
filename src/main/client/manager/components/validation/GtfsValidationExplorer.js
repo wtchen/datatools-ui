@@ -28,7 +28,7 @@ export default class GtfsValidationExplorer extends Component {
 
   componentWillReceiveProps (nextProps) {
     //
-    if(this.props.version && nextProps && nextProps.version &&
+    if (this.props.version && nextProps && nextProps.version &&
         this.props.version.id !== nextProps.version.id &&
         !nextProps.version.validationResult) {
       this.props.fetchValidationResult(nextProps.version)
@@ -64,7 +64,7 @@ export default class GtfsValidationExplorer extends Component {
                   this.setState({activeTab: key})
                   setTimeout(() => {
                     const map = this.refs[key + '-map']
-                    if(map) map.initializeMap()
+                    if (map) map.initializeMap()
                   }, 100); // Adjust timeout to tab transition
                 }}
               >
@@ -74,7 +74,7 @@ export default class GtfsValidationExplorer extends Component {
                       <IssuesMap
                         ref="issues-map"
                         version={version}
-                        initialized={true}
+                        initialized
                       />
                     </Col>
                     <Col xs={5}>
@@ -102,7 +102,7 @@ export default class GtfsValidationExplorer extends Component {
                 <Tab eventKey="time" title="Time-based Validation">
                   <Row style={tabRowStyle}>
                     <Col xs={12}>
-                      <TripsChart data={version.validationResult.tripsPerDate}/>
+                      <TripsChart data={version.validationResult.tripsPerDate} />
                     </Col>
                   </Row>
                 </Tab>

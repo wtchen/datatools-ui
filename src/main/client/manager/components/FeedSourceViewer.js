@@ -309,7 +309,7 @@ export default class FeedSourceViewer extends Component {
                     <ul className='list-unstyled small'>
                       <li><b>Last Updated:</b> {fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : 'n/a'}</li>
                       <li><b>Number of versions:</b> {fs.feedVersionCount}</li>
-                      <hr style={{marginTop: '5px', marginBottom: '0px'}}/>
+                      <hr style={{marginTop: '5px', marginBottom: '0px'}} />
                       <li><b>URL:</b> <EditableTextField
                           value={fs.url}
                           inline
@@ -386,7 +386,7 @@ export default class FeedSourceViewer extends Component {
                       <ul className='list-unstyled'>
                         <li><Button onClick={(evt) => { this.showUploadFeedModal() }} style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='upload' /> Upload file</Button></li>
                         <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='download' /> Fetch by URL</Button></li>
-                        <hr style={{marginTop: '5px', marginBottom: '5px'}}/>
+                        <hr style={{marginTop: '5px', marginBottom: '5px'}} />
                         <li><Button style={{margin: '0px', padding: '0px'}} bsStyle='link'><Glyphicon glyph='camera' /> Load from snapshot</Button></li>
                       </ul>
                     </Col>

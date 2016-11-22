@@ -475,7 +475,7 @@ export default class EntityDetails extends Component {
               <FormControl
                 value={currentValue}
                 type='number'
-                // readOnly={true}
+                // readOnly
                 onChange={(evt) => {
                   let props = {}
                   props[field.name] = evt.target.value
@@ -1310,20 +1310,20 @@ export default class EntityDetails extends Component {
           </OverlayTrigger>
         </ButtonToolbar>
         {this.props.activeComponent === 'route' && entity
-          ? <div className='IconStack'>
-            <Icon type='square' style={{color: `#${entity.route_color ? entity.route_color : 'fff'}`}} stack='2x' />
-            <Icon type='bus' style={{color: `#${entity.route_text_color ? entity.route_text_color : '000'}`}} stack='1x' />
-          </div>
+          ? <span className='fa-stack'>
+            <Icon type='square' style={{color: `#${entity.route_color ? entity.route_color : 'fff'}`}} className='fa-stack-2x' />
+            <Icon type='bus' style={{color: `#${entity.route_text_color ? entity.route_text_color : '000'}`}} className='fa-stack-1x' />
+          </span>
           : iconName
-          ? <div className='IconStack'>
-            <Icon type='square' stack='2x' />
-            <Icon type={iconName} inverse stack='1x' />
-          </div>
+          ? <span className='fa-stack'>
+            <Icon type='square' className='fa-stack-2x' />
+            <Icon type={iconName} inverse className='fa-stack-1x' />
+          </span>
           // schedule exception icon if no icon founds
-          : <div className='IconStack'>
-            <Icon type='calendar' stack='1x' />
-            <Icon type='ban' className='text-danger' stack='2x' />
-          </div>
+          : <span className='fa-stack'>
+            <Icon type='calendar' className='fa-stack-1x' />
+            <Icon type='ban' className='text-danger fa-stack-2x' />
+          </span>
         }
         {'  '}
         <span title={entityName}>

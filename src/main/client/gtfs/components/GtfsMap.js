@@ -268,7 +268,7 @@ export default class GtfsMap extends Component {
         )
       })
     }
-    if(this.state && this.state.lastClicked) {
+    if (this.state && this.state.lastClicked) {
       comps.push(
         <Marker
           key='marker'

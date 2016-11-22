@@ -74,7 +74,7 @@ export function downloadGtfsPlusFeed (feedVersionId) {
       cache: 'default',
       headers: { 'Authorization': 'Bearer ' + getState().user.token }
     }).then((response) => {
-      if(response.status !== 200) {
+      if (response.status !== 200) {
         console.log('error downloading gtfs+ feed', response.statusCode)
         dispatch(clearGtfsPlusContent())
       }
@@ -177,10 +177,10 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
     const typeLookup = {}
     const getDataType = function(tableId, fieldName) {
       const lookupKey = tableId + ':' + fieldName
-      if(lookupKey in typeLookup) return typeLookup[lookupKey]
+      if (lookupKey in typeLookup) return typeLookup[lookupKey]
       const fieldInfo = getConfigProperty('modules.gtfsplus.spec')
         .find(t => t.id === tableId).fields.find(f => f.name === fieldName)
-      if(!fieldInfo) return null
+      if (!fieldInfo) return null
       typeLookup[lookupKey] = fieldInfo.inputType
       return fieldInfo.inputType
     }
@@ -196,17 +196,17 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
         switch(getDataType(tableId, fieldName)) {
           case 'GTFS_ROUTE':
             const routeId = rowData[fieldName]
-            if(routeId && !(`route_${routeId}` in currentLookup)) routesToLoad.push(routeId)
+            if (routeId && !(`route_${routeId}` in currentLookup)) routesToLoad.push(routeId)
             break;
           case 'GTFS_STOP':
             const stopId = rowData[fieldName]
-            if(stopId && !(`stop_${stopId}` in currentLookup)) stopsToLoad.push(stopId)
+            if (stopId && !(`stop_${stopId}` in currentLookup)) stopsToLoad.push(stopId)
             break;
         }
       }
     }
 
-    if(routesToLoad.length === 0 && stopsToLoad.length === 0) return
+    if (routesToLoad.length === 0 && stopsToLoad.length === 0) return
     const feedId = getFeedId(feedSource)
     var loadRoutes = Promise.all(routesToLoad.map(routeId => {
       const url = `/api/manager/routes/${routeId}?feed=${feedId}`

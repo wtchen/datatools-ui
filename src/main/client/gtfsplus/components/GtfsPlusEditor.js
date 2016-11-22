@@ -28,7 +28,7 @@ export default class GtfsPlusEditor extends Component {
     const zip = new JSZip()
 
     for(const table of getConfigProperty('modules.gtfsplus.spec')) {
-      if(!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
+      if (!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
 
       let fileContent = ''
       // white the header line
@@ -53,7 +53,7 @@ export default class GtfsPlusEditor extends Component {
   }
 
   render () {
-    if(!this.props.feedSource) return null
+    if (!this.props.feedSource) return null
     const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs')
     const buttonStyle = {
       display: 'block',
@@ -107,7 +107,7 @@ export default class GtfsPlusEditor extends Component {
                     }}
                   >
                     {this.props.validation && (table.id in this.props.validation)
-                      ? <Glyphicon glyph='alert' style={{ color: 'red', marginRight: '8px' }}/>
+                      ? <Glyphicon glyph='alert' style={{ color: 'red', marginRight: '8px' }} />
                       : null
                     }
                     {table.id}

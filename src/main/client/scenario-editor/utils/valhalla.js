@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import {decode as decodePolyline} from 'polyline'
-import ll, {isEqual as coordinatesAreEqual} from 'lonlng'
+import {isEqual as coordinatesAreEqual} from 'lonlng'
 import lineString from 'turf-linestring'
 
 import { getConfigProperty } from '../../common/util/config'
@@ -42,8 +42,7 @@ export async function polyline (points) {
         .map((c, index) => [c[1] / 10, c[0] / 10]) // Mapzen or Mapbox is encoding/decoding wrong?
     })
     return [].concat.apply([], legArray)
-  }
-  else {
+  } else {
     return null
   }
 }
@@ -51,28 +50,26 @@ export async function polyline (points) {
 export async function getSegment (points, followRoad) {
   let geometry
   if (followRoad) { // if followRoad
-      const coordinates = await polyline(points.map(p => ({lng: p[0], lat: p[1]}))) // [{lng: from[0], lat: from[1]}, {lng: to[0], lat: to[1]}])
-      if (!coordinates) {
-        geometry = await lineString(points).geometry
-      }
-      else {
-        const c0 = coordinates[0]
-        const cy = coordinates[coordinates.length - 1]
-        const epsilon = 1e-6
-        if (!coordinatesAreEqual(c0, points[0], epsilon)) {
-          coordinates.unshift(points[0])
-        }
-        // if (!coordinatesAreEqual(cy, to, epsilon)) {
-        //   coordinates.push(to)
-        // }
-
-        geometry = {
-          type: 'LineString',
-          coordinates
-        }
-      }
-    } else {
+    const coordinates = await polyline(points.map(p => ({lng: p[0], lat: p[1]}))) // [{lng: from[0], lat: from[1]}, {lng: to[0], lat: to[1]}])
+    if (!coordinates) {
       geometry = await lineString(points).geometry
+    } else {
+      const c0 = coordinates[0]
+      const epsilon = 1e-6
+      if (!coordinatesAreEqual(c0, points[0], epsilon)) {
+        coordinates.unshift(points[0])
+      }
+      // if (!coordinatesAreEqual(cy, to, epsilon)) {
+      //   coordinates.push(to)
+      // }
+
+      geometry = {
+        type: 'LineString',
+        coordinates
+      }
     }
-    return geometry
+  } else {
+    geometry = await lineString(points).geometry
+  }
+  return geometry
 }

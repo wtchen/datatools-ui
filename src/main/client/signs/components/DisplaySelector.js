@@ -1,17 +1,15 @@
 import React, { PropTypes } from 'react'
-
 import fetch from 'isomorphic-fetch'
-
-import { Button, Glyphicon, Label } from 'react-bootstrap'
-
+import { Glyphicon, Label } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
-
 import Select from 'react-select'
 
-import { getFeed, getFeedId, getDisplaysUrl } from '../../common/util/modules'
+import { getDisplaysUrl } from '../../common/util/modules'
 
 export default class DisplaySelector extends React.Component {
-
+  static propTypes = {
+    sign: PropTypes.object
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -42,15 +40,10 @@ export default class DisplaySelector extends React.Component {
       marginBottom: '15px'
     }
     const renderValue = (option) => {
-      let draftLabel = getDraftStatusLabel(option.display)
-      let publishedLabel = getPublishedStatusLabel(option.display)
       let combinedLabel = getDisplayStatusLabel(option.display)
-      // return <span>{option.label} {draftLabel} {publishedLabel}</span>
       return <span>{option.label} {combinedLabel}</span>
     }
     const renderOption = (option) => {
-      let draftLabel = getDraftStatusLabel(option.display)
-      let publishedLabel = getPublishedStatusLabel(option.display)
       let combinedLabel = getDisplayStatusLabel(option.display)
       return <span style={{ color: 'black' }}><Glyphicon glyph='modal-window' /> <strong>{option.label}</strong> {option.location} {combinedLabel} {option.link}</span>
     }
@@ -58,13 +51,6 @@ export default class DisplaySelector extends React.Component {
       if (!display) return ''
       let displayDraftId = display.DraftDisplayConfigurationId
       let displayPublishedId = display.PublishedDisplayConfigurationId
-      // let draftLabel = displayDraftId === null ? <Label>Unassigned</Label>
-      //                 : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
-      //                 : <Label bsStyle='warning'>Unpublished</Label>
-      // let publishedLabel = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-      //                     : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
-      //                     : ''
-
 
       let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 && displayDraftId === this.props.sign.id ? <span><Label bsStyle='warning'>Assigned here</Label><Label bsStyle='danger'>Published to {displayPublishedId}</Label></span>
             : displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
@@ -74,43 +60,8 @@ export default class DisplaySelector extends React.Component {
             : <Label bsStyle='warning'>Unpublished</Label>
       return label
     }
-    const getPublishedStatusLabel = (display) => {
-      if (!display) return ''
-      let displayDraftId = display.DraftDisplayConfigurationId
-      let displayPublishedId = display.PublishedDisplayConfigurationId
-      let draftLabel = displayDraftId === null ? <Label>Unassigned</Label>
-                      : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
-                      : <Label bsStyle='warning'>Unpublished</Label>
-      let publishedLabel = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-                          : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
-                          : ''
-      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-            : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
-            : displayDraftId === null ? <Label>Unassigned</Label>
-            : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
-            : <Label bsStyle='warning'>Unpublished</Label>
-      return publishedLabel
-    }
-    const getDraftStatusLabel = (display) => {
-      if (!display) return ''
-      let displayDraftId = display.DraftDisplayConfigurationId
-      let displayPublishedId = display.PublishedDisplayConfigurationId
-      let draftLabel = displayDraftId === null ? <Label>Unassigned</Label>
-                      : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
-                      : <Label bsStyle='warning'>Unpublished</Label>
-      let publishedLabel = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-                          : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
-                          : ''
-      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
-            : displayPublishedId !== null ? <Label bsStyle='success'>Published</Label>
-            : displayDraftId === null ? <Label>Unassigned</Label>
-            : displayDraftId !== this.props.sign.id && displayDraftId > 0 ? <Label bsStyle='danger'>Assigned to {displayDraftId}</Label>
-            : <Label bsStyle='warning'>Unpublished</Label>
-      return draftLabel
-    }
     const handleValueClick = (val) => {
       // Toggle value of draft/published config ID
-      let configId = null
       let pubId = val.display.PublishedDisplayConfigurationId
       let draftId = val.display.DraftDisplayConfigurationId
 
@@ -144,7 +95,7 @@ export default class DisplaySelector extends React.Component {
       }
 
       // Append Addition option
-      if (filteredOptions.length == 0) {
+      if (filteredOptions.length === 0) {
         filteredOptions.push({
           label: <span><strong>Create display</strong>: {filter}</span>,
           value: filter,
@@ -153,7 +104,7 @@ export default class DisplaySelector extends React.Component {
       }
 
       return filteredOptions
-    };
+    }
     const getDisplays = (input) => {
       const url = getDisplaysUrl()
       return fetch(url)
@@ -161,7 +112,7 @@ export default class DisplaySelector extends React.Component {
           return response.json()
         })
         .then((displays) => {
-          const displayOptions = displays !== null && displays.length > 0 ? displays.map(display => ({display, value: display.Id, label: display.DisplayTitle, location: display.LocationDescription })) : []
+          const displayOptions = displays !== null && displays.length > 0 ? displays.map(display => ({display, value: display.Id, label: display.DisplayTitle, location: display.LocationDescription})) : []
           return { options: displayOptions }
         })
         .catch((error) => {
@@ -187,23 +138,23 @@ export default class DisplaySelector extends React.Component {
 
     const placeholder = ''
     return (
-    <Select.Async
-      ref='displaySelect'
-      style={style}
-      cache={false}
-      onFocus={onFocus}
-      multi={true}
-      onValueClick={handleValueClick}
-      allowCreate={true} // currently not working in v 1.0.0
-      filterOptions={filterOptions}
-      minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
-      clearable={this.props.clearable}
-      placeholder={this.props.placeholder || placeholder}
-      loadOptions={getDisplays}
-      value={this.state.value}
-      optionRenderer={renderOption}
-      valueRenderer={renderValue}
-      onChange={handleChange} />
+      <Select.Async
+        ref='displaySelect'
+        style={style}
+        cache={false}
+        onFocus={onFocus}
+        multi
+        onValueClick={handleValueClick}
+        allowCreate // currently not working in v 1.0.0
+        filterOptions={filterOptions}
+        minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
+        clearable={this.props.clearable}
+        placeholder={this.props.placeholder || placeholder}
+        loadOptions={getDisplays}
+        value={this.state.value}
+        optionRenderer={renderOption}
+        valueRenderer={renderValue}
+        onChange={handleChange} />
     )
   }
 }

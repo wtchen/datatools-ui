@@ -182,7 +182,7 @@ class ValidationMap extends React.Component {
         bounds={bounds}
         onLeafletClick={getIsochrones}
         onLeafletLayeradd={(e) => console.log(e)}
-        scrollWheelZoom={true}
+        scrollWheelZoom
       >
         <TileLayer
           url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}.png?access_token=${getConfigProperty('mapbox.access_token')}`}

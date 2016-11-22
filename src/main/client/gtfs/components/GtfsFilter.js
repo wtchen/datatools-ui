@@ -22,8 +22,8 @@ export default class GtfsFilter extends React.Component {
     var compare = function (a, b) {
       var aName = a.shortName || a.name
       var bName = b.shortName || b.name
-      if(aName < bName) return -1
-      if(aName > bName) return 1
+      if (aName < bName) return -1
+      if (aName > bName) return 1
       return 0
     }
 

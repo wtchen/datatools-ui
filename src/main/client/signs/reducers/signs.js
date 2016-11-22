@@ -12,22 +12,12 @@ const signs = (state = {
     filter: 'ALL'
   }
 }, action) => {
-  let foundIndex, signs, entities
+  let signs, entities
   switch (action.type) {
     case 'SET_SIGN_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
     case 'SET_SIGN_VISIBILITY_FILTER':
       return update(state, {filter: {filter: {$set: action.filter}}})
-
-    case 'DELETE_SIGN':
-      // foundIndex = state.findIndex(a => a.id === action.sign.id)
-      // if(foundIndex !== -1) {
-      //   return [
-      //     ...state.slice(0, foundIndex),
-      //     ...state.slice(foundIndex + 1)
-      //   ]
-      // }
-
     case 'REQUEST_RTD_SIGNS':
       return {
         isFetching: true,
@@ -44,7 +34,7 @@ const signs = (state = {
       entities = state.entities
       signs = clone(state.all)
       // for those entities we requested, assign the gtfs data to the saved entities
-      for (var i = 0; i < entities.length; i++) {
+      for (let i = 0; i < entities.length; i++) {
         let feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
         if (feed) {
           let gtfs = entities[i].type === 'stop'
@@ -59,16 +49,16 @@ const signs = (state = {
         }
       }
       // iterate over processed gtfs entities
-      for (var i = 0; i < entities.length; i++) {
+      for (let i = 0; i < entities.length; i++) {
         let ent = entities[i]
-        if (ent.gtfs && signs){
+        if (ent.gtfs && signs) {
           let sign = signs.find(s => s.id === ent.entity.DisplayConfigurationId)
           let selectedEnt = sign && sign.affectedEntities.find(e => e.agencyAndStop === ent.entity.agencyAndStop)
-          if (selectedEnt && ent.type === 'stop'){
+          if (selectedEnt && ent.type === 'stop') {
             selectedEnt.stop = ent.gtfs
           }
           // route is an array for signs
-          if (ent.type === 'route'){
+          if (ent.type === 'route') {
             let route = ent.gtfs ? ent.gtfs : ent.entity
             selectedEnt.route.push(route)
           }
@@ -85,15 +75,13 @@ const signs = (state = {
         }
       }
     case 'RECEIVED_RTD_DISPLAYS':
-      // let signIndex = state.all.find
       if (state.all !== null) {
         let displayMap = {}
-        let count = 0
-        for (var i = 0; i < action.rtdDisplays.length; i++) {
+        for (let i = 0; i < action.rtdDisplays.length; i++) {
           let d = action.rtdDisplays[i]
-          if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId)
+          if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId) {
             continue
-          count++
+          }
           if (d.DraftDisplayConfigurationId) {
             if (displayMap[d.DraftDisplayConfigurationId] && displayMap[d.DraftDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.DraftDisplayConfigurationId].push(d)
@@ -146,9 +134,8 @@ const signs = (state = {
           // if entity already exists, push RouteId to existing array
           if (currentEntity) {
             entities[ent.AgencyId + ent.StopId].route_id.push(ent.RouteId)
-          }
-          // else, construct new object for entity
-          else {
+          } else {
+            // else, construct new object for entity
             let feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
             entities[ent.AgencyId + ent.StopId] = {
               id: ent.Id,
@@ -177,7 +164,6 @@ const signs = (state = {
         }
         return sign
       })
-
       return {
         isFetching: false,
         all: allSigns,
@@ -187,7 +173,6 @@ const signs = (state = {
           filter: 'ALL'
         }
       }
-
     default:
       return state
   }

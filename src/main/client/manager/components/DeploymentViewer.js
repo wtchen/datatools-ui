@@ -93,7 +93,7 @@ export default class DeploymentViewer extends Component {
         <Panel
           header={(<h3><Glyphicon glyph='list' /> {getMessage(messages, 'versions')}</h3>)}
           collapsible
-          defaultExpanded={true}
+          defaultExpanded
         >
           <Row>
             <Col xs={8} sm={6} md={4}>

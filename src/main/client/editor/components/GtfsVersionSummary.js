@@ -1,37 +1,39 @@
 import React, {Component, PropTypes} from 'react'
-import { Panel, Row, Col, Table, Input, Button, Glyphicon, Well, Alert } from 'react-bootstrap'
-import { Link, browserHistory } from 'react-router'
+import { Panel, Row, Col, Table, Button, Glyphicon, Alert } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 import moment from 'moment'
 
 import { getConfigProperty } from '../../common/util/config'
 
 export default class GtfsVersionSummary extends Component {
-
+  static propTypes = {
+    editor: PropTypes.object
+  }
   constructor (props) {
     super(props)
     this.state = { expanded: false }
   }
 
   isTableIncluded (tableId) {
-    if(!this.props.editor.tableData) return null
+    if (!this.props.editor.tableData) return null
     return tableId in this.props.editor.tableData ? 'Yes' : 'No'
   }
 
   tableRecordCount (tableId) {
-    if(!this.props.editor.tableData) return null
-    if(!(tableId in this.props.editor.tableData)) return 'N/A'
+    if (!this.props.editor.tableData) return null
+    if (!(tableId in this.props.editor.tableData)) return 'N/A'
     return this.props.editor.tableData[tableId].length.toLocaleString()
   }
 
   validationIssueCount (tableId) {
-    if(!this.props.editor.validation) return null
-    if(!(tableId in this.props.editor.validation)) return 'None'
+    if (!this.props.editor.validation) return null
+    if (!(tableId in this.props.editor.validation)) return 'None'
     return this.props.editor.validation[tableId].length.toLocaleString()
   }
 
   feedStatus () {
-    if(!this.props.editor.timestamp) return null
-    if(!this.gtfsPlusEdited()) return <i>GTFS+ data for this feed version has not been edited.</i>
+    if (!this.props.editor.timestamp) return null
+    if (!this.gtfsPlusEdited()) return <i>GTFS+ data for this feed version has not been edited.</i>
     return <b>GTFS+ Data updated {moment(this.props.editor.timestamp).format('MMM. DD, YYYY, h:MMa')}</b>
   }
 
@@ -44,7 +46,7 @@ export default class GtfsVersionSummary extends Component {
     const publishingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'approve-gtfs')
     const header = (
       <h3 onClick={() => {
-        if(!this.state.expanded) this.props.gtfsPlusDataRequested(this.props.version)
+        if (!this.state.expanded) this.props.gtfsPlusDataRequested(this.props.version)
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> GTFS+ for this Version
@@ -72,17 +74,17 @@ export default class GtfsVersionSummary extends Component {
             </Button>
             {this.gtfsPlusEdited()
               ? <Button
-                  bsSize='large'
-                  disabled={publishingIsDisabled}
-                  bsStyle='primary'
-                  style={{ marginLeft: '6px' }}
-                  onClick={() => {
-                    this.props.publishClicked(this.props.version)
-                    this.setState({ expanded: false })
-                  }}
-                >
-                  <Glyphicon glyph='upload' /> Publish as New Version
-                </Button>
+                bsSize='large'
+                disabled={publishingIsDisabled}
+                bsStyle='primary'
+                style={{ marginLeft: '6px' }}
+                onClick={() => {
+                  this.props.publishClicked(this.props.version)
+                  this.setState({ expanded: false })
+                }}
+              >
+                <Glyphicon glyph='upload' /> Publish as New Version
+              </Button>
               : null
             }
           </Col>
@@ -96,7 +98,7 @@ export default class GtfsVersionSummary extends Component {
                   <th>Included?</th>
                   <th>Records</th>
                   <th>Validation Issues</th>
-                  <th></th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
@@ -106,7 +108,7 @@ export default class GtfsVersionSummary extends Component {
                     <td>{this.isTableIncluded(table.id)}</td>
                     <td>{this.tableRecordCount(table.id)}</td>
                     <td>{this.validationIssueCount(table.id)}</td>
-                    <td></td>
+                    <td />
                   </tr>)
                 })}
               </tbody>

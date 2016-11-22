@@ -7,18 +7,15 @@ import GtfsSearch from '../../gtfs/components/gtfssearch'
 import { getFeed } from '../../common/util/modules'
 
 export default class AffectedEntity extends Component {
-  constructor (props) {
-    super(props)
+  static propTypes = {
+    feeds: PropTypes.array
   }
   render () {
     const getEntitySummary = (entity) => {
-      const type = entity.type
-      const val = entity[type.toLowerCase()]
       let agencyName = ''
       if (entity.agency) {
         agencyName = entity.agency.name
-      }
-      else if (entity.stop) {
+      } else if (entity.stop) {
         const feed = getFeed(this.props.feeds, entity.stop.feed_id)
         agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
       }
@@ -36,7 +33,7 @@ export default class AffectedEntity extends Component {
       labelComponents.push(routes)
       return (
         <span>
-        {labelComponents ? labelComponents.map(l => (l)) : null}
+          {labelComponents ? labelComponents.map(l => (l)) : null}
         </span>
       )
     }
@@ -62,7 +59,6 @@ export default class AffectedEntity extends Component {
             paddingLeft: '30px'
           }
           let selectedFeeds = [this.props.entity.agency] || this.props.activeFeeds
-          let selectedRoute = this.props.entity.route
           let selectedStop = this.props.entity.stop
           switch (this.props.entity.type) {
             case 'STOP':
@@ -98,9 +94,6 @@ export default class AffectedEntity extends Component {
 }
 
 class RouteSelector extends Component {
-  constructor (props) {
-    super(props)
-  }
   render () {
     const getRouteName = (route) => {
       let routeName = route.route_short_name && route.route_long_name
@@ -111,14 +104,12 @@ class RouteSelector extends Component {
         : null
       return routeName
     }
-    const feed = this.props.route ? getFeed(this.props.feeds, this.props.route.feed_id) : null
-    const agencyName = feed ? feed.name : 'Unknown agency'
     return (
       <div>
         <GtfsSearch
           feeds={this.props.feeds}
           limit={100}
-          multi={true}
+          multi
           minimumInput={this.props.minimumInput}
           filterByStop={this.props.filterByStop}
           clearable={this.props.clearable}
@@ -127,8 +118,7 @@ class RouteSelector extends Component {
             if (evt) {
               let routes = evt.map(e => e.route)
               this.props.entityUpdated(this.props.entity, 'ROUTES', routes)
-            }
-            else {
+            } else {
               this.props.entityUpdated(this.props.entity, 'ROUTES', [])
             }
           }}
@@ -144,11 +134,7 @@ class RouteSelector extends Component {
 }
 
 class StopSelector extends Component {
-  constructor (props) {
-    super(props)
-  }
   render () {
-    var stops = []
     const feed = this.props.stop ? getFeed(this.props.feeds, this.props.stop.feed_id) : null
     const agencyName = feed ? feed.name : 'Unknown agency'
     return (
@@ -161,18 +147,19 @@ class StopSelector extends Component {
           entities={['stops']}
           clearable={this.props.clearable}
           onChange={(evt) => {
-            if (typeof evt !== 'undefined' && evt !== null)
+            if (typeof evt !== 'undefined' && evt !== null) {
               this.props.entityUpdated(this.props.entity, 'STOP', evt.stop, evt.agency)
-            else if (evt == null)
+            } else if (evt === null) {
               this.props.entityUpdated(this.props.entity, 'STOP', null, null)
+            }
           }}
           value={
             this.props.stop
             ? {
-                stop: this.props.stop,
-                value: this.props.stop.stop_id,
-                label: `${this.props.stop.stop_name} (${agencyName})`,
-              }
+              stop: this.props.stop,
+              value: this.props.stop.stop_id,
+              label: `${this.props.stop.stop_name} (${agencyName})`
+            }
             : ''
           }
         />

@@ -67,7 +67,7 @@ export default class SidebarNavItem extends Component {
     }
     const icon = this.props.image
       ? <div style={imageContainerStyle}>
-          <img width={40} height={40} src={this.props.image}/>
+          <img width={40} height={40} src={this.props.image} />
         </div>
       : <div style={iconContainerStyle}>
           <Icon

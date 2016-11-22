@@ -32,9 +32,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(fetchProjectFeeds(activeProjectId))
           .then(() => browserHistory.push(`/home/${activeProjectId}`))
         }
-        // for (var i = 0; i < projects.length; i++) {
-        //   dispatch(fetchProjectFeeds(projects[i].id))
-        // }
       })
     },
     fetchProjectFeeds: (projectId) => { dispatch(fetchProjectFeeds(projectId)) },

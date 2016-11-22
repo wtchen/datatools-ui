@@ -19,7 +19,7 @@ export default class GtfsPlusTable extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if(this.props.table !== nextProps.table) {
+    if (this.props.table !== nextProps.table) {
       this.setState({ currentPage: 1 })
     }
   }
@@ -33,9 +33,9 @@ export default class GtfsPlusTable extends Component {
   }
 
   getActiveRowData (currentPage) {
-    if(!this.props.tableData) return []
+    if (!this.props.tableData) return []
     const tableValidation = this.props.validation || []
-    if(this.state.visibility === 'validation' && tableValidation.length < 5000) {
+    if (this.state.visibility === 'validation' && tableValidation.length < 5000) {
       return this.props.tableData
         .filter(record => (tableValidation.find(v => v.rowIndex === record.origRowIndex)))
           .slice((currentPage - 1) * recordsPerPage,
@@ -194,7 +194,7 @@ export default class GtfsPlusTable extends Component {
                       onKeyUp={(e) => {
                         if (e.keyCode == 13) {
                           const newPage = parseInt(e.target.value)
-                          if(newPage > 0 && newPage <= pageCount) {
+                          if (newPage > 0 && newPage <= pageCount) {
                             e.target.value = ''
                             this.setState({ currentPage: newPage })
                           }

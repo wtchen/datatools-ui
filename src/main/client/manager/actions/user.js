@@ -28,7 +28,7 @@ export function checkExistingLogin() {
   return function (dispatch, getState) {
     dispatch(checkingExistingLogin())
     var login = getState().user.auth0.checkExistingLogin()
-    if(login) {
+    if (login) {
       return login.then((userTokenAndProfile) => {
         if (userTokenAndProfile) {
           dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))

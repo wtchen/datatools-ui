@@ -133,7 +133,7 @@ export default class GtfsSearch extends React.Component {
         tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
         cache={false}
         onFocus={onFocus}
-        filterOptions={true}
+        filterOptions
         multi={this.props.multi !== null ? this.props.multi : false}
         minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
         clearable={this.props.clearable}

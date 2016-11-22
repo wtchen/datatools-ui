@@ -3,18 +3,18 @@ import { setErrorMessage } from '../../manager/actions/status'
 import gravatar from 'gravatar'
 
 export function defaultSorter (a, b) {
-  if(a.isCreating && !b.isCreating) return -1
-  if(!a.isCreating && b.isCreating) return 1
-  if(a.name.toLowerCase() < b.name.toLowerCase()) return -1
-  if(a.name.toLowerCase() > b.name.toLowerCase()) return 1
+  if (a.isCreating && !b.isCreating) return -1
+  if (!a.isCreating && b.isCreating) return 1
+  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
+  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
   return 0
 }
 
 export function versionsSorter (a, b) {
-  // if(a.isCreating && !b.isCreating) return -1
-  // if(!a.isCreating && b.isCreating) return 1
-  if(a.feedSource.name < b.feedSource.name) return -1
-  if(a.feedSource.name > b.feedSource.name) return 1
+  // if (a.isCreating && !b.isCreating) return -1
+  // if (!a.isCreating && b.isCreating) return 1
+  if (a.feedSource.name < b.feedSource.name) return -1
+  if (a.feedSource.name > b.feedSource.name) return 1
   return 0
 }
 
@@ -78,7 +78,7 @@ export function generateRandomColor () {
     return color
 }
 // export function invertHex (hexnum) {
-//   if(hexnum.length != 6) {
+//   if (hexnum.length != 6) {
 //     alert('Hex color must be six hex numbers in length.')
 //     return false
 //   }
@@ -96,9 +96,9 @@ export function generateRandomColor () {
 //   complexnum.F = '0'
 //
 //   for(var i=0; i<6; i++){
-//     if(!isNaN(splitnum[i])) {
+//     if (!isNaN(splitnum[i])) {
 //       resultnum += simplenum[splitnum[i]]
-//     } else if(complexnum[splitnum[i]]){
+//     } else if (complexnum[splitnum[i]]){
 //       resultnum += complexnum[splitnum[i]]
 //     } else {
 //       alert('Hex colors must only include hex numbers 0-9, and A-F')

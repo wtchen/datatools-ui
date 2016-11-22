@@ -67,14 +67,14 @@ export default class MapModal extends React.Component {
     }
   }
   initializeMap() {
-    if(this.mapInitialized || this.props.initialized) return
+    if (this.mapInitialized || this.props.initialized) return
     const leafletMap = this.getMap().leafletElement
     leafletMap.invalidateSize()
     this.mapInitialized = true
   }
   ok () {
-    if(this.state.markerSelect) this.state.onConfirm(this.state.marker)
-    if(this.state.rectangleSelect) this.state.onConfirm(this.state.rectangle)
+    if (this.state.markerSelect) this.state.onConfirm(this.state.marker)
+    if (this.state.rectangleSelect) this.state.onConfirm(this.state.rectangle)
     else this.state.onConfirm()
     this.close()
   }

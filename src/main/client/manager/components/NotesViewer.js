@@ -64,7 +64,7 @@ export default class NotesViewer extends Component {
                 return (
                   <Media>
                    <Media.Left>
-                      <img width={64} height={64} src={`${gravatar.url(note.userEmail, {protocol: 'https', s: '100'})}`} alt={note.userEmail}/>
+                      <img width={64} height={64} src={`${gravatar.url(note.userEmail, {protocol: 'https', s: '100'})}`} alt={note.userEmail} />
                     </Media.Left>
                     <Media.Body>
                       <Panel
@@ -89,7 +89,7 @@ export default class NotesViewer extends Component {
           <h3>{getMessage(messages, 'postComment')}</h3>
           <Media>
            <Media.Left>
-              <img width={64} height={64} src={this.props.user ? this.props.user.profile.picture : ''}/>
+              <img width={64} height={64} src={this.props.user ? this.props.user.profile.picture : ''} />
             </Media.Left>
             <Media.Body>
               <Panel className='comment-panel' header={<Media.Heading>{userLink}</Media.Heading>}>

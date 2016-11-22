@@ -184,7 +184,7 @@ export default class GtfsInput extends Component {
             {basicLabel}
             <Select
               placeholder='Select zone ID...'
-              clearable={true}
+              clearable
               noResultsText={`No zones found. Specify zones in stop.`}
               key={Math.random()}
               value={currentValue}
@@ -322,7 +322,7 @@ export default class GtfsInput extends Component {
           <FormControl
             value={currentValue}
             type='number'
-            // readOnly={true}
+            // readOnly
             onChange={(evt) => {
               let props = {}
               props[editorField] = evt.target.value
@@ -426,7 +426,7 @@ export default class GtfsInput extends Component {
           }
           {
             // this.state.displayColorPicker ? <div is="popover">
-            //   <div is="cover" onClick={ this.handleClose }/>
+            //   <div is="cover" onClick={ this.handleClose } />
             //   <SketchPicker
             //     color={ `#${this.state[editorField]}` || `#${currentValue}` }
             //     onChange={ this.handleChange }
@@ -445,7 +445,7 @@ export default class GtfsInput extends Component {
           {
             // this.state.displayColorPicker
             // ? <div style={ popover }>
-            //     <div style={ cover } onClick={ this.handleClose }/>
+            //     <div style={ cover } onClick={ this.handleClose } />
             //     <SketchPicker />
             //   </div>
             // : null
@@ -587,7 +587,7 @@ export default class GtfsInput extends Component {
             {basicLabel}
             <Select
               placeholder='Select agency...'
-              clearable={true}
+              clearable
               value={agency ? {value: currentValue, label: agency.agency_name}: {value: currentValue}}
               onChange={(input) => {
                 console.log(input)

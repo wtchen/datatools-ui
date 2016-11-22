@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import { shallowEqual } from 'react-pure-render'
+import { browserHistory } from 'react-router'
 
 import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import ConfirmModal from '../../common/components/ConfirmModal.js'
@@ -113,7 +114,10 @@ export default class GtfsEditor extends Component {
     // console.log(this.props)
     const feedSource = this.props.feedSource
     const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
-
+    if (this.props.feedSource && editingIsDisabled) {
+      console.log('editing disabled')
+      // browserHistory.push(`/feed/${this.props.feedSource.id}`)
+    }
     let listWidth = 220
     let detailsWidth = 300
     let entityDetails = this.props.activeEntityId

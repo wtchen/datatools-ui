@@ -624,8 +624,8 @@ const editor = (state = defaultState, action) => {
       sortedTrips = trips
         ? action.trips.filter(t => t.useFrequency === activePattern.useFrequency) // filter out based on useFrequency
         .sort((a, b) => {
-          // if(a.isCreating && !b.isCreating) return -1
-          // if(!a.isCreating && b.isCreating) return 1
+          // if (a.isCreating && !b.isCreating) return -1
+          // if (!a.isCreating && b.isCreating) return 1
           if (a.stopTimes[0].departureTime < b.stopTimes[0].departureTime) return -1
           if (a.stopTimes[0].departureTime > b.stopTimes[0].departureTime) return 1
           return 0
@@ -747,7 +747,7 @@ const editor = (state = defaultState, action) => {
       newTableData = {}
       for(let i = 0; i < action.filenames.length; i++) {
         const lines = action.fileContent[i].split('\n')
-        if(lines.length < 2) continue
+        if (lines.length < 2) continue
         fields = lines[0].split(',')
         newTableData[action.filenames[i].split('.')[0]] = lines.slice(1)
           .filter(line => line.split(',').length === fields.length)
@@ -767,7 +767,7 @@ const editor = (state = defaultState, action) => {
 
     case 'ADD_GTFSEDITOR_ROW':
       // create this table if it doesn already exist
-      if(!(action.tableId in state.tableData)) {
+      if (!(action.tableId in state.tableData)) {
         return update(state,
           {tableData:
             {$merge: {[action.tableId]: [action.rowData]} }

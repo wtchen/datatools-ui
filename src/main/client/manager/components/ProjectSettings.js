@@ -532,7 +532,7 @@ export default class ProjectSettings extends Component {
               <Radio
                 name='osm-extract'
                 checked={typeof this.state.deployment.useCustomOsmBounds !== 'undefined' ? this.state.deployment.useCustomOsmBounds : project.useCustomOsmBounds}
-                value={true}
+                value
               >
                 {getMessage(messages, 'deployment.osm.custom')}
               </Radio>

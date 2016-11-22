@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import { fetchProjects } from '../actions/projects'
 import { saveSign, deleteSign, createSign, setActiveSign, createDisplay } from '../actions/signs'
-import { setActiveTitle, setActiveDescription, setActiveUrl, setActiveCause,
+import { setActiveTitle, setActiveUrl, setActiveCause,
   setActiveEffect, setActiveStart, setActiveEnd, setActivePublished,
   addActiveEntity, deleteActiveEntity, updateActiveEntity, updateDisplays,
   toggleConfigForDisplay } from '../actions/activeSign'
@@ -12,13 +12,6 @@ import SignEditor from '../components/SignEditor'
 import { browserHistory } from 'react-router'
 import { getFeedsForPermission } from '../../common/util/permissions'
 
-const agencyCompare = function(a, b) {
-  if (a.name < b.name)
-    return -1;
-  if (a.name > b.name)
-    return 1;
-  return 0;
-}
 const mapStateToProps = (state, ownProps) => {
   return {
     sign: state.activeSign,
@@ -34,24 +27,24 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       const signId = initialProps.location.pathname.split('/sign/')[1]
-      if (initialProps.sign)
+      if (initialProps.sign) {
         return
+      }
 
       if (!signId) {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')){
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')) {
             console.log('cannot create sign!')
             browserHistory.push('/signs')
             return
           }
           return dispatch(createSign())
         })
-      }
-      else {
+      } else {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')){
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')) {
             console.log('cannot create sign!')
             browserHistory.push('/signs')
             return

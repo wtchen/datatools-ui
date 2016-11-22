@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   const feedId = ownProps.version.id.replace('.zip', '')
   return {
     onComponentMount: (initialProps) => {
-      if(!initialProps.routes.fetchStatus.fetched) {
+      if (!initialProps.routes.fetchStatus.fetched) {
         dispatch(fetchRoutes(feedId))
       }
     },

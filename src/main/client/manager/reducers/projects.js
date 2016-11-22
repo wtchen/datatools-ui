@@ -10,7 +10,7 @@ const projects = (state = {
     searchText: null
   }
 }, action) => {
-  let projects, sources, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds, activeProjectId, project, newState, deployment
+  let projects, projectIndex, sourceIndex, versionIndex, activeProject, activeIndex, feeds, activeProjectId, project, newState, deployment
   switch (action.type) {
     case 'SET_PROJECT_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
@@ -21,18 +21,17 @@ const projects = (state = {
         isCreating: true,
         name: ''
       }, ...state.all]
-      return update(state, { all: { $set: projects }})
+      return update(state, { all: { $set: projects } })
 
     case 'CREATE_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
       project = state.all[projectIndex]
       newState = null
-      console.log("adding fs to project", state.all[projectIndex]);
-
+      console.log('adding fs to project', state.all[projectIndex])
 
       // if project's feedSources array is undefined, add it
-      if(!project.feedSources) {
-        console.log('adding new fs array');
+      if (!project.feedSources) {
+        console.log('adding new fs array')
         newState = update(state, {all: {[projectIndex]: {$merge: {feedSources: []}}}})
       }
 
@@ -76,7 +75,7 @@ const projects = (state = {
         }
       }
     case 'SET_ACTIVE_PROJECT':
-      return update(state, { active: { $set: action.project }})
+      return update(state, { active: { $set: action.project } })
     case 'RECEIVE_PROJECT':
       if (!action.project) {
         return state
@@ -116,14 +115,12 @@ const projects = (state = {
           ...state.all[projectIndex].feedSources,
           ...action.feedSources
         ]
-      }
-      else {
+      } else {
         feeds = action.feedSources
       }
       feeds = feeds.sort(defaultSorter)
       if (state.active && action.projectId === state.active.id) {
-        return update(state,
-        {
+        return update(state, {
           isFetching: {$set: false},
           active: {$merge: {feedSources: feeds}},
           all: {
@@ -143,10 +140,11 @@ const projects = (state = {
 
     case 'RECEIVE_FEEDSOURCE':
       if (!action.feedSource) {
-        return update(state, { isFetching: { $set: false }})
+        return update(state, { isFetching: { $set: false } })
       }
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
-      let existingSources = state.all[projectIndex].feedSources || [], updatedSources
+      let existingSources = state.all[projectIndex].feedSources || []
+      let updatedSources
       sourceIndex = existingSources.findIndex(s => s.id === action.feedSource.id)
       if (sourceIndex === -1) { // source does not currently; add it
         updatedSources = [
@@ -197,7 +195,8 @@ const projects = (state = {
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions
         ? state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
         : -1
-      let existingVersions = state.all[projectIndex].feedSources[sourceIndex].feedVersions || [], updatedVersions
+      let existingVersions = state.all[projectIndex].feedSources[sourceIndex].feedVersions || []
+      let updatedVersions
       if (versionIndex === -1) { // version does not currently; add it
         updatedVersions = [
           ...existingVersions,
@@ -265,51 +264,48 @@ const projects = (state = {
           }
         }
       )
-
-      case 'RECEIVE_DEPLOYMENTS':
-        projectIndex = state.all.findIndex(p => p.id === action.projectId)
-        if (state.active && action.projectId === state.active.id) {
-          return update(state,
+    case 'RECEIVE_DEPLOYMENTS':
+      projectIndex = state.all.findIndex(p => p.id === action.projectId)
+      if (state.active && action.projectId === state.active.id) {
+        return update(state, {
+          active: {$merge: {deployments: action.deployments}},
+          all: {
+            [projectIndex]: {$merge: {deployments: action.deployments}}
+          }
+        })
+      } else { // if projectId does not match active project
+        return update(state,
           {
-            active: {$merge: {deployments: action.deployments}},
             all: {
               [projectIndex]: {$merge: {deployments: action.deployments}}
             }
-          })
-        } else { // if projectId does not match active project
-          return update(state,
-            {
-              all: {
-                [projectIndex]: {$merge: {deployments: action.deployments}}
-              }
-            }
-          )
-        }
-
-      case 'RECEIVE_DEPLOYMENT':
-        projectIndex = state.all.findIndex(p => p.id === action.deployment.project.id)
-        let existingDeployments = state.all[projectIndex].deployments || [], updatedDeployments
-        sourceIndex = existingDeployments.findIndex(s => s.id === action.deployment.id)
-        if (sourceIndex === -1) { // source does not currently; add it
-          updatedDeployments = [
-            ...existingDeployments,
-            action.deployment
-          ]
-        } else { // existing feedsource array includes this one, replace it
-          updatedDeployments = [
-            ...existingDeployments.slice(0, sourceIndex),
-            action.deployment,
-            ...existingDeployments.slice(sourceIndex + 1)
-          ]
-        }
-        return update(state,
-          {all:
-            {[projectIndex]:
-              {$merge: {deployments: updatedDeployments}}
-            }
           }
         )
-
+      }
+    case 'RECEIVE_DEPLOYMENT':
+      projectIndex = state.all.findIndex(p => p.id === action.deployment.project.id)
+      let existingDeployments = state.all[projectIndex].deployments || []
+      let updatedDeployments
+      sourceIndex = existingDeployments.findIndex(s => s.id === action.deployment.id)
+      if (sourceIndex === -1) { // source does not currently; add it
+        updatedDeployments = [
+          ...existingDeployments,
+          action.deployment
+        ]
+      } else { // existing feedsource array includes this one, replace it
+        updatedDeployments = [
+          ...existingDeployments.slice(0, sourceIndex),
+          action.deployment,
+          ...existingDeployments.slice(sourceIndex + 1)
+        ]
+      }
+      return update(state,
+        {all:
+          {[projectIndex]:
+            {$merge: {deployments: updatedDeployments}}
+          }
+        }
+      )
     case 'RECEIVE_NOTES_FOR_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)

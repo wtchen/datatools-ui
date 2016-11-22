@@ -280,7 +280,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateControlPoint: (index, point, distance) => { dispatch(updateControlPoint(index, point, distance)) },
 
     // EDITOR UI
-    setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) },
+    setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) }
   }
 }
 

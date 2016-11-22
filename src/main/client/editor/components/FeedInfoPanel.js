@@ -86,7 +86,7 @@ export default class FeedInfoPanel extends Component {
                   }
                 }}
               >
-                <Icon type={toolbarVisible ? 'caret-right' : 'caret-left'}/>
+                <Icon type={toolbarVisible ? 'caret-right' : 'caret-left'} />
               </Button>
             </OverlayTrigger>
             {/* Navigation dropdown */}

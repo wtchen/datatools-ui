@@ -22,7 +22,7 @@ export default class IsochroneMap extends ValidationMap {
   getMapComponents () {
     let comps = []
 
-    if(this.props.version && this.props.version.isochrones) {
+    if (this.props.version && this.props.version.isochrones) {
       comps = this.props.version.isochrones.features.map((iso, index) => {
         if (iso.properties.time !== 60*60) return null
         return (
@@ -40,7 +40,7 @@ export default class IsochroneMap extends ValidationMap {
       })
     }
 
-    if(this.state && this.state.lastClicked) {
+    if (this.state && this.state.lastClicked) {
       comps.push(
         <Marker
           key='marker'

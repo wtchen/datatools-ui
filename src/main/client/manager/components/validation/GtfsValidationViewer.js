@@ -15,7 +15,7 @@ export default class GtfsValidationViewer extends React.Component {
     this.props.fetchValidationResult()
   }
   componentWillReceiveProps (nextProps) {
-    if(!nextProps.validationResult) this.setState({ expanded: false })
+    if (!nextProps.validationResult) this.setState({ expanded: false })
   }
 
   render () {
@@ -25,7 +25,7 @@ export default class GtfsValidationViewer extends React.Component {
 
     const header = (
       <h3 onClick={() => {
-        if(!result) this.props.fetchValidationResult()
+        if (!result) this.props.fetchValidationResult()
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> {getMessage(messages, 'title')}

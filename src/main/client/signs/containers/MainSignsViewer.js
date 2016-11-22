@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import SignsViewer from '../components/SignsViewer'
-
 import { createSign } from '../actions/signs'
 import { fetchProjects } from '../actions/projects'
 
@@ -22,11 +21,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.signs || initialProps.signs.length === 0 || !initialProps.project.feedSources) {
         dispatch(fetchProjects())
       }
-
     },
     onStopClick: (stop, agency) => dispatch(createSign(stop, agency)),
     onRouteClick: (route, agency) => dispatch(createSign(route, agency)),
-    createSign: () => dispatch(createSign()),
+    createSign: () => dispatch(createSign())
   }
 }
 

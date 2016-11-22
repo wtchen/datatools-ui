@@ -49,8 +49,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
   return {
     onComponentMount: (initialProps) => {
-      if(!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
-      if(!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
+      if (!initialProps.feedSource) dispatch(fetchFeedSourceAndProject(feedSourceId))
+      if (!initialProps.tableData) dispatch(downloadGtfsFeed(feedVersionId))
       if (initialProps.currentTable) dispatch(getGtfsTable(initialProps.currentTable, feedSourceId))
     },
     newRowClicked: (tableId) => {
@@ -76,7 +76,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       })
     },
     newRowsDisplayed: (tableId, rows, feedSource) => {
-      if(feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
+      if (feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
     },
     gtfsEntitySelected: (type, entity) => {
       dispatch(receiveGtfsEntities([entity]))

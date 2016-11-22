@@ -77,7 +77,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       return dispatch(newGtfsEntity(feedSourceId, component, props, save))
     },
 
-    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
+    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) }
   }
 }
 

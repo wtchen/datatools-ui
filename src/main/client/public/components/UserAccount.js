@@ -48,7 +48,7 @@ export default class UserAccount extends Component {
                         <ListGroupItem>
                           <p><strong>Avatar</strong></p>
                           <a href='http://gravatar.com'>
-                            <img className='img-rounded' height={40} width={40} src={this.props.user.profile.picture}/>
+                            <img className='img-rounded' height={40} width={40} src={this.props.user.profile.picture} />
                             <span style={{marginLeft: '10px'}}>Change on gravatar.com</span>
                           </a>
                         </ListGroupItem>

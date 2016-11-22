@@ -1,6 +1,6 @@
 import { browserHistory } from 'react-router'
 import fetch from 'isomorphic-fetch'
-import { fetchStopsAndRoutes } from  '../../gtfs/actions/general'
+import { fetchStopsAndRoutes } from '../../gtfs/actions/general'
 import { getSignConfigUrl, getDisplaysUrl, getFeedId } from '../../common/util/modules'
 
 // signs management action
@@ -41,8 +41,8 @@ export function createSign (entity, agency) {
   }
 }
 
-export const deleteSign = (sign) => {
-  return function (dispatch, getState){
+export function deleteSign (sign) {
+  return function (dispatch, getState) {
     console.log('deleting', sign)
     const user = getState().user
     const url = getSignConfigUrl() + '/' + sign.id
@@ -56,7 +56,7 @@ export const deleteSign = (sign) => {
         'Authorization': 'Bearer ' + user.token
       }
     }).then((res) => {
-      console.log('status='+res.status)
+      console.log('status=' + res.status)
       return res.json()
     }).then(json => {
       console.log(json)
@@ -79,14 +79,16 @@ export const deleteSign = (sign) => {
 
 export const requestRtdSigns = () => {
   return {
-    type: 'REQUEST_RTD_SIGNS',
+    type: 'REQUEST_RTD_SIGNS'
   }
 }
 
 export const requestGtfsEntities = (feedIds, routeids, stopIds) => {
   return {
     type: 'REQUEST_SIGN_GTFS_ENTITIES',
-    feedIds, routeids, stopIds
+    feedIds,
+    routeids,
+    stopIds
   }
 }
 
@@ -170,19 +172,18 @@ export const createDisplay = (name) => {
       StopPublicId: null,
       PublishedDisplayConfigurationId: null,
       DraftDisplayConfigurationId: null,
-      LocationDescription: "",
+      LocationDescription: '',
       DisplayLatitude: null,
       DisplayLongitude: null,
       ContactEmailList: null,
-      DisplayStatus: "Inactive",
+      DisplayStatus: 'Inactive'
     }
     return saveDisplay(display, getState().user)
   }
 }
 
 export function saveDisplay (display, user) {
-  // return function (dispatch, getState) {
-    // const user = getState().user
+  return function (dispatch, getState) {
     const url = display.Id < 0 ? getDisplaysUrl() : getDisplaysUrl() + '/' + display.Id
     console.log(url)
     const method = display.Id < 0 ? 'post' : 'put'
@@ -195,9 +196,9 @@ export function saveDisplay (display, user) {
       },
       body: JSON.stringify(display)
     }).then((res) => {
-      console.log('status='+res.status)
+      console.log('status=' + res.status)
     }).catch(error => console.log(error))
-  // }
+  }
 }
 
 export function saveSign (sign) {
@@ -237,7 +238,7 @@ export function saveSign (sign) {
       },
       body: JSON.stringify(json)
     }).then(res => {
-      console.log('status='+res.status)
+      console.log('status=' + res.status)
       return res.json()
     }).then(json => {
       console.log(json)
@@ -246,10 +247,12 @@ export function saveSign (sign) {
       console.log(newSignId)
       if (sign.displays) {
         sign.displays.map(display => {
-          if (display.DraftDisplayConfigurationId === sign.id)
+          if (display.DraftDisplayConfigurationId === sign.id) {
             display.DraftDisplayConfigurationId = newSignId
-          if (display.PublishedDisplayConfigurationId === sign.id)
+          }
+          if (display.PublishedDisplayConfigurationId === sign.id) {
             display.PublishedDisplayConfigurationId = newSignId
+          }
           console.log(display)
           saveDisplays.push(saveDisplay(display, user))
         })

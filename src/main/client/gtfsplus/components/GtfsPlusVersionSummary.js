@@ -15,25 +15,25 @@ export default class GtfsPlusVersionSummary extends Component {
     this.props.gtfsPlusDataRequested(this.props.version)
   }
   isTableIncluded (tableId) {
-    if(!this.props.gtfsplus.tableData) return null
+    if (!this.props.gtfsplus.tableData) return null
     return tableId in this.props.gtfsplus.tableData ? 'Yes' : 'No'
   }
 
   tableRecordCount (tableId) {
-    if(!this.props.gtfsplus.tableData) return null
-    if(!(tableId in this.props.gtfsplus.tableData)) return 'N/A'
+    if (!this.props.gtfsplus.tableData) return null
+    if (!(tableId in this.props.gtfsplus.tableData)) return 'N/A'
     return this.props.gtfsplus.tableData[tableId].length.toLocaleString()
   }
 
   validationIssueCount (tableId) {
-    if(!this.props.gtfsplus.validation) return null
-    if(!(tableId in this.props.gtfsplus.validation)) return 'None'
+    if (!this.props.gtfsplus.validation) return null
+    if (!(tableId in this.props.gtfsplus.validation)) return 'None'
     return this.props.gtfsplus.validation[tableId].length.toLocaleString()
   }
 
   feedStatus () {
-    if(!this.props.gtfsplus.timestamp) return null
-    if(!this.gtfsPlusEdited()) return <i>GTFS+ data for this feed version has not been edited.</i>
+    if (!this.props.gtfsplus.timestamp) return null
+    if (!this.gtfsPlusEdited()) return <i>GTFS+ data for this feed version has not been edited.</i>
     return <b>GTFS+ Data updated {moment(this.props.gtfsplus.timestamp).format('MMM. DD, YYYY, h:MMa')}</b>
   }
 
@@ -46,7 +46,7 @@ export default class GtfsPlusVersionSummary extends Component {
     const publishingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'approve-gtfs')
     const header = (
       <h3 onClick={() => {
-        if(!this.state.expanded) this.props.gtfsPlusDataRequested(this.props.version)
+        if (!this.state.expanded) this.props.gtfsPlusDataRequested(this.props.version)
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> GTFS+ for this Version

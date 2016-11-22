@@ -84,7 +84,7 @@ export default class FeedVersionViewer extends Component {
                 : this.props.versionSection === 'comments'
                 ? <NotesViewer
                     type='feed-version'
-                    stacked={true}
+                    stacked
                     user={this.props.user}
                     version={this.props.version}
                     notes={version.notes}
