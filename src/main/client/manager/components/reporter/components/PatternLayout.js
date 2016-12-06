@@ -19,9 +19,6 @@ export default class PatternLayout extends Component {
     patterns: PropTypes.object,
     tableOptions: PropTypes.object
   }
-  constructor (props) {
-    super(props)
-  }
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }

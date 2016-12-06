@@ -1,7 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { setActiveGtfsEntity } from './editor'
-
-//// FARES
+import { setActiveGtfsEntity } from './active'
 
 export function savingFare (feedId, fare) {
   return {
@@ -34,7 +32,7 @@ export function saveFare (feedId, fare) {
       currencyType: fare.currency_type,
       paymentMethod: fare.payment_method,
       transfers: fare.transfers,
-      transferDuration: fare.transfer_duration,
+      transferDuration: fare.transfer_duration
     }
     const method = fare.id !== 'new' ? 'put' : 'post'
     const url = fare.id !== 'new'
@@ -43,7 +41,6 @@ export function saveFare (feedId, fare) {
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
       .then(f => {
-
         // dispatch(receiveFare(feedId, fare))
         dispatch(fetchFares(feedId))
         .then(() => {

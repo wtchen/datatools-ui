@@ -1,7 +1,7 @@
 import React from 'react'
 import Helmet from 'react-helmet'
 import {Icon} from '@conveyal/woonerf'
-import { Grid, Row, Col, Button } from 'react-bootstrap'
+import { Grid, Row, Col } from 'react-bootstrap'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import CreateAlert from '../components/CreateAlert'
@@ -9,19 +9,10 @@ import VisibleAlertsList from '../containers/VisibleAlertsList'
 import GlobalGtfsFilter from '../../gtfs/containers/GlobalGtfsFilter'
 import GtfsMapSearch from '../../gtfs/components/gtfsmapsearch'
 
-import { Link } from 'react-router'
-
 export default class AlertsViewer extends React.Component {
-
-  constructor (props) {
-    super(props)
-    //console.log("AV activeFeeds", this.props.activeFeeds);
-  }
-
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
   render () {
     const createDisabled = this.props.project && this.props.user ? !this.props.user.permissions.hasProjectPermission(this.props.project.id, 'edit-alert') : true
     return (

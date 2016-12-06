@@ -1,4 +1,3 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import PublicFeedsViewer from '../components/PublicFeedsViewer'
@@ -18,8 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onComponentMount: (initialProps) => {
       dispatch(fetchProjectsWithPublicFeeds())
     },
-    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
-    // onFeedClick: (feed) => {dispatch()}
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) }
   }
 }
 

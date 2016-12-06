@@ -16,7 +16,7 @@ export default class TripsChart extends Component {
   }
   render () {
     if (!this.props.validationResult) {
-      return <Loading/>
+      return <Loading />
     }
     const tripsPerDate = this.props.validationResult.tripsPerDate
     const data = Object.keys(tripsPerDate).map(key => [key, tripsPerDate[key]])
@@ -77,11 +77,11 @@ export default class TripsChart extends Component {
                 />
                 {index % 14 === 0 /* label the date every 14 days */
                   ? <g>
-                      <line x1={x} y1={graphHeight} x2={x} y2={graphHeight + 12} stroke='black' />
-                      <text x={x - 35} y={graphHeight + 26} fill='black'>
-                        {d[0]}
-                      </text>
-                    </g>
+                    <line x1={x} y1={graphHeight} x2={x} y2={graphHeight + 12} stroke='black' />
+                    <text x={x - 35} y={graphHeight + 26} fill='black'>
+                      {d[0]}
+                    </text>
+                  </g>
                   : null
                 }
               </g>

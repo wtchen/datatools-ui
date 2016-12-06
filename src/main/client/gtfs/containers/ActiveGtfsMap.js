@@ -1,14 +1,10 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import GtfsMap from '../components/GtfsMap'
-import { fetchPatterns } from '../actions/patterns'
 import { clearGtfsElements, refreshGtfsElements } from '../actions/general'
-import { fetchStops, stopPatternFilterChange, stopRouteFilterChange, stopDateTimeFilterChange } from '../actions/stops'
-import { fetchRoutes } from '../actions/routes'
+import { stopPatternFilterChange, stopRouteFilterChange, stopDateTimeFilterChange } from '../actions/stops'
 import { updateMapState } from '../actions/filter'
 import { fetchFeedVersionIsochrones } from '../../manager/actions/feeds'
-
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -51,11 +47,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     fetchIsochrones: (feedVersion, fromLat, fromLon, toLat, toLon, date, fromTime, toTime) => {
       dispatch(fetchFeedVersionIsochrones(feedVersion, fromLat, fromLon, toLat, toLon, date, fromTime, toTime))
-    },
-    // viewStops: (row) => {
-    //   dispatch(stopPatternFilterChange(feedId, row))
-    //   dispatch(ownProps.selectTab('stops'))
-    // }
+    }
   }
 }
 

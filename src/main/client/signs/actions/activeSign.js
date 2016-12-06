@@ -83,7 +83,7 @@ export const addActiveEntity = (field = 'AGENCY', value = null, agency = null, n
     }
   }
   // set agency of new entity
-  if (agency){
+  if (agency) {
     newEntity.entity.agency = agency
   }
   newEntity.entity[field.toLowerCase()] = value

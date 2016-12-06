@@ -1,9 +1,8 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import { fetchProjects, updateProject, createProject, saveProject } from '../actions/projects'
 import { setVisibilitySearchText } from '../actions/visibilityFilter'
-import ProjectsList  from '../components/ProjectsList'
+import ProjectsList from '../components/ProjectsList'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -24,9 +23,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveProject({ name }))
     },
     projectNameChanged: (project, newName) => {
-      dispatch(updateProject(project, { name : newName }))
+      dispatch(updateProject(project, { name: newName }))
     },
-    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))}
+    searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) }
   }
 }
 

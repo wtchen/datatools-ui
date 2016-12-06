@@ -1,16 +1,12 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import GtfsValidationExplorer from '../../components/validation/GtfsValidationExplorer'
-
+import { fetchFeedSourceAndProject } from '../../actions/feeds'
 import {
-  fetchFeedSourceAndProject,
   fetchFeedVersions,
   fetchValidationResult,
   fetchFeedVersionIsochrones
-} from '../../actions/feeds'
-
-import { updateTargetForSubscription } from '../../actions/user'
+} from '../../actions/versions'
 
 const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId
@@ -20,9 +16,9 @@ const mapStateToProps = (state, ownProps) => {
   // find the containing project
   let project = state.projects.all
     ? state.projects.all.find(p => {
-        if (!p.feedSources) return false
-        return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
-      })
+      if (!p.feedSources) return false
+      return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
+    })
     : null
 
   let feedSource, version
@@ -30,7 +26,7 @@ const mapStateToProps = (state, ownProps) => {
     feedSource = project.feedSources.find(fs => fs.id === feedSourceId)
   }
   if (feedSource && feedSource.feedVersions) {
-    version = feedSource.feedVersions[feedVersionIndex-1]
+    version = feedSource.feedVersions[feedVersionIndex - 1]
   }
   return {
     version,
@@ -66,7 +62,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     fetchIsochrones: (feedVersion, fromLat, fromLon, toLat, toLon) => {
       dispatch(fetchFeedVersionIsochrones(feedVersion, fromLat, fromLon, toLat, toLon))
-    },
+    }
   }
 }
 

@@ -65,8 +65,6 @@ export default class FeedVersionNavigator extends Component {
       console.log(`Error version ${this.props.feedVersionIndex} does not exist`)
     }
 
-    const publicPrefix = this.props.isPublic ? '/public' : ''
-
     return (
       <div>
         <ConfirmModal ref='deleteModal'
@@ -94,91 +92,91 @@ export default class FeedVersionNavigator extends Component {
         <Row style={{marginBottom: '20px'}}>
           {/* Version Navigation Widget and Name Editor */}
           <Col xs={12} style={versionTitleStyle}>
-              <ButtonToolbar>
-                <ButtonGroup>
-                  <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon type='square' /></Button>
-                  <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon type='list' /></Button>
+            <ButtonToolbar>
+              <ButtonGroup>
+                <Button active={!this.state.listView} onClick={() => this.setState({listView: false})}><Icon type='square' /></Button>
+                <Button active={this.state.listView} onClick={() => this.setState({listView: true})}><Icon type='list' /></Button>
+              </ButtonGroup>
+              {this.state.listView
+                ? null
+                : <ButtonGroup> {/* Version Navigation/Selection Widget */}
+                  {/* Previous Version Button */}
+                  <Button href='#'
+                    disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex - 2]}
+                    onClick={() => this.props.setVersionIndex(fs, this.props.feedVersionIndex - 1)}
+                  >
+                    <Glyphicon glyph='arrow-left' />
+                  </Button>
+
+                  {/* Version Selector Dropdown */}
+                  <DropdownButton href='#' id='versionSelector'
+                    title={`${getMessage(messages, 'version')} ${this.props.feedVersionIndex} ${getMessage(messages, 'of')} ${versions.length}`}
+                    onSelect={(key) => {
+                      if (key !== this.props.feedVersionIndex) {
+                        this.props.setVersionIndex(fs, key)
+                      }
+                    }}
+                  >
+                    {versions.map((version, k) => {
+                      k = k + 1
+                      return <MenuItem key={k} eventKey={k}>{k}. {version.name}</MenuItem>
+                    })}
+                  </DropdownButton>
+
+                  {/* Next Version Button */}
+                  <Button href='#'
+                    disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex]}
+                    onClick={() => this.props.setVersionIndex(fs, this.props.feedVersionIndex + 1)}
+                  >
+                    <Glyphicon glyph='arrow-right' />
+                  </Button>
                 </ButtonGroup>
-                {this.state.listView
-                  ? null
-                  : <ButtonGroup> {/* Version Navigation/Selection Widget */}
-                      {/* Previous Version Button */}
-                      <Button href='#'
-                        disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex - 2]}
-                        onClick={() => this.props.setVersionIndex(fs, this.props.feedVersionIndex - 1)}
-                      >
-                        <Glyphicon glyph='arrow-left' />
-                      </Button>
-
-                      {/* Version Selector Dropdown */}
-                      <DropdownButton href='#' id='versionSelector'
-                        title={`${getMessage(messages, 'version')} ${this.props.feedVersionIndex} ${getMessage(messages, 'of')} ${versions.length}`}
-                        onSelect={(key) => {
-                          if (key !== this.props.feedVersionIndex) {
-                            this.props.setVersionIndex(fs, key)
-                          }
-                        }}
-                      >
-                        {versions.map((version, k) => {
-                          k = k + 1
-                          return <MenuItem key={k} eventKey={k}>{k}. {version.name}</MenuItem>
-                        })}
-                      </DropdownButton>
-
-                      {/* Next Version Button */}
-                      <Button href='#'
-                        disabled={!hasVersions || !sortedVersions[this.props.feedVersionIndex]}
-                        onClick={() => this.props.setVersionIndex(fs, this.props.feedVersionIndex + 1)}
-                      >
-                        <Glyphicon glyph='arrow-right' />
-                      </Button>
-                    </ButtonGroup>
-                  }
-                  <ButtonToolbar className='pull-right'>
-                    {isModuleEnabled('deployment')
-                      ? <Button
-                          // disabled={editGtfsDisabled} // || !fs.latestValidation}
-                          // bsStyle='info'
-                          onClick={() => { this.props.createDeploymentFromFeedSource(fs) }}>
-                          <Icon type='globe' /> Deploy feed
-                        </Button>
-                      : null
+              }
+              <ButtonToolbar className='pull-right'>
+                {isModuleEnabled('deployment')
+                  ? <Button
+                    // disabled={editGtfsDisabled} // || !fs.latestValidation}
+                    // bsStyle='info'
+                    onClick={() => { this.props.createDeploymentFromFeedSource(fs) }}>
+                    <Icon type='globe' /> Deploy feed
+                  </Button>
+                  : null
+                }
+                {isModuleEnabled('editor')
+                  ? <Button
+                    // disabled={editGtfsDisabled} // || !fs.latestValidation}
+                    // bsStyle='info'
+                    onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
+                    <Glyphicon glyph='pencil' /> Edit feed
+                  </Button>
+                  : null
+                }
+                <DropdownButton
+                  bsStyle='success'
+                  title={<span><Icon type='plus' /> Create new version</span>} id='bg-nested-dropdown'
+                  onSelect={key => {
+                    console.log(key)
+                    switch (key) {
+                      case 'delete':
+                        return this.refs['deleteModal'].open()
+                      case 'fetch':
+                        return this.props.fetchFeed(fs)
+                      case 'upload':
+                        return this.refs['uploadModal'].open()
+                      case 'deploy':
+                        return this.props.createDeploymentFromFeedSource(fs)
+                      case 'public':
+                        return browserHistory.push(`/public/feed/${fs.id}`)
                     }
-                    {isModuleEnabled('editor')
-                      ? <Button
-                          // disabled={editGtfsDisabled} // || !fs.latestValidation}
-                          // bsStyle='info'
-                          onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
-                          <Glyphicon glyph='pencil' /> Edit feed
-                        </Button>
-                      : null
-                    }
-                    <DropdownButton
-                      bsStyle='success'
-                      title={<span><Icon type='plus' /> Create new version</span>} id='bg-nested-dropdown'
-                      onSelect={key => {
-                        console.log(key)
-                        switch (key) {
-                          case 'delete':
-                            return this.refs['deleteModal'].open()
-                          case 'fetch':
-                            return this.props.fetchFeed(fs)
-                          case 'upload':
-                            return this.refs['uploadModal'].open()
-                          case 'deploy':
-                            return this.props.createDeploymentFromFeedSource(fs)
-                          case 'public':
-                            return browserHistory.push(`/public/feed/${fs.id}`)
-                        }
-                      }}
-                    >
-                      <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
-                      <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-                      <MenuItem divider />
-                      <MenuItem disabled={disabled || !fs.editorSnapshots || fs.editorSnapshots.length === 0} eventKey='snapshot'><Glyphicon glyph='camera' /> From snapshot</MenuItem>
-                    </DropdownButton>
-                  </ButtonToolbar>
-                </ButtonToolbar>
+                  }}
+                >
+                  <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
+                  <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
+                  <MenuItem divider />
+                  <MenuItem disabled={disabled || !fs.editorSnapshots || fs.editorSnapshots.length === 0} eventKey='snapshot'><Glyphicon glyph='camera' /> From snapshot</MenuItem>
+                </DropdownButton>
+              </ButtonToolbar>
+            </ButtonToolbar>
           </Col>
         </Row>
         <Row>

@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
 import gravatar from 'gravatar'
-import ReactDOM from 'react-dom'
 import { Panel, Row, Col, Glyphicon, FormControl, Button, ButtonToolbar, Media } from 'react-bootstrap'
 
 import WatchButton from '../../common/containers/WatchButton'
@@ -61,26 +60,26 @@ export default class NotesViewer extends Component {
           </h3>
           {this.props.notes && this.props.notes.length > 0
             ? this.props.notes.map(note => {
-                return (
-                  <Media>
-                   <Media.Left>
-                      <img width={64} height={64} src={`${gravatar.url(note.userEmail, {protocol: 'https', s: '100'})}`} alt={note.userEmail} />
-                    </Media.Left>
-                    <Media.Body>
-                      <Panel
-                        className='comment-panel'
-                        header={
-                          <Media.Heading>
-                            <a href={getProfileLink(this.props.user.profile.email)}>{this.props.user.profile.email}</a> <small title={moment(note.date).format('h:MMa, MMM. DD YYYY')}>commented {moment(note.date).fromNow()}</small>
-                          </Media.Heading>
-                        }
-                      >
+              return (
+                <Media>
+                  <Media.Left>
+                    <img width={64} height={64} src={`${gravatar.url(note.userEmail, {protocol: 'https', s: '100'})}`} alt={note.userEmail} />
+                  </Media.Left>
+                  <Media.Body>
+                    <Panel
+                      className='comment-panel'
+                      header={
+                        <Media.Heading>
+                          <a href={getProfileLink(this.props.user.profile.email)}>{this.props.user.profile.email}</a> <small title={moment(note.date).format('h:MMa, MMM. DD YYYY')}>commented {moment(note.date).fromNow()}</small>
+                        </Media.Heading>
+                      }
+                    >
                       <p>{note.body || '(no content)'}</p>
-                      </Panel>
-                    </Media.Body>
-                  </Media>
-                )
-              })
+                    </Panel>
+                  </Media.Body>
+                </Media>
+              )
+            })
             : <p><i>{getMessage(messages, 'none')}</i></p>
 
           }
@@ -88,7 +87,7 @@ export default class NotesViewer extends Component {
         <Col xs={12} sm={this.props.stacked ? 12 : 4} md={this.props.stacked ? 12 : 6}>
           <h3>{getMessage(messages, 'postComment')}</h3>
           <Media>
-           <Media.Left>
+            <Media.Left>
               <img width={64} height={64} src={this.props.user ? this.props.user.profile.picture : ''} />
             </Media.Left>
             <Media.Body>

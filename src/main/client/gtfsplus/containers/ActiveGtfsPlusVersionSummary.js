@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import GtfsPlusVersionSummary  from '../components/GtfsPlusVersionSummary'
+import GtfsPlusVersionSummary from '../components/GtfsPlusVersionSummary'
 
 import {
   downloadGtfsPlusFeed,

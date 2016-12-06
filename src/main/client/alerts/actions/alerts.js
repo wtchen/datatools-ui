@@ -1,12 +1,10 @@
-import { push } from 'react-router-redux'
 import { browserHistory } from 'react-router'
-import clone from 'clone'
+import fetch from 'isomorphic-fetch'
+import { fetchStopsAndRoutes } from '../../gtfs/actions/general'
 
-import { fetchStopsAndRoutes } from  '../../gtfs/actions/general'
 import { secureFetch } from '../../common/util/util'
 import { getAlertsUrl, getFeedId } from '../../common/util/modules'
 import { setErrorMessage } from '../../manager/actions/status'
-import moment from 'moment'
 
 // alerts management action
 
@@ -26,8 +24,9 @@ export function createAlert (entity, agency) {
         type: type
       }
 
-      if (agency !== null)
+      if (agency !== null) {
         newEntity.agency = agency
+      }
 
       const typeKey = type.toLowerCase()
       newEntity[typeKey] = entity
@@ -38,56 +37,15 @@ export function createAlert (entity, agency) {
       id: nextAlertId,
       title: '', // 'New Alert',
       affectedEntities: entities,
-      published: false,
-      // start: moment().unix()*1000,
-      // end: moment().add(30, 'day').unix()*1000
+      published: false
     }
     browserHistory.push('/alerts/new')
     dispatch(updateActiveAlert(alert))
   }
 }
 
-/*export const createAlert = (entity) => {
-  nextAlertId--
-  let entities = []
-  if (entity) {
-    nextStopEntityId++
-    let type = typeof entity.stop_id !== 'undefined' ? 'STOP' : 'ROUTE'
-    let newEntity = {
-      id: nextStopEntityId,
-      type: type
-    }
-    const typeKey = type.toLowerCase()
-    newEntity[typeKey] = entity
-    entities.push(newEntity)
-  }
-  return {
-    type: 'CREATE_ALERT',
-    alert: {
-      id: nextAlertId,
-      title: 'New Alert',
-      affectedEntities: entities,
-      published: false
-    }
-  }
-}*/
-
-/*export const saveAlert = (alert) => {
-  return {
-    type: 'SAVE_ALERT',
-    alert
-  }
-}*/
-
-/*export const editAlert = (alert) => {
-  return {
-    type: 'EDIT_ALERT',
-    alert
-  }
-}*/
-
 export const deleteAlert = (alert) => {
-  return function (dispatch, getState){
+  return function (dispatch, getState) {
     console.log('deleting', alert)
     const user = getState().user
     const url = getAlertsUrl() + '/' + alert.id
@@ -101,7 +59,7 @@ export const deleteAlert = (alert) => {
         'Authorization': 'Bearer ' + user.token
       }
     }).then((res) => {
-      console.log('status='+res.status)
+      // console.log('status=' + res.status)
       browserHistory.push('/alerts')
       dispatch(fetchRtdAlerts())
     })
@@ -110,7 +68,7 @@ export const deleteAlert = (alert) => {
 
 export const requestRtdAlerts = () => {
   return {
-    type: 'REQUEST_RTD_ALERTS',
+    type: 'REQUEST_RTD_ALERTS'
   }
 }
 
@@ -153,14 +111,14 @@ export const updateActiveAlert = (alert) => {
   }
 }
 
-export function editAlert(alert) {
+export function editAlert (alert) {
   return function (dispatch, getState) {
     dispatch(updateActiveAlert(alert))
-    browserHistory.push('/alerts/alert/'+alert.id)
+    browserHistory.push(`/alerts/alert/${alert.id}`)
   }
 }
 
-export function fetchEntity(entity, activeProject) {
+export function fetchEntity (entity, activeProject) {
   const feed = activeProject.feedSources.find(f => getFeedId(f) === entity.entity.AgencyId)
   const feedId = getFeedId(feed)
   const url = entity.type === 'stop' ? `/api/manager/stops/${entity.entity.StopId}?feed=${feedId}` : `/api/manager/routes/${entity.entity.RouteId}?feed=${feedId}`
@@ -171,11 +129,11 @@ export function fetchEntity(entity, activeProject) {
   .then((object) => {
     return object
   }).catch((error) => {
-    // console.log('caught', error)
+    console.log('caught', error)
   })
 }
 
-export function saveAlert(alert) {
+export function saveAlert (alert) {
   return function (dispatch, getState) {
     console.log('saving...')
     const user = getState().user
@@ -187,8 +145,8 @@ export function saveAlert(alert) {
       Cause: alert.cause || 'UNKNOWN_CAUSE',
       Effect: alert.effect || 'UNKNOWN_EFFECT',
       Published: alert.published ? 'Yes' : 'No',
-      StartDateTime: alert.start/1000 || 0,
-      EndDateTime: alert.end/1000 || 0,
+      StartDateTime: alert.start / 1000 || 0,
+      EndDateTime: alert.end / 1000 || 0,
       ServiceAlertEntities: alert.affectedEntities.map((entity) => {
         return {
           Id: entity.id,
@@ -217,7 +175,7 @@ export function saveAlert(alert) {
       },
       body: JSON.stringify(json)
     }).then((res) => {
-      console.log('status='+res.status)
+      console.log('status=' + res.status)
       browserHistory.push('/alerts')
       dispatch(fetchRtdAlerts())
     })

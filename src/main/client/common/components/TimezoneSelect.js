@@ -1,19 +1,21 @@
 import React, { PropTypes } from 'react'
-import fetch from 'isomorphic-fetch'
-import { Glyphicon, Label, FormControl } from 'react-bootstrap'
-import { PureComponent, shallowEqual } from 'react-pure-render'
+import { Glyphicon } from 'react-bootstrap'
+import { shallowEqual } from 'react-pure-render'
 import Select from 'react-select'
 
 // import timezones from '../util/timezones'
-import moment_tz from 'moment-timezone'
+import momentTZ from 'moment-timezone'
 import { getComponentMessages, getMessage } from '../util/config'
 
 export default class TimezoneSelect extends React.Component {
-  constructor(props) {
+  static propTypes = {
+    value: PropTypes.string
+  }
+  constructor (props) {
     super(props)
     this.state = {
       value: this.props.value
-    };
+    }
   }
 
   cacheOptions (options) {
@@ -29,16 +31,16 @@ export default class TimezoneSelect extends React.Component {
     }
   }
   renderOption (option) {
-    return <span style={{ color: 'black' }}>{option.region ? <Glyphicon glyph="globe" /> : <Glyphicon glyph="option-horizontal" />} {option.label} {option.link}</span>
+    return <span style={{ color: 'black' }}>{option.region ? <Glyphicon glyph='globe' /> : <Glyphicon glyph='option-horizontal' />} {option.label} {option.link}</span>
   }
   onChange (value) {
     this.setState({value})
   }
-  render() {
+  render () {
     // console.log('render search feeds', this.props.feeds)
     const messages = getComponentMessages('TimezoneSelect')
 
-    const options = moment_tz.tz.names().map(tz => ({value: tz, label: tz}))
+    const options = momentTZ.tz.names().map(tz => ({value: tz, label: tz}))
     const handleChange = (input) => {
       this.onChange(input)
       this.props.onChange && this.props.onChange(input)
@@ -51,19 +53,19 @@ export default class TimezoneSelect extends React.Component {
 
     const placeholder = getMessage(messages, 'placeholder')
     return (
-    <Select
-      ref='tzSelect'
-      tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
-      cache={false}
-      style={{marginBottom: '20px'}}
-      onFocus={onFocus}
-      filterOptions
-      minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
-      clearable={this.props.clearable}
-      placeholder={this.props.placeholder || placeholder}
-      options={options}
-      value={this.state.value}
-      onChange={handleChange} />
+      <Select
+        ref='tzSelect'
+        tabIndex={this.props.tabIndex ? this.props.tabIndex : null}
+        cache={false}
+        style={{marginBottom: '20px'}}
+        onFocus={onFocus}
+        filterOptions
+        minimumInput={this.props.minimumInput !== null ? this.props.minimumInput : 1}
+        clearable={this.props.clearable}
+        placeholder={this.props.placeholder || placeholder}
+        options={options}
+        value={this.state.value}
+        onChange={handleChange} />
     )
   }
 }

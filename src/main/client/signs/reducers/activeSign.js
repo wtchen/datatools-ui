@@ -26,12 +26,13 @@ const activeSign = (state = null, action) => {
     case 'SET_ACTIVE_SIGN_PUBLISHED':
       return update(state, {published: {$set: action.published}})
     case 'RECEIVED_RTD_DISPLAYS':
-      if (state !== null){
+      if (state !== null) {
         let displayMap = {}
         for (var i = 0; i < action.rtdDisplays.length; i++) {
           let d = action.rtdDisplays[i]
-          if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId)
+          if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId) {
             continue
+          }
           if (d.DraftDisplayConfigurationId) {
             if (displayMap[d.DraftDisplayConfigurationId] && displayMap[d.DraftDisplayConfigurationId].findIndex(display => display.Id === d.Id) === -1) {
               displayMap[d.DraftDisplayConfigurationId].push(d)
@@ -55,13 +56,13 @@ const activeSign = (state = null, action) => {
     case 'RECEIVED_SIGN_GTFS_ENTITIES':
       // TODO: update GTFS entities for active sign
       if (state !== null && state.affectedEntities !== null) {
-        for (var i = 0; i < action.gtfsObjects.length; i++) {
+        for (let i = 0; i < action.gtfsObjects.length; i++) {
           let ent = action.gtfsObjects[i]
           if (typeof ent.gtfs !== 'undefined' && ent.SignId === state.id) {
             // let sign = action.gtfsSigns.find(a => a.id === ent.entity.SignId)
             let updatedEntity = state.affectedEntities.find(e => e.id === ent.entity.Id)
             updatedEntity[ent.type] = ent.gtfs
-            entities.push(selectedEnt)
+            // entities.push(selectedEnt)
             entities = [
               ...state.affectedEntities.slice(0, foundIndex),
               updatedEntity,
@@ -87,7 +88,7 @@ const activeSign = (state = null, action) => {
           // if (action.configId)
           //   return update(state, {displays: {[displayIndex]: {$merge: {PublishedDisplayConfigurationId: action.configId, DraftDisplayConfigurationId: null}}}})
           // else {
-            return update(state, {displays: {[displayIndex]: {$merge: {PublishedDisplayConfigurationId: action.configId}}}})
+          return update(state, {displays: {[displayIndex]: {$merge: {PublishedDisplayConfigurationId: action.configId}}}})
           // }
       }
       return state
@@ -133,15 +134,14 @@ const activeSign = (state = null, action) => {
                 stop_id: {$set: stopId},
                 agency: {$set: action.agency},
                 route: {$set: null},
-                route_id: {$set: null},
+                route_id: {$set: null}
                 // TODO: update agency id from feed id?
               })
-            }
-            else {
+            } else {
               updatedEntity = update(action.entity, {
                 stop: {$set: action.value},
                 stop_id: {$set: stopId},
-                agency: {$set: action.agency},
+                agency: {$set: action.agency}
                 // TODO: update agency id from feed id?
               })
             }
@@ -153,7 +153,7 @@ const activeSign = (state = null, action) => {
             return update(state, {affectedEntities: {$set: entities}})
           case 'ROUTES':
             updatedEntity = update(action.entity, {
-              route: {$set: action.value},
+              route: {$set: action.value}
             })
             entities = [
               ...state.affectedEntities.slice(0, foundIndex),

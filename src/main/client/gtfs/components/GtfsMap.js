@@ -1,18 +1,13 @@
 import React, { Component, PropTypes } from 'react'
-import fetch from 'isomorphic-fetch'
-import moment from 'moment'
-import { Button, FormControl, ControlLabel } from 'react-bootstrap'
 import { shallowEqual } from 'react-pure-render'
-import { divIcon, Browser } from 'leaflet'
-import { Map, Marker, Popup, TileLayer, GeoJson, FeatureGroup, Rectangle } from 'react-leaflet'
-import {Icon} from '@conveyal/woonerf'
+import { Browser } from 'leaflet'
+import { Map, Marker, TileLayer, GeoJson, FeatureGroup, Rectangle } from 'react-leaflet'
 
-import { getFeed, getFeedId } from '../../common/util/modules'
+import { getFeedId } from '../../common/util/modules'
+import PatternGeoJson from './PatternGeoJson'
+import StopMarker from './StopMarker'
 import { getFeedsBounds } from '../../common/util/geo'
-import { getRouteName } from '../../editor/util/gtfs'
 import { getConfigProperty } from '../../common/util/config'
-
-const colors = ['#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#cab2d6', '#6a3d9a']
 
 export default class GtfsMap extends Component {
   static propTypes = {
@@ -20,31 +15,26 @@ export default class GtfsMap extends Component {
     bounds: PropTypes.array,
     feeds: PropTypes.array,
     version: PropTypes.object,
-
     onStopClick: PropTypes.func,
     onRouteClick: PropTypes.func,
     onZoomChange: PropTypes.func,
     popupAction: PropTypes.string,
     newEntityId: PropTypes.number,
-
     entities: PropTypes.array,
     position: PropTypes.array,
     stops: PropTypes.array,
     patterns: PropTypes.array,
     routes: PropTypes.array,
-
     width: PropTypes.string, // % or px
     height: PropTypes.number // only px
   }
   constructor (props) {
     super(props)
-
     this.state = {
       bounds: this.props.bounds || [[70, 130], [-70, -130]],
       map: {}
     }
   }
-
   componentDidMount () {
     this.resetMap(true)
   }
@@ -71,27 +61,22 @@ export default class GtfsMap extends Component {
       if (nextProps.feeds.length !== this.props.feeds.length && this.refs.map) {
         this.refreshGtfsElements(nextProps.feeds)
       }
-      //
       if (nextProps.entities !== this.props.entities && this.refs.map) {
         this.refreshGtfsElements(nextProps.feeds, nextProps.entities)
       }
     }
-
     if (nextProps.searchFocus && nextProps.searchFocus !== this.props.searchFocus) {
       this.setState({searchFocus: nextProps.searchFocus})
     }
-
     // handle stop: panning on stop select
     // pattern panTo is handled with layerAddHandler and searchFocus
     if (nextProps.stop && !shallowEqual(nextProps.stop, this.props.stop)) {
       this.refs.map.leafletElement.panTo([nextProps.stop.stop_lat, nextProps.stop.stop_lon])
     }
-
     // if height or width changes, reset map
     if (nextProps.height !== this.props.height || nextProps.width !== this.props.width) {
       this.resetMap()
     }
-
     // recalculate isochrone if date/time changes
     if (!shallowEqual(nextProps.dateTime, this.props.dateTime)) {
       this.state.lastClicked && this.props.showIsochrones && this.fetchIsochrones(this.state.lastClicked)
@@ -101,8 +86,7 @@ export default class GtfsMap extends Component {
     let bounds
     if (this.props.feeds) {
       bounds = getFeedsBounds(this.props.feeds)
-    }
-    else if (this.props.version) {
+    } else if (this.props.version) {
       bounds = this.props.version.validationSummary.bounds
     }
     bounds = bounds && bounds.north ? [[bounds.north, bounds.east], [bounds.south, bounds.west]] : this.state.bounds
@@ -116,136 +100,15 @@ export default class GtfsMap extends Component {
   getIsochroneColor (time) {
     return time ? 'blue' : 'red'
   }
-  renderTransferPerformance (stop) {
-    return stop.transferPerformance && stop.transferPerformance.length
-      ? <div>
-          <ControlLabel>Transfer performance</ControlLabel>
-          <FormControl
-            componentClass='select'
-            defaultValue={0}
-            onChange={(evt) => {
-              let state = {}
-              state[stop.stop_id] = +evt.target.value
-              this.setState(state)}
-            }
-          >
-            {stop.transferPerformance
-              // .sort((a, b) => {
-              //
-              // })
-              .map((summary, index) => {
-                const fromRoute = this.props.routes.find(r => r.route_id === summary.fromRoute)
-                const toRoute = this.props.routes.find(r => r.route_id === summary.toRoute)
-                return <option value={index}>{fromRoute.route_short_name} to {toRoute.route_short_name}</option>
-              })
-            }
-          </FormControl>
-          {this.renderTransferPerformanceResult(stop.transferPerformance[this.state[stop.stop_id] || 0])}
-        </div>
-      : <p>No transfers found</p>
-  }
-  renderTransferPerformanceResult (transferPerformance) {
-    if (!transferPerformance)
-      return <p>No transfers found</p>
-    return (
-    <ul className='list-unstyled' style={{marginTop: '5px'}}>
-      <li><strong>Typical case: {moment.duration(transferPerformance.typicalCase, 'seconds').humanize()}</strong></li>
-      <li>Best case: {moment.duration(transferPerformance.bestCase, 'seconds').humanize()}</li>
-      <li>Worst case: {moment.duration(transferPerformance.worstCase, 'seconds').humanize()}</li>
-    </ul>)
-  }
-  renderStop (stop, index) {
-    if (!stop) {
-      return null
+  refreshGtfsElements (feeds, entities) {
+    const zoomLevel = this.refs.map.leafletElement.getZoom()
+    const feedIds = (feeds || this.props.feeds).map(getFeedId)
+    const ents = (entities || this.props.entities || ['routes', 'stops'])
+    if (feedIds.length === 0 || zoomLevel <= 13) {
+      // this.props.clearGtfsElements()
+    } else {
+      this.props.refreshGtfsElements(feedIds, ents)
     }
-    const feedId = stop.feed_id || stop.feed && stop.feed.feed_id
-    const feed = getFeed(this.props.feeds, feedId)
-    const busIcon = divIcon({
-      html: `<span title="${stop.stop_name}" class="fa-stack bus-stop-icon" style="opacity: 0.6">
-              <i class="fa fa-circle fa-stack-2x" style="color: #ffffff"></i>
-              <i class="fa fa-bus fa-stack-1x" style="color: #000000"></i>
-            </span>`,
-      className: '',
-      iconSize: [24, 24],
-    })
-    return (
-      <Marker
-        ref={`marker-${stop.stop_id}`}
-        icon={busIcon}
-        // onAdd={(e) => {
-        //   e.target.openPopup()
-        // }}
-        position={[stop.stop_lat, stop.stop_lon]}
-        key={`marker-${stop.stop_id}`}
-        >
-        <Popup>
-          <div>
-            <p><Icon type='map-marker' /> <strong>{stop.stop_name} ({stop.stop_id})</strong></p>
-            {this.props.renderTransferPerformance && this.renderTransferPerformance(stop)}
-            {this.props.onStopClick
-              ? <Button
-                  bsStyle='primary'
-                  block
-                  onClick={() => this.props.onStopClick(stop, feed, this.props.newEntityId)}
-                >
-                  <Icon type='map-marker' /> {this.props.popupAction} stop
-                </Button>
-              : null
-            }
-          </div>
-        </Popup>
-      </Marker>
-    )
-  }
-  renderPattern (pattern, index = 0) {
-    if (!pattern) {
-      return null
-    }
-    const route = pattern.route
-    const feedId = route ? route.feed_id || route.feed.feed_id : null
-    const feed = getFeed(this.props.feeds, feedId)
-    const routeName = route ? getRouteName(route) : pattern.route_name
-    const routeId = route ? route.route_id : pattern.route_id
-    const popup = (
-      <Popup>
-        <div>
-          <p><Icon type='bus' /> <strong>{routeName}</strong></p>
-          <p><Icon type='bus' /> <strong>{getRouteName(route)}</strong></p>
-          <ul>
-            <li><strong>ID:</strong> {routeId}</li>
-            <li><strong>Agency:</strong>{' '}
-            {// TODO: change this back to feedName
-              // route.feed_id
-              feed && feed.name
-            }
-            </li>
-          </ul>
-          {this.props.onRouteClick
-            ? <Button
-                bsStyle='primary'
-                block
-                onClick={() => this.props.onRouteClick(route, feed, this.props.newEntityId)}
-              >
-                <Icon type='bus' /> {this.props.popupAction} route
-              </Button>
-            : <p>[Must add stops first]</p>
-          }
-        </div>
-      </Popup>
-    )
-    return (
-      <GeoJson
-        color={colors[index % (colors.length - 1)]}
-        key={pattern.pattern_id}
-        data={pattern.geometry}
-        onEachFeature={(feature, layer) => {
-          layer.feature.properties.patternId = pattern.pattern_id
-          layer._leaflet_id = pattern.pattern_id
-        }}
-      >
-        {popup}
-      </GeoJson>
-    )
   }
   renderIsochrones () {
     let comps = []
@@ -261,7 +124,7 @@ export default class GtfsMap extends Component {
             opacity={0}
             style={(feature) => {
               return {
-                color: this.getIsochroneColor(iso.properties.time),
+                color: this.getIsochroneColor(iso.properties.time)
               }
             }}
           />
@@ -303,64 +166,73 @@ export default class GtfsMap extends Component {
     }
     let bounds = this.getBounds()
     return (
-    <div>
-      <Map
-        ref='map'
-        style={mapStyle}
-        bounds={bounds}
-        scrollWheelZoom={!this.props.disableScroll}
-        onClick={(e) => this.mapClicked(e)}
-        onMoveEnd={(e) => this.mapMoved(e)}
-        onLayerAdd={(e) => this.layerAddHandler(e)}
-        className='Gtfs-Map'
-      >
-        <TileLayer
-          url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}${Browser.retina ? '@2x' : ''}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
-          attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
-        />
-        {/* feed bounds */}
-        {this.props.showBounds
-          ? <Rectangle
+      <div>
+        <Map
+          ref='map'
+          style={mapStyle}
+          bounds={bounds}
+          scrollWheelZoom={!this.props.disableScroll}
+          onClick={(e) => this.mapClicked(e)}
+          onMoveEnd={(e) => this.mapMoved(e)}
+          onLayerAdd={(e) => this.layerAddHandler(e)}
+          className='Gtfs-Map'
+        >
+          <TileLayer
+            url={`https://api.tiles.mapbox.com/v4/${getConfigProperty('mapbox.map_id')}/{z}/{x}/{y}${Browser.retina ? '@2x' : ''}.png?access_token=${getConfigProperty('mapbox.access_token')}`}
+            attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
+          />
+          {/* feed bounds */}
+          {this.props.showBounds &&
+            <Rectangle
               bounds={bounds}
               fillOpacity={0}
             />
-          : null
-        }
-        <FeatureGroup ref='stops'>
-          {/* Stops from map bounds search */}
-          {this.props.stops
-            ? this.props.stops.map((stop, index) => this.renderStop(stop, index))
-            : null
           }
-          {/* Stop from GtfsSearch */}
-          {this.renderStop(this.props.stop)}
-        </FeatureGroup>
-      <FeatureGroup ref='patterns'>
-        {/* Patterns from map bounds search */}
-        {this.props.patterns
-          ? this.props.patterns.map((pattern, index) => this.renderPattern(pattern, index))
-          : null
-        }
-        {/* Pattern from GtfsSearch */}
-        {this.renderPattern(this.props.pattern)}
-      </FeatureGroup>
-      <FeatureGroup ref='isochrones'>
-        {/* Isochrones from map click */}
-        {this.props.showIsochrones && this.renderIsochrones()}
-      </FeatureGroup>
-      </Map>
-    </div>
+          <FeatureGroup ref='stops'>
+            {/* Stops from map bounds search */}
+            {this.props.stops && this.props.stops.length
+              ? this.props.stops.map((stop, index) => {
+                if (!stop) return null
+                return (
+                  <StopMarker
+                    stop={stop}
+                    key={`marker-${stop.stop_id}`}
+                    feeds={this.props.feeds}
+                    renderTransferPerformance={this.props.renderTransferPerformance}
+                    onStopClick={this.props.onStopClick}
+                    newEntityId={this.props.newEntityId}
+                    popupAction={this.props.popupAction} />
+                )
+              })
+              : null
+            }
+            {/* Stop from GtfsSearch */}
+            {this.props.stop && <StopMarker stop={this.props.stop} />}
+          </FeatureGroup>
+          <FeatureGroup ref='patterns'>
+            {/* Patterns from map bounds search */}
+            {this.props.patterns
+              ? this.props.patterns.map((pattern, index) => (
+                <PatternGeoJson
+                  pattern={pattern}
+                  key={pattern.pattern_id}
+                  feeds={this.props.feeds}
+                  index={index}
+                  onRouteClick={this.props.onRouteClick}
+                  newEntityId={this.props.newEntityId}
+                  popupAction={this.props.popupAction} />
+              ))
+              : null
+            }
+            {/* Pattern from GtfsSearch */}
+            {this.props.pattern && <PatternGeoJson pattern={this.props.pattern} />}
+          </FeatureGroup>
+          <FeatureGroup ref='isochrones'>
+            {/* Isochrones from map click */}
+            {this.props.showIsochrones && this.renderIsochrones()}
+          </FeatureGroup>
+        </Map>
+      </div>
     )
-  }
-
-  refreshGtfsElements (feeds, entities) {
-    const zoomLevel = this.refs.map.leafletElement.getZoom()
-    const feedIds = (feeds || this.props.feeds).map(getFeedId)
-    const ents = (entities || this.props.entities || ['routes', 'stops'])
-    if (feedIds.length === 0 || zoomLevel <= 13) {
-      // this.props.clearGtfsElements()
-    } else {
-      this.props.refreshGtfsElements(feedIds, ents)
-    }
   }
 }

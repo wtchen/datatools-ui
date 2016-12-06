@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { setActiveGtfsEntity } from './editor'
+import { setActiveGtfsEntity } from './active'
 import { isNew, stopFromGtfs } from '../util/gtfs'
 
 // STOPS

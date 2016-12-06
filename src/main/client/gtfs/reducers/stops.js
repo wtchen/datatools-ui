@@ -93,5 +93,4 @@ export default function reducer (state = defaultState, action) {
     default:
       return state
   }
-
 }

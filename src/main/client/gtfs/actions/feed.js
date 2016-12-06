@@ -7,7 +7,9 @@ function fetchingFeed (feedId, date, from, to) {
   return {
     type: 'FETCH_GRAPHQL_FEED',
     feedId,
-    date, from, to
+    date,
+    from,
+    to
   }
 }
 
@@ -15,7 +17,9 @@ function errorFetchingFeed (feedId, date, from, to) {
   return {
     type: 'FETCH_GRAPHQL_FEED_REJECTED',
     feedId,
-    date, from, to
+    date,
+    from,
+    to
   }
 }
 

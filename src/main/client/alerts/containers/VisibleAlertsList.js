@@ -1,4 +1,3 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -31,9 +30,8 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
       if (aValue > bValue) return visibilityFilter.sort.direction === 'asc' ? 1 : -1
       return 0
     })
-  }
-  else {
-    visibleAlerts.sort((a,b) => {
+  } else {
+    visibleAlerts.sort((a, b) => {
       if (a.id < b.id) return -1
       if (a.id > b.id) return 1
       return 0
@@ -57,7 +55,6 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
     default:
       return visibleAlerts
   }
-  return visibleAlerts
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -84,7 +81,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     searchTextChanged: (text) => dispatch(setVisibilitySearchText(text)),
     visibilityFilterChanged: (filter) => dispatch(setVisibilityFilter(filter)),
     agencyFilterChanged: (agency) => dispatch(setAlertAgencyFilter(agency)),
-    sortChanged: (sort) => dispatch(setAlertSort(sort)),
+    sortChanged: (sort) => dispatch(setAlertSort(sort))
   }
 }
 

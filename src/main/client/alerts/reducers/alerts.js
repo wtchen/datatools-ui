@@ -13,7 +13,7 @@ const alerts = (state = {
     filter: 'ACTIVE'
   }
 }, action) => {
-  let foundIndex, alerts, entities
+  let alerts, entities
   switch (action.type) {
     case 'SET_ALERT_VISIBILITY_SEARCH_TEXT':
       return update(state, {filter: {searchText: {$set: action.text}}})
@@ -23,9 +23,7 @@ const alerts = (state = {
       return update(state, {filter: {sort: {$set: action.sort}}})
     case 'SET_ALERT_AGENCY_FILTER':
       return update(state, {filter: {feedId: {$set: action.feedId}}})
-
     case 'DELETE_ALERT':
-
     case 'REQUEST_RTD_ALERTS':
       return {
         isFetching: true,
@@ -57,9 +55,9 @@ const alerts = (state = {
         }
       }
       // iterate over processed gtfs entities
-      for (var i = 0; i < entities.length; i++) {
+      for (let i = 0; i < entities.length; i++) {
         let ent = entities[i]
-        if (ent.gtfs && alerts){
+        if (ent.gtfs && alerts) {
           let alert = alerts.find(a => a.id === ent.entity.AlertId)
           let selectedEnt = alert.affectedEntities.find(e => e.id === ent.entity.Id)
           selectedEnt[ent.type] = ent.gtfs
@@ -79,23 +77,22 @@ const alerts = (state = {
     case 'RECEIVED_RTD_ALERTS':
       const entityList = []
       alerts = action.rtdAlerts
-      for (var i = 0; i < alerts.length; i++) {
+      for (let i = 0; i < alerts.length; i++) {
         let action = alerts[i]
-        if (typeof action !== 'undefined' && action.ServiceAlertEntities && action.ServiceAlertEntities.length > 0){
-
+        if (typeof action !== 'undefined' && action.ServiceAlertEntities && action.ServiceAlertEntities.length > 0) {
           for (var j = 0; j < action.ServiceAlertEntities.length; j++) {
             let ent = action.ServiceAlertEntities[j]
-            if (ent.StopId !== null){
+            if (ent.StopId !== null) {
               entityList.push({type: 'stop', entity: ent, gtfs: {}})
             }
-            if (ent.RouteId !== null){
+            if (ent.RouteId !== null) {
               entityList.push({type: 'route', entity: ent, gtfs: {}})
             }
           }
         }
       }
       const allAlerts = action.rtdAlerts ? action.rtdAlerts.map((rtdAlert) => {
-        //let activeIndex = action.projects.findIndex(p => p.id == config.activeProjectId)
+        // let activeIndex = action.projects.findIndex(p => p.id == config.activeProjectId)
         let project = action.activeProject // action.projects[activeIndex]
 
         let alert = {
@@ -107,12 +104,12 @@ const alerts = (state = {
           editedBy: rtdAlert.EditedBy,
           editedDate: rtdAlert.EditedDate,
           url: rtdAlert.Url,
-          start: rtdAlert.StartDateTime*1000,
-          end: rtdAlert.EndDateTime*1000,
-          published: rtdAlert.Published === "Yes",
+          start: rtdAlert.StartDateTime * 1000,
+          end: rtdAlert.EndDateTime * 1000,
+          published: rtdAlert.Published === 'Yes',
           affectedEntities: rtdAlert.ServiceAlertEntities.map((ent) => {
             let entity = {
-              id: ent.Id,
+              id: ent.Id
             }
 
             if (ent.AgencyId !== null) {

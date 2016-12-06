@@ -1,6 +1,6 @@
 import update from 'react-addons-update'
 
-/*const emptyTableData = {
+/* const emptyTableData = {
   'realtime_routes': [],
   'realtime_stops': [],
   'directions': [],
@@ -11,9 +11,7 @@ import update from 'react-addons-update'
   'fare_rider_categories': [],
   'calendar_attributes': [],
   'farezone_attributes': []
-}*/
-
-const emptyTableData = { }
+} */
 
 const gtfsplus = (state = {
   feedVersionId: null,
@@ -34,7 +32,7 @@ const gtfsplus = (state = {
 
     case 'RECEIVE_GTFSPLUS_CONTENT':
       let newTableData = {}
-      for(let i = 0; i < action.filenames.length; i++) {
+      for (let i = 0; i < action.filenames.length; i++) {
         const lines = action.fileContent[i].split(/\r\n|\r|\n/g)
         if (lines.length < 2) continue
         console.log(lines[0])
@@ -47,8 +45,8 @@ const gtfsplus = (state = {
           .map((line, rowIndex) => {
             const values = line.split(',')
             let rowData = { origRowIndex: rowIndex }
-            for(let f = 0; f < fields.length; f++) {
-                rowData[fields[f]] = values[f]
+            for (let f = 0; f < fields.length; f++) {
+              rowData[fields[f]] = values[f]
             }
             return rowData
           })
@@ -58,13 +56,12 @@ const gtfsplus = (state = {
         timestamp: {$set: action.timestamp},
         tableData: {$set: newTableData}
       })
-
     case 'ADD_GTFSPLUS_ROW':
       // create this table if it doesn't already exist
       if (!(action.tableId in state.tableData)) {
         return update(state,
           {tableData:
-            {$merge: {[action.tableId]: [action.rowData]} }
+            {$merge: {[action.tableId]: [action.rowData]}}
           }
         )
       }
@@ -76,7 +73,6 @@ const gtfsplus = (state = {
           }
         }
       )
-
     case 'UPDATE_GTFSPLUS_FIELD':
       return update(state,
         {tableData:
@@ -89,7 +85,6 @@ const gtfsplus = (state = {
           }
         }
       )
-
     case 'DELETE_GTFSPLUS_ROW':
       const table = state.tableData[action.tableId]
       const newTable = [
@@ -103,17 +98,15 @@ const gtfsplus = (state = {
           }
         }
       )
-
     case 'RECEIVE_GTFS_PLUS_ENTITIES':
       const getType = function (entity) {
         if (entity.hasOwnProperty('route_id')) return 'route'
         if (entity.hasOwnProperty('stop_id')) return 'stop'
       }
-
       const newLookupEntries = {}
-      for(const entity of action.gtfsEntities) {
+      for (let entity of action.gtfsEntities) {
         const type = getType(entity)
-        const key = type + '_' + entity[type+'_id']
+        const key = type + '_' + entity[type + '_id']
         newLookupEntries[key] = entity
       }
 
@@ -122,10 +115,9 @@ const gtfsplus = (state = {
           {$merge: newLookupEntries}
         }
       )
-
     case 'RECEIVE_GTFSPLUS_VALIDATION':
       const validationTable = {}
-      for(const issue of action.validationIssues) {
+      for (let issue of action.validationIssues) {
         if (!(issue.tableId in validationTable)) {
           validationTable[issue.tableId] = []
         }

@@ -7,14 +7,6 @@ export default class ExternalPropertiesTable extends Component {
   static propTypes = {
     resourceType: PropTypes.string
   }
-  constructor (props) {
-    super(props)
-    console.log('>> ExternalPropertiesTable props', this.props);
-  }
-
-  componentWillMount () {
-  }
-
   render () {
     return (
       <Panel

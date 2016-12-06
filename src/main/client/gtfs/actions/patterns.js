@@ -12,7 +12,7 @@ export function fetchingPatterns (feedId, routeId) {
 
 export function clearPatterns () {
   return {
-    type: 'CLEAR_GRAPHQL_PATTERNS',
+    type: 'CLEAR_GRAPHQL_PATTERNS'
   }
 }
 

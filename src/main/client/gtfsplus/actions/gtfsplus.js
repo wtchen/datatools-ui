@@ -1,4 +1,5 @@
 import JSZip from 'jszip'
+import fetch from 'isomorphic-fetch'
 
 import { secureFetch } from '../../common/util/util'
 import { getConfigProperty } from '../../common/util/config'
@@ -11,7 +12,7 @@ export function addGtfsPlusRow (tableId) {
   const table = getConfigProperty('modules.gtfsplus.spec').find(t => t.id === tableId)
 
   let rowData = {}
-  for(const field of table.fields) {
+  for (const field of table.fields) {
     rowData[field.name] = null
   }
 
@@ -40,18 +41,17 @@ export function deleteGtfsPlusRow (tableId, rowIndex) {
   }
 }
 
-
 // DOWNLOAD/RECEIVE DATA ACTIONS
 
 export function requestingGtfsPlusContent () {
   return {
-    type: 'REQUESTING_GTFSPLUS_CONTENT',
+    type: 'REQUESTING_GTFSPLUS_CONTENT'
   }
 }
 
 export function clearGtfsPlusContent () {
   return {
-    type: 'CLEAR_GTFSPLUS_CONTENT',
+    type: 'CLEAR_GTFSPLUS_CONTENT'
   }
 }
 
@@ -69,7 +69,7 @@ export function downloadGtfsPlusFeed (feedVersionId) {
   return function (dispatch, getState) {
     dispatch(requestingGtfsPlusContent())
 
-    const fetchFeed = fetch('/api/manager/secure/gtfsplus/'+  feedVersionId, {
+    const fetchFeed = fetch('/api/manager/secure/gtfsplus/' + feedVersionId, {
       method: 'get',
       cache: 'default',
       headers: { 'Authorization': 'Bearer ' + getState().user.token }
@@ -88,7 +88,7 @@ export function downloadGtfsPlusFeed (feedVersionId) {
       JSZip.loadAsync(feed).then((zip) => {
         let filenames = []
         let filePromises = []
-        zip.forEach((path,file) => {
+        zip.forEach((path, file) => {
           filenames.push(path)
           filePromises.push(file.async('string'))
         })
@@ -105,7 +105,7 @@ export function downloadGtfsPlusFeed (feedVersionId) {
 
 export function validatingGtfsPlusFeed () {
   return {
-    type: 'VALIDATING_GTFSPLUS_FEED',
+    type: 'VALIDATING_GTFSPLUS_FEED'
   }
 }
 
@@ -123,7 +123,6 @@ export function validateGtfsPlusFeed (feedVersionId) {
     return secureFetch(url, getState())
       .then(res => res.json())
       .then(validationIssues => {
-        //console.log('got GTFS+ val result', validationResult)
         dispatch(receiveGtfsPlusValidation(validationIssues))
       })
   }
@@ -133,13 +132,13 @@ export function validateGtfsPlusFeed (feedVersionId) {
 
 export function uploadingGtfsPlusFeed () {
   return {
-    type: 'UPLOADING_GTFSPLUS_FEED',
+    type: 'UPLOADING_GTFSPLUS_FEED'
   }
 }
 
 export function uploadedGtfsPlusFeed () {
   return {
-    type: 'UPLOADED_GTFSPLUS_FEED',
+    type: 'UPLOADED_GTFSPLUS_FEED'
   }
 }
 
@@ -147,7 +146,7 @@ export function uploadGtfsPlusFeed (feedVersionId, file) {
   return function (dispatch, getState) {
     dispatch(uploadingGtfsPlusFeed())
     const url = `/api/manager/secure/gtfsplus/${feedVersionId}`
-    var data = new FormData()
+    var data = new window.FormData()
     data.append('file', file)
 
     return fetch(url, {
@@ -170,12 +169,10 @@ export function receiveGtfsEntities (gtfsEntities) {
 }
 
 export function loadGtfsEntities (tableId, rows, feedSource) {
-
   return function (dispatch, getState) {
-
     // lookup table for mapping tableId:fieldName keys to inputType values
     const typeLookup = {}
-    const getDataType = function(tableId, fieldName) {
+    const getDataType = function (tableId, fieldName) {
       const lookupKey = tableId + ':' + fieldName
       if (lookupKey in typeLookup) return typeLookup[lookupKey]
       const fieldInfo = getConfigProperty('modules.gtfsplus.spec')
@@ -191,17 +188,17 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
 
     const currentLookup = getState().gtfsplus.gtfsEntityLookup
 
-    for(const rowData of rows) {
-      for(const fieldName in rowData) {
-        switch(getDataType(tableId, fieldName)) {
+    for (const rowData of rows) {
+      for (const fieldName in rowData) {
+        switch (getDataType(tableId, fieldName)) {
           case 'GTFS_ROUTE':
             const routeId = rowData[fieldName]
             if (routeId && !(`route_${routeId}` in currentLookup)) routesToLoad.push(routeId)
-            break;
+            break
           case 'GTFS_STOP':
             const stopId = rowData[fieldName]
             if (stopId && !(`stop_${stopId}` in currentLookup)) stopsToLoad.push(stopId)
-            break;
+            break
         }
       }
     }
@@ -236,7 +233,7 @@ export function loadGtfsEntities (tableId, rows, feedSource) {
 
 export function publishingGtfsPlusFeed () {
   return {
-    type: 'PUBLISHING_GTFSPLUS_FEED',
+    type: 'PUBLISHING_GTFSPLUS_FEED'
   }
 }
 
@@ -246,7 +243,7 @@ export function publishGtfsPlusFeed (feedVersion) {
     const url = `/api/manager/secure/gtfsplus/${feedVersion.id}/publish`
     return secureFetch(url, getState(), 'post')
       .then((res) => {
-        console.log('published done');
+        console.log('published done')
         return dispatch(fetchFeedVersions(feedVersion.feedSource))
       })
   }

@@ -41,7 +41,7 @@ export default class JobMonitor extends Pure {
 
     return (
       <SidebarPopover
-        ref={(SidebarPopover) => this.popover = SidebarPopover}
+        ref={(SidebarPopover) => { this.popover = SidebarPopover }}
         title='Server Jobs'
         {...this.props}>
         {this.props.jobMonitor.retired.map(job => {

@@ -65,6 +65,81 @@ export default class FeedVersionReport extends Component {
       return 'Click on map above to show travel shed for this feed.'
     }
   }
+  renderValidatorTabs () {
+    if (!isModuleEnabled('validator')) {
+      return null
+    }
+    const validatorTabs = [
+      {
+        title: 'Validation',
+        key: 'validation',
+        component: <GtfsValidationSummary
+          version={this.props.version}
+          key='validation'
+          feedVersionIndex={this.props.feedVersionIndex}
+          fetchValidationResult={() => { this.props.fetchValidationResult(this.props.version) }}
+        />
+      },
+      {
+        title: 'Accessibility',
+        key: 'accessibility',
+        component: <div>
+          <Row>
+            <Col xs={12}>
+              {/* isochrone message */}
+              <p className='lead text-center'>
+                {this.renderIsochroneMessage(this.props.version)}
+              </p>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6} mdOffset={3} xs={12} style={{marginBottom: '20px'}}>
+              <ControlLabel>Travel time</ControlLabel>
+              <Rcslider
+                min={5}
+                max={120}
+                defaultValue={this.state.isochroneBand / 60}
+                onChange={(value) => this.setState({isochroneBand: value * 60})}
+                step={5}
+                marks={{
+                  15: '¼ hour',
+                  30: '½ hour',
+                  60: <strong>1 hour</strong>,
+                  120: '2 hours'
+                }}
+                tipFormatter={(value) => {
+                  return `${value} minutes`
+                }}
+              />
+            </Col>
+          </Row>
+          <ActiveDateTimeFilter
+            version={this.props.version}
+          />
+        </div>
+      },
+      {
+        title: 'Timeline',
+        key: 'timeline',
+        component: <div>
+          <Row>
+            <Col xs={12}>
+              <p className='lead text-center'>Number of trips per date of service.</p>
+            </Col>
+          </Row>
+          <TripsChart
+            validationResult={this.props.version.validationResult}
+            fetchValidationResult={() => { this.props.fetchValidationResult(this.props.version) }}
+          />
+        </div>
+      }
+    ]
+    return validatorTabs.map(t => (
+      <Tab eventKey={t.key} title={t.title} key={t.key}>
+        {t.component}
+      </Tab>
+    ))
+  }
   render () {
     const version = this.props.version
     const messages = getComponentMessages('FeedVersionReport')
@@ -111,6 +186,7 @@ export default class FeedVersionReport extends Component {
         sizePerPageList: [10, 20, 50, 100]
       }
     }
+    const countFields = ['agencyCount', 'routeCount', 'tripCount', 'stopTimesCount']
     return (
       <Panel
         bsStyle='info'
@@ -184,22 +260,12 @@ export default class FeedVersionReport extends Component {
             >
               <Tab eventKey={'feed'} title='Summary'>
                 <Row>
-                  <Col xs={3} className='text-center'>
-                    <p title={`${version.validationSummary.agencyCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.agencyCount).format('0 a')}</p>
-                    <p style={{marginBottom: '0px'}}>{getMessage(messages, 'agencyCount')}</p>
-                  </Col>
-                  <Col xs={3} className='text-center'>
-                    <p title={`${version.validationSummary.routeCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.routeCount).format('0 a')}</p>
-                    <p style={{marginBottom: '0px'}}>{getMessage(messages, 'routeCount')}</p>
-                  </Col>
-                  <Col xs={3} className='text-center'>
-                    <p title={`${version.validationSummary.tripCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.tripCount).format('0 a')}</p>
-                    <p style={{marginBottom: '0px'}}>{getMessage(messages, 'tripCount')}</p>
-                  </Col>
-                  <Col xs={3} className='text-center'>
-                    <p title={`${version.validationSummary.stopTimesCount}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary.stopTimesCount).format('0 a')}</p>
-                    <p style={{marginBottom: '0px'}}>{getMessage(messages, 'stopTimesCount')}</p>
-                  </Col>
+                  {countFields.map(c => (
+                    <Col xs={3} className='text-center' key={c}>
+                      <p title={`${version.validationSummary[c]}`} style={{marginBottom: '0px', fontSize: '200%'}}>{numeral(version.validationSummary[c]).format('0 a')}</p>
+                      <p style={{marginBottom: '0px'}}>{getMessage(messages, c)}</p>
+                    </Col>
+                  ))}
                 </Row>
               </Tab>
               <Tab eventKey={'routes'} title='Routes'>
@@ -223,66 +289,7 @@ export default class FeedVersionReport extends Component {
                   tableOptions={tableOptions}
                 />
               </Tab>
-              {isModuleEnabled('validator')
-                ? [
-                <Tab eventKey={'validation'} title='Validation' key='validation'>
-                  <GtfsValidationSummary
-                    version={this.props.version}
-                    key='validation'
-                    feedVersionIndex={this.props.feedVersionIndex}
-                    fetchValidationResult={() => { this.props.fetchValidationResult(this.props.version) }}
-                  />
-                </Tab>,
-                <Tab eventKey={'accessibility'} title='Accessibility' key='accessibility'>
-                  <div>
-                    <Row>
-                      <Col xs={12}>
-                        {/* isochrone message */}
-                        <p className='lead text-center'>
-                          {this.renderIsochroneMessage(this.props.version)}
-                        </p>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col md={6} mdOffset={3} xs={12} style={{marginBottom: '20px'}}>
-                        <ControlLabel>Travel time</ControlLabel>
-                        <Rcslider
-                          min={5}
-                          max={120}
-                          defaultValue={this.state.isochroneBand / 60}
-                          onChange={(value) => this.setState({isochroneBand: value * 60})}
-                          step={5}
-                          marks={{
-                            15: '¼ hour',
-                            30: '½ hour',
-                            60: <strong>1 hour</strong>,
-                            120: '2 hours'
-                          }}
-                          tipFormatter={(value) => {
-                            return `${value} minutes`
-                          }}
-                        />
-                      </Col>
-                    </Row>
-                    <ActiveDateTimeFilter
-                      version={this.props.version}
-                    />
-                  </div>
-                </Tab>,
-                <Tab eventKey={'timeline'} title='Timeline' key='timeline'>
-                  <Row>
-                    <Col xs={12}>
-                      <p className='lead text-center'>Number of trips per date of service.</p>
-                    </Col>
-                  </Row>
-                  <TripsChart
-                    validationResult={this.props.version.validationResult}
-                    fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
-                  />
-                </Tab>
-              ]
-              : null
-            }
+              {this.renderValidatorTabs()}
             </Tabs>
           </ListGroupItem>
         </ListGroup>

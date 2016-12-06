@@ -13,32 +13,26 @@ import {
 import {
   fetchTripPatternsForRoute,
   fetchTripPatterns,
-  undoActiveTripPatternEdits,
+  undoActiveTripPatternEdits
+} from '../actions/tripPattern'
+import {
   updateControlPoint,
   addControlPoint,
-  removeControlPoint
-} from '../actions/tripPattern'
+  removeControlPoint,
+  updateMapSetting,
+  handleControlPointDragEnd,
+  handlePatternEdit
+} from '../actions/map'
 import {
   fetchTripsForCalendar
 } from '../actions/trip'
+import { updateEditSetting, setActiveGtfsEntity, deleteGtfsEntity, updateActiveGtfsEntity, resetActiveGtfsEntity, clearGtfsContent } from '../actions/active'
 import {
-  setActiveGtfsEntity,
   newGtfsEntity,
   newGtfsEntities,
   cloneGtfsEntity,
-  updateEditSetting,
-  updateMapSetting,
   saveActiveGtfsEntity,
-  resetActiveGtfsEntity,
-  deleteGtfsEntity,
-  updateActiveGtfsEntity,
-  clearGtfsContent,
-  addGtfsRow,
-  updateGtfsField,
-  deleteGtfsRow,
-  saveGtfsRow,
   getGtfsTable,
-  loadGtfsEntities,
   receiveGtfsEntities,
   uploadBrandingAsset
 } from '../actions/editor'
@@ -47,57 +41,46 @@ import { findProjectByFeedSource } from '../../manager/util'
 import { setTutorialHidden } from '../../manager/actions/ui'
 
 const mapStateToProps = (state, ownProps) => {
-  const feedSourceId = ownProps.routeParams.feedSourceId // location.pathname.split('/')[2]
-  const activeComponent = ownProps.routeParams.subpage // location.pathname.split('/')[4]
-  // const { activeComponent, subComponent, subSubComponent, activeEntityId, subEntityId, activeSubSubEntity } = ownProps.routeParams.subpage // location.pathname.split('/')[4]
-  const subComponent = ownProps.routeParams.subsubpage // location.pathname.split('/')[5]
-  const subSubComponent = ownProps.routeParams.subsubcomponent // location.pathname.split('/')[6]
-  const activeEntityId = ownProps.routeParams.entity // location.pathname.split('/')[7]
-  const subEntityId = ownProps.routeParams.subentity // location.pathname.split('/')[8]
-  const activeSubSubEntity = ownProps.routeParams.subsubentity // location.pathname.split('/')[9]
+  const {
+    feedSourceId,
+    activeComponent,
+    subComponent,
+    subSubComponent,
+    activeEntityId,
+    subEntityId,
+    activeSubSubEntity
+  } = ownProps.routeParams
   const activeEntity =
-    state.editor.active && state.editor.active.entity && state.editor.active.entity.id === activeEntityId
-    ? state.editor.active.entity
-    : state.editor.active && state.editor.active.entity && activeComponent === 'feedinfo'
-    ? state.editor.active.entity
+    state.editor.data.active.entity && state.editor.data.active.entity.id === activeEntityId
+    ? state.editor.data.active.entity
+    : state.editor.data.active.entity && activeComponent === 'feedinfo'
+    ? state.editor.data.active.entity
     : null
-  const activePattern = state.editor.active && state.editor.active.subEntity
-  // const subEntityId = state.editor.active && state.editor.active.subEntity && state.editor.active.subEntity.id === activeEntityId
-  // ? state.editor.active.subEntity
-  // : state.editor.active && state.editor.active.subEntity && activeComponent === 'feedinfo'
-  // ? state.editor.active.subEntity
-  // : null
-    // ownProps.routeParams.entity && state.editor.tableData[activeComponent]
-    // ? state.editor.tableData[activeComponent].find(e => ownProps.routeParams.entity === e.id)
-    // : null
+  const activePattern = state.editor.data.active.subEntity
   const entityEdited = subComponent === 'trippattern'
-    ? state.editor.active.patternEdited
-    : state.editor.active && state.editor.active.edited
+    ? state.editor.data.active.patternEdited
+    : state.editor.data.active.edited
 
   const controlPoints = state.editor.editSettings.controlPoints && state.editor.editSettings.controlPoints.length
     ? state.editor.editSettings.controlPoints[state.editor.editSettings.controlPoints.length - 1]
     : []
   const editSettings = state.editor.editSettings
   const mapState = state.editor.mapState
-  const stopTree = state.editor.stopTree
+  const stopTree = state.editor.mapState.stopTree
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
-  const entities = state.editor.tableData[activeComponent]
+  const entities = state.editor.data.tables[activeComponent]
   let user = state.user
 
   // find the containing project
   const project = findProjectByFeedSource(state, feedSourceId)
   const feedSource = project && project.feedSources.find(fs => fs.id === feedSourceId)
 
-  const feedInfo = state.editor.tableData.feedinfo
+  const feedInfo = state.editor.data.tables.feedinfo
 
   return {
-    tableData: state.editor.tableData,
+    tableData: state.editor.data.tables,
     hideTutorial: state.ui.hideTutorial,
     tripPatterns: state.editor.tripPatterns,
-    timetable: state.editor.timetable,
-    // gtfsEntityLookup: state.editor.gtfsEntityLookup,
-    // validation: state.editor.validation,
-    // currentTable: state.routing.locationBeforeTransitions.hash ? state.routing.locationBeforeTransitions.hash.split('#')[1] : 'agency',
     feedSource,
     entities,
     feedSourceId,
@@ -113,7 +96,6 @@ const mapStateToProps = (state, ownProps) => {
     activeEntityId,
     subEntityId,
     activePattern,
-    // subEntityIdId,
     activeSubSubEntity,
     editSettings,
     mapState,
@@ -124,14 +106,15 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const feedSourceId = ownProps.routeParams.feedSourceId
-  const activeComponent = ownProps.routeParams.subpage
-  const subComponent = ownProps.routeParams.subsubpage
-  const subSubComponent = ownProps.routeParams.subsubcomponent
-  const activeEntityId = ownProps.routeParams.entity
-  const subEntityId = ownProps.routeParams.subentity
-  const activeSubSubEntity = ownProps.routeParams.subsubentity
-
+  const {
+    feedSourceId,
+    activeComponent,
+    subComponent,
+    subSubComponent,
+    activeEntityId,
+    subEntityId,
+    activeSubSubEntity
+  } = ownProps.routeParams
   return {
     updateUserMetadata: (profile, props) => {
       dispatch(updateUserMetadata(profile, props))
@@ -203,26 +186,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
 
-    // OLD ROW FUNCTIONS
-    newRowClicked: (tableId) => {
-      dispatch(addGtfsRow(tableId))
-    },
-    deleteRowClicked: (tableId, rowIndex) => {
-      dispatch(deleteGtfsRow(tableId, rowIndex))
-    },
-    getGtfsTable: (tableId, feedId) => {
-      dispatch(getGtfsTable(tableId, feedId))
-    },
-    saveRowClicked: (tableId, rowIndex, feedId) => {
-      dispatch(saveGtfsRow(tableId, rowIndex, feedId))
-    },
-    fieldEdited: (tableId, rowIndex, fieldName, newValue) => {
-      dispatch(updateGtfsField(tableId, rowIndex, fieldName, newValue))
-    },
-    newRowsDisplayed: (tableId, rows, feedSource) => {
-      if (feedSource) dispatch(loadGtfsEntities(tableId, rows, feedSource))
-    },
-
     // NEW GENERIC GTFS/EDITOR FUNCTIONS
     updateEditSetting: (setting, value) => {
       dispatch(updateEditSetting(setting, value))
@@ -271,13 +234,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     fetchTripPatterns: (feedSourceId) => { dispatch(fetchTripPatterns(feedSourceId)) },
     fetchStopsForTripPattern: (feedSourceId, tripPatternId) => { dispatch(fetchStopsForTripPattern(feedSourceId, tripPatternId)) },
     fetchStops: (feedSourceId) => { dispatch(fetchStops(feedSourceId)) },
-    fetchTripsForCalendar: (feedSourceId, pattern, calendarId) => { dispatch(fetchTripsForCalendar(feedSourceId, pattern, calendarId)) },
+    fetchTripsForCalendar: (feedSourceId, pattern, calendarId) => dispatch(fetchTripsForCalendar(feedSourceId, pattern, calendarId)),
 
     // TRIP PATTERN EDIT FUNCTIONS
     undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
     addControlPoint: (controlPoint, index) => { dispatch(addControlPoint(controlPoint, index)) },
-    removeControlPoint: (index) => { dispatch(removeControlPoint(index)) },
+    removeControlPoint: (index, begin, end, pattern, polyline) => { dispatch(removeControlPoint(index, begin, end, pattern, polyline)) },
     updateControlPoint: (index, point, distance) => { dispatch(updateControlPoint(index, point, distance)) },
+    handleControlPointDragEnd: (e, timer, controlPoint, controlPointIndex, polyline, activePattern) => dispatch(handleControlPointDragEnd(e, timer, controlPoint, controlPointIndex, polyline, activePattern)),
+    handlePatternEdit: (controlPointRef, begin, end, polyline, activePattern) => dispatch(handlePatternEdit(controlPointRef, begin, end, polyline, activePattern)),
 
     // EDITOR UI
     setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) }

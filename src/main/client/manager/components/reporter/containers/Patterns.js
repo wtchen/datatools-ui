@@ -1,4 +1,3 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import PatternLayout from '../components/PatternLayout'
@@ -33,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     patternDateTimeFilterChange: (props) => {
       dispatch(patternDateTimeFilterChange(feedId, props))
-    },
+    }
   }
 }
 

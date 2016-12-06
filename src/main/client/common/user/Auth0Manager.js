@@ -7,7 +7,7 @@ import UserPermissions from './UserPermissions'
 import { getConfigProperty } from '../util/config'
 
 // TODO: Fix PNG import
-const icon = "" // import icon from '../../assets/application_logo.png'
+const icon = '' // import icon from '../../assets/application_logo.png'
 
 export default class Auth0Manager {
 
@@ -38,7 +38,7 @@ export default class Auth0Manager {
     var hash = this.lock.parseHash()
     if (hash && hash.id_token) { // the user came back from the login (either SSO or regular login)
       // save the token
-      localStorage.setItem('userToken', hash.id_token)
+      window.localStorage.setItem('userToken', hash.id_token)
 
       // redirect to "targetUrl" if any
       let newLocation = hash.state || ''
@@ -90,24 +90,24 @@ export default class Auth0Manager {
           reject(err)
         }
         // save token to localStorage
-        localStorage.setItem('userToken', token)
+        window.localStorage.setItem('userToken', token)
 
         // initialize auto log out check
         // this.setupSingleLogout()
         console.log(token, profile)
-        //this.userLoggedIn(token, profile)
+        // this.userLoggedIn(token, profile)
         resolve(constructUserObj(token, profile))
       })
     })
   }
 
   logout () {
-    localStorage.removeItem('userToken')
-    var redirect = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '')
+    window.localStorage.removeItem('userToken')
+    var redirect = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '')
     window.location.replace('https://' + this.props.domain + '/v2/logout?returnTo=' + redirect)
   }
 
-  resetPassword() {
+  resetPassword () {
     this.lock.showReset((err) => {
       if (!err) this.lock.hide()
     })
@@ -116,7 +116,7 @@ export default class Auth0Manager {
   setupSingleLogout () {
     setInterval(() => {
       // if the token is not in local storage, there is nothing to check (i.e. the user is already logged out)
-      if (!localStorage.getItem('userToken')) return
+      if (!window.localStorage.getItem('userToken')) return
 
       this.auth0.getSSOData((err, data) => {
         // if there is still a session, do nothing
@@ -124,7 +124,7 @@ export default class Auth0Manager {
 
         // if we get here, it means there is no session on Auth0,
         // then remove the token and redirect to #login
-        localStorage.removeItem('userToken')
+        window.localStorage.removeItem('userToken')
         window.location.href = '/'
       })
     }, 5000)

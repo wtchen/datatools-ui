@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import GtfsPlusEditor  from '../components/GtfsPlusEditor'
+import GtfsPlusEditor from '../components/GtfsPlusEditor'
 import { fetchFeedSourceAndProject } from '../../manager/actions/feeds'
 import {
   addGtfsPlusRow,
@@ -8,21 +8,19 @@ import {
   deleteGtfsPlusRow,
   uploadGtfsPlusFeed,
   downloadGtfsPlusFeed,
-  importGtfsPlusFromGtfs,
   loadGtfsEntities,
   receiveGtfsEntities
 } from '../actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
-
   let feedSourceId = ownProps.routeParams.feedSourceId
   let user = state.user
   // find the containing project
   let project = state.projects.all
     ? state.projects.all.find(p => {
-        if (!p.feedSources) return false
-        return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
-      })
+      if (!p.feedSources) return false
+      return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
+    })
     : null
 
   let feedSource
@@ -61,7 +59,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     feedSaved: (file) => {
       dispatch(uploadGtfsPlusFeed(feedVersionId, file))
       .then(() => {
-        console.log('re-downloading');
+        console.log('re-downloading')
         dispatch(downloadGtfsPlusFeed(feedVersionId))
       })
     },

@@ -1,7 +1,6 @@
-import React  from 'react'
 import { connect } from 'react-redux'
 
-import StatusMessage  from '../components/StatusMessage'
+import StatusMessage from '../components/StatusMessage'
 
 const mapStateToProps = (state, ownProps) => {
   return {

@@ -1,5 +1,3 @@
-
-
 import React from 'react'
 import Leaflet from 'leaflet'
 // import MarkerPopup from './MarkerPopup'

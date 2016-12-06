@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { createSnapshot, fetchSnapshots, restoreSnapshot } from '../actions/snapshots'
-import { displayRoutesShapefile } from '../actions/editor'
+import { displayRoutesShapefile } from '../actions/map'
 import FeedInfoPanel from '../components/FeedInfoPanel'
 
 const mapStateToProps = (state, ownProps) => { return { } }

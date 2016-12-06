@@ -17,7 +17,8 @@ import TimezoneSelect from '../../common/components/TimezoneSelect'
 import LanguageSelect from '../../common/components/LanguageSelect'
 import ActiveTripPatternList from '../containers/ActiveTripPatternList'
 import VirtualizedEntitySelect from './VirtualizedEntitySelect'
-import { getEntityName, gtfsIcons, getEntityBounds } from '../util/gtfs'
+import { getEntityName, getEntityBounds } from '../util/gtfs'
+import { gtfsIcons } from '../util/ui'
 import { getConfigProperty } from '../../common/util/config'
 
 export default class EntityDetails extends Component {

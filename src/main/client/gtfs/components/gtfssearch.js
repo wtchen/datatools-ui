@@ -1,19 +1,19 @@
-import React, { PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
-import { Panel, Grid, Row, Col, Button, Glyphicon, Label } from 'react-bootstrap'
-import { PureComponent, shallowEqual } from 'react-pure-render'
-import { Map, Marker, Popup, TileLayer, Polyline, MapControl } from 'react-leaflet'
+import { Glyphicon, Label } from 'react-bootstrap'
 import Select from 'react-select'
 
 import { getFeed, getFeedId } from '../../common/util/modules'
 
-export default class GtfsSearch extends React.Component {
-
-  constructor(props) {
+export default class GtfsSearch extends Component {
+  static propTypes = {
+    value: PropTypes.string
+  }
+  constructor (props) {
     super(props)
     this.state = {
       value: this.props.value
-    };
+    }
   }
 
   cacheOptions (options) {
@@ -29,17 +29,28 @@ export default class GtfsSearch extends React.Component {
   }
 
   renderOption (option) {
-    return <span style={{ color: 'black' }}>{option.stop ? <Glyphicon glyph="map-marker" /> : <Glyphicon glyph="option-horizontal" />} {option.label} <Label>{option.agency ? option.agency.name : ''}</Label> {option.link}</span>
+    return (
+      <span style={{ color: 'black' }}>
+        {option.stop
+          ? <Glyphicon glyph='map-marker' />
+          : <Glyphicon glyph='option-horizontal' />
+        } {option.label} <Label>{option.agency ? option.agency.name : ''}</Label> {option.link}
+      </span>
+    )
   }
   onChange (value) {
     this.props.onChange && this.props.onChange(value)
     this.setState({value})
   }
-  render() {
+  render () {
     const getRouteName = (route) => {
-      let routeName = route.route_short_name && route.route_long_name ? `${route.route_short_name} - ${route.route_long_name}` :
-        route.route_long_name ? route.route_long_name :
-        route.route_short_name ? route.route_short_name : null
+      let routeName = route.route_short_name && route.route_long_name
+        ? `${route.route_short_name} - ${route.route_long_name}`
+        : route.route_long_name
+        ? route.route_long_name
+        : route.route_short_name
+        ? route.route_short_name
+        : null
       return routeName
     }
     const getStops = (input) => {
@@ -104,19 +115,18 @@ export default class GtfsSearch extends React.Component {
         })
     }
     const getOptions = (input) => {
-
       const entities = typeof this.props.entities !== 'undefined' ? this.props.entities : ['routes', 'stops']
       let entitySearches = []
-      if (entities.indexOf('stops') > -1){
+      if (entities.indexOf('stops') > -1) {
         entitySearches.push(getStops(input))
       }
-      if (entities.indexOf('routes') > -1){
+      if (entities.indexOf('routes') > -1) {
         entitySearches.push(getRoutes(input))
       }
       return Promise.all(entitySearches).then((results) => {
         const stops = results[0]
         const routes = typeof results[1] !== 'undefined' ? results[1] : []
-        const options = { options: [...stops,...routes] }
+        const options = { options: [...stops, ...routes] }
         // console.log('search options', options)
         return options
       })

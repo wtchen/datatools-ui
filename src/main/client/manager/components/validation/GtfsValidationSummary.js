@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import { Table, Glyphicon, Button } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
-// import { connect } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
 
 import Loading from '../../../common/components/Loading'
@@ -29,7 +28,7 @@ export default class GtfsValidationSummary extends Component {
   render () {
     const result = this.props.version.validationResult
     if (!result) {
-      return <Loading/>
+      return <Loading />
     }
     let errors = {}
     result && result.errors.map(error => {
@@ -114,7 +113,7 @@ class ResultTable extends React.Component {
           file: val.file,
           affected: [val.affectedEntityId],
           description: val.problemDescription,
-          data: [val.problemData],
+          data: [val.problemData]
         }
       }
       problemMap[val.errorType].count++

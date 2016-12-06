@@ -14,7 +14,7 @@ export default class StatusModal extends React.Component {
       this.setState({
         showModal: true,
         title: newProps.title,
-        body: newProps.body,
+        body: newProps.body
       })
     }
   }

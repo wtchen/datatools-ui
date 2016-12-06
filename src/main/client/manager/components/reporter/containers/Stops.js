@@ -1,11 +1,8 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import StopLayout from '../components/StopLayout'
-import { fetchPatterns } from '../../../../gtfs/actions/patterns'
-import { fetchStops, stopPatternFilterChange, stopRouteFilterChange, stopDateTimeFilterChange } from '../../../../gtfs/actions/stops'
+import { stopPatternFilterChange, stopRouteFilterChange, stopDateTimeFilterChange } from '../../../../gtfs/actions/stops'
 import { fetchRoutes } from '../../../../gtfs/actions/routes'
-
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -35,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     stopDateTimeFilterChange: (props) => {
       dispatch(stopDateTimeFilterChange(feedId, props))
-    },
+    }
     // viewStops: (row) => {
     //   dispatch(stopPatternFilterChange(feedId, row))
     //   dispatch(ownProps.selectTab('stops'))

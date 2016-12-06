@@ -1,13 +1,9 @@
 import { connect } from 'react-redux'
+import { updateEditSetting, setActiveGtfsEntity, deleteGtfsEntity, updateActiveGtfsEntity, resetActiveGtfsEntity } from '../actions/active'
 import {
-  setActiveGtfsEntity,
   newGtfsEntity,
   saveActiveGtfsEntity,
-  deleteGtfsEntity,
-  updateEditSetting,
   updateMapSetting,
-  updateActiveGtfsEntity,
-  resetActiveGtfsEntity,
   cloneGtfsEntity,
   undoActiveTripPatternEdits
 } from '../actions/editor'
@@ -18,17 +14,16 @@ import TripPatternList from '../components/TripPatternList'
 const mapStateToProps = (state, ownProps) => {
   const mapState = state.editor.mapState
   const editSettings = state.editor.editSettings
-  const stops = state.editor.tableData.stop
-  const activePattern = state.editor.active.subEntity
-
-  const feedSourceId = state.editor.active.feedSourceId
+  const stops = state.editor.data.tables.stop
+  const activePattern = state.editor.data.active.subEntity
+  const feedSourceId = state.editor.data.active.feedSourceId
   // find the containing project
   const project = findProjectByFeedSource(state, feedSourceId)
   const feedSource = project && project.feedSources.find(fs => fs.id === feedSourceId)
 
-  const activeEntity = state.editor.active.entity
-  // const subSubComponent = state.editor.active.subSubComponent
-  const activePatternId = state.editor.active.subEntityId
+  const activeEntity = state.editor.data.active.entity
+  // const subSubComponent = state.editor.data.active.subSubComponent
+  const activePatternId = state.editor.data.active.subEntityId
 
   return {
     mapState,
@@ -37,7 +32,6 @@ const mapStateToProps = (state, ownProps) => {
     activePattern,
     feedSource,
     activeEntity,
-    // subSubComponent,
     activePatternId
   }
 }

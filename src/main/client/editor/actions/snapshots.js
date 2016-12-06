@@ -1,5 +1,6 @@
 import { secureFetch } from '../../common/util/util'
-import { clearGtfsContent, fetchBaseGtfs } from './editor'
+import { fetchBaseGtfs } from './editor'
+import { clearGtfsContent } from './active'
 import { startJobMonitor } from '../../manager/actions/status'
 
 // SNAPSHOT ACTIONS

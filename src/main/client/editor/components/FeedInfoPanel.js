@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 
 import CreateSnapshotModal from './CreateSnapshotModal'
 import SelectFileModal from '../../common/components/SelectFileModal.js'
-import { gtfsIcons } from '../util/gtfs'
+import { gtfsIcons } from '../util/ui'
 
 export default class FeedInfoPanel extends Component {
 
@@ -31,8 +31,7 @@ export default class FeedInfoPanel extends Component {
         let nameArray = files[0].name.split('.')
         if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
           return false
-        }
-        else {
+        } else {
           this.props.displayRoutesShapefile(feedSource, files[0])
           return true
         }
@@ -66,13 +65,13 @@ export default class FeedInfoPanel extends Component {
 
     return (
       <div>
-      <SelectFileModal ref='selectFileModal' />
-      <div style={panelStyle}>
-        <CreateSnapshotModal ref='snapshotModal'
-          onOkClicked={(name, comment) => {
-            this.props.createSnapshot(feedSource, name, comment)
-          }}
-        />
+        <SelectFileModal ref='selectFileModal' />
+        <div style={panelStyle}>
+          <CreateSnapshotModal ref='snapshotModal'
+            onOkClicked={(name, comment) => {
+              this.props.createSnapshot(feedSource, name, comment)
+            }}
+          />
           <ButtonGroup>
             {/* Hide toolbar toggle */}
             <OverlayTrigger placement='top' overlay={<Tooltip id='hide-tooltip'>{toolbarVisible ? 'Hide toolbar' : 'Show toolbar'}</Tooltip>}>
@@ -80,8 +79,7 @@ export default class FeedInfoPanel extends Component {
                 onClick={() => {
                   if (toolbarVisible) {
                     this.setState({right: 30 - panelWidth})
-                  }
-                  else {
+                  } else {
                     this.setState({right: 5})
                   }
                 }}
@@ -156,26 +154,26 @@ export default class FeedInfoPanel extends Component {
                     <Icon type='camera' />
                   </Button>
                 </OverlayTrigger>
-                    <Dropdown.Toggle
-                      bsStyle='primary'
-                      onClick={() => {
-                        this.props.getSnapshots(feedSource)
-                      }}
-                    />
-                    <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
-                      {this.props.feedSource && this.props.feedSource.editorSnapshots
-                        ? this.props.feedSource.editorSnapshots.map(snapshot => {
-                            return (
-                              <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon type='reply' /> Revert to {snapshot.name}</MenuItem>
-                            )
-                          })
-                        : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>
-                      }
-                    </Dropdown.Menu>
+                <Dropdown.Toggle
+                  bsStyle='primary'
+                  onClick={() => {
+                    this.props.getSnapshots(feedSource)
+                  }}
+                />
+                <Dropdown.Menu style={{maxHeight: '200px', overflowY: 'scroll'}}>
+                  {this.props.feedSource && this.props.feedSource.editorSnapshots
+                    ? this.props.feedSource.editorSnapshots.map(snapshot => {
+                      return (
+                        <MenuItem key={snapshot.id} eventKey={snapshot.id}><Icon type='reply' /> Revert to {snapshot.name}</MenuItem>
+                      )
+                    })
+                    : <MenuItem disabled eventKey={null}>No snapshots</MenuItem>
+                  }
+                </Dropdown.Menu>
               </Dropdown>
             }
           </ButtonGroup>
-      </div>
+        </div>
       </div>
     )
   }

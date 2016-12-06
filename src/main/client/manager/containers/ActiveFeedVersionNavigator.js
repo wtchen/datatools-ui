@@ -2,18 +2,15 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import FeedVersionNavigator from '../components/FeedVersionNavigator'
-
 import {
   deleteFeedVersion,
   downloadFeedViaToken,
-  fetchNotesForFeedVersion,
   fetchValidationResult,
-  postNoteForFeedVersion,
   renameFeedVersion,
   setActiveVersion,
-  publishFeedVersion,
-  fetchFeedSource
-} from '../actions/feeds'
+  publishFeedVersion
+} from '../actions/versions'
+import { postNoteForFeedVersion, fetchNotesForFeedVersion } from '../actions/notes'
 import { createDeploymentFromFeedSource } from '../../manager/actions/deployments'
 import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
@@ -90,7 +87,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       // .then(() => {
       //   dispatch(fetchFeedSource(feedVersion.feedSource.id, true, true))
       // })
-    },
+    }
   }
 }
 

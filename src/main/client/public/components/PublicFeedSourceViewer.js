@@ -14,22 +14,14 @@ export default class PublicFeedSourceViewer extends Component {
 
     onComponentMount: PropTypes.func
   }
-
-  constructor (props) {
-    super(props)
-  }
-
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-
   render () {
     const fs = this.props.feedSource
-
     if (!fs) {
       return <PublicPage />
     }
-
     return (
       <PublicPage>
         <Grid>
@@ -45,14 +37,15 @@ export default class PublicFeedSourceViewer extends Component {
           <Row>
             <Col xs={12}>
               <h2>
-              {fs.name} <small>Public view
-              {this.props.user.profile
-                ? <span>(<Link to={`/feed/${fs.id}`}>View private page</Link>)</span>
-                : null
-              }
-              </small>
+                {fs.name}{' '}
+                <small>
+                  Public view
+                  {this.props.user.profile
+                    ? <span>(<Link to={`/feed/${fs.id}`}>View private page</Link>)</span>
+                    : null
+                  }
+                </small>
               </h2>
-
             </Col>
           </Row>
 
@@ -82,10 +75,10 @@ export default class PublicFeedSourceViewer extends Component {
           <Panel header={(<h3><Glyphicon glyph='list' /> Feed Versions</h3>)}>
             {fs.feedVersions && fs.feedVersions.length > 0
               ? <ActiveFeedVersionNavigator
-                  feedSource={fs}
-                  routeParams={this.props.routeParams}
-                  isPublic
-                />
+                feedSource={fs}
+                routeParams={this.props.routeParams}
+                isPublic
+              />
               : <span>No Feed Versions to show.</span>
             }
           </Panel>

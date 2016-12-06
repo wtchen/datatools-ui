@@ -7,11 +7,6 @@ const activeAlert = (state = null, action) => {
     case 'CREATE_ALERT':
     case 'EDIT_ALERT':
       return action.alert
-    /*case 'SAVE_ALERT':
-    case 'DELETE_ALERT':
-    case 'SET_ACTIVE_ALERT_PUBLISHED':
-      return null*/
-
     case 'SET_ACTIVE_ALERT_TITLE':
       return update(state, {title: {$set: action.title}})
     case 'SET_ACTIVE_ALERT_DESCRIPTION':
@@ -30,14 +25,14 @@ const activeAlert = (state = null, action) => {
       return update(state, {published: {$set: action.published}})
     case 'RECEIVED_ALERT_GTFS_ENTITIES':
       // TODO: update GTFS entities for active alert
-      if (state !== null && state.affectedEntities !== null){
+      if (state !== null && state.affectedEntities !== null) {
         for (var i = 0; i < action.gtfsObjects.length; i++) {
           let ent = action.gtfsObjects[i]
-          if (typeof ent.gtfs !== 'undefined' && ent.AlertId === state.id){
+          if (typeof ent.gtfs !== 'undefined' && ent.AlertId === state.id) {
             // let alert = action.gtfsAlerts.find(a => a.id === ent.entity.AlertId)
             updatedEntity = state.affectedEntities.find(e => e.id === ent.entity.Id)
             updatedEntity[ent.type] = ent.gtfs
-            entities.push(selectedEnt)
+            // entities.push(selectedEnt)
             entities = [
               ...state.affectedEntities.slice(0, foundIndex),
               updatedEntity,
@@ -96,15 +91,14 @@ const activeAlert = (state = null, action) => {
                 stop_id: {$set: stopId},
                 agency: {$set: action.agency},
                 route: {$set: null},
-                route_id: {$set: null},
+                route_id: {$set: null}
                 // TODO: update agency id from feed id?
               })
-            }
-            else {
+            } else {
               updatedEntity = update(action.entity, {
                 stop: {$set: action.value},
                 stop_id: {$set: stopId},
-                agency: {$set: action.agency},
+                agency: {$set: action.agency}
                 // TODO: update agency id from feed id?
               })
             }
@@ -124,15 +118,14 @@ const activeAlert = (state = null, action) => {
                 route_id: {$set: routeId},
                 agency: {$set: action.agency},
                 stop: {$set: null},
-                stop_id: {$set: null},
+                stop_id: {$set: null}
                 // TODO: update agency id from feed id?
               })
-            }
-            else {
+            } else {
               updatedEntity = update(action.entity, {
                 route: {$set: action.value},
                 route_id: {$set: routeId},
-                agency: {$set: action.agency},
+                agency: {$set: action.agency}
                 // TODO: update agency id from feed id?
               })
             }
@@ -143,7 +136,6 @@ const activeAlert = (state = null, action) => {
             ]
             return update(state, {affectedEntities: {$set: entities}})
         }
-
       }
       return state
     case 'DELETE_ACTIVE_ALERT_AFFECTED_ENTITY':

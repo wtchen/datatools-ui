@@ -2,7 +2,6 @@ import update from 'react-addons-update'
 
 import { getRouteName } from '../../editor/util/gtfs'
 
-
 const defaultState = {
   fetchStatus: {
     fetched: false,
@@ -25,7 +24,6 @@ export default function reducer (state = defaultState, action) {
         },
         data: []
       }
-      break
     case 'FETCH_GRAPHQL_ROUTES_REJECTED':
       return update(state, {
         fetchStatus: {
@@ -36,7 +34,6 @@ export default function reducer (state = defaultState, action) {
           }
         }
       })
-      break
     case 'FETCH_GRAPHQL_ROUTES_FULFILLED':
       let newRoutes = []
       for (let i = 0; i < action.data.routes.length; i++) {
@@ -52,9 +49,7 @@ export default function reducer (state = defaultState, action) {
         },
         data: newRoutes
       }
-      break
     default:
       return state
   }
-
 }

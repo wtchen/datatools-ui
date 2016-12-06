@@ -21,9 +21,6 @@ export default class SignsList extends Component {
     searchTextChanged: PropTypes.func,
     visibilityFilterChanged: PropTypes.func
   }
-  constructor (props) {
-    super(props)
-  }
   render () {
     let sortedSigns = this.props.signs.sort((a, b) => {
       if (a.id < b.id) return -1
@@ -59,23 +56,22 @@ export default class SignsList extends Component {
           <div className='form-group'>&nbsp;</div>
         </Row>
         <Row>
-
-        {this.props.isFetching
-          ? <p className='text-center'><Icon className='fa-5x fa-spin' type='refresh' /></p>
-          : sortedSigns.length
-          ? sortedSigns.map((sign) => {
-            return <SignPreview
-              sign={sign}
-              key={sign.id}
-              editableFeeds={this.props.editableFeeds}
-              publishableFeeds={this.props.publishableFeeds}
-              onEditClick={this.props.onEditClick}
-              onZoomClick={this.props.onZoomClick}
-              onDeleteClick={this.props.onDeleteClick}
-            />
-          })
-          : <p className='lead text-center'>No signs found.</p>
-        }
+          {this.props.isFetching
+            ? <p className='text-center'><Icon className='fa-5x fa-spin' type='refresh' /></p>
+            : sortedSigns.length
+            ? sortedSigns.map((sign) => {
+              return <SignPreview
+                sign={sign}
+                key={sign.id}
+                editableFeeds={this.props.editableFeeds}
+                publishableFeeds={this.props.publishableFeeds}
+                onEditClick={this.props.onEditClick}
+                onZoomClick={this.props.onZoomClick}
+                onDeleteClick={this.props.onDeleteClick}
+              />
+            })
+            : <p className='lead text-center'>No signs found.</p>
+          }
         </Row>
       </div>
     )

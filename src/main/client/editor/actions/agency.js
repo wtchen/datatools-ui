@@ -1,7 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { setActiveGtfsEntity } from './editor'
-
-//// AGENCY
+import { setActiveGtfsEntity } from './active'
 
 export function savingAgency (feedId, agency) {
   return {
@@ -35,7 +33,7 @@ export function saveAgency (feedId, agency) {
       timezone: agency.agency_timezone,
       url: agency.agency_url,
       agencyFareUrl: agency.agency_fare_url,
-      agencyBrandingUrl: agency.agency_branding_url,
+      agencyBrandingUrl: agency.agency_branding_url
     }
     const method = agency.id !== 'new' ? 'put' : 'post'
     const url = agency.id !== 'new'

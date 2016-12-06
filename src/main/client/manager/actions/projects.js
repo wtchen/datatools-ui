@@ -1,12 +1,12 @@
 import { secureFetch } from '../../common/util/util'
 import { updateGtfsFilter } from '../../gtfs/actions/filter'
 import { setErrorMessage, startJobMonitor } from './status'
-import { fetchProjectFeeds, updateFeedSource } from './feeds'
+import { fetchProjectFeeds } from './feeds'
 // Bulk Project Actions
 
 function requestingProjects () {
   return {
-    type: 'REQUESTING_PROJECTS',
+    type: 'REQUESTING_PROJECTS'
   }
 }
 
@@ -63,7 +63,7 @@ export function fetchProjectsWithPublicFeeds () {
 
 function requestingProject () {
   return {
-    type: 'REQUESTING_PROJECT',
+    type: 'REQUESTING_PROJECT'
   }
 }
 
@@ -101,15 +101,16 @@ export function fetchProjectWithFeeds (projectId, unsecure) {
       // .catch(err => console.log(err))
       .then(project => {
         dispatch(receiveProject(project))
-        if (!unsecure)
+        if (!unsecure) {
           return dispatch(fetchProjectFeeds(project.id))
+        }
       })
   }
 }
 
 function deletingProject () {
   return {
-    type: 'DELETING_PROJECT',
+    type: 'DELETING_PROJECT'
   }
 }
 
@@ -157,13 +158,13 @@ export function createProject () {
 
 export function requestingSync () {
   return {
-    type: 'REQUESTING_SYNC',
+    type: 'REQUESTING_SYNC'
   }
 }
 
 export function receiveSync () {
   return {
-    type: 'RECEIVE_SYNC',
+    type: 'RECEIVE_SYNC'
   }
 }
 
@@ -183,7 +184,7 @@ export function thirdPartySync (projectId, type) {
 
 export function runningFetchFeedsForProject () {
   return {
-    type: 'RUNNING_FETCH_FEED_FOR_PROJECT',
+    type: 'RUNNING_FETCH_FEED_FOR_PROJECT'
   }
 }
 
@@ -196,7 +197,6 @@ export function receiveFetchFeedsForProject (project) {
 
 export function fetchFeedsForProject (project) {
   return function (dispatch, getState) {
-
     dispatch(runningFetchFeedsForProject())
     const url = `/api/manager/secure/project/${project.id}/fetch`
     return secureFetch(url, getState(), 'post')
@@ -204,11 +204,9 @@ export function fetchFeedsForProject (project) {
         if (res.status === 304) {
           // dispatch(feedNotModified(feedSource, 'Feed fetch cancelled because it matches latest feed version.'))
           console.log('fetch cancelled because matches latest')
-        }
-        else if (res.status >= 400) {
+        } else if (res.status >= 400) {
           dispatch(setErrorMessage('Error fetching project feeds'))
-        }
-        else {
+        } else {
           dispatch(receiveFetchFeedsForProject(project))
           dispatch(startJobMonitor())
           return res.json()
@@ -224,7 +222,7 @@ export function fetchFeedsForProject (project) {
 
 function savingProject () {
   return {
-    type: 'SAVING_PROJECT',
+    type: 'SAVING_PROJECT'
   }
 }
 

@@ -23,7 +23,6 @@ import ActiveSignEditor from '../../signs/containers/ActiveSignEditor'
 import PageNotFound from '../components/PageNotFound'
 import ActiveGtfsPlusEditor from '../../gtfsplus/containers/ActiveGtfsPlusEditor'
 import ActiveGtfsEditor from '../../editor/containers/ActiveGtfsEditor'
-import ActiveGtfsTableEditor from '../../editor/containers/ActiveGtfsTableEditor'
 
 class App extends Component {
   static propTypes = {
@@ -32,21 +31,8 @@ class App extends Component {
     login: PropTypes.func,
     history: PropTypes.object
   }
-  constructor (props) {
-    super(props)
-  }
-
-  componentDidMount () {
-    // set up status checkLogin
-    /* setInterval(() => {
-      console.log('status check!', this.props.user);
-      this.props.checkJobStatus()
-    }, 5000) */
-  }
-
   render () {
     const requireAuth = (nextState, replace, callback) => {
-      console.log(nextState)
       this.props.checkExistingLogin()
       .then((action) => {
         if (this.props.user.profile === null) {
@@ -87,7 +73,7 @@ class App extends Component {
       {path: '/project', component: ActiveProjectsList, onEnter: requireAuth},
       {path: '/project/:projectId(/:subpage)(/:subsubpage)', component: ActiveProjectViewer, onEnter: requireAuth},
       {
-        path: '/feed/:feedSourceId/edit(/:subpage)(/:entity)(/:subsubpage)(/:subentity)(/:subsubcomponent)(/:subsubentity)',
+        path: '/feed/:feedSourceId/edit(/:activeComponent)(/:activeEntityId)(/:subComponent)(/:subEntityId)(/:subSubComponent)(/:activeSubSubEntity)',
         component: ActiveGtfsEditor,
         onEnter: requireAuth
       },
@@ -95,7 +81,6 @@ class App extends Component {
 
       {path: '/deployment/:deploymentId', component: ActiveDeploymentViewer, onEnter: requireAuth},
       {path: '/gtfsplus/:feedSourceId/:feedVersionId', component: ActiveGtfsPlusEditor, onEnter: requireAuth},
-      {path: '/feed/:feedSourceId/editTable/:feedVersionId(/:subpage)', component: ActiveGtfsTableEditor, onEnter: requireAuth},
       {path: '*', component: PageNotFound}
     ]
 
@@ -139,9 +124,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-App = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(App)
-
-export default App

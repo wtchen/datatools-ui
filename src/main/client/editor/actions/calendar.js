@@ -1,7 +1,7 @@
 import { secureFetch } from '../../common/util/util'
-import { setActiveGtfsEntity } from './editor'
+import { setActiveGtfsEntity } from './active'
 
-//// CALENDAR + SCHEDULE_EXCEPTION
+// CALENDAR + SCHEDULE_EXCEPTION
 
 export function requestingCalendars (feedId) {
   return {
@@ -62,7 +62,7 @@ export function saveCalendar (feedId, calendar) {
       sunday: calendar.sunday === 1,
       startDate: calendar.start_date,
       endDate: calendar.end_date,
-      id: calendar.id === 'new' ? null : calendar.id,
+      id: calendar.id === 'new' ? null : calendar.id
     }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())

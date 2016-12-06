@@ -1,9 +1,8 @@
 import React from 'react'
-import { Panel, Table, Glyphicon, Button, Badge } from 'react-bootstrap'
-import { browserHistory } from 'react-router'
+import { Panel, Table, Badge } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 
-import { isModuleEnabled, isExtensionEnabled, getComponentMessages, getMessage } from '../../../common/util/config'
+import { getComponentMessages, getMessage } from '../../../common/util/config'
 
 export default class GtfsValidationViewer extends React.Component {
 
@@ -17,20 +16,9 @@ export default class GtfsValidationViewer extends React.Component {
   componentWillReceiveProps (nextProps) {
     if (!nextProps.validationResult) this.setState({ expanded: false })
   }
-
   render () {
-
     const result = this.props.validationResult
     const messages = getComponentMessages('GtfsValidationViewer')
-
-    const header = (
-      <h3 onClick={() => {
-        if (!result) this.props.fetchValidationResult()
-        this.setState({ expanded: !this.state.expanded })
-      }}>
-        <Glyphicon glyph='check' /> {getMessage(messages, 'title')}
-      </h3>
-    )
 
     let report = null
     let files = ['routes', 'stops', 'trips', 'shapes', 'stop_times']

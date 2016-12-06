@@ -1,10 +1,8 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import GtfsFilter from '../components/GtfsFilter'
-
 import { addActiveFeed, removeActiveFeed, addAllActiveFeeds,
-  removeAllActiveFeeds, updatePermissionFilter, updateGtfsFilter } from '../actions/filter'
+  removeAllActiveFeeds, updateGtfsFilter } from '../actions/filter'
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -19,10 +17,11 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
-      let filter = initialProps.permissionFilter || 'view-feed'
+      // let filter = initialProps.permissionFilter || 'view-feed'
       // dispatch(updatePermissionFilter(filter))
-      if (initialProps.project && initialProps.user)
+      if (initialProps.project && initialProps.user) {
         dispatch(updateGtfsFilter(initialProps.project, initialProps.user))
+      }
     },
     onAddFeed: (feed) => dispatch(addActiveFeed(feed)),
     onRemoveFeed: (feed) => dispatch(removeActiveFeed(feed)),

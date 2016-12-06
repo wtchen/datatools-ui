@@ -1,11 +1,9 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import SignupPage from '../components/SignupPage'
-import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
 import { fetchProjectsWithPublicFeeds } from '../../manager/actions/projects'
-import { login, createPublicUser, fetchUser, userLoggedIn, checkExistingLogin } from '../../manager/actions/user'
+import { login, createPublicUser } from '../../manager/actions/user'
 
 const mapStateToProps = (state, ownProps) => {
   return {

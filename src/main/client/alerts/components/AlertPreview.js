@@ -20,10 +20,10 @@ export default class AlertPreview extends React.Component {
     const editButtonMessage = this.props.alert.published && deleteIsDisabled ? 'Cannot edit because alert is published'
       : !canEdit ? 'Cannot alter alerts for other agencies' : 'Edit alert'
     const publishedLabel = this.props.alert.published
-      ? <Label title='Published' bsStyle="success"><Icon type="ok" /></Label>
-      : <Label title='Draft' bsStyle="warning"><Icon type="pencil" /></Label>
+      ? <Label title='Published' bsStyle='success'><Icon type='ok' /></Label>
+      : <Label title='Draft' bsStyle='warning'><Icon type='pencil' /></Label>
     const entitiesLabel = this.props.alert.affectedEntities.length
-      ? <Label title={`${this.props.alert.affectedEntities.length} affected service(s)`} bsStyle="danger"><Icon type="alert" /> {this.props.alert.affectedEntities.length}</Label>
+      ? <Label title={`${this.props.alert.affectedEntities.length} affected service(s)`} bsStyle='danger'><Icon type='alert' /> {this.props.alert.affectedEntities.length}</Label>
       : <Label>General alert</Label>
     return (
       <Panel collapsible header={
@@ -35,22 +35,21 @@ export default class AlertPreview extends React.Component {
           <Col xs={4}>
             <ButtonGroup className='pull-right'>
               <Button title={editButtonMessage} disabled={editingIsDisabled} onClick={() => this.props.onEditClick(this.props.alert)}>
-                <Icon type="pencil" />
+                <Icon type='pencil' />
               </Button>
               <Button
                 title={deleteButtonMessage}
                 disabled={deleteIsDisabled}
-                onClick={
-                  (evt) => {
-                    let r = confirm('Are you sure you want to delete this alert?')
-                    if (r == true) {
-                        this.props.onDeleteClick(this.props.alert)
-                    } else {
-                        return
-                    }
+                onClick={(evt) => {
+                  let r = window.confirm('Are you sure you want to delete this alert?')
+                  if (r === true) {
+                    this.props.onDeleteClick(this.props.alert)
+                  } else {
+                    return
+                  }
                 }}
               >
-                <Icon type="remove" />
+                <Icon type='remove' />
               </Button>
             </ButtonGroup>
           </Col>
@@ -61,9 +60,9 @@ export default class AlertPreview extends React.Component {
           <span className='pull-right'>{publishedLabel} {this.props.alert.published ? 'Published' : 'Draft'}</span>
         </p>
         <p>{this.props.alert.description}</p>
-        <p>URL: <a href={this.props.alert.url} target="_blank">{this.props.alert.url}</a></p>
+        <p>URL: <a href={this.props.alert.url} target='_blank'>{this.props.alert.url}</a></p>
         <p>
-        <span className='pull-right'>{entitiesLabel} affected service(s)</span>
+          <span className='pull-right'>{entitiesLabel} affected service(s)</span>
         </p>
       </Panel>
     )

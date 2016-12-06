@@ -11,7 +11,7 @@ const ui = (state = {
       const sidebarExpanded = getUserMetadataProperty(action.profile, 'sidebarExpanded')
       return update(state, {
         sidebarExpanded: { $set: sidebarExpanded },
-        hideTutorial: { $set: hideTutorial },
+        hideTutorial: { $set: hideTutorial }
       })
     case 'SETTING_TUTORIAL_VISIBILITY':
       return update(state, { hideTutorial: { $set: action.value } })

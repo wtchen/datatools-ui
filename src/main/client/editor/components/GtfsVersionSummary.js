@@ -15,14 +15,14 @@ export default class GtfsVersionSummary extends Component {
   }
 
   isTableIncluded (tableId) {
-    if (!this.props.editor.tableData) return null
-    return tableId in this.props.editor.tableData ? 'Yes' : 'No'
+    if (!this.props.editor.data.tables) return null
+    return tableId in this.props.editor.data.tables ? 'Yes' : 'No'
   }
 
   tableRecordCount (tableId) {
-    if (!this.props.editor.tableData) return null
-    if (!(tableId in this.props.editor.tableData)) return 'N/A'
-    return this.props.editor.tableData[tableId].length.toLocaleString()
+    if (!this.props.editor.data.tables) return null
+    if (!(tableId in this.props.editor.data.tables)) return 'N/A'
+    return this.props.editor.data.tables[tableId].length.toLocaleString()
   }
 
   validationIssueCount (tableId) {

@@ -25,7 +25,7 @@ export default class RouteLayout extends Component {
         }
 
         {this.props.routes.fetchStatus.error &&
-          <Alert bsStyle="danger">
+          <Alert bsStyle='danger'>
             An error occurred while trying to fetch the data
           </Alert>
         }
@@ -54,8 +54,8 @@ export default class RouteLayout extends Component {
               dataFormat={(cell, row) => {
                 return (
                   <Button
-                    bsStyle="primary"
-                    bsSize="small"
+                    bsStyle='primary'
+                    bsSize='small'
                     onClick={() => { self.props.viewPatterns(row) }}
                   >
                     View Patterns

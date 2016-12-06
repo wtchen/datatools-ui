@@ -1,10 +1,7 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import UserAdmin from '../components/UserAdmin'
-import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
-
 import {
   fetchUsers,
   createUser,
@@ -12,7 +9,6 @@ import {
   setUserPage,
   setUserQueryString
 } from '../actions/admin'
-
 import { updateUserData } from '../../manager/actions/user'
 import { fetchProjects } from '../../manager/actions/projects'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
@@ -32,8 +28,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.activeComponent) {
         browserHistory.push('/admin/users')
       }
-      if (!initialProps.users)
+      if (!initialProps.users) {
         dispatch(fetchUsers())
+      }
 
       // always load projects to prevent interference with public feeds viewer loading of projects
       dispatch(fetchProjects())

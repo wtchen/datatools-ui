@@ -39,7 +39,7 @@ export default class SidebarNavItem extends Component {
       borderLeft: this.props.active ? '4px solid #2889CA' : '4px solid rgba(0,0,0,0)',
       textDecoration: 'none',
       borderRight: this.props.active ? '5px solid rgba(0,0,0,0)' : '5px solid rgba(0,0,0,0)',
-      backgroundColor: this.props.active ? '#313131' : 'rgba(0,0,0,0)',
+      backgroundColor: this.props.active ? '#313131' : 'rgba(0,0,0,0)'
     }
 
     const iconContainerStyle = {
@@ -67,24 +67,24 @@ export default class SidebarNavItem extends Component {
     }
     const icon = this.props.image
       ? <div style={imageContainerStyle}>
-          <img width={40} height={40} src={this.props.image} />
-        </div>
+        <img width={40} height={40} src={this.props.image} />
+      </div>
       : <div style={iconContainerStyle}>
-          <Icon
-            type={this.props.icon}
-            size='lg'
-            style={iconStyle}
-            ref='icon'
-            className={this.props.loading
-              ? 'fa-spin fa-lg'
-              : 'fa-lg'
-            }
-          />
-        </div>
+        <Icon
+          type={this.props.icon}
+          size='lg'
+          style={iconStyle}
+          ref='icon'
+          className={this.props.loading
+            ? 'fa-spin fa-lg'
+            : 'fa-lg'
+          }
+        />
+      </div>
     const tooltip = <Tooltip id={this.props.label}>{this.props.label}</Tooltip>
     let containerProps = {
       onMouseEnter: () => this.toggleHover(),
-      onMouseLeave: () => this.toggleHover(),
+      onMouseLeave: () => this.toggleHover()
     }
     if (!this.props.link) {
       containerProps.onClick = () => this.props.onClick()
@@ -103,13 +103,13 @@ export default class SidebarNavItem extends Component {
     )
     const navItem = this.props.link
       ? <Link to={this.props.link} style={{textDecoration: 'none'}}>
-          {container}
-        </Link>
+        {container}
+      </Link>
       : container
     return this.props.expanded
       ? navItem
       : <OverlayTrigger overlay={this.props.expanded ? null : tooltip}>
-          {navItem}
-        </OverlayTrigger>
+        {navItem}
+      </OverlayTrigger>
   }
 }

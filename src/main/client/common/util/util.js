@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-import { setErrorMessage } from '../../manager/actions/status'
+// import { setErrorMessage } from '../../manager/actions/status'
 import gravatar from 'gravatar'
 
 export function defaultSorter (a, b) {
@@ -62,20 +62,20 @@ export function secureFetch (url, state, method, payload, raw) {
 }
 
 export function generateUID () {
-    return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
+  return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
 }
 
 export function generateRandomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export function generateRandomColor () {
-    var letters = '0123456789ABCDEF'.split('')
-    var color = ''
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)]
-    }
-    return color
+  var letters = '0123456789ABCDEF'.split('')
+  var color = ''
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)]
+  }
+  return color
 }
 // export function invertHex (hexnum) {
 //   if (hexnum.length != 6) {
@@ -116,17 +116,16 @@ export function idealTextColor (bgColor) {
   return ((255 - bgDelta) < nThreshold) ? '000000' : 'FFFFFF'
 }
 
-function getRGBComponents(color) {
+function getRGBComponents (color) {
+  var r = color.substring(1, 3)
+  var g = color.substring(3, 5)
+  var b = color.substring(5, 7)
 
-    var r = color.substring(1, 3)
-    var g = color.substring(3, 5)
-    var b = color.substring(5, 7)
-
-    return {
-       R: parseInt(r, 16),
-       G: parseInt(g, 16),
-       B: parseInt(b, 16)
-    }
+  return {
+    R: parseInt(r, 16),
+    G: parseInt(g, 16),
+    B: parseInt(b, 16)
+  }
 }
 // export const UserIsAuthenticated = UserAuthWrapper({
 //   authSelector: state => state.user,

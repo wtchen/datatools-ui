@@ -1,12 +1,8 @@
-import React from 'react'
 import { connect } from 'react-redux'
-import moment from 'moment'
 
 import { editSign, deleteSign } from '../actions/signs'
 import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibilityFilter'
-
 import SignsList from '../components/SignsList'
-
 import { getFeedsForPermission } from '../../common/util/permissions'
 import { FILTERS } from '../util'
 
@@ -14,7 +10,6 @@ const getVisibleSigns = (signs, visibilityFilter) => {
   if (!signs) return []
   let visibleSigns = signs.filter(sign =>
     sign.title.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1)
-  let now = moment()
   switch (visibilityFilter.filter) {
     case 'ALL':
       return visibleSigns
@@ -25,7 +20,6 @@ const getVisibleSigns = (signs, visibilityFilter) => {
     default:
       return visibleSigns
   }
-  return visibleSigns
 }
 
 const mapStateToProps = (state, ownProps) => {

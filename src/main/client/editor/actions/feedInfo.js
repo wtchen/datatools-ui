@@ -1,7 +1,4 @@
 import { secureFetch } from '../../common/util/util'
-import { setActiveGtfsEntity } from './editor'
-
-//// FEED_INFO
 
 export function requestingFeedInfo (feedId) {
   return {
@@ -42,15 +39,13 @@ export function fetchFeedInfo (feedId) {
   }
 }
 
-////// Create new feed info
-
-
+// Create new feed info
 export function createFeedInfo (feedId) {
   return function (dispatch, getState) {
     dispatch(savingFeedInfo(feedId))
     const data = {
       // datatools props
-      id: feedId,
+      id: feedId
       // color: feedInfo.color,
       // defaultLat: feedInfo.defaultLat,
       // defaultLon: feedInfo.defaultLon,
@@ -89,10 +84,10 @@ export function saveFeedInfo (feedId, feedInfo) {
       feedLang: feedInfo.feed_lang,
       feedPublisherName: feedInfo.feed_publisher_name,
       feedPublisherUrl: feedInfo.feed_publisher_url,
-      feedVersion: feedInfo.feed_version,
+      feedVersion: feedInfo.feed_version
     }
     const url = `/api/manager/secure/feedinfo/${feedId}`
-    const method = getState().editor.tableData.feedinfo ? 'put' : 'post'
+    const method = getState().editor.data.tables.feedinfo ? 'put' : 'post'
     return secureFetch(url, getState(), method, data)
       .then((res) => {
         return dispatch(fetchFeedInfo(feedId))

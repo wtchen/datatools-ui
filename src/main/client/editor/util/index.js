@@ -8,7 +8,7 @@ export function isTimeFormat (type) {
   return /TIME/.test(type)
 }
 
-export function getTimetableColumns (pattern, stops, hideDepartureTimes) {
+export function getTimetableColumns (pattern, stops) {
   const columns = [
     {
       name: 'Block ID',
@@ -45,21 +45,20 @@ export function getTimetableColumns (pattern, stops, hideDepartureTimes) {
           width: TIME_WIDTH,
           key: `stopTimes.${index}.arrivalTime`,
           colSpan: '2',
-          hidden: false,
+          // hidden: false,
           type: 'ARRIVAL_TIME',
           placeholder: 'HH:MM:SS'
         })
         columns.push({
           key: `stopTimes.${index}.departureTime`,
           width: TIME_WIDTH,
-          hidden: hideDepartureTimes,
+          // hidden: hideDepartureTimes,
           type: 'DEPARTURE_TIME',
           placeholder: 'HH:MM:SS'
         })
       })
-    }
-    // columns added if using freqency schedule type
-    else {
+    } else {
+      // columns added if using freqency schedule type
       columns.push({
         name: 'Start time',
         width: 100,
@@ -84,4 +83,21 @@ export function getTimetableColumns (pattern, stops, hideDepartureTimes) {
     }
   }
   return columns
+}
+
+export function getStopsForPattern (pattern, stops) {
+  return pattern && pattern.patternStops && stops
+    ? pattern.patternStops.map(ps => stops.find(s => s.id === ps.stopId))
+    : []
+}
+
+export function sortAndFilterTrips (trips, useFrequency) {
+  return trips
+    ? trips.filter(t => t.useFrequency === useFrequency) // filter out based on useFrequency
+    .sort((a, b) => {
+      if (a.stopTimes[0].departureTime < b.stopTimes[0].departureTime) return -1
+      if (a.stopTimes[0].departureTime > b.stopTimes[0].departureTime) return 1
+      return 0
+    })
+    : []
 }

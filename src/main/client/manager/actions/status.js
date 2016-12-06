@@ -1,5 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { fetchFeedVersion, fetchFeedSource } from './feeds'
+import { fetchFeedSource } from './feeds'
 import { fetchSnapshots } from '../../editor/actions/snapshots'
 
 export function setErrorMessage (message) {
@@ -15,7 +15,7 @@ export function clearStatusModal () {
   }
 }
 
-/*function watchingStatus (job) {
+/* function watchingStatus (job) {
   return {
     type: 'WATCHING_STATUS',
     job
@@ -43,7 +43,7 @@ export function watchStatus (job) {
       }
     }, 1000);
   }
-}*/
+} */
 
 export function removeRetiredJob (job) {
   return {

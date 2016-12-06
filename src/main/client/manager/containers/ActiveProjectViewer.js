@@ -1,4 +1,3 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import ProjectViewer from '../components/ProjectViewer'
@@ -57,8 +56,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         .then(project => {
           dispatch(fetchProjectFeeds(projectId))
         })
+      } else if (!initialProps.project.feedSources || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) {
+        dispatch(fetchProjectFeeds(projectId))
       }
-      else if (!initialProps.project.feedSources || initialProps.project.feedSources.length !== initialProps.project.numberOfFeeds) dispatch(fetchProjectFeeds(projectId))
     },
     onNewFeedSourceClick: () => { dispatch(createFeedSource(projectId)) },
     updateProjectSettings: (project, newSettings) => {

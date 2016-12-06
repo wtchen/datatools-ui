@@ -139,41 +139,42 @@ export default class UserSettings extends Component {
     }
 
     let projectPanel = (
-      <Panel header={
-        <h3>
-          Project Settings for&nbsp;
-          <SplitButton
-            title={currentProject.name}
-            id={currentProject.name}
-            onSelect={(key) => this.projectSelected(key)}
+      <Panel
+        header={
+          <h3>
+            Project Settings for&nbsp;
+            <SplitButton
+              title={currentProject.name}
+              id={currentProject.name}
+              onSelect={(key) => this.projectSelected(key)}
 
-          >
-            {this.props.projects.map((project, i) => {
-              let settings = this.state.projectSettings[project.id]
-              if (typeof settings !== 'undefined') {
-                return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
-              }
-            })}
-          </SplitButton>
-        </h3>
-      }
+            >
+              {this.props.projects.map((project, i) => {
+                let settings = this.state.projectSettings[project.id]
+                if (typeof settings !== 'undefined') {
+                  return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
+                }
+              })}
+            </SplitButton>
+          </h3>
+        }
       >
-      <div></div>
-      {this.props.projects.map((project, i) => {
-        if (i !== this.state.currentProjectIndex) return null
-        let settings = this.state.projectSettings[project.id]
-        return <ProjectSettings
-          project={project}
-          key={project.id}
-          settings={settings}
-          fetchProjectFeeds={this.props.fetchProjectFeeds}
-          visible={(i === this.state.currentProjectIndex)}
-          projectAccessUpdated={this.projectAccessUpdated.bind(this)}
-          projectFeedsUpdated={this.projectFeedsUpdated.bind(this)}
-          projectPermissionsUpdated={this.projectPermissionsUpdated.bind(this)}
-        />
-      })}
-    </Panel>)
+        {this.props.projects.map((project, i) => {
+          if (i !== this.state.currentProjectIndex) return null
+          let settings = this.state.projectSettings[project.id]
+          return <ProjectSettings
+            project={project}
+            key={project.id}
+            settings={settings}
+            fetchProjectFeeds={this.props.fetchProjectFeeds}
+            visible={(i === this.state.currentProjectIndex)}
+            projectAccessUpdated={this.projectAccessUpdated.bind(this)}
+            projectFeedsUpdated={this.projectFeedsUpdated.bind(this)}
+            projectPermissionsUpdated={this.projectPermissionsUpdated.bind(this)}
+          />
+        })}
+      </Panel>
+  )
 
     return (
       <Row>
@@ -237,7 +238,6 @@ class ProjectSettings extends Component {
     })
     this.props.projectFeedsUpdated(this.props.project.id, selectedFeeds)
   }
-
   permissionsUpdated () {
     let selectedPermissions = []
     allPermissions.forEach((permission) => {
@@ -246,7 +246,6 @@ class ProjectSettings extends Component {
     })
     this.props.projectPermissionsUpdated(this.props.project.id, selectedPermissions)
   }
-
   render () {
     const messages = getComponentMessages('UserSettings')
 
@@ -258,7 +257,6 @@ class ProjectSettings extends Component {
         return 0
       })
     }
-
     return (
       <Row style={{display: this.props.visible ? 'block' : 'none'}}>
         <Col xs={12}>

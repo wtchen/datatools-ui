@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { Map, Marker, TileLayer, FeatureGroup } from 'react-leaflet'
 // import { EditControl } from 'react-leaflet-draw'
@@ -7,22 +7,13 @@ import { getConfigProperty } from '../util/config'
 
 let polyline
 
-export default class MapModal extends React.Component {
+export default class MapModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
       showModal: false
     }
   }
-  // componentWillReceiveProps (newProps) {
-  //   if (newProps.title) {
-  //     this.setState({
-  //       showModal: true,
-  //       title: newProps.title,
-  //       body: newProps.body,
-  //     })
-  //   }
-  // }
   close () {
     this.setState({
       showModal: false
@@ -43,7 +34,7 @@ export default class MapModal extends React.Component {
       draw: true
     })
   }
-  getMap() {
+  getMap () {
     return this.refs.map
   }
   _onEditPath (e) {
@@ -51,7 +42,7 @@ export default class MapModal extends React.Component {
   }
 
   _onCreate (e) {
-    polyline = e.layer;
+    polyline = e.layer
     this.setState({rectangle: e.layer})
     // To edit this polyline call : polyline.handler.enable()
     console.log('Path created !', polyline)
@@ -62,11 +53,11 @@ export default class MapModal extends React.Component {
   _onDeleted (e) {
     console.log('Path deleted !')
 
-    if (this.refs.drawnItems.getLayers().length === 0){
-        this.setState({draw: true})
+    if (this.refs.drawnItems.getLayers().length === 0) {
+      this.setState({draw: true})
     }
   }
-  initializeMap() {
+  initializeMap () {
     if (this.mapInitialized || this.props.initialized) return
     const leafletMap = this.getMap().leafletElement
     leafletMap.invalidateSize()
@@ -87,12 +78,12 @@ export default class MapModal extends React.Component {
       height: '300px',
       width: '100%'
     }
-    const marker = this.state.marker ? <Marker
-                      position={[this.state.marker.lat, this.state.marker.lng]}
-                      key={Math.random()}
-                    >
-                    </Marker>
-                    : null
+    const marker = this.state.marker
+      ? <Marker
+        position={[this.state.marker.lat, this.state.marker.lng]}
+        key={Math.random()}
+      />
+      : null
     const clickHandler = (e) => {
       console.log(e.latlng)
       if (this.state.markerSelect) {
@@ -119,33 +110,34 @@ export default class MapModal extends React.Component {
             />
             {this.state.rectangleSelect
               ? <FeatureGroup
-                  ref='drawnItems'
-                >
-                  <EditControl
-                    onEdited={(e) => this._onEditPath(e)}
-                    onCreated={(e) => this._onCreate(e)}
-                    onDeleted={(e) => this._onDeleted(e)}
-                    position='topright'
-                    draw={this.state.draw
-                      ? {
-                        circle: false,
-                        polyline: false,
-                        polygon: false,
-                        marker: false
-                      }
-                      : {
-                        circle: false,
-                        polyline: false,
-                        polygon: false,
-                        marker: false,
-                        rectangle: false
-                      }
+                ref='drawnItems'
+              >
+                {/* <EditControl
+                  onEdited={(e) => this._onEditPath(e)}
+                  onCreated={(e) => this._onCreate(e)}
+                  onDeleted={(e) => this._onDeleted(e)}
+                  position='topright'
+                  draw={this.state.draw
+                    ? {
+                      circle: false,
+                      polyline: false,
+                      polygon: false,
+                      marker: false
                     }
-                  />
-                </FeatureGroup>
+                    : {
+                      circle: false,
+                      polyline: false,
+                      polygon: false,
+                      marker: false,
+                      rectangle: false
+                    }
+                  }
+                />
+              */}
+              </FeatureGroup>
               : null
             }
-            {/*this.state.marker
+            {/* this.state.marker
               ? this.state.marker.map(m => {
                 return (
                   <Marker

@@ -1,11 +1,11 @@
-import {Icon} from '@conveyal/woonerf'
 import React, {Component, PropTypes} from 'react'
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap'
-import { browserHistory } from 'react-router'
+// import {Icon} from '@conveyal/woonerf'
+import { Navbar, Nav, NavItem } from 'react-bootstrap'
+// import { browserHistory } from 'react-router'
 
-import Breadcrumbs from './Breadcrumbs'
-import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../util/config'
-import JobMonitor from './JobMonitor'
+// import Breadcrumbs from './Breadcrumbs'
+// import { getComponentMessages, getMessage } from '../util/config'
+// import JobMonitor from './JobMonitor'
 
 export default class DatatoolsNavbar extends Component {
 
@@ -25,70 +25,70 @@ export default class DatatoolsNavbar extends Component {
   };
 
   render () {
-    var userControl
-    const messages = getComponentMessages('DatatoolsNavbar')
-
-    if (!this.props.username) {
-      userControl = (<NavItem onClick={this.props.loginHandler} href='#'>{getMessage(messages, 'login')}</NavItem>)
-    } else {
-      userControl = (
-        <NavDropdown title={
-          <span><Icon type='user' /> {this.props.username}</span>
-        } id='basic-nav-dropdown'>
-        <MenuItem onClick={() => browserHistory.push('/account')}>{getMessage(messages, 'account')}</MenuItem>
-          <MenuItem onClick={this.props.resetPassword}>{getMessage(messages, 'resetPassword')}</MenuItem>
-          <MenuItem onClick={this.props.logoutHandler}>{getMessage(messages, 'logout')}</MenuItem>
-        </NavDropdown>
-      )
-    }
-    let projectControl
-    if (!this.props.username) {
-      projectControl = ('')
-    } else if (!this.props.projects || !this.props.projects.active) {
-      projectControl = ('') // (<NavItem href='#'>No project selected</NavItem>)
-    } else {
-      let activeProject = this.props.projects.active
-      projectControl = (
-        <NavDropdown
-          title={<span><Icon type='briefcase' /> {activeProject.name}</span>}
-          id='basic-nav-dropdown'
-        >
-          {this.props.projects.all.map(proj => {
-            return (
-              <MenuItem
-                key={proj.id}
-                onClick={(evt) =>{
-                  evt.preventDefault()
-                  this.props.setActiveProject(proj)
-                }}
-              >{proj.name}</MenuItem>
-            )
-          })}
-        </NavDropdown>
-      )
-    }
-
-    let languageControl = (
-      <NavDropdown
-        title={<span><Icon type='globe' /></span>}
-        id='basic-nav-dropdown'
-      >
-        {this.props.languages.all ? this.props.languages.all.map(lang => {
-          return (
-            <MenuItem
-              key={lang.id}
-              active={this.props.languages.active.id === lang.id}
-              onClick={(evt) =>{
-                evt.preventDefault()
-                this.props.setActiveLanguage(lang.id)
-              }}
-            >{lang.name}</MenuItem>
-          )
-        })
-        : null
-      }
-      </NavDropdown>
-    )
+    // var userControl
+    // const messages = getComponentMessages('DatatoolsNavbar')
+    //
+    // if (!this.props.username) {
+    //   userControl = (<NavItem onClick={this.props.loginHandler} href='#'>{getMessage(messages, 'login')}</NavItem>)
+    // } else {
+    //   userControl = (
+    //     <NavDropdown title={
+    //       <span><Icon type='user' /> {this.props.username}</span>
+    //     } id='basic-nav-dropdown'>
+    //     <MenuItem onClick={() => browserHistory.push('/account')}>{getMessage(messages, 'account')}</MenuItem>
+    //       <MenuItem onClick={this.props.resetPassword}>{getMessage(messages, 'resetPassword')}</MenuItem>
+    //       <MenuItem onClick={this.props.logoutHandler}>{getMessage(messages, 'logout')}</MenuItem>
+    //     </NavDropdown>
+    //   )
+    // }
+    // let projectControl
+    // if (!this.props.username) {
+    //   projectControl = ('')
+    // } else if (!this.props.projects || !this.props.projects.active) {
+    //   projectControl = ('') // (<NavItem href='#'>No project selected</NavItem>)
+    // } else {
+    //   let activeProject = this.props.projects.active
+    //   projectControl = (
+    //     <NavDropdown
+    //       title={<span><Icon type='briefcase' /> {activeProject.name}</span>}
+    //       id='basic-nav-dropdown'
+    //     >
+    //       {this.props.projects.all.map(proj => {
+    //         return (
+    //           <MenuItem
+    //             key={proj.id}
+    //             onClick={(evt) =>{
+    //               evt.preventDefault()
+    //               this.props.setActiveProject(proj)
+    //             }}
+    //           >{proj.name}</MenuItem>
+    //         )
+    //       })}
+    //     </NavDropdown>
+    //   )
+    // }
+    //
+    // let languageControl = (
+    //   <NavDropdown
+    //     title={<span><Icon type='globe' /></span>}
+    //     id='basic-nav-dropdown'
+    //   >
+    //     {this.props.languages.all ? this.props.languages.all.map(lang => {
+    //       return (
+    //         <MenuItem
+    //           key={lang.id}
+    //           active={this.props.languages.active.id === lang.id}
+    //           onClick={(evt) =>{
+    //             evt.preventDefault()
+    //             this.props.setActiveLanguage(lang.id)
+    //           }}
+    //         >{lang.name}</MenuItem>
+    //       )
+    //     })
+    //     : null
+    //   }
+    //   </NavDropdown>
+    // )
 
     const navBarStyle = {
       left: this.props.sidebarExpanded ? 130 : 50,

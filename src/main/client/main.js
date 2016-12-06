@@ -31,7 +31,7 @@ const languageId = window.localStorage.getItem('lang')
 
 config.messages.active = lang.find(l => l.id === languageId) || lang.find(l => l.id === 'en-US')
 
-console.log('config', config)
+// console.log('config', config)
 window.DT_CONFIG = config
 
 import * as managerReducers from './manager/reducers'
@@ -40,7 +40,7 @@ import * as alertsReducers from './alerts/reducers'
 import * as signsReducers from './signs/reducers'
 
 import * as gtfsPlusReducers from './gtfsplus/reducers'
-import * as editorReducers from './editor/reducers'
+import editor from './editor/reducers'
 import gtfs from './gtfs/reducers'
 
 const logger = createLogger({duration: true, collapsed: true})
@@ -51,7 +51,7 @@ const store = createStore(
     ...alertsReducers,
     ...signsReducers,
     ...gtfsPlusReducers,
-    ...editorReducers,
+    editor,
     // ...reportReducers,
     routing: routerReducer,
     gtfs
@@ -59,7 +59,7 @@ const store = createStore(
   applyMiddleware(thunkMiddleware, logger)
 )
 
-console.log('initial store', store.getState())
+// console.log('initial store', store.getState())
 
 const appHistory = syncHistoryWithStore(browserHistory, store)
 

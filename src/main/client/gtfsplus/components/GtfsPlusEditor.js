@@ -8,7 +8,9 @@ import GtfsPlusTable from './GtfsPlusTable'
 import { getConfigProperty } from '../../common/util/config'
 
 export default class GtfsPlusEditor extends Component {
-
+  static propTypes = {
+    onComponentMount: PropTypes.function
+  }
   constructor (props) {
     super(props)
 
@@ -27,7 +29,7 @@ export default class GtfsPlusEditor extends Component {
   save () {
     const zip = new JSZip()
 
-    for(const table of getConfigProperty('modules.gtfsplus.spec')) {
+    for (const table of getConfigProperty('modules.gtfsplus.spec')) {
       if (!(table.id in this.props.tableData) || this.props.tableData[table.id].length === 0) continue
 
       let fileContent = ''
@@ -36,7 +38,7 @@ export default class GtfsPlusEditor extends Component {
       fileContent += fieldNameArr.join(',') + '\n'
 
       // write the data rows
-      var dataRows = this.props.tableData[table.id].map(rowData => {
+      this.props.tableData[table.id].map(rowData => {
         const rowText = fieldNameArr.map(fieldName => {
           return rowData[fieldName] || ''
         }).join(',')
@@ -47,7 +49,7 @@ export default class GtfsPlusEditor extends Component {
       zip.file(table.name, fileContent)
     }
 
-    zip.generateAsync({type:"blob"}).then((content) => {
+    zip.generateAsync({type: 'blob'}).then((content) => {
       this.props.feedSaved(content)
     })
   }
@@ -86,7 +88,7 @@ export default class GtfsPlusEditor extends Component {
                   disabled={editingIsDisabled}
                   className='pull-right'
                   onClick={() => {
-                    console.log('save');
+                    console.log('save')
                     this.save()
                   }}
                 ><Glyphicon glyph='save' /> Save & Revalidate</Button>
@@ -117,7 +119,7 @@ export default class GtfsPlusEditor extends Component {
             </Col>
             <Col xs={10}>
               <GtfsPlusTable
-                ref="activeTable"
+                ref='activeTable'
                 feedSource={this.props.feedSource}
                 table={activeTable}
                 tableData={this.props.tableData[activeTable.id]}

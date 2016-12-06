@@ -8,19 +8,12 @@ import ActivePublicHeader from '../containers/ActivePublicHeader'
 import { getConfigProperty } from '../../common/util/config'
 
 export default class PublicPage extends React.Component {
-
-  constructor (props) {
-    super(props)
-  }
-
   showConfirmModal (props) {
     this.refs.confirmModal.open(props)
   }
-
   showSelectFileModal (props) {
     this.refs.selectFileModal.open(props)
   }
-
   render () {
     return (
       <div>

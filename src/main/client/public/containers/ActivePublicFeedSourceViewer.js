@@ -1,15 +1,12 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import PublicFeedSourceViewer from '../components/PublicFeedSourceViewer'
-
 import {
   fetchFeedSourceAndProject,
   updateFeedSource,
-  runFetchFeed,
-  fetchFeedVersions,
-  uploadFeed
+  runFetchFeed
 } from '../../manager/actions/feeds'
+import { fetchFeedVersions, uploadFeed } from '../../manager/actions/versions'
 
 const mapStateToProps = (state, ownProps) => {
   let feedSourceId = ownProps.routeParams.feedSourceId

@@ -1,11 +1,10 @@
-import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 
 import UserAccount from '../components/UserAccount'
 import { setVisibilitySearchText } from '../../manager/actions/visibilityFilter'
-import { fetchProjectsWithPublicFeeds, fetchProjects } from '../../manager/actions/projects'
-import { fetchFeedSource, receiveFeedSource } from '../../manager/actions/feeds'
+import { fetchProjects } from '../../manager/actions/projects'
+import { fetchFeedSource } from '../../manager/actions/feeds'
 import {
   updateUserData,
   fetchUser,
@@ -33,7 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!ownProps.routeParams.subpage) {
         browserHistory.push('/settings/profile')
       }
-      if (!initialProps.projects){
+      if (!initialProps.projects) {
         dispatch(fetchProjects())
         .then(() => {
           let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
@@ -51,8 +50,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             })
           }
         })
-      }
-      else {
+      } else {
         let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
         if (subscriptions) {
           Promise.all(
@@ -68,7 +66,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           })
         }
       }
-
     },
     searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text)) },
     updateUserName: (user, permissions) => { dispatch(updateUserData(user, permissions)) },

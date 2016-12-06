@@ -8,7 +8,7 @@ import { getComponentMessages, getMessage } from '../util/config'
 
 class StarButton extends React.Component {
   render () {
-    const {dispatch, isStarred, user, target, subscriptionType} = this.props
+    const {dispatch, isStarred, user, target} = this.props
     const messages = getComponentMessages('StarButton')
 
     return (

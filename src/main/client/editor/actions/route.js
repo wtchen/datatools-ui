@@ -1,7 +1,5 @@
 import { secureFetch } from '../../common/util/util'
-import { setActiveGtfsEntity } from './editor'
-
-//// ROUTES
+import { updateEditSetting, setActiveGtfsEntity } from './active'
 
 export function savingRoute (feedId, route) {
   return {
@@ -40,7 +38,7 @@ export function saveRoute (feedId, route) {
       routeUrl: route.route_url,
       routeColor: route.route_color,
       routeTextColor: route.route_text_color,
-      id: route.id === 'new' ? null : route.id,
+      id: route.id === 'new' ? null : route.id
     }
     return secureFetch(url, getState(), method, data)
       .then(res => res.json())
@@ -102,6 +100,13 @@ export function fetchRoutes (feedId) {
       .then(res => res.json())
       .then(routes => {
         dispatch(receiveRoutes(feedId, routes))
+        // update followStreets value
+        // TODO: update value when setting active entity
+        if (getState().editor.data.active.entity) {
+          let routeIndex = getState().editor.data.active.entity && routes.findIndex(r => r.id === getState().editor.data.active.entity)
+          let followStreets = routeIndex !== -1 ? routes[routeIndex].route_type === 3 || routes[routeIndex].route_type === 0 : true
+          dispatch(updateEditSetting('followStreets', followStreets))
+        }
         return routes
       })
   }

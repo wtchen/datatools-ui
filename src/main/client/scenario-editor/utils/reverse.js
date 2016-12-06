@@ -5,12 +5,11 @@ import { getConfigProperty } from '../../common/util/config'
 
 export async function reversePelias (point) {
   const location = {lon: point.lng, lat: point.lat}
-  const api_key = getConfigProperty('MAPZEN_TURN_BY_TURN_KEY')
+  const apiKey = getConfigProperty('MAPZEN_TURN_BY_TURN_KEY')
   const params = {
-    api_key,
+    api_key: apiKey,
     ...location
   }
-  // api_key=mapzen-xxxxxx&point.lat=48.858268&point.lon=2.294471
   const url = `https://search.mapzen.com/v1/reverse?${qs.stringify(params)}`
   const response = await fetch(url)
   return await response.json()

@@ -8,7 +8,9 @@ import EditableTextField from '../../common/components/EditableTextField'
 const recordsPerPage = 25
 
 export default class GtfsPlusTable extends Component {
-
+  static propTypes = {
+    table: PropTypes.object
+  }
   constructor (props) {
     super(props)
 
@@ -17,7 +19,6 @@ export default class GtfsPlusTable extends Component {
       visibility: 'all'
     }
   }
-
   componentWillReceiveProps (nextProps) {
     if (this.props.table !== nextProps.table) {
       this.setState({ currentPage: 1 })
@@ -50,7 +51,7 @@ export default class GtfsPlusTable extends Component {
     const rowData = this.getActiveRowData(this.state.currentPage)
 
     const getInput = (row, field, currentValue) => {
-      switch(field.inputType) {
+      switch (field.inputType) {
         case 'TEXT':
         case 'GTFS_TRIP':
         case 'GTFS_FARE':
@@ -106,7 +107,9 @@ export default class GtfsPlusTable extends Component {
           )
         case 'GTFS_STOP':
           const stopEntity = this.props.getGtfsEntity('stop', currentValue)
-          const stopValue = stopEntity ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name } : ''
+          const stopValue = stopEntity
+            ? {'value': stopEntity.stop_id, 'label': stopEntity.stop_name}
+            : ''
 
           return (
             <GtfsSearch
@@ -168,49 +171,49 @@ export default class GtfsPlusTable extends Component {
           <div className='form-inline'>
             {(pageCount > 1)
               ? <span style={{ marginRight: '15px' }}>
-                  <Button
-                    disabled={this.state.currentPage <= 1}
-                    onClick={(evt => {
-                      this.setState({ currentPage: this.state.currentPage - 1 })
-                    })}
-                  ><Glyphicon glyph='arrow-left' /></Button>
+                <Button
+                  disabled={this.state.currentPage <= 1}
+                  onClick={(evt => {
+                    this.setState({ currentPage: this.state.currentPage - 1 })
+                  })}
+                ><Glyphicon glyph='arrow-left' /></Button>
 
-                  <span style={{ fontSize: '18px', margin: '0px 10px'}}>
-                    Page {this.state.currentPage} of {pageCount}
-                  </span>
-
-                  <Button
-                    disabled={this.state.currentPage >= pageCount}
-                    onClick={(evt => {
-                      this.setState({ currentPage: this.state.currentPage + 1 })
-                    })}
-                  ><Glyphicon glyph='arrow-right' /></Button>
-
-                  <span style={{ fontSize: '18px', marginLeft: '15px'}}>
-                    Go to <FormControl
-                      type='text'
-                      size={5}
-                      style={{ width: '50px', display: 'inline', textAlign: 'center' }}
-                      onKeyUp={(e) => {
-                        if (e.keyCode == 13) {
-                          const newPage = parseInt(e.target.value)
-                          if (newPage > 0 && newPage <= pageCount) {
-                            e.target.value = ''
-                            this.setState({ currentPage: newPage })
-                          }
-                        }
-                      }}
-                      onFocus={(e) => e.target.select()}
-                    />
-                  </span>
+                <span style={{fontSize: '18px', margin: '0px 10px'}}>
+                  Page {this.state.currentPage} of {pageCount}
                 </span>
+
+                <Button
+                  disabled={this.state.currentPage >= pageCount}
+                  onClick={(evt => {
+                    this.setState({ currentPage: this.state.currentPage + 1 })
+                  })}
+                ><Glyphicon glyph='arrow-right' /></Button>
+
+                <span style={{fontSize: '18px', marginLeft: '15px'}}>
+                  Go to <FormControl
+                    type='text'
+                    size={5}
+                    style={{ width: '50px', display: 'inline', textAlign: 'center' }}
+                    onKeyUp={(e) => {
+                      if (e.keyCode === 13) {
+                        const newPage = parseInt(e.target.value)
+                        if (newPage > 0 && newPage <= pageCount) {
+                          e.target.value = ''
+                          this.setState({ currentPage: newPage })
+                        }
+                      }
+                    }}
+                    onFocus={(e) => e.target.select()}
+                  />
+                </span>
+              </span>
               : null
             }
             <span style={{ fontSize: '18px' }}>
               Show&nbsp;
-              <FormControl componentClass="select"
+              <FormControl componentClass='select'
                 onChange={(evt) => {
-                  console.log('evt', evt.target.value);
+                  console.log('evt', evt.target.value)
                   this.setState({
                     visibility: evt.target.value,
                     currentPage: 1
@@ -245,14 +248,15 @@ export default class GtfsPlusTable extends Component {
                 />
               </th>)
             })}
-            <th></th>
+            <th />
           </tr>
         </thead>
         <tbody>
           {rowData && rowData.length > 0
             ? rowData.map((data, rowIndex) => {
-                const tableRowIndex = (this.state.currentPage - 1) * recordsPerPage + rowIndex
-                return (<tr key={rowIndex}>
+              const tableRowIndex = (this.state.currentPage - 1) * recordsPerPage + rowIndex
+              return (
+                <tr key={rowIndex}>
                   {table.fields.map(field => {
                     const validationIssue = this.props.validation
                       ? this.props.validation.find(v =>
@@ -263,22 +267,24 @@ export default class GtfsPlusTable extends Component {
                       <Tooltip>{validationIssue.description}</Tooltip>
                     ) : null
 
-                    return (<td key={field.name}>
-                      {validationIssue
-                        ? <div style={{ float: 'left' }}>
+                    return (
+                      <td key={field.name}>
+                        {validationIssue
+                          ? <div style={{ float: 'left' }}>
                             <OverlayTrigger placement='top' overlay={tooltip}>
                               <Glyphicon glyph='alert' style={{ color: 'red', marginTop: '4px' }} />
                             </OverlayTrigger>
                           </div>
-                        : null
-                      }
-                      <div style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
-                        {getInput(tableRowIndex, field, data[field.name])}
-                      </div>
-                    </td>)
+                          : null
+                        }
+                        <div style={{ marginLeft: (validationIssue ? '20px' : '0px') }}>
+                          {getInput(tableRowIndex, field, data[field.name])}
+                        </div>
+                      </td>
+                    )
                   })}
                   <td>
-                  <Button
+                    <Button
                       bsStyle='danger'
                       bsSize='small'
                       className='pull-right'
@@ -287,8 +293,9 @@ export default class GtfsPlusTable extends Component {
                       <Glyphicon glyph='remove' />
                     </Button>
                   </td>
-                </tr>)
-              })
+                </tr>
+              )
+            })
             : null
           }
         </tbody>
@@ -296,8 +303,8 @@ export default class GtfsPlusTable extends Component {
 
       {!rowData || rowData.length === 0
         ? <Row><Col xs={12}>
-            <i>No entries exist for this table.</i>
-          </Col></Row>
+          <i>No entries exist for this table.</i>
+        </Col></Row>
         : null
       }
 

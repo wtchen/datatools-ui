@@ -1,23 +1,8 @@
 import fetch from 'isomorphic-fetch'
-import {
-  fetchingStops,
-  errorFetchingStops,
-  receiveStops,
-  clearStops
-} from './stops'
-import {
-  fetchingPatterns,
-  errorFetchingPatterns,
-  receivePatterns,
-  clearPatterns
-} from './patterns'
-import {
-  fetchingRoutes,
-  errorFetchingRoutes,
-  receiveRoutes,
-  clearRoutes
-} from './routes'
-import { stopsAndRoutes, compose, patternsAndStopsForBoundingBox } from  '../util/graphql'
+import { clearStops } from './stops'
+import { clearPatterns } from './patterns'
+import { clearRoutes } from './routes'
+import { stopsAndRoutes, compose, patternsAndStopsForBoundingBox } from '../util/graphql'
 import { getFeedId } from '../../common/util/modules'
 
 export function clearGtfsElements () {
@@ -27,7 +12,6 @@ export function clearGtfsElements () {
     dispatch(clearPatterns())
   }
 }
-
 function requestGtfsElements (feedIds, entities) {
   return {
     type: 'REQUESTING_GTFS_ELEMENTS',
@@ -35,7 +19,6 @@ function requestGtfsElements (feedIds, entities) {
     entities
   }
 }
-//
 function receivedGtfsElements (feedIds, stops, patterns) {
   return {
     type: 'RECEIVED_GTFS_ELEMENTS',
@@ -44,21 +27,22 @@ function receivedGtfsElements (feedIds, stops, patterns) {
     patterns
   }
 }
-
 export const requestStopsAndRoutes = (feedIds, routeids, stopIds, module) => {
   return {
     type: 'REQUEST_GTFS_STOPS_AND_ROUTES',
-    feedIds, routeids, stopIds, module
+    feedIds,
+    routeids,
+    stopIds,
+    module
   }
 }
-
 export const receivedStopsAndRoutes = (results, module) => {
   return {
     type: 'RECEIVED_GTFS_STOPS_AND_ROUTES',
-    results, module
+    results,
+    module
   }
 }
-
 export function fetchStopsAndRoutes (entities, module) {
   return function (dispatch, getState) {
     let activeProject = getState().projects.active
@@ -91,16 +75,22 @@ export function fetchStopsAndRoutes (entities, module) {
       })
   }
 }
-
 export function refreshGtfsElements (feedId, entities) {
   return function (dispatch, getState) {
     dispatch(requestGtfsElements(feedId, entities))
     const bounds = getState().gtfs.filter.map.bounds
-    const max_lat = bounds.getNorth()
-    const max_lon = bounds.getEast()
-    const min_lat = bounds.getSouth()
-    const min_lon = bounds.getWest()
-    return fetch(compose(patternsAndStopsForBoundingBox(feedId, entities, max_lat, max_lon, min_lat, min_lon), {feedId, max_lat, max_lon, min_lat, min_lon}))
+    const maxLat = bounds.getNorth()
+    const maxLon = bounds.getEast()
+    const minLat = bounds.getSouth()
+    const minLon = bounds.getWest()
+    const vars = {
+      feedId,
+      max_lat: maxLat,
+      max_lon: maxLon,
+      min_lat: minLat,
+      min_lon: minLon
+    }
+    return fetch(compose(patternsAndStopsForBoundingBox(feedId, entities, maxLat, maxLon, minLat, minLon), vars))
       .then((response) => {
         return response.json()
       })

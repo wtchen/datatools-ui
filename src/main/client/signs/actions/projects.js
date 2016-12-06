@@ -7,7 +7,7 @@ import { getConfigProperty } from '../../common/util/config'
 
 function requestProjects () {
   return {
-    type: 'REQUEST_PROJECTS',
+    type: 'REQUEST_PROJECTS'
   }
 }
 

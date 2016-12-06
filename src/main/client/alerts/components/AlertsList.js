@@ -23,9 +23,6 @@ export default class AlertsList extends Component {
     searchTextChanged: PropTypes.func,
     visibilityFilterChanged: PropTypes.func
   }
-  constructor (props) {
-    super(props)
-  }
   render () {
     // console.log(this.props)
     var compare = function (a, b) {
@@ -35,8 +32,7 @@ export default class AlertsList extends Component {
       if (aName > bName) return 1
       return 0
     }
-   let sortedFeeds = this.props.editableFeeds.sort(compare)
-
+    let sortedFeeds = this.props.editableFeeds.sort(compare)
     return (
       <div>
         <Row>

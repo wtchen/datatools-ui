@@ -1,10 +1,7 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import DeploymentViewer from '../components/DeploymentViewer'
-import { fetchDeployment,
-  fetchDeploymentAndProject,
-  fetchDeploymentTargets,
+import { fetchDeploymentAndProject,
   deployToTarget,
   updateDeployment,
   fetchDeploymentStatus,
@@ -14,23 +11,8 @@ import { fetchDeployment,
 import { fetchProjectFeeds } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
-  // let deploymentId = ownProps.routeParams.deploymentId
   let user = state.user
-  // let project = state.projects.all
-  //   ? state.projects.all.find(p => {
-  //       if (!p.deployments) return false
-  //       return (p.deployments.findIndex(dep => dep.id === deploymentId) !== -1)
-  //     })
-  //   : null
-
-  // let deployment
-  // if (project) {
-  //   deployment = project.deployments.find(dep => dep.id === deploymentId)
-  // }
-
   return {
-    // deployment,
-    // project,
     user
   }
 }
@@ -50,7 +32,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       }
     },
-    onDeploymentTargetsClick: () => { dispatch(fetchDeploymentTargets()) },
     deployToTargetClicked: (deployment, target) => { dispatch(deployToTarget(deployment, target)) },
     downloadDeployment: (deployment) => { dispatch(downloadDeployment(deployment)) },
     // updateProjectSettings: (project, newSettings) => { dispatch(updateProject(project, newSettings)) }, // dispatch(updateProject(project, { [propName] : newValue }))

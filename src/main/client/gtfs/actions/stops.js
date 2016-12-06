@@ -8,13 +8,16 @@ export function fetchingStops (feedId, routeId, patternId, date, from, to) {
     type: 'FETCH_GRAPHQL_STOPS',
     feedId,
     routeId,
-    patternId, date, from, to
+    patternId,
+    date,
+    from,
+    to
   }
 }
 
 export function clearStops () {
   return {
-    type: 'CLEAR_GRAPHQL_STOPS',
+    type: 'CLEAR_GRAPHQL_STOPS'
   }
 }
 
@@ -24,7 +27,9 @@ export function errorFetchingStops (feedId, routeId, patternId, date, from, to) 
     feedId,
     routeId,
     patternId,
-    date, from, to
+    date,
+    from,
+    to
   }
 }
 

@@ -10,7 +10,7 @@ export function fetchingRoutes (feedId) {
 
 export function clearRoutes () {
   return {
-    type: 'CLEAR_GRAPHQL_ROUTES',
+    type: 'CLEAR_GRAPHQL_ROUTES'
   }
 }
 

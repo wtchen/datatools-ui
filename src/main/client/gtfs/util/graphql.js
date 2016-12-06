@@ -93,10 +93,10 @@ query allStopsQuery($feedId: [String]) {
 }
 `
 
-export const patternsAndStopsForBoundingBox = (feedId, entities, max_lat, max_lon, min_lat, min_lon) => `
+export const patternsAndStopsForBoundingBox = (feedId, entities, maxLat, maxLon, minLat, minLon) => `
   query patternsAndStopsGeo($feedId: [String], $max_lat: Float, $max_lon: Float, $min_lat: Float, $min_lon: Float){
      ${entities.indexOf('routes') !== -1
-      ?  `patterns(feed_id: $feedId, max_lat: $max_lat, max_lon: $max_lon, min_lat: $min_lat, min_lon: $min_lon){
+      ? `patterns(feed_id: $feedId, max_lat: $max_lat, max_lon: $max_lon, min_lat: $min_lat, min_lon: $min_lon){
          pattern_id,
          geometry,
          name,

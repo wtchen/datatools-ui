@@ -8,7 +8,7 @@ const gtfsFilter = (state = {
   typeFilter: ['stops', 'routes'],
   map: {
     bounds: [],
-    zoom: null,
+    zoom: null
   },
   permissionFilter: 'view-feed',
   version: null,

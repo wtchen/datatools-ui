@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Button } from 'react-bootstrap'
 
 export default class StatusMessage extends React.Component {
@@ -36,12 +35,12 @@ export default class StatusMessage extends React.Component {
       <div style={styles}>
         {this.props.message && this.state.visible
           ? <Button
-              bsStyle="info"
-              bsSize="large"
-              onClick={() => this.clear()}
-            >
-              {this.props.message}
-            </Button>
+            bsStyle='info'
+            bsSize='large'
+            onClick={() => this.clear()}
+          >
+            {this.props.message}
+          </Button>
           : null
         }
       </div>

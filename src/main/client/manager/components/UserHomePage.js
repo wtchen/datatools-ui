@@ -166,17 +166,14 @@ export default class UserHomePage extends Component {
                   //   this.props.setActiveProject(eventKey)
                   // }}
                 >
-                  {activeProject
-                    ? [
-                      <LinkContainer key='home-link' to={`/home/`}>
-                        <MenuItem>
-                          <span><img height={20} width={20} src={this.props.user.profile.picture} /> {this.props.user.profile.nickname}</span>
-                        </MenuItem>
-                      </LinkContainer>,
-                      <MenuItem key='divider' divider />
-                    ]
-                    : null
-                  }
+                  {activeProject && (
+                    <LinkContainer key='home-link' to={`/home/`}>
+                      <MenuItem>
+                        <span><img height={20} width={20} src={this.props.user.profile.picture} /> {this.props.user.profile.nickname}</span>
+                      </MenuItem>
+                    </LinkContainer>
+                  )}
+                  {activeProject && <MenuItem key='divider' divider />}
                   {visibleProjects.length > 0
                     ? visibleProjects.map((project, index) => {
                       if (activeProject && project.id === activeProject.id) {

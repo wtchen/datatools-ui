@@ -1,8 +1,6 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import AlertsViewer from '../components/AlertsViewer'
-
 import { createAlert } from '../actions/alerts'
 import { fetchProjects } from '../actions/projects'
 
@@ -22,11 +20,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.alerts || initialProps.alerts.length === 0 || !initialProps.project.feedSources) {
         dispatch(fetchProjects())
       }
-
     },
     createAlert: () => dispatch(createAlert()),
     onStopClick: (stop, agency) => dispatch(createAlert(stop, agency)),
-    onRouteClick: (route, agency) => dispatch(createAlert(route, agency)),
+    onRouteClick: (route, agency) => dispatch(createAlert(route, agency))
   }
 }
 

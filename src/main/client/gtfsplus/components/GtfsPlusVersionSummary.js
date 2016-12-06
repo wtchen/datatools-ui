@@ -1,12 +1,14 @@
 import React, {Component, PropTypes} from 'react'
-import { Panel, Row, Col, Table, Input, Button, Glyphicon, Well, Alert } from 'react-bootstrap'
-import { Link, browserHistory } from 'react-router'
+import { Panel, Row, Col, Table, Button, Glyphicon, Alert } from 'react-bootstrap'
+import { browserHistory } from 'react-router'
 import moment from 'moment'
 
 import { getConfigProperty } from '../../common/util/config'
 
 export default class GtfsPlusVersionSummary extends Component {
-
+  static propTypes = {
+    gtfsplus: PropTypes.object
+  }
   constructor (props) {
     super(props)
     this.state = { expanded: false }
@@ -71,16 +73,16 @@ export default class GtfsPlusVersionSummary extends Component {
             </Button>
             {this.gtfsPlusEdited()
               ? <Button
-                  disabled={publishingIsDisabled}
-                  bsStyle='primary'
-                  style={{ marginLeft: '6px' }}
-                  onClick={() => {
-                    this.props.publishClicked(this.props.version)
-                    this.setState({ expanded: false })
-                  }}
-                >
-                  <Glyphicon glyph='upload' /> Publish as New Version
-                </Button>
+                disabled={publishingIsDisabled}
+                bsStyle='primary'
+                style={{ marginLeft: '6px' }}
+                onClick={() => {
+                  this.props.publishClicked(this.props.version)
+                  this.setState({ expanded: false })
+                }}
+              >
+                <Glyphicon glyph='upload' /> Publish as New Version
+              </Button>
               : null
             }
           </Col>
@@ -95,7 +97,7 @@ export default class GtfsPlusVersionSummary extends Component {
                     <th>Included?</th>
                     <th>Records</th>
                     <th>Validation Issues</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
@@ -105,7 +107,7 @@ export default class GtfsPlusVersionSummary extends Component {
                       <td>{this.isTableIncluded(table.id)}</td>
                       <td>{this.tableRecordCount(table.id)}</td>
                       <td>{this.validationIssueCount(table.id)}</td>
-                      <td></td>
+                      <td />
                     </tr>)
                   })}
                 </tbody>

@@ -5,12 +5,12 @@ import { LinkContainer } from 'react-router-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 
 import GtfsValidationViewer from './validation/GtfsValidationViewer'
-import GtfsValidationExplorer from './validation/GtfsValidationExplorer'
+// import GtfsValidationExplorer from './validation/GtfsValidationExplorer'
 import FeedVersionReport from './FeedVersionReport'
 import NotesViewer from './NotesViewer'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import ActiveGtfsPlusVersionSummary from '../../gtfsplus/containers/ActiveGtfsPlusVersionSummary'
-import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
+import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class FeedVersionViewer extends Component {
 
@@ -42,19 +42,21 @@ export default class FeedVersionViewer extends Component {
       return (
         <Row>
           <Col xs={12} sm={12}>
-              <VersionList
-                {...this.props}
-              />
+            <VersionList
+              {...this.props}
+            />
           </Col>
         </Row>
       )
     }
 
     switch (this.props.versionSection) {
-      case 'validation':
-        return <GtfsValidationExplorer
-                  {...this.props}
-                />
+      // case 'validation':
+      //   return (
+      //     <GtfsValidationExplorer
+      //       {...this.props}
+      //     />
+      //   )
       default:
         return (
           <Row>
@@ -68,33 +70,32 @@ export default class FeedVersionViewer extends Component {
             <Col xs={12} sm={9}>
               {!this.props.versionSection
                 ? <FeedVersionReport
-                    isPublished={version.id === this.props.feedSource.publishedVersionId}
-                    {...this.props}
-                  />
+                  isPublished={version.id === this.props.feedSource.publishedVersionId}
+                  {...this.props}
+                />
                 : this.props.versionSection === 'issues'
                 ? <GtfsValidationViewer
-                    validationResult={version.validationResult}
-                    version={version}
-                    fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
-                  />
+                  validationResult={version.validationResult}
+                  version={version}
+                  fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
+                />
                 : this.props.versionSection === 'gtfsplus' && isModuleEnabled('gtfsplus')
                 ? <ActiveGtfsPlusVersionSummary
-                    version={version}
-                  />
+                  version={version}
+                />
                 : this.props.versionSection === 'comments'
                 ? <NotesViewer
-                    type='feed-version'
-                    stacked
-                    user={this.props.user}
-                    version={this.props.version}
-                    notes={version.notes}
-                    noteCount={version.noteCount}
-                    notesRequested={() => { this.props.notesRequested() }}
-                    newNotePosted={(note) => { this.props.newNotePosted(note) }}
-                  />
+                  type='feed-version'
+                  stacked
+                  user={this.props.user}
+                  version={this.props.version}
+                  notes={version.notes}
+                  noteCount={version.noteCount}
+                  notesRequested={() => { this.props.notesRequested() }}
+                  newNotePosted={(note) => { this.props.newNotePosted(note) }}
+                />
                 : null
               }
-              {/**/}
             </Col>
           </Row>
         )
@@ -121,21 +122,21 @@ export class VersionButtonToolbar extends Component {
     const messages = getComponentMessages('FeedVersionViewer')
     return (
       <div style={{display: 'inline'}}>
-      <ConfirmModal ref='confirm' />
-      <ButtonToolbar className='pull-right'>
+        <ConfirmModal ref='confirm' />
+        <ButtonToolbar className='pull-right'>
 
-        {/* "Download Feed" Button */}
-        <Button
-          bsStyle='primary'
-          disabled={!this.props.hasVersions}
-          onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
-        >
-          <Glyphicon glyph='download' /><span className='hidden-xs'> {getMessage(messages, 'download')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'feed')}</span>
-        </Button>
+          {/* "Download Feed" Button */}
+          <Button
+            bsStyle='primary'
+            disabled={!this.props.hasVersions}
+            onClick={(evt) => this.props.downloadFeedClicked(version, this.props.isPublic)}
+          >
+            <Glyphicon glyph='download' /><span className='hidden-xs'> {getMessage(messages, 'download')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'feed')}</span>
+          </Button>
 
-        {/* "Load for Editing" Button */}
-        {isModuleEnabled('editor') && !this.props.isPublic
-          ? <Button bsStyle='success'
+          {/* "Load for Editing" Button */}
+          {isModuleEnabled('editor') && !this.props.isPublic
+            ? <Button bsStyle='success'
               disabled={!this.props.hasVersions}
               onClick={(evt) => {
                 this.refs.confirm.open({
@@ -147,12 +148,12 @@ export class VersionButtonToolbar extends Component {
             >
               <Glyphicon glyph='pencil' /><span className='hidden-xs'> {getMessage(messages, 'load')}</span>
             </Button>
-          : null
-        }
+            : null
+          }
 
-        {/* "Delete Version" Button */}
-        {!this.props.isPublic
-          ? <Button
+          {/* "Delete Version" Button */}
+          {!this.props.isPublic
+            ? <Button
               bsStyle='danger'
               disabled={this.props.deleteDisabled || !this.props.hasVersions || typeof this.props.deleteFeedVersionConfirmed === 'undefined'}
               onClick={(evt) => {
@@ -166,9 +167,9 @@ export class VersionButtonToolbar extends Component {
               <Glyphicon glyph='trash' />
               <span className='hidden-xs'> {getMessage(messages, 'delete')}</span><span className='hidden-xs hidden-sm'> {getMessage(messages, 'version')}</span>
             </Button>
-          : null
-        }
-      </ButtonToolbar>
+            : null
+          }
+        </ButtonToolbar>
       </div>
     )
   }
@@ -204,12 +205,16 @@ class VersionSectionSelector extends Component {
             <ListGroupItem><Icon type='info-circle' /> Version summary</ListGroupItem>
           </LinkContainer>
           <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/issues`} active={this.props.versionSection === 'issues'}>
-            <ListGroupItem><Icon type='exclamation-triangle' /> Validation issues {this.renderIssuesLabel(version)}
-          </ListGroupItem></LinkContainer>
+            <ListGroupItem>
+              <Icon type='exclamation-triangle' /> Validation issues {this.renderIssuesLabel(version)}
+            </ListGroupItem>
+          </LinkContainer>
           {isModuleEnabled('gtfsplus')
             ? <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/gtfsplus`} active={this.props.versionSection === 'gtfsplus'}>
-                <ListGroupItem><Icon type='plus' /> GTFS+ for this version</ListGroupItem>
-              </LinkContainer>
+              <ListGroupItem>
+                <Icon type='plus' /> GTFS+ for this version
+              </ListGroupItem>
+            </LinkContainer>
             : null
           }
           <LinkContainer to={`/feed/${version.feedSource.id}/version/${this.props.feedVersionIndex}/comments`} active={this.props.versionSection === 'comments'}>
@@ -238,23 +243,23 @@ class VersionList extends Component {
       <ListGroup fill>
         {this.props.versions
           ? this.props.versions.map(v => {
-              return (
-                <ListGroupItem>
-                  {v.name}
-                  {' '}
-                  <small>
+            return (
+              <ListGroupItem>
+                {v.name}
+                {' '}
+                <small>
                   {this.getVersionDateLabel(v)}
-                  </small>
-                  <VersionButtonToolbar
-                    version={v}
-                    {...this.props}
-                  />
-                </ListGroupItem>
-              )
-            })
+                </small>
+                <VersionButtonToolbar
+                  version={v}
+                  {...this.props}
+                />
+              </ListGroupItem>
+            )
+          })
           : <ListGroupItem>
-              No versions
-            </ListGroupItem>
+            No versions
+          </ListGroupItem>
         }
       </ListGroup>
     </Panel>

@@ -1,6 +1,7 @@
 import { secureFetch } from '../../common/util/util'
 import { setErrorMessage } from '../../manager/actions/status'
-import { setActiveGtfsEntity } from './editor'
+import { setActiveGtfsEntity } from './active'
+import { getStopsForPattern, getTimetableColumns } from '../util'
 
 // TRIP PATTERNS
 
@@ -65,30 +66,6 @@ export function undoActiveTripPatternEdits () {
   }
 }
 
-export function addControlPoint (controlPoint, index) {
-  return {
-    type: 'ADD_CONTROL_POINT',
-    controlPoint,
-    index
-  }
-}
-
-export function removeControlPoint (index) {
-  return {
-    type: 'REMOVE_CONTROL_POINT',
-    index
-  }
-}
-
-export function updateControlPoint (index, point, distance) {
-  return {
-    type: 'UPDATE_CONTROL_POINT',
-    index,
-    point,
-    distance
-  }
-}
-
 // TODO: merge the following with the above?
 
 export function requestingTripPatternsForRoute (feedId, routeId) {
@@ -99,12 +76,14 @@ export function requestingTripPatternsForRoute (feedId, routeId) {
   }
 }
 
-export function receiveTripPatternsForRoute (feedId, routeId, tripPatterns) {
+export function receiveTripPatternsForRoute (feedId, routeId, tripPatterns, activePattern, activePatternStops) {
   return {
     type: 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE',
     feedId,
     routeId,
-    tripPatterns
+    tripPatterns,
+    activePattern,
+    activePatternStops
   }
 }
 
@@ -124,7 +103,10 @@ export function fetchTripPatternsForRoute (feedId, routeId) {
         return res.json()
       })
       .then(tripPatterns => {
-        dispatch(receiveTripPatternsForRoute(feedId, routeId, tripPatterns))
+        const activePattern = getState().editor.data.active.subEntityId && tripPatterns.find(p => p.id === getState().editor.data.active.subEntityId)
+        const activePatternStops = getStopsForPattern(activePattern, getState().editor.data.tables.stop)
+        const activeColumns = getTimetableColumns(activePattern, activePatternStops)
+        dispatch(receiveTripPatternsForRoute(feedId, routeId, tripPatterns, activePattern, activeColumns))
         return tripPatterns
       })
   }

@@ -1,29 +1,29 @@
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 
 import FeedSourceViewer from '../components/FeedSourceViewer'
-
 import { createFeedInfo } from '../../editor/actions/feedInfo'
-
 import {
-  deleteFeedVersion,
-  downloadFeedViaToken,
   fetchFeedSourceAndProject,
   fetchFeedSource,
   deleteFeedSource,
-  fetchFeedVersions,
-  fetchNotesForFeedSource,
-  fetchNotesForFeedVersion,
-  fetchValidationResult,
-  postNoteForFeedSource,
-  postNoteForFeedVersion,
-  renameFeedVersion,
   runFetchFeed,
   updateExternalFeedResource,
   uploadFeed,
   updateFeedSource
 } from '../actions/feeds'
-
+import {
+  deleteFeedVersion,
+  downloadFeedViaToken,
+  fetchFeedVersions,
+  fetchValidationResult,
+  renameFeedVersion
+} from '../actions/versions'
+import {
+  fetchNotesForFeedSource,
+  fetchNotesForFeedVersion,
+  postNoteForFeedSource,
+  postNoteForFeedVersion
+} from '../actions/notes'
 import { updateTargetForSubscription } from '../../manager/actions/user'
 import { createDeploymentFromFeedSource } from '../../manager/actions/deployments'
 import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
@@ -36,9 +36,9 @@ const mapStateToProps = (state, ownProps) => {
 
   let project = state.projects.all
     ? state.projects.all.find(p => {
-        if (!p.feedSources) return false
-        return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
-      })
+      if (!p.feedSources) return false
+      return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
+    })
     : null
 
   let feedSource

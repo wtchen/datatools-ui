@@ -101,8 +101,8 @@ export default class StopLayout extends Component {
             <TableHeaderColumn dataSort dataField='stop_name'>Name</TableHeaderColumn>
             <TableHeaderColumn dataSort dataField='tripCount'># of Trips</TableHeaderColumn>
             <TableHeaderColumn dataSort dataFormat={formatHeadway} dataField='headway'>Headway</TableHeaderColumn>
-            {/*<TableHeaderColumn dataSort dataField='best_headway'>Best Headway</TableHeaderColumn>*/}
-            {/*<TableHeaderColumn dataSort dataField='network_importance'>Network Importance</TableHeaderColumn>*/}
+            {/* <TableHeaderColumn dataSort dataField='best_headway'>Best Headway</TableHeaderColumn> */}
+            {/* <TableHeaderColumn dataSort dataField='network_importance'>Network Importance</TableHeaderColumn> */}
           </BootstrapTable>
         }
       </div>

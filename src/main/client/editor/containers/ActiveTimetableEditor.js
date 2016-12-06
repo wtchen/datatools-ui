@@ -10,14 +10,15 @@ import {
   setOffset
 } from '../actions/trip'
 
-import TimetableEditor from '../components/TimetableEditor'
+import TimetableEditor from '../components/timetable/TimetableEditor'
 
 const mapStateToProps = (state, ownProps) => {
-  const activePattern = ownProps.route && ownProps.route.tripPatterns ? ownProps.route.tripPatterns.find(p => p.id === ownProps.activePatternId) : null
-  const activeSchedule = ownProps.tableData.calendar ? ownProps.tableData.calendar.find(c => c.id === ownProps.activeScheduleId) : null
+  const activePattern = state.editor.data.active.subEntity
+  const activeSchedule = state.editor.data.tables.calendar ? state.editor.data.tables.calendar.find(c => c.id === ownProps.activeScheduleId) : null
   return {
     activePattern,
-    activeSchedule
+    activeSchedule,
+    timetable: state.editor.timetable
   }
 }
 

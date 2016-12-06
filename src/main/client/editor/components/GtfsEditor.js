@@ -1,12 +1,11 @@
 import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import { shallowEqual } from 'react-pure-render'
-import { browserHistory } from 'react-router'
 
 import CurrentStatusMessage from '../../common/containers/CurrentStatusMessage'
 import ConfirmModal from '../../common/components/ConfirmModal.js'
 import CurrentStatusModal from '../../common/containers/CurrentStatusModal'
-import EditorMap from './EditorMap'
+import EditorMap from './map/EditorMap'
 import EditorHelpModal from './EditorHelpModal'
 import EditorSidebar from './EditorSidebar'
 import ActiveEntityList from '../containers/ActiveEntityList'
@@ -62,7 +61,6 @@ export default class GtfsEditor extends Component {
       activeTableId: this.props.currentTable
     }
   }
-
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
@@ -85,8 +83,7 @@ export default class GtfsEditor extends Component {
     if (nextProps.feedSource && nextProps.activeEntity && (!this.props.activeEntity || nextProps.activeEntity.id !== this.props.activeEntity.id)) {
       // console.log(nextProps.activeComponent)
       // console.log(nextProps.activeEntity, nextProps.activeEntityId)
-      if (nextProps.activeComponent === 'route') {
-        console.log('getting trip patterns')
+      if (nextProps.activeComponent === 'route' && this.props.activeComponent !== 'route') {
         this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
       }
     }
@@ -94,8 +91,6 @@ export default class GtfsEditor extends Component {
     if (nextProps.subSubComponent && nextProps.activeSubSubEntity && !shallowEqual(nextProps.activeSubSubEntity, this.props.activeSubSubEntity)) {
       switch (nextProps.subSubComponent) {
         case 'timetable':
-          console.log(nextProps.subEntityId)
-          console.log(nextProps.activeSubSubEntity)
           let pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.subEntityId)
           // fetch trips if they haven't been fetched
           if (!pattern[nextProps.activeSubSubEntity]) {
@@ -109,34 +104,66 @@ export default class GtfsEditor extends Component {
   showConfirmModal (props) {
     this.refs.confirmModal.open(props)
   }
-
+  getMapOffset (activeComponent, dWidth, activeEntityId, lWidth) {
+    return activeComponent === 'feedinfo'
+      ? dWidth
+      : activeEntityId
+      ? lWidth + dWidth
+      : activeComponent
+      ? lWidth
+      : 0
+  }
   render () {
     // console.log(this.props)
-    const feedSource = this.props.feedSource
-    const editingIsDisabled = this.props.feedSource ? !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs') : true
-    if (this.props.feedSource && editingIsDisabled) {
+    const {
+      feedSource,
+      user,
+      activeEntityId,
+      tableData,
+      entities,
+      activeComponent,
+      sidebarExpanded,
+      feedInfo,
+      setActiveEntity,
+      subSubComponent,
+      activeEntity,
+      subEntityId,
+      activeSubSubEntity,
+      deleteEntity,
+      updateActiveEntity,
+      resetActiveEntity,
+      saveActiveEntity,
+      fetchTripsForCalendar,
+      updateCellValue,
+      cloneEntity,
+      newGtfsEntity,
+      mapState,
+      hideTutorial,
+      setTutorialHidden,
+      project
+    } = this.props
+    const editingIsDisabled = feedSource ? !user.permissions.hasFeedPermission(feedSource.projectId, feedSource.id, 'edit-gtfs') : true
+    if (feedSource && editingIsDisabled) {
       console.log('editing disabled')
-      // browserHistory.push(`/feed/${this.props.feedSource.id}`)
+      // browserHistory.push(`/feed/${feedSource.id}`)
     }
-    let listWidth = 220
-    let detailsWidth = 300
-    let entityDetails = this.props.activeEntityId
-      ? (
-          <EntityDetails
-            width={detailsWidth}
-            key='entity-details'
-            offset={listWidth}
-            stops={this.props.tableData.stop}
-            showConfirmModal={(props) => this.showConfirmModal(props)}
-            {...this.props}
-            getGtfsEntity={(type, id) => {
-              return this.props.entities.find(ent => ent.id === id)
-            }}
-            getGtfsEntityIndex={(type, id) => {
-              return this.props.entities.findIndex(ent => ent.id === id)
-            }}
-          />
-        )
+    let LIST_WIDTH = 220
+    let DETAILS_WIDTH = 300
+    let entityDetails = activeEntityId
+      ? <EntityDetails
+        width={DETAILS_WIDTH}
+        key='entity-details'
+        offset={LIST_WIDTH}
+        stops={tableData.stop}
+        showConfirmModal={(props) => this.showConfirmModal(props)}
+        {...this.props}
+        getGtfsEntity={(type, id) => {
+          return entities.find(ent => ent.id === id)
+        }}
+        getGtfsEntityIndex={(type, id) => {
+          return entities.findIndex(ent => ent.id === id)
+        }}
+      />
       : null
     const defaultTitle = `${getConfigProperty('application.title')}: GTFS Editor`
     return (
@@ -146,57 +173,55 @@ export default class GtfsEditor extends Component {
           titleTemplate={`${defaultTitle} - %s`}
         />
         <EditorSidebar
-          activeComponent={this.props.activeComponent}
-          expanded={this.props.sidebarExpanded}
-          feedSource={this.props.feedSource}
-          feedInfo={this.props.feedInfo}
-          setActiveEntity={this.props.setActiveEntity}
+          activeComponent={activeComponent}
+          expanded={sidebarExpanded}
+          feedSource={feedSource}
+          feedInfo={feedInfo}
+          setActiveEntity={setActiveEntity}
         />
         <div style={{
           position: 'fixed',
-          left: this.props.sidebarExpanded ? 130 : 50,
+          left: sidebarExpanded ? 130 : 50,
           bottom: 0,
           right: 0,
           top: 0
         }}>
-          {this.props.subSubComponent === 'timetable' // && this.props.activeEntity
+          {subSubComponent === 'timetable' // && activeEntity
             ? <ActiveTimetableEditor
               feedSource={feedSource}
-              timetable={this.props.timetable}
-              route={this.props.activeEntity}
+              route={activeEntity}
               showConfirmModal={(props) => this.showConfirmModal(props)}
-              activePatternId={this.props.subEntityId}
-              activeScheduleId={this.props.activeSubSubEntity}
-              setActiveEntity={this.props.setActiveEntity}
-              tableData={this.props.tableData}
-              deleteEntity={this.props.deleteEntity}
-              updateActiveEntity={this.props.updateActiveEntity}
-              resetActiveEntity={this.props.resetActiveEntity}
-              saveActiveEntity={this.props.saveActiveEntity}
-              fetchTripsForCalendar={this.props.fetchTripsForCalendar}
-              sidebarExpanded={this.props.sidebarExpanded}
-              updateCellValue={this.props.updateCellValue}
+              activePatternId={subEntityId}
+              activeScheduleId={activeSubSubEntity}
+              setActiveEntity={setActiveEntity}
+              tableData={tableData}
+              deleteEntity={deleteEntity}
+              updateActiveEntity={updateActiveEntity}
+              resetActiveEntity={resetActiveEntity}
+              saveActiveEntity={saveActiveEntity}
+              fetchTripsForCalendar={fetchTripsForCalendar}
+              sidebarExpanded={sidebarExpanded}
+              updateCellValue={updateCellValue}
             />
-            : this.props.activeComponent === 'feedinfo'
+            : activeComponent === 'feedinfo'
             ? <EntityDetails
-                width={detailsWidth}
-                {...this.props}
-              />
-            : this.props.activeComponent
+              width={DETAILS_WIDTH}
+              {...this.props}
+            />
+            : activeComponent
             ? [
               <ActiveEntityList
-                width={listWidth}
-                setActiveEntity={this.props.setActiveEntity}
-                cloneEntity={this.props.cloneEntity}
-                updateActiveEntity={this.props.updateActiveEntity}
-                deleteEntity={this.props.deleteEntity}
-                newGtfsEntity={this.props.newGtfsEntity}
+                width={LIST_WIDTH}
+                setActiveEntity={setActiveEntity}
+                cloneEntity={cloneEntity}
+                updateActiveEntity={updateActiveEntity}
+                deleteEntity={deleteEntity}
+                newGtfsEntity={newGtfsEntity}
                 showConfirmModal={(props) => this.showConfirmModal(props)}
-
-                entities={this.props.entities}
-                activeEntityId={this.props.activeEntityId}
-                activeComponent={this.props.activeComponent}
-                feedSource={this.props.feedSource}
+                entities={entities}
+                activeEntityId={activeEntityId}
+                activeComponent={activeComponent}
+                feedSource={feedSource}
                 key='entity-list'
               />,
               entityDetails
@@ -204,35 +229,28 @@ export default class GtfsEditor extends Component {
             : null
           }
           <EditorMap
-            offset={this.props.activeComponent === 'feedinfo'
-              ? detailsWidth
-              : this.props.activeEntityId
-              ? listWidth + detailsWidth
-              : this.props.activeComponent
-              ? listWidth
-              : 0
-            }
-            hidden={this.props.subSubComponent === 'timetable'}
-            stops={this.props.tableData.stop || []}
+            offset={this.getMapOffset(activeComponent, DETAILS_WIDTH, activeEntityId, LIST_WIDTH)}
+            hidden={subSubComponent === 'timetable'}
+            stops={tableData.stop || []}
             showConfirmModal={(props) => this.showConfirmModal(props)}
-            drawStops={this.props.mapState.zoom > 14} // && (this.props.activeComponent === 'stop' || this.props.editSettings.addStops)}
-            zoomToTarget={this.props.mapState.target}
-            sidebarExpanded={this.props.sidebarExpanded}
+            drawStops={mapState.zoom > 14} // && (activeComponent === 'stop' || editSettings.addStops)}
+            zoomToTarget={mapState.target}
+            sidebarExpanded={sidebarExpanded}
             {...this.props}
           />
-          {!this.props.activeComponent && !this.props.hideTutorial
+          {!activeComponent && !hideTutorial
             ? <EditorHelpModal
-                show
-                setTutorialHidden={this.props.setTutorialHidden}
-              />
+              show
+              setTutorialHidden={setTutorialHidden}
+            />
             : null
           }
           <ActiveFeedInfoPanel
-            feedSource={this.props.feedSource}
-            project={this.props.project}
+            feedSource={feedSource}
+            project={project}
             showConfirmModal={(props) => this.showConfirmModal(props)}
-            setActiveEntity={this.props.setActiveEntity}
-            feedInfo={this.props.feedInfo}
+            setActiveEntity={setActiveEntity}
+            feedInfo={feedInfo}
           />
         </div>
         <CurrentStatusMessage />

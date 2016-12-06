@@ -86,12 +86,12 @@ export default class DateTimeFilter extends Component {
         </Row>
         {!validDate
           ? <Row>
-              <Col xs={12} md={6} mdOffset={3} style={{paddingTop: '10px'}}>
-                <Alert bsStyle='danger'>
-                  <span><strong>Warning!</strong> Chosen date is outside of valid date range for feed version.</span>
-                </Alert>
-              </Col>
-            </Row>
+            <Col xs={12} md={6} mdOffset={3} style={{paddingTop: '10px'}}>
+              <Alert bsStyle='danger'>
+                <span><strong>Warning!</strong> Chosen date is outside of valid date range for feed version.</span>
+              </Alert>
+            </Col>
+          </Row>
           : null
         }
       </div>

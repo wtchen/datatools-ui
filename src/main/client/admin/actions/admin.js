@@ -42,9 +42,9 @@ export function fetchUserCount () {
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        //const users = JSON.parse(data)
-        //return dispatch(receiveUsers(users))
+        console.log(data)
+        // const users = JSON.parse(data)
+        // return dispatch(receiveUsers(users))
       })
   }
 }

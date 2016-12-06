@@ -24,7 +24,7 @@ export default class DeploymentViewer extends Component {
   }
 
   render () {
-    const { project, deployment, feedSources } = this.props
+    const { project } = this.props
     if (!this.props.deployment || !this.props.project || !this.props.feedSources) {
       return <Loading />
     }
@@ -59,13 +59,13 @@ export default class DeploymentViewer extends Component {
                   onSelect={(evt) => {
                     console.log(evt)
                     this.props.deployToTargetClicked(this.props.deployment, evt)
-                    //setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
+                    // setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
                   }}
                 >
                   {this.props.project.otpServers
                     ? this.props.project.otpServers.map(server => (
-                        <MenuItem eventKey={server.name}>{server.name}</MenuItem>
-                      ))
+                      <MenuItem eventKey={server.name}>{server.name}</MenuItem>
+                    ))
                     : null
                   }
                 </DropdownButton>
@@ -138,7 +138,7 @@ export default class DeploymentViewer extends Component {
                     <th className='hidden-xs'>{getMessage(messages, 'table.stopTimesCount')}</th>
                     <th>{getMessage(messages, 'table.validFrom')}</th>
                     <th>{getMessage(messages, 'table.expires')}</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
@@ -165,11 +165,6 @@ export default class DeploymentViewer extends Component {
 }
 
 class FeedVersionTableRow extends Component {
-
-  constructor (props) {
-    super(props)
-  }
-
   render () {
     const fs = this.props.feedSource
     const version = this.props.version

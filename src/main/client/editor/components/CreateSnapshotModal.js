@@ -1,9 +1,11 @@
 import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
-import { Modal, Button, Glyphicon, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
+import { Modal, Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 
 export default class CreateSnapshotModal extends Component {
-
+  static propTypes = {
+    onOkClicked: PropTypes.func
+  }
   constructor (props) {
     super(props)
     this.state = {

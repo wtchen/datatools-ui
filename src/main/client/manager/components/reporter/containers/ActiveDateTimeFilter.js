@@ -1,9 +1,7 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import DateTimeFilter from '../components/DateTimeFilter'
 import { updateDateTimeFilter } from '../../../../gtfs/actions/filter'
-
 
 const mapStateToProps = (state, ownProps) => {
   return {

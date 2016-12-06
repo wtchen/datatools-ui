@@ -1,8 +1,6 @@
 import { secureFetch } from '../../common/util/util'
 import { setErrorMessage } from '../../manager/actions/status'
 
-//// TRIP
-
 export function requestingTripsForCalendar (feedId, pattern, calendarId) {
   return {
     type: 'REQUESTING_TRIPS_FOR_CALENDAR',
@@ -30,10 +28,10 @@ export function fetchTripsForCalendar (feedId, pattern, calendarId) {
       .then(res => res.json())
       .then(trips => {
         dispatch(receiveTripsForCalendar(feedId, pattern, calendarId, trips))
+        return trips
       })
   }
 }
-
 
 export function savingTrips (feedId, pattern, calendarId, trips) {
   return {
@@ -88,37 +86,36 @@ export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
   }
 }
 
-export function saveTripsForCalendar2 (feedId, pattern, calendarId, trips) {
-  return function (dispatch, getState) {
-    dispatch(savingTrips(feedId, pattern, calendarId, trips))
-    const tripExists = trip.id !== 'new' && trip.id !== null
-    const method = tripExists ? 'put' : 'post'
-    const url = tripExists
-      ? `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
-      : `/api/manager/secure/trip?feedId=${feedId}`
-    trip.id = tripExists ? trip.id : null
-    return secureFetch(url, getState(), method, trip)
-      .then(res => {
-        if (res.status >= 300) {
-          errorCount++
-          errorIndexes.push(index)
-          return null
-        } else {
-          return res.json()
-        }
-      })
-    .then(trips => {
-      // console.log(trips)
-      if (errorCount) {
-        dispatch(setErrorMessage(`Unknown error encountered while saving trips.  Could not save ${errorCount} trips`))
-      }
-      dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
-      return errorIndexes
-    })
-    // return result
-  }
-}
-
+// export function saveTripsForCalendar2 (feedId, pattern, calendarId, trips) {
+//   return function (dispatch, getState) {
+//     dispatch(savingTrips(feedId, pattern, calendarId, trips))
+//     const tripExists = trip.id !== 'new' && trip.id !== null
+//     const method = tripExists ? 'put' : 'post'
+//     const url = tripExists
+//       ? `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
+//       : `/api/manager/secure/trip?feedId=${feedId}`
+//     trip.id = tripExists ? trip.id : null
+//     return secureFetch(url, getState(), method, trip)
+//       .then(res => {
+//         if (res.status >= 300) {
+//           errorCount++
+//           errorIndexes.push(index)
+//           return null
+//         } else {
+//           return res.json()
+//         }
+//       })
+//     .then(trips => {
+//       // console.log(trips)
+//       if (errorCount) {
+//         dispatch(setErrorMessage(`Unknown error encountered while saving trips.  Could not save ${errorCount} trips`))
+//       }
+//       dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
+//       return errorIndexes
+//     })
+//     // return result
+//   }
+// }
 
 // export function saveTrip (feedId, trip) {
 //   // return function (dispatch, getState) {
@@ -179,7 +176,6 @@ export function deleteTripsForCalendar (feedId, pattern, calendarId, trips) {
     // return result
   }
 }
-
 
 export function updateCellValue (value, rowIndex, key) {
   return {

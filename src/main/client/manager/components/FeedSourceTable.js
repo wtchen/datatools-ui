@@ -1,17 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import moment from 'moment'
 
-import { Button, Checkbox, Glyphicon, Dropdown, MenuItem, ListGroupItem, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { browserHistory } from 'react-router'
+import { Button, ListGroupItem, ListGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 import { shallowEqual } from 'react-pure-render'
 
 import EditableTextField from '../../common/components/EditableTextField'
-import ConfirmModal from '../../common/components/ConfirmModal'
-import SelectFileModal from '../../common/components/SelectFileModal'
-import WatchButton from '../../common/containers/WatchButton'
+import FeedSourceDropdown from './FeedSourceDropdown'
 import { isModuleEnabled, getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
-import { isValidZipFile } from '../../common/util/util'
 
 export default class FeedSourceTable extends Component {
 
@@ -107,11 +103,11 @@ class FeedSourceTableRow extends Component {
   }
   render () {
     const fs = this.props.feedSource
-    const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
+    // const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
-    const dateFormat = getConfigProperty('application.date_format')
+    // const dateFormat = getConfigProperty('application.date_format')
     const messages = getComponentMessages('ProjectViewer')
-    const feedItem = (
+    return (
       <ListGroupItem
         key={fs.id}
         onMouseEnter={() => this.props.onHover(fs)}
@@ -156,66 +152,6 @@ class FeedSourceTableRow extends Component {
         </div>
       </ListGroupItem>
     )
-    const feedRow = (
-      <tr key={fs.id}
-        onMouseEnter={() => {
-          if (!this.state.hovered) {
-            this.setState({ hovered: true })
-            this.props.onHover(fs)
-          }
-        }}
-        onMouseLeave={() => {
-          if (!this.props.active && this.state.hovered) this.setState({ hovered: false })
-        }}
-      >
-        <td className='col-md-4'>
-          <div>
-            <EditableTextField
-              isEditing={(fs.isCreating === true)}
-              value={fs.name}
-              disabled={disabled}
-              onChange={(value) => {
-                if (fs.isCreating) this.props.saveFeedSource(value)
-                else this.props.updateFeedSourceProperty(fs, 'name', value)
-              }}
-              link={`/feed/${fs.id}`}
-            />
-          </div>
-        </td>
-        <td>
-          <Checkbox
-            disabled={disabled}
-            defaultChecked={fs.isPublic}
-            onChange={(e) => {
-              this.props.updateFeedSourceProperty(fs, 'isPublic', e.target.checked)
-            }}
-          />
-        </td>
-        <td>
-          <Checkbox
-            disabled={disabled}
-            defaultChecked={fs.deployable}
-            onChange={(e) => {
-              this.props.updateFeedSourceProperty(fs, 'deployable', e.target.checked)
-            }}
-          />
-        </td>
-        <td>{fs.lastUpdated ? moment(fs.lastUpdated).format(dateFormat) : na}</td>
-        <td>{fs.latestValidation ? fs.latestValidation.errorCount : na}</td>
-        <td>{fs.latestValidation
-          ? (<span>{moment(fs.latestValidation.startDate).format(dateFormat)} to {moment(fs.latestValidation.endDate).format(dateFormat)}</span>)
-          : na
-        }</td>
-        <td className='col-xs-2'>
-          {this.state.hovered
-            ? this.props.hoverComponent
-            : null
-          }
-        </td>
-      </tr>
-    )
-
-    return feedItem
   }
 }
 
@@ -289,137 +225,9 @@ class Attribute extends Component {
       </li>
     )
     return this.props.title
-    ? <OverlayTrigger placement='bottom' overlay={<Tooltip>{this.props.title}</Tooltip>}>
+    ? <OverlayTrigger placement='bottom' overlay={<Tooltip id={this.props.title}>{this.props.title}</Tooltip>}>
       {li}
     </OverlayTrigger>
     : li
-  }
-}
-
-class FeedSourceDropdown extends Component {
-
-  static propTypes = {
-    feedSource: PropTypes.object,
-    project: PropTypes.object,
-    user: PropTypes.object,
-
-    createDeploymentFromFeedSource: PropTypes.func,
-    deleteFeedSource: PropTypes.func,
-    fetchFeed: PropTypes.func,
-    uploadFeed: PropTypes.func
-  }
-  _selectItem (key) {
-    switch (key) {
-      case 'delete':
-        return this.deleteFeed()
-      case 'fetch':
-        return this.props.fetchFeed(this.props.feedSource)
-      case 'upload':
-        return this.uploadFeed()
-      case 'deploy':
-        return this.props.createDeploymentFromFeedSource(this.props.feedSource)
-      case 'public':
-        return browserHistory.push(`/public/feed/${this.props.feedSource.id}`)
-    }
-  }
-  deleteFeed () {
-    this.props.setHold(this.props.feedSource)
-    this.refs['deleteModal'].open()
-    // this.setState({keepActive: true})
-  }
-  uploadFeed () {
-    this.props.setHold(this.props.feedSource)
-    this.refs['uploadModal'].open()
-  }
-  confirmUpload (files) {
-    const file = files[0]
-    if (isValidZipFile(file)) {
-      this.props.uploadFeed(this.props.feedSource, file)
-      this.props.setHold(false)
-      return true
-    } else {
-      return false
-    }
-  }
-  render () {
-    const fs = this.props.feedSource
-    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
-    const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
-    const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
-
-    return <div>
-      <ConfirmModal ref='deleteModal'
-        title='Delete Feed Source?'
-        body={`Are you sure you want to delete the feed source ${fs.name}?`}
-        onConfirm={() => this.props.deleteFeedSource(fs)}
-        onClose={() => this.props.setHold(false)}
-      />
-
-      <SelectFileModal ref='uploadModal'
-        title='Upload Feed'
-        body='Select a GTFS feed to upload:'
-        onConfirm={(files) => this.confirmUpload(files)}
-        onClose={() => this.props.setHold(false)}
-        errorMessage='Uploaded file must be a valid zip file (.zip).'
-      />
-
-      <Dropdown
-        className='pull-right'
-        bsStyle='default'
-        bsSize='small'
-        onSelect={key => this._selectItem(key)}
-        id={`feed-source-action-button`}
-        pullRight
-      >
-        <Button
-          bsStyle='default'
-          disabled={editGtfsDisabled}
-          onClick={() => browserHistory.push(`/feed/${fs.id}/edit/`)}
-        >
-          <Glyphicon glyph='pencil' /> Edit
-        </Button>
-        <Dropdown.Toggle bsStyle='default' />
-        <Dropdown.Menu>
-          <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
-          <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
-
-          {/* show divider only if deployments and notifications are enabled (otherwise, we don't need it) */}
-          {isModuleEnabled('deployment') || getConfigProperty('application.notifications_enabled')
-            ? <MenuItem divider />
-            : null
-          }
-          {isModuleEnabled('deployment')
-            ? <MenuItem
-              disabled={disabled || !fs.deployable || !fs.feedVersionCount}
-              title={disabled
-                ? 'You do not have permission to deploy feed'
-                : !fs.deployable
-                ? 'Feed source is not deployable. Change in feed source settings.'
-                : !fs.feedVersionCount
-                ? 'No versions exist. Create new version to deploy feed'
-                : 'Deploy feed source.'
-              }
-              eventKey='deploy'
-            >
-              <Glyphicon glyph='globe' /> Deploy
-            </MenuItem>
-            : null
-          }
-          {getConfigProperty('application.notifications_enabled')
-            ? <WatchButton
-              isWatching={isWatchingFeed}
-              user={this.props.user}
-              target={fs.id}
-              subscriptionType='feed-updated'
-              componentClass='menuItem'
-            />
-            : null
-          }
-          <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link' /> View public page</MenuItem>
-          <MenuItem divider />
-          <MenuItem disabled={disabled} eventKey='delete'><Icon type='trash' /> Delete</MenuItem>
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
   }
 }

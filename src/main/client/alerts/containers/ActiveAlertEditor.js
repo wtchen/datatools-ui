@@ -1,4 +1,3 @@
-import React from 'react'
 import { connect } from 'react-redux'
 
 import { fetchProjects } from '../actions/projects'
@@ -6,18 +5,10 @@ import { saveAlert, deleteAlert, createAlert, setActiveAlert } from '../actions/
 import { setActiveTitle, setActiveDescription, setActiveUrl, setActiveCause,
   setActiveEffect, setActiveStart, setActiveEnd, setActivePublished,
   addActiveEntity, deleteActiveEntity, updateActiveEntity } from '../actions/activeAlert'
-
 import AlertEditor from '../components/AlertEditor'
 import { browserHistory } from 'react-router'
 import { getFeedsForPermission } from '../../common/util/permissions'
 
-const agencyCompare = function(a, b) {
-  if (a.name < b.name)
-    return -1;
-  if (a.name > b.name)
-    return 1;
-  return 0;
-}
 const mapStateToProps = (state, ownProps) => {
   return {
     alert: state.activeAlert,
@@ -33,24 +24,22 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       const alertId = initialProps.location.pathname.split('/alert/')[1]
-      if (initialProps.alert)
-        return
+      if (initialProps.alert) return
 
       if (!alertId) {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')){
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')) {
             console.log('cannot create alert!')
             browserHistory.push('/alerts')
             return
           }
           dispatch(createAlert())
         })
-      }
-      else {
+      } else {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')){
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')) {
             console.log('cannot create alert!')
             browserHistory.push('/alerts')
             return

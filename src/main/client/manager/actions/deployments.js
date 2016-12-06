@@ -1,7 +1,7 @@
 import { browserHistory } from 'react-router'
 
 import { secureFetch } from '../../common/util/util'
-import { fetchProject, receiveProject } from './projects'
+import { receiveProject } from './projects'
 import { startJobMonitor } from './status'
 
 // Deployment Actions
@@ -52,12 +52,11 @@ export function deployToTarget (deployment, target) {
   return function (dispatch, getState) {
     dispatch(deployingToTarget(deployment, target))
     const url = `/api/manager/secure/deployments/${deployment.id}/deploy/${target}`
-    console.log('*** deploying...');
     return secureFetch(url, getState(), 'post')
       .then(response => {
-        console.log(response);
+        console.log(response)
         if (response.status >= 300) {
-          alert('Deployment error: ' + response.statusText)
+          window.alert('Deployment error: ' + response.statusText)
         } else {
           dispatch(deployedToTarget(deployment, target))
           dispatch(startJobMonitor())
@@ -65,7 +64,6 @@ export function deployToTarget (deployment, target) {
       })
   }
 }
-
 
 export function requestingDeployment () {
   return {
@@ -149,18 +147,6 @@ export function fetchDeploymentAndProject (id) {
         //
         //     return proj
         //   })
-      })
-  }
-}
-
-export function fetchDeploymentTargets () {
-  return function (dispatch, getState) {
-    dispatch(requestingDeploymentTargets())
-    const url = '/api/manager/secure/deployments/targets'
-    return secureFetch(url, getState())
-      .then(response => response.json())
-      .then(targets => {
-        return dispatch(receiveDeploymentTargets(targets))
       })
   }
 }

@@ -7,11 +7,8 @@ import { fetchProjectFeeds } from '../../manager/actions/feeds'
 import { getComponentMessages, getMessage } from '../util/config'
 
 class Breadcrumbs extends React.Component {
-  constructor (props) {
-    super(props)
-  }
   render () {
-    let { dispatch, project, deployment, feedSource, feedVersion } = this.props
+    let { dispatch, feedSource, feedVersion } = this.props
     if (!feedSource && feedVersion) {
       feedSource = feedVersion.feedSource
     }
@@ -33,11 +30,11 @@ class Breadcrumbs extends React.Component {
         >
           {this.props.project.feedSources.length !== 1
             ? this.props.project.feedSources.map(fs => {
-                if (fs.id === feedSource.id) return null
-                return (
-                  <MenuItem key={fs.id} eventKey={fs.id}>{fs.name}</MenuItem>
-                )
-              })
+              if (fs.id === feedSource.id) return null
+              return (
+                <MenuItem key={fs.id} eventKey={fs.id}>{fs.name}</MenuItem>
+              )
+            })
             : <MenuItem disabled key={0}>Loading...</MenuItem>
           }
         </SplitButton>
@@ -88,4 +85,4 @@ class Breadcrumbs extends React.Component {
   }
 }
 
-export default connect()(Breadcrumbs);
+export default connect()(Breadcrumbs)

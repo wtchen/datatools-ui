@@ -9,7 +9,6 @@ import Patterns from '../containers/Patterns'
 import Routes from '../containers/Routes'
 import Stops from '../containers/Stops'
 
-
 export default class PageLayout extends React.Component {
 
   render () {

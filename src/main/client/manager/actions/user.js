@@ -1,6 +1,4 @@
 import { secureFetch } from '../../common/util/util'
-import { fetchProjects } from './projects'
-import update from 'react-addons-update'
 import { getConfigProperty } from '../../common/util/config'
 import objectPath from 'object-path'
 
@@ -24,7 +22,7 @@ export const userLoggedIn = (token, profile) => {
   }
 }
 
-export function checkExistingLogin() {
+export function checkExistingLogin () {
   return function (dispatch, getState) {
     dispatch(checkingExistingLogin())
     var login = getState().user.auth0.checkExistingLogin()
@@ -32,13 +30,11 @@ export function checkExistingLogin() {
       return login.then((userTokenAndProfile) => {
         if (userTokenAndProfile) {
           dispatch(userLoggedIn(userTokenAndProfile.token, userTokenAndProfile.profile))
-        }
-        else {
+        } else {
           console.log('error checking token')
         }
       })
-    }
-    else {
+    } else {
       console.log('no login found')
       dispatch(noExistingLogin())
       // return empty promise
@@ -65,13 +61,13 @@ export function updateUserMetadata (profile, props) {
     const CLIENT_ID = getConfigProperty('auth0.client_id')
 
     let userMetadata = profile.user_metadata || {
-          lang: 'en',
-          datatools: [
-            {
-              client_id: CLIENT_ID
-            }
-          ]
+      lang: 'en',
+      datatools: [
+        {
+          client_id: CLIENT_ID
         }
+      ]
+    }
     let clientIndex = userMetadata.datatools.findIndex(d => d.client_id === CLIENT_ID)
     for (var key in props) {
       objectPath.set(userMetadata, `datatools.${clientIndex}.${key}`, props[key])
@@ -116,8 +112,7 @@ export function updateTargetForSubscription (profile, target, subscriptionType) 
         let index = sub.target.indexOf(target)
         if (index > -1) {
           sub.target.splice(index, 1)
-        }
-        else {
+        } else {
           sub.target.push(target)
         }
       }
@@ -205,7 +200,7 @@ export function createPublicUser (credentials) {
 
 export function login (credentials, user, lockOptions) {
   return function (dispatch, getState) {
-    if (!credentials){
+    if (!credentials) {
       return getState().user.auth0.loginViaLock(lockOptions)
       .then((userInfo) => {
         return dispatch(userLoggedIn(userInfo.token, userInfo.profile))
@@ -213,8 +208,7 @@ export function login (credentials, user, lockOptions) {
       // .then(() => {
       //   dispatch(fetchProjects())
       // })
-    }
-    else {
+    } else {
       credentials.client_id = getConfigProperty('auth0.client_id')
       credentials.connection = 'Username-Password-Authentication'
       credentials.username = credentials.email
@@ -225,9 +219,9 @@ export function login (credentials, user, lockOptions) {
       .then(response => response.json())
       .then(token => {
         // save token to localStorage
-        localStorage.setItem('userToken', token.id_token)
+        window.localStorage.setItem('userToken', token.id_token)
 
-        return getState().user.auth0.loginFromToken (token.id_token)
+        return getState().user.auth0.loginFromToken(token.id_token)
       }).then((userInfo) => {
         console.log('got user info', userInfo)
         return dispatch(userLoggedIn(userInfo.token, userInfo.profile))
@@ -249,7 +243,7 @@ export function logout () {
   }
 }
 
-export function resetPassword() {
+export function resetPassword () {
   return function (dispatch, getState) {
     getState().user.auth0.resetPassword()
   }

@@ -84,9 +84,9 @@ export default class EditableTextField extends Component {
             evt.preventDefault()
             this.save()
           }}>
-        <Icon
-          type='check'
-          style={iconStyle} />
+          <Icon
+            type='check'
+            style={iconStyle} />
         </Button> //feed.name.length > 11 ? feed.name.substr(0, 11) + '...' : feed.name
       </InputGroup.Button>
     )
