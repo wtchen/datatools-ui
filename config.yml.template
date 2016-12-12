@@ -16,6 +16,7 @@ application:
   changelog_url: https://changelog.example.com
   support_email: support@example.com
   osm_vex: http://localhost:1000
+  r5: http://localhost:8080
   date_format: MMM Do YYYY
 
 auth0:
