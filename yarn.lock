@@ -2744,7 +2744,7 @@ fbjs@^0.3.1:
     ua-parser-js "^0.7.9"
     whatwg-fetch "^0.9.0"
 
-fbjs@^0.8.4:
+fbjs@^0.8.1, fbjs@^0.8.4:
   version "0.8.5"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.5.tgz#f69ba8a876096cb1b9bffe4d7c1e71c19d39d008"
   dependencies:
@@ -5693,13 +5693,17 @@ react-addons-perf@^15.3.2:
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-addons-perf/-/react-addons-perf-15.3.2.tgz#bbdbebe8649f936f9636a5750ac145bf5c620213"
 
-"react-addons-shallow-compare@^0.14.0 || ^15.0.0", react-addons-shallow-compare@^15.1.0:
-  version "15.3.2"
-  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.3.2.tgz#c9edba49b9eab44d0c59024d289beb1ab97318b5"
+react-addons-perf@^15.4.1:
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/react-addons-perf/-/react-addons-perf-15.4.1.tgz#c6dd5a7011f43cd3222f47b7cb1aebe9d4174cb0"
 
-"react-addons-update@^0.14.0 || ^15.0.0", react-addons-update@^0.14.7:
-  version "0.14.8"
-  resolved "https://registry.yarnpkg.com/react-addons-update/-/react-addons-update-0.14.8.tgz#486f1fb71e09ef8ad09c0e95fbe59d173782fe1a"
+"react-addons-shallow-compare@^0.14.0 || ^15.0.0", react-addons-shallow-compare@^15.4.1:
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.4.1.tgz#b68103dd4d13144cb221065f6021de1822bd435a"
+
+"react-addons-update@^0.14.0 || ^15.0.0", react-addons-update@^15.4.1:
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/react-addons-update/-/react-addons-update-15.4.1.tgz#00c07f45243aa9715e1706bbfd1f23d3d8d80bd1"
 
 react-bootstrap-datetimepicker@^0.0.22:
   version "0.0.22"
@@ -5757,9 +5761,13 @@ react-dnd@^2.1.4:
     invariant "^2.1.0"
     lodash "^4.2.0"
 
-"react-dom@^0.14.0 || ^15.0.0", "react-dom@^15.0.0 || ^16.0.0", react-dom@^15.2.1, react-dom@^15.3.2:
-  version "15.3.2"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
+"react-dom@^0.14.0 || ^15.0.0", "react-dom@^15.0.0 || ^16.0.0", react-dom@^15.3.2, react-dom@^15.4.1:
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.1.tgz#d54c913261aaedb17adc20410d029dcc18a1344a"
+  dependencies:
+    fbjs "^0.8.1"
+    loose-envify "^1.1.0"
+    object-assign "^4.1.0"
 
 react-dropzone@^3.5.3:
   version "3.7.2"
@@ -5877,9 +5885,9 @@ react-virtualized@^8.0.5, react-virtualized@^8.5.0:
     classnames "^2.2.3"
     dom-helpers "^2.4.0"
 
-"react@^15.0.0 || ^16.0.0", react@^15.2.1, react@^15.3.2:
-  version "15.3.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-15.3.2.tgz#a7bccd2fee8af126b0317e222c28d1d54528d09e"
+"react@^15.0.0 || ^16.0.0", react@^15.3.2, react@^15.4.1:
+  version "15.4.1"
+  resolved "https://registry.yarnpkg.com/react/-/react-15.4.1.tgz#498e918602677a3983cd0fd206dfe700389a0dd6"
   dependencies:
     fbjs "^0.8.4"
     loose-envify "^1.1.0"
