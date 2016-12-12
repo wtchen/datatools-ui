@@ -8,6 +8,7 @@ application:
     gtfs_s3_bucket: bucket-name
   port: 4000
   title: Data Manager
+  assets_bucket: bucket-name
   logo: http://gtfs-assets-dev.conveyal.com/data_manager.png # defaults to src/main/client/assets/application_logo.png
   active_project: project-id
   notifications_enabled: false
