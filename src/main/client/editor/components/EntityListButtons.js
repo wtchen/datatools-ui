@@ -97,7 +97,7 @@ export default class EntityListButtons extends Component {
             onClick={() => {
               newGtfsEntity(feedSource.id, activeComponent)
             }}
-          ><Icon type='plus' /> New {activeComponent === 'scheduleexception' ? 'exception' : activeComponent}
+          ><Icon style={{margin: '-5px'}} type='plus' /> New {activeComponent === 'scheduleexception' ? 'exception' : activeComponent}
           </Button>
         }
       </div>
