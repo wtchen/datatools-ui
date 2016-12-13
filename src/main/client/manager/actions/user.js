@@ -56,6 +56,15 @@ export function fetchUser (user) {
   }
 }
 
+function updatingUserMetadata (profile, props, payload) {
+  return {
+    type: 'UPDATING_USER_METADATA',
+    profile,
+    props,
+    payload
+  }
+}
+
 export function updateUserMetadata (profile, props) {
   return function (dispatch, getState) {
     const CLIENT_ID = getConfigProperty('auth0.client_id')
@@ -73,7 +82,7 @@ export function updateUserMetadata (profile, props) {
       objectPath.set(userMetadata, `datatools.${clientIndex}.${key}`, props[key])
     }
     const payload = {user_metadata: userMetadata}
-    console.log('updating user metadata props', props, payload)
+    dispatch(updatingUserMetadata(profile, props, payload))
     const url = `https://${getConfigProperty('auth0.domain')}/api/v2/users/${profile.user_id}`
     return secureFetch(url, getState(), 'PATCH', payload)
       .then(response => response.json())

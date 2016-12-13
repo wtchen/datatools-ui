@@ -17,8 +17,7 @@ import {
   saveFeedSource,
   updateFeedSource,
   runFetchFeed,
-  deleteFeedSource,
-  uploadFeed
+  deleteFeedSource
 } from '../actions/feeds'
 
 import {
@@ -29,7 +28,9 @@ import {
   deleteDeployment,
   updateDeployment
 } from '../actions/deployments'
-
+import {
+  uploadFeed
+} from '../actions/versions'
 const mapStateToProps = (state, ownProps) => {
   return {
     project: state.projects.all

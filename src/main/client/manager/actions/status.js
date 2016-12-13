@@ -138,10 +138,13 @@ export function handleFinishedJob (job) {
     dispatch(handlingFinishedJob(job))
     switch (job.type) {
       case 'VALIDATE_FEED':
-        dispatch(fetchFeedSource(job.feedVersion.feedSource.id, true))
+        dispatch(fetchFeedSource(job.feedVersion.feedSource.id, true, true))
         break
       case 'PROCESS_SNAPSHOT':
         dispatch(fetchSnapshots(job.feedVersion.feedSource))
+        break
+      case 'CREATE_FEEDVERSION_FROM_SNAPSHOT':
+        dispatch(fetchFeedSource(job.feedVersion.feedSource.id, true, true))
         break
     }
   }

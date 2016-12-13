@@ -160,10 +160,12 @@ export default class FeedVersionReport extends Component {
           }
           {this.props.isPublic
             ? <span>{version.name}</span>
-            : <EditableTextField inline value={version.name}
+            : <EditableTextField
+              inline
+              value={version.name}
+              maxWidth={40}
               disabled={this.props.isPublic}
-              onChange={(value) => this.props.feedVersionRenamed(version, value)}
-            />
+              onChange={(value) => this.props.feedVersionRenamed(version, value)} />
           }
           <VersionButtonToolbar
             {...this.props}

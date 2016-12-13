@@ -8,7 +8,6 @@ import {
   deleteFeedSource,
   runFetchFeed,
   updateExternalFeedResource,
-  uploadFeed,
   updateFeedSource
 } from '../actions/feeds'
 import {
@@ -16,6 +15,7 @@ import {
   downloadFeedViaToken,
   fetchFeedVersions,
   fetchValidationResult,
+  uploadFeed,
   renameFeedVersion
 } from '../actions/versions'
 import {
