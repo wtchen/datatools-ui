@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { divIcon } from 'leaflet'
 import { Marker, FeatureGroup } from 'react-leaflet'
 
+import {clickToLatLng} from '../../util/map'
+
 export default class StopsLayer extends Component {
   static propTypes = {
     mapState: PropTypes.object
@@ -73,7 +75,7 @@ export default class StopsLayer extends Component {
                 onDragEnd={(e) => {
                   console.log(e)
                   let latlng = e.target.getLatLng()
-                  let stopLatLng = this.getStopLatLng(latlng)
+                  let stopLatLng = clickToLatLng(latlng)
                   updateActiveEntity(activeEntity, 'stop', stopLatLng)
                   this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
                 }}

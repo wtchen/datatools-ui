@@ -65,7 +65,7 @@ export default class GtfsEditor extends Component {
     this.props.onComponentMount(this.props)
   }
   componentDidUpdate (prevProps) {
-    // console.log(prevProps, this.props)
+    // handles back button
     this.props.onComponentUpdate(prevProps, this.props)
   }
   componentWillReceiveProps (nextProps) {
@@ -80,12 +80,8 @@ export default class GtfsEditor extends Component {
       this.props.getGtfsTable(nextProps.activeComponent, nextProps.feedSource.id)
     }
     // fetch sub components of active entity on active entity switch (e.g., fetch trip patterns when route changed)
-    if (nextProps.feedSource && nextProps.activeEntity && (!this.props.activeEntity || nextProps.activeEntity.id !== this.props.activeEntity.id)) {
-      // console.log(nextProps.activeComponent)
-      // console.log(nextProps.activeEntity, nextProps.activeEntityId)
-      if (nextProps.activeComponent === 'route' && this.props.activeComponent !== 'route') {
-        this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
-      }
+    if (nextProps.activeComponent === 'route' && nextProps.feedSource && nextProps.activeEntity && (!this.props.activeEntity || nextProps.activeEntity.id !== this.props.activeEntity.id)) {
+      this.props.fetchTripPatternsForRoute(nextProps.feedSource.id, nextProps.activeEntity.id)
     }
     // fetch required sub sub component entities if active sub entity changes
     if (nextProps.subSubComponent && nextProps.activeSubSubEntity && !shallowEqual(nextProps.activeSubSubEntity, this.props.activeSubSubEntity)) {
@@ -114,7 +110,6 @@ export default class GtfsEditor extends Component {
       : 0
   }
   render () {
-    // console.log(this.props)
     const {
       feedSource,
       user,
@@ -162,30 +157,26 @@ export default class GtfsEditor extends Component {
         }}
         getGtfsEntityIndex={(type, id) => {
           return entities.findIndex(ent => ent.id === id)
-        }}
-      />
+        }} />
       : null
     const defaultTitle = `${getConfigProperty('application.title')}: GTFS Editor`
     return (
       <div>
         <Helmet
           defaultTitle={defaultTitle}
-          titleTemplate={`${defaultTitle} - %s`}
-        />
+          titleTemplate={`${defaultTitle} - %s`} />
         <EditorSidebar
           activeComponent={activeComponent}
           expanded={sidebarExpanded}
           feedSource={feedSource}
           feedInfo={feedInfo}
-          setActiveEntity={setActiveEntity}
-        />
+          setActiveEntity={setActiveEntity} />
         <div style={{
           position: 'fixed',
           left: sidebarExpanded ? 130 : 50,
           bottom: 0,
           right: 0,
-          top: 0
-        }}>
+          top: 0}}>
           {subSubComponent === 'timetable' // && activeEntity
             ? <ActiveTimetableEditor
               feedSource={feedSource}
@@ -201,13 +192,11 @@ export default class GtfsEditor extends Component {
               saveActiveEntity={saveActiveEntity}
               fetchTripsForCalendar={fetchTripsForCalendar}
               sidebarExpanded={sidebarExpanded}
-              updateCellValue={updateCellValue}
-            />
+              updateCellValue={updateCellValue} />
             : activeComponent === 'feedinfo'
             ? <EntityDetails
               width={DETAILS_WIDTH}
-              {...this.props}
-            />
+              {...this.props} />
             : activeComponent
             ? [
               <ActiveEntityList
@@ -222,8 +211,7 @@ export default class GtfsEditor extends Component {
                 activeEntityId={activeEntityId}
                 activeComponent={activeComponent}
                 feedSource={feedSource}
-                key='entity-list'
-              />,
+                key='entity-list' />,
               entityDetails
             ]
             : null
@@ -236,13 +224,11 @@ export default class GtfsEditor extends Component {
             drawStops={mapState.zoom > 14} // && (activeComponent === 'stop' || editSettings.addStops)}
             zoomToTarget={mapState.target}
             sidebarExpanded={sidebarExpanded}
-            {...this.props}
-          />
+            {...this.props} />
           {!activeComponent && !hideTutorial
             ? <EditorHelpModal
               show
-              setTutorialHidden={setTutorialHidden}
-            />
+              setTutorialHidden={setTutorialHidden} />
             : null
           }
           <ActiveFeedInfoPanel
@@ -250,8 +236,7 @@ export default class GtfsEditor extends Component {
             project={project}
             showConfirmModal={(props) => this.showConfirmModal(props)}
             setActiveEntity={setActiveEntity}
-            feedInfo={feedInfo}
-          />
+            feedInfo={feedInfo} />
         </div>
         <CurrentStatusMessage />
         <ConfirmModal ref='confirmModal' />

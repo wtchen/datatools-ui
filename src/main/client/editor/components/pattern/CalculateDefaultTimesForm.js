@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Icon } from '@conveyal/woonerf'
 import { Button, FormGroup, InputGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
 
-import MinuteSecondInput from './MinuteSecondInput'
+import MinuteSecondInput from '../MinuteSecondInput'
 
 const DEFAULT_SPEED = 20 // km/hr
 

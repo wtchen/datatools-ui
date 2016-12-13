@@ -7,8 +7,7 @@ export default class PatternsLayer extends Component {
   }
   _onClick (pattern, isActive, controlPoints, e) {
     return isActive && this.props.constructControlPoint(pattern, e.latlng, controlPoints)
-      // : this.setState({editable: this.refs[pattern.id].leafletElement})
-      // TODO: make clicked pattern active?
+    // TODO: make clicked pattern active if non-active?
   }
   render () {
     const {
@@ -17,7 +16,8 @@ export default class PatternsLayer extends Component {
       activePattern,
       activeEntity,
       editSettings,
-      controlPoints
+      controlPoints,
+      patternCoordinates
     } = this.props
     return (
       <FeatureGroup ref='patterns' key='patterns'>
@@ -41,8 +41,7 @@ export default class PatternsLayer extends Component {
                 : 'blue'
               return (
                 <Polyline
-                  positions={latLngs}
-                  // positions={this.state.newLatLngs || latLngs}
+                  positions={patternCoordinates && patternCoordinates.map(c => ([c[1], c[0]])) || latLngs}
                   ref={pattern.id}
                   key={pattern.id}
                   onClick={e => this._onClick(pattern, isActive, controlPoints, e)}

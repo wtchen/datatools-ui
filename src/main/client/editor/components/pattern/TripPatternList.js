@@ -50,7 +50,6 @@ export default class TripPatternList extends Component {
       paddingBottom: 5
     }
     const isActive = patternId && pattern.id === patternId
-    console.log(this.props)
     const patternName = `${`${pattern.name.length > 35 ? pattern.name.substr(0, 35) + '...' : pattern.name}`} ${pattern.patternStops ? `(${pattern.patternStops.length} stops)` : ''}`
     return (
       <tr

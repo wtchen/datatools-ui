@@ -6,7 +6,7 @@ import MinuteSecondInput from '../MinuteSecondInput'
 
 export default class PatternStopPopup extends Component {
   render () {
-    const { stop, index, patternStop, activePattern } = this.props
+    const { stop, index, patternStop, activePattern, entityEdited, saveActiveEntity, setActiveEntity, feedSource, removeStopFromPattern, addStopToPattern, updateActiveEntity, controlPoints } = this.props
     return (
       <div
         style={{minWidth: '240px'}} // keep button group from separating
@@ -17,9 +17,9 @@ export default class PatternStopPopup extends Component {
             <ButtonGroup className='pull-right'>
               <Button
                 bsStyle='primary'
-                disabled={!this.props.entityEdited}
+                disabled={!entityEdited}
                 onClick={() => {
-                  this.props.saveActiveEntity('trippattern')
+                  saveActiveEntity('trippattern')
                 }}
               >
                 <Icon type='floppy-o' />
@@ -27,7 +27,7 @@ export default class PatternStopPopup extends Component {
               <OverlayTrigger overlay={<Tooltip id='edit-stop-tooltip'>Edit stop</Tooltip>}>
                 <Button
                   onClick={() => {
-                    this.props.setActiveEntity(this.props.feedSource.id, 'stop', stop)
+                    setActiveEntity(feedSource.id, 'stop', stop)
                   }}
                 >
                   <Icon type='pencil' />
@@ -37,7 +37,7 @@ export default class PatternStopPopup extends Component {
                 <Button
                   bsStyle='danger'
                   onClick={() => {
-                    this.props.removeStopFromPattern(activePattern, stop, index)
+                    removeStopFromPattern(activePattern, stop, index, controlPoints)
                   }}
                 >
                   <Icon type='trash' />
@@ -45,13 +45,13 @@ export default class PatternStopPopup extends Component {
               </OverlayTrigger>
               <Dropdown
                 id={`add-stop-dropdown`}
-                onSelect={(key) => this.props.addStopToPattern(activePattern, stop, key)}
+                onSelect={(key) => addStopToPattern(activePattern, stop, key)}
               >
                 <Button
                   bsStyle='success'
                   disabled={index >= activePattern.patternStops.length - 2}
                   onClick={(e) => {
-                    this.props.addStopToPattern(activePattern, stop)
+                    addStopToPattern(activePattern, stop)
                   }}
                 >
                   <Icon type='plus' />
@@ -93,7 +93,7 @@ export default class PatternStopPopup extends Component {
                 onChange={(value) => {
                   let patternStops = [...activePattern.patternStops]
                   patternStops[index].defaultTravelTime = value
-                  this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                  updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                 }}
               />
             </FormGroup>
@@ -107,7 +107,7 @@ export default class PatternStopPopup extends Component {
                 onChange={(evt) => {
                   let patternStops = [...activePattern.patternStops]
                   patternStops[index].defaultDwellTime = +evt.target.value
-                  this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                  updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                 }}
               />
             </FormGroup>

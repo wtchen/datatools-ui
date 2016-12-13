@@ -31,8 +31,9 @@ export default class EditSchedulePanel extends Component {
             <MenuItem eventKey={activePattern.useFrequency ? 'timetables' : 'frequencies'}>{activePattern.useFrequency ? timetableOptions[0] : timetableOptions[1]}</MenuItem>
           </DropdownButton>
         </ButtonGroup>
-        <FormGroup>
+        <FormGroup style={{marginTop: '5px'}}>
           <ControlLabel>Direction</ControlLabel>
+          <br />
           <ButtonGroup>
             <Button
               active={activePattern.patternDirection === 0}

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import {Icon} from '@conveyal/woonerf'
 import { Button, ButtonToolbar } from 'react-bootstrap'
-import { polyline as getPolyline, getSegment } from '../../scenario-editor/utils/valhalla'
 import ll from 'lonlng'
 
+import { polyline as getPolyline, getSegment } from '../../../scenario-editor/utils/valhalla'
 import PatternStopContainer from './PatternStopContainer'
 import VirtualizedEntitySelect from '../VirtualizedEntitySelect'
 
@@ -27,20 +27,23 @@ export default class PatternStopsPanel extends Component {
     this.props.saveActiveEntity('trippattern')
     return true
   }
-  addStopFromSelect (input, activePattern) {
-    let patternStops = [...activePattern.patternStops]
+  addStopFromSelect = (input) => {
+    if (!input) {
+      return
+    }
+    let patternStops = [...this.props.activePattern.patternStops]
     let stop = input.entity
-    let coordinates = activePattern.shape && activePattern.shape.coordinates
+    let coordinates = this.props.activePattern.shape && this.props.activePattern.shape.coordinates
     let newStop = {stopId: stop.id, defaultDwellTime: 0, defaultTravelTime: 0}
-    // if adding stop to end
+    // if adding stop to end (currently only place to add stop in stop selector)
     if (typeof index === 'undefined') {
       // if shape coordinates already exist, just extend them
       if (coordinates) {
         let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
-        this.extendPatternToStop(activePattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
+        this.extendPatternToStop(this.props.activePattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
         .then(() => {
           patternStops.push(newStop)
-          this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+          this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
           this.props.saveActiveEntity('trippattern')
         })
       } else {
@@ -50,15 +53,15 @@ export default class PatternStopsPanel extends Component {
           let previousStop = this.props.stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
           getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], this.props.editSettings.followStreets)
           .then(geojson => {
-            this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
+            this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
             this.props.saveActiveEntity('trippattern')
           })
         } else {
-          this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+          this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops: patternStops})
           this.props.saveActiveEntity('trippattern')
         }
       }
-      // if not following roads
+      // TODO: add updated shape if not following roads
       // updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}})
     }
   }
@@ -109,15 +112,14 @@ export default class PatternStopsPanel extends Component {
           updateActiveEntity={this.props.updateActiveEntity}
           saveActiveEntity={this.props.saveActiveEntity}
           editSettings={this.props.editSettings}
-          updateEditSetting={this.props.updateEditSetting}
-        />
+          updateEditSetting={this.props.updateEditSetting} />
         {/* Add stop selector */}
         {this.props.editSettings.addStops
           ? <div style={cardStyle}>
             <VirtualizedEntitySelect
               component={'stop'}
               entities={this.props.stops}
-              onChange={(input) => this.addStopFromSelect(input, activePattern)}
+              onChange={this.addStopFromSelect}
             />
             <div style={{marginTop: '5px'}} className='text-center'>
               <Button

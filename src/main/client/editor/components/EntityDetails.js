@@ -169,7 +169,7 @@ export default class EntityDetails extends Component {
           </OverlayTrigger>
           : <ControlLabel><small>{editorField}{field.required ? ' *' : ''}</small></ControlLabel>
       switch (field.inputType) {
-        case 'ID':
+        case 'GTFS_ID':
           isNotValid = field.required && !currentValue
           let indices = []
           let idList = this.props.entities.map(e => e[field.name])
@@ -267,7 +267,7 @@ export default class EntityDetails extends Component {
               />
             </FormGroup>
           ]
-          if (field.name === 'agencyBrandingUrl' || field.name === 'routeBrandingUrl') {
+          if (field.name === 'agency_branding_url' || field.name === 'route_branding_url') {
             elements.push(
               <FormGroup
                 className='col-xs-12'
@@ -1368,8 +1368,7 @@ export default class EntityDetails extends Component {
             </div>, <div key='details-body' style={{height: '80%', overflowY: 'scroll'}}>
               {this.props.subComponent === 'trippattern'
                 ? <ActiveTripPatternList
-                  showConfirmModal={this.props.showConfirmModal}
-                />
+                  showConfirmModal={this.props.showConfirmModal} />
                 : this.state.editFareRules
                 ? fareRulesForm
                 : this.props.activeComponent === 'scheduleexception'

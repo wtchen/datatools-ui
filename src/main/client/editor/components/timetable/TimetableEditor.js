@@ -135,9 +135,9 @@ export default class TimetableEditor extends Component {
     //   }
     // }
   }
-  // shouldComponentUpdate (nextProps) {
-  //   return true
-  // }
+  shouldComponentUpdate (nextProps) {
+    return true
+  }
   offsetRows (rowIndexes, offsetAmount) {
     let newRows = [...this.props.timetable.trips]
     let editedRows = []

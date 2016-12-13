@@ -21,8 +21,7 @@ export default class AddableStopsLayer extends Component {
         ref='addableStops'
         key='addableStops'
       >
-        {
-          stops.length && activePattern && editSettings.addStops && mapState.zoom > 14
+        {stops && activePattern && editSettings.addStops && mapState.zoom > 14
           ? stops
             .filter(stop => {
               if (!bounds) return false
@@ -73,7 +72,7 @@ export default class AddableStopsLayer extends Component {
                         {activePattern.patternStops && activePattern.patternStops.map((stop, i) => {
                           let index = activePattern.patternStops.length - i
                           return (
-                            <MenuItem value={index - 1} eventKey={index - 1}>
+                            <MenuItem value={index - 1} eventKey={index - 1} key={i}>
                               {index === 1 ? 'Add to beginning' : `Insert as stop #${index}`}
                             </MenuItem>
                           )

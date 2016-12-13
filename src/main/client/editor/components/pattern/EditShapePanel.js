@@ -3,9 +3,9 @@ import {Icon} from '@conveyal/woonerf'
 import { Button, Alert, Checkbox, ButtonToolbar, FormGroup, Form, FormControl, ControlLabel } from 'react-bootstrap'
 import { sentence as toSentenceCase } from 'change-case'
 import Rcslider from 'rc-slider'
-import { polyline as getPolyline } from '../../scenario-editor/utils/valhalla'
 
-import { CLICK_OPTIONS } from '../util'
+import { polyline as getPolyline } from '../../../scenario-editor/utils/valhalla'
+import { CLICK_OPTIONS } from '../../util'
 
 export default class EditShapePanel extends Component {
   async drawPatternFromStops (pattern, stops) {
@@ -63,7 +63,7 @@ export default class EditShapePanel extends Component {
             <FormControl
               type='number' step={5} min={0} max={100}
               value={this.props.editSettings.distanceFromIntersection}
-              onChange={(evt) => this.props.updateEditSetting('distanceFromIntersection', evt.target.value)}
+              onChange={(evt) => this.props.updateEditSetting('distanceFromIntersection', +evt.target.value)}
               style={{width: '60px', marginTop: '10px'}}
             />
             <span> meters </span>
@@ -82,7 +82,7 @@ export default class EditShapePanel extends Component {
             <FormControl
               type='number' step={1} max={10} min={1}
               value={this.props.editSettings.intersectionStep}
-              onChange={(evt) => this.props.updateEditSetting('intersectionStep', evt.target.value)}
+              onChange={(evt) => this.props.updateEditSetting('intersectionStep', +evt.target.value)}
               style={{width: '55px', marginTop: '10px'}}
             />
             <span> intersections</span>
@@ -192,7 +192,6 @@ export default class EditShapePanel extends Component {
   }
   render () {
     const { activePattern } = this.props
-    console.log(this.props)
     return (
       <div>
         <h4>

@@ -12,14 +12,16 @@ export default class PatternStopsLayer extends Component {
     const {
       stops,
       activePattern,
-      editSettings
+      editSettings,
+      removeStopFromPattern,
+      addStopToPattern
     } = this.props
     return (
       <FeatureGroup
         ref='patternStops'
         key='patternStops'
       >
-        {stops.length && activePattern && !editSettings.hideStops
+        {stops && activePattern && !editSettings.hideStops
           ? activePattern.patternStops && activePattern.patternStops.map((s, index) => {
             const stop = stops.find(ps => ps.id === s.stopId)
             if (!stop) return null
@@ -43,8 +45,8 @@ export default class PatternStopsLayer extends Component {
                   <PatternStopPopup
                     {...this.props}
                     index={index}
-                    addStopToPattern={this.addStopToPattern}
-                    removeStopFromPattern={this.removeStopFromPattern}
+                    addStopToPattern={addStopToPattern}
+                    removeStopFromPattern={removeStopFromPattern}
                     stop={stop}
                     patternStop={s}
                   />

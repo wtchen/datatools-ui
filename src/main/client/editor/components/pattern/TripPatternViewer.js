@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 
-import EditableTextField from '../../common/components/EditableTextField'
+import EditableTextField from '../../../common/components/EditableTextField'
 import EditShapePanel from './EditShapePanel'
 import EditSchedulePanel from './EditSchedulePanel'
 import CalculateDefaultTimesForm from './CalculateDefaultTimesForm'
 import PatternStopsPanel from './PatternStopsPanel'
 
 export default class TripPatternViewer extends Component {
-  savePatternName (name) {
+  savePatternName = (name) => {
     this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {name})
     this.props.saveActiveEntity('trippattern')
   }
@@ -17,7 +17,7 @@ export default class TripPatternViewer extends Component {
       <div>
         <EditableTextField
           value={activePattern.name}
-          onChange={(value) => this.savePatternName(value)}
+          onChange={this.savePatternName}
         />
         <hr />
         <EditShapePanel {...this.props} />

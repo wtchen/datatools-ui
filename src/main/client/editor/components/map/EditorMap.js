@@ -93,6 +93,17 @@ export default class EditorMap extends Component {
         break
     }
   }
+  // async addStopAtPoint (latlng, addToPattern = false, index) {
+  //   // create stop
+  //   const stop = await constructStop(latlng, this.props.feedSource.id)
+  //   const s = await this.props.newGtfsEntity(this.props.feedSource.id, 'stop', stop, true)
+  //   const gtfsStop = stopToGtfs(s)
+  //   // add stop to end of pattern
+  //   if (addToPattern) {
+  //     await this.props.addStopToPattern(this.props.activePattern, gtfsStop, index)
+  //   }
+  //   return gtfsStop
+  // }
   _mapBaseLayerChanged = (e) => {
     const layer = MAP_LAYERS.find(l => l.name === e.name)
     console.log('base layer changed', e)
@@ -117,7 +128,7 @@ export default class EditorMap extends Component {
         case 'NO_ACTION':
           break
         case 'ADD_STOP_AT_CLICK':
-          return this.props.addStopAtPoint(e.latlng, true, this.props.activePattern)
+          return this.props.addStopAtPoint(e.latlng, true, null, this.props.activePattern)
         case 'ADD_STOPS_AT_INTERSECTIONS':
           return this.props.addStopAtIntersection(e.latlng, this.props.activePattern)
         case 'ADD_STOPS_AT_INTERVAL':
@@ -142,11 +153,6 @@ export default class EditorMap extends Component {
       }
     }
   }
-  onControlPointDrag (newCoordinates) {
-    // update active pattern leafletElement
-    // let leafletPattern = this.refs[this.props.activePattern.id].leafletElement
-    // leafletPattern.setLatLngs(leafletCoords)
-  }
   getMapComponents (component, entity, subEntityId, activePattern, stops, editSettings, mapState) {
     switch (component) {
       case 'route':
@@ -157,6 +163,7 @@ export default class EditorMap extends Component {
               route={entity}
               subEntityId={subEntityId}
               activePattern={activePattern}
+              patternCoordinates={this.props.editSettings.patternCoordinates}
               activeEntity={entity}
               editSettings={editSettings}
               controlPoints={this.props.controlPoints}
@@ -169,13 +176,24 @@ export default class EditorMap extends Component {
               activePattern={activePattern}
               editSettings={editSettings}
               handlePatternEdit={this.props.handlePatternEdit}
+              updateControlPoint={this.props.updateControlPoint}
+              removeControlPoint={this.props.removeControlPoint}
+              updateActiveEntity={this.props.updateActiveEntity}
               handleControlPointDragEnd={this.props.handleControlPointDragEnd}
-              onDrag={this.onControlPointDrag}
+              updatePatternCoordinates={this.props.updatePatternCoordinates}
               controlPoints={this.props.controlPoints}
               polyline={activePattern && this.refs[activePattern.id]} />
             <PatternStopsLayer
               stops={stops}
               activePattern={activePattern}
+              removeStopFromPattern={this.props.removeStopFromPattern}
+              entityEdited={this.props.editSettings.entityEdited}
+              saveActiveEntity={this.props.saveActiveEntity}
+              setActiveEntity={this.props.setActiveEntity}
+              feedSource={this.props.feedSource}
+              controlPoints={this.props.controlPoints}
+              addStopToPattern={this.props.addStopToPattern}
+              updateActiveEntity={this.props.updateActiveEntity}
               editSettings={editSettings} />
             <AddableStopsLayer
               stops={stops}
@@ -205,7 +223,6 @@ export default class EditorMap extends Component {
     }
   }
   render () {
-    console.log(this.props)
     const {
       feedSource,
       mapState,

@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react'
 import { divIcon } from 'leaflet'
 import {FeatureGroup, Marker} from 'react-leaflet'
 
-export default class StopMarkersLayer extends FeatureGroup {
+import {clickToLatLng} from '../../util/map'
 
+export default class StopMarkersLayer extends FeatureGroup {
   static propTypes = {
     stops: PropTypes.array,
     activeEntity: PropTypes.object,
@@ -71,7 +72,7 @@ export default class StopMarkersLayer extends FeatureGroup {
                 onDragEnd={(e) => {
                   console.log(e)
                   let latlng = e.target.getLatLng()
-                  let stopLatLng = this.getStopLatLng(latlng)
+                  let stopLatLng = clickToLatLng(latlng)
                   updateActiveEntity(activeEntity, 'stop', stopLatLng)
                   this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
                 }}
