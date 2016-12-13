@@ -42,7 +42,7 @@ export default class FeedInfoPanel extends Component {
   render () {
     let { feedSource, feedInfo } = this.props
     if (!feedInfo) return null
-    let panelWidth = 370
+    let panelWidth = 400
     // let panelHeight = '100px'
     let panelStyle = {
       // backgroundColor: 'white',
