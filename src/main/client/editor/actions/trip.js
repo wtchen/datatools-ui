@@ -28,7 +28,6 @@ export function fetchTripsForCalendar (feedId, pattern, calendarId) {
       .then(res => res.json())
       .then(trips => {
         dispatch(receiveTripsForCalendar(feedId, pattern, calendarId, trips))
-        return trips
       })
   }
 }

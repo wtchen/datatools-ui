@@ -27,7 +27,7 @@ export function saveRoute (feedId, route) {
       gtfsRouteId: route.route_id,
       agencyId: route.agency_id,
       feedId: route.feedId,
-      routeBrandingUrl: route.routeBrandingUrl,
+      routeBrandingUrl: route.route_branding_url,
       publiclyVisible: route.publiclyVisible,
       status: route.status,
 

@@ -76,14 +76,14 @@ export function requestingTripPatternsForRoute (feedId, routeId) {
   }
 }
 
-export function receiveTripPatternsForRoute (feedId, routeId, tripPatterns, activePattern, activePatternStops) {
+export function receiveTripPatternsForRoute (feedId, routeId, tripPatterns, activePattern, activeColumns) {
   return {
     type: 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE',
     feedId,
     routeId,
     tripPatterns,
     activePattern,
-    activePatternStops
+    activeColumns
   }
 }
 
@@ -163,12 +163,10 @@ export function saveTripPattern (feedId, tripPattern) {
       })
       .then(tp => {
         dispatch(savedTripPattern(feedId, tp))
-        console.log(tripPattern.id)
         if (tripPattern.id === 'new') {
           dispatch(setActiveGtfsEntity(feedId, 'route', routeId, 'trippattern', tp.id))
         }
         return tp
-        // return tripPattern
       })
   }
 }

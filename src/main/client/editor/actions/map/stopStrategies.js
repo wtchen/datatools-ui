@@ -1,87 +1,163 @@
 import along from 'turf-along'
 import ll from 'lonlng'
 import lineDistance from 'turf-line-distance'
+import lineSlice from 'turf-line-slice'
 
-import { constructStop, stopToStopTime } from '../../util/map'
+import { constructStop, stopToStopTime, handlePatternEdit, getPatternEndPoint, street, constructPoint } from '../../util/map'
 import { stopToGtfs } from '../../util/gtfs'
+import { newGtfsEntity } from '../editor'
 import { extendPatternToPoint } from '../map'
-import { updateActiveEntity, saveActiveEntity } from '../active'
-// import { newGtfsEntities } from '../editor'
+import { updateActiveGtfsEntity, saveActiveGtfsEntity } from '../active'
 import {getSegment} from '../../../scenario-editor/utils/valhalla'
 
-export async function addStopAtPoint (latlng, addToPattern = false, index, activePattern) {
-  return async function (dispatch, getState) {
-    // create stop
-    const stop = await constructStop(latlng, activePattern.feedId)
-    const s = await this.props.newGtfsEntity(activePattern.feedId, 'stop', stop, true)
-    const gtfsStop = stopToGtfs(s)
-    // add stop to end of pattern
-    if (addToPattern) {
-      await dispatch(addStopToPattern(activePattern, gtfsStop, index))
-    }
-    return gtfsStop
+function addingStopToPattern (pattern, stop, index) {
+  return {
+    type: 'ADDING_STOP_TO_PATTERN',
+    pattern,
+    stop,
+    index
   }
 }
 
-export async function addStopAtIntersection (latlng, activePattern) {
+export function addStopAtPoint (latlng, addToPattern = false, index, activePattern) {
+  return function (dispatch, getState) {
+    // create stop
+    return constructStop(latlng, activePattern.feedId)
+    .then(stop => {
+      return dispatch(newGtfsEntity(activePattern.feedId, 'stop', stop, true))
+      .then(s => {
+        const gtfsStop = stopToGtfs(s)
+        // add stop to end of pattern
+        if (addToPattern && gtfsStop) {
+          return dispatch(addStopToPattern(activePattern, gtfsStop, index))
+          .then(result => {
+            return gtfsStop
+          })
+        }
+        return gtfsStop
+      })
+    })
+  }
+}
+
+export function addStopAtIntersection (latlng, activePattern) {
   return async function (dispatch, getState) {
     console.log('adding stop at intersection!')
-    // TODO: implement intersection strategy
-    // 1. extend pattern to click point
-    // 2. get intersections from OSRM
-    // 3. add stops at intersections (using afterIntersection, intersectionStep, distanceFromIntersection)
+    let endPoint = getPatternEndPoint(activePattern)
+    street(endPoint, latlng)
+    .then(json => {
+      if (json) {
+        const extension = [].concat.apply([], json.data.features.map(f => f.geometry.coordinates))
+        const patternStops = [...activePattern.patternStops]
+        // trim added coordinates from end of existing pattern shape to end of extension
+        const last = json.data.features[json.data.features.length - 1]
+        const start = constructPoint(endPoint)
+        const end = constructPoint(last.geometry.coordinates[last.geometry.coordinates.length - 1])
+        const trimmed = lineSlice(start, end, {type: 'Feature', geometry: {type: 'LineString', coordinates: extension}})
+        const { afterIntersection, intersectionStep, distanceFromIntersection } = getState().editor.editSettings
+        const shape = {type: 'LineString', coordinates: [...activePattern.shape.coordinates, ...trimmed.geometry.coordinates]}
+        dispatch(updateActiveGtfsEntity(activePattern, 'trippattern', {shape}))
+        dispatch(saveActiveGtfsEntity('trippattern'))
+        return Promise.all(json.data.features.map((feature, index) => {
+          // create stops only at specified step
+          if (index % intersectionStep !== 0) {
+            return null
+          }
+          const toVertex = json.vertices.find(v => v.index === feature.properties.toVertex)
+          // skip vertex if no intersection exists
+          if (toVertex.incidentStreets.length <= 2) {
+            return null
+          }
+          // skip vertex if incidentStreets tags highway !== primary or secondary
+          // else if (toVertex) {
+          //
+          // }
+
+          // modify location according to distanceFromIntersection and before/after
+          const start = afterIntersection
+            ? constructPoint(feature.geometry.coordinates[feature.geometry.coordinates.length - 1])
+            : constructPoint(shape.coordinates[0])
+          const end = afterIntersection
+            ? constructPoint(shape.coordinates[shape.coordinates.length - 1])
+            : constructPoint(feature.geometry.coordinates[feature.geometry.coordinates.length - 1])
+          const lineFromPoint = lineSlice(start, end, {type: 'Feature', geometry: shape})
+          const stopLocation = along(lineFromPoint, distanceFromIntersection / 1000, 'kilometers')
+          const latlng = ll.toLatlng(stopLocation.geometry.coordinates)
+          // const {afterIntersection, intersectionStep, distanceFromIntersection} = getState().editor.editSettings
+          return dispatch(addStopAtPoint(latlng, false, patternStops.length, activePattern))
+        }))
+        .then(stops => {
+          console.log(stops)
+          stops.map(s => {
+            // add new stop to array
+            if (s) {
+              patternStops.push(stopToStopTime(s))
+            }
+          })
+          // update and save all new stops to pattern
+          console.log('saving pattern stops')
+          dispatch(updateActiveGtfsEntity(getState().editor.data.active.subEntity, 'trippattern', {patternStops}))
+          return dispatch(saveActiveGtfsEntity('trippattern'))
+        })
+      }
+    })
   }
 }
 
-export async function addStopAtInterval (latlng, activePattern) {
-  return async function (dispatch, getState) {
+export function addStopAtInterval (latlng, activePattern) {
+  return function (dispatch, getState) {
     // create first stop if none exist
     if (activePattern.patternStops.length === 0) {
-      dispatch(addStopAtPoint(latlng, true, activePattern))
+      return dispatch(addStopAtPoint(latlng, true, activePattern))
     } else {
-      let coordinates = activePattern.shape && activePattern.shape.coordinates
       let patternStops = [...activePattern.patternStops]
       let initialDistance = lineDistance(activePattern.shape, 'meters')
 
       // extend pattern to click point
-      let endPoint
-      if (coordinates) {
-        endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
-      } else {
-        endPoint = {lng: patternStops[0].stop_lon, lat: patternStops[0].stop_lat}
-      }
-      const updatedShape = await dispatch(extendPatternToPoint(activePattern, endPoint, latlng))
-      let totalDistance = lineDistance(activePattern.shape, 'meters')
-      let distanceAdded = totalDistance - initialDistance
-      let numIntervals = distanceAdded / getState().editor.editSettings.stopInterval
-      const latlngList = []
-      for (var i = 1; i < numIntervals; i++) {
-        let stopDistance = initialDistance + i * getState().editor.editSettings.stopInterval
+      let endPoint = getPatternEndPoint(activePattern)
+      dispatch(extendPatternToPoint(activePattern, endPoint, latlng))
+      .then(updatedShape => {
+        let totalDistance = lineDistance(updatedShape, 'meters')
+        let distanceAdded = totalDistance - initialDistance
+        let numIntervals = Math.floor(distanceAdded / getState().editor.editSettings.stopInterval)
+        const latlngList = []
+        console.log(numIntervals)
+        for (var i = 1; i <= numIntervals; i++) {
+          console.log(i)
+          let stopDistance = initialDistance + i * getState().editor.editSettings.stopInterval
 
-        // add stops along shape at interval (stopInterval)
-        let position = along(updatedShape, stopDistance, 'meters')
-        let stopLatlng = ll.toLatlng(position.geometry.coordinates)
-        latlngList.push(stopLatlng)
-
-        // pass patternStops.length as index to ensure pattern not extended to locaton
-        const newStop = await dispatch(addStopAtPoint(stopLatlng, false, patternStops.length, activePattern))
-        // add new stop to array
-        patternStops.push(stopToStopTime(newStop))
-      }
-      // TODO: switch to adding multiple stops per action (Java controller and action promise need updating)
-      // const newStops = await this.addStopsAtPoints(latlngList)
-      // // add new stop to array
-      // patternStops = [...patternStops, ...newStops.map(s => stopToStopTime(s))]
-
-      // update and save all new stops to pattern
-      updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-      saveActiveEntity('trippattern')
+          // add stops along shape at interval (stopInterval)
+          let position = along(updatedShape, stopDistance, 'meters')
+          let stopLatlng = ll.toLatlng(position.geometry.coordinates)
+          latlngList.push(stopLatlng)
+        }
+        return Promise.all(latlngList.map(latlng => {
+          // pass patternStops.length as index to ensure pattern not extended to locaton
+          return dispatch(addStopAtPoint(latlng, false, patternStops.length, activePattern))
+        }))
+        .then(stops => {
+          stops.map(s => {
+            // add new stop to array
+            if (s) {
+              patternStops.push(stopToStopTime(s))
+            }
+          })
+          console.log('saving pattern stops')
+          dispatch(updateActiveGtfsEntity(getState().editor.data.active.subEntity, 'trippattern', {patternStops}))
+          return dispatch(saveActiveGtfsEntity('trippattern'))
+        })
+        // TODO: switch to adding multiple stops per action (Java controller and action promise need updating)
+        // const newStops = await this.addStopsAtPoints(latlngList)
+        // // add new stop to array
+        // patternStops = [...patternStops, ...newStops.map(s => stopToStopTime(s))]
+      })
     }
   }
 }
 
-export async function addStopToPattern (pattern, stop, index) {
-  return async function (dispatch, getState) {
+export function addStopToPattern (pattern, stop, index) {
+  return function (dispatch, getState) {
+    dispatch(addingStopToPattern(pattern, stop, index))
     let patternStops = [...pattern.patternStops]
     let coordinates = pattern.shape && pattern.shape.coordinates
     let newStop = stopToStopTime(stop)
@@ -91,30 +167,57 @@ export async function addStopToPattern (pattern, stop, index) {
       if (coordinates) {
         let endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
         patternStops.push(newStop)
-        updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
-        // saveActiveEntity('trippattern')
-        extendPatternToPoint(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat})
+        dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops}))
+        // saveActiveGtfsEntity('trippattern')
+        return dispatch(extendPatternToPoint(pattern, endPoint, {lng: stop.stop_lon, lat: stop.stop_lat}))
       } else { // if shape coordinates do not exist, add pattern stop and get shape between stops (if multiple stops exist)
         patternStops.push(newStop)
         if (patternStops.length > 1) {
           let previousStop = getState().editor.data.tables.stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
           console.log(previousStop)
-          let geojson = await getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], getState().editor.editSettings.followStreets)
-          updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}})
-          saveActiveEntity('trippattern')
+          getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], getState().editor.editSettings.followStreets)
+          .then(geojson => {
+            dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}}))
+            dispatch(saveActiveGtfsEntity('trippattern'))
+          })
         } else {
-          updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
-          saveActiveEntity('trippattern')
+          dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops}))
+          return dispatch(saveActiveGtfsEntity('trippattern'))
         }
       }
       // if not following roads
-      // updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}})
+      // updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}})
     } else { // if adding stop in middle
       patternStops.splice(index, 0, newStop)
-      updateActiveEntity(pattern, 'trippattern', {patternStops: patternStops})
-      saveActiveEntity('trippattern')
+      dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops}))
+      return dispatch(saveActiveGtfsEntity('trippattern'))
     }
     // TODO: add strategy for stop at beginning
+  }
+}
+
+function removingStopFromPattern (pattern, stop, index, controlPoints) {
+  return {
+    type: 'REMOVING_STOP_FROM_PATTERN',
+    pattern,
+    stop,
+    index,
+    controlPoints
+  }
+}
+
+export function removeStopFromPattern (pattern, stop, index, controlPoints) {
+  return async function (dispatch, getState) {
+    dispatch(removingStopFromPattern(pattern, stop, index, controlPoints))
+    const cpIndex = controlPoints.findIndex(cp => cp.stopId === stop.id)
+    let begin = controlPoints[cpIndex - 2] ? controlPoints[cpIndex - 1].point : null
+    let end = controlPoints[cpIndex + 2] ? controlPoints[cpIndex + 1].point : null
+    const { followStreets, patternCoordinates } = getState().editor.editSettings
+    let coordinates = await handlePatternEdit(null, begin, end, pattern, followStreets, patternCoordinates)
+    let patternStops = [...pattern.patternStops]
+    patternStops.splice(index, 1)
+    dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: coordinates}}))
+    dispatch(saveActiveGtfsEntity('trippattern'))
   }
 }
 

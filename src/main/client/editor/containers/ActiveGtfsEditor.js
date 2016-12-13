@@ -3,9 +3,7 @@ import { connect } from 'react-redux'
 import GtfsEditor from '../components/GtfsEditor'
 import { componentList } from '../util/gtfs'
 import { fetchFeedSourceAndProject } from '../../manager/actions/feeds'
-import {
-  fetchFeedInfo
-} from '../actions/feedInfo'
+import { fetchFeedInfo } from '../actions/feedInfo'
 import {
   fetchStops,
   fetchStopsForTripPattern
@@ -16,22 +14,33 @@ import {
   undoActiveTripPatternEdits
 } from '../actions/tripPattern'
 import {
+  removeStopFromPattern,
+  addStopAtPoint,
+  addStopAtIntersection,
+  addStopAtInterval,
+  addStopToPattern } from '../actions/map/stopStrategies'
+import {
   updateControlPoint,
   addControlPoint,
   removeControlPoint,
   updateMapSetting,
-  handleControlPointDragEnd,
-  handlePatternEdit
+  constructControlPoint,
+  updatePatternCoordinates
 } from '../actions/map'
 import {
   fetchTripsForCalendar
 } from '../actions/trip'
-import { updateEditSetting, setActiveGtfsEntity, deleteGtfsEntity, updateActiveGtfsEntity, resetActiveGtfsEntity, clearGtfsContent } from '../actions/active'
+import { updateEditSetting,
+  setActiveGtfsEntity,
+  deleteGtfsEntity,
+  updateActiveGtfsEntity,
+  resetActiveGtfsEntity,
+  clearGtfsContent,
+  saveActiveGtfsEntity } from '../actions/active'
 import {
   newGtfsEntity,
   newGtfsEntities,
   cloneGtfsEntity,
-  saveActiveGtfsEntity,
   getGtfsTable,
   receiveGtfsEntities,
   uploadBrandingAsset
@@ -238,11 +247,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
     // TRIP PATTERN EDIT FUNCTIONS
     undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
+    updatePatternCoordinates: (coordinates) => { dispatch(updatePatternCoordinates(coordinates)) },
+    removeStopFromPattern: (pattern, stop, index, controlPoints) => dispatch(removeStopFromPattern(pattern, stop, index, controlPoints)),
+    addStopToPattern: (pattern, stop, index) => dispatch(addStopToPattern(pattern, stop, index)),
+    addStopAtPoint: (latlng, addToPattern, index, activePattern) => dispatch(addStopAtPoint(latlng, addToPattern, index, activePattern)),
+    addStopAtInterval: (latlng, activePattern) => dispatch(addStopAtInterval(latlng, activePattern)),
+    addStopAtIntersection: (latlng, activePattern) => dispatch(addStopAtIntersection(latlng, activePattern)),
     addControlPoint: (controlPoint, index) => { dispatch(addControlPoint(controlPoint, index)) },
     removeControlPoint: (index, begin, end, pattern, polyline) => { dispatch(removeControlPoint(index, begin, end, pattern, polyline)) },
     updateControlPoint: (index, point, distance) => { dispatch(updateControlPoint(index, point, distance)) },
-    handleControlPointDragEnd: (e, timer, controlPoint, controlPointIndex, polyline, activePattern) => dispatch(handleControlPointDragEnd(e, timer, controlPoint, controlPointIndex, polyline, activePattern)),
-    handlePatternEdit: (controlPointRef, begin, end, polyline, activePattern) => dispatch(handlePatternEdit(controlPointRef, begin, end, polyline, activePattern)),
+    constructControlPoint: (pattern, latlng, controlPoints) => { dispatch(constructControlPoint(pattern, latlng, controlPoints)) },
 
     // EDITOR UI
     setTutorialHidden: (value) => { dispatch(setTutorialHidden(value)) }

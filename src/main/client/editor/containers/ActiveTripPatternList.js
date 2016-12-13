@@ -1,15 +1,19 @@
 import { connect } from 'react-redux'
-import { updateEditSetting, setActiveGtfsEntity, deleteGtfsEntity, updateActiveGtfsEntity, resetActiveGtfsEntity } from '../actions/active'
+import {
+  updateEditSetting,
+  setActiveGtfsEntity,
+  deleteGtfsEntity,
+  saveActiveGtfsEntity,
+  updateActiveGtfsEntity,
+  resetActiveGtfsEntity } from '../actions/active'
 import {
   newGtfsEntity,
-  saveActiveGtfsEntity,
   updateMapSetting,
-  cloneGtfsEntity,
-  undoActiveTripPatternEdits
-} from '../actions/editor'
+  cloneGtfsEntity } from '../actions/editor'
+import { undoActiveTripPatternEdits } from '../actions/tripPattern'
 import { findProjectByFeedSource } from '../../manager/util'
 
-import TripPatternList from '../components/TripPatternList'
+import TripPatternList from '../components/pattern/TripPatternList'
 
 const mapStateToProps = (state, ownProps) => {
   const mapState = state.editor.mapState
@@ -40,12 +44,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
 
     // NEW GENERIC GTFS/EDITOR FUNCTIONS
-    updateEditSetting: (setting, value) => {
-      dispatch(updateEditSetting(setting, value))
-    },
-    updateMapSetting: (props) => {
-      dispatch(updateMapSetting(props))
-    },
+    updateEditSetting: (setting, value, activePattern) => dispatch(updateEditSetting(setting, value, activePattern)),
+    updateMapSetting: (props) => dispatch(updateMapSetting(props)),
     setActiveEntity: (feedSourceId, component, entity, subComponent, subEntity, subSubComponent, subSubEntity) => {
       let entityId = entity && entity.id
       let subEntityId = subEntity && subEntity.id

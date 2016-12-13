@@ -21,7 +21,7 @@ const mapState = (state = defaultState, action) => {
           target: {$set: action.feedInfo.id}
         })
       }
-      break
+      return state
     case 'RECEIVE_STOPS':
       const tree = rbush(9, ['[0]', '[1]', '[0]', '[1]'])
       tree.load(action.stops.map(s => ([s.stop_lon, s.stop_lat, s])))

@@ -81,6 +81,7 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       ? clone(activeEntity.tripPatterns.find(p => p.id === subEntityId))
       : null
     const activePatternStops = getStopsForPattern(activeSubEntity, getState().editor.data.tables.stop)
+    console.log('active', activeSubEntity)
     const activeColumns = getTimetableColumns(activeSubEntity, activePatternStops)
     dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId, activeEntity, activeSubEntity, activeColumns))
   }
@@ -175,8 +176,11 @@ export function deleteGtfsEntity (feedId, component, entityId, routeId) {
 }
 
 export function updateActiveGtfsEntity (entity, component, props) {
-  return function (dispatch, getState) {
-    dispatch(entity, component, props, getState().editor.data.active)
+  return {
+    type: 'UPDATE_ACTIVE_GTFS_ENTITY',
+    entity,
+    component,
+    props
   }
 }
 

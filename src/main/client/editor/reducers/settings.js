@@ -16,7 +16,8 @@ const defaultState = {
   hideStops: false,
   controlPoints: [],
   coordinatesHistory: [],
-  actions: []
+  actions: [],
+  patternCoordinates: null
 }
 
 const editSettings = (state = defaultState, action) => {
@@ -28,7 +29,8 @@ const editSettings = (state = defaultState, action) => {
           controlPoints = getControlPoints(action.activeSubEntity, state.snapToStops)
           coordinates = action.activeSubEntity && action.activeSubEntity.shape && action.activeSubEntity.shape.coordinates
           stateUpdate = {
-            controlPoints: {$set: controlPoints}
+            controlPoints: {$set: [controlPoints]},
+            patternCoordinates: {$set: coordinates}
           }
           if (coordinates) {
             stateUpdate.coordinatesHistory = {$set: [coordinates]}
@@ -37,26 +39,40 @@ const editSettings = (state = defaultState, action) => {
         default:
           return state
       }
-    case 'UPDATING_ACTIVE_GTFS_ENTITY':
-      if (action.props && 'shape' in action.props) {
-        // add previous coordinates to history
-        coordinates = action.active.subEntity.shape && action.active.subEntity.shape.coordinates
-        if (coordinates) {
-          return update(state, {
-            coordinatesHistory: {$push: [coordinates]}
-          })
-        }
+    case 'UPDATE_PATTERN_COORDINATES':
+      return update(state, {
+        patternCoordinates: {$set: action.coordinates}
+      })
+    case 'UPDATE_ACTIVE_GTFS_ENTITY':
+      switch (action.component) {
+        case 'trippattern':
+          if (action.props && 'shape' in action.props) {
+            // add previous coordinates to history
+            coordinates = action.entity.shape && action.entity.shape.coordinates
+            const newCoordinates = action.props.shape && action.props.shape.coordinates
+            if (coordinates) {
+              return update(state, {
+                coordinatesHistory: {$push: [coordinates]},
+                patternCoordinates: {$set: newCoordinates}
+              })
+            }
+          }
+          break
+        default:
+          return state
       }
-      break
+      return state
     case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       // set controlPoints initially and then whenever isSnappingToStops changes
       if (action.activePattern) {
+        coordinates = action.activePattern.shape && action.activePattern.shape.coordinates
         controlPoints = getControlPoints(action.activePattern, state.snapToStops)
       } else {
         controlPoints = []
       }
       return update(state, {
-        controlPoints: {$set: [controlPoints]}
+        controlPoints: {$set: [controlPoints]},
+        patternCoordinates: {$set: coordinates}
       })
     case 'UPDATE_EDIT_SETTING':
       if (action.setting === 'editGeometry' && !state.editGeometry) {
@@ -76,8 +92,6 @@ const editSettings = (state = defaultState, action) => {
       let lastCoordinatesIndex = state.coordinatesHistory.length - 1
       let lastControlPointsIndex = state.controlPoints.length - 1
       stateUpdate = {
-        // coordinatesHistory: {$splice: [[lastEditIndex, 1]]},
-        // controlPoints: {$splice: [[lastEditIndex, 1]]},
         actions: {$splice: [[lastActionIndex, 1]]}
       }
       switch (lastActionType) {
@@ -113,6 +127,16 @@ const editSettings = (state = defaultState, action) => {
         controlPoints: {$push: [controlPoints]},
         actions: {$push: [action.type]}
       })
+    case 'RESET_ACTIVE_GTFS_ENTITY':
+      switch (action.component) {
+        case 'trippattern':
+          coordinates = state.coordinatesHistory[0]
+          return update(state, {
+            patternCoordinates: {$set: coordinates}
+          })
+        default:
+          return state
+      }
     case 'REMOVE_CONTROL_POINT':
       controlPoints = [...state.controlPoints[state.controlPoints.length - 1]]
       controlPoints.splice(action.index, 1)
@@ -132,14 +156,13 @@ const editSettings = (state = defaultState, action) => {
         actions: {$push: [action.type]}
       })
     case 'SAVED_TRIP_PATTERN':
-      // NOTE: pattern should always be active, so conditional is unnecessary...
-      // if (action.tripPattern.id === state.data.active.subEntityId) {
-        // set controlPoints initially and then whenever isSnappingToStops changes
+      // set controlPoints initially and then whenever isSnappingToStops changes
       controlPoints = getControlPoints(action.tripPattern, state.snapToStops)
+      coordinates = action.tripPattern && action.tripPattern.shape && action.tripPattern.shape.coordinates
       return update(state, {
-        controlPoints: {$set: [controlPoints]}
+        controlPoints: {$set: [controlPoints]},
+        patternCoordinates: {$set: coordinates}
       })
-      // }
     default:
       return state
   }

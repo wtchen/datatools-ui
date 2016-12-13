@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { fetchSnapshots, restoreSnapshot, deleteSnapshot, loadFeedVersionForEditing } from '../actions/snapshots.js'
-import { createFeedVersionFromSnapshot } from '../../manager/actions/feeds'
+import { createFeedVersionFromSnapshot } from '../../manager/actions/versions'
 
 import EditorFeedSourcePanel from '../components/EditorFeedSourcePanel'
 

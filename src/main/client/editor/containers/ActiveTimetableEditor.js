@@ -25,12 +25,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     // NOTE: fetchTripsForCalendar is handled in ActiveGtfsEditor where it is used to fetch trips
-    saveTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
-      return dispatch(saveTripsForCalendar(feedSourceId, pattern, calendarId, trips))
-    },
-    deleteTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => {
-      return dispatch(deleteTripsForCalendar(feedSourceId, pattern, calendarId, trips))
-    },
+    saveTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => dispatch(saveTripsForCalendar(feedSourceId, pattern, calendarId, trips)),
+    deleteTripsForCalendar: (feedSourceId, pattern, calendarId, trips) => dispatch(deleteTripsForCalendar(feedSourceId, pattern, calendarId, trips)),
 
     // TIMETABLE FUNCTIONS
     updateCellValue: (value, rowIndex, key) => dispatch(updateCellValue(value, rowIndex, key)),

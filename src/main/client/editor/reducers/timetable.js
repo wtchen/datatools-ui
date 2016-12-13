@@ -16,7 +16,7 @@ const defaultState = {
 const timetable = (state = defaultState, action) => {
   let trips
   switch (action.type) {
-    case 'RECIEVE_TRIP_PATTERNS_FOR_ROUTE':
+    case 'RECEIVE_TRIP_PATTERNS_FOR_ROUTE':
       return update(state, {
         columns: {$set: action.activeColumns}
       })

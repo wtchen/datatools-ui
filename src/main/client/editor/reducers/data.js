@@ -11,14 +11,15 @@ const defaultState = {
 }
 const data = (state = defaultState, action) => {
   let stateUpdate, key, newTableData, activeEntity, activeSubEntity, newState, routeIndex, stopIndex, patternIndex, agencyIndex, fareIndex, calendarIndex, scheduleExceptionIndex, activePattern
-  switch (action.type) {
+  const { type, component } = action
+  switch (type) {
     case 'REQUESTING_FEED_INFO':
       if (state.feedSourceId && action.feedId !== state.feedSourceId) {
         return defaultState
       }
       return state
     case 'CREATE_GTFS_ENTITY':
-      if (action.component === 'trippattern') {
+      if (component === 'trippattern') {
         activeEntity = {
           isCreating: true,
           name: '',
@@ -43,13 +44,13 @@ const data = (state = defaultState, action) => {
           ...action.props
         }
         // if tables's component array is undefined, add it
-        if (!state.tables[action.component]) {
+        if (!state.tables[component]) {
           newState = update(state, {
-            tables: {[action.component]: {$set: []}}
+            tables: {[component]: {$set: []}}
           })
         }
         return update(newState || state, {
-          tables: {[action.component]: {$unshift: [activeEntity]}}
+          tables: {[component]: {$unshift: [activeEntity]}}
           // active: {
           //   entity: {$set: activeEntity},
           //   edited: {$set: typeof action.props !== 'undefined'}
@@ -57,10 +58,10 @@ const data = (state = defaultState, action) => {
         })
       }
     case 'SETTING_ACTIVE_GTFS_ENTITY':
-      activeEntity = action.component === 'feedinfo'
-        ? clone(state.tables[action.component])
-        : state.tables[action.component] && action.entityId
-        ? clone(state.tables[action.component].find(e => e.id === action.entityId))
+      activeEntity = component === 'feedinfo'
+        ? clone(state.tables[component])
+        : state.tables[component] && action.entityId
+        ? clone(state.tables[component].find(e => e.id === action.entityId))
         : null
       switch (action.subComponent) {
         case 'trippattern':
@@ -79,7 +80,7 @@ const data = (state = defaultState, action) => {
         subEntity: activeSubEntity,
         subEntityId: action.subEntityId,
         subSubEntityId: action.subSubEntityId,
-        component: action.component,
+        component: component,
         subComponent: action.subComponent,
         subSubComponent: action.subSubComponent,
         edited: activeEntity && activeEntity.id === 'new'
@@ -88,7 +89,7 @@ const data = (state = defaultState, action) => {
         active: {$set: active}
       })
     case 'RESET_ACTIVE_GTFS_ENTITY':
-      switch (action.tcomponent) {
+      switch (component) {
         case 'trippattern':
           patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
           activeEntity = Object.assign({}, state.active.entity.tripPatterns[patternIndex])
@@ -99,7 +100,7 @@ const data = (state = defaultState, action) => {
             }
           })
         case 'feedinfo':
-          activeEntity = Object.assign({}, state.tables[action.component])
+          activeEntity = Object.assign({}, state.tables[component])
           return update(state, {
             active: {
               entity: {$set: activeEntity},
@@ -107,7 +108,7 @@ const data = (state = defaultState, action) => {
             }
           })
         default:
-          activeEntity = state.tables[action.component].find(e => e.id === action.entity.id)
+          activeEntity = state.tables[component].find(e => e.id === action.entity.id)
           return update(state, {
             active: {
               entity: {$set: activeEntity},
@@ -142,8 +143,8 @@ const data = (state = defaultState, action) => {
         })
       }
       return update(state, stateUpdate)
-    case 'UPDATING_ACTIVE_GTFS_ENTITY':
-      switch (action.component) {
+    case 'UPDATE_ACTIVE_GTFS_ENTITY':
+      switch (component) {
         case 'trippattern':
           patternIndex = state.active.entity.tripPatterns.findIndex(p => p.id === action.entity.id)
           activeEntity = Object.assign({}, state.active.subEntity)
@@ -389,6 +390,9 @@ const data = (state = defaultState, action) => {
       })
     case 'RECEIVE_STOP':
       const stop = stopToGtfs(action.stop)
+      if (!stop) {
+        return state
+      }
       stopIndex = state.tables.stop.findIndex(s => s.id === stop.id)
 
       // TODO: handle adding to rbush tree

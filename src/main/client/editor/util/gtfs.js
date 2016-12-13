@@ -31,9 +31,12 @@ export function getEntityBounds (entity, offset = 0.005) {
       }
     })
     return latLngBounds(coordinates)
-  } else if (typeof entity.shape !== 'undefined') {
+  } else if (entity.shape) {
     // trip pattern
     return latLngBounds(entity.shape.coordinates.map(c => ([c[1], c[0]])))
+  } else if (entity.patternStops) {
+    // TODO: add pattern stops bounds extraction
+    return null
   }
 }
 
@@ -148,6 +151,9 @@ export function getRouteName (route) {
 }
 
 export function stopToGtfs (s) {
+  if (!s) {
+    return null
+  }
   return {
     // datatools props
     id: s.id,
@@ -201,7 +207,7 @@ export function routeToGtfs (route) {
     // datatools props
     id: route.id,
     feedId: route.feedId,
-    routeBrandingUrl: route.routeBrandingUrl,
+    route_branding_url: route.routeBrandingUrl,
     publiclyVisible: route.publiclyVisible,
     status: route.status,
     numberOfTrips: route.numberOfTrips,
@@ -224,7 +230,7 @@ export function agencyToGtfs (agency) {
     // datatools props
     id: agency.id,
     feedId: agency.feedId,
-    agencyBrandingUrl: agency.agencyBrandingUrl,
+    agency_branding_url: agency.agencyBrandingUrl,
 
     // gtfs spec props
     agency_id: agency.agencyId,

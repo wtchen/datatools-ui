@@ -38,15 +38,6 @@ export function saveStop (feedId, stop) {
           dispatch(setActiveGtfsEntity(feedId, 'stop', newStop.id))
         }
         return newStop
-
-        // return dispatch(fetchStops(feedId))
-        // .then(() => {
-        //   // only set active if stop.id === 'new', if id is undefined, do not set active entity
-        //   if (stop.id === 'new') {
-        //     dispatch(setActiveGtfsEntity(feedId, 'stop', s.id))
-        //   }
-        //   return s
-        // })
       })
   }
 }
