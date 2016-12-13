@@ -14,7 +14,7 @@ import { reverseEsri as reverse } from '../../scenario-editor/utils/reverse'
 export const MAP_LAYERS = [
   {
     name: 'Streets',
-    id: getConfigProperty('mapbox.map_id')
+    id: 'mapbox.streets'
   },
   {
     name: 'Light',
