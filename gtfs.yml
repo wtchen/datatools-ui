@@ -126,10 +126,10 @@
     placeholder: contact@agency.org
     columnWidth: 12
     helpContent: "The agency_email field contains a single valid email address actively monitored by the agency’s customer service department. This email address will be considered a direct contact point where transit riders can reach a customer service representative at the agency."
-  - name: agencyBrandingUrl
+  - name: agency_branding_url
     required: false
     displayName: Agency branding URL
-    datatools: true
+    datatools: false
     placeholder: https://agency.org/assets/agency/XYZ
     inputType: URL
     columnWidth: 12
@@ -309,10 +309,10 @@
         text: Black
     columnWidth: 6
     helpContent: The route_text_color field can be used to specify a legible color to use for text drawn against a background of route_color. The color must be provided as a six-character hexadecimal number, for example, FFD700. If no color is specified, the default text color is black (000000).
-  - name: routeBrandingUrl
+  - name: route_branding_url
     required: false
     displayName: Route branding URL
-    datatools: true
+    datatools: false
     placeholder: https://agency.org/assets/route/1234
     inputType: URL
     columnWidth: 12
