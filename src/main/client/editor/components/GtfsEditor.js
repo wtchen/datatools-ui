@@ -225,7 +225,7 @@ export default class GtfsEditor extends Component {
             zoomToTarget={mapState.target}
             sidebarExpanded={sidebarExpanded}
             {...this.props} />
-          {!activeComponent && !hideTutorial
+          {!activeComponent && !hideTutorial && false
             ? <EditorHelpModal
               show
               setTutorialHidden={setTutorialHidden} />
