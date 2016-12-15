@@ -21,7 +21,7 @@ export async function reverseEsri (point) {
     returnIntersection: true,
     f: 'pjson'
   }
-  const url = `http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?${qs.stringify(params)}`
+  const url = `https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?${qs.stringify(params)}`
   const response = await fetch(url)
   return await response.json()
 }
