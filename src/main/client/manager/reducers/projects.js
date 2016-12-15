@@ -249,6 +249,12 @@ const projects = (state = {
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
+      const { fromLat, fromLon, date, fromTime, toTime } = action
+      action.isochrones.properties = { fromLat, fromLon, date, fromTime, toTime }
+      action.isochrones.features = action.isochrones.features.map(f => {
+        f.type = 'Feature'
+        return f
+      })
       return update(state,
         {all:
           {[projectIndex]:
