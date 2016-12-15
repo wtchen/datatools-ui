@@ -1,8 +1,10 @@
-import { getAbbreviatedStopName } from '../util/gtfs'
+import { getAbbreviatedStopName } from './gtfs'
+import { getConfigProperty } from '../../common/util/config'
 
 export const CLICK_OPTIONS = ['DRAG_HANDLES', 'ADD_STOP_AT_CLICK', 'ADD_STOPS_AT_INTERVAL', 'ADD_STOPS_AT_INTERSECTIONS']
 export const YEAR_FORMAT = 'YYYY-MM-DD'
 export const TIMETABLE_FORMATS = ['HH:mm:ss', 'h:mm:ss a', 'h:mm:ssa', 'h:mm a', 'h:mma', 'h:mm', 'HHmm', 'hmm', 'HH:mm'].map(format => `YYYY-MM-DDT${format}`)
+export const EXEMPLARS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY', 'NO_SERVICE', 'CUSTOM', 'SWAP']
 
 export function isTimeFormat (type) {
   return /TIME/.test(type)
@@ -100,4 +102,51 @@ export function sortAndFilterTrips (trips, useFrequency) {
       return 0
     })
     : []
+}
+
+export function getZones (stops, activeStop) {
+  let zones = {}
+  if (stops) {
+    for (var i = 0; i < stops.length; i++) {
+      let stop = stops[i]
+      if (stop.zone_id) {
+        let zone = zones[stop.zone_id]
+        if (!zone) {
+          zone = []
+        }
+        zone.push(stop)
+        zones[stop.zone_id] = zone
+      }
+    }
+    // add any new zone
+    if (activeStop && activeStop.zone_id && !zones[activeStop.zone_id]) {
+      let zone = zones[activeStop.zone_id]
+      if (!zone) {
+        zone = []
+      }
+      zone.push(activeStop)
+      zones[activeStop.zone_id] = zone
+    }
+  }
+  let zoneOptions = Object.keys(zones).map(key => {
+    return {
+      value: key,
+      label: `${key} zone (${zones[key] ? zones[key].length : 0} stops)`
+    }
+  })
+  return {zones, zoneOptions}
+}
+
+export function getEditorTable (component) {
+  return getConfigProperty('modules.editor.spec').find(
+    t => component === 'scheduleexception'
+      ? t.id === 'calendar_dates'
+      : component === 'fare'
+      ? t.id === 'fare_attributes'
+      : t.id === component
+  )
+}
+
+export function canApproveGtfs (project, feedSource, user) {
+  return project && feedSource && user && !user.permissions.hasFeedPermission(project.id, feedSource.id, 'approve-gtfs')
 }

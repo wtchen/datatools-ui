@@ -196,6 +196,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
 
     // NEW GENERIC GTFS/EDITOR FUNCTIONS
+    getGtfsTable: (activeComponent, feedSourceId) => dispatch(getGtfsTable(activeComponent, feedSourceId)),
     updateEditSetting: (setting, value) => {
       dispatch(updateEditSetting(setting, value))
     },

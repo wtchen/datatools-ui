@@ -72,7 +72,8 @@ const editSettings = (state = defaultState, action) => {
       }
       return update(state, {
         controlPoints: {$set: [controlPoints]},
-        patternCoordinates: {$set: coordinates}
+        patternCoordinates: {$set: coordinates},
+        coordinatesHistory: {$set: [coordinates]}
       })
     case 'UPDATE_EDIT_SETTING':
       if (action.setting === 'editGeometry' && !state.editGeometry) {
@@ -132,7 +133,8 @@ const editSettings = (state = defaultState, action) => {
         case 'trippattern':
           coordinates = state.coordinatesHistory[0]
           return update(state, {
-            patternCoordinates: {$set: coordinates}
+            patternCoordinates: {$set: coordinates},
+            coordinatesHistory: {$set: [coordinates]}
           })
         default:
           return state
@@ -161,7 +163,8 @@ const editSettings = (state = defaultState, action) => {
       coordinates = action.tripPattern && action.tripPattern.shape && action.tripPattern.shape.coordinates
       return update(state, {
         controlPoints: {$set: [controlPoints]},
-        patternCoordinates: {$set: coordinates}
+        patternCoordinates: {$set: coordinates},
+        coordinatesHistory: {$set: [coordinates]}
       })
     default:
       return state

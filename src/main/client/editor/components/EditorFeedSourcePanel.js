@@ -106,7 +106,14 @@ class SnapshotItem extends Component {
     feedSource: PropTypes.object
   }
   render () {
-    const { snapshot, feedSource } = this.props
+    const {
+      snapshot,
+      feedSource,
+      restoreSnapshot,
+      downloadSnapshot,
+      exportSnapshotAsVersion,
+      deleteSnapshot
+    } = this.props
     const dateFormat = getConfigProperty('application.date_format')
     const timeFormat = 'h:MMa'
     const messages = getComponentMessages('EditorFeedSourcePanel')
@@ -117,26 +124,26 @@ class SnapshotItem extends Component {
             <Button
               bsStyle='primary'
               // disabled={snapshot.current}
-              onClick={() => this.props.restoreSnapshot(feedSource, snapshot)}
+              onClick={() => restoreSnapshot(feedSource, snapshot)}
             >
               {snapshot.current
                 ? <span><Icon type='check-circle' /> {getMessage(messages, 'active')}</span>
                 : <span><Glyphicon glyph='pencil' /> {getMessage(messages, 'restore')}</span>
               }
             </Button>
-            {
-            // <Button bsStyle='success'>
-            //   <Glyphicon glyph='download' /> {getMessage(messages, 'download')}
-            // </Button>
-            }
-            <Button bsStyle='info'
-              onClick={() => this.props.exportSnapshotAsVersion(feedSource, snapshot)}
-            >
+            <Button
+              bsStyle='success'
+              onClick={() => downloadSnapshot(feedSource, snapshot)}>
+              <Glyphicon glyph='download' /> {getMessage(messages, 'download')}
+            </Button>
+            <Button
+              bsStyle='info'
+              onClick={() => exportSnapshotAsVersion(feedSource, snapshot)}>
               <Glyphicon glyph='export' /> {getMessage(messages, 'publish')}
             </Button>
-            <Button bsStyle='danger'
-              onClick={() => this.props.deleteSnapshot(feedSource, snapshot)}
-            >
+            <Button
+              bsStyle='danger'
+              onClick={() => deleteSnapshot(feedSource, snapshot)}>
               <Icon type='trash' /> {getMessage(messages, 'delete')}
             </Button>
           </ButtonToolbar>
