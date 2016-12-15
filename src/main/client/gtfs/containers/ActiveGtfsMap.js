@@ -4,7 +4,7 @@ import GtfsMap from '../components/GtfsMap'
 import { clearGtfsElements, refreshGtfsElements } from '../actions/general'
 import { stopPatternFilterChange, stopRouteFilterChange, stopDateTimeFilterChange } from '../actions/stops'
 import { updateMapState } from '../actions/filter'
-import { fetchFeedVersionIsochrones } from '../../manager/actions/feeds'
+import { fetchFeedVersionIsochrones } from '../../manager/actions/versions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
