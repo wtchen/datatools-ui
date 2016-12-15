@@ -3,6 +3,12 @@ import { ControlLabel, FormControl } from 'react-bootstrap'
 import moment from 'moment'
 
 export default class TransferPerformance extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      index: 0
+    }
+  }
   renderTransferPerformanceResult (transferPerformance) {
     if (!transferPerformance) {
       return <p>No transfers found</p>
@@ -16,7 +22,7 @@ export default class TransferPerformance extends Component {
     )
   }
   render () {
-    const { stop } = this.props
+    const { stop, routes } = this.props
     return stop.transferPerformance && stop.transferPerformance.length
       ? <div>
         <ControlLabel>Transfer performance</ControlLabel>
@@ -24,9 +30,8 @@ export default class TransferPerformance extends Component {
           componentClass='select'
           defaultValue={0}
           onChange={(evt) => {
-            let state = {}
-            state[stop.stop_id] = +evt.target.value
-            this.setState(state)
+            const index = +evt.target.value
+            this.setState({index})
           }}
         >
           {stop.transferPerformance
@@ -34,13 +39,13 @@ export default class TransferPerformance extends Component {
             //
             // })
             .map((summary, index) => {
-              const fromRoute = this.props.routes.find(r => r.route_id === summary.fromRoute)
-              const toRoute = this.props.routes.find(r => r.route_id === summary.toRoute)
-              return <option value={index}>{fromRoute.route_short_name} to {toRoute.route_short_name}</option>
+              const fromRoute = routes.find(r => r.route_id === summary.fromRoute)
+              const toRoute = routes.find(r => r.route_id === summary.toRoute)
+              return <option key={index} value={index}>{fromRoute.route_short_name} to {toRoute.route_short_name}</option>
             })
           }
         </FormControl>
-        {this.renderTransferPerformanceResult(stop.transferPerformance[this.state[stop.stop_id] || 0])}
+        {this.renderTransferPerformanceResult(stop.transferPerformance[this.state.index])}
       </div>
       : <p>No transfers found</p>
   }

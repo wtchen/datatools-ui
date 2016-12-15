@@ -160,18 +160,35 @@ export default class GtfsMap extends Component {
     }
   }
   render () {
+    const {
+      width,
+      height,
+      disableScroll,
+      showBounds,
+      stops,
+      routes,
+      feeds,
+      renderTransferPerformance,
+      onStopClick,
+      newEntityId,
+      popupAction,
+      stop,
+      patterns,
+      onRouteClick,
+      pattern,
+      showIsochrones
+    } = this.props
     var mapStyle = {
-      width: this.props.width, // % or px
-      height: `${this.props.height}px` // only px
+      width: width, // % or px
+      height: `${height}px` // only px
     }
-    let bounds = this.getBounds()
     return (
       <div>
         <Map
           ref='map'
           style={mapStyle}
-          bounds={bounds}
-          scrollWheelZoom={!this.props.disableScroll}
+          bounds={this.getBounds()}
+          scrollWheelZoom={!disableScroll}
           onClick={(e) => this.mapClicked(e)}
           onMoveEnd={(e) => this.mapMoved(e)}
           onLayerAdd={(e) => this.layerAddHandler(e)}
@@ -182,54 +199,55 @@ export default class GtfsMap extends Component {
             attribution='<a href="https://www.mapbox.com/about/maps/" target="_blank">&copy; Mapbox &copy; OpenStreetMap</a> <a href="https://www.mapbox.com/map-feedback/" target="_blank">Improve this map</a>'
           />
           {/* feed bounds */}
-          {this.props.showBounds &&
+          {showBounds &&
             <Rectangle
-              bounds={bounds}
+              bounds={this.getBounds()}
               fillOpacity={0}
             />
           }
           <FeatureGroup ref='stops'>
             {/* Stops from map bounds search */}
-            {this.props.stops && this.props.stops.length
-              ? this.props.stops.map((stop, index) => {
-                if (!stop) return null
+            {stops && stops.length
+              ? stops.map((s, index) => {
+                if (!s) return null
                 return (
                   <StopMarker
-                    stop={stop}
-                    key={`marker-${stop.stop_id}`}
-                    feeds={this.props.feeds}
-                    renderTransferPerformance={this.props.renderTransferPerformance}
-                    onStopClick={this.props.onStopClick}
-                    newEntityId={this.props.newEntityId}
-                    popupAction={this.props.popupAction} />
+                    stop={s}
+                    routes={routes}
+                    key={`marker-${s.stop_id}`}
+                    feeds={feeds}
+                    renderTransferPerformance={renderTransferPerformance}
+                    onStopClick={onStopClick}
+                    newEntityId={newEntityId}
+                    popupAction={popupAction} />
                 )
               })
               : null
             }
             {/* Stop from GtfsSearch */}
-            {this.props.stop && <StopMarker stop={this.props.stop} />}
+            {stop && <StopMarker stop={stop} />}
           </FeatureGroup>
           <FeatureGroup ref='patterns'>
             {/* Patterns from map bounds search */}
-            {this.props.patterns
-              ? this.props.patterns.map((pattern, index) => (
+            {patterns
+              ? patterns.map((pattern, index) => (
                 <PatternGeoJson
                   pattern={pattern}
                   key={pattern.pattern_id}
-                  feeds={this.props.feeds}
+                  feeds={feeds}
                   index={index}
-                  onRouteClick={this.props.onRouteClick}
-                  newEntityId={this.props.newEntityId}
-                  popupAction={this.props.popupAction} />
+                  onRouteClick={onRouteClick}
+                  newEntityId={newEntityId}
+                  popupAction={popupAction} />
               ))
               : null
             }
             {/* Pattern from GtfsSearch */}
-            {this.props.pattern && <PatternGeoJson pattern={this.props.pattern} />}
+            {pattern && <PatternGeoJson pattern={pattern} />}
           </FeatureGroup>
           <FeatureGroup ref='isochrones'>
             {/* Isochrones from map click */}
-            {this.props.showIsochrones && this.renderIsochrones()}
+            {showIsochrones && this.renderIsochrones()}
           </FeatureGroup>
         </Map>
       </div>

@@ -12,7 +12,7 @@ export default class StopMarker extends Component {
     stop: PropTypes.object
   }
   render () {
-    const { stop, feeds, renderTransferPerformance, onStopClick, newEntityId, popupAction } = this.props
+    const { stop, feeds, renderTransferPerformance, onStopClick, newEntityId, popupAction, routes } = this.props
     if (!stop) {
       return null
     }
@@ -34,17 +34,15 @@ export default class StopMarker extends Component {
         <Popup>
           <div>
             <p><Icon type='map-marker' /> <strong>{stop.stop_name} ({stop.stop_id})</strong></p>
-            {renderTransferPerformance && <TransferPerformance stop={stop} />}
-            {onStopClick
-              ? <Button
+            {renderTransferPerformance && <TransferPerformance stop={stop} routes={routes} />}
+            {onStopClick && (
+              <Button
                 bsStyle='primary'
                 block
-                onClick={() => onStopClick(stop, feed, newEntityId)}
-              >
+                onClick={() => onStopClick(stop, feed, newEntityId)}>
                 <Icon type='map-marker' /> {popupAction} stop
               </Button>
-              : null
-            }
+            )}
           </div>
         </Popup>
       </Marker>
