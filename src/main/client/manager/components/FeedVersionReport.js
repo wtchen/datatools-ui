@@ -4,13 +4,14 @@ import moment from 'moment'
 import {Icon} from '@conveyal/woonerf'
 import numeral from 'numeral'
 import Rcslider from 'rc-slider'
+import fileDownload from 'react-file-download'
+
 import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
 import { getComponentMessages, getMessage, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 import { getProfileLink } from '../../common/util/util'
-
-// import Feed from './reporter/containers/Feed'
+// import { downloadAsShapefile } from '../util'
 import Patterns from './reporter/containers/Patterns'
 import Routes from './reporter/containers/Routes'
 import Stops from './reporter/containers/Stops'
@@ -58,14 +59,26 @@ export default class FeedVersionReport extends Component {
   }
   renderIsochroneMessage (version) {
     if (version.isochrones && version.isochrones.features) {
-      return 'Move marker or change date/time to recalculate travel shed.'
+      return <span>
+        Move marker or change date/time to recalculate travel shed.<br />
+        <Button
+          bsStyle='success'
+          bsSize='small'
+          onClick={() => {
+            // TODO: add shapefile download (currently shp-write does not support isochrones)
+            // downloadAsShapefile(version.isochrones, {folder: 'isochrones', types: {line: 'isochrones'}})
+            fileDownload(JSON.stringify(version.isochrones), `isochrones_${version.feedSource.name.replace(/[^a-zA-Z0-9]/g, '_')}.json`)
+          }}>
+          <Icon type='download' /> Export isochrones
+        </Button>
+      </span>
     } else if (version.isochrones) {
       return 'Reading transport network, please try again later.'
     } else {
       return 'Click on map above to show travel shed for this feed.'
     }
   }
-  renderValidatorTabs () {
+  renderValidatorTabs (version) {
     if (!isModuleEnabled('validator')) {
       return null
     }
@@ -74,10 +87,10 @@ export default class FeedVersionReport extends Component {
         title: 'Validation',
         key: 'validation',
         component: <GtfsValidationSummary
-          version={this.props.version}
+          version={version}
           key='validation'
           feedVersionIndex={this.props.feedVersionIndex}
-          fetchValidationResult={() => { this.props.fetchValidationResult(this.props.version) }}
+          fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
         />
       },
       {
@@ -88,7 +101,7 @@ export default class FeedVersionReport extends Component {
             <Col xs={12}>
               {/* isochrone message */}
               <p className='lead text-center'>
-                {this.renderIsochroneMessage(this.props.version)}
+                {this.renderIsochroneMessage(version)}
               </p>
             </Col>
           </Row>
@@ -114,7 +127,7 @@ export default class FeedVersionReport extends Component {
             </Col>
           </Row>
           <ActiveDateTimeFilter
-            version={this.props.version}
+            version={version}
           />
         </div>
       },
@@ -128,8 +141,8 @@ export default class FeedVersionReport extends Component {
             </Col>
           </Row>
           <TripsChart
-            validationResult={this.props.version.validationResult}
-            fetchValidationResult={() => { this.props.fetchValidationResult(this.props.version) }}
+            validationResult={version.validationResult}
+            fetchValidationResult={() => { this.props.fetchValidationResult(version) }}
           />
         </div>
       }
@@ -291,7 +304,7 @@ export default class FeedVersionReport extends Component {
                   tableOptions={tableOptions}
                 />
               </Tab>
-              {this.renderValidatorTabs()}
+              {this.renderValidatorTabs(version)}
             </Tabs>
           </ListGroupItem>
         </ListGroup>
