@@ -61,6 +61,47 @@ export function restoreSnapshot (feedSource, snapshot) {
   }
 }
 
+export function downloadingSnapshot (feedSource, snapshot) {
+  return {
+    type: 'DOWNLOADING_SNAPSHOT',
+    feedSource,
+    snapshot
+  }
+}
+
+export function downloadedSnapshot (name) {
+  return {
+    type: 'DOWNLOADED_SNAPSHOT',
+    name
+  }
+}
+
+// Download a GTFS file for a FeedVersion
+export function downloadFeedViaToken (feedVersion, isPublic) {
+  return function (dispatch, getState) {
+    const route = isPublic ? 'public' : 'secure'
+    const url = `/api/manager/${route}/feedversion/${feedVersion.id}/downloadtoken`
+    secureFetch(url, getState())
+    .then(response => response.json())
+    .then(result => {
+      window.location.assign(`/api/manager/downloadfeed/${result.id}`)
+    })
+  }
+}
+
+export function downloadSnapshotViaToken (feedSource, snapshot) {
+  return function (dispatch, getState) {
+    dispatch(downloadingSnapshot(feedSource, snapshot))
+    const url = `/api/manager/secure/snapshot/${snapshot.id}/downloadtoken`
+    secureFetch(url, getState())
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result)
+      window.location.assign(`/api/manager/downloadsnapshot/${result.id}`)
+    })
+  }
+}
+
 export function creatingSnapshot () {
   return {
     type: 'CREATING_SNAPSHOT'

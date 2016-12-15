@@ -170,8 +170,8 @@ export function deleteFeedVersion (feedVersion, changes) {
     const url = '/api/manager/secure/feedversion/' + feedVersion.id
     return secureFetch(url, getState(), 'delete')
       .then((res) => {
-        // fetch feed source with versions
-        return dispatch(fetchFeedSource(feedVersion.feedSource.id, true))
+        // fetch feed source with versions + snapshots
+        return dispatch(fetchFeedSource(feedVersion.feedSource.id, true, true))
       })
   }
 }
@@ -201,18 +201,33 @@ export function fetchValidationResult (feedVersion, isPublic) {
   }
 }
 
-export function requestingFeedVersionIsochrones () {
+export function requestingFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat, toLon, date, fromTime, toTime) {
   return {
-    type: 'REQUESTING_FEEDVERSION_ISOCHRONES'
+    type: 'REQUESTING_FEEDVERSION_ISOCHRONES',
+    feedVersion,
+    fromLat,
+    fromLon,
+    toLat,
+    toLon,
+    date,
+    fromTime,
+    toTime
   }
 }
 
-export function receiveFeedVersionIsochrones (feedSource, feedVersion, isochrones) {
+export function receiveFeedVersionIsochrones (feedSource, feedVersion, isochrones, fromLat, fromLon, toLat, toLon, date, fromTime, toTime) {
   return {
     type: 'RECEIVE_FEEDVERSION_ISOCHRONES',
     feedSource,
     feedVersion,
-    isochrones
+    isochrones,
+    fromLat,
+    fromLon,
+    toLat,
+    toLon,
+    date,
+    fromTime,
+    toTime
   }
 }
 
@@ -223,7 +238,7 @@ export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat
       fromTime = getState().gtfs.filter.dateTimeFilter.from
       toTime = getState().gtfs.filter.dateTimeFilter.to
     }
-    dispatch(requestingFeedVersionIsochrones())
+    dispatch(requestingFeedVersionIsochrones(feedVersion, fromLat, fromLon, toLat, toLon, date, fromTime, toTime))
     const params = {fromLat, fromLon, toLat, toLon, date, fromTime, toTime}
     const url = `/api/manager/secure/feedversion/${feedVersion.id}/isochrones?${qs.stringify(params)}`
     return secureFetch(url, getState())
@@ -238,7 +253,7 @@ export function fetchFeedVersionIsochrones (feedVersion, fromLat, fromLon, toLat
       })
       .then(isochrones => {
         console.log('received isochrones ', isochrones)
-        dispatch(receiveFeedVersionIsochrones(feedVersion.feedSource, feedVersion, isochrones))
+        dispatch(receiveFeedVersionIsochrones(feedVersion.feedSource, feedVersion, isochrones, fromLat, fromLon, toLat, toLon, date, fromTime, toTime))
         return isochrones
       })
   }
