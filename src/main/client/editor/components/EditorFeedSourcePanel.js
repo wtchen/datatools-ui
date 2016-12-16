@@ -140,7 +140,7 @@ class SnapshotItem extends Component {
           <ButtonToolbar className='pull-right' style={{marginTop: '-20px'}}>
             <Button
               bsStyle='primary'
-              // disabled={snapshot.current}
+              disabled={snapshot.current}
               onClick={() => restoreSnapshot(feedSource, snapshot)}
             >
               {snapshot.current
