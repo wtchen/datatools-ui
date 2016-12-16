@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Panel, Row, Col, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
 import {Icon} from '@conveyal/woonerf'
 
@@ -76,12 +77,12 @@ export default class EditorFeedSourcePanel extends Component {
             </div>
             : <div>
               <p>No snapshots loaded.</p>
-              <Button
-                bsStyle='success'
-                onClick={() => browserHistory.push(`/feed/${feedSource.id}/edit/`)}
-              >
-                <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
-              </Button>
+              <LinkContainer to={`/feed/${feedSource.id}/edit`}>
+                <Button
+                  bsStyle='success'>
+                  <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
+                </Button>
+              </LinkContainer>
               {' '}or{' '}
               <Button bsStyle='success'
                 disabled={!hasVersions}
@@ -100,6 +101,12 @@ export default class EditorFeedSourcePanel extends Component {
           }
         </Col>
         <Col xs={3}>
+          <LinkContainer to={`/feed/${feedSource.id}/edit`}>
+            <Button
+              block>
+              <Icon type='pencil' /> Edit feed
+            </Button>
+          </LinkContainer>
           <Button
             block
             bsStyle='primary'

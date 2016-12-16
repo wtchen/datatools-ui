@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { Row, Col, ButtonGroup, ButtonToolbar, DropdownButton, MenuItem, Button, Glyphicon } from 'react-bootstrap'
 import { browserHistory } from 'react-router'
+import { LinkContainer } from 'react-router-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 
 import { isModuleEnabled, getComponentMessages, getMessage } from '../../common/util/config'
@@ -143,12 +144,14 @@ export default class FeedVersionNavigator extends Component {
                   : null
                 }
                 {isModuleEnabled('editor')
-                  ? <Button
-                    // disabled={editGtfsDisabled} // || !fs.latestValidation}
-                    // bsStyle='info'
-                    onClick={() => { browserHistory.push(`/feed/${fs.id}/edit`) }}>
-                    <Glyphicon glyph='pencil' /> Edit feed
-                  </Button>
+                  ? <LinkContainer to={`/feed/${fs.id}/edit`}>
+                    <Button
+                      // disabled={editGtfsDisabled} // || !fs.latestValidation}
+                      // bsStyle='info'
+                    >
+                      <Glyphicon glyph='pencil' /> Edit feed
+                    </Button>
+                  </LinkContainer>
                   : null
                 }
                 <DropdownButton
