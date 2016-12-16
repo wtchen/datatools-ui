@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router'
 import moment from 'moment'
 import {Icon} from '@conveyal/woonerf'
 
+import CreateSnapshotModal from '../../editor/components/CreateSnapshotModal'
 import ConfirmModal from '../../common/components/ConfirmModal'
 import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
@@ -26,20 +27,29 @@ export default class EditorFeedSourcePanel extends Component {
     this.state = { expanded: false }
   }
   render () {
+    const {
+      feedSource,
+      createSnapshot,
+      loadFeedVersionForEditing
+    } = this.props
     const messages = getComponentMessages('EditorFeedSourcePanel')
-    const hasVersions = this.props.feedSource && this.props.feedSource.feedVersions && this.props.feedSource.feedVersions.length > 0
-    const currentSnapshot = this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
-       ? this.props.feedSource.editorSnapshots.find(s => s.current)
+    const hasVersions = feedSource && feedSource.feedVersions && feedSource.feedVersions.length > 0
+    const currentSnapshot = feedSource.editorSnapshots && feedSource.editorSnapshots.length
+       ? feedSource.editorSnapshots.find(s => s.current)
        : null
-    const inactiveSnapshots = this.props.feedSource.editorSnapshots
-       ? this.props.feedSource.editorSnapshots.filter(s => !s.current)
+    const inactiveSnapshots = feedSource.editorSnapshots
+       ? feedSource.editorSnapshots.filter(s => !s.current)
        : []
-    console.log(inactiveSnapshots)
     return (
       <Row>
+        <CreateSnapshotModal ref='snapshotModal'
+          onOkClicked={(name, comment) => {
+            createSnapshot(feedSource, name, comment)
+          }}
+        />
         <ConfirmModal ref='confirmLoad' />
         <Col xs={9}>
-          {this.props.feedSource.editorSnapshots && this.props.feedSource.editorSnapshots.length
+          {feedSource.editorSnapshots && feedSource.editorSnapshots.length
             ? <div>
               <Panel bsStyle='success' header={<h3>Active snapshot</h3>}>
                 {currentSnapshot
@@ -68,7 +78,7 @@ export default class EditorFeedSourcePanel extends Component {
               <p>No snapshots loaded.</p>
               <Button
                 bsStyle='success'
-                onClick={() => browserHistory.push(`/feed/${this.props.feedSource.id}/edit/`)}
+                onClick={() => browserHistory.push(`/feed/${feedSource.id}/edit/`)}
               >
                 <Icon type='file' /> {getMessage(messages, 'createFromScratch')}
               </Button>
@@ -76,11 +86,11 @@ export default class EditorFeedSourcePanel extends Component {
               <Button bsStyle='success'
                 disabled={!hasVersions}
                 onClick={(evt) => {
-                  let version = this.props.feedSource.feedVersions[this.props.feedSource.feedVersions.length - 1]
+                  let version = feedSource.feedVersions[feedSource.feedVersions.length - 1]
                   this.refs.confirmLoad.open({
                     title: getMessage(messages, 'load'),
                     body: getMessage(messages, 'confirmLoad'),
-                    onConfirm: () => { this.props.loadFeedVersionForEditing(version) }
+                    onConfirm: () => { loadFeedVersionForEditing(version) }
                   })
                 }}
               >
@@ -90,6 +100,13 @@ export default class EditorFeedSourcePanel extends Component {
           }
         </Col>
         <Col xs={3}>
+          <Button
+            block
+            bsStyle='primary'
+            style={{marginBottom: '20px'}}
+            onClick={() => this.refs.snapshotModal.open()}>
+            <Icon type='camera' /> Take snapshot of latest changes
+          </Button>
           <Panel header={<h3><Icon type='camera' /> What are snapshots?</h3>}>
             <p>Snapshots are save points you can always revert back to when editing a GTFS feed.</p>
             <p>A snapshot might represent a work-in-progress, future planning scenario or even different service patterns (e.g., summer schedule markup).</p>
