@@ -240,6 +240,11 @@ export default class Timetable extends Component {
     } else {
       if (value === 0) {
         return moment().startOf('day').seconds(value).format('HH:mm:ss')
+      } else if (value && value >= 86400) {
+        let text = moment().startOf('day').seconds(value).format('HH:mm:ss')
+        let parts = text.split(':')
+        parts[0] = +parts[0] + 24
+        return parts.join(':')
       } else if (value && value > 0) {
         return moment().startOf('day').seconds(value).format('HH:mm:ss')
       } else {

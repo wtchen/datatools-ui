@@ -133,12 +133,26 @@ export default class EditableCell extends Component {
         this.cancel()
       }
     } else {
+      let data = this.state.data
+      let parts = this.state.data.split(':')
+      const hours = +parts[0]
+      let greaterThan24 = false
+
+      // check for times greater than 24:00
+      if (parts && parts[0] && hours >= 24 && hours < 34) {
+        parts[0] = `0${hours - 24}`
+        greaterThan24 = true
+        data = parts.join(':')
+      }
       let date = moment().startOf('day').format('YYYY-MM-DD')
-      let momentTime = moment(date + 'T' + this.state.data, TIMETABLE_FORMATS, true)
+      let momentTime = moment(date + 'T' + data, TIMETABLE_FORMATS, true)
       let value = momentTime.isValid() ? momentTime.diff(date, 'seconds') : null
 
+      if (greaterThan24 && momentTime.isValid()) {
+        value += 86400
+      }
       // check for valid time and new value
-      if ((this.state.data === '' || momentTime.isValid()) && value !== this.state.data) {
+      if ((data === '' || momentTime.isValid()) && value !== data) {
         this.setState({data: value, isEditing: false})
         this.props.onChange(value)
         this.props.onStopEditing()
