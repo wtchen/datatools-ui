@@ -221,7 +221,7 @@ export default class GtfsEditor extends Component {
             hidden={subSubComponent === 'timetable'}
             stops={tableData.stop || []}
             showConfirmModal={(props) => this.showConfirmModal(props)}
-            drawStops={mapState.zoom > 14} // && (activeComponent === 'stop' || editSettings.addStops)}
+            drawStops={mapState.zoom > 14}
             zoomToTarget={mapState.target}
             sidebarExpanded={sidebarExpanded}
             {...this.props} />

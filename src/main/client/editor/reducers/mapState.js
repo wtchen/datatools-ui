@@ -2,7 +2,7 @@ import update from 'react-addons-update'
 import { latLngBounds } from 'leaflet'
 import rbush from 'rbush'
 
-import { getEntityBounds } from '../util/gtfs'
+import { getEntityBounds, stopToGtfs } from '../util/gtfs'
 
 const defaultState = {
   zoom: null,
@@ -24,7 +24,7 @@ const mapState = (state = defaultState, action) => {
       return state
     case 'RECEIVE_STOPS':
       const tree = rbush(9, ['[0]', '[1]', '[0]', '[1]'])
-      tree.load(action.stops.map(s => ([s.stop_lon, s.stop_lat, s])))
+      tree.load(action.stops.map(stopToGtfs).map(s => ([s.stop_lon, s.stop_lat, s])))
       return update(state, {
         stopTree: {$set: tree}
       })

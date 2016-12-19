@@ -30,7 +30,6 @@ export default class StopsLayer extends Component {
     if (activeEntity && results.findIndex(r => r[2].id === activeEntity.id) === -1) {
       results.push([0, 0, activeEntity])
     }
-    console.log(results)
     const outOfZoom = !drawStops
     // console.log(mapState.bounds, paddedBounds)
     return (
