@@ -16,3 +16,4 @@ config.yml
 config_server.yml
 configurations/*
 !configurations/default
+tmp/

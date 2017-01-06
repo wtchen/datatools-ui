@@ -91,7 +91,7 @@ export function fetchRtdAlerts () {
   return function (dispatch, getState) {
     dispatch(requestRtdAlerts())
     return secureFetch(getAlertsUrl(), getState()).then((res) => {
-      if (res.status >= 400) {
+      if (!res || res.status >= 400) {
         dispatch(setErrorMessage('Error fetching alerts!'))
         return []
       }
