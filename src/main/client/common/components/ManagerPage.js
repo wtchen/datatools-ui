@@ -71,6 +71,7 @@ export default class ManagerPage extends Component {
               paddingBottom: '140px',
               minHeight: '100%',
               marginBottom: '-140px',
+              // minHeight: '500px',
               position: 'relative'
             }}
           >
