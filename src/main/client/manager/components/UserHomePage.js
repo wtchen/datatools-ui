@@ -180,8 +180,8 @@ export default class UserHomePage extends Component {
                         return null
                       }
                       return (
-                        <LinkContainer to={`/home/${project.id}`}>
-                          <MenuItem key={project.id} eventKey={project.id}>
+                        <LinkContainer to={`/home/${project.id}`} key={project.id}>
+                          <MenuItem eventKey={project.id}>
                             <Icon type='folder-o' /> {project.name}
                           </MenuItem>
                         </LinkContainer>
