@@ -28,12 +28,13 @@ export default class Auth0Manager {
     return window.localStorage.getItem('userToken')
   }
 
-  checkExistingLogin () {
+  checkExistingLogin (props) {
     // Get the user token if we've saved it in localStorage before
     var userToken = this.getToken()
 
-    if (userToken) return this.loginFromToken(userToken)
+    if (userToken) return this.loginFromToken(userToken, props)
 
+    // TODO: remove code if no longer SSO
     // check if we have returned from an SSO redirect
     var hash = this.lock.parseHash()
     if (hash && hash.id_token) { // the user came back from the login (either SSO or regular login)
@@ -59,14 +60,18 @@ export default class Auth0Manager {
     return null
   }
 
-  loginFromToken (token) {
+  loginFromToken (token, props) {
     return fetch('https://' + this.props.domain + '/tokeninfo?id_token=' + token, {
       method: 'post'
     }).then(res => res.json()).then((profile) => {
       return constructUserObj(token, profile)
     }).catch((err) => {
       console.log('error getting profile', err)
-      return this.loginViaLock({closable: false})
+      if (props && props.required) {
+        return this.loginViaLock({closable: false})
+      } else {
+        this.logout()
+      }
     })
   }
 
@@ -86,8 +91,8 @@ export default class Auth0Manager {
       if (this.props.logo) lockOptions.icon = this.props.logo
       this.lock.show(lockOptions, (err, profile, token) => {
         if (err) {
-          console.log('Error w/ lock login', err)
-          reject(err)
+          console.log(err)
+          return null
         }
         // save token to localStorage
         window.localStorage.setItem('userToken', token)
