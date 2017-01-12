@@ -152,7 +152,7 @@ export default class UserAccount extends Component {
     const visibleComponent = activeSection ? activeSection.component : null
     return (
       <ManagerPage ref='page'>
-        <Grid>
+        <Grid fluid>
           <Row style={{marginBottom: '20px'}}>
             <Col xs={12}>
               <h1>

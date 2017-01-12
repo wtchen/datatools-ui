@@ -23,7 +23,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     loginHandler: () => {
       dispatch(login())
-      .then(() => browserHistory.push('/home'))
+      .then((success) => {
+        console.log(success)
+        if (success) {
+          browserHistory.push('/home')
+        }
+      }, failure => {
+        console.log(failure)
+      })
     },
     logoutHandler: () => { dispatch(logout()) },
     resetPassword: () => { dispatch(resetPassword()) }
