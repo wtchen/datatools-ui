@@ -114,6 +114,7 @@ export default class DeploymentViewer extends Component {
             <Col xs={4} sm={6} md={8}>
               <DropdownButton
                 bsStyle='primary'
+                id='add-feedsource-button'
                 className='pull-right'
                 disabled={!deployableFeeds.length}
                 title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> {getMessage(messages, 'addFeedSource')}</span> : <span>{getMessage(messages, 'allFeedsAdded')}</span>}

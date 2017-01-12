@@ -35,7 +35,7 @@ export default class DeploymentsPanel extends Component {
   //   })
   // }
   render () {
-    const deployment = this.props.deployments && this.props.deployments.find(d => d.id === this.props.activeSubComponent)
+    const deployment = this.props.deployments && this.props.deployments.find(d => d.id && d.id === this.props.activeSubComponent)
     if (deployment) {
       return (
         <ActiveDeploymentViewer
