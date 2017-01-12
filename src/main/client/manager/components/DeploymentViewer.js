@@ -18,25 +18,33 @@ export default class DeploymentViewer extends Component {
     super(props)
     this.state = {}
   }
-
-  componentWillMount () {
-    // this.props.onComponentMount(this.props)
-  }
-
   render () {
-    const { project } = this.props
-    if (!this.props.deployment || !this.props.project || !this.props.feedSources) {
+    const {
+      project,
+      deployment,
+      feedSources,
+      downloadDeployment,
+      deployToTargetClicked,
+      deploymentPropertyChanged,
+      searchTextChanged,
+      addFeedVersion,
+      user,
+      updateVersionForFeedSource,
+      deleteFeedVersion
+    } = this.props
+    const { feedVersions } = deployment
+    if (!deployment || !project || !feedSources) {
       return <Loading />
     }
-    const deployableFeeds = this.props.feedSources
-      ? this.props.feedSources.filter(fs =>
-        this.props.deployment.feedVersions && this.props.deployment.feedVersions.findIndex(v => v.feedSource.id === fs.id) === -1 &&
+    const deployableFeeds = feedSources
+      ? feedSources.filter(fs =>
+        feedVersions && feedVersions.findIndex(v => v.feedSource.id === fs.id) === -1 &&
         fs.deployable &&
         fs.latestValidation
       )
       : []
     const messages = getComponentMessages('DeploymentViewer')
-    const versions = this.props.deployment.feedVersions.sort(versionsSorter)
+    const versions = feedVersions && feedVersions.sort(versionsSorter) || []
     return (
       <div>
         <Row>
@@ -45,25 +53,25 @@ export default class DeploymentViewer extends Component {
               <ButtonToolbar className='pull-right'>
                 <Button
                   bsStyle='default'
-                  onClick={() => this.props.downloadDeployment(this.props.deployment)}
+                  onClick={() => downloadDeployment(deployment)}
                 >
                   <span><Glyphicon glyph='download' /> {getMessage(messages, 'download')}</span>
                 </Button>
                 <DropdownButton
                   bsStyle='primary'
-                  disabled={!this.props.project.otpServers || !this.props.project.otpServers.length}
-                  title={this.props.project.otpServers && this.props.project.otpServers.length
+                  disabled={!project.otpServers || !project.otpServers.length}
+                  title={project.otpServers && project.otpServers.length
                     ? <span><Glyphicon glyph='globe' /> {getMessage(messages, 'deploy')}</span>
                     : <span>{getMessage(messages, 'noServers')}</span>
                   }
                   onSelect={(evt) => {
                     console.log(evt)
-                    this.props.deployToTargetClicked(this.props.deployment, evt)
-                    // setTimeout(() => this.props.getDeploymentStatus(this.props.deployment, evt), 5000)
+                    deployToTargetClicked(deployment, evt)
+                    // setTimeout(() => getDeploymentStatus(deployment, evt), 5000)
                   }}
                 >
-                  {this.props.project.otpServers
-                    ? this.props.project.otpServers.map(server => (
+                  {project.otpServers
+                    ? project.otpServers.map(server => (
                       <MenuItem eventKey={server.name}>{server.name}</MenuItem>
                     ))
                     : null
@@ -79,11 +87,11 @@ export default class DeploymentViewer extends Component {
                 <EditableTextField
                   inline
                   style={{marginLeft: '5px'}}
-                  value={this.props.deployment.name}
-                  onChange={(value) => this.props.deploymentPropertyChanged(this.props.deployment, 'name', value)}
+                  value={deployment.name}
+                  onChange={(value) => deploymentPropertyChanged(deployment, 'name', value)}
                 />
-                {this.props.deployment.deployedTo
-                  ? <Label>{this.props.deployment.deployedTo}</Label>
+                {deployment.deployedTo
+                  ? <Label>{deployment.deployedTo}</Label>
                   : null
                 }
               </h2>
@@ -100,7 +108,7 @@ export default class DeploymentViewer extends Component {
               <FormControl
                 type='text'
                 placeholder={getMessage(messages, 'search')}
-                onChange={evt => this.props.searchTextChanged(evt.target.value)}
+                onChange={evt => searchTextChanged(evt.target.value)}
               />
             </Col>
             <Col xs={4} sm={6} md={8}>
@@ -112,7 +120,7 @@ export default class DeploymentViewer extends Component {
                 onSelect={(evt) => {
                   console.log(evt)
                   let feed = deployableFeeds.find(fs => fs.id === evt)
-                  this.props.addFeedVersion(this.props.deployment, {id: feed.latestVersionId})
+                  addFeedVersion(deployment, {id: feed.latestVersionId})
                 }}
               >
                 {
@@ -146,12 +154,12 @@ export default class DeploymentViewer extends Component {
                     return <FeedVersionTableRow
                       feedSource={version.feedSource}
                       version={version}
-                      project={this.props.deployment.project}
-                      deployment={this.props.deployment}
+                      project={deployment.project}
+                      deployment={deployment}
                       key={version.id}
-                      user={this.props.user}
-                      updateVersionForFeedSource={this.props.updateVersionForFeedSource}
-                      deleteFeedVersionClicked={this.props.deleteFeedVersion}
+                      user={user}
+                      updateVersionForFeedSource={updateVersionForFeedSource}
+                      deleteFeedVersionClicked={deleteFeedVersion}
                     />
                   })}
                 </tbody>
@@ -166,27 +174,34 @@ export default class DeploymentViewer extends Component {
 
 class FeedVersionTableRow extends Component {
   render () {
-    const fs = this.props.feedSource
-    const version = this.props.version
-    const result = this.props.version.validationResult
+    const {
+      feedSource,
+      version,
+      deployment,
+      project,
+      user,
+      updateVersionForFeedSource,
+      deleteFeedVersionClicked
+    } = this.props
+    const result = version.validationResult
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const hasVersionStyle = {cursor: 'pointer'}
     const noVersionStyle = {color: 'lightGray'}
-    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
+    const disabled = !user.permissions.hasFeedPermission(project.id, feedSource.id, 'manage-feed')
     return (
-      <tr key={fs.id}>
+      <tr key={feedSource.id}>
         <td>
-          <Link to={`/feed/${fs.id}`}>{fs.name}</Link>
+          <Link to={`/feed/${feedSource.id}`}>{feedSource.name}</Link>
         </td>
         <td className='col-md-1 col-xs-3'>
-          <Link to={`/feed/${fs.id}/version/${version.version - 1}`}>Version {version.version}</Link>
+          <Link to={`/feed/${feedSource.id}/version/${version.version - 1}`}>Version {version.version}</Link>
           <ButtonToolbar>
             <Button
               bsSize='xsmall'
               bsStyle='default'
               style={{color: 'black'}}
               disabled={!version.previousVersionId}
-              onClick={() => this.props.updateVersionForFeedSource(this.props.deployment, fs, {id: version.previousVersionId})}
+              onClick={() => updateVersionForFeedSource(deployment, feedSource, {id: version.previousVersionId})}
             >
               <Glyphicon
                 glyph='menu-left'
@@ -200,7 +215,7 @@ class FeedVersionTableRow extends Component {
               bsStyle='default'
               style={{color: 'black'}}
               disabled={!version.nextVersionId}
-              onClick={() => this.props.updateVersionForFeedSource(this.props.deployment, fs, {id: version.nextVersionId})}
+              onClick={() => updateVersionForFeedSource(deployment, feedSource, {id: version.nextVersionId})}
             >
               <Glyphicon
                 glyph='menu-right'
@@ -229,7 +244,7 @@ class FeedVersionTableRow extends Component {
             bsSize='xsmall'
             disabled={disabled}
             className='pull-right'
-            onClick={() => this.props.deleteFeedVersionClicked(this.props.deployment, version)}
+            onClick={() => deleteFeedVersionClicked(deployment, version)}
           >
             <Glyphicon glyph='remove' />
           </Button>
