@@ -30,7 +30,7 @@ export default class DeploymentViewer extends Component {
     }
     const deployableFeeds = this.props.feedSources
       ? this.props.feedSources.filter(fs =>
-        this.props.deployment.feedVersions.findIndex(v => v.feedSource.id === fs.id) === -1 &&
+        this.props.deployment.feedVersions && this.props.deployment.feedVersions.findIndex(v => v.feedSource.id === fs.id) === -1 &&
         fs.deployable &&
         fs.latestValidation
       )
