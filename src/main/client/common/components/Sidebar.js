@@ -65,7 +65,8 @@ export default class Sidebar extends Pure {
   render () {
     const {children, expanded, userPicture} = this.props
     const navbarStyle = {
-      width: expanded ? 130 : 50
+      width: expanded ? 130 : 50,
+      minHeight: '500px'
     }
     const hasActiveJobs = this.props.jobMonitor.jobs.length > 0
     return (
