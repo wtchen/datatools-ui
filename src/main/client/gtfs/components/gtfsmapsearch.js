@@ -95,7 +95,7 @@ export default class GtfsMapSearch extends Component {
           onRouteClick={this.props.onRouteClick}
           newEntityId={this.props.newEntityId}
           popupAction={this.props.popupAction}
-          width='555px'
+          width={`100%`}
           height={400}
           {...searchProps}
         />

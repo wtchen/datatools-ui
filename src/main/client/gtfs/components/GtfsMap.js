@@ -176,10 +176,16 @@ export default class GtfsMap extends Component {
       patterns,
       onRouteClick,
       pattern,
-      showIsochrones
+      showIsochrones,
+      sidebarExpanded
     } = this.props
+    let mapWidth = width
+    if (width.indexOf('px') !== -1) {
+      let diff = sidebarExpanded ? 30 : 0
+      mapWidth = `${width.split('px')[0] - diff}px`
+    }
     var mapStyle = {
-      width: width, // % or px
+      width: mapWidth, // % or px
       height: `${height}px` // only px
     }
     return (

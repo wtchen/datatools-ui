@@ -12,7 +12,8 @@ const mapStateToProps = (state, ownProps) => {
     routes: state.gtfs.routes.data,
     patterns: state.gtfs.patterns.data,
     routing: state.routing.locationBeforeTransitions && state.routing.locationBeforeTransitions.pathname,
-    dateTime: state.gtfs.filter.dateTimeFilter
+    dateTime: state.gtfs.filter.dateTimeFilter,
+    sidebarExpanded: state.ui.sidebarExpanded
   }
 }
 
