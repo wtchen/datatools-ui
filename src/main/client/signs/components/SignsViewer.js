@@ -19,7 +19,7 @@ export default class SignsViewer extends React.Component {
         <Helmet
           title='eTID Config'
         />
-        <Grid>
+        <Grid fluid>
           <Row>
             <Col xs={12}>
               <CreateSign

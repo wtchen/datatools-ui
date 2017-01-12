@@ -46,7 +46,7 @@ export default class SignEditor extends React.Component {
         <Helmet
           title={this.props.sign.id > 0 ? `eTID Config ${this.props.sign.id}` : 'New eTID Config'}
         />
-        <Grid>
+        <Grid fluid>
           <Row>
             <Col xs={4} sm={8} md={9}>
               <Button

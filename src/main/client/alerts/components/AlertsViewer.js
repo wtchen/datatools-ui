@@ -20,7 +20,7 @@ export default class AlertsViewer extends React.Component {
         <Helmet
           title='Alerts'
         />
-        <Grid>
+        <Grid fluid>
           <Row>
             <Col xs={12}>
               <h2>

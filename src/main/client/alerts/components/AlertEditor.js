@@ -85,7 +85,7 @@ export default class AlertEditor extends React.Component {
         <Helmet
           title={this.props.alert.id > 0 ? `Alert ${this.props.alert.id}` : 'New Alert'}
         />
-        <Grid>
+        <Grid fluid>
           <Row>
             <Col xs={4} sm={8} md={9}>
               <Button
