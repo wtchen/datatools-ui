@@ -2,19 +2,20 @@ import { secureFetch } from '../../common/util/util'
 import { getConfigProperty } from '../../common/util/config'
 import objectPath from 'object-path'
 
-export const checkingExistingLogin = () => {
+export function checkingExistingLogin (loginProps) {
   return {
-    type: 'CHECKING_EXISTING_LOGIN'
+    type: 'CHECKING_EXISTING_LOGIN',
+    loginProps
   }
 }
 
-export const noExistingLogin = () => {
+export function noExistingLogin () {
   return {
     type: 'NO_EXISTING_LOGIN'
   }
 }
 
-export const userLoggedIn = (token, profile) => {
+export function userLoggedIn (token, profile) {
   return {
     type: 'USER_LOGGED_IN',
     token,
@@ -22,10 +23,10 @@ export const userLoggedIn = (token, profile) => {
   }
 }
 
-export function checkExistingLogin () {
+export function checkExistingLogin (loginProps) {
   return function (dispatch, getState) {
-    dispatch(checkingExistingLogin())
-    var login = getState().user.auth0.checkExistingLogin()
+    dispatch(checkingExistingLogin(loginProps))
+    var login = getState().user.auth0.checkExistingLogin(loginProps)
     if (login) {
       return login.then((userTokenAndProfile) => {
         if (userTokenAndProfile) {
@@ -211,12 +212,16 @@ export function login (credentials, user, lockOptions) {
   return function (dispatch, getState) {
     if (!credentials) {
       return getState().user.auth0.loginViaLock(lockOptions)
-      .then((userInfo) => {
-        return dispatch(userLoggedIn(userInfo.token, userInfo.profile))
-      })
-      // .then(() => {
-      //   dispatch(fetchProjects())
-      // })
+        .then(userInfo => {
+          if (userInfo) {
+            dispatch(userLoggedIn(userInfo.token, userInfo.profile))
+            return userInfo
+          }
+        })
+        .catch(e => {
+          console.log(e)
+          throw e
+        })
     } else {
       credentials.client_id = getConfigProperty('auth0.client_id')
       credentials.connection = 'Username-Password-Authentication'

@@ -33,7 +33,7 @@ class App extends Component {
   }
   render () {
     const requireAuth = (nextState, replace, callback) => {
-      this.props.checkExistingLogin()
+      this.props.checkExistingLogin({required: 'AUTH'})
       .then((action) => {
         if (this.props.user.profile === null) {
           // replace(null, '/')
@@ -47,13 +47,13 @@ class App extends Component {
       })
     }
     const checkLogin = (nextState, replace, callback) => {
-      this.props.checkExistingLogin()
+      this.props.checkExistingLogin({required: false})
       .then((action) => {
         callback()
       })
     }
     const requireAdmin = (nextState, replace, callback) => {
-      this.props.checkExistingLogin()
+      this.props.checkExistingLogin({required: 'ADMIN'})
       .then((action) => {
         console.log('requiring admin')
         if (this.props.user.profile === null || !this.props.user.permissions.isApplicationAdmin()) {
