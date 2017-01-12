@@ -116,3 +116,10 @@
   font-size: 13px;
   font-weight: bold;
 }
+
+
+/* React Bootstrap Table adjustments (no way to change toolbar class otherwise) */
+
+.react-bs-table-tool-bar {
+  margin: 0px;
+}
