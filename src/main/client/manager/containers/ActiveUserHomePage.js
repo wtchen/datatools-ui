@@ -10,7 +10,7 @@ import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibil
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
-    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id)) : [],
+    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions && state.user.permissions.isApplicationAdmin() || state.user.permissions && state.user.permissions.hasProject(p.id)) : [],
     project: ownProps.routeParams.projectId && state.projects.all ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId) : null,
     visibilityFilter: state.projects.filter
   }
