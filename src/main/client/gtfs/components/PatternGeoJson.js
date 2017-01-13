@@ -31,7 +31,6 @@ export default class PatternGeoJson extends GeoJson {
       <Popup>
         <div>
           <p><Icon type='bus' /> <strong>{routeName}</strong></p>
-          <p><Icon type='bus' /> <strong>{getRouteName(route)}</strong></p>
           <ul>
             <li><strong>ID:</strong> {routeId}</li>
             <li><strong>Agency:</strong>{' '}

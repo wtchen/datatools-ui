@@ -231,7 +231,15 @@ export default class GtfsMap extends Component {
               : null
             }
             {/* Stop from GtfsSearch */}
-            {stop && <StopMarker stop={stop} />}
+            {stop && <StopMarker
+              stop={stop}
+              routes={routes}
+              feeds={feeds}
+              renderTransferPerformance={renderTransferPerformance}
+              onStopClick={onStopClick}
+              newEntityId={newEntityId}
+              popupAction={popupAction}
+            />}
           </FeatureGroup>
           <FeatureGroup ref='patterns'>
             {/* Patterns from map bounds search */}
@@ -249,7 +257,14 @@ export default class GtfsMap extends Component {
               : null
             }
             {/* Pattern from GtfsSearch */}
-            {pattern && <PatternGeoJson pattern={pattern} />}
+            {pattern &&
+              <PatternGeoJson
+                pattern={pattern}
+                feeds={feeds}
+                onRouteClick={onRouteClick}
+                newEntityId={newEntityId}
+                popupAction={popupAction} />
+            }
           </FeatureGroup>
           <FeatureGroup ref='isochrones'>
             {/* Isochrones from map click */}
