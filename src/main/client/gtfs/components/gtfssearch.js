@@ -67,7 +67,15 @@ export default class GtfsSearch extends Component {
         })
         .then((stops) => {
           const stopOptions = stops !== null && stops.length > 0
-            ? stops.map(stop => {
+            ? stops.sort((a, b) => {
+              const aStopName = a && a.stop_name && a.stop_name.toLowerCase()
+              const bStopName = b && b.stop_name && b.stop_name.toLowerCase()
+              if (aStopName.startsWith(input)) {
+                return bStopName.startsWith(input) ? aStopName.localeCompare(bStopName) : -1
+              } else {
+                return bStopName.startsWith(input) ? 1 : aStopName.localeCompare(bStopName)
+              }
+            }).map(stop => {
               const agency = getFeed(this.props.feeds, stop.feed_id)
               return {
                 stop,
@@ -99,7 +107,16 @@ export default class GtfsSearch extends Component {
         })
         .then((routes) => {
           const routeOptions = routes !== null && routes.length > 0
-            ? routes.map(route => (
+            ? routes.sort((a, b) => {
+              const aRouteName = a && getRouteName(a).toLowerCase()
+              const bRouteName = b && getRouteName(b).toLowerCase()
+              if (aRouteName.startsWith(input)) {
+                return bRouteName.startsWith(input) ? aRouteName.localeCompare(bRouteName) : -1
+              } else {
+                return bRouteName.startsWith(input) ? 1 : aRouteName.localeCompare(bRouteName)
+              }
+              // return 0
+            }).map(route => (
               {
                 route,
                 value: route.route_id,
