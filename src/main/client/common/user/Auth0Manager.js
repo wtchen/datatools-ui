@@ -70,6 +70,8 @@ export default class Auth0Manager {
       if (props && props.required) {
         return this.loginViaLock({closable: false})
       } else {
+        console.log(props)
+        console.log('bad token. logging out...')
         this.logout()
       }
     })

@@ -119,7 +119,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     checkJobStatus: () => dispatch(checkJobStatus()),
-    checkExistingLogin: (callback) => dispatch(checkExistingLogin()),
+    checkExistingLogin: (props) => dispatch(checkExistingLogin(props)),
     login: (options) => dispatch(login(null, null, options))
   }
 }
