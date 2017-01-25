@@ -7,6 +7,7 @@ import HourMinuteInput from '../HourMinuteInput'
 import CalendarSelect from './CalendarSelect'
 import RouteSelect from './RouteSelect'
 import PatternSelect from './PatternSelect'
+import {getConfigProperty} from '../../../common/util/config'
 
 export default class TimetableHeader extends Component {
   static propTypes = {
@@ -56,14 +57,16 @@ export default class TimetableHeader extends Component {
               inline
               className='pull-right'
             >
-              {activePattern && !activePattern.useFrequency
+              {activePattern && !activePattern.useFrequency && getConfigProperty('application.dev')
                 ? <Checkbox
                   value={hideDepartureTimes}
                   onChange={(evt) => {
                     toggleDepartureTimes()
                   }}
                 >
-                  <small> Hide departures</small>
+                  <OverlayTrigger placement='bottom' overlay={<Tooltip id='hide-departures-check'>Hiding departure times will keep arrival and departure times in sync. WARNING: do not use if arrivals and departures differ.</Tooltip>}>
+                    <small> Hide departures</small>
+                  </OverlayTrigger>
                 </Checkbox>
                 : null
               }
