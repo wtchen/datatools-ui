@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react'
 import { Panel, Row, Col, ButtonToolbar, Button, Glyphicon, ListGroup, ListGroupItem } from 'react-bootstrap'
-import { browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 import moment from 'moment'
 import {Icon} from '@conveyal/woonerf'
