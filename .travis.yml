@@ -14,12 +14,14 @@ before_install:
 # Replace Travis's default Maven installation step with a no-op.
 # This avoids redundantly pre-running 'mvn install -DskipTests' every time.
 install: true
-
+cache:
+  yarn: true
 # Replace Travis's default build step.
 # Run all Maven phases at once up through verify, install, and deploy.
 script:
   - nvm use $NODE_VERSION
   - mvn clean verify
+  - yarn
   - yarn test -- --coverage
   - codecov
   - yarn run build
