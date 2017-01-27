@@ -66,7 +66,15 @@ export default class PatternStopsPanel extends Component {
     }
   }
   render () {
-    const { activePattern } = this.props
+    const {
+      activePattern,
+      updateEditSetting,
+      editSettings,
+      mapState,
+      stops,
+      updateActiveEntity,
+      saveActiveEntity
+    } = this.props
     const cardStyle = {
       border: '1px dashed gray',
       padding: '0.5rem 0.5rem',
@@ -81,17 +89,17 @@ export default class PatternStopsPanel extends Component {
             className='pull-right'
           >
             <Button
-              onClick={() => this.props.updateEditSetting('addStops', !this.props.editSettings.addStops)}
-              bsStyle={this.props.editSettings.addStops ? 'default' : 'success'}
+              onClick={() => updateEditSetting('addStops', !editSettings.addStops)}
+              bsStyle={editSettings.addStops ? 'default' : 'success'}
               bsSize='small'
             >
-              {this.props.editSettings.addStops
+              {editSettings.addStops
                 ? <span><Icon type='times' /> Cancel</span>
                 : <span><Icon type='plus' /> Add stop</span>
               }
             </Button>
           </ButtonToolbar>
-          {this.props.editSettings.addStops && this.props.mapState.zoom <= 14
+          {editSettings.addStops && mapState.zoom <= 14
             ? <small className='pull-right' style={{margin: '5px'}}>Zoom to view stops</small>
             : null
           }
@@ -106,19 +114,19 @@ export default class PatternStopsPanel extends Component {
         </div>
         <div className='clearfix' />
         <PatternStopContainer
-          stops={this.props.stops}
+          stops={stops}
           cardStyle={cardStyle}
           activePattern={activePattern}
-          updateActiveEntity={this.props.updateActiveEntity}
-          saveActiveEntity={this.props.saveActiveEntity}
-          editSettings={this.props.editSettings}
-          updateEditSetting={this.props.updateEditSetting} />
+          updateActiveEntity={updateActiveEntity}
+          saveActiveEntity={saveActiveEntity}
+          editSettings={editSettings}
+          updateEditSetting={updateEditSetting} />
         {/* Add stop selector */}
-        {this.props.editSettings.addStops
+        {editSettings.addStops
           ? <div style={cardStyle}>
             <VirtualizedEntitySelect
               component={'stop'}
-              entities={this.props.stops}
+              entities={stops}
               onChange={this.addStopFromSelect}
             />
             <div style={{marginTop: '5px'}} className='text-center'>
@@ -126,7 +134,7 @@ export default class PatternStopsPanel extends Component {
                 bsSize='small'
                 bsStyle='default'
                 block
-                onClick={() => this.props.updateEditSetting('addStops', !this.props.editSettings.addStops)}
+                onClick={() => updateEditSetting('addStops', !editSettings.addStops)}
               >
                 <Icon type='times' /> Cancel
               </Button>
@@ -135,7 +143,7 @@ export default class PatternStopsPanel extends Component {
           : <div style={cardStyle}>
             <p
               style={{width: '100%', margin: '0px'}}
-              onClick={() => this.props.updateEditSetting('addStops', !this.props.editSettings.addStops)}
+              onClick={() => updateEditSetting('addStops', !editSettings.addStops)}
               className='small'
             >
               <Icon type='plus' /> Add stop

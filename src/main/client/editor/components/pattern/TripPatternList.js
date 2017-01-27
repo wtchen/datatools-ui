@@ -33,8 +33,6 @@ export default class TripPatternList extends Component {
     subEntityId: PropTypes.string,
     currentPattern: PropTypes.object
   }
-  componentWillReceiveProps (nextProps) {
-  }
   shouldComponentUpdate (nextProps) {
     return true
   }

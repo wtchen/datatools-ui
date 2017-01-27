@@ -39,6 +39,7 @@ class PatternStopContainer extends Component {
     }
   }
   componentWillReceiveProps (nextProps) {
+    // Updates cards when pattern stops order changes (does not account for changes to default travel/dwell times)
     if (nextProps.activePattern.patternStops && !shallowEqual(nextProps.activePattern.patternStops, this.props.activePattern.patternStops)) {
       this.setState({cards: nextProps.activePattern.patternStops.map(this.addUniqueId)})
     }
@@ -70,7 +71,6 @@ class PatternStopContainer extends Component {
       index: cards.indexOf(card)
     }
   }
-
   render () {
     const { connectDropTarget } = this.props
     const { cards } = this.state
@@ -91,7 +91,6 @@ class PatternStopContainer extends Component {
               id={card.id}
               index={i}
               style={this.props.cardStyle}
-              stopIsActive={false}
               cumulativeTravelTime={cumulativeTravelTime}
               stop={stop}
               activePattern={this.props.activePattern}

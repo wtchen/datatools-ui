@@ -156,10 +156,11 @@ class PatternStopCard extends Component {
                     >
                       <ControlLabel className='small'>Default travel time</ControlLabel>
                       <MinuteSecondInput
-                        seconds={patternStop.defaultTravelTime}
+                        seconds={this.state.defaultTravelTime || patternStop.defaultTravelTime}
                         onChange={(value) => {
                           let patternStops = [...activePattern.patternStops]
                           patternStops[index].defaultTravelTime = value
+                          this.setState({defaultTravelTime: value})
                           updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                         }}
                       />
@@ -172,10 +173,11 @@ class PatternStopCard extends Component {
                     >
                       <ControlLabel className='small'>Default dwell time</ControlLabel>
                       <MinuteSecondInput
-                        seconds={patternStop.defaultDwellTime}
+                        seconds={this.state.defaultDwellTime || patternStop.defaultDwellTime}
                         onChange={(value) => {
                           let patternStops = [...activePattern.patternStops]
                           patternStops[index].defaultDwellTime = value
+                          this.setState({defaultDwellTime: value})
                           updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                         }}
                       />
