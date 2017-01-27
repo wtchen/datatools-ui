@@ -176,6 +176,7 @@ export default class GtfsEditor extends Component {
           left: sidebarExpanded ? 130 : 50,
           bottom: 0,
           right: 0,
+          minHeight: '500px',
           top: 0}}>
           {subSubComponent === 'timetable' // && activeEntity
             ? <ActiveTimetableEditor

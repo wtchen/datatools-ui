@@ -187,7 +187,7 @@ export default class EditorMap extends Component {
               stops={stops}
               activePattern={activePattern}
               removeStopFromPattern={this.props.removeStopFromPattern}
-              entityEdited={this.props.editSettings.entityEdited}
+              entityEdited={this.props.entityEdited}
               saveActiveEntity={this.props.saveActiveEntity}
               setActiveEntity={this.props.setActiveEntity}
               feedSource={this.props.feedSource}
