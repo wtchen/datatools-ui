@@ -198,6 +198,7 @@ export default class EditorMap extends Component {
             <AddableStopsLayer
               stops={stops}
               activePattern={activePattern}
+              addStopToPattern={this.props.addStopToPattern}
               editSettings={editSettings}
               mapState={mapState} />
           </FeatureGroup>

@@ -13,7 +13,8 @@ export default class AddableStopsLayer extends Component {
       stops,
       activePattern,
       editSettings,
-      mapState
+      mapState,
+      addStopToPattern
     } = this.props
     const { bounds } = mapState
     return (
@@ -60,10 +61,10 @@ export default class AddableStopsLayer extends Component {
                         id={`add-stop-dropdown`}
                         bsStyle='success'
                         onSelect={(key) => {
-                          this.addStopToPattern(activePattern, stop, key)
+                          addStopToPattern(activePattern, stop, key)
                         }}
                         onClick={(e) => {
-                          this.addStopToPattern(activePattern, stop)
+                          addStopToPattern(activePattern, stop)
                         }}
                       >
                         <MenuItem value={activePattern.patternStops.length} eventKey={activePattern.patternStops.length}>
