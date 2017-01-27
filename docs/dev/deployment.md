@@ -95,16 +95,16 @@ To allow for the creation, deletion and editing of users you must generate a tok
 
 ## Building and Running the Application
 
-Install the Javascript dependencies using npm:
+Install the Javascript dependencies using yarn:
 
 ```bash
-$ npm install
+$ yarn
 ```
 
-Build the frontend using webpack:
+Build the frontend using [mastarm](https://github.com/conveyal/mastarm):
 
 ```bash
-$ webpack
+$ npm run build
 ```
 
 Package the application using Maven:
