@@ -53,6 +53,7 @@ export default class EntityDetails extends Component {
     !shallowEqual(nextProps.mapState.target, this.props.mapState.target) ||
     !shallowEqual(nextProps.entities, this.props.entities) ||
     !shallowEqual(nextProps.activeEntity, this.props.activeEntity) ||
+    !shallowEqual(nextProps.activePattern, this.props.activePattern) ||
     !shallowEqual(nextProps.activeEntityId, this.props.activeEntityId) ||
     !shallowEqual(nextProps.width, this.props.width)
   }
