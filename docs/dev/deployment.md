@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-The application features a Spark-powered Java backend and a Javascript frontend written with React and Redux. To install and deploy the application, you will need Java 8, Maven, Node/npm, and Webpack.
+The application features a Spark-powered Java backend and a Javascript frontend written with React and Redux. To install and deploy the application, you will need Java 8, Maven, Node/npm, yarn, and [mastarm](https://github.com/conveyal/mastarm).
 
 User athentication is done via [Auth0](http://auth0.com). You will need an Auth0 account and application to use the Data Manager.
 
@@ -101,10 +101,11 @@ Install the Javascript dependencies using yarn:
 $ yarn
 ```
 
-Build the frontend using [mastarm](https://github.com/conveyal/mastarm):
+Build and deploy the frontend to s3 using npm script (which calls [mastarm](https://github.com/conveyal/mastarm)):
 
 ```bash
-$ npm run build
+$ npm run deploy -- s3://$S3_BUCKET_NAME/dist
+>>>>>>> Stashed changes
 ```
 
 Package the application using Maven:
@@ -119,7 +120,9 @@ Deploy the application with Java:
 $ java -jar target/datatools.jar
 ```
 
-The application should now be accessible at `http://localhost:9000` (or whatever port you specified in `config.yml`).
+
+The application back-end should now be running at `http://localhost:9000` (or whatever port you specified in `config.yml`).
+The front-end assets are pointed to by the back end at whatever s3 bucket name is specified in `config.yml` at `application.assets_bucket`.
 
 ## Configuring Modules
 
