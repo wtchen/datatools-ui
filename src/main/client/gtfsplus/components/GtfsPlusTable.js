@@ -84,11 +84,12 @@ export default class GtfsPlusTable extends Component {
           const routeEntity = this.props.getGtfsEntity('route', currentValue)
 
           const routeValue = routeEntity
-            ? { 'value': routeEntity.route_id,
-                'label': routeEntity.route_short_name
-                  ? `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`
-                  : routeEntity.route_long_name
-              }
+            ? {
+              'value': routeEntity.route_id,
+              'label': routeEntity.route_short_name
+                ? `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`
+                : routeEntity.route_long_name
+            }
             : ''
 
           return (

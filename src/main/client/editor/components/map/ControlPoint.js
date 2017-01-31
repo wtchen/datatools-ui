@@ -56,6 +56,6 @@ export default class ControlPoint extends Component {
         }}
         color='black'
       />
-     )
+    )
   }
 }

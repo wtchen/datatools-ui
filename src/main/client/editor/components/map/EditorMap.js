@@ -213,7 +213,7 @@ export default class EditorMap extends Component {
             updateActiveEntity={this.props.updateActiveEntity}
             setActiveEntity={this.props.setActiveEntity}
             feedSource={this.props.feedSource} />
-          )
+        )
       default:
         return null
     }

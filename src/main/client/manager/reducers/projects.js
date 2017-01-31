@@ -158,15 +158,16 @@ const projects = (state = {
           ...existingSources.slice(sourceIndex + 1)
         ]
       }
-      return update(state,
-        {
-          all:
-            {[projectIndex]:
-              {$merge: {feedSources: updatedSources}}
-            },
-          isFetching: { $set: false }
-        }
-      )
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            $merge: {
+              feedSources: updatedSources
+            }
+          }
+        },
+        isFetching: { $set: false }
+      })
 
     case 'RECEIVE_FEEDVERSIONS':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
@@ -176,17 +177,19 @@ const projects = (state = {
         if (a.version > b.version) return 1
         return 0
       }
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {$merge: {feedVersions: action.feedVersions.sort(versionSort)}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                $merge: {
+                  feedVersions: action.feedVersions.sort(versionSort)
+                }
               }
             }
           }
         }
-      )
+      })
 
     case 'RECEIVE_FEEDVERSION':
       projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
@@ -209,26 +212,36 @@ const projects = (state = {
           ...existingVersions.slice(versionIndex + 1)
         ]
       }
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {$merge: {feedVersions: updatedVersions}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                $merge: {
+                  feedVersions: updatedVersions
+                }
               }
             }
           }
         }
-      )
+      })
     case 'PUBLISHED_FEEDVERSION':
       projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
-      return update(state,
-        {all: {[projectIndex]: {feedSources: {[sourceIndex]: {publishedVersionId: {
-          $set: action.feedVersion.id
-        }}}}}}
-      )
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                publishedVersionId: {
+                  $set: action.feedVersion.id
+                }
+              }
+            }
+          }
+        }
+      })
     case 'RECEIVE_VALIDATION_RESULT':
       projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
@@ -240,11 +253,23 @@ const projects = (state = {
       //   }
       //   result[error.file].push(error)
       // })
-      return update(state,
-        {all: {[projectIndex]: {feedSources: {[sourceIndex]: {feedVersions: {
-          [versionIndex]: {$merge: {validationResult: action.validationResult}}
-        }}}}}}
-      )
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                feedVersions: {
+                  [versionIndex]: {
+                    $merge: {
+                      validationResult: action.validationResult
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
     case 'RECEIVE_FEEDVERSION_ISOCHRONES':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
@@ -255,38 +280,50 @@ const projects = (state = {
         f.type = 'Feature'
         return f
       })
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {feedVersions:
-                  {[versionIndex]:
-                    {$merge: {isochrones: action.isochrones}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                feedVersions: {
+                  [versionIndex]: {
+                    $merge: {
+                      isochrones: action.isochrones
+                    }
                   }
                 }
               }
             }
           }
         }
-      )
+      })
     case 'RECEIVE_DEPLOYMENTS':
       projectIndex = state.all.findIndex(p => p.id === action.projectId)
       if (state.active && action.projectId === state.active.id) {
         return update(state, {
-          active: {$merge: {deployments: action.deployments}},
+          active: {
+            $merge: {
+              deployments: action.deployments
+            }
+          },
           all: {
-            [projectIndex]: {$merge: {deployments: action.deployments}}
+            [projectIndex]: {
+              $merge: {
+                deployments: action.deployments
+              }
+            }
           }
         })
       } else { // if projectId does not match active project
-        return update(state,
-          {
-            all: {
-              [projectIndex]: {$merge: {deployments: action.deployments}}
+        return update(state, {
+          all: {
+            [projectIndex]: {
+              $merge: {
+                deployments: action.deployments
+              }
             }
           }
-        )
+        })
       }
     case 'RECEIVE_DEPLOYMENT':
       projectIndex = state.all.findIndex(p => p.id === action.deployment.project.id)
@@ -305,62 +342,70 @@ const projects = (state = {
           ...existingDeployments.slice(sourceIndex + 1)
         ]
       }
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {$merge: {deployments: updatedDeployments}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            $merge: {
+              deployments: updatedDeployments
+            }
           }
         }
-      )
+      })
     case 'RECEIVE_NOTES_FOR_FEEDSOURCE':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {$merge: {notes: action.notes}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                $merge: {
+                  notes: action.notes
+                }
               }
             }
           }
         }
-      )
+      })
 
     case 'RECEIVE_NOTES_FOR_FEEDVERSION':
       projectIndex = state.all.findIndex(p => p.id === action.feedVersion.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedVersion.feedSource.id)
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {feedVersions:
-                  {[versionIndex]:
-                    {$merge: {notes: action.notes}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                feedVersions: {
+                  [versionIndex]: {
+                    $merge: {
+                      notes: action.notes
+                    }
                   }
                 }
               }
             }
           }
         }
-      )
+      })
 
     case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
-      return update(state,
-        {all:
-          {[projectIndex]:
-            {feedSources:
-              {[sourceIndex]:
-                {$merge: {editorSnapshots: action.snapshots}}
+      return update(state, {
+        all: {
+          [projectIndex]: {
+            feedSources: {
+              [sourceIndex]: {
+                $merge: {
+                  editorSnapshots: action.snapshots
+                }
               }
             }
           }
         }
-      )
+      })
 
     default:
       return state
