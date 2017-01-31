@@ -22,7 +22,8 @@ script:
   - nvm use $NODE_VERSION
   - mvn clean verify
   - yarn
-  - yarn test -- --coverage
+  - yarn run lint
+  - yarn run cover-client
   - codecov
   - yarn run build
 
