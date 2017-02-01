@@ -44,7 +44,7 @@ export default class TimetableEditor extends Component {
 
     // set starting time for first arrival
     let cumulativeTravelTime = !toClone ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
-    cumulativeTravelTime += this.state.offsetSeconds
+    cumulativeTravelTime += this.props.timetable.offset
 
     for (let i = 0; i < activePattern.patternStops.length; i++) {
       let stop = activePattern.patternStops[i]
@@ -80,13 +80,13 @@ export default class TimetableEditor extends Component {
   addNewRow (blank = false, scroll = false) {
     // set blank to true if there are no rows to clone
     blank = blank || this.props.timetable.trips.length === 0
-
-    let clone = blank ? null : this.props.timetable.trips[this.props.timetable.trips.length - 1]
+    const lastIndex = this.props.timetable.trips.length - 1
+    let clone = blank ? null : this.props.timetable.trips[lastIndex]
     let newRow = this.constructNewRow(clone)
 
     let stateUpdate = {
       activeCell: {$set: null},
-      scrollToRow: {$set: this.props.timetable.trips.length},
+      scrollToRow: {$set: lastIndex + 1}, // increment selected row
       scrollToColumn: {$set: 0}
     }
     this.props.addNewTrip(newRow)
