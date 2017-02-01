@@ -48,6 +48,8 @@ DeploymentsPanel:
     feedCount: Number of feeds
 ProjectViewer:
   mergeFeeds: Merge Feeds
+  settings: Settings
+  makePublic: Publish public feeds
   feeds:
     title: Feed Sources
     search: Search by name
@@ -214,6 +216,28 @@ UserList:
   showing: Showing Users
   of: of
   search: Search by username
+UserHomePage:
+  title: Projects
+  noProjects: You currently do not have any projects.
+  createFirst: Create my first project
+  search: Search feeds
+  table:
+    name: Project Name
+  new: New Project
+  help:
+    title: What's a project?
+    content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+OrganizationList:
+  search: Search orgs
+  new: Create org
+OrganizationSettings:
+  subscriptionBeginDate: Subscription begins
+  subscriptionEndDate: Subscription ends
+  usageTier:
+    low: Low
+    medium: Medium
+    high: High
+
 CreateUser:
   new: Create User
 UserSettings:
