@@ -66,38 +66,38 @@ const gtfsplus = (state = {
         )
       }
       // otherwise, add it to the exising table
-      return update(state,
-        {tableData:
-          {[action.tableId]:
-            {$push: [action.rowData]}
+      return update(state, {
+        tableData: {
+          [action.tableId]: {
+            $push: [action.rowData]
           }
         }
-      )
+      })
     case 'UPDATE_GTFSPLUS_FIELD':
-      return update(state,
-        {tableData:
-          {[action.tableId]:
-            {[action.rowIndex]:
-              {[action.fieldName]:
-                {$set: action.newValue}
+      return update(state, {
+        tableData: {
+          [action.tableId]: {
+            [action.rowIndex]: {
+              [action.fieldName]: {
+                $set: action.newValue
               }
             }
           }
         }
-      )
+      })
     case 'DELETE_GTFSPLUS_ROW':
       const table = state.tableData[action.tableId]
       const newTable = [
         ...table.slice(0, action.rowIndex),
         ...table.slice(action.rowIndex + 1)
       ]
-      return update(state,
-        {tableData:
-          {[action.tableId]:
-            {$set: newTable}
+      return update(state, {
+        tableData: {
+          [action.tableId]: {
+            $set: newTable
           }
         }
-      )
+      })
     case 'RECEIVE_GTFS_PLUS_ENTITIES':
       const getType = function (entity) {
         if (entity.hasOwnProperty('route_id')) return 'route'
@@ -110,11 +110,11 @@ const gtfsplus = (state = {
         newLookupEntries[key] = entity
       }
 
-      return update(state,
-        {gtfsEntityLookup:
-          {$merge: newLookupEntries}
+      return update(state, {
+        gtfsEntityLookup: {
+          $merge: newLookupEntries
         }
-      )
+      })
     case 'RECEIVE_GTFSPLUS_VALIDATION':
       const validationTable = {}
       for (let issue of action.validationIssues) {
@@ -123,11 +123,11 @@ const gtfsplus = (state = {
         }
         validationTable[issue.tableId].push(issue)
       }
-      return update(state,
-        {validation:
-          {$set: validationTable}
+      return update(state, {
+        validation: {
+          $set: validationTable
         }
-      )
+      })
 
     default:
       return state

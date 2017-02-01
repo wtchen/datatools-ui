@@ -10,10 +10,13 @@
   "license": "MIT",
   "scripts": {
     "build": "mastarm build --env production",
+    "cover-client": "npm run test-client -- --coverage --coverage-paths \"src/main/client/**/*.js\"",
     "deploy": "mastarm build --minify --env production && aws s3 cp --recursive --acl public-read dist",
+    "lint": "mastarm lint \"src/main/client/**/*.js\"",
     "prestart": "yarn",
     "start": "mastarm build --serve --proxy http://localhost:4000/api",
-    "test": "mastarm lint \"src/main/client/**/*.js\""
+    "test": "npm run lint && npm run test-client",
+    "test-client": "mastarm test"
   },
   "dependencies": {
     "@conveyal/woonerf": "^0.2.0",
@@ -89,7 +92,7 @@
     "validator": "^5.5.0"
   },
   "devDependencies": {
-    "mastarm": "^3.1.0"
+    "mastarm": "^3.3.0"
   },
   "standard": {
     "parser": "babel-eslint"

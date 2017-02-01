@@ -443,11 +443,12 @@ export default class EditorInput extends Component {
       case 'GTFS_ROUTE':
         const routeEntity = getGtfsEntity('route', currentValue)
         const routeValue = routeEntity
-          ? { 'value': routeEntity.route_id,
-              'label': routeEntity.route_short_name
-                ? `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`
-                : routeEntity.route_long_name
-            }
+          ? {
+            'value': routeEntity.route_id,
+            'label': routeEntity.route_short_name
+              ? `${routeEntity.route_short_name} - ${routeEntity.route_long_name}`
+              : routeEntity.route_long_name
+          }
           : ''
         return (
           <GtfsSearch

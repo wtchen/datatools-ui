@@ -392,7 +392,8 @@ export default class Timetable extends Component {
                                   width={width - scrollbarSize() - columnWidth} />
                               </div>
                             </div>
-                        ) }}
+                          )
+                        }}
                       </AutoSizer>
                     </div>
                   </div>
