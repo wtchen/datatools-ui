@@ -26,7 +26,7 @@ export default class PatternsLayer extends Component {
             .map(tp => {
               const isActive = subEntityId === tp.id
               let pattern = isActive ? activePattern : tp
-              const latLngs = pattern.shape ? pattern.shape.coordinates.map(c => ([c[1], c[0]])) : []
+              const latLngs = pattern && pattern.shape ? pattern.shape.coordinates.map(c => ([c[1], c[0]])) : []
 
               // NOTE: don't render pattern if latlngs don't exist or a single pattern is active
               if (!latLngs || !isActive && subEntityId) {

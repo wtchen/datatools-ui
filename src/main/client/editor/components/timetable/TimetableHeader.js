@@ -14,7 +14,7 @@ export default class TimetableHeader extends Component {
     feedSource: PropTypes.object
   }
   render () {
-    const { feedSource, timetable, setOffset, offsetRows, toggleDepartureTimes, addNewRow, removeSelectedRows, saveEditedTrips, route, tableData, activeScheduleId, activePattern, setActiveEntity, fetchTripsForCalendar } = this.props
+    const { feedSource, timetable, setOffset, offsetRows, toggleDepartureTimes, addNewRow, removeSelectedRows, saveEditedTrips, route, tableData, activeScheduleId, activePattern, setActiveEntity, fetchTripsForCalendar, duplicateRows } = this.props
     const { selected, trips, hideDepartureTimes, edited, offset } = timetable
     const calendars = tableData.calendar || []
     const activeCalendar = calendars.find(c => c.id === activeScheduleId)
@@ -130,9 +130,9 @@ export default class TimetableHeader extends Component {
             <ButtonGroup
               className='pull-right'
             >
-              <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-add'>Add new trip</Tooltip>}>
+              <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-add'>Add blank trip</Tooltip>}>
                 <Button
-                  onClick={() => addNewRow(false, true)}
+                  onClick={() => addNewRow(true, true)}
                   bsStyle='default'
                 >
                   <Icon type='plus' />
@@ -140,7 +140,16 @@ export default class TimetableHeader extends Component {
               </OverlayTrigger>
               <OverlayTrigger placement='bottom' overlay={<Tooltip id='tooltip-duplicate'>Duplicate trips</Tooltip>}>
                 <Button
-                  disabled={selected.length === 0}
+                  onClick={() => {
+                    // if no rows selected, duplicate last
+                    // TODO: should this duplicate row in which cursor lies?
+                    if (selected.length === 0) {
+                      duplicateRows([timetable.trips.length - 1])
+                    } else {
+                      duplicateRows(timetable.selected)
+                    }
+                  }}
+                  disabled={timetable.trips.length === 0}
                 >
                   <Icon type='clone' />
                 </Button>

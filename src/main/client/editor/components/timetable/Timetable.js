@@ -86,8 +86,13 @@ export default class Timetable extends Component {
     this.setState(update(this.state, stateUpdate))
   }
   _getColumnWidth ({ index }) {
+    index = this.props.timetable.hideDepartureTimes && index > 3 ? index * 2 - 3 : index
     const col = this.props.columns[index]
-    const width = col ? col.width : 90
+    const width = col.type === 'ARRIVAL_TIME' && this.props.timetable.hideDepartureTimes
+      ? col.width * 2
+      : col
+      ? col.width
+      : 90
     return width
   }
   _getColumnHeaderWidth ({ index }) {
@@ -107,10 +112,12 @@ export default class Timetable extends Component {
     return isTimeFormat(col.type) && value >= 0 && value < previousValue
   }
   _cellRenderer ({ columnIndex, key, rowIndex, scrollToColumn, scrollToRow, style }) {
-    const isFocused = columnIndex === scrollToColumn && rowIndex === scrollToRow
-    const isEditing = this.state.activeCell === `${rowIndex}-${columnIndex}`
-    const col = this.props.columns[columnIndex]
-    const previousCol = this.props.columns[columnIndex - 1]
+    // adjust columnIndex for hideDepartures
+    const colIndex = this.props.timetable.hideDepartureTimes && columnIndex > 3 ? columnIndex * 2 - 3 : columnIndex
+    const isFocused = colIndex === scrollToColumn && rowIndex === scrollToRow
+    const isEditing = this.state.activeCell === `${rowIndex}-${colIndex}`
+    const col = this.props.columns[colIndex]
+    const previousCol = this.props.columns[colIndex - 1]
     const row = this.props.data[rowIndex]
 
     let rowIsChecked = this.props.selected[0] === '*' &&
@@ -126,9 +133,9 @@ export default class Timetable extends Component {
     return (
       <EditableCell
         key={key}
-        onClick={() => this.handleCellClick(rowIndex, columnIndex)}
+        onClick={() => this.handleCellClick(rowIndex, colIndex)}
         duplicateLeft={(evt) => this.props.updateCellValue(previousValue, rowIndex, `${rowIndex}.${col.key}`)}
-        handlePastedRows={(rows) => this.handlePastedRows(rows, rowIndex, columnIndex, this.props.columns)}
+        handlePastedRows={(rows) => this.handlePastedRows(rows, rowIndex, colIndex, this.props.columns)}
         invalidData={isInvalid}
         isEditing={isEditing}
         isSelected={rowIsChecked}
@@ -144,11 +151,11 @@ export default class Timetable extends Component {
           this.props.updateCellValue(value, rowIndex, `${rowIndex}.${col.key}`)
           // this.setState({activeCell: null})
 
-          // TODO: add below back in
-          // // set departure time value if departure times are hidden
-          // if (this.props.timetable.hideDepartureTimes && this.props.timetable.columns[colIndex + 1] && this.props.timetable.columns[colIndex + 1].type === 'DEPARTURE_TIME') {
-          //   this.updateCellValue(value, rowIndex, `${rowIndex}.${this.props.timetable.columns[columnIndex + 1].key}`)
-          // }
+          // set departure time value equal to arrival time if departure times are hidden
+          const nextCol = this.props.timetable.columns[colIndex + 1]
+          if (this.props.timetable.hideDepartureTimes && nextCol && nextCol.type === 'DEPARTURE_TIME') {
+            this.props.updateCellValue(value, rowIndex, `${rowIndex}.${nextCol.key}`)
+          }
         }} />
     )
   }
@@ -253,7 +260,6 @@ export default class Timetable extends Component {
     }
   }
   render () {
-    // console.log(this.props, this.state)
     if (this.props.columns.length === 0 && this.props.data.length === 0) {
       return (
         <div style={{marginTop: '20px'}}>
@@ -378,7 +384,7 @@ export default class Timetable extends Component {
                                   ref={Grid => { this.grid = Grid }}
                                   style={{outline: 'none'}}
                                   columnWidth={this._getColumnWidth}
-                                  columnCount={this.props.columns.length}
+                                  columnCount={this.props.timetable.hideDepartureTimes ? columnHeaderCount : this.props.columns.length}
                                   height={height}
                                   onScroll={onScroll}
                                   overscanColumnCount={overscanColumnCount}
@@ -392,7 +398,8 @@ export default class Timetable extends Component {
                                   width={width - scrollbarSize() - columnWidth} />
                               </div>
                             </div>
-                        ) }}
+                          )
+                        }}
                       </AutoSizer>
                     </div>
                   </div>
