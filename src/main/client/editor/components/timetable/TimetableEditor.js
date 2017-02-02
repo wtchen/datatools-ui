@@ -44,7 +44,9 @@ export default class TimetableEditor extends Component {
 
     // set starting time for first arrival
     let cumulativeTravelTime = !toClone ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
-    cumulativeTravelTime += this.props.timetable.offset
+
+    // TODO: auto-add offset to any new trip?  No, for now. Add toggle/checkbox that allows for this.
+    // cumulativeTravelTime += this.props.timetable.offset
 
     for (let i = 0; i < activePattern.patternStops.length; i++) {
       let stop = activePattern.patternStops[i]
@@ -76,6 +78,17 @@ export default class TimetableEditor extends Component {
     objectPath.set(newRow, 'calendarId', this.props.activeScheduleId)
 
     return newRow
+  }
+  duplicateRows (indexArray) {
+    let arrayAscending = indexArray.sort((a, b) => {
+      return a - b
+    })
+    for (var i = 0; i < arrayAscending.length; i++) {
+      const index = arrayAscending[i]
+      const toClone = this.props.timetable.trips[index]
+      const newRow = this.constructNewRow(toClone)
+      this.props.addNewTrip(newRow)
+    }
   }
   addNewRow (blank = false, scroll = false) {
     // set blank to true if there are no rows to clone
@@ -214,6 +227,7 @@ export default class TimetableEditor extends Component {
           removeSelectedRows={() => this.removeSelectedRows()}
           offsetRows={(rowIndexes, offsetAmount) => this.offsetRows(rowIndexes, offsetAmount)}
           addNewRow={(blank, scroll) => this.addNewRow(blank, scroll)}
+          duplicateRows={(indexArray) => this.duplicateRows(indexArray)}
           saveEditedTrips={(pattern, scheduleId) => this.saveEditedTrips(pattern, scheduleId)}
           {...this.props} />
         {activeSchedule
