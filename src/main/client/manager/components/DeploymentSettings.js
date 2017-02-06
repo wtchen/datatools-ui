@@ -41,10 +41,10 @@ export default class DeploymentSettings extends Component {
           <Row>
             <Col xs={6}>
               <FormGroup>
+                <ControlLabel>{getMessage(messages, 'deployment.buildConfig.fetchElevationUS')}</ControlLabel>
                 <FormControl
                   componentClass='select'
                   defaultValue={project.buildConfig && project.buildConfig.fetchElevationUS ? project.buildConfig.fetchElevationUS : ''}
-                  label={getMessage(messages, 'deployment.buildConfig.fetchElevationUS')}
                   ref='fetchElevationUS'
                   onChange={(evt) => {
                     let stateUpdate = { deployment: { buildConfig: { fetchElevationUS: { $set: (evt.target.value === 'true') } } } }
@@ -57,10 +57,10 @@ export default class DeploymentSettings extends Component {
             </Col>
             <Col xs={6}>
               <FormGroup>
+                <ControlLabel>{getMessage(messages, 'deployment.buildConfig.stationTransfers')}</ControlLabel>
                 <FormControl
                   componentClass='select'
                   defaultValue={project.buildConfig && project.buildConfig.stationTransfers ? project.buildConfig.stationTransfers : ''}
-                  label={getMessage(messages, 'deployment.buildConfig.stationTransfers')}
                   ref='stationTransfers'
                   onChange={(evt) => {
                     let stateUpdate = { deployment: { buildConfig: { stationTransfers: { $set: (evt.target.value === 'true') } } } }
@@ -73,10 +73,10 @@ export default class DeploymentSettings extends Component {
             </Col>
           </Row>
           <FormGroup>
+            <ControlLabel>{getMessage(messages, 'deployment.buildConfig.subwayAccessTime')}</ControlLabel>
             <FormControl
               defaultValue={project.buildConfig && project.buildConfig.subwayAccessTime ? project.buildConfig.subwayAccessTime : ''}
               placeholder='2.5 (min)'
-              label={getMessage(messages, 'deployment.buildConfig.subwayAccessTime')}
               ref='subwayAccessTime'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { buildConfig: { subwayAccessTime: { $set: +evt.target.value } } } }
@@ -84,10 +84,10 @@ export default class DeploymentSettings extends Component {
               }} />
           </FormGroup>
           <FormGroup>
+            <ControlLabel>{getMessage(messages, 'deployment.buildConfig.fares')}</ControlLabel>
             <FormControl
               defaultValue={project.buildConfig && project.buildConfig.fares ? project.buildConfig.fares : ''}
               placeholder='fares'
-              label={getMessage(messages, 'deployment.buildConfig.fares')}
               ref='fares'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { buildConfig: { fares: { $set: evt.target.value } } } }
@@ -99,11 +99,11 @@ export default class DeploymentSettings extends Component {
           <Row>
             <Col xs={6}>
               <FormGroup>
+                <ControlLabel>{getMessage(messages, 'deployment.routerConfig.numItineraries')}</ControlLabel>
                 <FormControl
                   type='integer'
                   defaultValue={project.routerConfig && project.routerConfig.numItineraries ? project.routerConfig.numItineraries : ''}
                   placeholder='6'
-                  label={getMessage(messages, 'deployment.buildConfig.numItineraries')}
                   ref='numItineraries'
                   onChange={(evt) => {
                     let stateUpdate = { deployment: { routerConfig: { numItineraries: { $set: +evt.target.value } } } }
@@ -113,11 +113,11 @@ export default class DeploymentSettings extends Component {
             </Col>
             <Col xs={6}>
               <FormGroup>
+                <ControlLabel>{getMessage(messages, 'deployment.routerConfig.walkSpeed')}</ControlLabel>
                 <FormControl
                   type='number'
                   defaultValue={project.routerConfig && project.routerConfig.walkSpeed ? project.routerConfig.walkSpeed : ''}
                   placeholder='3.0'
-                  label={getMessage(messages, 'deployment.buildConfig.walkSpeed')}
                   ref='walkSpeed'
                   onChange={(evt) => {
                     let stateUpdate = { deployment: { routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
@@ -129,11 +129,11 @@ export default class DeploymentSettings extends Component {
           <Row>
             <Col xs={6}>
               <FormGroup>
+                <ControlLabel>{getMessage(messages, 'deployment.routerConfig.stairsReluctance')}</ControlLabel>
                 <FormControl
                   type='number'
                   defaultValue={project.routerConfig && project.routerConfig.stairsReluctance ? project.routerConfig.stairsReluctance : ''}
                   placeholder='2.0'
-                  label={getMessage(messages, 'deployment.buildConfig.stairsReluctance')}
                   ref='stairsReluctance'
                   onChange={(evt) => {
                     let stateUpdate = { deployment: { routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
@@ -143,11 +143,11 @@ export default class DeploymentSettings extends Component {
             </Col>
             <Col xs={6}>
               <FormGroup>
+                <ControlLabel>{getMessage(messages, 'deployment.routerConfig.carDropoffTime')}</ControlLabel>
                 <FormControl
                   type='number'
                   defaultValue={project.routerConfig && project.routerConfig.carDropoffTime ? project.routerConfig.carDropoffTime : ''}
                   placeholder='240 (sec)'
-                  label={getMessage(messages, 'deployment.buildConfig.carDropoffTime')}
                   ref='carDropoffTime'
                   onChange={(evt) => {
                     let stateUpdate = { deployment: { routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
@@ -157,11 +157,11 @@ export default class DeploymentSettings extends Component {
             </Col>
           </Row>
           <FormGroup>
+            <ControlLabel>{getMessage(messages, 'deployment.routerConfig.brandingUrlRoot')}</ControlLabel>
             <FormControl
               type='text'
               defaultValue={project.routerConfig && project.routerConfig.brandingUrlRoot ? project.routerConfig.brandingUrlRoot : ''}
               placeholder='http://gtfs.example.com/branding'
-              label={getMessage(messages, 'deployment.buildConfig.brandingUrlRoot')}
               ref='brandingUrlRoot'
               onChange={(evt) => {
                 let stateUpdate = { deployment: { routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
@@ -287,19 +287,21 @@ export default class DeploymentSettings extends Component {
             </Radio>
           </FormGroup>
           {project.useCustomOsmBounds || this.state.deployment.useCustomOsmBounds
-            ? <FormControl
-              type='text'
-              defaultValue={project.osmNorth !== null ? `${project.osmWest},${project.osmSouth},${project.osmEast},${project.osmNorth}` : ''}
-              placeholder='-88.45,33.22,-87.12,34.89'
-              label={(<span><Glyphicon glyph='fullscreen' /> {getMessage(messages, 'deployment.osm.bounds')}</span>)}
-              ref='osmBounds'
-              onChange={(evt) => {
-                const bBox = evt.target.value.split(',')
-                if (bBox.length === 4) {
-                  let stateUpdate = { deployment: { $merge: { osmWest: bBox[0], osmSouth: bBox[1], osmEast: bBox[2], osmNorth: bBox[3] } } }
-                  this.setState(update(this.state, stateUpdate))
-                }
-              }} />
+            ? <FormGroup>
+              <ControlLabel>{(<span><Glyphicon glyph='fullscreen' /> {getMessage(messages, 'deployment.osm.bounds')}</span>)}</ControlLabel>
+              <FormControl
+                type='text'
+                defaultValue={project.osmNorth !== null ? `${project.osmWest},${project.osmSouth},${project.osmEast},${project.osmNorth}` : ''}
+                placeholder='-88.45,33.22,-87.12,34.89'
+                ref='osmBounds'
+                onChange={(evt) => {
+                  const bBox = evt.target.value.split(',')
+                  if (bBox.length === 4) {
+                    let stateUpdate = { deployment: { $merge: { osmWest: bBox[0], osmSouth: bBox[1], osmEast: bBox[2], osmNorth: bBox[3] } } }
+                    this.setState(update(this.state, stateUpdate))
+                  }
+                }} />
+            </FormGroup>
             : null
           }
         </Panel>
