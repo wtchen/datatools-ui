@@ -233,9 +233,9 @@
     required: true
     inputType: DROPDOWN
     options:
-    - value: 0
+    - value: false
       text: 'No'
-    - value: 1
+    - value: true
       text: 'Yes'
     columnWidth: 6
     adminOnly: true
