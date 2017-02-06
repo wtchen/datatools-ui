@@ -203,6 +203,7 @@ ProjectSettings:
       public: Public URL
       internal: Internal URLs
       admin: Admin access only?
+      s3Bucket: S3 Bucket Name
     osm:
       title: OSM Extract
       gtfs: Use GTFS-Derived Extract Bounds

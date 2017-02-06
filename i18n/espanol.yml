@@ -231,6 +231,15 @@ OrganizationList:
   search: Search orgs
   new: Create org
 OrganizationSettings:
+  orgDetails: Organization details
+  projects: Projects
+  subDetails: Subscription details
+  name:
+    label: Name
+    placeholder: Big City Transit
+  logoUrl:
+    label: Logo URL
+    placeholder: http://example.com/logo_30x30.png
   subscriptionBeginDate: Subscription begins
   subscriptionEndDate: Subscription ends
   usageTier:
