@@ -60,9 +60,25 @@ export function fetchTripPattern (feedId, tripPatternId) {
   }
 }
 
-export function undoActiveTripPatternEdits () {
+export function undoingActiveTripPatternEdits (lastActionIndex, lastActionType, lastCoordinatesIndex, lastControlPointsIndex, lastCoordinates) {
   return {
-    type: 'UNDO_TRIP_PATTERN_EDITS'
+    type: 'UNDO_TRIP_PATTERN_EDITS',
+    lastActionIndex,
+    lastActionType,
+    lastCoordinatesIndex,
+    lastControlPointsIndex,
+    lastCoordinates
+  }
+}
+
+export function undoActiveTripPatternEdits () {
+  return function (dispatch, getState) {
+    const lastActionIndex = getState().editor.editSettings.actions.length - 1
+    const lastActionType = getState().editor.editSettings.actions[lastActionIndex]
+    const lastCoordinatesIndex = getState().editor.editSettings.coordinatesHistory.length - 1
+    const lastControlPointsIndex = getState().editor.editSettings.controlPoints.length - 1
+    const lastCoordinates = getState().editor.editSettings.coordinatesHistory[lastCoordinatesIndex]
+    dispatch(undoingActiveTripPatternEdits(lastActionIndex, lastActionType, lastCoordinatesIndex, lastControlPointsIndex, lastCoordinates))
   }
 }
 

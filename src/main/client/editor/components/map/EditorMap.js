@@ -169,7 +169,7 @@ export default class EditorMap extends Component {
               controlPoints={this.props.controlPoints}
               constructControlPoint={this.props.constructControlPoint} />
             <DirectionIconsLayer
-              activePattern={activePattern}
+              patternCoordinates={this.props.editSettings.patternCoordinates}
               mapState={mapState} />
             <ControlPointsLayer
               stops={stops}
