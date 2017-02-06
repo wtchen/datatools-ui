@@ -59,6 +59,7 @@ export default class DeploymentViewer extends Component {
                 </Button>
                 <DropdownButton
                   bsStyle='primary'
+                  id='deploy-server-dropdown'
                   disabled={!project.otpServers || !project.otpServers.length}
                   title={project.otpServers && project.otpServers.length
                     ? <span><Glyphicon glyph='globe' /> {getMessage(messages, 'deploy')}</span>
@@ -71,8 +72,8 @@ export default class DeploymentViewer extends Component {
                   }}
                 >
                   {project.otpServers
-                    ? project.otpServers.map(server => (
-                      <MenuItem eventKey={server.name}>{server.name}</MenuItem>
+                    ? project.otpServers.map((server, i) => (
+                      <MenuItem key={i} eventKey={server.name}>{server.name}</MenuItem>
                     ))
                     : null
                   }
@@ -125,8 +126,8 @@ export default class DeploymentViewer extends Component {
                 }}
               >
                 {
-                  deployableFeeds.map(fs => (
-                    <MenuItem eventKey={fs.id}>{fs.name}</MenuItem>
+                  deployableFeeds.map((fs, i) => (
+                    <MenuItem MenuItem key={i} eventKey={fs.id}>{fs.name}</MenuItem>
                   ))
                 }
               </DropdownButton>

@@ -241,6 +241,17 @@ export default class DeploymentSettings extends Component {
                           this.setState(update(this.state, stateUpdate))
                         }} />
                     </FormGroup>
+                    <FormGroup>
+                      <ControlLabel>{getMessage(messages, 'deployment.servers.s3Bucket')}</ControlLabel>
+                      <FormControl
+                        type='text'
+                        placeholder='s3_bucket_name'
+                        defaultValue={server.s3Bucket}
+                        onChange={(evt) => {
+                          let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { s3Bucket: evt.target.value } } } } }
+                          this.setState(update(this.state, stateUpdate))
+                        }} />
+                    </FormGroup>
                     <Checkbox
                       checked={server.admin}
                       onChange={(evt) => {
