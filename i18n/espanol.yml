@@ -191,6 +191,7 @@ ProjectSettings:
       stairsReluctance: Stairs Reluctance
       carDropoffTime: Car Dropoff Time
       brandingUrlRoot: Branding URL Root
+      requestLogFile: Request log file
     servers:
       title: Servers
       new: Add server
