@@ -168,6 +168,18 @@ export default class DeploymentSettings extends Component {
                 this.setState(update(this.state, stateUpdate))
               }} />
           </FormGroup>
+          <FormGroup>
+            <ControlLabel>{getMessage(messages, 'deployment.routerConfig.requestLogFile')}</ControlLabel>
+            <FormControl
+              type='text'
+              defaultValue={project.routerConfig && project.routerConfig.requestLogFile ? project.routerConfig.requestLogFile : ''}
+              placeholder='/var/otp/request.log'
+              ref='requestLogFile'
+              onChange={(evt) => {
+                let stateUpdate = { deployment: { routerConfig: { requestLogFile: { $set: evt.target.value } } } }
+                this.setState(update(this.state, stateUpdate))
+              }} />
+          </FormGroup>
         </Panel>
         <Panel header={
           <h4>
