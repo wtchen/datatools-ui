@@ -173,7 +173,12 @@ export default class EditableCell extends Component {
   }
   handlePaste (evt) {
     let text = evt.clipboardData.getData('Text')
-    let rows = text.split(String.fromCharCode(13))
+    let rowDelimiter = text.indexOf('\n') > -1 // google sheets row delimiter
+      ? '\n'
+      : text.indexOf(String.fromCharCode(13)) > -1 // excel row delimiter
+      ? String.fromCharCode(13)
+      : null
+    let rows = text.split(rowDelimiter)
 
     for (var i = 0; i < rows.length; i++) {
       rows[i] = rows[i].split(String.fromCharCode(9))
