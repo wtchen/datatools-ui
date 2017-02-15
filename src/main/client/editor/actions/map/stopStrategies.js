@@ -173,12 +173,12 @@ export function addStopToPattern (pattern, stop, index) {
       } else { // if shape coordinates do not exist, add pattern stop and get shape between stops (if multiple stops exist)
         patternStops.push(newStop)
         if (patternStops.length > 1) {
-          let previousStop = getState().editor.data.tables.stops.find(s => s.id === patternStops[patternStops.length - 2].stopId)
+          let previousStop = getState().editor.data.tables.stop.find(s => s.id === patternStops[patternStops.length - 2].stopId)
           console.log(previousStop)
-          getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], getState().editor.editSettings.followStreets)
+          return getSegment([[previousStop.stop_lon, previousStop.stop_lat], [stop.stop_lon, stop.stop_lat]], getState().editor.editSettings.followStreets)
           .then(geojson => {
             dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops, shape: {type: 'LineString', coordinates: geojson.coordinates}}))
-            dispatch(saveActiveGtfsEntity('trippattern'))
+            return dispatch(saveActiveGtfsEntity('trippattern'))
           })
         } else {
           dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {patternStops: patternStops}))
