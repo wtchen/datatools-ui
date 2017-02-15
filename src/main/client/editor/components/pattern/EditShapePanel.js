@@ -10,10 +10,14 @@ import { CLICK_OPTIONS } from '../../util'
 export default class EditShapePanel extends Component {
   async drawPatternFromStops (pattern, stops) {
     let newShape = await getPolyline(stops)
-    console.log(newShape)
-    this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: newShape}})
-    this.props.saveActiveEntity('trippattern')
-    return true
+    if (newShape) {
+      this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: newShape}})
+      this.props.saveActiveEntity('trippattern')
+      return true
+    } else {
+      this.props.setErrorMessage('Error drawing pattern from stops! Some stops may be unreachable by streets.')
+      return false
+    }
   }
   renderEditSettings (isEditing) {
     return isEditing
