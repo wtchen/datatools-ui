@@ -101,7 +101,7 @@ export default class Timetable extends Component {
       ? col.width * 2
       : col
       ? col.width
-      : 90
+      : 200
     return width
   }
   handleCellClick = (rowIndex, columnIndex) => {

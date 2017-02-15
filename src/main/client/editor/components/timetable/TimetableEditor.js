@@ -41,7 +41,11 @@ export default class TimetableEditor extends Component {
   constructNewRow (toClone = null) {
     const activePattern = this.props.route && this.props.route.tripPatterns ? this.props.route.tripPatterns.find(p => p.id === this.props.activePatternId) : null
     let newRow = toClone ? clone(toClone) || {} : {}
-
+    if (toClone) {
+      objectPath.set(newRow, 'id', 'new')
+      objectPath.set(newRow, 'gtfsTripId', null)
+      return newRow
+    }
     // set starting time for first arrival
     let cumulativeTravelTime = !toClone ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
 
@@ -83,11 +87,18 @@ export default class TimetableEditor extends Component {
     let arrayAscending = indexArray.sort((a, b) => {
       return a - b
     })
+    const lastIndex = this.props.timetable.trips.length - 1
     for (var i = 0; i < arrayAscending.length; i++) {
       const index = arrayAscending[i]
       const toClone = this.props.timetable.trips[index]
       const newRow = this.constructNewRow(toClone)
+      let stateUpdate = {
+        activeCell: {$set: null},
+        scrollToRow: {$set: lastIndex + arrayAscending.length}, // increment selected row
+        scrollToColumn: {$set: 0}
+      }
       this.props.addNewTrip(newRow)
+      this.setState(update(this.state, stateUpdate))
     }
   }
   addNewRow (blank = false, scroll = false) {
