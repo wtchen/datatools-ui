@@ -27,7 +27,7 @@ export default class ControlPoint extends Component {
         onDragStart={(e) => {
           const timerFunction = () => {
             const latlng = this.refs.marker.leafletElement.getLatLng()
-            console.log(latlng)
+            // console.log(latlng)
             handlePatternEdit(latlng, this.props.previous, this.props.next, this.props.activePattern, followStreets, patternCoordinates)
             .then(coords => {
               this.setState({latlng})
@@ -39,7 +39,7 @@ export default class ControlPoint extends Component {
           this.setState({timer})
         }}
         onDragEnd={(e) => {
-          console.log('drag end')
+          // console.log('drag end')
           // clear timer
           if (this.state.timer) clearInterval(this.state.timer)
           const { snap, distTraveled } = handleControlPointDragEnd(e, patternCoordinates)

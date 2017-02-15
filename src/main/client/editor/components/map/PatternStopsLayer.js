@@ -6,15 +6,19 @@ import PatternStopPopup from './PatternStopPopup'
 
 export default class PatternStopsLayer extends Component {
   static propTypes = {
+    activePattern: PropTypes.object,
+    addStopToPattern: PropTypes.func,
+    editSettings: PropTypes.object,
+    removeStopFromPattern: PropTypes.func,
     stops: PropTypes.array
   }
   render () {
     const {
-      stops,
       activePattern,
+      addStopToPattern,
       editSettings,
       removeStopFromPattern,
-      addStopToPattern
+      stops
     } = this.props
     return (
       <FeatureGroup
