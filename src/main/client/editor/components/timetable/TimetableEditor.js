@@ -60,9 +60,15 @@ export default class TimetableEditor extends Component {
       }
       objectPath.set(newRow, `stopTimes.${i}.stopId`, stop.stopId)
       cumulativeTravelTime += +stop.defaultTravelTime
+
+      // only set time if timepoint set to true or null
+      // if (stop.timepoint === null || stop.timepoint) {
       objectPath.set(newRow, `stopTimes.${i}.arrivalTime`, cumulativeTravelTime)
+      // }
       cumulativeTravelTime += +stop.defaultDwellTime
+      // if (stop.timepoint === null || stop.timepoint) {
       objectPath.set(newRow, `stopTimes.${i}.departureTime`, cumulativeTravelTime)
+      // }
     }
     for (let i = 0; i < this.props.timetable.columns.length; i++) {
       let col = this.props.timetable.columns[i]
@@ -119,20 +125,20 @@ export default class TimetableEditor extends Component {
     }
   }
   removeSelectedRows () {
-    let splice = []
+    let indexes = []
     let tripsToDelete = []
     let newRows = [...this.props.timetable.trips]
     let selectedDescending = this.props.timetable.selected.sort((a, b) => {
       return b - a
     })
-    // loop over selected array in descending order to ensure that splice operates on indexes in reverse
+    // loop over selected array in descending order to ensure that indexes operates on indexes in reverse
     for (var i = 0; i < selectedDescending.length; i++) {
       let rowIndex = selectedDescending[i]
 
       // removed.push([this.props.selected[i], 1])
       let row = newRows[rowIndex]
       if (row.id === 'new') {
-        splice.push([rowIndex, 1])
+        indexes.push([rowIndex, 1])
       } else {
         tripsToDelete.push(row)
       }
@@ -140,6 +146,7 @@ export default class TimetableEditor extends Component {
     if (tripsToDelete.length > 0) {
       this.props.deleteTripsForCalendar(this.props.feedSource.id, this.props.activePattern, this.props.activeScheduleId, tripsToDelete)
     }
+    this.props.removeTrips(indexes)
     this.props.toggleAllRows(false)
   }
   componentWillReceiveProps (nextProps) {

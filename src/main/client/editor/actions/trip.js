@@ -222,6 +222,14 @@ export function addNewTrip (trip) {
     trip
   }
 }
+
+export function removeTrips (indexes) {
+  return {
+    type: 'REMOVE_TRIPS',
+    indexes
+  }
+}
+
 // export function fetchTripsForCalendar (feedId, patternId, calendarId) {
 //   return function (dispatch, getState) {
 //     dispatch(requestingTripsForCalendar(feedId, patternId, calendarId))
