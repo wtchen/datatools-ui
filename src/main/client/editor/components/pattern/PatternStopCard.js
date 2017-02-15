@@ -112,82 +112,77 @@ class PatternStopCard extends Component {
         </div>
         {/* Collapsible interior div */}
         <Collapse in={stopIsActive}>
-          {stopIsActive
-            ? (
-              <div>
-                {/* Remove from pattern button */}
-                <Row>
-                  <Col xs={6}>
-                    <Checkbox
-                      checked={patternStop.timepoint}
-                      onChange={() => {
-                        let patternStops = [...activePattern.patternStops]
-                        patternStops[index].timepoint = !patternStop.timepoint
-                        updateActiveEntity(activePattern, 'trippattern', {patternStops})
-                        saveActiveEntity('trippattern')
-                      }}
-                    >
-                      Timepoint?
-                    </Checkbox>
-                  </Col>
-                  <Col xs={6}>
-                    <Button
-                      bsStyle='danger'
-                      bsSize='xsmall'
-                      style={{marginTop: '9px'}} // margin on top to align button with checkbox
-                      className='pull-right'
-                      onClick={() => {
-                        let patternStops = [...activePattern.patternStops]
-                        patternStops.splice(index, 1)
-                        updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-                        saveActiveEntity('trippattern')
-                      }}
-                    >
-                      <Icon type='trash' /> Remove
-                    </Button>
-                  </Col>
-                </Row>
-                {/* default travel time inputs */}
-                <Row>
-                  <Col xs={6}>
-                    <FormGroup
-                      controlId='defaultTravelTime'
-                      bsSize='small'
-                    >
-                      <ControlLabel className='small'>Default travel time</ControlLabel>
-                      <MinuteSecondInput
-                        seconds={this.state.defaultTravelTime || patternStop.defaultTravelTime}
-                        onChange={(value) => {
-                          let patternStops = [...activePattern.patternStops]
-                          patternStops[index].defaultTravelTime = value
-                          this.setState({defaultTravelTime: value})
-                          updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-                        }}
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col xs={6}>
-                    <FormGroup
-                      controlId='defaultDwellTime'
-                      bsSize='small'
-                    >
-                      <ControlLabel className='small'>Default dwell time</ControlLabel>
-                      <MinuteSecondInput
-                        seconds={this.state.defaultDwellTime || patternStop.defaultDwellTime}
-                        onChange={(value) => {
-                          let patternStops = [...activePattern.patternStops]
-                          patternStops[index].defaultDwellTime = value
-                          this.setState({defaultDwellTime: value})
-                          updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
-                        }}
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-              </div>
-            )
-            : <div />
-          }
+          <div>
+            {/* Remove from pattern button */}
+            <Row>
+              <Col xs={6}>
+                <Checkbox
+                  checked={patternStop.timepoint}
+                  onChange={() => {
+                    let patternStops = [...activePattern.patternStops]
+                    patternStops[index].timepoint = !patternStop.timepoint
+                    updateActiveEntity(activePattern, 'trippattern', {patternStops})
+                    saveActiveEntity('trippattern')
+                  }}
+                >
+                  Timepoint?
+                </Checkbox>
+              </Col>
+              <Col xs={6}>
+                <Button
+                  bsStyle='danger'
+                  bsSize='xsmall'
+                  style={{marginTop: '9px'}} // margin on top to align button with checkbox
+                  className='pull-right'
+                  onClick={() => {
+                    let patternStops = [...activePattern.patternStops]
+                    patternStops.splice(index, 1)
+                    updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                    saveActiveEntity('trippattern')
+                  }}
+                >
+                  <Icon type='trash' /> Remove
+                </Button>
+              </Col>
+            </Row>
+            {/* default travel time inputs */}
+            <Row>
+              <Col xs={6}>
+                <FormGroup
+                  controlId='defaultTravelTime'
+                  bsSize='small'
+                >
+                  <ControlLabel className='small'>Default travel time</ControlLabel>
+                  <MinuteSecondInput
+                    seconds={this.state.defaultTravelTime || patternStop.defaultTravelTime}
+                    onChange={(value) => {
+                      let patternStops = [...activePattern.patternStops]
+                      patternStops[index].defaultTravelTime = value
+                      this.setState({defaultTravelTime: value})
+                      updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+              <Col xs={6}>
+                <FormGroup
+                  controlId='defaultDwellTime'
+                  bsSize='small'
+                >
+                  <ControlLabel className='small'>Default dwell time</ControlLabel>
+                  <MinuteSecondInput
+                    seconds={this.state.defaultDwellTime || patternStop.defaultDwellTime}
+                    onChange={(value) => {
+                      let patternStops = [...activePattern.patternStops]
+                      patternStops[index].defaultDwellTime = value
+                      this.setState({defaultDwellTime: value})
+                      updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
+                    }}
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+          </div>
         </Collapse>
       </div>
     ))
