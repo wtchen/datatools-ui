@@ -21,6 +21,7 @@ export default class EntityDetailsHeader extends Component {
       resetActiveEntity,
       saveActiveEntity,
       activeEntity,
+      activePattern,
       validationErrors,
       setActiveEntity,
       feedSource,
@@ -62,7 +63,7 @@ export default class EntityDetailsHeader extends Component {
                 disabled={!entityEdited}
                 onClick={(e) => {
                   if (subComponent === 'trippattern') {
-                    let pattern = activeEntity.tripPatterns.find(p => p.id === subComponent)
+                    let pattern = activeEntity.tripPatterns.find(p => p.id === activePattern.id)
                     resetActiveEntity(pattern, 'trippattern')
                   } else {
                     resetActiveEntity(activeEntity, activeComponent)
@@ -102,7 +103,7 @@ export default class EntityDetailsHeader extends Component {
             : iconName
             ? <span className='fa-stack'>
               <Icon type='square' className='fa-stack-2x' />
-              <Icon type={iconName} inverse className='fa-stack-1x' />
+              <Icon type={iconName} className='fa-inverse fa-stack-1x' />
             </span>
             // schedule exception icon if no icon founds
             : <span className='fa-stack'>
