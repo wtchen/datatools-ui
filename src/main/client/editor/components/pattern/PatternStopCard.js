@@ -119,10 +119,10 @@ class PatternStopCard extends Component {
                 <Row>
                   <Col xs={6}>
                     <Checkbox
-                      checked={stop.timepoint}
+                      checked={patternStop.timepoint}
                       onChange={() => {
                         let patternStops = [...activePattern.patternStops]
-                        patternStops[index].timepoint = !stop.timepoint
+                        patternStops[index].timepoint = !patternStop.timepoint
                         updateActiveEntity(activePattern, 'trippattern', {patternStops})
                         saveActiveEntity('trippattern')
                       }}
