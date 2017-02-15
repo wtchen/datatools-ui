@@ -43,6 +43,7 @@ export default class EditorInput extends Component {
       uploadBrandingAsset,
       feedSource,
       getGtfsEntity,
+      key,
       fieldEdited,
       gtfsEntitySelected,
       tableData,
@@ -56,15 +57,17 @@ export default class EditorInput extends Component {
     } = this.props
     const formProps = {
       controlId: `${editorField}`,
-      className: `col-xs-${field.columnWidth}`,
-      validationState: isNotValid
-        ? 'error'
-        : field.required
-        ? 'success'
-        : ''
+      key: key,
+      className: `col-xs-${field.columnWidth}`
+    }
+    if (isNotValid) {
+      formProps.validationState = 'error'
+    } else if (field.required) {
+      formProps.validationState = 'success'
     }
     const simpleFormProps = {
       controlId: `${editorField}`,
+      key: key,
       className: `col-xs-${field.columnWidth}`
     }
     const styles = reactCSS({
@@ -397,7 +400,7 @@ export default class EditorInput extends Component {
         )
       case 'DAY_OF_WEEK_BOOLEAN':
         return (
-          <span>
+          <span key={key}>
             <span key={`dow-label`}>
               {editorField === 'monday'
                 ? <div className='col-xs-12'><ControlLabel>Days of service</ControlLabel></div> : null
@@ -421,11 +424,12 @@ export default class EditorInput extends Component {
       case 'DROPDOWN':
         return (
           <FormGroup
+            key={key}
             controlId={`${editorField}`}
             className={field.columnWidth ? `col-xs-${field.columnWidth}` : 'col-xs-12'}>
             {basicLabel}
             <FormControl componentClass='select'
-              value={currentValue}
+              value={currentValue !== null ? currentValue : false}
               disabled={approveGtfsDisabled && field.adminOnly}
               onChange={(evt) => {
                 let props = {}
@@ -454,6 +458,7 @@ export default class EditorInput extends Component {
           <GtfsSearch
             feeds={[feedSource]}
             limit={100}
+            key={key}
             entities={['routes']}
             minimumInput={1}
             clearable={false}
