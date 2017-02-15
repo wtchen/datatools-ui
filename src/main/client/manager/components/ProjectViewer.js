@@ -78,17 +78,32 @@ export default class ProjectViewer extends Component {
     this.props.onComponentMount(this.props)
   }
   render () {
-    if (!this.props.project) {
+    const {
+      project,
+      user,
+      visibilityFilter,
+      visibilityFilterChanged,
+      searchTextChanged,
+      onNewFeedSourceClick,
+      thirdPartySync,
+      updateAllFeeds,
+      downloadMergedFeed,
+      activeComponent,
+      deployPublic,
+      activeSubComponent
+    } = this.props
+    if (!project) {
       return <ManagerPage />
     }
     const messages = getComponentMessages('ProjectViewer')
-    const isWatchingProject = this.props.user.subscriptions.hasProjectSubscription(this.props.project.id, 'project-updated')
-    const projectEditDisabled = !this.props.user.permissions.isProjectAdmin(this.props.project.id)
-    const filteredFeedSources = this.props.project.feedSources
-      ? this.props.project.feedSources.filter(feedSource => {
+    const publicFeedsLink = `https://s3.amazonaws.com/${getConfigProperty('application.data.gtfs_s3_bucket')}/public/index.html`
+    const isWatchingProject = user.subscriptions.hasProjectSubscription(project.id, 'project-updated')
+    const projectEditDisabled = !user.permissions.isProjectAdmin(project.id)
+    const filteredFeedSources = project.feedSources
+      ? project.feedSources.filter(feedSource => {
         if (feedSource.isCreating) return true // feeds actively being created are always visible
-        let visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((this.props.visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
-        switch (this.props.visibilityFilter.filter) {
+        let visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
+        switch (visibilityFilter.filter) {
           case 'ALL':
             return visible
           case 'STARRED':
@@ -109,9 +124,9 @@ export default class ProjectViewer extends Component {
             <DropdownButton
               componentClass={InputGroup.Button}
               id='input-dropdown-addon'
-              title={this.props.visibilityFilter.filter ? toSentenceCase(this.props.visibilityFilter.filter) : 'Filter'}
+              title={visibilityFilter.filter ? toSentenceCase(visibilityFilter.filter) : 'Filter'}
               onSelect={(key) => {
-                this.props.visibilityFilterChanged(key)
+                visibilityFilterChanged(key)
               }}
             >
               <MenuItem eventKey='ALL'>All</MenuItem>
@@ -121,7 +136,7 @@ export default class ProjectViewer extends Component {
             </DropdownButton>
             <FormControl
               placeholder={getMessage(messages, 'feeds.search')}
-              onChange={evt => this.props.searchTextChanged(evt.target.value)}
+              onChange={evt => searchTextChanged(evt.target.value)}
             />
           </InputGroup>
         </Col>
@@ -130,7 +145,7 @@ export default class ProjectViewer extends Component {
             bsStyle='primary'
             disabled={projectEditDisabled}
             className='pull-right'
-            onClick={() => this.props.onNewFeedSourceClick()}
+            onClick={() => onNewFeedSourceClick()}
           >
             <Glyphicon glyph='plus' /> {getMessage(messages, 'feeds.new')}
           </Button>
@@ -138,7 +153,7 @@ export default class ProjectViewer extends Component {
             {isExtensionEnabled('transitland') || isExtensionEnabled('transitfeeds') || isExtensionEnabled('mtc')
               ? <ThirdPartySyncButton
                 projectEditDisabled={projectEditDisabled}
-                thirdPartySync={this.props.thirdPartySync}
+                thirdPartySync={thirdPartySync}
               />
               : null
             }
@@ -146,14 +161,14 @@ export default class ProjectViewer extends Component {
               bsStyle='default'
               disabled={projectEditDisabled}
               onClick={() => {
-                this.props.updateAllFeeds(this.props.project)
+                updateAllFeeds(project)
               }}
             >
               <Icon type='cloud-download' /> {getMessage(messages, 'feeds.update')}
             </Button>
             <Button
               bsStyle='primary'
-              onClick={() => { this.props.downloadMergedFeed(this.props.project) }}
+              onClick={() => { downloadMergedFeed(project) }}
             >
               <Glyphicon glyph='download' /> {getMessage(messages, 'mergeFeeds')}
             </Button>
@@ -165,12 +180,12 @@ export default class ProjectViewer extends Component {
       <ManagerPage ref='page'
         breadcrumbs={
           <Breadcrumbs
-            project={this.props.project}
+            project={project}
           />
         }
       >
         <Helmet
-          title={this.props.project.name}
+          title={project.name}
         />
         <Grid fluid>
           <Row
@@ -187,15 +202,15 @@ export default class ProjectViewer extends Component {
           >
             <Col xs={12}>
               <h3>
-                <Icon className='icon-link' type='folder-open-o' /><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link>
+                <Icon className='icon-link' type='folder-open-o' /><Link to={`/project/${project.id}`}>{project.name}</Link>
                 <ButtonToolbar
                   className={`pull-right`}
                 >
                   {getConfigProperty('application.notifications_enabled')
                   ? <WatchButton
                     isWatching={isWatchingProject}
-                    user={this.props.user}
-                    target={this.props.project.id}
+                    user={user}
+                    target={project.id}
                     subscriptionType='project-updated'
                   />
                   : null
@@ -203,8 +218,8 @@ export default class ProjectViewer extends Component {
                 </ButtonToolbar>
               </h3>
               <ul className='list-unstyled list-inline small' style={{marginBottom: '0px'}}>
-                <li><Icon type='map-marker' /> {this.props.project.defaultLocationLon ? `${this.props.project.defaultLocationLat}, ${this.props.project.defaultLocationLon}` : 'n/a'}</li>
-                <li><Icon type='cloud-download' /> {this.props.project.autoFetchFeeds ? `${this.props.project.autoFetchHour}:${this.props.project.autoFetchMinute < 10 ? '0' + this.props.project.autoFetchMinute : this.props.project.autoFetchMinute}` : 'Auto fetch disabled'}</li>
+                <li><Icon type='map-marker' /> {project.defaultLocationLon ? `${project.defaultLocationLat}, ${project.defaultLocationLon}` : 'n/a'}</li>
+                <li><Icon type='cloud-download' /> {project.autoFetchFeeds ? `${project.autoFetchHour}:${project.autoFetchMinute < 10 ? '0' + project.autoFetchMinute : project.autoFetchMinute}` : 'Auto fetch disabled'}</li>
                 {/*
                   <li><Icon type='file-archive-o' /> {fs.feedVersions ? `${this.getAverageFileSize(fs.feedVersions)} MB` : 'n/a'}</li>
                 */}
@@ -213,7 +228,7 @@ export default class ProjectViewer extends Component {
           </Row>
           <Tabs
             id='project-viewer-tabs'
-            activeKey={this.props.activeComponent ? this.props.activeComponent : 'sources'}
+            activeKey={activeComponent || 'sources'}
             onSelect={(key) => this._selectTab(key)}
           >
             <Tab
@@ -232,9 +247,24 @@ export default class ProjectViewer extends Component {
                   </Panel>
                 </Col>
                 <Col xs={12} sm={3}>
+                  {isModuleEnabled('enterprise') &&
+                    <div style={{marginBottom: '20px'}}>
+                      <Button
+                        bsStyle='primary'
+                        block
+                        style={{marginBottom: '5px'}}
+                        onClick={() => deployPublic(project)}
+                      >
+                        <Icon type='users' /> {getMessage(messages, 'makePublic')}
+                      </Button>
+                      <p className='small'>
+                        <strong>Note:</strong> Public feeds page can be viewed <a target='_blank' href={publicFeedsLink}>here</a>.
+                      </p>
+                    </div>
+                  }
                   <ProjectSummaryPanel
-                    project={this.props.project}
-                    feedSources={this.props.project.feedSources || []}
+                    project={project}
+                    feedSources={project.feedSources || []}
                   />
                   <Panel header={<h3>What is a feed source?</h3>}>
                     A feed source defines the location or upstream source of a GTFS feed. GTFS can be populated via automatic fetch, directly editing or uploading a zip file.
@@ -249,8 +279,8 @@ export default class ProjectViewer extends Component {
                 title={<span><Glyphicon className='icon-link' glyph='globe' /><span className='hidden-xs'>{getMessage(messages, 'deployments')}</span></span>}
               >
                 <DeploymentsPanel
-                  deployments={this.props.project.deployments}
-                  expanded={this.props.activeComponent === 'deployments'}
+                  deployments={project.deployments}
+                  expanded={activeComponent === 'deployments'}
                   {...this.props}
                 />
               </Tab>
@@ -262,7 +292,7 @@ export default class ProjectViewer extends Component {
               title={<span><Glyphicon className='icon-link' glyph='cog' /><span className='hidden-xs'>{getMessage(messages, 'settings')}</span></span>}
             >
               <ProjectSettings
-                activeSettingsPanel={this.props.activeSubComponent}
+                activeSettingsPanel={activeSubComponent}
                 projectEditDisabled={projectEditDisabled}
                 {...this.props}
               />
