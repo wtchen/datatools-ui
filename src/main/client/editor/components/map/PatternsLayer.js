@@ -19,7 +19,6 @@ export default class PatternsLayer extends Component {
       controlPoints,
       patternCoordinates
     } = this.props
-    console.log(this.props)
     return (
       <FeatureGroup ref='patterns' key='patterns'>
         {route && route.tripPatterns
