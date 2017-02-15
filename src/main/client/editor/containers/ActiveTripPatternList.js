@@ -10,6 +10,7 @@ import {
   newGtfsEntity,
   updateMapSetting,
   cloneGtfsEntity } from '../actions/editor'
+import { setErrorMessage } from '../../manager/actions/status'
 import { undoActiveTripPatternEdits } from '../actions/tripPattern'
 import { findProjectByFeedSource } from '../../manager/util'
 
@@ -71,7 +72,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       return dispatch(newGtfsEntity(feedSourceId, component, props, save))
     },
 
-    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) }
+    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
+    setErrorMessage: (message) => { dispatch(setErrorMessage(message)) }
   }
 }
 
