@@ -30,7 +30,7 @@ export function receiveTripPattern (feedId, tripPattern) {
 
 export function fetchTripPatterns (feedId) {
   return function (dispatch, getState) {
-    dispatch(requestingTripPatternsForRoute(feedId))
+    dispatch(requestingTripPatterns(feedId))
     const url = `/api/manager/secure/trippattern?feedId=${feedId}`
     return secureFetch(url, getState())
       .then(res => {
