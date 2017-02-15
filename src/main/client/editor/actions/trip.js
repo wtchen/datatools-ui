@@ -101,11 +101,12 @@ export function saveMultipleTripsForCalendar (feedId, pattern, calendarId, trips
         newTrips.push(t)
       }
     })
-    return secureFetch(url, getState(), method, trip)
+    const createUrl = `/api/manager/secure/trip?feedId=${feedId}`
+    return secureFetch(createUrl, getState(), 'post')
       .then(res => {
         if (res.status >= 300) {
           errorCount++
-          errorIndexes.push(index)
+          // errorIndexes.push(index)
           return null
         } else {
           return res.json()
