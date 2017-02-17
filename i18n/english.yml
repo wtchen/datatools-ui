@@ -220,6 +220,7 @@ ProjectSettings:
       stairsReluctance: Stairs Reluctance
       carDropoffTime: Car Dropoff Time
       brandingUrlRoot: Branding URL Root
+      requestLogFile: Request log file
     servers:
       title: Servers
       new: Add server
@@ -230,6 +231,7 @@ ProjectSettings:
       public: Public URL
       internal: Internal URLs
       admin: Admin access only?
+      s3Bucket: S3 bucket name
     osm:
       title: OSM Extract
       gtfs: Use GTFS-Derived Extract Bounds

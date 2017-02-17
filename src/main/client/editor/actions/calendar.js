@@ -1,4 +1,5 @@
 import { secureFetch } from '../../common/util/util'
+import { setErrorMessage } from '../../manager/actions/status'
 import { setActiveGtfsEntity } from './active'
 
 // CALENDAR + SCHEDULE_EXCEPTION
@@ -87,6 +88,7 @@ export function deletingCalendar (feedId, calendar) {
   }
 }
 
+// Unused... currently deleteGtfsEntity is used for deleting entities.
 export function deleteCalendar (feedId, calendar) {
   return function (dispatch, getState) {
     dispatch(deletingCalendar(feedId, calendar))
@@ -95,7 +97,13 @@ export function deleteCalendar (feedId, calendar) {
     }
     const url = `/api/manager/secure/calendar/${calendar.id}?feedId=${feedId}`
     return secureFetch(url, getState(), 'delete')
-      .then(res => res.json())
+    .then(res => {
+      if (res.status >= 300) {
+        console.log(res)
+        dispatch(setErrorMessage('Error deleting calendar'))
+      }
+      return res.json()
+    })
       .then(calendar => {
         dispatch(fetchCalendars(feedId))
       })

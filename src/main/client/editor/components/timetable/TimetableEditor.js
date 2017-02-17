@@ -41,7 +41,11 @@ export default class TimetableEditor extends Component {
   constructNewRow (toClone = null) {
     const activePattern = this.props.route && this.props.route.tripPatterns ? this.props.route.tripPatterns.find(p => p.id === this.props.activePatternId) : null
     let newRow = toClone ? clone(toClone) || {} : {}
-
+    if (toClone) {
+      objectPath.set(newRow, 'id', 'new')
+      objectPath.set(newRow, 'gtfsTripId', null)
+      return newRow
+    }
     // set starting time for first arrival
     let cumulativeTravelTime = !toClone ? 0 : objectPath.get(newRow, `stopTimes.0.arrivalTime`)
 
@@ -56,9 +60,15 @@ export default class TimetableEditor extends Component {
       }
       objectPath.set(newRow, `stopTimes.${i}.stopId`, stop.stopId)
       cumulativeTravelTime += +stop.defaultTravelTime
+
+      // only set time if timepoint set to true or null
+      // if (stop.timepoint === null || stop.timepoint) {
       objectPath.set(newRow, `stopTimes.${i}.arrivalTime`, cumulativeTravelTime)
+      // }
       cumulativeTravelTime += +stop.defaultDwellTime
+      // if (stop.timepoint === null || stop.timepoint) {
       objectPath.set(newRow, `stopTimes.${i}.departureTime`, cumulativeTravelTime)
+      // }
     }
     for (let i = 0; i < this.props.timetable.columns.length; i++) {
       let col = this.props.timetable.columns[i]
@@ -75,6 +85,7 @@ export default class TimetableEditor extends Component {
     objectPath.set(newRow, 'useFrequency', activePattern.useFrequency)
     objectPath.set(newRow, 'feedId', this.props.feedSource.id)
     objectPath.set(newRow, 'patternId', activePattern.id)
+    objectPath.set(newRow, 'routeId', activePattern.routeId)
     objectPath.set(newRow, 'calendarId', this.props.activeScheduleId)
 
     return newRow
@@ -83,11 +94,18 @@ export default class TimetableEditor extends Component {
     let arrayAscending = indexArray.sort((a, b) => {
       return a - b
     })
+    const lastIndex = this.props.timetable.trips.length - 1
     for (var i = 0; i < arrayAscending.length; i++) {
       const index = arrayAscending[i]
       const toClone = this.props.timetable.trips[index]
       const newRow = this.constructNewRow(toClone)
+      let stateUpdate = {
+        activeCell: {$set: null},
+        scrollToRow: {$set: lastIndex + arrayAscending.length}, // increment selected row
+        scrollToColumn: {$set: 0}
+      }
       this.props.addNewTrip(newRow)
+      this.setState(update(this.state, stateUpdate))
     }
   }
   addNewRow (blank = false, scroll = false) {
@@ -108,20 +126,20 @@ export default class TimetableEditor extends Component {
     }
   }
   removeSelectedRows () {
-    let splice = []
+    let indexes = []
     let tripsToDelete = []
     let newRows = [...this.props.timetable.trips]
     let selectedDescending = this.props.timetable.selected.sort((a, b) => {
       return b - a
     })
-    // loop over selected array in descending order to ensure that splice operates on indexes in reverse
+    // loop over selected array in descending order to ensure that indexes operates on indexes in reverse
     for (var i = 0; i < selectedDescending.length; i++) {
       let rowIndex = selectedDescending[i]
 
       // removed.push([this.props.selected[i], 1])
       let row = newRows[rowIndex]
       if (row.id === 'new') {
-        splice.push([rowIndex, 1])
+        indexes.push([rowIndex, 1])
       } else {
         tripsToDelete.push(row)
       }
@@ -129,6 +147,7 @@ export default class TimetableEditor extends Component {
     if (tripsToDelete.length > 0) {
       this.props.deleteTripsForCalendar(this.props.feedSource.id, this.props.activePattern, this.props.activeScheduleId, tripsToDelete)
     }
+    this.props.removeTrips(indexes)
     this.props.toggleAllRows(false)
   }
   componentWillReceiveProps (nextProps) {

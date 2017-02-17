@@ -10,6 +10,13 @@ import {
   newGtfsEntity,
   updateMapSetting,
   cloneGtfsEntity } from '../actions/editor'
+import {
+  // removeStopFromPattern,
+  // addStopAtPoint,
+  // addStopAtIntersection,
+  // addStopAtInterval,
+  addStopToPattern } from '../actions/map/stopStrategies'
+import { setErrorMessage } from '../../manager/actions/status'
 import { undoActiveTripPatternEdits } from '../actions/tripPattern'
 import { findProjectByFeedSource } from '../../manager/util'
 
@@ -71,7 +78,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       return dispatch(newGtfsEntity(feedSourceId, component, props, save))
     },
 
-    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) }
+    addStopToPattern: (pattern, stop, index) => dispatch(addStopToPattern(pattern, stop, index)),
+    undoActiveTripPatternEdits: () => { dispatch(undoActiveTripPatternEdits()) },
+    setErrorMessage: (message) => { dispatch(setErrorMessage(message)) }
   }
 }
 

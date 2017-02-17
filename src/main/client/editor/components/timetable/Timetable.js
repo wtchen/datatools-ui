@@ -54,23 +54,27 @@ export default class Timetable extends Component {
   handlePastedRows (pastedRows, rowIndex, colIndex) {
     let newRows = [...this.props.data]
     let editedRows = []
-
+    let activeRow = rowIndex
+    let activeCol = colIndex
     // iterate over rows in pasted selection
     for (var i = 0; i < pastedRows.length; i++) {
+      activeRow = rowIndex + i
       editedRows.push(i)
+
+      // construct new row if it doesn't exist
       if (typeof this.props.data[i + rowIndex] === 'undefined') {
-        console.log('adding row' + i + rowIndex)
         this.props.addNewRow()
       }
       // iterate over number of this.props.columns in pasted selection
       for (var j = 0; j < pastedRows[0].length; j++) {
+        activeCol = colIndex + j
         let path = `${rowIndex + i}.${this.props.columns[colIndex + j].key}`
 
-        // construct new row if it doesn't exist
-        if (typeof newRows[i + rowIndex] === 'undefined' || typeof objectPath.get(newRows, path) === 'undefined') {
-          // newRows.push(this.props.constructNewRow())
-          // this.props.addNewRow()
-        }
+        // // construct new row if it doesn't exist
+        // if (typeof newRows[i + rowIndex] === 'undefined' || typeof objectPath.get(newRows, path) === 'undefined') {
+        //   // newRows.push(this.props.constructNewRow())
+        //   // this.props.addNewRow()
+        // }
         let value = this.parseTime(pastedRows[i][j])
         // objectPath.set(newRows, path, value)
         this.props.updateCellValue(value, rowIndex + i, path)
@@ -82,7 +86,13 @@ export default class Timetable extends Component {
         }
       }
     }
-    let stateUpdate = {activeCell: {$set: `${rowIndex}-${colIndex}`}, data: {$set: newRows}, edited: { $push: editedRows }}
+    let stateUpdate = {
+      activeCell: {$set: `${activeRow}-${activeCol}`},
+      scrollToRow: {$set: activeRow},
+      scrollToColumn: {$set: activeCol}
+      // data: {$set: newRows},
+      // edited: { $push: editedRows }
+    }
     this.setState(update(this.state, stateUpdate))
   }
   _getColumnWidth ({ index }) {
@@ -101,7 +111,7 @@ export default class Timetable extends Component {
       ? col.width * 2
       : col
       ? col.width
-      : 90
+      : 200
     return width
   }
   handleCellClick = (rowIndex, columnIndex) => {

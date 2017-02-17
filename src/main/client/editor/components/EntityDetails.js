@@ -101,7 +101,8 @@ export default class EntityDetails extends Component {
     const rowIndex = 0
     const validationErrors = []
     const currentTable = getEditorTable(activeComponent)
-    const inputs = currentTable.fields.map((field, colIndex) => {
+    const renderDefault = subComponent !== 'trippattern' && !this.state.editFareRules && activeComponent !== 'scheduleexception'
+    const inputs = renderDefault && currentTable.fields.map((field, colIndex) => {
       const isNotValid = validate(field.inputType, field.required, field.name, activeEntity[field.name], entities, activeEntity.id)
       isNotValid && validationErrors.push(isNotValid)
       return (
@@ -117,6 +118,30 @@ export default class EntityDetails extends Component {
           {...this.props} />
       )
     })
+    const detailsBody = (
+      <div style={{height: '80%', overflowY: 'scroll'}}>
+        {/* Render relevant form based on entity type */}
+        {subComponent === 'trippattern'
+          ? <ActiveTripPatternList
+            showConfirmModal={showConfirmModal} />
+          : this.state.editFareRules && activeEntity
+          ? <FareRulesForm
+            zones={zones}
+            zoneOptions={zoneOptions}
+            {...this.props} />
+          : activeComponent === 'scheduleexception'
+          ? <ScheduleExceptionForm
+            {...this.props}
+            validate={(invalid) => validationErrors.push(invalid)} />
+          : <div>
+            <Form>
+              {inputs}
+              <p className='col-xs-12'>* = field is required</p>
+            </Form>
+          </div>
+        }
+      </div>
+    )
     return (
       <div style={panelStyle}>
         <div style={{height: '100%'}}>
@@ -125,28 +150,7 @@ export default class EntityDetails extends Component {
             editFareRules={this.state.editFareRules}
             toggleEditFareRules={(bool) => this.setState({editFareRules: bool})}
             {...this.props} />
-          <div style={{height: '80%', overflowY: 'scroll'}}>
-            {/* Render relevant form based on entity type */}
-            {subComponent === 'trippattern'
-              ? <ActiveTripPatternList
-                showConfirmModal={showConfirmModal} />
-              : this.state.editFareRules && activeEntity
-              ? <FareRulesForm
-                zones={zones}
-                zoneOptions={zoneOptions}
-                {...this.props} />
-              : activeComponent === 'scheduleexception'
-              ? <ScheduleExceptionForm
-                {...this.props}
-                validate={this.validate} />
-              : <div>
-                <Form>
-                  {inputs}
-                  <p className='col-xs-12'>* = field is required</p>
-                </Form>
-              </div>
-            }
-          </div>
+          {detailsBody}
         </div>
       </div>
     )

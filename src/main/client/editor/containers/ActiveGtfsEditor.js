@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import GtfsEditor from '../components/GtfsEditor'
-import { componentList } from '../util/gtfs'
+import { componentList, findEntityByGtfsId } from '../util/gtfs'
 import { fetchFeedSourceAndProject } from '../../manager/actions/feeds'
 import { fetchFeedInfo } from '../actions/feedInfo'
 import {
@@ -138,11 +138,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(fetchFeedInfo(feedSourceId))
           for (var i = 0; i < tablesToFetch.length; i++) {
             if (tablesToFetch[i] !== activeComponent) {
+              console.log('requesting ' + tablesToFetch[i])
               dispatch(getGtfsTable(tablesToFetch[i], feedSourceId))
             }
           }
         })
         .then(() => {
+          console.log('here')
+          var newId = activeEntityId
           if (componentList.indexOf(activeComponent) !== -1) {
             dispatch(getGtfsTable(activeComponent, feedSourceId))
             // FETCH trip patterns if route selected
@@ -150,12 +153,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               if (activeEntityId === 'new') {
                 dispatch(newGtfsEntity(feedSourceId, activeComponent))
               } else if (activeEntityId && entities.findIndex(e => e.id === activeEntityId) === -1) {
-                console.log('bad entity id, going back to ' + activeComponent)
-                return dispatch(setActiveGtfsEntity(feedSourceId, activeComponent))
+                console.log('could not find ID... trying to map to GTFS ID')
+                // TODO: try to match against gtfsRouteId / gtfsStopId / gtfsAgencyId / etc.
+                newId = findEntityByGtfsId(activeComponent, activeEntityId, entities)
+                if (newId === -1) {
+                  console.log('bad entity id, going back to ' + activeComponent)
+                  return dispatch(setActiveGtfsEntity(feedSourceId, activeComponent))
+                }
               }
-              dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, activeEntityId, subComponent, subEntityId, subSubComponent, activeSubSubEntity))
-              if (activeComponent === 'route' && activeEntityId) {
-                dispatch(fetchTripPatternsForRoute(feedSourceId, activeEntityId))
+              dispatch(setActiveGtfsEntity(feedSourceId, activeComponent, newId, subComponent, subEntityId, subSubComponent, activeSubSubEntity))
+              if (activeComponent === 'route' && newId) {
+                dispatch(fetchTripPatternsForRoute(feedSourceId, newId))
                 .then((tripPatterns) => {
                   let pattern = tripPatterns && tripPatterns.find(p => p.id === subEntityId)
                   if (subSubComponent === 'timetable' && activeSubSubEntity) {
@@ -173,6 +181,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         for (var i = 0; i < tablesToFetch.length; i++) {
           if (tablesToFetch[i] !== activeComponent) {
             dispatch(getGtfsTable(tablesToFetch[i], feedSourceId))
+            // TODO: add setActive here (e.g., for redirections from validation summary)
           }
         }
       }

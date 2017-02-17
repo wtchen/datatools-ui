@@ -43,6 +43,7 @@ export default class ScheduleExceptionForm extends Component {
         dateMap[moment(d).format('YYYYMMDD')].push(allExceptions[i].id)
       })
     }
+    activeEntity && activeEntity.dates.length === 0 && validate({field: 'dates', invalid: true})
     return (
       <div>
         <Form>

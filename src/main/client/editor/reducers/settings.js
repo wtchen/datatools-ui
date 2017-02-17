@@ -88,36 +88,22 @@ const editSettings = (state = defaultState, action) => {
         })
       }
     case 'UNDO_TRIP_PATTERN_EDITS':
-      let lastActionIndex = state.actions.length - 1
-      let lastActionType = state.actions[lastActionIndex]
-      let lastCoordinatesIndex = state.coordinatesHistory.length - 1
-      let lastControlPointsIndex = state.controlPoints.length - 1
       stateUpdate = {
-        actions: {$splice: [[lastActionIndex, 1]]}
+        actions: {$splice: [[action.lastActionIndex, 1]]}
       }
-      switch (lastActionType) {
+      switch (action.lastActionType) {
         case 'ADD_CONTROL_POINT':
-          stateUpdate.controlPoints = {$splice: [[lastControlPointsIndex, 1]]}
+          stateUpdate.controlPoints = {$splice: [[action.lastControlPointsIndex, 1]]}
           break
         case 'UPDATE_CONTROL_POINT':
-          stateUpdate.controlPoints = {$splice: [[lastControlPointsIndex, 1]]}
-          stateUpdate.coordinatesHistory = {$splice: [[lastCoordinatesIndex, 1]]}
-          coordinates = state.coordinatesHistory[lastCoordinatesIndex]
-          if (coordinates) {
-            stateUpdate.active = {
-              subEntity: {shape: {coordinates: {$set: coordinates}}}
-            }
-          }
+          stateUpdate.controlPoints = {$splice: [[action.lastControlPointsIndex, 1]]}
+          stateUpdate.coordinatesHistory = {$splice: [[action.lastCoordinatesIndex, 1]]}
+          stateUpdate.patternCoordinates = {$set: action.lastCoordinates}
           break
         case 'REMOVE_CONTROL_POINT':
-          stateUpdate.controlPoints = {$splice: [[lastControlPointsIndex, 1]]}
-          stateUpdate.coordinatesHistory = {$splice: [[lastCoordinatesIndex, 1]]}
-          coordinates = state.coordinatesHistory[lastCoordinatesIndex]
-          if (coordinates) {
-            stateUpdate.active = {
-              subEntity: {shape: {coordinates: {$set: coordinates}}}
-            }
-          }
+          stateUpdate.controlPoints = {$splice: [[action.lastControlPointsIndex, 1]]}
+          stateUpdate.coordinatesHistory = {$splice: [[action.lastCoordinatesIndex, 1]]}
+          stateUpdate.patternCoordinates = {$set: action.lastCoordinates}
           break
       }
       return update(state, stateUpdate)

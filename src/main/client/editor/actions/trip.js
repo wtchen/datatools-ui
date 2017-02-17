@@ -85,36 +85,44 @@ export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
   }
 }
 
-// export function saveTripsForCalendar2 (feedId, pattern, calendarId, trips) {
-//   return function (dispatch, getState) {
-//     dispatch(savingTrips(feedId, pattern, calendarId, trips))
-//     const tripExists = trip.id !== 'new' && trip.id !== null
-//     const method = tripExists ? 'put' : 'post'
-//     const url = tripExists
-//       ? `/api/manager/secure/trip/${trip.id}?feedId=${feedId}`
-//       : `/api/manager/secure/trip?feedId=${feedId}`
-//     trip.id = tripExists ? trip.id : null
-//     return secureFetch(url, getState(), method, trip)
-//       .then(res => {
-//         if (res.status >= 300) {
-//           errorCount++
-//           errorIndexes.push(index)
-//           return null
-//         } else {
-//           return res.json()
-//         }
-//       })
-//     .then(trips => {
-//       // console.log(trips)
-//       if (errorCount) {
-//         dispatch(setErrorMessage(`Unknown error encountered while saving trips.  Could not save ${errorCount} trips`))
-//       }
-//       dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
-//       return errorIndexes
-//     })
-//     // return result
-//   }
-// }
+// TODO: action is under construction...
+export function saveMultipleTripsForCalendar (feedId, pattern, calendarId, trips) {
+  return function (dispatch, getState) {
+    let errorCount = 0
+    let errorIndexes = []
+    dispatch(savingTrips(feedId, pattern, calendarId, trips))
+    const newTrips = []
+    const existingTrips = []
+    trips.forEach(t => {
+      const tripExists = t.id !== 'new' && t.id !== null
+      if (tripExists) {
+        existingTrips.push(t)
+      } else {
+        newTrips.push(t)
+      }
+    })
+    const createUrl = `/api/manager/secure/trip?feedId=${feedId}`
+    return secureFetch(createUrl, getState(), 'post')
+      .then(res => {
+        if (res.status >= 300) {
+          errorCount++
+          // errorIndexes.push(index)
+          return null
+        } else {
+          return res.json()
+        }
+      })
+    .then(trips => {
+      // console.log(trips)
+      if (errorCount) {
+        dispatch(setErrorMessage(`Unknown error encountered while saving trips.  Could not save ${errorCount} trips`))
+      }
+      dispatch(fetchTripsForCalendar(feedId, pattern, calendarId))
+      return errorIndexes
+    })
+    // return result
+  }
+}
 
 // export function saveTrip (feedId, trip) {
 //   // return function (dispatch, getState) {
@@ -214,6 +222,14 @@ export function addNewTrip (trip) {
     trip
   }
 }
+
+export function removeTrips (indexes) {
+  return {
+    type: 'REMOVE_TRIPS',
+    indexes
+  }
+}
+
 // export function fetchTripsForCalendar (feedId, patternId, calendarId) {
 //   return function (dispatch, getState) {
 //     dispatch(requestingTripsForCalendar(feedId, patternId, calendarId))

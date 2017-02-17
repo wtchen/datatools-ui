@@ -42,8 +42,7 @@ export default class PatternsLayer extends Component {
               return (
                 <Polyline
                   positions={patternCoordinates && patternCoordinates.map(c => ([c[1], c[0]])) || latLngs}
-                  ref={pattern.id}
-                  key={pattern.id}
+                  key={tp.id}
                   onClick={e => this._onClick(pattern, isActive, controlPoints, e)}
                   lineCap='butt'
                   color={lineColor}

@@ -40,6 +40,25 @@ export function getEntityBounds (entity, offset = 0.005) {
   }
 }
 
+export function findEntityByGtfsId (component, gtfsId, entities) {
+  let entity
+  switch (component) {
+    case 'stop':
+      entity = entities.find(e => e.gtfsStopId === gtfsId)
+      break
+    case 'route':
+      entity = entities.find(e => e.gtfsRouteId === gtfsId)
+      break
+    case 'calendar':
+      entity = entities.find(e => e.gtfsServiceId === gtfsId)
+      break
+    default:
+      entity = null
+      break
+  }
+  return entity ? entity.id : -1
+}
+
 export function getEntityName (component, entity) {
   if (!entity) {
     return '[Unnamed]'

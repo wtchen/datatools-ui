@@ -150,6 +150,18 @@ export function updateProject (project, changes, fetchFeeds = false) {
   }
 }
 
+export function deployPublic (project) {
+  return function (dispatch, getState) {
+    // dispatch(savingProject())
+    const url = `/api/manager/secure/project/${project.id}/deployPublic`
+    return secureFetch(url, getState(), 'post')
+      .then((res) => res.json())
+      .then(json => {
+        return json
+      })
+  }
+}
+
 export function createProject () {
   return {
     type: 'CREATE_PROJECT'

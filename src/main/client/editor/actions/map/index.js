@@ -114,7 +114,7 @@ export function extendPatternToPoint (pattern, endPoint, newEndPoint) {
 
     // get single coordinate if polyline fails
     if (!newShape) {
-      newShape = ll.toCoordinates(newEndPoint)
+      newShape = [ll.toCoordinates(newEndPoint)]
     }
     const updatedShape = {type: 'LineString', coordinates: [...pattern.shape.coordinates, ...newShape]}
     dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {shape: updatedShape}))

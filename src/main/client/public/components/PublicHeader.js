@@ -4,7 +4,7 @@ import { Grid, Row, Col, Button, Glyphicon, ButtonToolbar } from 'react-bootstra
 import { browserHistory } from 'react-router'
 import { LinkContainer } from 'react-router-bootstrap'
 
-import { getConfigProperty } from '../../common/util/config'
+import { isModuleEnabled } from '../../common/util/config'
 
 export default class PublicHeader extends Component {
 
@@ -44,11 +44,11 @@ export default class PublicHeader extends Component {
             }
 
             {/* "Create Account" Button (only show if no active user) */}
-            {this.props.username || getConfigProperty('modules.enterprise.enabled')
-              ? null
-              : <Button bsStyle='success' onClick={() => { browserHistory.push('/signup') }}>
+            {!this.props.username && !isModuleEnabled('enterprise')
+              ? <Button bsStyle='success' onClick={() => { browserHistory.push('/signup') }}>
                 <Glyphicon glyph='plus' /> Create Account
               </Button>
+              : null
             }
 
             {/* "Log out" Button */}

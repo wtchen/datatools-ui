@@ -7,6 +7,7 @@ import {
   toggleAllRows,
   toggleDepartureTimes,
   addNewTrip,
+  removeTrips,
   setOffset
 } from '../actions/trip'
 
@@ -31,6 +32,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // TIMETABLE FUNCTIONS
     updateCellValue: (value, rowIndex, key) => dispatch(updateCellValue(value, rowIndex, key)),
     addNewTrip: (trip) => dispatch(addNewTrip(trip)),
+    removeTrips: (indexes) => dispatch(removeTrips(indexes)),
     toggleAllRows: (select) => dispatch(toggleAllRows(select)),
     toggleRowSelection: (rowIndex) => dispatch(toggleRowSelection(rowIndex)),
     toggleDepartureTimes: () => dispatch(toggleDepartureTimes()),

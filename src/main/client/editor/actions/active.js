@@ -1,6 +1,7 @@
 import clone from 'clone'
 import { browserHistory } from 'react-router'
 
+import { setErrorMessage } from '../../manager/actions/status'
 import { secureFetch } from '../../common/util/util'
 import { saveFeedInfo } from './feedInfo'
 import { saveAgency } from './agency'
@@ -81,7 +82,6 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
       ? clone(activeEntity.tripPatterns.find(p => p.id === subEntityId))
       : null
     const activePatternStops = getStopsForPattern(activeSubEntity, getState().editor.data.tables.stop)
-    console.log('active', activeSubEntity)
     const activeColumns = getTimetableColumns(activeSubEntity, activePatternStops)
     dispatch(settingActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId, activeEntity, activeSubEntity, activeColumns))
   }
@@ -162,10 +162,20 @@ export function deleteGtfsEntity (feedId, component, entityId, routeId) {
     if (entityId === 'new') {
       return dispatch(getGtfsTable(component, feedId))
     }
+    var error = false
     const url = `/api/manager/secure/${component}/${entityId}?feedId=${feedId}`
     return secureFetch(url, getState(), 'delete')
-      .then(res => res.json())
-      .then(entity => {
+      .then(res => {
+        if (res.status >= 300) {
+          error = true
+        }
+        return res.json()
+      })
+      .then(json => {
+        if (error) {
+          dispatch(setErrorMessage(`Error deleting ${component}. ${json && json.message ? json.message : ''}`))
+          return null
+        }
         if (component === 'trippattern' && routeId) {
           dispatch(fetchTripPatternsForRoute(feedId, routeId))
         } else {

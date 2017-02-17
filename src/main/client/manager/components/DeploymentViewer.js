@@ -9,6 +9,7 @@ import Loading from '../../common/components/Loading'
 import EditableTextField from '../../common/components/EditableTextField'
 import { versionsSorter } from '../../common/util/util'
 import { getComponentMessages, getMessage } from '../../common/util/config'
+import DeploymentPreviewButton from './DeploymentPreviewButton'
 
 export default class DeploymentViewer extends Component {
   static propTypes = {
@@ -59,6 +60,7 @@ export default class DeploymentViewer extends Component {
                 </Button>
                 <DropdownButton
                   bsStyle='primary'
+                  id='deploy-server-dropdown'
                   disabled={!project.otpServers || !project.otpServers.length}
                   title={project.otpServers && project.otpServers.length
                     ? <span><Glyphicon glyph='globe' /> {getMessage(messages, 'deploy')}</span>
@@ -71,8 +73,8 @@ export default class DeploymentViewer extends Component {
                   }}
                 >
                   {project.otpServers
-                    ? project.otpServers.map(server => (
-                      <MenuItem eventKey={server.name}>{server.name}</MenuItem>
+                    ? project.otpServers.map((server, i) => (
+                      <MenuItem key={i} eventKey={server.name}>{server.name}</MenuItem>
                     ))
                     : null
                   }
@@ -91,7 +93,11 @@ export default class DeploymentViewer extends Component {
                   onChange={(value) => deploymentPropertyChanged(deployment, 'name', value)}
                 />
                 {deployment.deployedTo
-                  ? <Label>{deployment.deployedTo}</Label>
+                  ? <span>
+                    <Label>{deployment.deployedTo}</Label>
+                    {' '}
+                    <DeploymentPreviewButton deployment={deployment} />
+                  </span>
                   : null
                 }
               </h2>
@@ -125,8 +131,8 @@ export default class DeploymentViewer extends Component {
                 }}
               >
                 {
-                  deployableFeeds.map(fs => (
-                    <MenuItem eventKey={fs.id}>{fs.name}</MenuItem>
+                  deployableFeeds.map((fs, i) => (
+                    <MenuItem MenuItem key={i} eventKey={fs.id}>{fs.name}</MenuItem>
                   ))
                 }
               </DropdownButton>
