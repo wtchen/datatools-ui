@@ -85,6 +85,7 @@ export default class TimetableEditor extends Component {
     objectPath.set(newRow, 'useFrequency', activePattern.useFrequency)
     objectPath.set(newRow, 'feedId', this.props.feedSource.id)
     objectPath.set(newRow, 'patternId', activePattern.id)
+    objectPath.set(newRow, 'routeId', activePattern.routeId)
     objectPath.set(newRow, 'calendarId', this.props.activeScheduleId)
 
     return newRow
