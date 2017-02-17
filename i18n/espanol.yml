@@ -48,6 +48,7 @@ DeploymentsPanel:
     feedCount: Number of feeds
 ProjectViewer:
   mergeFeeds: Merge Feeds
+  makePublic: Update public feeds
   feeds:
     title: Feed Sources
     search: Search by name

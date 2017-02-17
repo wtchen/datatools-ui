@@ -50,6 +50,7 @@ DeploymentsPanel:
     deployedTo: Deployed to
 ProjectViewer:
   mergeFeeds: Merge all
+  makePublic: Update public feeds
   settings: Settings
   deployments: Deployments
   feeds:
