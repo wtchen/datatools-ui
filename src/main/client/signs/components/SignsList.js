@@ -22,7 +22,7 @@ export default class SignsList extends Component {
     visibilityFilterChanged: PropTypes.func
   }
   render () {
-    let sortedSigns = this.props.signs.sort((a, b) => {
+    const sortedSigns = this.props.signs.sort((a, b) => {
       if (a.id < b.id) return -1
       if (a.id > b.id) return 1
       return 0

@@ -14,12 +14,12 @@ let nextStopEntityId = 100
 export function createAlert (entity, agency) {
   return function (dispatch, getState) {
     nextAlertId--
-    let entities = []
+    const entities = []
 
     if (entity) {
       nextStopEntityId++
-      let type = typeof entity.stop_id !== 'undefined' ? 'STOP' : 'ROUTE'
-      let newEntity = {
+      const type = typeof entity.stop_id !== 'undefined' ? 'STOP' : 'ROUTE'
+      const newEntity = {
         id: nextStopEntityId,
         type: type
       }
@@ -39,12 +39,12 @@ export function createAlert (entity, agency) {
       affectedEntities: entities,
       published: false
     }
-    browserHistory.push('/alerts/new')
     dispatch(updateActiveAlert(alert))
+    browserHistory.push('/alerts/new')
   }
 }
 
-export const deleteAlert = (alert) => {
+export function deleteAlert (alert) {
   return function (dispatch, getState) {
     console.log('deleting', alert)
     const user = getState().user
@@ -59,9 +59,14 @@ export const deleteAlert = (alert) => {
         'Authorization': 'Bearer ' + user.token
       }
     }).then((res) => {
-      // console.log('status=' + res.status)
+      if (res.status >= 300) {
+        dispatch(setErrorMessage('Failed to delete alert!'))
+        return
+      }
       browserHistory.push('/alerts')
       dispatch(fetchRtdAlerts())
+    }).catch(e => {
+      console.log(e)
     })
   }
 }
@@ -176,8 +181,14 @@ export function saveAlert (alert) {
       body: JSON.stringify(json)
     }).then((res) => {
       console.log('status=' + res.status)
+      if (res.status >= 300) {
+        dispatch(setErrorMessage('Failed to save alert!'))
+        return
+      }
       browserHistory.push('/alerts')
       dispatch(fetchRtdAlerts())
+    }).catch(e => {
+      console.log(e)
     })
   }
 }

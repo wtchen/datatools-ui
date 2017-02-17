@@ -1,54 +1,54 @@
 import update from 'react-addons-update'
 
-const active = (state = null, action) => {
+const active = (state = {active: null}, action) => {
   let entities, foundIndex, updatedEntity
   switch (action.type) {
     case 'UPDATE_ACTIVE_ALERT_ALERT':
     case 'CREATE_ALERT':
     case 'EDIT_ALERT':
-      return action.alert
+      return update(state, {active: {$set: action.alert}})
     case 'SET_ACTIVE_ALERT_TITLE':
-      return update(state, {title: {$set: action.title}})
+      return update(state, {active: {title: {$set: action.title}}})
     case 'SET_ACTIVE_ALERT_DESCRIPTION':
-      return update(state, {description: {$set: action.description}})
+      return update(state, {active: {description: {$set: action.description}}})
     case 'SET_ACTIVE_ALERT_URL':
-      return update(state, {url: {$set: action.url}})
+      return update(state, {active: {url: {$set: action.url}}})
     case 'SET_ACTIVE_ALERT_CAUSE':
-      return update(state, {cause: {$set: action.cause}})
+      return update(state, {active: {cause: {$set: action.cause}}})
     case 'SET_ACTIVE_ALERT_EFFECT':
-      return update(state, {effect: {$set: action.effect}})
+      return update(state, {active: {effect: {$set: action.effect}}})
     case 'SET_ACTIVE_ALERT_START':
-      return update(state, {start: {$set: parseInt(action.start)}})
+      return update(state, {active: {start: {$set: parseInt(action.start)}}})
     case 'SET_ACTIVE_ALERT_END':
-      return update(state, {end: {$set: parseInt(action.end)}})
+      return update(state, {active: {end: {$set: parseInt(action.end)}}})
     case 'SET_ACTIVE_ALERT_PUBLISHED':
-      return update(state, {published: {$set: action.published}})
+      return update(state, {active: {published: {$set: action.published}}})
     case 'RECEIVED_ALERT_GTFS_ENTITIES':
       // TODO: update GTFS entities for active alert
-      if (state !== null && state.affectedEntities !== null) {
+      if (state !== null && state.active.affectedEntities !== null) {
         for (var i = 0; i < action.gtfsObjects.length; i++) {
-          let ent = action.gtfsObjects[i]
-          if (typeof ent.gtfs !== 'undefined' && ent.AlertId === state.id) {
+          const ent = action.gtfsObjects[i]
+          if (typeof ent.gtfs !== 'undefined' && ent.AlertId === state.active.id) {
             // let alert = action.gtfsAlerts.find(a => a.id === ent.entity.AlertId)
-            updatedEntity = state.affectedEntities.find(e => e.id === ent.entity.Id)
+            updatedEntity = state.active.affectedEntities.find(e => e.id === ent.entity.Id)
             updatedEntity[ent.type] = ent.gtfs
             // entities.push(selectedEnt)
             entities = [
-              ...state.affectedEntities.slice(0, foundIndex),
+              ...state.active.affectedEntities.slice(0, foundIndex),
               updatedEntity,
-              ...state.affectedEntities.slice(foundIndex + 1)
+              ...state.active.affectedEntities.slice(foundIndex + 1)
             ]
           }
         }
-        return update(state, {affectedEntities: {$set: entities}})
+        return update(state, {active: {affectedEntities: {$set: entities}}})
       }
       return state
     case 'ADD_ACTIVE_ALERT_AFFECTED_ENTITY':
-      entities = [...state.affectedEntities, action.entity]
-      return update(state, {affectedEntities: {$set: entities}})
+      entities = [...state.active.affectedEntities, action.entity]
+      return update(state, {active: {affectedEntities: {$set: entities}}})
     case 'UPDATE_ACTIVE_ALERT_ENTITY':
       console.log('update entity', action.entity, action.field, action.value)
-      foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
+      foundIndex = state.active.affectedEntities.findIndex(e => e.id === action.entity.id)
       if (foundIndex !== -1) {
         switch (action.field) {
           case 'TYPE':
@@ -60,29 +60,29 @@ const active = (state = null, action) => {
               route_id: {$set: null}
             })
             entities = [
-              ...state.affectedEntities.slice(0, foundIndex),
+              ...state.active.affectedEntities.slice(0, foundIndex),
               updatedEntity,
-              ...state.affectedEntities.slice(foundIndex + 1)
+              ...state.active.affectedEntities.slice(foundIndex + 1)
             ]
-            return update(state, {affectedEntities: {$set: entities}})
+            return update(state, {active: {affectedEntities: {$set: entities}}})
           case 'AGENCY':
             updatedEntity = update(action.entity, {agency: {$set: action.value}})
             entities = [
-              ...state.affectedEntities.slice(0, foundIndex),
+              ...state.active.affectedEntities.slice(0, foundIndex),
               updatedEntity,
-              ...state.affectedEntities.slice(foundIndex + 1)
+              ...state.active.affectedEntities.slice(foundIndex + 1)
             ]
-            return update(state, {affectedEntities: {$set: entities}})
+            return update(state, {active: {affectedEntities: {$set: entities}}})
           case 'MODE':
             updatedEntity = update(action.entity, {mode: {$set: action.value}})
             entities = [
-              ...state.affectedEntities.slice(0, foundIndex),
+              ...state.active.affectedEntities.slice(0, foundIndex),
               updatedEntity,
-              ...state.affectedEntities.slice(foundIndex + 1)
+              ...state.active.affectedEntities.slice(foundIndex + 1)
             ]
-            return update(state, {affectedEntities: {$set: entities}})
+            return update(state, {active: {affectedEntities: {$set: entities}}})
           case 'STOP':
-            let stopId = action.value !== null ? action.value.stop_id : null
+            const stopId = action.value !== null ? action.value.stop_id : null
             console.log(action.entity)
             // set route to null if stop is updated for type stop
             if (action.entity.type === 'STOP') {
@@ -104,13 +104,13 @@ const active = (state = null, action) => {
             }
             console.log(updatedEntity)
             entities = [
-              ...state.affectedEntities.slice(0, foundIndex),
+              ...state.active.affectedEntities.slice(0, foundIndex),
               updatedEntity,
-              ...state.affectedEntities.slice(foundIndex + 1)
+              ...state.active.affectedEntities.slice(foundIndex + 1)
             ]
-            return update(state, {affectedEntities: {$set: entities}})
+            return update(state, {active: {affectedEntities: {$set: entities}}})
           case 'ROUTE':
-            let routeId = action.value !== null ? action.value.route_id : null
+            const routeId = action.value !== null ? action.value.route_id : null
             // set route to null if stop is updated for type stop
             if (action.entity.type === 'ROUTE') {
               updatedEntity = update(action.entity, {
@@ -130,25 +130,24 @@ const active = (state = null, action) => {
               })
             }
             entities = [
-              ...state.affectedEntities.slice(0, foundIndex),
+              ...state.active.affectedEntities.slice(0, foundIndex),
               updatedEntity,
-              ...state.affectedEntities.slice(foundIndex + 1)
+              ...state.active.affectedEntities.slice(foundIndex + 1)
             ]
-            return update(state, {affectedEntities: {$set: entities}})
+            return update(state, {active: {affectedEntities: {$set: entities}}})
         }
       }
       return state
     case 'DELETE_ACTIVE_ALERT_AFFECTED_ENTITY':
-      foundIndex = state.affectedEntities.findIndex(e => e.id === action.entity.id)
+      foundIndex = state.active.affectedEntities.findIndex(e => e.id === action.entity.id)
       if (foundIndex !== -1) {
         entities = [
-          ...state.affectedEntities.slice(0, foundIndex),
-          ...state.affectedEntities.slice(foundIndex + 1)
+          ...state.active.affectedEntities.slice(0, foundIndex),
+          ...state.active.affectedEntities.slice(foundIndex + 1)
         ]
-        return update(state, {affectedEntities: {$set: entities}})
+        return update(state, {active: {affectedEntities: {$set: entities}}})
       }
       return state
-
     default:
       return state
   }

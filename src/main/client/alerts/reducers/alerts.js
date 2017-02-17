@@ -1,4 +1,5 @@
 import clone from 'clone'
+import mergeable from 'redux-merge-reducers'
 
 import modes from '../modes'
 import update from 'react-addons-update'
@@ -41,9 +42,9 @@ const alerts = (state = {
       alerts = clone(state.all)
       // for those entities we requested, assign the gtfs data to the saved entities
       for (var i = 0; i < entities.length; i++) {
-        let feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
+        const feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
         if (feed) {
-          let gtfs = entities[i].type === 'stop'
+          const gtfs = entities[i].type === 'stop'
             ? feed.stops.find(s => s.stop_id === entities[i].entity.StopId)
             : entities[i].type === 'route'
             ? feed.routes.find(s => s.route_id === entities[i].entity.RouteId)
@@ -56,10 +57,10 @@ const alerts = (state = {
       }
       // iterate over processed gtfs entities
       for (let i = 0; i < entities.length; i++) {
-        let ent = entities[i]
+        const ent = entities[i]
         if (ent.gtfs && alerts) {
-          let alert = alerts.find(a => a.id === ent.entity.AlertId)
-          let selectedEnt = alert.affectedEntities.find(e => e.id === ent.entity.Id)
+          const alert = alerts.find(a => a.id === ent.entity.AlertId)
+          const selectedEnt = alert.affectedEntities.find(e => e.id === ent.entity.Id)
           selectedEnt[ent.type] = ent.gtfs
         }
       }
@@ -78,10 +79,10 @@ const alerts = (state = {
       const entityList = []
       alerts = action.rtdAlerts
       for (let i = 0; i < alerts.length; i++) {
-        let action = alerts[i]
+        const action = alerts[i]
         if (typeof action !== 'undefined' && action.ServiceAlertEntities && action.ServiceAlertEntities.length > 0) {
           for (var j = 0; j < action.ServiceAlertEntities.length; j++) {
-            let ent = action.ServiceAlertEntities[j]
+            const ent = action.ServiceAlertEntities[j]
             if (ent.StopId !== null) {
               entityList.push({type: 'stop', entity: ent, gtfs: {}})
             }
@@ -93,9 +94,9 @@ const alerts = (state = {
       }
       const allAlerts = action.rtdAlerts ? action.rtdAlerts.map((rtdAlert) => {
         // let activeIndex = action.projects.findIndex(p => p.id == config.activeProjectId)
-        let project = action.activeProject // action.projects[activeIndex]
+        const project = action.activeProject // action.projects[activeIndex]
 
-        let alert = {
+        const alert = {
           id: rtdAlert.Id,
           title: rtdAlert.HeaderText,
           description: rtdAlert.DescriptionText,
@@ -108,12 +109,12 @@ const alerts = (state = {
           end: rtdAlert.EndDateTime * 1000,
           published: rtdAlert.Published === 'Yes',
           affectedEntities: rtdAlert.ServiceAlertEntities.map((ent) => {
-            let entity = {
+            const entity = {
               id: ent.Id
             }
 
             if (ent.AgencyId !== null) {
-              let feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
+              const feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
               entity.agency = feed
               entity.type = 'AGENCY'
             }
@@ -129,7 +130,7 @@ const alerts = (state = {
             }
 
             if (ent.RouteType !== null) {
-              let mode = modes.find(m => m.gtfsType === ent.RouteType)
+              const mode = modes.find(m => m.gtfsType === ent.RouteType)
 
               // catch any integers outside of 0 -7 range
               entity.mode = typeof mode !== 'undefined' ? mode : modes.find(m => m.gtfsType === 0)
@@ -157,4 +158,5 @@ const alerts = (state = {
   }
 }
 
-export default alerts
+// export default alerts
+export default mergeable(alerts)

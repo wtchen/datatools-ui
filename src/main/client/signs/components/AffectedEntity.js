@@ -19,7 +19,7 @@ export default class AffectedEntity extends Component {
         const feed = getFeed(this.props.feeds, entity.stop.feed_id)
         agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
       }
-      let labelComponents = []
+      const labelComponents = []
       const stopName = entity.stop
         ? <span key='stop-name'>{entity.stop.stop_name} ({entity.stop.stop_id}) <Label>{agencyName}</Label></span>
         : <span key='stop-id'>entity.stop_id</span>
@@ -58,8 +58,8 @@ export default class AffectedEntity extends Component {
           var indent = {
             paddingLeft: '30px'
           }
-          let selectedFeeds = [this.props.entity.agency] || this.props.activeFeeds
-          let selectedStop = this.props.entity.stop
+          const selectedFeeds = [this.props.entity.agency] || this.props.activeFeeds
+          const selectedStop = this.props.entity.stop
           switch (this.props.entity.type) {
             case 'STOP':
               return (
@@ -96,7 +96,7 @@ export default class AffectedEntity extends Component {
 class RouteSelector extends Component {
   render () {
     const getRouteName = (route) => {
-      let routeName = route.route_short_name && route.route_long_name
+      const routeName = route.route_short_name && route.route_long_name
         ? `${route.route_short_name} - ${route.route_long_name}`
         : route.route_long_name ? route.route_long_name
         : route.route_short_name ? route.route_short_name
@@ -116,7 +116,7 @@ class RouteSelector extends Component {
           entities={['routes']}
           onChange={(evt) => {
             if (evt) {
-              let routes = evt.map(e => e.route)
+              const routes = evt.map(e => e.route)
               this.props.entityUpdated(this.props.entity, 'ROUTES', routes)
             } else {
               this.props.entityUpdated(this.props.entity, 'ROUTES', [])

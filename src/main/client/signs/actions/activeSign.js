@@ -75,7 +75,7 @@ export const updateDisplays = (displays) => {
 let nextEntityId = 0
 export const addActiveEntity = (field = 'AGENCY', value = null, agency = null, newEntityId = 0) => {
   nextEntityId++
-  let newEntity = {
+  const newEntity = {
     type: 'ADD_ACTIVE_SIGN_AFFECTED_ENTITY',
     entity: {
       id: newEntityId || nextEntityId,

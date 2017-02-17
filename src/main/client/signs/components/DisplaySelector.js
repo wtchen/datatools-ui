@@ -40,19 +40,19 @@ export default class DisplaySelector extends React.Component {
       marginBottom: '15px'
     }
     const renderValue = (option) => {
-      let combinedLabel = getDisplayStatusLabel(option.display)
+      const combinedLabel = getDisplayStatusLabel(option.display)
       return <span>{option.label} {combinedLabel}</span>
     }
     const renderOption = (option) => {
-      let combinedLabel = getDisplayStatusLabel(option.display)
+      const combinedLabel = getDisplayStatusLabel(option.display)
       return <span style={{ color: 'black' }}><Glyphicon glyph='modal-window' /> <strong>{option.label}</strong> {option.location} {combinedLabel} {option.link}</span>
     }
     const getDisplayStatusLabel = (display) => {
       if (!display) return ''
-      let displayDraftId = display.DraftDisplayConfigurationId
-      let displayPublishedId = display.PublishedDisplayConfigurationId
+      const displayDraftId = display.DraftDisplayConfigurationId
+      const displayPublishedId = display.PublishedDisplayConfigurationId
 
-      let label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 && displayDraftId === this.props.sign.id ? <span><Label bsStyle='warning'>Assigned here</Label><Label bsStyle='danger'>Published to {displayPublishedId}</Label></span>
+      const label = displayPublishedId !== this.props.sign.id && displayPublishedId > 0 && displayDraftId === this.props.sign.id ? <span><Label bsStyle='warning'>Assigned here</Label><Label bsStyle='danger'>Published to {displayPublishedId}</Label></span>
             : displayPublishedId !== this.props.sign.id && displayPublishedId > 0 ? <Label bsStyle='danger'>Published to {displayPublishedId}</Label>
             : displayPublishedId !== null && displayDraftId !== null ? <span><Label bsStyle='success'>Published</Label><Label bsStyle='warning'>Assigned to {displayDraftId}</Label></span>
             : displayDraftId === null ? <Label>Unassigned</Label>
@@ -62,12 +62,12 @@ export default class DisplaySelector extends React.Component {
     }
     const handleValueClick = (val) => {
       // Toggle value of draft/published config ID
-      let pubId = val.display.PublishedDisplayConfigurationId
-      let draftId = val.display.DraftDisplayConfigurationId
+      const pubId = val.display.PublishedDisplayConfigurationId
+      const draftId = val.display.DraftDisplayConfigurationId
 
       // allow publishing or unpublishing to display if sign config is published AND display isn't assigned elsewhere
       if (this.props.sign.published && (pubId === null || pubId === this.props.sign.id)) {
-        let newPubId = pubId ? null
+        const newPubId = pubId ? null
                   : this.props.sign.id
         this.props.toggleConfigForDisplay(val.display, 'PUBLISHED', newPubId)
         // if (newPub)
@@ -75,14 +75,14 @@ export default class DisplaySelector extends React.Component {
       } else if (pubId === this.props.sign.id) { // else already published to this config (but config not published), you can set it to null
         this.props.toggleConfigForDisplay(val.display, 'PUBLISHED', null)
       } else { // if config is draft, you can toggle draftId
-        let newDraftId = draftId ? null
+        const newDraftId = draftId ? null
                   : this.props.sign.id
         this.props.toggleConfigForDisplay(val.display, 'DRAFT', newDraftId)
       }
     }
     const filterOptions = (options, filter, values) => {
       // Filter already selected values
-      let valueKeys = values.map(i => i.value)
+      const valueKeys = values.map(i => i.value)
       let filteredOptions = options.filter(option => {
         return valueKeys.indexOf(option.value) === -1
       })
