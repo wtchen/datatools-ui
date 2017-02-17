@@ -1,4 +1,5 @@
 import { getConfigProperty } from '../util/config'
+import objectPath from 'object-path'
 
 export default class UserPermissions {
   constructor (datatoolsApps) {
@@ -10,6 +11,22 @@ export default class UserPermissions {
     if (datatoolsJson && datatoolsJson.permissions) {
       for (var appPermission of datatoolsJson.permissions) {
         this.appPermissionLookup[appPermission.type] = appPermission
+      }
+    }
+
+    this.organizationLookup = {}
+    const orgs = datatoolsJson.organizations
+    if (orgs) {
+      for (var organization of orgs) {
+        this.organizationLookup[organization.organization_id] = organization
+      }
+    }
+
+    this.orgPermissionLookup = {}
+    const orgPermissions = objectPath.get(datatoolsJson, `organizations.0.permissions`)
+    if (orgPermissions) {
+      for (var p of orgPermissions) {
+        this.orgPermissionLookup[p.type] = p
       }
     }
 
@@ -25,6 +42,21 @@ export default class UserPermissions {
     return ('administer-application' in this.appPermissionLookup)
   }
 
+  hasOrganization (orgId) {
+    return orgId === objectPath.get(datatoolsJson, `organizations.0.organization_id`)
+  }
+  isOrganizationAdmin (orgId) {
+    return ('administer-organization' in this.orgPermissionLookup)
+  }
+
+  getOrganizationPermission (organizationId, permissionType) {
+    if (!this.hasOrganization(organizationId)) return null
+    var organizationPermissions = this.getOrganizationPermissions(organizationId)
+    for (var permission of organizationPermissions) {
+      if (permission.type === permissionType) return permission
+    }
+    return null
+  }
   hasProject (projectId) {
     return (projectId in this.projectLookup)
   }

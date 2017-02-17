@@ -6,11 +6,12 @@ import {Icon} from '@conveyal/woonerf'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
+import OrganizationList from './OrganizationList'
 import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class UserAdmin extends Component {
   static propTypes = {
-    user: PropTypes.user,
+    user: PropTypes.object,
 
     onComponentMount: PropTypes.func,
     setUserPermission: PropTypes.func,
@@ -29,12 +30,22 @@ export default class UserAdmin extends Component {
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
-  isAdmin () {
-    var appAdmin = this.props.user && this.props.user.permissions && this.props.user.permissions.isApplicationAdmin()
-    return appAdmin
-  }
   render () {
+    const {
+      user,
+      users,
+      projects,
+      activeComponent,
+      setUserPermission,
+      saveUser,
+      deleteUser,
+      fetchProjectFeeds,
+      createUser,
+      setPage,
+      userSearch
+    } = this.props
     const messages = getComponentMessages('UserAdmin')
+    const isAdmin = user && user.permissions && user.permissions.isApplicationAdmin()
     return (
       <ManagerPage ref='page'>
         <Helmet
@@ -54,15 +65,15 @@ export default class UserAdmin extends Component {
             </Col>
           </Row>
           <Row>
-            {this.isAdmin()
+            {isAdmin
               ? <div>
                 <Col xs={12} sm={3}>
                   <Panel>
                     <ListGroup fill>
                       <LinkContainer to='/admin/users'><ListGroupItem>User management</ListGroupItem></LinkContainer>
+                      <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>
                       <LinkContainer to='/admin/logs'><ListGroupItem>Application logs</ListGroupItem></LinkContainer>
                       {/*
-                        <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>
                         <LinkContainer to='/admin/regions'><ListGroupItem>Regions</ListGroupItem></LinkContainer>
                       */}
                     </ListGroup>
@@ -70,27 +81,27 @@ export default class UserAdmin extends Component {
                 </Col>
                 <Col xs={12} sm={9}>
                   {
-                    this.props.admin.users &&
-                    this.props.projects &&
-                    this.props.activeComponent === 'users'
+                    users.data &&
+                    projects &&
+                    activeComponent === 'users'
                     ? <UserList
-                      token={this.props.user.token}
-                      projects={this.props.projects}
-                      users={this.props.admin.users}
-                      userCount={this.props.admin.userCount}
-                      page={this.props.admin.page}
-                      perPage={this.props.admin.perPage}
-                      isFetching={this.props.admin.isFetching}
-
-                      setUserPermission={this.props.setUserPermission}
-                      saveUser={this.props.saveUser}
-                      deleteUser={this.props.deleteUser}
-                      fetchProjectFeeds={this.props.fetchProjectFeeds}
-                      createUser={this.props.createUser}
-                      setPage={this.props.setPage}
-                      userSearch={this.props.userSearch}
+                      token={user.token}
+                      projects={projects}
+                      users={users.data}
+                      userCount={users.userCount}
+                      page={users.page}
+                      perPage={users.perPage}
+                      isFetching={users.isFetching}
+                      creatingUser={user}
+                      setUserPermission={setUserPermission}
+                      saveUser={saveUser}
+                      deleteUser={deleteUser}
+                      fetchProjectFeeds={fetchProjectFeeds}
+                      createUser={createUser}
+                      setPage={setPage}
+                      userSearch={userSearch}
                     />
-                  : this.props.activeComponent === 'logs'
+                  : activeComponent === 'logs'
                   ? <p className='text-center' style={{marginTop: '100px'}}>
                     <Button
                       bsStyle='danger'
@@ -99,12 +110,16 @@ export default class UserAdmin extends Component {
                       <Icon type='star' /> View application logs on Auth0.com
                     </Button>
                   </p>
+                  : activeComponent === 'organizations'
+                  ? <OrganizationList
+                    {...this.props}
+                    />
                   : null
                 }
                 </Col>
               </div>
               : <div>
-                {this.props.user
+                {user
                   ? <p>{getMessage(messages, 'noAccess')}</p>
                   : <h1
                     className='text-center'

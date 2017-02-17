@@ -9,6 +9,7 @@ import {
   setUserPage,
   setUserQueryString
 } from '../actions/admin'
+import { fetchOrganizations, createOrganization, updateOrganization, deleteOrganization } from '../actions/organizations'
 import { updateUserData } from '../../manager/actions/user'
 import { fetchProjects } from '../../manager/actions/projects'
 import { fetchProjectFeeds } from '../../manager/actions/feeds'
@@ -17,7 +18,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     projects: state.projects.all,
     user: state.user,
-    admin: state.admin,
+    users: state.admin.users,
+    organizations: state.admin.organizations,
     activeComponent: ownProps.routeParams.subpage
   }
 }
@@ -28,7 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.activeComponent) {
         browserHistory.push('/admin/users')
       }
-      if (!initialProps.users) {
+      if (!initialProps.users.data) {
         dispatch(fetchUsers())
       }
 
@@ -36,18 +38,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchProjects())
     },
     fetchProjectFeeds: (project) => { dispatch(fetchProjectFeeds(project)) },
+    fetchOrganizations: () => { dispatch(fetchOrganizations()) },
+    createOrganization: (org) => { return dispatch(createOrganization(org)) },
+    deleteOrganization: (org) => { return dispatch(deleteOrganization(org)) },
+    updateOrganization: (org, settings) => { return dispatch(updateOrganization(org, settings)) },
     saveUser: (user, permissions) => {
       dispatch(updateUserData(user, permissions))
       .then(() => {
         dispatch(fetchUsers())
       })
     },
-    deleteUser: (user) => {
-      dispatch(deleteUser(user))
-      .then(() => {
-        dispatch(fetchUsers())
-      })
-    },
+    deleteUser: (user) => { dispatch(deleteUser(user)) },
     // setUserPermission: (user, permissions) => { dispatch(setUserPermission(user, permissions)) },
     createUser: (credentials) => { dispatch(createUser(credentials)) },
     setPage: (page) => {

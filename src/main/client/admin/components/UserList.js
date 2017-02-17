@@ -31,6 +31,7 @@ export default class UserList extends Component {
   }
 
   render () {
+    const {creatingUser} = this.props
     const headerStyle = {
       fontSize: '18px',
       marginLeft: '12px'
@@ -98,6 +99,7 @@ export default class UserList extends Component {
               <Col xs={2}>
                 <CreateUser
                   projects={this.props.projects}
+                  creatingUser={creatingUser}
                   fetchProjectFeeds={this.props.fetchProjectFeeds}
                   createUser={this.props.createUser.bind(this)} />
               </Col>

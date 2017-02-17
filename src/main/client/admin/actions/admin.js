@@ -17,14 +17,14 @@ export function receiveUsers (users, totalUserCount) {
 export function fetchUsers () {
   return function (dispatch, getState) {
     dispatch(requestingUsers())
-    const queryString = getState().admin.userQueryString
+    const queryString = getState().admin.users.userQueryString
 
     let countUrl = '/api/manager/secure/usercount'
     if (queryString) countUrl += `?queryString=${queryString}`
     const getCount = secureFetch(countUrl, getState())
       .then(response => response.json())
 
-    let usersUrl = `/api/manager/secure/user?page=${getState().admin.page}`
+    let usersUrl = `/api/manager/secure/user?page=${getState().admin.users.page}`
     if (queryString) usersUrl += `&queryString=${queryString}`
     const getUsers = secureFetch(usersUrl, getState())
       .then(response => response.json())

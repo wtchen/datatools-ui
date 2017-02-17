@@ -128,6 +128,8 @@ export default class UserSettings extends Component {
 
   render () {
     const messages = getComponentMessages('UserSettings')
+    const { creatingUser } = this.props
+    const isAdmin = creatingUser.permissions.isApplicationAdmin()
     let currentProject = this.props.projects[this.state.currentProjectIndex]
 
     const getProjectLabel = (access) => {
@@ -179,14 +181,23 @@ export default class UserSettings extends Component {
     return (
       <Row>
         <Col xs={4}>
-          <Panel header={<h3>{getMessage(messages, 'application')}</h3>}>
-            <Checkbox
-              checked={this.state.appAdminChecked}
-              onChange={(evt) => this.appAdminClicked(evt.target.checked)}
-              ref='appAdminCheckbox'
-            >
-              {getMessage(messages, 'admin.title')}
-            </Checkbox>
+          <Panel header={
+            <h3>
+              Organization settings
+              {
+                // getMessage(messages, 'application')
+              }
+            </h3>
+          }>
+            {isAdmin &&
+              <Checkbox
+                checked={this.state.appAdminChecked}
+                onChange={(evt) => this.appAdminClicked(evt.target.checked)}
+                ref='appAdminCheckbox'
+              >
+                {getMessage(messages, 'admin.title')}
+              </Checkbox>
+            }
           </Panel>
         </Col>
         <Col xs={8}>

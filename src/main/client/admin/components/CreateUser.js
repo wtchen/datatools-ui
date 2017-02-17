@@ -43,6 +43,7 @@ export default class CreateUser extends Component {
 
   render () {
     const messages = getComponentMessages('CreateUser')
+    const {creatingUser} = this.props
     return (
       <div>
         <Button
@@ -50,7 +51,7 @@ export default class CreateUser extends Component {
           onClick={this.open.bind(this)}
           className='pull-right'
         >
-          <Icon type='plus' />&nbsp;
+          <Icon type='plus' />{' '}
           Create User
         </Button>
 
@@ -70,6 +71,7 @@ export default class CreateUser extends Component {
             <UserSettings
               projects={this.props.projects}
               fetchProjectFeeds={this.props.fetchProjectFeeds}
+              creatingUser={creatingUser}
               permissions={new UserPermissions()}
               ref='userSettings'
             />
