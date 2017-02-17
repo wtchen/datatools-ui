@@ -78,7 +78,7 @@ const mapStateToProps = (state, ownProps) => {
   const stopTree = state.editor.mapState.stopTree
   const tableView = ownProps.location.query && ownProps.location.query.table === 'true'
   const entities = state.editor.data.tables[activeComponent]
-  let user = state.user
+  const user = state.user
 
   // find the containing project
   const project = findProjectByFeedSource(state, feedSourceId)
@@ -165,7 +165,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               if (activeComponent === 'route' && newId) {
                 dispatch(fetchTripPatternsForRoute(feedSourceId, newId))
                 .then((tripPatterns) => {
-                  let pattern = tripPatterns && tripPatterns.find(p => p.id === subEntityId)
+                  const pattern = tripPatterns && tripPatterns.find(p => p.id === subEntityId)
                   if (subSubComponent === 'timetable' && activeSubSubEntity) {
                     dispatch(fetchTripsForCalendar(feedSourceId, pattern, activeSubSubEntity))
                   }
@@ -216,9 +216,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(receiveGtfsEntities([entity]))
     },
     setActiveEntity: (feedSourceId, component, entity, subComponent, subEntity, subSubComponent, subSubEntity) => {
-      let entityId = entity && entity.id
-      let subEntityId = subEntity && subEntity.id
-      let subSubEntityId = subSubEntity && subSubEntity.id
+      const entityId = entity && entity.id
+      const subEntityId = subEntity && subEntity.id
+      const subSubEntityId = subSubEntity && subSubEntity.id
       dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
     },
     updateActiveEntity: (entity, component, props) => {

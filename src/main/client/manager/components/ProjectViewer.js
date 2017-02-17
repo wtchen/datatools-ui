@@ -56,7 +56,7 @@ export default class ProjectViewer extends Component {
       title: 'Upload Feed',
       body: 'Select a GTFS feed to upload:',
       onConfirm: (files) => {
-        let nameArray = files[0].name.split('.')
+        const nameArray = files[0].name.split('.')
         if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
           return false
         } else {
@@ -102,7 +102,7 @@ export default class ProjectViewer extends Component {
     const filteredFeedSources = project.feedSources
       ? project.feedSources.filter(feedSource => {
         if (feedSource.isCreating) return true // feeds actively being created are always visible
-        let visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
+        const visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
         switch (visibilityFilter.filter) {
           case 'ALL':
             return visible

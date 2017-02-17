@@ -53,7 +53,7 @@ export function savingTrips (feedId, pattern, calendarId, trips) {
 export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
   return function (dispatch, getState) {
     let errorCount = 0
-    let errorIndexes = []
+    const errorIndexes = []
     dispatch(savingTrips(feedId, pattern, calendarId, trips))
     return Promise.all(trips.filter(t => t).map((trip, index) => {
       const tripExists = trip.id !== 'new' && trip.id !== null
@@ -89,7 +89,7 @@ export function saveTripsForCalendar (feedId, pattern, calendarId, trips) {
 export function saveMultipleTripsForCalendar (feedId, pattern, calendarId, trips) {
   return function (dispatch, getState) {
     let errorCount = 0
-    let errorIndexes = []
+    const errorIndexes = []
     dispatch(savingTrips(feedId, pattern, calendarId, trips))
     const newTrips = []
     const existingTrips = []

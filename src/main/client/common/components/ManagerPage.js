@@ -95,7 +95,7 @@ export default class ManagerPage extends Component {
                 <li><a href={getConfigProperty('application.docs_url')}>Guide</a></li>
                 <li><a href={`mailto:${getConfigProperty('application.support_email')}`}>Contact</a></li>
               </ul>
-              <p className='text-center text-muted'>&copy; <a href='http://conveyal.com'>Conveyal</a></p>
+              <p className='text-center text-muted'><span role='img' title='Copyright' aria-label='copyright'>&copy;</span> <a href='http://conveyal.com'>Conveyal</a></p>
             </div>
           </footer>
         </PageContent>

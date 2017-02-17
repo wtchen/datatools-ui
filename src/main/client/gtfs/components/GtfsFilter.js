@@ -6,7 +6,7 @@ export default class GtfsFilter extends React.Component {
     this.props.onComponentMount(this.props)
   }
   render () {
-    let buttonMinimalStyle = {
+    const buttonMinimalStyle = {
       marginTop: '10px',
       marginBottom: '5px'
     }
@@ -25,7 +25,7 @@ export default class GtfsFilter extends React.Component {
     // }).sort(compare)
 
     var feedLookup = {}
-    for (let f of this.props.allFeeds) feedLookup[f.id] = f
+    for (const f of this.props.allFeeds) feedLookup[f.id] = f
     return (
       <ButtonToolbar className='pull-right' style={buttonMinimalStyle}>
         <DropdownButton
@@ -37,15 +37,16 @@ export default class GtfsFilter extends React.Component {
             : `Searching ${activeAndLoadedFeeds.length} feeds`}
           alt={activeAndLoadedFeeds.join(', ')}
           onSelect={eventKey => {
-            let feed = feedLookup[eventKey]
+            const feed = feedLookup[eventKey]
             activeFeeds.indexOf(feed) === -1 ? this.props.onAddFeed(feed) : this.props.onRemoveFeed(feed)
           }}
         >
           {this.props.allFeeds.map((feed) => {
-            let disabled = this.props.loadedFeeds.findIndex(f => f.id === feed.id) === -1
+            const disabled = this.props.loadedFeeds.findIndex(f => f.id === feed.id) === -1
             return (
               <MenuItem
                 key={feed.id}
+                style={{width: '200px'}}
                 eventKey={feed.id}
                 alt={feed.shortName || feed.name}
                 disabled={disabled}

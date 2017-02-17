@@ -15,8 +15,8 @@ export default class EditSchedulePanel extends Component {
         <ButtonGroup>
           <DropdownButton
             onSelect={(key) => {
-              let useFrequency = key !== 'timetables'
-              let other = key === 'timetables' ? 'frequencies' : 'timetables'
+              const useFrequency = key !== 'timetables'
+              const other = key === 'timetables' ? 'frequencies' : 'timetables'
               this.props.showConfirmModal({
                 title: `Use ${key} for ${activePattern.name}?`,
                 body: `Are you sure you want to use ${key} for this trip pattern? Any trips created using ${other} will be lost.`,

@@ -46,7 +46,7 @@ export default class UserHomePage extends Component {
     const messages = getComponentMessages('UserHomePage')
     // const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const feedVisibilityFilter = (feed) => {
-      let visible = feed.name.toLowerCase().indexOf((this.props.visibilityFilter.searchText || '').toLowerCase()) !== -1
+      const visible = feed.name.toLowerCase().indexOf((this.props.visibilityFilter.searchText || '').toLowerCase()) !== -1
       switch (this.props.visibilityFilter.filter) {
         case 'ALL':
           return visible

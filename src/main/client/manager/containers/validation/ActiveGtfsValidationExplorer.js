@@ -9,12 +9,12 @@ import {
 } from '../../actions/versions'
 
 const mapStateToProps = (state, ownProps) => {
-  let feedSourceId = ownProps.routeParams.feedSourceId
-  let feedVersionIndex = ownProps.routeParams.feedVersionIndex
-  let user = state.user
+  const feedSourceId = ownProps.routeParams.feedSourceId
+  const feedVersionIndex = ownProps.routeParams.feedVersionIndex
+  const user = state.user
 
   // find the containing project
-  let project = state.projects.all
+  const project = state.projects.all
     ? state.projects.all.find(p => {
       if (!p.feedSources) return false
       return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           return dispatch(fetchFeedVersions(feedSource, unsecured))
         })
         .then((feedVersions) => {
-          let version = feedVersions[feedVersionIndex - 1]
+          const version = feedVersions[feedVersionIndex - 1]
           dispatch(fetchValidationResult(version))
         })
       }

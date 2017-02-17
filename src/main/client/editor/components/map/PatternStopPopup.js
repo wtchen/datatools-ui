@@ -62,7 +62,7 @@ export default class PatternStopPopup extends Component {
                     Add to end (default)
                   </MenuItem>
                   {activePattern.patternStops && activePattern.patternStops.map((stop, i) => {
-                    let addIndex = activePattern.patternStops.length - i
+                    const addIndex = activePattern.patternStops.length - i
                     if (index === activePattern.patternStops.length - 1 && index === addIndex - 1) {
                       return null
                     }
@@ -91,7 +91,7 @@ export default class PatternStopPopup extends Component {
               <MinuteSecondInput
                 seconds={patternStop.defaultTravelTime}
                 onChange={(value) => {
-                  let patternStops = [...activePattern.patternStops]
+                  const patternStops = [...activePattern.patternStops]
                   patternStops[index].defaultTravelTime = value
                   updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                 }}
@@ -105,7 +105,7 @@ export default class PatternStopPopup extends Component {
               <MinuteSecondInput
                 seconds={patternStop.defaultDwellTime}
                 onChange={(evt) => {
-                  let patternStops = [...activePattern.patternStops]
+                  const patternStops = [...activePattern.patternStops]
                   patternStops[index].defaultDwellTime = +evt.target.value
                   updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                 }}

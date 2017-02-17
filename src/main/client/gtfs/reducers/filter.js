@@ -29,7 +29,7 @@ const gtfsFilter = (state = {
       return update(state, {permissionFilter: {$set: action.permission}})
     case 'UPDATE_GTFS_DATETIME_FILTER':
       dateTimeFilter = {...state.dateTimeFilter}
-      for (let key in action.props) {
+      for (const key in action.props) {
         dateTimeFilter[key] = action.props[key]
       }
       return update(state, {
@@ -44,7 +44,7 @@ const gtfsFilter = (state = {
           return action.user.permissions.hasFeedPermission(action.activeProject.id, feed.id, state.permissionFilter) !== null
         }) : []
       }
-      let validatedFeeds = userFeeds.filter((feed) => {
+      const validatedFeeds = userFeeds.filter((feed) => {
         return feed.latestVersionId !== undefined
       })
       return update(state, {
@@ -63,7 +63,7 @@ const gtfsFilter = (state = {
       return update(state, {activeFeeds: {$set: activeFeeds}})
 
     case 'REMOVE_ACTIVE_FEED':
-      let foundIndex = state.activeFeeds.findIndex(f => f.id === action.feed.id)
+      const foundIndex = state.activeFeeds.findIndex(f => f.id === action.feed.id)
       if (foundIndex !== -1) {
         activeFeeds = [
           ...state.activeFeeds.slice(0, foundIndex),

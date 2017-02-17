@@ -87,7 +87,7 @@ export default class GtfsEditor extends Component {
     if (nextProps.subSubComponent && nextProps.activeSubSubEntity && !shallowEqual(nextProps.activeSubSubEntity, this.props.activeSubSubEntity)) {
       switch (nextProps.subSubComponent) {
         case 'timetable':
-          let pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.subEntityId)
+          const pattern = nextProps.activeEntity.tripPatterns.find(p => p.id === nextProps.subEntityId)
           // fetch trips if they haven't been fetched
           if (!pattern[nextProps.activeSubSubEntity]) {
             this.props.fetchTripsForCalendar(nextProps.feedSource.id, pattern, nextProps.activeSubSubEntity)
@@ -142,9 +142,9 @@ export default class GtfsEditor extends Component {
       console.log('editing disabled')
       // browserHistory.push(`/feed/${feedSource.id}`)
     }
-    let LIST_WIDTH = 220
-    let DETAILS_WIDTH = 300
-    let entityDetails = activeEntityId
+    const LIST_WIDTH = 220
+    const DETAILS_WIDTH = 300
+    const entityDetails = activeEntityId
       ? <EntityDetails
         width={DETAILS_WIDTH}
         key='entity-details'

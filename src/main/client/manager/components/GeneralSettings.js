@@ -67,9 +67,9 @@ export default class GeneralSettings extends Component {
                 <Checkbox
                   checked={autoFetchChecked}
                   onChange={(evt) => {
-                    let minutes = moment(DEFAULT_FETCH_TIME).minutes()
-                    let hours = moment(DEFAULT_FETCH_TIME).hours()
-                    let stateUpdate = { general: { $merge: { autoFetchFeeds: evt.target.checked, autoFetchMinute: minutes, autoFetchHour: hours } } }
+                    const minutes = moment(DEFAULT_FETCH_TIME).minutes()
+                    const hours = moment(DEFAULT_FETCH_TIME).hours()
+                    const stateUpdate = { general: { $merge: { autoFetchFeeds: evt.target.checked, autoFetchMinute: minutes, autoFetchHour: hours } } }
                     this.setState(update(this.state, stateUpdate))
                   }}
                 >
@@ -83,10 +83,10 @@ export default class GeneralSettings extends Component {
                     }
                     mode='time'
                     onChange={seconds => {
-                      let time = moment(+seconds)
-                      let minutes = moment(time).minutes()
-                      let hours = moment(time).hours()
-                      let stateUpdate = { general: { $merge: { autoFetchMinute: minutes, autoFetchHour: hours } } }
+                      const time = moment(+seconds)
+                      const minutes = moment(time).minutes()
+                      const hours = moment(time).hours()
+                      const stateUpdate = { general: { $merge: { autoFetchMinute: minutes, autoFetchHour: hours } } }
                       this.setState(update(this.state, stateUpdate))
                     }}
                   />
@@ -113,7 +113,7 @@ export default class GeneralSettings extends Component {
                     onChange={(evt) => {
                       const latLng = evt.target.value.split(',')
                       if (typeof latLng[0] !== 'undefined' && typeof latLng[1] !== 'undefined') {
-                        let stateUpdate = { general: { $merge: {defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]} } }
+                        const stateUpdate = { general: { $merge: {defaultLocationLat: latLng[0], defaultLocationLon: latLng[1]} } }
                         this.setState(update(this.state, stateUpdate))
                       } else {
                         console.log('invalid value for latlng')
@@ -136,7 +136,7 @@ export default class GeneralSettings extends Component {
                           onConfirm: (marker) => {
                             if (marker) {
                               ReactDOM.findDOMNode(this.refs.defaultLocation).value = `${marker.lat.toFixed(6)},${marker.lng.toFixed(6)}`
-                              let stateUpdate = { general: { $merge: {defaultLocationLat: marker.lat, defaultLocationLon: marker.lng} } }
+                              const stateUpdate = { general: { $merge: {defaultLocationLat: marker.lat, defaultLocationLon: marker.lng} } }
                               this.setState(update(this.state, stateUpdate))
                             }
                           }
@@ -161,7 +161,7 @@ export default class GeneralSettings extends Component {
                     onChange={(evt) => {
                       const bBox = evt.target.value.split(',')
                       if (bBox.length === 4) {
-                        let stateUpdate = { general: { $merge: {west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]} } }
+                        const stateUpdate = { general: { $merge: {west: bBox[0], south: bBox[1], east: bBox[2], north: bBox[3]} } }
                         this.setState(update(this.state, stateUpdate))
                       }
                     }}
@@ -181,13 +181,13 @@ export default class GeneralSettings extends Component {
                             onConfirm: (rectangle) => {
                               console.log('OK, rectangle', rectangle)
                               if (rectangle && rectangle.getBounds()) {
-                                let bounds = rectangle.getBounds()
-                                let west = bounds.getWest().toFixed(6)
-                                let south = bounds.getSouth().toFixed(6)
-                                let east = bounds.getEast().toFixed(6)
-                                let north = bounds.getNorth().toFixed(6)
+                                const bounds = rectangle.getBounds()
+                                const west = bounds.getWest().toFixed(6)
+                                const south = bounds.getSouth().toFixed(6)
+                                const east = bounds.getEast().toFixed(6)
+                                const north = bounds.getNorth().toFixed(6)
                                 ReactDOM.findDOMNode(this.refs.boundingBox).value = `${west},${south},${east},${north}`
-                                let stateUpdate = { general: { $merge: {west: west, south: south, east: east, north: north} } }
+                                const stateUpdate = { general: { $merge: {west: west, south: south, east: east, north: north} } }
                                 this.setState(update(this.state, stateUpdate))
                               }
                               return rectangle
@@ -207,7 +207,7 @@ export default class GeneralSettings extends Component {
               <TimezoneSelect
                 value={this.state.general.defaultTimeZone || project.defaultTimeZone}
                 onChange={(option) => {
-                  let stateUpdate = { general: { $merge: { defaultTimeZone: option.value } } }
+                  const stateUpdate = { general: { $merge: { defaultTimeZone: option.value } } }
                   this.setState(update(this.state, stateUpdate))
                 }}
               />
@@ -217,7 +217,7 @@ export default class GeneralSettings extends Component {
               <LanguageSelect
                 value={this.state.general.defaultLanguage || project.defaultLanguage}
                 onChange={(option) => {
-                  let stateUpdate = { general: { $merge: { defaultLanguage: option.value } } }
+                  const stateUpdate = { general: { $merge: { defaultLanguage: option.value } } }
                   this.setState(update(this.state, stateUpdate))
                 }}
               />

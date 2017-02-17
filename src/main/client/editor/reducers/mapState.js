@@ -34,7 +34,7 @@ const mapState = (state = defaultState, action) => {
       })
     case 'UPDATE_MAP_SETTING':
       updatedState = {}
-      for (let key in action.props) {
+      for (const key in action.props) {
         updatedState[key] = {$set: action.props[key]}
       }
       if (!('target' in action.props)) {

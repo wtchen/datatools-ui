@@ -16,9 +16,9 @@ export default class DirectionIconsLayer extends Component {
     // let zoom = this.refs.map ? this.refs.map.leafletElement.getZoom() : 11
     // let bounds = this.refs.map && this.refs.map.leafletElement.getBounds()
     // get intervals along path for arrow icons
-    let patternLine = patternCoordinates && patternCoordinates.length && lineString(patternCoordinates)
-    let patternLength = patternLine ? lineDistance(patternLine, 'meters') : 0
-    let iconInterval = zoom > 15
+    const patternLine = patternCoordinates && patternCoordinates.length && lineString(patternCoordinates)
+    const patternLength = patternLine ? lineDistance(patternLine, 'meters') : 0
+    const iconInterval = zoom > 15
       ? 200
       : zoom > 14
       ? 500
@@ -29,10 +29,10 @@ export default class DirectionIconsLayer extends Component {
       : zoom > 6
       ? 8000
       : 10000
-    let lengthsAlongPattern = []
+    const lengthsAlongPattern = []
     for (var i = 0; i < Math.floor(patternLength / iconInterval); i++) {
-      let distance = i ? iconInterval * i : iconInterval / 2
-      let position = along(patternLine, distance, 'meters')
+      const distance = i ? iconInterval * i : iconInterval / 2
+      const position = along(patternLine, distance, 'meters')
       if (!bounds) continue
       if (position.geometry.coordinates[1] > bounds.getNorth() || position.geometry.coordinates[1] < bounds.getSouth() || position.geometry.coordinates[0] > bounds.getEast() || position.geometry.coordinates[0] < bounds.getWest()) {
         continue
@@ -43,10 +43,10 @@ export default class DirectionIconsLayer extends Component {
       <FeatureGroup>
         {lengthsAlongPattern.length && patternLine // this.refs[activePattern.id]
           ? lengthsAlongPattern.map((length, index) => {
-            let distance = length[0]
-            let position = length[1]
+            const distance = length[0]
+            const position = length[1]
 
-            let nextPosition = along(patternLine, distance + 5, 'meters')
+            const nextPosition = along(patternLine, distance + 5, 'meters')
             const dir = position && nextPosition ? bearing(position, nextPosition) : 0
             const color = '#000'
             const arrowIcon = divIcon({

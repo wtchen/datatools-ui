@@ -5,14 +5,14 @@ export function validate (type, required, name, value, entities, id) {
   switch (type) {
     case 'GTFS_ID':
       isNotValid = required && !value
-      let indices = []
-      let idList = entities.map(e => e[name])
+      const indices = []
+      const idList = entities.map(e => e[name])
       let idx = idList.indexOf(value)
       while (idx !== -1) {
         indices.push(idx)
         idx = idList.indexOf(value, idx + 1)
       }
-      let isNotUnique = value && (indices.length > 1 || indices.length && entities[indices[0]].id !== id)
+      const isNotUnique = value && (indices.length > 1 || indices.length && entities[indices[0]].id !== id)
       if (isNotValid || isNotUnique) {
         return {field: name, invalid: isNotValid || isNotUnique}
       } else {

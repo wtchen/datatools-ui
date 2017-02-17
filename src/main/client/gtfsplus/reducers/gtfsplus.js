@@ -31,7 +31,7 @@ const gtfsplus = (state = {
       }
 
     case 'RECEIVE_GTFSPLUS_CONTENT':
-      let newTableData = {}
+      const newTableData = {}
       for (let i = 0; i < action.filenames.length; i++) {
         const lines = action.fileContent[i].split(/\r\n|\r|\n/g)
         if (lines.length < 2) continue
@@ -44,7 +44,7 @@ const gtfsplus = (state = {
           .filter(line => line.split(',').length === fields.length)
           .map((line, rowIndex) => {
             const values = line.split(',')
-            let rowData = { origRowIndex: rowIndex }
+            const rowData = { origRowIndex: rowIndex }
             for (let f = 0; f < fields.length; f++) {
               rowData[fields[f]] = values[f]
             }
@@ -104,7 +104,7 @@ const gtfsplus = (state = {
         if (entity.hasOwnProperty('stop_id')) return 'stop'
       }
       const newLookupEntries = {}
-      for (let entity of action.gtfsEntities) {
+      for (const entity of action.gtfsEntities) {
         const type = getType(entity)
         const key = type + '_' + entity[type + '_id']
         newLookupEntries[key] = entity
@@ -117,7 +117,7 @@ const gtfsplus = (state = {
       })
     case 'RECEIVE_GTFSPLUS_VALIDATION':
       const validationTable = {}
-      for (let issue of action.validationIssues) {
+      for (const issue of action.validationIssues) {
         if (!(issue.tableId in validationTable)) {
           validationTable[issue.tableId] = []
         }

@@ -23,7 +23,7 @@ export default class MinuteSecondInput extends Component {
     }
   }
   onChange (value) {
-    let seconds = this.convertStringToSeconds(value)
+    const seconds = this.convertStringToSeconds(value)
     if (seconds === this.state.seconds) {
       this.setState({string: value})
     } else {
@@ -36,7 +36,11 @@ export default class MinuteSecondInput extends Component {
   convertSecondsToString (seconds) {
     const minutes = Math.floor(seconds / 60)
     const sec = seconds % 60
-    return seconds ? `${minutes}:${sec < 10 ? '0' + sec : sec}` : '00:00'
+    return seconds
+      ? `${minutes}:${sec < 10 ? '0' + sec : sec}`
+      : this.state.string
+      ? this.state.string
+      : '00:00'
   }
   convertStringToSeconds (string) {
     const minuteSecond = string.split(':')
@@ -52,7 +56,7 @@ export default class MinuteSecondInput extends Component {
     }
   }
   render () {
-    let seconds = this.state.seconds
+    const seconds = this.state.seconds
     return (
       <FormControl
         value={typeof this.state.string !== 'undefined' ? this.state.string : this.convertSecondsToString(seconds)}

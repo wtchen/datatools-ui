@@ -32,18 +32,18 @@ export default class StopLayout extends Component {
       const flat = clone(s)
       if (s.stats) {
         delete flat.stats
-        for (let key in s.stats) {
+        for (const key in s.stats) {
           flat[key] = s.stats[key]
         }
       }
       return flat
     })
-    let dateTimeProps = {
+    const dateTimeProps = {
       mode: 'date',
       dateTime: this.props.dateTime.date ? +moment(this.props.dateTime.date, 'YYYY-MM-DD') : +moment(),
       onChange: (millis) => {
         console.log(+millis)
-        let date = moment(+millis).format('YYYY-MM-DD')
+        const date = moment(+millis).format('YYYY-MM-DD')
         console.log(date)
         this.props.stopDateTimeFilterChange({date})
       }

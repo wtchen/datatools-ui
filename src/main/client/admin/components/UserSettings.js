@@ -28,7 +28,7 @@ export default class UserSettings extends Component {
           access = 'admin'
         } else {
           access = 'custom'
-          let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
+          const projectPermissions = this.props.permissions.getProjectPermissions(project.id)
           permissions = projectPermissions.map((p) => { return p.type })
           defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
         }
@@ -47,17 +47,17 @@ export default class UserSettings extends Component {
       }
     }
 
-    let settings = {
+    const settings = {
       permissions: [],
       projects: [],
       client_id: getConfigProperty('auth0.client_id')
     }
 
     this.props.projects.forEach((project, i) => {
-      let stateProjectSettings = this.state.projectSettings[project.id]
+      const stateProjectSettings = this.state.projectSettings[project.id]
       if (stateProjectSettings.access === 'none') return
 
-      let projectSettings = {
+      const projectSettings = {
         project_id: project.id,
         permissions: []
       }
@@ -128,7 +128,7 @@ export default class UserSettings extends Component {
 
   render () {
     const messages = getComponentMessages('UserSettings')
-    let currentProject = this.props.projects[this.state.currentProjectIndex]
+    const currentProject = this.props.projects[this.state.currentProjectIndex]
 
     const getProjectLabel = (access) => {
       switch (access) {
@@ -138,7 +138,7 @@ export default class UserSettings extends Component {
       }
     }
 
-    let projectPanel = (
+    const projectPanel = (
       <Panel
         header={
           <h3>
@@ -150,7 +150,7 @@ export default class UserSettings extends Component {
 
             >
               {this.props.projects.map((project, i) => {
-                let settings = this.state.projectSettings[project.id]
+                const settings = this.state.projectSettings[project.id]
                 if (typeof settings !== 'undefined') {
                   return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
                 }
@@ -161,7 +161,7 @@ export default class UserSettings extends Component {
       >
         {this.props.projects.map((project, i) => {
           if (i !== this.state.currentProjectIndex) return null
-          let settings = this.state.projectSettings[project.id]
+          const settings = this.state.projectSettings[project.id]
           return <ProjectSettings
             project={project}
             key={project.id}
@@ -231,7 +231,7 @@ class ProjectSettings extends Component {
     this.inputRef = ref
   }
   feedsUpdated () {
-    let selectedFeeds = []
+    const selectedFeeds = []
     this.props.project.feedSources.forEach((feed) => {
       var checkbox = this['feed-' + feed.id]
       if (checkbox.checked) selectedFeeds.push(feed.id)
@@ -239,7 +239,7 @@ class ProjectSettings extends Component {
     this.props.projectFeedsUpdated(this.props.project.id, selectedFeeds)
   }
   permissionsUpdated () {
-    let selectedPermissions = []
+    const selectedPermissions = []
     allPermissions.forEach((permission) => {
       var checkbox = this['permission-' + permission.type]
       if (checkbox.checked) selectedPermissions.push(permission.type)
@@ -292,9 +292,9 @@ class ProjectSettings extends Component {
                 <h4>{getMessage(messages, 'project.feeds')}</h4>
                 {feedSources
                   ? feedSources.map((feed, i) => {
-                    let name = (feed.name === '') ? '(unnamed feed)' : feed.name
-                    let refName = 'feed-' + feed.id
-                    let checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
+                    const name = (feed.name === '') ? '(unnamed feed)' : feed.name
+                    const refName = 'feed-' + feed.id
+                    const checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
                     return <Checkbox
                       inputRef={ref => { this[refName] = ref }}
                       key={feed.id}
@@ -310,8 +310,8 @@ class ProjectSettings extends Component {
               <Col xs={6}>
                 <h4>{getMessage(messages, 'project.permissions')}</h4>
                 {allPermissions.map((permission, i) => {
-                  let refName = 'permission-' + permission.type
-                  let checked = this.props.settings.permissions.indexOf(permission.type) !== -1
+                  const refName = 'permission-' + permission.type
+                  const checked = this.props.settings.permissions.indexOf(permission.type) !== -1
                   return <Checkbox
                     inputRef={ref => { this[refName] = ref }}
                     key={permission.type}

@@ -166,7 +166,7 @@ class UserRow extends Component {
   }
 
   render () {
-    let permissions = new UserPermissions(this.props.user.app_metadata && this.props.user.app_metadata.datatools ? this.props.user.app_metadata.datatools : null)
+    const permissions = new UserPermissions(this.props.user.app_metadata && this.props.user.app_metadata.datatools ? this.props.user.app_metadata.datatools : null)
     return (
       <ListGroupItem
         collapsible

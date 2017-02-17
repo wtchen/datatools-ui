@@ -17,8 +17,8 @@ import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
   let feedVersionIndex
-  let routeVersionIndex = parseInt(ownProps.routeParams.feedVersionIndex, 10)
-  let hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
+  const routeVersionIndex = parseInt(ownProps.routeParams.feedVersionIndex, 10)
+  const hasVersionIndex = typeof ownProps.routeParams.feedVersionIndex !== 'undefined'
 
   if (ownProps.feedSource && typeof ownProps.feedSource.feedVersions !== 'undefined') {
     if ((hasVersionIndex && isNaN(routeVersionIndex)) ||

@@ -42,7 +42,7 @@ export default class Auth0Manager {
       window.localStorage.setItem('userToken', hash.id_token)
 
       // redirect to "targetUrl" if any
-      let newLocation = hash.state || ''
+      const newLocation = hash.state || ''
       browserHistory.push(newLocation)
     } else {
       // check if logged in elsewhere via SSO

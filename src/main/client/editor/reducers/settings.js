@@ -133,12 +133,12 @@ const editSettings = (state = defaultState, action) => {
         actions: {$push: [action.type]}
       })
     case 'UPDATE_CONTROL_POINT':
-      let newControlPoints = []
+      const newControlPoints = []
       controlPoints = state.controlPoints[state.controlPoints.length - 1]
       for (var i = 0; i < controlPoints.length; i++) {
         newControlPoints.push(Object.assign({}, controlPoints[i]))
       }
-      let newest = update(newControlPoints, {[action.index]: {point: {$set: action.point}, distance: {$set: action.distance}}})
+      const newest = update(newControlPoints, {[action.index]: {point: {$set: action.point}, distance: {$set: action.distance}}})
       return update(state, {
         controlPoints: {$push: [newest]},
         actions: {$push: [action.type]}

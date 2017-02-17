@@ -61,7 +61,7 @@ export default class ProjectsList extends React.Component {
                   </thead>
                   <tbody>
                     {visibleProjects.length > 0 ? visibleProjects.map((project) => {
-                      let disabled = !this.props.user.permissions.isProjectAdmin(project.id)
+                      const disabled = !this.props.user.permissions.isProjectAdmin(project.id)
                       return (
                         <tr key={project.id}>
                           <td className='col-md-4'>

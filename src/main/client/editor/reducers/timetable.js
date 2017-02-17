@@ -51,7 +51,7 @@ const timetable = (state = defaultState, action) => {
         edited: {$push: [action.rowIndex]}
       })
     case 'TOGGLE_ALL_TIMETABLE_ROW_SELECTION':
-      let selected = []
+      const selected = []
       if (action.select) {
         for (let i = 0; i < state.trips.length; i++) {
           selected.push(i)
@@ -74,7 +74,7 @@ const timetable = (state = defaultState, action) => {
         trips: {$splice: action.indexes}
       })
     case 'TOGGLE_SINGLE_TIMETABLE_ROW_SELECTION':
-      let selectIndex = state.selected.indexOf(action.rowIndex)
+      const selectIndex = state.selected.indexOf(action.rowIndex)
       if (selectIndex === -1) {
         return update(state, {
           selected: {$push: [action.rowIndex]}

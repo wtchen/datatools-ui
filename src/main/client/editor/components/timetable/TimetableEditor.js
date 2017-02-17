@@ -40,7 +40,7 @@ export default class TimetableEditor extends Component {
   }
   constructNewRow (toClone = null) {
     const activePattern = this.props.route && this.props.route.tripPatterns ? this.props.route.tripPatterns.find(p => p.id === this.props.activePatternId) : null
-    let newRow = toClone ? clone(toClone) || {} : {}
+    const newRow = toClone ? clone(toClone) || {} : {}
     if (toClone) {
       objectPath.set(newRow, 'id', 'new')
       objectPath.set(newRow, 'gtfsTripId', null)
@@ -53,7 +53,7 @@ export default class TimetableEditor extends Component {
     // cumulativeTravelTime += this.props.timetable.offset
 
     for (let i = 0; i < activePattern.patternStops.length; i++) {
-      let stop = activePattern.patternStops[i]
+      const stop = activePattern.patternStops[i]
       // if stopTime null/undefined, set as new object
       if (!objectPath.get(newRow, `stopTimes.${i}`)) {
         objectPath.set(newRow, `stopTimes.${i}`, {})
@@ -71,7 +71,7 @@ export default class TimetableEditor extends Component {
       // }
     }
     for (let i = 0; i < this.props.timetable.columns.length; i++) {
-      let col = this.props.timetable.columns[i]
+      const col = this.props.timetable.columns[i]
       if (isTimeFormat(col.type)) {
         // TODO: add default travel/dwell times to new rows
         // objectPath.ensureExists(newRow, col.key, 0)
@@ -91,7 +91,7 @@ export default class TimetableEditor extends Component {
     return newRow
   }
   duplicateRows (indexArray) {
-    let arrayAscending = indexArray.sort((a, b) => {
+    const arrayAscending = indexArray.sort((a, b) => {
       return a - b
     })
     const lastIndex = this.props.timetable.trips.length - 1
@@ -99,7 +99,7 @@ export default class TimetableEditor extends Component {
       const index = arrayAscending[i]
       const toClone = this.props.timetable.trips[index]
       const newRow = this.constructNewRow(toClone)
-      let stateUpdate = {
+      const stateUpdate = {
         activeCell: {$set: null},
         scrollToRow: {$set: lastIndex + arrayAscending.length}, // increment selected row
         scrollToColumn: {$set: 0}
@@ -112,10 +112,10 @@ export default class TimetableEditor extends Component {
     // set blank to true if there are no rows to clone
     blank = blank || this.props.timetable.trips.length === 0
     const lastIndex = this.props.timetable.trips.length - 1
-    let clone = blank ? null : this.props.timetable.trips[lastIndex]
-    let newRow = this.constructNewRow(clone)
+    const clone = blank ? null : this.props.timetable.trips[lastIndex]
+    const newRow = this.constructNewRow(clone)
 
-    let stateUpdate = {
+    const stateUpdate = {
       activeCell: {$set: null},
       scrollToRow: {$set: lastIndex + 1}, // increment selected row
       scrollToColumn: {$set: 0}
@@ -126,18 +126,18 @@ export default class TimetableEditor extends Component {
     }
   }
   removeSelectedRows () {
-    let indexes = []
-    let tripsToDelete = []
-    let newRows = [...this.props.timetable.trips]
-    let selectedDescending = this.props.timetable.selected.sort((a, b) => {
+    const indexes = []
+    const tripsToDelete = []
+    const newRows = [...this.props.timetable.trips]
+    const selectedDescending = this.props.timetable.selected.sort((a, b) => {
       return b - a
     })
     // loop over selected array in descending order to ensure that indexes operates on indexes in reverse
     for (var i = 0; i < selectedDescending.length; i++) {
-      let rowIndex = selectedDescending[i]
+      const rowIndex = selectedDescending[i]
 
       // removed.push([this.props.selected[i], 1])
-      let row = newRows[rowIndex]
+      const row = newRows[rowIndex]
       if (row.id === 'new') {
         indexes.push([rowIndex, 1])
       } else {
@@ -171,35 +171,35 @@ export default class TimetableEditor extends Component {
     return true
   }
   offsetRows (rowIndexes, offsetAmount) {
-    let newRows = [...this.props.timetable.trips]
-    let editedRows = []
+    const newRows = [...this.props.timetable.trips]
+    const editedRows = []
     console.log(`Offsetting ${rowIndexes.length} rows by ${offsetAmount} seconds`)
     for (var i = 0; i < rowIndexes.length; i++) {
       editedRows.push(rowIndexes[i])
       for (var j = 0; j < this.props.timetable.columns.length; j++) {
-        let col = this.props.timetable.columns[j]
-        let path = `${rowIndexes[i]}.${col.key}`
+        const col = this.props.timetable.columns[j]
+        const path = `${rowIndexes[i]}.${col.key}`
         if (isTimeFormat(col.type)) {
-          let currentVal = objectPath.get(newRows, path)
-          let value = currentVal + offsetAmount % 86399 // ensure seconds does not exceed 24 hours
+          const currentVal = objectPath.get(newRows, path)
+          const value = currentVal + offsetAmount % 86399 // ensure seconds does not exceed 24 hours
           objectPath.set(newRows, path, value)
           // this.props.updateCellValue(value, i, path)
         }
       }
     }
-    let stateUpdate = {
+    const stateUpdate = {
       data: {$set: newRows},
       edited: {$push: editedRows}
     }
     this.setState(update(this.state, stateUpdate))
   }
   saveEditedTrips (pattern, activeScheduleId) {
-    let trips = []
-    let tripIndexes = []
+    const trips = []
+    const tripIndexes = []
     for (var i = 0; i < this.props.timetable.edited.length; i++) {
-      let rowIndex = this.props.timetable.edited[i]
+      const rowIndex = this.props.timetable.edited[i]
       if (tripIndexes.indexOf(rowIndex) === -1) {
-        let trip = this.props.timetable.trips[rowIndex]
+        const trip = this.props.timetable.trips[rowIndex]
         if (trip) {
           trips.push(trip)
           tripIndexes.push(rowIndex)
@@ -209,12 +209,12 @@ export default class TimetableEditor extends Component {
     this.props.saveTripsForCalendar(this.props.feedSource.id, pattern, activeScheduleId, trips)
       .then((errorIndexes) => {
         console.log('errors for trips', errorIndexes)
-        let edited = []
+        const edited = []
         for (var i = 0; i < errorIndexes.length; i++) {
           edited.push(this.props.timetable.edited[errorIndexes[i]])
         }
         console.log(edited)
-        let stateUpdate = {
+        const stateUpdate = {
           edited: {$set: edited}
         }
         this.setState(update(this.state, stateUpdate))

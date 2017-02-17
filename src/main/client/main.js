@@ -36,9 +36,9 @@ config.messages.active = lang.find(l => l.id === languageId) || lang.find(l => l
 window.DT_CONFIG = config
 
 import * as managerReducers from './manager/reducers'
-import * as adminReducers from './admin/reducers'
-import * as alertsReducers from './alerts/reducers'
-import * as signsReducers from './signs/reducers'
+import admin from './admin/reducers'
+import alerts from './alerts/reducers'
+import signs from './signs/reducers'
 
 import * as gtfsPlusReducers from './gtfsplus/reducers'
 import editor from './editor/reducers'
@@ -48,9 +48,9 @@ const logger = createLogger({duration: true, collapsed: true})
 const store = createStore(
   combineReducers({
     ...managerReducers,
-    ...adminReducers,
-    ...alertsReducers,
-    ...signsReducers,
+    admin,
+    alerts,
+    signs,
     ...gtfsPlusReducers,
     editor,
     // ...reportReducers,

@@ -70,7 +70,7 @@ export function updateUserMetadata (profile, props) {
   return function (dispatch, getState) {
     const CLIENT_ID = getConfigProperty('auth0.client_id')
 
-    let userMetadata = profile.user_metadata || {
+    const userMetadata = profile.user_metadata || {
       lang: 'en',
       datatools: [
         {
@@ -78,7 +78,7 @@ export function updateUserMetadata (profile, props) {
         }
       ]
     }
-    let clientIndex = userMetadata.datatools.findIndex(d => d.client_id === CLIENT_ID)
+    const clientIndex = userMetadata.datatools.findIndex(d => d.client_id === CLIENT_ID)
     for (var key in props) {
       objectPath.set(userMetadata, `datatools.${clientIndex}.${key}`, props[key])
     }
@@ -99,8 +99,8 @@ export function updateUserMetadata (profile, props) {
 
 export function removeUserSubscription (profile, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions || [{type: subscriptionType, target: []}]
-    let index = subscriptions.findIndex(sub => sub.type === subscriptionType)
+    const subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions || [{type: subscriptionType, target: []}]
+    const index = subscriptions.findIndex(sub => sub.type === subscriptionType)
     if (index > -1) {
       subscriptions.splice(index, 1)
     } else {
@@ -112,14 +112,14 @@ export function removeUserSubscription (profile, subscriptionType) {
 
 export function updateTargetForSubscription (profile, target, subscriptionType) {
   return function (dispatch, getState) {
-    let subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions || [{type: subscriptionType, target: []}]
+    const subscriptions = profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions || [{type: subscriptionType, target: []}]
     if (subscriptions.findIndex(sub => sub.type === subscriptionType) === -1) {
       subscriptions.push({type: subscriptionType, target: []})
     }
     for (var i = 0; i < subscriptions.length; i++) {
-      let sub = subscriptions[i]
+      const sub = subscriptions[i]
       if (sub.type === subscriptionType) {
-        let index = sub.target.indexOf(target)
+        const index = sub.target.indexOf(target)
         if (index > -1) {
           sub.target.splice(index, 1)
         } else {

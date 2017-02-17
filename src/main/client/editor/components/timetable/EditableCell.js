@@ -47,7 +47,7 @@ export default class EditableCell extends Component {
     }
   }
   handleKeyDown (evt) {
-    let input = ReactDOM.findDOMNode(this.refs.cellInput)
+    const input = ReactDOM.findDOMNode(this.refs.cellInput)
     switch (evt.keyCode) {
       case 88: // x
         if (this.props.renderTime) {
@@ -134,7 +134,7 @@ export default class EditableCell extends Component {
       }
     } else {
       let data = this.state.data
-      let parts = this.state.data.split(':')
+      const parts = this.state.data.split(':')
       const hours = +parts[0]
       let greaterThan24 = false
 
@@ -144,8 +144,8 @@ export default class EditableCell extends Component {
         greaterThan24 = true
         data = parts.join(':')
       }
-      let date = moment().startOf('day').format('YYYY-MM-DD')
-      let momentTime = moment(date + 'T' + data, TIMETABLE_FORMATS, true)
+      const date = moment().startOf('day').format('YYYY-MM-DD')
+      const momentTime = moment(date + 'T' + data, TIMETABLE_FORMATS, true)
       let value = momentTime.isValid() ? momentTime.diff(date, 'seconds') : null
 
       if (greaterThan24 && momentTime.isValid()) {
@@ -172,13 +172,13 @@ export default class EditableCell extends Component {
     this.setState({data: evt.target.value})
   }
   handlePaste (evt) {
-    let text = evt.clipboardData.getData('Text')
-    let rowDelimiter = text.indexOf('\n') > -1 // google sheets row delimiter
+    const text = evt.clipboardData.getData('Text')
+    const rowDelimiter = text.indexOf('\n') > -1 // google sheets row delimiter
       ? '\n'
       : text.indexOf(String.fromCharCode(13)) > -1 // excel row delimiter
       ? String.fromCharCode(13)
       : null
-    let rows = text.split(rowDelimiter)
+    const rows = text.split(rowDelimiter)
 
     for (var i = 0; i < rows.length; i++) {
       rows[i] = rows[i].split(String.fromCharCode(9))

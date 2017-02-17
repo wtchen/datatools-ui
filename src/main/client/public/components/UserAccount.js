@@ -23,7 +23,7 @@ export default class UserAccount extends Component {
     }
     const messages = getComponentMessages('UserAccount')
 
-    let subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
+    const subscriptions = this.props.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
     const accountSections = [
       {
         id: 'profile',
@@ -69,79 +69,79 @@ export default class UserAccount extends Component {
         id: 'notifications',
         hidden: !getConfigProperty('application.notifications_enabled'),
         component:
-          <div>
-            <Panel
-              header={<h4>Notification methods</h4>}
+  <div>
+    <Panel
+      header={<h4>Notification methods</h4>}
             >
-              <ListGroup fill>
-                <ListGroupItem>
-                  <h4>Watching</h4>
-                  <p>Receive updates to any feed sources or comments you are watching.</p>
-                  <Checkbox inline>Email</Checkbox>{' '}<Checkbox inline>Web</Checkbox>
-                </ListGroupItem>
-              </ListGroup>
-            </Panel>
-            <Panel
-              header={
-                <h4>
-                  <Button
-                    onClick={() => this.props.unsubscribeAll(this.props.user.profile)}
-                    className='pull-right'
-                    bsSize='xsmall'
+      <ListGroup fill>
+        <ListGroupItem>
+          <h4>Watching</h4>
+          <p>Receive updates to any feed sources or comments you are watching.</p>
+          <Checkbox inline>Email</Checkbox>{' '}<Checkbox inline>Web</Checkbox>
+        </ListGroupItem>
+      </ListGroup>
+    </Panel>
+    <Panel
+      header={
+        <h4>
+          <Button
+            onClick={() => this.props.unsubscribeAll(this.props.user.profile)}
+            className='pull-right'
+            bsSize='xsmall'
                   >
-                    {getMessage(messages, 'notifications.unsubscribeAll')}
-                  </Button>
-                  {getMessage(messages, 'notifications.subscriptions')}
-                </h4>
+            {getMessage(messages, 'notifications.unsubscribeAll')}
+          </Button>
+          {getMessage(messages, 'notifications.subscriptions')}
+        </h4>
               }
             >
+      <ul>
+        {subscriptions.length ? subscriptions.map(sub => {
+          return (
+            <li>
+              {sub.type.replace('-', ' ')}{' '}
+              <Icon
+                type='trash'
+                className='text-danger'
+                style={removeIconStyle}
+                onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
+                      />
               <ul>
-                {subscriptions.length ? subscriptions.map(sub => {
+                {sub.target.length ? sub.target.map(target => {
+                  let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
+                  if (this.props.projects) {
+                    for (var i = 0; i < this.props.projects.length; i++) {
+                      const feed = this.props.projects[i].feedSources
+                                ? this.props.projects[i].feedSources.find(fs => fs.id === target)
+                                : null
+                      fs = feed || fs
+                    }
+                  }
                   return (
                     <li>
-                      {sub.type.replace('-', ' ')}{' '}
+                      {
+                                fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
+                                : <span>{target}</span>
+                              } {' '}
                       <Icon
                         type='trash'
                         className='text-danger'
                         style={removeIconStyle}
-                        onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
-                      />
-                      <ul>
-                        {sub.target.length ? sub.target.map(target => {
-                          let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
-                          if (this.props.projects) {
-                            for (var i = 0; i < this.props.projects.length; i++) {
-                              let feed = this.props.projects[i].feedSources
-                                ? this.props.projects[i].feedSources.find(fs => fs.id === target)
-                                : null
-                              fs = feed || fs
-                            }
-                          }
-                          return (
-                            <li>
-                              {
-                                fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
-                                : <span>{target}</span>
-                              } {' '}
-                              <Icon
-                                type='trash'
-                                className='text-danger'
-                                style={removeIconStyle}
-                                onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
+                        onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
                               />
-                            </li>
-                          )
-                        }) : <li>No feeds subscribed to.</li>
-                      }
-                      </ul>
                     </li>
                   )
-                })
+                }) : <li>No feeds subscribed to.</li>
+                      }
+              </ul>
+            </li>
+          )
+        })
                 : <li>No subscriptions.</li>
               }
-              </ul>
-            </Panel>
-          </div>
+      </ul>
+    </Panel>
+  </div>
       },
       {
         id: 'billing',

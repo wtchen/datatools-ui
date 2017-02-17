@@ -175,7 +175,7 @@ export default class ScheduleExceptionForm extends Component {
                   mode: 'date',
                   dateTime: date ? +moment(date) : +moment(),
                   onChange: (millis) => {
-                    let dates = [...activeEntity.dates]
+                    const dates = [...activeEntity.dates]
                     dates[index] = +millis
                     updateActiveEntity(activeEntity, activeComponent, {dates})
                   }
@@ -193,7 +193,7 @@ export default class ScheduleExceptionForm extends Component {
                       style={{marginLeft: '5px'}}
                       key={`date-remove-${index}`}
                       onClick={() => {
-                        let dates = [...activeEntity.dates]
+                        const dates = [...activeEntity.dates]
                         dates.splice(index, 1)
                         updateActiveEntity(activeEntity, activeComponent, {dates: dates})
                       }}
@@ -213,7 +213,7 @@ export default class ScheduleExceptionForm extends Component {
           <div className={`col-xs-12`}>
             <Button
               onClick={() => {
-                let dates = [...activeEntity.dates]
+                const dates = [...activeEntity.dates]
                 dates.push(0)
                 updateActiveEntity(activeEntity, activeComponent, {dates: dates})
               }}

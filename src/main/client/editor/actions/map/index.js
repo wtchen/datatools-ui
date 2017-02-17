@@ -36,13 +36,13 @@ export function removingControlPoint (pattern, index, begin, end) {
 export function constructControlPoint (pattern, latlng, controlPoints) {
   return function (dispatch, getState) {
     // slice line
-    let beginPoint = point(pattern.shape.coordinates[0])
-    let clickPoint = point(ll.toCoordinates(latlng))
-    let lineSegment = lineSlice(beginPoint, clickPoint, pattern.shape)
+    const beginPoint = point(pattern.shape.coordinates[0])
+    const clickPoint = point(ll.toCoordinates(latlng))
+    const lineSegment = lineSlice(beginPoint, clickPoint, pattern.shape)
 
     // measure line segment
-    let distTraveled = lineDistance(lineSegment, 'meters')
-    let controlPoint = {distance: distTraveled, point: clickPoint}
+    const distTraveled = lineDistance(lineSegment, 'meters')
+    const controlPoint = {distance: distTraveled, point: clickPoint}
 
     // find splice index based on shape dist traveled
     let index = 0
@@ -68,7 +68,7 @@ export function updatePatternCoordinates (coordinates) {
 export function removeControlPoint (pattern, index, begin, end) {
   return async function (dispatch, getState) {
     const { followStreets, patternCoordinates } = getState().editor.editSettings
-    let coordinates = await handlePatternEdit(null, begin, end, pattern, followStreets, patternCoordinates)
+    const coordinates = await handlePatternEdit(null, begin, end, pattern, followStreets, patternCoordinates)
     // update pattern
     dispatch(updateActiveGtfsEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: coordinates}}))
     // remove controlPoint
@@ -95,9 +95,9 @@ function receivedRoutesShapefile (feedSource, geojson) {
 
 export function displayRoutesShapefile (feedSource, file) {
   return function (dispatch, getState) {
-    let reader = new window.FileReader()
+    const reader = new window.FileReader()
     reader.onload = e => {
-      let arrayBuff = reader.result
+      const arrayBuff = reader.result
       shp(arrayBuff).then(geojson => {
         console.log(geojson)
         geojson.key = Math.random()

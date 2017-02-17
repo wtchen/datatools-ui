@@ -32,14 +32,14 @@ export default class UserSubscriptions {
 
   hasProjectSubscription (projectId, subscriptionType) {
     if (!this.hasSubscription(subscriptionType)) return null
-    let subscription = this.getSubscription(subscriptionType)
+    const subscription = this.getSubscription(subscriptionType)
     return subscription ? subscription.target.indexOf(projectId) !== -1 : false
   }
 
   hasFeedSubscription (projectId, feedId, subscriptionType) {
     if (!this.hasSubscription(subscriptionType)) return null
     else if (this.hasProjectSubscription(projectId, subscriptionType)) return true
-    let subscription = this.getSubscription(subscriptionType)
+    const subscription = this.getSubscription(subscriptionType)
     return subscription ? subscription.target.indexOf(feedId) !== -1 : false
   }
 
