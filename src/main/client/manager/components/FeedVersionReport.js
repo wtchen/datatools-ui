@@ -5,11 +5,13 @@ import {Icon} from '@conveyal/woonerf'
 import numeral from 'numeral'
 import Rcslider from 'rc-slider'
 import fileDownload from 'react-file-download'
+import area from 'turf-area'
+import bboxPoly from 'turf-bbox-polygon'
 
 import EditableTextField from '../../common/components/EditableTextField'
 import ActiveGtfsMap from '../../gtfs/containers/ActiveGtfsMap'
 import { VersionButtonToolbar } from './FeedVersionViewer'
-import { getComponentMessages, getMessage, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
+import { getComponentMessages, getConfigProperty, getMessage, isModuleEnabled, isExtensionEnabled } from '../../common/util/config'
 import { getProfileLink } from '../../common/util/util'
 // import { downloadAsShapefile } from '../util'
 import Patterns from './reporter/containers/Patterns'
@@ -45,6 +47,10 @@ export default class FeedVersionReport extends Component {
       mapHeight: MAP_HEIGHTS[0],
       isochroneBand: 60 * 60
     }
+  }
+  getBoundsArea (bounds) {
+    const poly = bounds && bboxPoly([bounds.west, bounds.south, bounds.east, bounds.east])
+    return poly && area(poly)
   }
   getVersionDateLabel (version) {
     const now = +moment()
@@ -216,7 +222,7 @@ export default class FeedVersionReport extends Component {
               padding: '0px'
             }}
             >
-            <ButtonGroup bsSize='small' style={{position: 'absolute', zIndex: 1000, right: 5, top: 5}}>
+            <ButtonGroup bsSize='small' style={{position: 'absolute', zIndex: 100, right: 5, top: 5}}>
               <Button active={this.state.mapHeight === MAP_HEIGHTS[0]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[0]})}>Slim</Button>
               <Button active={this.state.mapHeight === MAP_HEIGHTS[1]} onClick={() => this.setState({mapHeight: MAP_HEIGHTS[1]})}>Large</Button>
             </ButtonGroup>
@@ -257,6 +263,10 @@ export default class FeedVersionReport extends Component {
             <p>
               {version.validationSummary && version.validationSummary.avgDailyRevenueTime
                 ? <span><Icon type='clock-o' /> {Math.floor(version.validationSummary.avgDailyRevenueTime / 60 / 60 * 100) / 100} hours daily service (Tuesday)</span>
+                : null
+              }
+              {version.validationSummary && version.validationSummary.bounds && getConfigProperty('application.dev')
+                ? <span><Icon type='globe' /> {this.getBoundsArea(version.validationSummary.bounds)} square meters</span>
                 : null
               }
             </p>
