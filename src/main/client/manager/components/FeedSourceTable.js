@@ -82,7 +82,7 @@ export default class FeedSourceTable extends Component {
           : <ListGroupItem className='text-center'>
             <Button
               bsStyle='success'
-              disabled={user.permissions.isProjectAdmin(project.id, project.organizationId)}
+              disabled={!user.permissions.isProjectAdmin(project.id, project.organizationId)}
               onClick={() => onNewFeedSourceClick()}>
               <Icon type='plus' /> {getMessage(messages, 'feeds.createFirst')}
             </Button>

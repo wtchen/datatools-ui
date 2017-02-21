@@ -13,6 +13,7 @@ export default class UserAccountInfoPanel extends Component {
       user,
       logoutHandler
     } = this.props
+    // const userOrganization = user.permissions.getOrganizationId()
     return (
       <Panel>
         <Row>
@@ -29,14 +30,23 @@ export default class UserAccountInfoPanel extends Component {
           </Col>
           <Col md={8}>
             <div className='text-muted'><Icon type='user' /> {user.profile.email}</div>
-            <div><Badge className='text-muted'>
-              {user.permissions.isApplicationAdmin()
-                ? 'Application admin'
-                : user.permissions.canAdministerAnOrganization()
-                ? 'Organization admin'
-                : 'Standard user'
-              }
-            </Badge></div>
+            <div>
+              <Badge className='text-muted'>
+                {user.permissions.isApplicationAdmin()
+                  ? 'Application admin'
+                  : user.permissions.canAdministerAnOrganization()
+                  ? 'Organization admin'
+                  : 'Standard user'
+                }
+              </Badge>
+              {/* TODO: fetch organization for user and show badge here */}
+              {' '}
+              {/* userOrganization &&
+                <Badge className='text-muted'>
+                  user.permissions.getOrganizationId()
+                </Badge>
+              */}
+            </div>
             <div style={{ marginTop: 15 }}>
               <ButtonToolbar className='pull-right'>
                 <LinkContainer to='/settings/profile'>

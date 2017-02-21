@@ -21,6 +21,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onComponentMount: (initialProps) => {
       dispatch(getRecentActivity(initialProps.user))
+      // dispatch(fetchOrganizationForUser(initialProps.user))
       dispatch(fetchProjects())
       .then(projects => {
         if (!activeProjectId) {
@@ -28,11 +29,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (initialProps.user.permissions.hasProject(p.id, p.organizationId)) {
               return p.id
             }
-          }) // Object.keys(initialProps.user.permissions.projectLookup)
-          console.log(userProjectIds)
+          })
           activeProjectId = userProjectIds && userProjectIds[0]
         }
-        console.log(activeProjectId)
         if (activeProjectId) {
           dispatch(fetchProjectFeeds(activeProjectId))
           .then(() => browserHistory.push(`/home/${activeProjectId}`))

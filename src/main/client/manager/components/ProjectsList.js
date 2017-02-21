@@ -40,7 +40,7 @@ export default class ProjectsList extends Component {
       return <ManagerPage />
     }
     const messages = getComponentMessages('ProjectsList')
-    const projectCreationDisabled = !(user.permissions.isApplicationAdmin() || user.permissions.canAdministerAnOrganization())
+    const projectCreationDisabled = !user.permissions.isApplicationAdmin() && !user.permissions.canAdministerAnOrganization()
     const visibleProjects = projects.filter((project) => {
       if (project.isCreating) return true // projects actively being created are always visible
       return project.name.toLowerCase().indexOf((visibilitySearchText || '').toLowerCase()) !== -1
