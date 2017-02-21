@@ -44,8 +44,8 @@ export default function reducer (state = defaultState, action) {
         data: []
       })
     case 'FETCH_GRAPHQL_FEED_FULFILLED':
-      let feedData = action.data.feeds[0]
-      let feedStats = []
+      const feedData = action.data.feeds[0]
+      const feedStats = []
       const feedKeys = Object.keys(feedData)
       for (let i = 0; i < feedKeys.length; i++) {
         feedStats.push({

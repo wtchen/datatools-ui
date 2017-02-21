@@ -45,8 +45,8 @@ class PatternStopContainer extends Component {
     }
   }
   dropCard () {
-    let patternStops = [...this.state.cards]
-    let pattern = Object.assign({}, this.props.activePattern)
+    const patternStops = [...this.state.cards]
+    const pattern = Object.assign({}, this.props.activePattern)
     pattern.patternStops = patternStops
     this.props.updateActiveEntity(this.props.activePattern, 'trippattern', {patternStops})
     this.props.saveActiveEntity('trippattern')

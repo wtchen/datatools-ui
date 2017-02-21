@@ -9,8 +9,8 @@ export const checkEntitiesForFeeds = (entities, feeds) => {
   // if (!entities) return true
   // console.log(entities)
   // console.log(feeds)
-  let publishableIds = feeds.map(f => f.id)
-  let entityIds = entities ? entities.map(e => e.agency ? e.agency.id : null) : []
+  const publishableIds = feeds.map(f => f.id)
+  const entityIds = entities ? entities.map(e => e.agency ? e.agency.id : null) : []
   for (var i = 0; i < entityIds.length; i++) {
     if (publishableIds.indexOf(entityIds[i]) === -1) return false
   }

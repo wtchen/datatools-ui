@@ -7,8 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -84,9 +86,11 @@ public class Auth0UserProfile {
             return null;
         }
     }
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DatatoolsInfo {
         @JsonProperty("client_id")
         String clientId;
+        Organization[] organizations;
         Project[] projects;
         Permission[] permissions;
         Subscription[] subscriptions;
@@ -94,10 +98,11 @@ public class Auth0UserProfile {
         public DatatoolsInfo() {
         }
 
-        public DatatoolsInfo(String clientId, Project[] projects, Permission[] permissions, Subscription[] subscriptions) {
+        public DatatoolsInfo(String clientId, Project[] projects, Permission[] permissions, Organization[] organizations, Subscription[] subscriptions) {
             this.clientId = clientId;
             this.projects = projects;
             this.permissions = permissions;
+            this.organizations = organizations;
             this.subscriptions = subscriptions;
         }
 
@@ -108,7 +113,9 @@ public class Auth0UserProfile {
         public void setProjects(Project[] projects) {
             this.projects = projects;
         }
-
+        public void setOrganizations(Organization[] organizations) {
+            this.organizations = organizations;
+        }
         public void setPermissions(Permission[] permissions) {
             this.permissions = permissions;
         }
@@ -117,7 +124,7 @@ public class Auth0UserProfile {
             this.subscriptions = subscriptions;
         }
 
-        public Subscription[] getSubscriptions() { return subscriptions; }
+        public Subscription[] getSubscriptions() { return subscriptions == null ? new Subscription[0] : subscriptions; }
 
     }
 
@@ -170,7 +177,32 @@ public class Auth0UserProfile {
             this.feeds = feeds;
         }
     }
+    public static class Organization {
+        @JsonProperty("organization_id")
+        String organizationId;
+        Permission[] permissions;
+//        String name;
+//        UsageTier usageTier;
+//        Extension[] extensions;
+//        Date subscriptionDate;
+//        String logoUrl;
 
+        public Organization() {
+        }
+
+        public Organization(String organizationId, Permission[] permissions) {
+            this.organizationId = organizationId;
+            this.permissions = permissions;
+        }
+
+        public void setOrganizationId(String organizationId) {
+            this.organizationId = organizationId;
+        }
+
+        public void setPermissions(Permission[] permissions) {
+            this.permissions = permissions;
+        }
+    }
     public static class Subscription {
 
         String type;
@@ -201,7 +233,9 @@ public class Auth0UserProfile {
         return app_metadata.getDatatoolsInfo().projects.length;
     }
 
-    public boolean hasProject(String projectID) {
+    public boolean hasProject(String projectID, String organizationId) {
+        if (canAdministerApplication()) return true;
+        if (canAdministerOrganization(organizationId)) return true;
         if(app_metadata.getDatatoolsInfo() == null || app_metadata.getDatatoolsInfo().projects == null) return false;
         for(Project project : app_metadata.getDatatoolsInfo().projects) {
             if (project.project_id.equals(projectID)) return true;
@@ -220,8 +254,49 @@ public class Auth0UserProfile {
         return false;
     }
 
-    public boolean canAdministerProject(String projectID) {
+    public boolean canAdministerOrganization() {
+        if(app_metadata.getDatatoolsInfo() != null && app_metadata.getDatatoolsInfo().organizations != null) {
+            Organization org = app_metadata.getDatatoolsInfo().organizations[0];
+            for(Permission permission : org.permissions) {
+                if(permission.type.equals("administer-organization")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public Organization getAuth0Organization() {
+        if(app_metadata.getDatatoolsInfo() != null && app_metadata.getDatatoolsInfo().organizations != null && app_metadata.getDatatoolsInfo().organizations.length != 0) {
+            return app_metadata.getDatatoolsInfo().organizations[0];
+        }
+        return null;
+    }
+
+    public String getOrganizationId() {
+        Organization org = getAuth0Organization();
+        if (org != null) {
+            return org.organizationId;
+        }
+        return null;
+    }
+
+    public boolean canAdministerOrganization(String organizationId) {
+//      TODO: adapt for specific org
+        Organization org = getAuth0Organization();
+        if (org != null && org.organizationId.equals(organizationId)) {
+            for(Permission permission : org.permissions) {
+                if(permission.type.equals("administer-organization")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean canAdministerProject(String projectID, String organizationId) {
         if(canAdministerApplication()) return true;
+        if(canAdministerOrganization(organizationId)) return true;
         for(Project project : app_metadata.getDatatoolsInfo().projects) {
             if (project.project_id.equals(projectID)) {
                 for(Permission permission : project.permissions) {
@@ -234,8 +309,8 @@ public class Auth0UserProfile {
         return false;
     }
 
-    public boolean canViewFeed(String projectID, String feedID) {
-        if (canAdministerApplication() || canAdministerProject(projectID)) {
+    public boolean canViewFeed(String organizationId, String projectID, String feedID) {
+        if (canAdministerApplication() || canAdministerProject(projectID, organizationId)) {
             return true;
         }
         for(Project project : app_metadata.getDatatoolsInfo().projects) {
@@ -246,8 +321,8 @@ public class Auth0UserProfile {
         return false;
     }
 
-    public boolean canManageFeed(String projectID, String feedID) {
-        if (canAdministerApplication() || canAdministerProject(projectID)) {
+    public boolean canManageFeed(String organizationId, String projectID, String feedID) {
+        if (canAdministerApplication() || canAdministerProject(projectID, organizationId)) {
             return true;
         }
         Project[] projectList = app_metadata.getDatatoolsInfo().projects;
@@ -260,8 +335,8 @@ public class Auth0UserProfile {
         return false;
     }
 
-    public boolean canEditGTFS(String projectID, String feedID) {
-        if (canAdministerApplication() || canAdministerProject(projectID)) {
+    public boolean canEditGTFS(String organizationId, String projectID, String feedID) {
+        if (canAdministerApplication() || canAdministerProject(projectID, organizationId)) {
             return true;
         }
         Project[] projectList = app_metadata.getDatatoolsInfo().projects;
@@ -274,8 +349,8 @@ public class Auth0UserProfile {
         return false;
     }
 
-    public boolean canApproveGTFS(String projectID, String feedID) {
-        if (canAdministerApplication() || canAdministerProject(projectID)) {
+    public boolean canApproveGTFS(String organizationId, String projectID, String feedID) {
+        if (canAdministerApplication() || canAdministerProject(projectID, organizationId)) {
             return true;
         }
         Project[] projectList = app_metadata.getDatatoolsInfo().projects;
@@ -306,5 +381,14 @@ public class Auth0UserProfile {
             }
         }
         return false;
+    }
+
+    @JsonIgnore
+    public com.conveyal.datatools.manager.models.Organization getOrganization () {
+        Organization[] orgs = getApp_metadata().getDatatoolsInfo().organizations;
+        if (orgs != null && orgs.length != 0) {
+            return orgs[0] != null ? com.conveyal.datatools.manager.models.Organization.get(orgs[0].organizationId) : null;
+        }
+        return null;
     }
 }

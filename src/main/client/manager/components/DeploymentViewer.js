@@ -126,7 +126,7 @@ export default class DeploymentViewer extends Component {
                 title={deployableFeeds.length ? <span><Glyphicon glyph='plus' /> {getMessage(messages, 'addFeedSource')}</span> : <span>{getMessage(messages, 'allFeedsAdded')}</span>}
                 onSelect={(evt) => {
                   console.log(evt)
-                  let feed = deployableFeeds.find(fs => fs.id === evt)
+                  const feed = deployableFeeds.find(fs => fs.id === evt)
                   addFeedVersion(deployment, {id: feed.latestVersionId})
                 }}
               >
@@ -194,7 +194,7 @@ class FeedVersionTableRow extends Component {
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const hasVersionStyle = {cursor: 'pointer'}
     const noVersionStyle = {color: 'lightGray'}
-    const disabled = !user.permissions.hasFeedPermission(project.id, feedSource.id, 'manage-feed')
+    const disabled = !user.permissions.hasFeedPermission(project.organizationId, project.id, feedSource.id, 'manage-feed')
     return (
       <tr key={feedSource.id}>
         <td>

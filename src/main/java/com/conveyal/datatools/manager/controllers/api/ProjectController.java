@@ -3,9 +3,11 @@ package com.conveyal.datatools.manager.controllers.api;
 import com.conveyal.datatools.manager.DataManager;
 import com.conveyal.datatools.manager.auth.Auth0UserProfile;
 import com.conveyal.datatools.manager.jobs.FetchProjectFeedsJob;
+import com.conveyal.datatools.manager.jobs.MakePublicJob;
 import com.conveyal.datatools.manager.models.FeedSource;
 import com.conveyal.datatools.manager.models.FeedVersion;
 import com.conveyal.datatools.manager.models.JsonViews;
+import com.conveyal.datatools.manager.models.Organization;
 import com.conveyal.datatools.manager.models.OtpBuildConfig;
 import com.conveyal.datatools.manager.models.OtpRouterConfig;
 import com.conveyal.datatools.manager.models.OtpServer;
@@ -15,7 +17,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.google.gson.JsonObject;
 import org.apache.http.concurrent.Cancellable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +66,15 @@ public class ProjectController {
     public static Collection<Project> getAllProjects(Request req, Response res) throws JsonProcessingException {
 
         Auth0UserProfile userProfile = req.attribute("user");
-
+//        Organization org = userProfile.getOrganization();
+//        if (!userProfile.canAdministerOrganization()) {
+//
+//        }
+//        org.getProjects();
         Collection<Project> filteredProjects = new ArrayList<Project>();
-
-        System.out.println("found projects: " + Project.getAll().size());
+//        Collection<Project> projects = Project.getAll();
+//        orgProjects =
+        LOG.info("found projects: " + Project.getAll().size());
         for (Project proj : Project.getAll()) {
             // Get feedSources if making a public call
 //            Supplier<Collection<FeedSource>> supplier = () -> new LinkedList<FeedSource>();
@@ -78,7 +84,7 @@ public class ProjectController {
             else {
                 proj.feedSources = null;
             }
-            if (req.pathInfo().contains("public") || userProfile.canAdministerApplication() || userProfile.hasProject(proj.id)) {
+            if (req.pathInfo().contains("public") || userProfile.canAdministerApplication() || userProfile.hasProject(proj.id, proj.organizationId)) {
                 filteredProjects.add(proj);
             }
         }
@@ -168,6 +174,9 @@ public class ProjectController {
             else if(entry.getKey().equals("west")) {
                 proj.west = entry.getValue().asDouble();
             }
+            else if(entry.getKey().equals("organizationId")) {
+                proj.organizationId = entry.getValue().asText();
+            }
             else if(entry.getKey().equals("osmNorth")) {
                 proj.osmNorth = entry.getValue().asDouble();
             }
@@ -208,7 +217,7 @@ public class ProjectController {
                 updateBuildConfig(proj, entry.getValue());
             }
             else if (entry.getKey().equals("routerConfig")) {
-                    updateRouterConfig(proj, entry.getValue());
+                updateRouterConfig(proj, entry.getValue());
             }
         }
         if (updateFetchSchedule) {
@@ -314,7 +323,7 @@ public class ProjectController {
         boolean authorized;
         switch (action) {
             case "manage":
-                authorized = userProfile.canAdministerProject(p.id);
+                authorized = userProfile.canAdministerProject(p.id, p.organizationId);
                 break;
             case "view":
                 authorized = false; // userProfile.canViewProject(p.id, p.id);
@@ -635,6 +644,22 @@ public class ProjectController {
         return tableOut.toByteArray();
     }
 
+    public static boolean deployPublic (Request req, Response res) {
+        Auth0UserProfile userProfile = req.attribute("user");
+        String id = req.params("id");
+        if (id == null) {
+            halt(400, "must provide project id!");
+        }
+        Project proj = Project.get(id);
+
+        if (proj == null)
+            halt(400, "no such project!");
+
+        // run as sync job; if it gets too slow change to async
+        new MakePublicJob(proj, userProfile.getUser_id()).run();
+        return true;
+    }
+
     public static Project thirdPartySync(Request req, Response res) throws Exception {
         Auth0UserProfile userProfile = req.attribute("user");
         String id = req.params("id");
@@ -642,7 +667,7 @@ public class ProjectController {
 
         String syncType = req.params("type");
 
-        if (!userProfile.canAdministerProject(proj.id))
+        if (!userProfile.canAdministerProject(proj.id, proj.organizationId))
             halt(403);
 
         LOG.info("syncing with third party " + syncType);
@@ -722,6 +747,7 @@ public class ProjectController {
         delete(apiPrefix + "secure/project/:id", ProjectController::deleteProject, json::write);
         get(apiPrefix + "secure/project/:id/thirdPartySync/:type", ProjectController::thirdPartySync, json::write);
         post(apiPrefix + "secure/project/:id/fetch", ProjectController::fetch, json::write);
+        post(apiPrefix + "secure/project/:id/deployPublic", ProjectController::deployPublic, json::write);
 
         get(apiPrefix + "public/project/:id/download", ProjectController::downloadMergedFeed);
 

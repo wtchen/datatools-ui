@@ -1,10 +1,15 @@
 package com.conveyal.datatools.manager.models;
 
 import com.conveyal.datatools.manager.persistence.DataStore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +23,7 @@ public class Organization extends Model implements Serializable {
     public String logoUrl;
     public boolean active;
     public UsageTier usageTier;
-    public Extension[] extensions;
+    public Set<Extension> extensions = new HashSet<>();
     public Date subscriptionBeginDate;
     public Date subscriptionEndDate;
 
@@ -48,14 +53,21 @@ public class Organization extends Model implements Serializable {
     }
 
     public void delete() {
-        for (Project p : getProjects()) {
-            p.delete();
-        }
         organizationStore.delete(this.id);
     }
 
-    public Collection<Project> getProjects () {
-        return Project.getAll().stream().filter(p -> p.organizationId == this.id).collect(Collectors.toList());
+    public Collection<Project> getProjects() {
+        return Project.getAll().stream().filter(p -> id.equals(p.organizationId)).collect(Collectors.toList());
+    }
+
+    public long getTotalServiceSeconds () {
+        return getProjects().stream()
+                .map(p -> p.getProjectFeedSources())
+                .flatMap(p -> p.stream())
+                .filter(fs -> fs.getLatestValidation() != null)
+                .map(fs -> fs.getLatestValidation().avgDailyRevenueTime)
+                .mapToLong(Long::longValue)
+                .sum();
     }
 
     /**
@@ -66,8 +78,7 @@ public class Organization extends Model implements Serializable {
         DEPLOYMENT,
         VALIDATOR,
         ALERTS,
-        SIGN_CONFIG;
-
+        SIGN_CONFIG
     }
 
     /**

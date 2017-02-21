@@ -86,7 +86,7 @@ export default class EditorFeedSourcePanel extends Component {
               <Button bsStyle='success'
                 disabled={!hasVersions}
                 onClick={(evt) => {
-                  let version = feedSource.feedVersions[feedSource.feedVersions.length - 1]
+                  const version = feedSource.feedVersions[feedSource.feedVersions.length - 1]
                   this.refs.confirmLoad.open({
                     title: getMessage(messages, 'load'),
                     body: getMessage(messages, 'confirmLoad'),

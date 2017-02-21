@@ -46,7 +46,7 @@ export function setActiveGtfsEntity (feedSourceId, component, entityId, subCompo
     // if (getState().editor.data.active.edited && !window.confirm('You have unsaved changes. Discard changes?')) {
     //   return false
     // }
-    let previousFeedSourceId = getState().editor.feedSourceId
+    const previousFeedSourceId = getState().editor.feedSourceId
     if (previousFeedSourceId && feedSourceId !== previousFeedSourceId) {
       dispatch(clearGtfsContent())
     }

@@ -50,7 +50,7 @@ export default class GtfsMapSearch extends Component {
   render () {
     let zoomMessage = 'Zoom in to view ' + this.state.searching.join(' and ')
     if (this.refs.map && this.refs.map.refs.map) {
-      let mapZoom = this.refs.map.refs.map.leafletElement.getZoom()
+      const mapZoom = this.refs.map.refs.map.leafletElement.getZoom()
       zoomMessage = mapZoom <= 13 ? zoomMessage : ''
     }
     const searchProps = {

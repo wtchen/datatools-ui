@@ -8,7 +8,11 @@ export default class ThirdPartySyncButton extends Component {
   render () {
     const { projectEditDisabled, thirdPartySync } = this.props
     return (
-      <DropdownButton id='sync-dropdown' bsStyle='success' title={<span><Icon type='refresh' /> Sync</span>}>
+      <DropdownButton
+        id='sync-dropdown'
+        bsStyle='success'
+        disabled={projectEditDisabled}
+        title={<span><Icon type='refresh' /> Sync</span>}>
         {isExtensionEnabled('transitland')
           ? <MenuItem
             bsStyle='primary'

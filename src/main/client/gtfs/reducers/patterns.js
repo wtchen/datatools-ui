@@ -62,15 +62,15 @@ export default function reducer (state = defaultState, action) {
         data: {$set: action.patterns}
       })
     case 'FETCH_GRAPHQL_PATTERNS_FULFILLED':
-      let allRoutes = action.data ? action.data.routes : []
-      let allPatterns = []
+      const allRoutes = action.data ? action.data.routes : []
+      const allPatterns = []
 
       for (let i = 0; i < allRoutes.length; i++) {
         const curRouteId = allRoutes[i].route_id
         const curRouteName = getRouteName(allRoutes[i])
 
         for (let j = 0; j < allRoutes[i].patterns.length; j++) {
-          let curPattern = allRoutes[i].patterns[j]
+          const curPattern = allRoutes[i].patterns[j]
           curPattern.route_id = curRouteId
           curPattern.route_name = curRouteName
           allPatterns.push(curPattern)

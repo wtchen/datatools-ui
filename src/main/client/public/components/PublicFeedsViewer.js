@@ -24,7 +24,7 @@ export default class PublicFeedsViewer extends React.Component {
     if (!this.props.projects) {
       return <PublicPage />
     }
-    let feeds = []
+    const feeds = []
     return (
       <PublicPage ref='publicPage'>
         <Grid>
@@ -91,7 +91,7 @@ class PublicFeedsTable extends React.Component {
     return b.lastUpdated - a.lastUpdated
   }
   render () {
-    let feeds = []
+    const feeds = []
     const messages = getComponentMessages('PublicFeedsTable')
     return (
       <BootstrapTable

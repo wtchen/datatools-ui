@@ -52,8 +52,8 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
   return function (dispatch, getState) {
     if (!props) {
       const generateProps = (component) => {
-        let agency = getState().editor.data.tables.agency ? getState().editor.data.tables.agency[0] : null
-        let color = generateRandomColor()
+        const agency = getState().editor.data.tables.agency ? getState().editor.data.tables.agency[0] : null
+        const color = generateRandomColor()
         switch (component) {
           case 'route':
             return {
@@ -66,7 +66,7 @@ export function newGtfsEntity (feedSourceId, component, props, save) {
               route_type: getState().editor.data.tables.feedinfo && getState().editor.data.tables.feedinfo.defaultRouteType !== null ? getState().editor.data.tables.feedinfo.defaultRouteType : 3
             }
           case 'stop':
-            let stopId = generateUID()
+            const stopId = generateUID()
             return {
               stop_id: stopId,
               stop_name: null,

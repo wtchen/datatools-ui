@@ -35,9 +35,9 @@ export default function reducer (state = defaultState, action) {
         }
       })
     case 'FETCH_GRAPHQL_ROUTES_FULFILLED':
-      let newRoutes = []
+      const newRoutes = []
       for (let i = 0; i < action.data.routes.length; i++) {
-        let curRoute = action.data.routes[i]
+        const curRoute = action.data.routes[i]
         curRoute.route_name = getRouteName(curRoute)
         newRoutes.push(curRoute)
       }

@@ -5,8 +5,8 @@ import gravatar from 'gravatar'
 export function defaultSorter (a, b) {
   if (a.isCreating && !b.isCreating) return -1
   if (!a.isCreating && b.isCreating) return 1
-  if (a.name.toLowerCase() < b.name.toLowerCase()) return -1
-  if (a.name.toLowerCase() > b.name.toLowerCase()) return 1
+  if (a.name && b.name && a.name.toLowerCase() < b.name.toLowerCase()) return -1
+  if (a.name && b.name && a.name.toLowerCase() > b.name.toLowerCase()) return 1
   return 0
 }
 
@@ -146,7 +146,7 @@ function getRGBComponents (color) {
 // })
 
 export function isValidZipFile (file) {
-  let nameArray = file.name.split('.')
+  const nameArray = file.name.split('.')
   return (
     ( // check for various possible zip file types
       file.type === 'application/zip' ||

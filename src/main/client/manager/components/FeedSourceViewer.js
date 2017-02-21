@@ -112,16 +112,29 @@ export default class FeedSourceViewer extends Component {
         </ManagerPage>
       )
     }
-
+    const {
+      user,
+      project,
+      activeComponent,
+      activeSubComponent,
+      routeParams,
+      feedSourcePropertyChanged,
+      externalPropertyChanged,
+      feedSource,
+      feedVersionIndex,
+      notesRequestedForFeedSource,
+      updateUserSubscription,
+      newNotePostedForFeedSource
+    } = this.props
     const messages = getComponentMessages('FeedSourceViewer')
-    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
-    // const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
+    const disabled = !user.permissions.hasFeedPermission(project.organizationId, project.id, fs.id, 'manage-feed')
+    // const editGtfsDisabled = !user.permissions.hasFeedPermission(project.organizationId, project.id, fs.id, 'edit-gtfs')
     const autoFetchFeed = fs.retrievalMethod === 'FETCHED_AUTOMATICALLY'
-    const resourceType = this.props.activeComponent === 'settings' && this.props.activeSubComponent && this.props.activeSubComponent.toUpperCase()
-    const activeTab = ['settings', 'comments', 'snapshots'].indexOf(this.props.activeComponent) === -1 || typeof this.props.routeParams.feedVersionIndex !== 'undefined'
+    const resourceType = activeComponent === 'settings' && activeSubComponent && activeSubComponent.toUpperCase()
+    const activeTab = ['settings', 'comments', 'snapshots'].indexOf(activeComponent) === -1 || typeof routeParams.feedVersionIndex !== 'undefined'
       ? ''
-      : this.props.activeComponent
-    // console.log(this.props.activeComponent, this.props.routeParams.feedVersionIndex)
+      : activeComponent
+    // console.log(activeComponent, routeParams.feedVersionIndex)
     const activeSettings = !resourceType
       ? <Col xs={7}>
         <Panel header={<h3>Settings</h3>}>
@@ -140,7 +153,7 @@ export default class FeedSourceViewer extends Component {
                     <Button
                       disabled={!this.state.name || this.state.name === fs.name} // disable if no change or no value.
                       onClick={() => {
-                        this.props.feedSourcePropertyChanged(fs, 'name', this.state.name)
+                        feedSourcePropertyChanged(fs, 'name', this.state.name)
                         .then(() => this.setState({name: null}))
                       }}
                     >Rename</Button>
@@ -150,7 +163,7 @@ export default class FeedSourceViewer extends Component {
             </ListGroupItem>
             <ListGroupItem>
               <FormGroup>
-                <Checkbox checked={fs.deployable} onChange={() => this.props.feedSourcePropertyChanged(fs, 'deployable', !fs.deployable)}><strong>Make feed source deployable</strong></Checkbox>
+                <Checkbox checked={fs.deployable} onChange={() => feedSourcePropertyChanged(fs, 'deployable', !fs.deployable)}><strong>Make feed source deployable</strong></Checkbox>
                 <small>Enable this feed source to be deployed to an OpenTripPlanner (OTP) instance (defined in organization settings) as part of a collection of feed sources or individually.</small>
               </FormGroup>
             </ListGroupItem>
@@ -172,7 +185,7 @@ export default class FeedSourceViewer extends Component {
                     <Button
                       disabled={this.state.url === fs.url} // disable if no change.
                       onClick={() => {
-                        this.props.feedSourcePropertyChanged(fs, 'url', this.state.url)
+                        feedSourcePropertyChanged(fs, 'url', this.state.url)
                         .then(() => this.setState({url: null}))
                       }}
                     >Change URL</Button>
@@ -182,7 +195,7 @@ export default class FeedSourceViewer extends Component {
             </ListGroupItem>
             <ListGroupItem>
               <FormGroup>
-                <Checkbox checked={autoFetchFeed} onChange={() => this.props.feedSourcePropertyChanged(fs, 'retrievalMethod', autoFetchFeed ? 'MANUALLY_UPLOADED' : 'FETCHED_AUTOMATICALLY')} bsStyle='danger'><strong>Auto fetch feed source</strong></Checkbox>
+                <Checkbox checked={autoFetchFeed} onChange={() => feedSourcePropertyChanged(fs, 'retrievalMethod', autoFetchFeed ? 'MANUALLY_UPLOADED' : 'FETCHED_AUTOMATICALLY')} bsStyle='danger'><strong>Auto fetch feed source</strong></Checkbox>
                 <small>Set this feed source to fetch automatically. (Feed source URL must be specified and project auto fetch must be enabled.)</small>
               </FormGroup>
             </ListGroupItem>
@@ -191,7 +204,7 @@ export default class FeedSourceViewer extends Component {
         <Panel bsStyle='danger' header={<h3>Danger zone</h3>}>
           <ListGroup fill>
             <ListGroupItem>
-              <Button onClick={() => this.props.feedSourcePropertyChanged(fs, 'isPublic', !fs.isPublic)} className='pull-right'>Make {fs.isPublic ? 'private' : 'public'}</Button>
+              <Button onClick={() => feedSourcePropertyChanged(fs, 'isPublic', !fs.isPublic)} className='pull-right'>Make {fs.isPublic ? 'private' : 'public'}</Button>
               <h4>Make this feed source {fs.isPublic ? 'private' : 'public'}.</h4>
               <p>This feed source is currently {fs.isPublic ? 'public' : 'private'}.</p>
             </ListGroupItem>
@@ -209,7 +222,7 @@ export default class FeedSourceViewer extends Component {
           editingIsDisabled={disabled}
           resourceProps={fs.externalProperties[resourceType]}
           externalPropertyChanged={(name, value) => {
-            this.props.externalPropertyChanged(fs, resourceType, name, value)
+            externalPropertyChanged(fs, resourceType, name, value)
           }}
         />
       </Col>
@@ -217,13 +230,13 @@ export default class FeedSourceViewer extends Component {
       <ManagerPage ref='page'
         breadcrumbs={
           <Breadcrumbs
-            project={this.props.project}
-            feedSource={this.props.feedSource}
+            project={project}
+            feedSource={feedSource}
           />
         }
       >
         <Helmet
-          title={this.props.feedSource.name}
+          title={feedSource.name}
         />
         <Grid fluid>
           <ManagerHeader
@@ -240,10 +253,10 @@ export default class FeedSourceViewer extends Component {
               <Row>
                 <Col xs={12}>
                   <ActiveFeedVersionNavigator
-                    routeParams={this.props.routeParams}
+                    routeParams={routeParams}
                     feedSource={fs}
                     disabled={disabled}
-                    versionIndex={this.props.feedVersionIndex}
+                    versionIndex={feedVersionIndex}
                     deleteDisabled={disabled}
                     {...this.props}
                   />
@@ -262,17 +275,17 @@ export default class FeedSourceViewer extends Component {
             {/* Comments for feed source */}
             <Tab eventKey='comments'
               title={<span><Glyphicon className='icon-link' glyph='comment' /><span className='hidden-xs'>{getComponentMessages('NotesViewer').title} </span><Badge>{fs.noteCount}</Badge></span>}
-              onEnter={() => this.props.notesRequestedForFeedSource(fs)}
+              onEnter={() => notesRequestedForFeedSource(fs)}
             >
               <NotesViewer
                 type='feed-source'
                 notes={fs.notes}
                 feedSource={fs}
-                user={this.props.user}
-                updateUserSubscription={this.props.updateUserSubscription}
+                user={user}
+                updateUserSubscription={updateUserSubscription}
                 noteCount={fs.noteCount}
-                notesRequested={() => { this.props.notesRequestedForFeedSource(fs) }}
-                newNotePosted={(note) => { this.props.newNotePostedForFeedSource(fs, note) }}
+                notesRequested={() => { notesRequestedForFeedSource(fs) }}
+                newNotePosted={(note) => { newNotePostedForFeedSource(fs, note) }}
               />
             </Tab>
             {/* Settings */}
@@ -281,11 +294,11 @@ export default class FeedSourceViewer extends Component {
                 <Col xs={3}>
                   <Panel>
                     <ListGroup fill>
-                      <LinkContainer to={`/feed/${fs.id}/settings`} active={!this.props.activeSubComponent}><ListGroupItem>General</ListGroupItem></LinkContainer>
+                      <LinkContainer to={`/feed/${fs.id}/settings`} active={!activeSubComponent}><ListGroupItem>General</ListGroupItem></LinkContainer>
                       {Object.keys(fs.externalProperties || {}).map(resourceType => {
                         const resourceLowerCase = resourceType.toLowerCase()
                         return (
-                          <LinkContainer key={resourceType} to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={this.props.activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
+                          <LinkContainer key={resourceType} to={`/feed/${fs.id}/settings/${resourceLowerCase}`} active={activeSubComponent === resourceLowerCase}><ListGroupItem>{toSentenceCase(resourceType)} properties</ListGroupItem></LinkContainer>
                         )
                       })}
                     </ListGroup>

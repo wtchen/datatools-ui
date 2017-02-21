@@ -108,7 +108,7 @@ export default class EntityList extends Component {
   _onRowClick (index, list, shiftKey) {
     let fromIndex, toIndex
     if (shiftKey && this.props.activeEntity && !list[index].isActive) {
-      let selectedIndex = list.findIndex(e => e.id === this.props.activeEntity.id)
+      const selectedIndex = list.findIndex(e => e.id === this.props.activeEntity.id)
       fromIndex = selectedIndex > index ? index : selectedIndex
       toIndex = selectedIndex < index ? index : selectedIndex
       console.log(`select multiple from ${fromIndex} to ${toIndex}`)
@@ -127,8 +127,8 @@ export default class EntityList extends Component {
   // }
   render () {
     const sidePadding = '5px'
-    let panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
-    let panelStyle = {
+    const panelWidth = !this.props.tableView ? `${this.props.width}px` : '100%'
+    const panelStyle = {
       width: panelWidth,
       height: '100%',
       position: 'absolute',

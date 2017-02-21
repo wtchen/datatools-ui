@@ -25,14 +25,14 @@ export default class PatternsLayer extends Component {
           ? route.tripPatterns
             .map(tp => {
               const isActive = subEntityId === tp.id
-              let pattern = isActive ? activePattern : tp
+              const pattern = isActive ? activePattern : tp
               const latLngs = pattern && pattern.shape ? pattern.shape.coordinates.map(c => ([c[1], c[0]])) : []
 
               // NOTE: don't render pattern if latlngs don't exist or a single pattern is active
               if (!latLngs || !isActive && subEntityId) {
                 return null
               }
-              let lineColor = activeEntity.route_color && editSettings.editGeometry
+              const lineColor = activeEntity.route_color && editSettings.editGeometry
                 ? '#F3F315' // yellow if editing
                 : activeEntity.route_color // otherwise, use route color if it exists
                 ? `#${activeEntity.route_color}`

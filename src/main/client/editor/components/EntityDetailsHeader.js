@@ -46,7 +46,7 @@ export default class EntityDetailsHeader extends Component {
                   }
                   onClick={(e) => {
                     if (subEntityId) {
-                      let pattern = activeEntity.tripPatterns.find(p => p.id === subEntityId)
+                      const pattern = activeEntity.tripPatterns.find(p => p.id === subEntityId)
                       updateMapSetting({bounds: getEntityBounds(pattern), target: subEntityId})
                     } else {
                       updateMapSetting({bounds: getEntityBounds(activeEntity), target: activeEntity.id})
@@ -63,12 +63,12 @@ export default class EntityDetailsHeader extends Component {
                 disabled={!entityEdited}
                 onClick={(e) => {
                   if (subComponent === 'trippattern') {
-                    let pattern = activeEntity.tripPatterns.find(p => p.id === activePattern.id)
+                    const pattern = activeEntity.tripPatterns.find(p => p.id === activePattern.id)
                     resetActiveEntity(pattern, 'trippattern')
                   } else {
                     resetActiveEntity(activeEntity, activeComponent)
                   }
-                  let stateUpdate = {}
+                  const stateUpdate = {}
                   for (var key in this.state) {
                     stateUpdate[key] = {$set: null}
                   }

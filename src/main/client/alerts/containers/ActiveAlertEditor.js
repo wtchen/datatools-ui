@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!alertId) {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')) {
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.organizationId, activeProject.id, 'edit-alert')) {
             console.log('cannot create alert!')
             browserHistory.push('/alerts')
             return
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       } else {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-alert')) {
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.organizationId, activeProject.id, 'edit-alert')) {
             console.log('cannot create alert!')
             browserHistory.push('/alerts')
             return

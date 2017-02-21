@@ -9,7 +9,8 @@ import {
   thirdPartySync,
   fetchFeedsForProject,
   updateProject,
-  downloadFeedForProject
+  downloadFeedForProject,
+  deployPublic
    } from '../actions/projects'
 import {
   fetchProjectFeeds,
@@ -72,6 +73,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateFeedSource(feedSource, { [propName]: newValue }))
     },
     deploymentsRequested: () => { dispatch(fetchProjectDeployments(projectId)) },
+    deployPublic: (project) => { return dispatch(deployPublic(project)) },
     createDeploymentFromFeedSource: (feedSource) => {
       dispatch(createDeploymentFromFeedSource(feedSource))
     },

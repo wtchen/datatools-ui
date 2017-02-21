@@ -83,8 +83,8 @@ export default class TripPatternList extends Component {
       return <Loading />
     }
     const sidePadding = '5px'
-    let panelWidth = '300px'
-    let panelStyle = {
+    const panelWidth = '300px'
+    const panelStyle = {
       width: panelWidth,
       height: '85%',
       position: 'absolute',

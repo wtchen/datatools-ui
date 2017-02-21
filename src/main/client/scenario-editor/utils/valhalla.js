@@ -32,7 +32,7 @@ export async function polyline (points) {
   }
   if (json && json.trip) {
     const legArray = json.trip.legs.map((leg, index) => {
-      let ignorePoints = {}
+      const ignorePoints = {}
       for (var i = 0; i < leg.maneuvers.length; i++) {
         if (leg.maneuvers[i].type === 5 || leg.maneuvers[i].type === 6) {
           ignorePoints.from = leg.maneuvers[i].begin_shape_index

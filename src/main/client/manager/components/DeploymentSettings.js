@@ -47,7 +47,7 @@ export default class DeploymentSettings extends Component {
                   defaultValue={project.buildConfig && project.buildConfig.fetchElevationUS ? project.buildConfig.fetchElevationUS : ''}
                   ref='fetchElevationUS'
                   onChange={(evt) => {
-                    let stateUpdate = { deployment: { buildConfig: { fetchElevationUS: { $set: (evt.target.value === 'true') } } } }
+                    const stateUpdate = { deployment: { buildConfig: { fetchElevationUS: { $set: (evt.target.value === 'true') } } } }
                     this.setState(update(this.state, stateUpdate))
                   }}>
                   <option value='false'>false</option>
@@ -63,7 +63,7 @@ export default class DeploymentSettings extends Component {
                   defaultValue={project.buildConfig && project.buildConfig.stationTransfers ? project.buildConfig.stationTransfers : ''}
                   ref='stationTransfers'
                   onChange={(evt) => {
-                    let stateUpdate = { deployment: { buildConfig: { stationTransfers: { $set: (evt.target.value === 'true') } } } }
+                    const stateUpdate = { deployment: { buildConfig: { stationTransfers: { $set: (evt.target.value === 'true') } } } }
                     this.setState(update(this.state, stateUpdate))
                   }}>
                   <option value='false'>false</option>
@@ -79,7 +79,7 @@ export default class DeploymentSettings extends Component {
               placeholder='2.5 (min)'
               ref='subwayAccessTime'
               onChange={(evt) => {
-                let stateUpdate = { deployment: { buildConfig: { subwayAccessTime: { $set: +evt.target.value } } } }
+                const stateUpdate = { deployment: { buildConfig: { subwayAccessTime: { $set: +evt.target.value } } } }
                 this.setState(update(this.state, stateUpdate))
               }} />
           </FormGroup>
@@ -90,7 +90,7 @@ export default class DeploymentSettings extends Component {
               placeholder='fares'
               ref='fares'
               onChange={(evt) => {
-                let stateUpdate = { deployment: { buildConfig: { fares: { $set: evt.target.value } } } }
+                const stateUpdate = { deployment: { buildConfig: { fares: { $set: evt.target.value } } } }
                 this.setState(update(this.state, stateUpdate))
               }} />
           </FormGroup>
@@ -106,7 +106,7 @@ export default class DeploymentSettings extends Component {
                   placeholder='6'
                   ref='numItineraries'
                   onChange={(evt) => {
-                    let stateUpdate = { deployment: { routerConfig: { numItineraries: { $set: +evt.target.value } } } }
+                    const stateUpdate = { deployment: { routerConfig: { numItineraries: { $set: +evt.target.value } } } }
                     this.setState(update(this.state, stateUpdate))
                   }} />
               </FormGroup>
@@ -120,7 +120,7 @@ export default class DeploymentSettings extends Component {
                   placeholder='3.0'
                   ref='walkSpeed'
                   onChange={(evt) => {
-                    let stateUpdate = { deployment: { routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
+                    const stateUpdate = { deployment: { routerConfig: { walkSpeed: { $set: +evt.target.value } } } }
                     this.setState(update(this.state, stateUpdate))
                   }} />
               </FormGroup>
@@ -136,7 +136,7 @@ export default class DeploymentSettings extends Component {
                   placeholder='2.0'
                   ref='stairsReluctance'
                   onChange={(evt) => {
-                    let stateUpdate = { deployment: { routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
+                    const stateUpdate = { deployment: { routerConfig: { stairsReluctance: { $set: +evt.target.value } } } }
                     this.setState(update(this.state, stateUpdate))
                   }} />
               </FormGroup>
@@ -150,7 +150,7 @@ export default class DeploymentSettings extends Component {
                   placeholder='240 (sec)'
                   ref='carDropoffTime'
                   onChange={(evt) => {
-                    let stateUpdate = { deployment: { routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
+                    const stateUpdate = { deployment: { routerConfig: { carDropoffTime: { $set: +evt.target.value } } } }
                     this.setState(update(this.state, stateUpdate))
                   }} />
               </FormGroup>
@@ -164,7 +164,7 @@ export default class DeploymentSettings extends Component {
               placeholder='http://gtfs.example.com/branding'
               ref='brandingUrlRoot'
               onChange={(evt) => {
-                let stateUpdate = { deployment: { routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
+                const stateUpdate = { deployment: { routerConfig: { brandingUrlRoot: { $set: evt.target.value } } } }
                 this.setState(update(this.state, stateUpdate))
               }} />
           </FormGroup>
@@ -176,7 +176,7 @@ export default class DeploymentSettings extends Component {
               placeholder='/var/otp/request.log'
               ref='requestLogFile'
               onChange={(evt) => {
-                let stateUpdate = { deployment: { routerConfig: { requestLogFile: { $set: evt.target.value } } } }
+                const stateUpdate = { deployment: { routerConfig: { requestLogFile: { $set: evt.target.value } } } }
                 this.setState(update(this.state, stateUpdate))
               }} />
           </FormGroup>
@@ -188,7 +188,7 @@ export default class DeploymentSettings extends Component {
               bsStyle='success'
               bsSize='xsmall'
               onClick={() => {
-                let stateUpdate = { deployment: { otpServers: { $push: [{name: '', publicUrl: '', internalUrl: [], admin: false}] } } }
+                const stateUpdate = { deployment: { otpServers: { $push: [{name: '', publicUrl: '', internalUrl: [], admin: false}] } } }
                 this.setState(update(this.state, stateUpdate))
               }}>
               <Glyphicon glyph='plus' /> {getMessage(messages, 'deployment.servers.new')}
@@ -198,7 +198,7 @@ export default class DeploymentSettings extends Component {
         }>
           <div>
             {this.state.deployment.otpServers && this.state.deployment.otpServers.map((server, i) => {
-              let title = (
+              const title = (
                 <h5>
                   {server.name}{'  '}
                   <small>{server.publicUrl}</small>
@@ -215,7 +215,7 @@ export default class DeploymentSettings extends Component {
                       bsStyle='danger'
                       className='pull-right'
                       onClick={() => {
-                        let stateUpdate = { deployment: { otpServers: { $splice: [[i, 1]] } } }
+                        const stateUpdate = { deployment: { otpServers: { $splice: [[i, 1]] } } }
                         this.setState(update(this.state, stateUpdate))
                       }}>
                       Remove <Glyphicon glyph='remove' />
@@ -227,7 +227,7 @@ export default class DeploymentSettings extends Component {
                         placeholder={getMessage(messages, 'deployment.servers.namePlaceholder')}
                         defaultValue={server.name}
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { name: evt.target.value } } } } }
+                          const stateUpdate = { deployment: { otpServers: { [i]: { $merge: { name: evt.target.value } } } } }
                           this.setState(update(this.state, stateUpdate))
                         }} />
                     </FormGroup>
@@ -238,7 +238,7 @@ export default class DeploymentSettings extends Component {
                         placeholder='http://otp.example.com'
                         defaultValue={server.publicUrl}
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { publicUrl: evt.target.value } } } } }
+                          const stateUpdate = { deployment: { otpServers: { [i]: { $merge: { publicUrl: evt.target.value } } } } }
                           this.setState(update(this.state, stateUpdate))
                         }} />
                     </FormGroup>
@@ -249,7 +249,7 @@ export default class DeploymentSettings extends Component {
                         placeholder='http://127.0.0.1/otp,http://0.0.0.0/otp'
                         defaultValue={server.internalUrl && server.internalUrl.join(',')}
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { internalUrl: evt.target.value.split(',') } } } } }
+                          const stateUpdate = { deployment: { otpServers: { [i]: { $merge: { internalUrl: evt.target.value.split(',') } } } } }
                           this.setState(update(this.state, stateUpdate))
                         }} />
                     </FormGroup>
@@ -260,14 +260,14 @@ export default class DeploymentSettings extends Component {
                         placeholder='s3_bucket_name'
                         defaultValue={server.s3Bucket}
                         onChange={(evt) => {
-                          let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { s3Bucket: evt.target.value } } } } }
+                          const stateUpdate = { deployment: { otpServers: { [i]: { $merge: { s3Bucket: evt.target.value } } } } }
                           this.setState(update(this.state, stateUpdate))
                         }} />
                     </FormGroup>
                     <Checkbox
                       checked={server.admin}
                       onChange={(evt) => {
-                        let stateUpdate = { deployment: { otpServers: { [i]: { $merge: { admin: evt.target.checked } } } } }
+                        const stateUpdate = { deployment: { otpServers: { [i]: { $merge: { admin: evt.target.checked } } } } }
                         this.setState(update(this.state, stateUpdate))
                       }}>
                       {getMessage(messages, 'deployment.servers.admin')}
@@ -281,7 +281,7 @@ export default class DeploymentSettings extends Component {
         <Panel header={<h4>{getMessage(messages, 'deployment.osm.title')}</h4>}>
           <FormGroup
             onChange={(evt) => {
-              let stateUpdate = { deployment: { useCustomOsmBounds: { $set: (evt.target.value === 'true') } } }
+              const stateUpdate = { deployment: { useCustomOsmBounds: { $set: (evt.target.value === 'true') } } }
               this.setState(update(this.state, stateUpdate))
             }}
           >
@@ -309,7 +309,7 @@ export default class DeploymentSettings extends Component {
                 onChange={(evt) => {
                   const bBox = evt.target.value.split(',')
                   if (bBox.length === 4) {
-                    let stateUpdate = { deployment: { $merge: { osmWest: bBox[0], osmSouth: bBox[1], osmEast: bBox[2], osmNorth: bBox[3] } } }
+                    const stateUpdate = { deployment: { $merge: { osmWest: bBox[0], osmSouth: bBox[1], osmEast: bBox[2], osmNorth: bBox[3] } } }
                     this.setState(update(this.state, stateUpdate))
                   }
                 }} />

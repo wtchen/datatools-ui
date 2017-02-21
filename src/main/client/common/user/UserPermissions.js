@@ -1,4 +1,5 @@
 import { getConfigProperty } from '../util/config'
+import objectPath from 'object-path'
 
 export default class UserPermissions {
   constructor (datatoolsApps) {
@@ -10,6 +11,22 @@ export default class UserPermissions {
     if (datatoolsJson && datatoolsJson.permissions) {
       for (var appPermission of datatoolsJson.permissions) {
         this.appPermissionLookup[appPermission.type] = appPermission
+      }
+    }
+
+    this.organizationLookup = {}
+    const orgs = datatoolsJson && datatoolsJson.organizations
+    if (orgs) {
+      for (var organization of orgs) {
+        this.organizationLookup[organization.organization_id] = organization
+      }
+    }
+
+    this.orgPermissionLookup = {}
+    const orgPermissions = objectPath.get(datatoolsJson, `organizations.0.permissions`)
+    if (orgPermissions) {
+      for (var p of orgPermissions) {
+        this.orgPermissionLookup[p.type] = p
       }
     }
 
@@ -25,12 +42,50 @@ export default class UserPermissions {
     return ('administer-application' in this.appPermissionLookup)
   }
 
-  hasProject (projectId) {
+  hasOrganization (orgId) {
+    if (this.isApplicationAdmin()) return true
+    return (orgId in this.organizationLookup)
+  }
+
+  getOrganizationId () {
+    const keys = Object.keys(this.organizationLookup)
+    return keys && keys.length ? keys[0] : null
+  }
+
+  // as opposed to the specific isOrganizationAdmin, this method checks for generic admin access to some organization
+  canAdministerAnOrganization () {
+    if (this.isApplicationAdmin()) return true
+    return ('administer-organization' in this.orgPermissionLookup)
+  }
+
+  isOrganizationAdmin (orgId = null) {
+    if (this.isApplicationAdmin()) return true
+    return this.hasOrganization(orgId) && this.getOrganizationPermission(orgId, 'administer-organization') != null
+  }
+
+  getOrganizationPermission (organizationId, permissionType) {
+    if (!this.hasOrganization(organizationId)) return null
+    var organizationPermissions = this.getOrganizationPermissions(organizationId)
+    for (var permission of organizationPermissions) {
+      if (permission.type === permissionType) return permission
+    }
+    return null
+  }
+
+  getOrganizationPermissions (organizationId) {
+    if (!this.hasOrganization(organizationId)) return null
+    return this.organizationLookup[organizationId].permissions
+  }
+
+  hasProject (projectId, organizationId = null) {
+    if (this.isOrganizationAdmin(organizationId)) return true
     return (projectId in this.projectLookup)
   }
 
-  isProjectAdmin (projectId) {
+  isProjectAdmin (projectId, organizationId) {
     if (this.isApplicationAdmin()) return true
+    // TODO: make project admin subject to org admin
+    if (this.isOrganizationAdmin(organizationId)) return true
     return this.hasProject(projectId) && this.getProjectPermission(projectId, 'administer-project') != null
   }
 
@@ -44,9 +99,9 @@ export default class UserPermissions {
     return this.projectLookup[projectId].defaultFeeds || []
   }
 
-  hasProjectPermission (projectId, permissionType) {
-    if (this.isProjectAdmin(projectId)) return true
-    let p = this.getProjectPermission(projectId, permissionType)
+  hasProjectPermission (organizationId, projectId, permissionType) {
+    if (this.isProjectAdmin(projectId, organizationId)) return true
+    const p = this.getProjectPermission(projectId, permissionType)
     return (p !== null)
   }
 
@@ -65,12 +120,12 @@ export default class UserPermissions {
     return null
   }
 
-  hasFeedPermission (projectId, feedId, permissionType) {
-    if (this.isProjectAdmin(projectId)) return true
-    let p = this.getProjectPermission(projectId, permissionType)
+  hasFeedPermission (organizationId, projectId, feedId, permissionType) {
+    if (this.isProjectAdmin(projectId, organizationId)) return true
+    const p = this.getProjectPermission(projectId, permissionType)
     if (p !== null) {
-      let defaultFeeds = this.getProjectDefaultFeeds(projectId)
-      let permissionFeeds = p.feeds || []
+      const defaultFeeds = this.getProjectDefaultFeeds(projectId)
+      const permissionFeeds = p.feeds || []
       if (this.hasFeed(defaultFeeds, feedId)) return true
       if (this.hasFeed(permissionFeeds, feedId)) return true
     }

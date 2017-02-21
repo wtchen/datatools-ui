@@ -56,7 +56,7 @@ export default class ProjectViewer extends Component {
       title: 'Upload Feed',
       body: 'Select a GTFS feed to upload:',
       onConfirm: (files) => {
-        let nameArray = files[0].name.split('.')
+        const nameArray = files[0].name.split('.')
         if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
           return false
         } else {
@@ -98,11 +98,11 @@ export default class ProjectViewer extends Component {
     const messages = getComponentMessages('ProjectViewer')
     const publicFeedsLink = `https://s3.amazonaws.com/${getConfigProperty('application.data.gtfs_s3_bucket')}/public/index.html`
     const isWatchingProject = user.subscriptions.hasProjectSubscription(project.id, 'project-updated')
-    const projectEditDisabled = !user.permissions.isProjectAdmin(project.id)
+    const projectEditDisabled = !user.permissions.isProjectAdmin(project.id, project.organizationId)
     const filteredFeedSources = project.feedSources
       ? project.feedSources.filter(feedSource => {
         if (feedSource.isCreating) return true // feeds actively being created are always visible
-        let visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
+        const visible = feedSource.name !== null ? feedSource.name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1 : '[unnamed project]'
         switch (visibilityFilter.filter) {
           case 'ALL':
             return visible
@@ -141,14 +141,16 @@ export default class ProjectViewer extends Component {
           </InputGroup>
         </Col>
         <Col xs={8}>
-          <Button
-            bsStyle='primary'
-            disabled={projectEditDisabled}
-            className='pull-right'
-            onClick={() => onNewFeedSourceClick()}
-          >
-            <Glyphicon glyph='plus' /> {getMessage(messages, 'feeds.new')}
-          </Button>
+          {!projectEditDisabled &&
+            <Button
+              bsStyle='primary'
+              disabled={projectEditDisabled}
+              className='pull-right'
+              onClick={() => onNewFeedSourceClick()}
+            >
+              <Glyphicon glyph='plus' /> {getMessage(messages, 'feeds.new')}
+            </Button>
+          }
           <ButtonToolbar>
             {isExtensionEnabled('transitland') || isExtensionEnabled('transitfeeds') || isExtensionEnabled('mtc')
               ? <ThirdPartySyncButton
@@ -247,7 +249,7 @@ export default class ProjectViewer extends Component {
                   </Panel>
                 </Col>
                 <Col xs={12} sm={3}>
-                  {isModuleEnabled('enterprise') &&
+                  {isModuleEnabled('enterprise') && !projectEditDisabled &&
                     <div style={{marginBottom: '20px'}}>
                       <Button
                         bsStyle='primary'

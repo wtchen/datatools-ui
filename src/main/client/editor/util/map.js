@@ -47,9 +47,9 @@ export function zoomToEntity (entity, map) {
 }
 
 export async function constructStop (latlng, feedId) {
-  let stopLatLng = clickToLatLng(latlng)
-  let result = await reverse(latlng)
-  let stopId = generateUID()
+  const stopLatLng = clickToLatLng(latlng)
+  const result = await reverse(latlng)
+  const stopId = generateUID()
   let stopName = `New Stop (${stopId})`
   if (result && result.address) {
     stopName = result.address.Address
@@ -95,8 +95,8 @@ export async function street (from, to) {
 }
 
 export function getPatternEndPoint (pattern) {
-  let coordinates = pattern.shape && pattern.shape.coordinates
-  let patternStops = [...pattern.patternStops]
+  const coordinates = pattern.shape && pattern.shape.coordinates
+  const patternStops = [...pattern.patternStops]
   let endPoint
   if (coordinates) {
     endPoint = ll.toLatlng(coordinates[coordinates.length - 1])
@@ -133,7 +133,7 @@ export async function handlePatternEdit (position, begin, end, pattern, followSt
   }
 
   if (from) {
-    let points = [
+    const points = [
       from.geometry ? from.geometry.coordinates : from
     ]
     if (to) {
@@ -143,30 +143,30 @@ export async function handlePatternEdit (position, begin, end, pattern, followSt
       points.push(end.geometry.coordinates)
     }
     let newCoordinates
-    let newSegment = await getSegment(points, followStreets)
-    let originalSegment = lineString(patternCoordinates)
+    const newSegment = await getSegment(points, followStreets)
+    const originalSegment = lineString(patternCoordinates)
 
     // slice line if middle control point
     if (end && begin) {
-      let beginPoint = point(patternCoordinates[0])
-      let beginSlice = lineSlice(beginPoint, from, originalSegment)
-      let endPoint = point(patternCoordinates[patternCoordinates.length - 1])
-      let endSlice = lineSlice(end, endPoint, originalSegment)
+      const beginPoint = point(patternCoordinates[0])
+      const beginSlice = lineSlice(beginPoint, from, originalSegment)
+      const endPoint = point(patternCoordinates[patternCoordinates.length - 1])
+      const endSlice = lineSlice(end, endPoint, originalSegment)
       newCoordinates = [
         ...beginSlice.geometry.coordinates,
         ...newSegment.coordinates,
         ...endSlice.geometry.coordinates
       ]
     } else if (end) { // handle begin control point
-      let endPoint = point(patternCoordinates[patternCoordinates.length - 1])
-      let endSlice = lineSlice(end, endPoint, originalSegment)
+      const endPoint = point(patternCoordinates[patternCoordinates.length - 1])
+      const endSlice = lineSlice(end, endPoint, originalSegment)
       newCoordinates = [
         ...newSegment.coordinates,
         ...endSlice.geometry.coordinates
       ]
     } else { // append latlngs if end control point
-      let beginPoint = point(patternCoordinates[0])
-      let beginSlice = lineSlice(beginPoint, from, originalSegment)
+      const beginPoint = point(patternCoordinates[0])
+      const beginSlice = lineSlice(beginPoint, from, originalSegment)
       newCoordinates = [
         ...beginSlice.geometry.coordinates,
         ...newSegment.coordinates
@@ -187,14 +187,14 @@ function geojsonFromCoordinates (coordinates) {
 }
 
 export function handleControlPointDragEnd (e, coordinates) {
-  let geojson = geojsonFromCoordinates(coordinates)
+  const geojson = geojsonFromCoordinates(coordinates)
 
   // snap control point to line
-  let controlPointLocation = e.target.toGeoJSON()
-  let snap = pointOnLine(geojson, controlPointLocation)
-  let lineSegment = lineSlice(point(geojson.geometry.coordinates[0]), snap, geojson)
+  const controlPointLocation = e.target.toGeoJSON()
+  const snap = pointOnLine(geojson, controlPointLocation)
+  const lineSegment = lineSlice(point(geojson.geometry.coordinates[0]), snap, geojson)
 
   // measure line segment
-  let distTraveled = lineDistance(lineSegment, 'meters')
+  const distTraveled = lineDistance(lineSegment, 'meters')
   return { snap, distTraveled }
 }

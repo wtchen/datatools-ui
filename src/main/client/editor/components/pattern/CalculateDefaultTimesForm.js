@@ -15,8 +15,8 @@ export default class CalculateDefaultTimesForm extends Component {
     if (!speed) {
       speed = DEFAULT_SPEED
     }
-    let patternStops = [...pattern.patternStops]
-    let convertedSpeed = speed * 1000 / 60 / 60 // km/hr -> m/s
+    const patternStops = [...pattern.patternStops]
+    const convertedSpeed = speed * 1000 / 60 / 60 // km/hr -> m/s
     for (var i = 0; i < patternStops.length; i++) {
       patternStops[i].defaultDwellTime = dwellTime
       patternStops[i].defaultTravelTime = patternStops[i].shapeDistTraveled / convertedSpeed

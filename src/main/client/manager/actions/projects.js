@@ -162,9 +162,10 @@ export function deployPublic (project) {
   }
 }
 
-export function createProject () {
+export function createProject (project) {
   return {
-    type: 'CREATE_PROJECT'
+    type: 'CREATE_PROJECT',
+    project
   }
 }
 
@@ -232,15 +233,16 @@ export function fetchFeedsForProject (project) {
   }
 }
 
-function savingProject () {
+function savingProject (props) {
   return {
-    type: 'SAVING_PROJECT'
+    type: 'SAVING_PROJECT',
+    props
   }
 }
 
 export function saveProject (props) {
   return function (dispatch, getState) {
-    dispatch(savingProject())
+    dispatch(savingProject(props))
     const url = '/api/manager/secure/project'
     return secureFetch(url, getState(), 'post', props)
       .then((res) => {

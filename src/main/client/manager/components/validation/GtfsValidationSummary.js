@@ -30,7 +30,7 @@ export default class GtfsValidationSummary extends Component {
     if (!result) {
       return <Loading />
     }
-    let errors = {}
+    const errors = {}
     result && result.errors.map(error => {
       if (!errors[error.file]) {
         errors[error.file] = []
@@ -104,7 +104,7 @@ class ResultTable extends React.Component {
       overflowWrap: 'break-word'
     }
 
-    let problemMap = {}
+    const problemMap = {}
     this.props.invalidValues && this.props.invalidValues.map(val => {
       if (!problemMap[val.errorType]) {
         problemMap[val.errorType] = {

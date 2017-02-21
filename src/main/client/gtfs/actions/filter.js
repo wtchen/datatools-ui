@@ -28,7 +28,7 @@ export function updateGtfsFilter (activeProject, user) {
     return secureFetch('/api/manager/feeds', getState())
       .then(response => response.json())
       .then((feedIds) => {
-        let activeFeeds = getState().projects.active.feedSources
+        const activeFeeds = getState().projects.active.feedSources
         // if (!activeFeeds) {
         //   return dispatch(fetchProjectFeeds(getState().projects.active.id))
         //   .then((projectFeeds) => {
@@ -39,7 +39,7 @@ export function updateGtfsFilter (activeProject, user) {
         //   })
         // }
         // else {
-        let feeds = feedIds.map(id => getFeed(activeFeeds, id)).filter(n => n)
+        const feeds = feedIds.map(id => getFeed(activeFeeds, id)).filter(n => n)
         dispatch(updateLoadedFeeds(feeds))
         // }
       })

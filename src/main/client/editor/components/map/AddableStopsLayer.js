@@ -34,7 +34,7 @@ export default class AddableStopsLayer extends Component {
             })
             .map((stop, index) => {
               if (!stop) return null
-              let patternStop = activePattern.patternStops.find(ps => ps.stopId === stop.id)
+              const patternStop = activePattern.patternStops.find(ps => ps.stopId === stop.id)
               if (patternStop) return null
               const color = 'blue'
               const busIcon = divIcon({
@@ -71,7 +71,7 @@ export default class AddableStopsLayer extends Component {
                           Add to end (default)
                         </MenuItem>
                         {activePattern.patternStops && activePattern.patternStops.map((stop, i) => {
-                          let index = activePattern.patternStops.length - i
+                          const index = activePattern.patternStops.length - i
                           return (
                             <MenuItem value={index - 1} eventKey={index - 1} key={i}>
                               {index === 1 ? 'Add to beginning' : `Insert as stop #${index}`}

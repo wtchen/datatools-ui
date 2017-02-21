@@ -28,7 +28,7 @@ export default class PatternLayout extends Component {
       const flat = clone(p)
       if (p.stats) {
         delete flat.stats
-        for (let key in p.stats) {
+        for (const key in p.stats) {
           flat[key] = p.stats[key]
         }
       }

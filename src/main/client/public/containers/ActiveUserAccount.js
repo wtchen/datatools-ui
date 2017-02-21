@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!initialProps.projects) {
         dispatch(fetchProjects())
         .then(() => {
-          let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
+          const subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
           if (subscriptions) {
             Promise.all(
               subscriptions.map(sub => {
@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           }
         })
       } else {
-        let subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
+        const subscriptions = initialProps.user.profile.app_metadata.datatools.find(dt => dt.client_id === getConfigProperty('auth0.client_id')).subscriptions
         if (subscriptions) {
           Promise.all(
             subscriptions.map(sub => {

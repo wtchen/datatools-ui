@@ -103,8 +103,8 @@ export function fetchRoutes (feedId) {
         // update followStreets value
         // TODO: update value when setting active entity
         if (getState().editor.data.active.entity) {
-          let routeIndex = getState().editor.data.active.entity && routes.findIndex(r => r.id === getState().editor.data.active.entity)
-          let followStreets = routeIndex !== -1 ? routes[routeIndex].route_type === 3 || routes[routeIndex].route_type === 0 : true
+          const routeIndex = getState().editor.data.active.entity && routes.findIndex(r => r.id === getState().editor.data.active.entity)
+          const followStreets = routeIndex !== -1 ? routes[routeIndex].route_type === 3 || routes[routeIndex].route_type === 0 : true
           dispatch(updateEditSetting('followStreets', followStreets))
         }
         return routes

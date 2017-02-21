@@ -13,14 +13,14 @@ import App from './common/containers/App'
 import config from '../../../config.yml'
 
 if (config.modules.gtfsplus && config.modules.gtfsplus.enabled) {
-config.modules.gtfsplus.spec = require('../../../gtfsplus.yml')
+  config.modules.gtfsplus.spec = require('../../../gtfsplus.yml')
 }
 config.modules.editor.spec = require('../../../gtfs.yml')
 
 const lang = [
-require('../../../i18n/english.yml'),
-require('../../../i18n/espanol.yml'),
-require('../../../i18n/francais.yml')
+  require('../../../i18n/english.yml'),
+  require('../../../i18n/espanol.yml'),
+  require('../../../i18n/francais.yml')
 ]
 
 // is an array containing all the matching modules
@@ -65,7 +65,7 @@ applyMiddleware(thunkMiddleware, logger)
 const appHistory = syncHistoryWithStore(browserHistory, store)
 
 ReactDOM.render(
-<Provider store={store}>
-  <App history={appHistory} />
-</Provider>,
+  <Provider store={store}>
+    <App history={appHistory} />
+  </Provider>,
 document.getElementById('main'))

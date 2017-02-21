@@ -79,11 +79,11 @@ class PatternStopCard extends Component {
   render () {
     const { isDragging, connectDragSource, connectDropTarget, stop, index, patternStop, cumulativeTravelTime, updateActiveEntity, saveActiveEntity, activePattern } = this.props
     const opacity = isDragging ? 0 : 1
-    let stopIsActive = this.props.activeStop === this.props.id
-    let stopName = getEntityName('stop', stop)
-    let abbreviatedStopName = getAbbreviatedStopName(stop)
-    let titleStopName = stop ? `${index + 1}. ${stopName}` : `${index + 1}. ${stop.stop_id}`
-    let fullStopName = stop ? `${index + 1}. ${abbreviatedStopName}` : `${index + 1}. ${stop.stop_id}`
+    const stopIsActive = this.props.activeStop === this.props.id
+    const stopName = getEntityName('stop', stop)
+    const abbreviatedStopName = getAbbreviatedStopName(stop)
+    const titleStopName = stop ? `${index + 1}. ${stopName}` : `${index + 1}. ${stop.stop_id}`
+    const fullStopName = stop ? `${index + 1}. ${abbreviatedStopName}` : `${index + 1}. ${stop.stop_id}`
 
     return connectDragSource(connectDropTarget(
       <div style={{ ...this.props.style, opacity }}>
@@ -119,7 +119,7 @@ class PatternStopCard extends Component {
                 <Checkbox
                   checked={patternStop.timepoint}
                   onChange={() => {
-                    let patternStops = [...activePattern.patternStops]
+                    const patternStops = [...activePattern.patternStops]
                     patternStops[index].timepoint = !patternStop.timepoint
                     updateActiveEntity(activePattern, 'trippattern', {patternStops})
                     saveActiveEntity('trippattern')
@@ -135,7 +135,7 @@ class PatternStopCard extends Component {
                   style={{marginTop: '9px'}} // margin on top to align button with checkbox
                   className='pull-right'
                   onClick={() => {
-                    let patternStops = [...activePattern.patternStops]
+                    const patternStops = [...activePattern.patternStops]
                     patternStops.splice(index, 1)
                     updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
                     saveActiveEntity('trippattern')
@@ -156,7 +156,7 @@ class PatternStopCard extends Component {
                   <MinuteSecondInput
                     seconds={this.state.defaultTravelTime || patternStop.defaultTravelTime}
                     onChange={(value) => {
-                      let patternStops = [...activePattern.patternStops]
+                      const patternStops = [...activePattern.patternStops]
                       patternStops[index].defaultTravelTime = value
                       this.setState({defaultTravelTime: value})
                       updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})
@@ -173,7 +173,7 @@ class PatternStopCard extends Component {
                   <MinuteSecondInput
                     seconds={this.state.defaultDwellTime || patternStop.defaultDwellTime}
                     onChange={(value) => {
-                      let patternStops = [...activePattern.patternStops]
+                      const patternStops = [...activePattern.patternStops]
                       patternStops[index].defaultDwellTime = value
                       this.setState({defaultDwellTime: value})
                       updateActiveEntity(activePattern, 'trippattern', {patternStops: patternStops})

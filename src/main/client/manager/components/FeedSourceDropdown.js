@@ -55,24 +55,30 @@ export default class FeedSourceDropdown extends Component {
     }
   }
   render () {
-    const fs = this.props.feedSource
-    const disabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'manage-feed')
-    const isWatchingFeed = this.props.user.subscriptions.hasFeedSubscription(this.props.project.id, fs.id, 'feed-updated')
-    const editGtfsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.project.id, fs.id, 'edit-gtfs')
+    const {
+      feedSource,
+      user,
+      project,
+      deleteFeedSource,
+      setHold
+    } = this.props
+    const disabled = !user.permissions.hasFeedPermission(project.organizationId, project.id, feedSource.id, 'manage-feed')
+    const isWatchingFeed = user.subscriptions.hasFeedSubscription(project.id, feedSource.id, 'feed-updated')
+    const editGtfsDisabled = !user.permissions.hasFeedPermission(project.organizationId, project.id, feedSource.id, 'edit-gtfs')
 
     return <div>
       <ConfirmModal ref='deleteModal'
         title='Delete Feed Source?'
-        body={`Are you sure you want to delete the feed source ${fs.name}?`}
-        onConfirm={() => this.props.deleteFeedSource(fs)}
-        onClose={() => this.props.setHold(false)}
+        body={`Are you sure you want to delete the feed source ${feedSource.name}?`}
+        onConfirm={() => deleteFeedSource(feedSource)}
+        onClose={() => setHold(false)}
       />
 
       <SelectFileModal ref='uploadModal'
         title='Upload Feed'
         body='Select a GTFS feed to upload:'
         onConfirm={(files) => this.confirmUpload(files)}
-        onClose={() => this.props.setHold(false)}
+        onClose={() => setHold(false)}
         errorMessage='Uploaded file must be a valid zip file (.zip).'
       />
 
@@ -87,13 +93,13 @@ export default class FeedSourceDropdown extends Component {
         <Button
           bsStyle='default'
           disabled={editGtfsDisabled}
-          onClick={() => browserHistory.push(`/feed/${fs.id}/edit/`)}
+          onClick={() => browserHistory.push(`/feed/${feedSource.id}/edit/`)}
         >
           <Glyphicon glyph='pencil' /> Edit
         </Button>
         <Dropdown.Toggle bsStyle='default' />
         <Dropdown.Menu>
-          <MenuItem disabled={disabled || !fs.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
+          <MenuItem disabled={disabled || !feedSource.url} eventKey='fetch'><Glyphicon glyph='refresh' /> Fetch</MenuItem>
           <MenuItem disabled={disabled} eventKey='upload'><Glyphicon glyph='upload' /> Upload</MenuItem>
 
           {/* show divider only if deployments and notifications are enabled (otherwise, we don't need it) */}
@@ -103,12 +109,12 @@ export default class FeedSourceDropdown extends Component {
           }
           {isModuleEnabled('deployment')
             ? <MenuItem
-              disabled={disabled || !fs.deployable || !fs.feedVersionCount}
+              disabled={disabled || !feedSource.deployable || !feedSource.feedVersionCount}
               title={disabled
                 ? 'You do not have permission to deploy feed'
-                : !fs.deployable
+                : !feedSource.deployable
                 ? 'Feed source is not deployable. Change in feed source settings.'
-                : !fs.feedVersionCount
+                : !feedSource.feedVersionCount
                 ? 'No versions exist. Create new version to deploy feed'
                 : 'Deploy feed source.'
               }
@@ -121,14 +127,14 @@ export default class FeedSourceDropdown extends Component {
           {getConfigProperty('application.notifications_enabled')
             ? <WatchButton
               isWatching={isWatchingFeed}
-              user={this.props.user}
-              target={fs.id}
+              user={user}
+              target={feedSource.id}
               subscriptionType='feed-updated'
               componentClass='menuItem'
             />
             : null
           }
-          <MenuItem disabled={!fs.isPublic} eventKey='public'><Glyphicon glyph='link' /> View public page</MenuItem>
+          <MenuItem disabled={!feedSource.isPublic} eventKey='public'><Glyphicon glyph='link' /> View public page</MenuItem>
           <MenuItem divider />
           <MenuItem disabled={disabled} eventKey='delete'><Icon type='trash' /> Delete</MenuItem>
         </Dropdown.Menu>

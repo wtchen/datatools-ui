@@ -29,7 +29,7 @@ const gtfsFilter = (state = {
       return update(state, {permissionFilter: {$set: action.permission}})
     case 'UPDATE_GTFS_DATETIME_FILTER':
       dateTimeFilter = {...state.dateTimeFilter}
-      for (let key in action.props) {
+      for (const key in action.props) {
         dateTimeFilter[key] = action.props[key]
       }
       return update(state, {
@@ -37,14 +37,14 @@ const gtfsFilter = (state = {
       })
     case 'UPDATE_GTFS_FILTER':
       let userFeeds = []
-      if (action.user.permissions.isProjectAdmin(action.activeProject.id)) {
+      if (action.user.permissions.isProjectAdmin(action.activeProject.id, action.activeProject.organizationId)) {
         userFeeds = action.activeProject.feedSources || []
-      } else if (action.user.permissions.hasProjectPermission(action.activeProject.id, state.permissionFilter)) {
+      } else if (action.user.permissions.hasProjectPermission(action.activeProject.organizationId, action.activeProject.id, state.permissionFilter)) {
         userFeeds = action.activeProject.feedSources ? action.activeProject.feedSources.filter((feed) => {
-          return action.user.permissions.hasFeedPermission(action.activeProject.id, feed.id, state.permissionFilter) !== null
+          return action.user.permissions.hasFeedPermission(action.activeProject.organizationId, action.activeProject.id, feed.id, state.permissionFilter) !== null
         }) : []
       }
-      let validatedFeeds = userFeeds.filter((feed) => {
+      const validatedFeeds = userFeeds.filter((feed) => {
         return feed.latestVersionId !== undefined
       })
       return update(state, {
@@ -63,7 +63,7 @@ const gtfsFilter = (state = {
       return update(state, {activeFeeds: {$set: activeFeeds}})
 
     case 'REMOVE_ACTIVE_FEED':
-      let foundIndex = state.activeFeeds.findIndex(f => f.id === action.feed.id)
+      const foundIndex = state.activeFeeds.findIndex(f => f.id === action.feed.id)
       if (foundIndex !== -1) {
         activeFeeds = [
           ...state.activeFeeds.slice(0, foundIndex),
