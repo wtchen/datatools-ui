@@ -3,11 +3,14 @@ import fetch from 'isomorphic-fetch'
 import { secureFetch, generateUID, generateRandomInt, generateRandomColor, idealTextColor } from '../../common/util/util'
 import { fetchFeedInfo } from './feedInfo'
 import { fetchAgencies } from './agency'
+import { fetchTripsForCalendar } from './trip'
 import { fetchStops } from './stop'
 import { fetchRoutes } from './route'
 import { fetchFares } from './fare'
+import { fetchTripPatternsForRoute } from './tripPattern'
 import { fetchCalendars, fetchScheduleExceptions } from './calendar'
 import { saveActiveGtfsEntity, setActiveGtfsEntity } from './active'
+import { componentList, findEntityByGtfsId } from '../util/gtfs'
 
 export function createGtfsEntity (feedSourceId, component, props) {
   return {
@@ -171,5 +174,39 @@ export function receiveGtfsEntities (gtfsEntities) {
   return {
     type: 'RECEIVE_GTFS_ENTITIES',
     gtfsEntities
+  }
+}
+
+export function fetchActiveTable (activeTable, newId, activeEntityId, feedSourceId, subComponent, subEntityId, subSubComponent, activeSubSubEntity) {
+  return function (dispatch, getState) {
+    if (componentList.indexOf(activeTable) !== -1) {
+      dispatch(getGtfsTable(activeTable, feedSourceId))
+      // FETCH trip patterns if route selected
+      .then((entities) => {
+        if (activeEntityId === 'new') {
+          dispatch(newGtfsEntity(feedSourceId, activeTable))
+        } else if (activeEntityId && entities.findIndex(e => e.id === activeEntityId) === -1) {
+          console.log('could not find ID... trying to map to GTFS ID')
+          // Attempt to match against gtfsRouteId / gtfsStopId / gtfsAgencyId / etc.
+          newId = findEntityByGtfsId(activeTable, activeEntityId, entities)
+          if (newId === -1) {
+            console.log('bad entity id, going back to ' + activeTable)
+            return dispatch(setActiveGtfsEntity(feedSourceId, activeTable))
+          }
+        }
+        dispatch(setActiveGtfsEntity(feedSourceId, activeTable, newId, subComponent, subEntityId, subSubComponent, activeSubSubEntity))
+        if (activeTable === 'route' && newId) {
+          dispatch(fetchTripPatternsForRoute(feedSourceId, newId))
+          .then((tripPatterns) => {
+            const pattern = tripPatterns && tripPatterns.find(p => p.id === subEntityId)
+            if (subSubComponent === 'timetable' && activeSubSubEntity) {
+              dispatch(fetchTripsForCalendar(feedSourceId, pattern, activeSubSubEntity))
+            }
+          })
+        }
+      })
+    } else {
+      dispatch(setActiveGtfsEntity(feedSourceId))
+    }
   }
 }

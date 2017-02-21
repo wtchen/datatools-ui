@@ -1,10 +1,12 @@
 import React from 'react'
-import { Panel, Table, Badge, Button } from 'react-bootstrap'
+import { Panel, Table,
+  // Badge,
+  Button } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
-import {Icon} from '@conveyal/woonerf'
+// import {Icon} from '@conveyal/woonerf'
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table'
 
-import { getComponentMessages, getMessage } from '../../../common/util/config'
+// import { getComponentMessages, getMessage } from '../../../common/util/config'
 
 export default class GtfsValidationViewer extends React.Component {
 

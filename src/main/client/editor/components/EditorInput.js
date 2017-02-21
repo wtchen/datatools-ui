@@ -43,7 +43,6 @@ export default class EditorInput extends Component {
       uploadBrandingAsset,
       feedSource,
       getGtfsEntity,
-      key,
       fieldEdited,
       gtfsEntitySelected,
       tableData,
@@ -57,7 +56,6 @@ export default class EditorInput extends Component {
     } = this.props
     const formProps = {
       controlId: `${editorField}`,
-      key: key,
       className: `col-xs-${field.columnWidth}`
     }
     if (isNotValid) {
@@ -67,7 +65,6 @@ export default class EditorInput extends Component {
     }
     const simpleFormProps = {
       controlId: `${editorField}`,
-      key: key,
       className: `col-xs-${field.columnWidth}`
     }
     const styles = reactCSS({
@@ -139,10 +136,10 @@ export default class EditorInput extends Component {
         )
       case 'URL':
         const elements = [
-          <FormGroup {...formProps}>
+          <FormGroup {...formProps} key={`${editorField}-input`}>
             {basicLabel}
             <FormControl
-              value={currentValue}
+              value={currentValue || ''}
               placeholder={field.placeholder ? field.placeholder : ''}
               onChange={(evt) => {
                 const props = {}
@@ -199,7 +196,6 @@ export default class EditorInput extends Component {
               placeholder='Select zone ID...'
               clearable
               noResultsText={`No zones found. Specify zones in stop.`}
-              key={Math.random()}
               value={currentValue}
               onChange={(input) => {
                 const props = {}
@@ -417,13 +413,13 @@ export default class EditorInput extends Component {
         )
       case 'DAY_OF_WEEK_BOOLEAN':
         return (
-          <span key={key}>
-            <span key={`dow-label`}>
+          <span>
+            <span>
               {editorField === 'monday'
                 ? <div className='col-xs-12'><ControlLabel>Days of service</ControlLabel></div> : null
               }
             </span>
-            <span key={`${editorField}`} className='col-xs-3'>
+            <span className='col-xs-3'>
               <Checkbox
                 inline
                 checked={this.state[editorField] === 1 || currentValue === 1}
@@ -441,7 +437,6 @@ export default class EditorInput extends Component {
       case 'DROPDOWN':
         return (
           <FormGroup
-            key={key}
             controlId={`${editorField}`}
             className={field.columnWidth ? `col-xs-${field.columnWidth}` : 'col-xs-12'}>
             {basicLabel}
@@ -475,7 +470,6 @@ export default class EditorInput extends Component {
           <GtfsSearch
             feeds={[feedSource]}
             limit={100}
-            key={key}
             entities={['routes']}
             minimumInput={1}
             clearable={false}
