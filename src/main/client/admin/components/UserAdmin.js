@@ -7,7 +7,7 @@ import {Icon} from '@conveyal/woonerf'
 import ManagerPage from '../../common/components/ManagerPage'
 import UserList from './UserList'
 import OrganizationList from './OrganizationList'
-import { getComponentMessages, getMessage } from '../../common/util/config'
+import { getComponentMessages, getMessage, isModuleEnabled } from '../../common/util/config'
 
 export default class UserAdmin extends Component {
   static propTypes = {
@@ -117,7 +117,7 @@ export default class UserAdmin extends Component {
                       <Icon type='star' /> View application logs on Auth0.com
                     </Button>
                   </p>
-                  : activeComponent === 'organizations' && isApplicationAdmin
+                  : activeComponent === 'organizations' && isApplicationAdmin && !isModuleEnabled('enterprise')
                   ? <OrganizationList
                     {...this.props}
                     />

@@ -233,7 +233,8 @@ export default class UserSettings extends Component {
                 {getMessage(messages, 'admin.title')}
               </Checkbox>
             }
-            {!this.state.appAdminChecked &&
+            {/* Organizations selector. Only show if there exist organizations already. */}
+            {!this.state.appAdminChecked && organizations &&
               <div className='orgDetails'>
                 <Select
                   options={organizations.map(orgToOption)}
