@@ -98,7 +98,7 @@ export default class ProjectViewer extends Component {
     const messages = getComponentMessages('ProjectViewer')
     const publicFeedsLink = `https://s3.amazonaws.com/${getConfigProperty('application.data.gtfs_s3_bucket')}/public/index.html`
     const isWatchingProject = user.subscriptions.hasProjectSubscription(project.id, 'project-updated')
-    const projectEditDisabled = !user.permissions.isProjectAdmin(project.id)
+    const projectEditDisabled = !user.permissions.isProjectAdmin(project.id, project.organizationId)
     const filteredFeedSources = project.feedSources
       ? project.feedSources.filter(feedSource => {
         if (feedSource.isCreating) return true // feeds actively being created are always visible

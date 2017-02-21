@@ -99,8 +99,8 @@ export default class UserPermissions {
     return this.projectLookup[projectId].defaultFeeds || []
   }
 
-  hasProjectPermission (projectId, permissionType) {
-    if (this.isProjectAdmin(projectId)) return true
+  hasProjectPermission (organizationId, projectId, permissionType) {
+    if (this.isProjectAdmin(projectId, organizationId)) return true
     let p = this.getProjectPermission(projectId, permissionType)
     return (p !== null)
   }
@@ -120,8 +120,8 @@ export default class UserPermissions {
     return null
   }
 
-  hasFeedPermission (projectId, feedId, permissionType) {
-    if (this.isProjectAdmin(projectId)) return true
+  hasFeedPermission (organizationId, projectId, feedId, permissionType) {
+    if (this.isProjectAdmin(projectId, organizationId)) return true
     let p = this.getProjectPermission(projectId, permissionType)
     if (p !== null) {
       let defaultFeeds = this.getProjectDefaultFeeds(projectId)

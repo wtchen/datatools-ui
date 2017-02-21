@@ -194,7 +194,7 @@ class FeedVersionTableRow extends Component {
     const na = (<span style={{ color: 'lightGray' }}>N/A</span>)
     const hasVersionStyle = {cursor: 'pointer'}
     const noVersionStyle = {color: 'lightGray'}
-    const disabled = !user.permissions.hasFeedPermission(project.id, feedSource.id, 'manage-feed')
+    const disabled = !user.permissions.hasFeedPermission(project.organizationId, project.id, feedSource.id, 'manage-feed')
     return (
       <tr key={feedSource.id}>
         <td>

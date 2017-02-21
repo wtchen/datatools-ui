@@ -6,7 +6,7 @@ import ProjectsList from '../components/ProjectsList'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id)) : [],
+    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions.isApplicationAdmin() || state.user.permissions.hasProject(p.id, p.organizationId)) : [],
     visibilitySearchText: state.projects.filter.searchText,
     user: state.user
   }
@@ -18,9 +18,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setVisibilitySearchText(null))
       dispatch(fetchProjects())
     },
-    onNewProjectClick: () => { dispatch(createProject()) },
-    newProjectNamed: (name) => {
-      dispatch(saveProject({ name }))
+    onNewProjectClick: (project) => { dispatch(createProject(project)) },
+    saveProject: (project) => {
+      dispatch(saveProject(project))
     },
     projectNameChanged: (project, newName) => {
       dispatch(updateProject(project, { name: newName }))

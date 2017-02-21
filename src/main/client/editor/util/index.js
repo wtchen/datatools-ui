@@ -148,5 +148,5 @@ export function getEditorTable (component) {
 }
 
 export function canApproveGtfs (project, feedSource, user) {
-  return project && feedSource && user && !user.permissions.hasFeedPermission(project.id, feedSource.id, 'approve-gtfs')
+  return project && feedSource && user && !user.permissions.hasFeedPermission(project.organizationId, project.id, feedSource.id, 'approve-gtfs')
 }

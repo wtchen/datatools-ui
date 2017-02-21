@@ -19,7 +19,8 @@ const projects = (state = {
     case 'CREATE_PROJECT':
       projects = [{
         isCreating: true,
-        name: ''
+        name: '',
+        ...action.project
       }, ...state.all]
       return update(state, { all: { $set: projects } })
 

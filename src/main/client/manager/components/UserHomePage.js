@@ -55,6 +55,7 @@ export default class UserHomePage extends Component {
       searchTextChanged,
       visibilityFilterChanged
     } = this.props
+    console.log(this.props)
     // const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
     const visibleProjects = projects.sort(defaultSorter)
     const activeProject = project
@@ -106,6 +107,7 @@ export default class UserHomePage extends Component {
                 activeProject={activeProject}
                 visibilityFilter={visibilityFilter}
                 searchTextChanged={searchTextChanged}
+                user={user}
                 visibilityFilterChanged={visibilityFilterChanged}
               />
             </Col>

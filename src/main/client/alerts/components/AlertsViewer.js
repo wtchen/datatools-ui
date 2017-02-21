@@ -14,7 +14,7 @@ export default class AlertsViewer extends React.Component {
     this.props.onComponentMount(this.props)
   }
   render () {
-    const createDisabled = this.props.project && this.props.user ? !this.props.user.permissions.hasProjectPermission(this.props.project.id, 'edit-alert') : true
+    const createDisabled = this.props.project && this.props.user ? !this.props.user.permissions.hasProjectPermission(this.props.project.organizationId, this.props.project.id, 'edit-alert') : true
     return (
       <ManagerPage ref='page'>
         <Helmet

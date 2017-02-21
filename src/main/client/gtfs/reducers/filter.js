@@ -37,11 +37,11 @@ const gtfsFilter = (state = {
       })
     case 'UPDATE_GTFS_FILTER':
       let userFeeds = []
-      if (action.user.permissions.isProjectAdmin(action.activeProject.id)) {
+      if (action.user.permissions.isProjectAdmin(action.activeProject.id, action.activeProject.organizationId)) {
         userFeeds = action.activeProject.feedSources || []
-      } else if (action.user.permissions.hasProjectPermission(action.activeProject.id, state.permissionFilter)) {
+      } else if (action.user.permissions.hasProjectPermission(action.activeProject.organizationId, action.activeProject.id, state.permissionFilter)) {
         userFeeds = action.activeProject.feedSources ? action.activeProject.feedSources.filter((feed) => {
-          return action.user.permissions.hasFeedPermission(action.activeProject.id, feed.id, state.permissionFilter) !== null
+          return action.user.permissions.hasFeedPermission(action.activeProject.organizationId, action.activeProject.id, feed.id, state.permissionFilter) !== null
         }) : []
       }
       let validatedFeeds = userFeeds.filter((feed) => {

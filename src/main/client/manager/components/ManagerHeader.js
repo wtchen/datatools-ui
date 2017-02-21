@@ -57,19 +57,22 @@ export default class ManagerHeader extends Component {
             <ButtonToolbar
               className={`pull-right`}
             >
-              <StarButton
-                isStarred
-                user={this.props.user}
-                target={feedSource.id}
-              />
-
+              {getConfigProperty('application.dev') &&
+                <StarButton
+                  isStarred
+                  user={this.props.user}
+                  target={feedSource.id}
+                />
+              }
               <WatchButton
                 isWatching={isWatchingFeed}
                 user={this.props.user}
                 target={feedSource.id}
                 subscriptionType='feed-updated'
               />
-              <Button><Icon type='thumbs-o-up' /></Button>
+              {getConfigProperty('application.dev') &&
+                <Button><Icon type='thumbs-o-up' /></Button>
+              }
             </ButtonToolbar>
           </h3>
           <ul className='list-unstyled list-inline small' style={{marginBottom: '0px'}}>

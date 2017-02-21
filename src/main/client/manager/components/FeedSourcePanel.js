@@ -7,7 +7,11 @@ import { getComponentMessages, getMessage } from '../../common/util/config'
 
 export default class FeedSourcePanel extends Component {
   static propTypes = {
-    activeProject: PropTypes.object
+    activeProject: PropTypes.object,
+    visibilityFilter: PropTypes.object,
+    searchTextChanged: PropTypes.func,
+    user: PropTypes.object,
+    visibilityFilterChanged: PropTypes.func
   }
   render () {
     const messages = getComponentMessages('FeedSourcePanel')
@@ -15,6 +19,7 @@ export default class FeedSourcePanel extends Component {
       activeProject,
       visibilityFilter,
       searchTextChanged,
+      user,
       visibilityFilterChanged
     } = this.props
     const renderFeedItems = (p, fs) => {
@@ -31,7 +36,8 @@ export default class FeedSourcePanel extends Component {
       )
     }
     const feedVisibilityFilter = (feed) => {
-      let visible = feed.name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1
+      const name = feed.name || 'unnamed'
+      let visible = name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1
       switch (visibilityFilter.filter) {
         case 'ALL':
           return visible
@@ -83,6 +89,13 @@ export default class FeedSourcePanel extends Component {
           </ListGroupItem>
           {activeProject && activeProject.feedSources
             ? activeProject.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(activeProject, fs))
+            : activeProject
+            ? <ListGroupItem>
+              <p className='lead text-center'>
+                No feeds yet.{' '}
+                {user.permissions.isProjectAdmin(activeProject.id, activeProject.organizationId) && <Link to={`/project/${activeProject.id}`}>Create one.</Link>}
+              </p>
+            </ListGroupItem>
             : <ListGroupItem><p className='lead text-center'>Choose a project to view feeds</p></ListGroupItem>
               // projects && projects.map(p => {
               //   return p.feedSources && p.feedSources.filter(feedVisibilityFilter).map(fs => renderFeedItems(p, fs))

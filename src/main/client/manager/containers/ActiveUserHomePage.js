@@ -10,7 +10,7 @@ import { setVisibilitySearchText, setVisibilityFilter } from '../actions/visibil
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
-    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions && state.user.permissions.isApplicationAdmin() || state.user.permissions && state.user.permissions.hasProject(p.id)) : [],
+    projects: state.projects.all ? state.projects.all.filter(p => p.isCreating || state.user.permissions && state.user.permissions.isApplicationAdmin() || state.user.permissions && state.user.permissions.hasProject(p.id, p.organizationId)) : [],
     project: ownProps.routeParams.projectId && state.projects.all ? state.projects.all.find(p => p.id === ownProps.routeParams.projectId) : null,
     visibilityFilter: state.projects.filter
   }
@@ -19,12 +19,17 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   let activeProjectId = ownProps.routeParams.projectId
   return {
-    onComponentMount: (props) => {
-      dispatch(getRecentActivity(props.user))
+    onComponentMount: (initialProps) => {
+      dispatch(getRecentActivity(initialProps.user))
       dispatch(fetchProjects())
       .then(projects => {
         if (!activeProjectId) {
-          const userProjectIds = props.user && Object.keys(props.user.permissions.projectLookup)
+          const userProjectIds = initialProps.user && projects.map(p => {
+            if (initialProps.user.permissions.hasProject(p.id, p.organizationId)) {
+              return p.id
+            }
+          }) // Object.keys(initialProps.user.permissions.projectLookup)
+          console.log(userProjectIds)
           activeProjectId = userProjectIds && userProjectIds[0]
         }
         console.log(activeProjectId)

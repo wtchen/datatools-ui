@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       if (!signId) {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')) {
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.organizationId, activeProject.id, 'edit-etid')) {
             console.log('cannot create sign!')
             browserHistory.push('/signs')
             return
@@ -43,7 +43,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       } else {
         dispatch(fetchProjects())
         .then((activeProject) => {
-          if (!initialProps.user.permissions.hasProjectPermission(activeProject.id, 'edit-etid')) {
+          if (!initialProps.user.permissions.hasProjectPermission(activeProject.organizationId, activeProject.id, 'edit-etid')) {
             console.log('cannot create sign!')
             browserHistory.push('/signs')
             return

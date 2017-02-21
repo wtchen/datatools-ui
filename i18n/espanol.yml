@@ -238,6 +238,8 @@ UserHomePage:
   help:
     title: What's a project?
     content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+FeedSourcePanel:
+  search: Search feeds
 OrganizationList:
   search: Search orgs
   new: Create org
