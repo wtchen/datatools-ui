@@ -89,7 +89,7 @@ export default class OrganizationList extends Component {
             </ListGroupItem>
             : organizations.data && organizations.data.map((organization, i) => {
               const orgUsers = users.data ? users.data.filter(u => {
-                let permissions = new UserPermissions(u.app_metadata && u.app_metadata.datatools ? u.app_metadata.datatools : null)
+                const permissions = new UserPermissions(u.app_metadata && u.app_metadata.datatools ? u.app_metadata.datatools : null)
                 return permissions.getOrganizationId() === organization.id
               }) : []
               return <OrganizationRow

@@ -113,7 +113,7 @@ export default class UserSettings extends Component {
   }
 
   appAdminClicked (value) {
-    let stateUpdate = {
+    const stateUpdate = {
       appAdminChecked: value
     }
     if (value) {
@@ -127,7 +127,7 @@ export default class UserSettings extends Component {
     this.setState({orgAdminChecked: value})
   }
   orgUpdated = (val) => {
-    let stateUpdate = {
+    const stateUpdate = {
       organization: val && val.organization || null,
       orgAdminChecked: false,
       projectSettings: {}
@@ -365,9 +365,9 @@ class ProjectSettings extends Component {
                 <h4>{getMessage(messages, 'project.feeds')}</h4>
                 {feedSources
                   ? feedSources.map((feed, i) => {
-                    let name = (feed.name === '') ? '(unnamed feed)' : feed.name
-                    let refName = 'feed-' + feed.id
-                    let checked = settings.defaultFeeds.indexOf(feed.id) !== -1
+                    const name = (feed.name === '') ? '(unnamed feed)' : feed.name
+                    const refName = 'feed-' + feed.id
+                    const checked = settings.defaultFeeds.indexOf(feed.id) !== -1
                     return <Checkbox
                       inputRef={ref => { this[refName] = ref }}
                       key={feed.id}
@@ -383,8 +383,8 @@ class ProjectSettings extends Component {
               <Col xs={6}>
                 <h4>{getMessage(messages, 'project.permissions')}</h4>
                 {allPermissions.map((permission, i) => {
-                  let refName = 'permission-' + permission.type
-                  let checked = settings.permissions.indexOf(permission.type) !== -1
+                  const refName = 'permission-' + permission.type
+                  const checked = settings.permissions.indexOf(permission.type) !== -1
                   return <Checkbox
                     inputRef={ref => { this[refName] = ref }}
                     key={permission.type}

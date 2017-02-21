@@ -222,7 +222,7 @@ class UserRow extends Component {
       fetchProjectFeeds
     } = this.props
     const messages = getComponentMessages('UserRow')
-    let permissions = new UserPermissions(user.app_metadata && user.app_metadata.datatools ? user.app_metadata.datatools : null)
+    const permissions = new UserPermissions(user.app_metadata && user.app_metadata.datatools ? user.app_metadata.datatools : null)
     const creatorIsApplicationAdmin = creatingUser.permissions.isApplicationAdmin()
     const userOrganization = organizations.find(o => o.id === permissions.getOrganizationId())
     // return null if creating user is not app admin and list item user is part of a different org

@@ -42,7 +42,7 @@ export default class OrganizationSettings extends Component {
     }
   }
   handleChange = (evt) => {
-    let change = {}
+    const change = {}
     console.log(evt.target.name)
     change[evt.target.name] = evt.target.value
     return this.setState(change)

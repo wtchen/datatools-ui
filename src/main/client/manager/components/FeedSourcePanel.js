@@ -37,7 +37,7 @@ export default class FeedSourcePanel extends Component {
     }
     const feedVisibilityFilter = (feed) => {
       const name = feed.name || 'unnamed'
-      let visible = name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1
+      const visible = name.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1
       switch (visibilityFilter.filter) {
         case 'ALL':
           return visible

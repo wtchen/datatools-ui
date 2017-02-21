@@ -97,7 +97,7 @@ export default class NotesViewer extends Component {
           <h3>{getMessage(messages, 'postComment')}</h3>
           <Media>
             <Media.Left>
-              <img width={64} height={64} src={user ? user.profile.picture : ''} />
+              <img alt={user.email} width={64} height={64} src={user ? user.profile.picture : ''} />
             </Media.Left>
             <Media.Body>
               <Panel className='comment-panel' header={<Media.Heading>{userLink}</Media.Heading>}>

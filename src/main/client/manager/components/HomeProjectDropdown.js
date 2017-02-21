@@ -26,7 +26,7 @@ export default class HomeProjectDropdown extends Component {
           id='context-dropdown'
           title={activeProject
             ? <span><Icon type='folder-open-o' /> {activeProject.name}</span>
-            : <span><img height={20} width={20} src={user.profile.picture} /> {user.profile.nickname}</span>
+            : <span><img alt={user.email} height={20} width={20} src={user.profile.picture} /> {user.profile.nickname}</span>
           }
           // onSelect={(eventKey) => {
           //   setActiveProject(eventKey)
@@ -35,7 +35,7 @@ export default class HomeProjectDropdown extends Component {
           {activeProject && (
             <LinkContainer key='home-link' to={`/home/`}>
               <MenuItem>
-                <span><img height={20} width={20} src={user.profile.picture} /> {user.profile.nickname}</span>
+                <span><img alt={user.email} height={20} width={20} src={user.profile.picture} /> {user.profile.nickname}</span>
               </MenuItem>
             </LinkContainer>
           )}
