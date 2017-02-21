@@ -1,11 +1,12 @@
 import React, { PropTypes, Component} from 'react'
 import ReactDOM from 'react-dom'
-import { Panel, Modal, Row, Col, Button, FormControl, ListGroup, ListGroupItem, Image } from 'react-bootstrap'
+import { Panel, Modal, Row, Col, Button, FormControl, Label, ListGroup, ListGroupItem, Image } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
 import validator from 'validator'
 
-import OrganizationSettings from './OrganizationSettings'
+import UserPermissions from '../../common/user/UserPermissions'
 import { getComponentMessages, getMessage } from '../../common/util/config'
+import OrganizationSettings from './OrganizationSettings'
 
 export default class OrganizationList extends Component {
   static propTypes = {
@@ -18,7 +19,8 @@ export default class OrganizationList extends Component {
     // createUser: PropTypes.func,
     // setPage: PropTypes.func,
     // isFetching: PropTypes.bool,
-    organizations: PropTypes.object
+    organizations: PropTypes.object,
+    users: PropTypes.object
     // setUserPermission: PropTypes.func,
     // saveUser: PropTypes.func,
     // deleteUser: PropTypes.func,
@@ -53,12 +55,8 @@ export default class OrganizationList extends Component {
     }
   }
   render () {
-    console.log(this.state, this.props)
     const messages = getComponentMessages('OrganizationList')
-    // const minUserIndex = this.props.page * this.props.perPage + 1
-    // const maxUserIndex = Math.min((this.props.page + 1) * this.props.perPage, this.props.userCount)
-    // const maxPage = Math.ceil(this.props.userCount / this.props.perPage) - 1
-
+    const { isFetching, organizations, users } = this.props
     return (
       <div>
         <Panel
@@ -85,15 +83,20 @@ export default class OrganizationList extends Component {
           }
         >
           <ListGroup fill>
-            {this.props.isFetching
+            {isFetching
             ? <ListGroupItem style={{ fontSize: '18px', textAlign: 'center' }}>
               <Icon className='fa-2x fa-spin' type='refresh' />
             </ListGroupItem>
-            : this.props.organizations.data && this.props.organizations.data.map((organization, i) => {
+            : organizations.data && organizations.data.map((organization, i) => {
+              const orgUsers = users.data ? users.data.filter(u => {
+                let permissions = new UserPermissions(u.app_metadata && u.app_metadata.datatools ? u.app_metadata.datatools : null)
+                return permissions.getOrganizationId() === organization.id
+              }) : []
               return <OrganizationRow
                 {...this.props}
                 organization={organization}
                 key={i}
+                users={orgUsers}
                 // fetchProjectFeeds={this.props.fetchProjectFeeds}
                 // setUserPermission={this.props.setUserPermission}
                 // saveUser={this.props.saveUser.bind(this)}
@@ -132,7 +135,8 @@ export default class OrganizationList extends Component {
 
 class OrganizationRow extends Component {
   static propTypes = {
-    organization: PropTypes.object
+    organization: PropTypes.object,
+    users: PropTypes.array
   }
   constructor (props) {
     super(props)
@@ -162,7 +166,8 @@ class OrganizationRow extends Component {
   }
   render () {
     const {
-      organization
+      organization,
+      users
     } = this.props
     return (
       <ListGroupItem
@@ -177,7 +182,10 @@ class OrganizationRow extends Component {
               />
             </Col>
             <Col xs={8} sm={5} md={6}>
-              <h5>{organization.name}</h5>
+              <h5>
+                {organization.name}{' '}
+                {users.length ? <Label>{users.length} users</Label> : null}
+              </h5>
               <small />
             </Col>
             <Col xs={12} sm={5} md={5}>

@@ -3,6 +3,7 @@ import { ControlLabel, FormControl, FormGroup, Radio, Row, Col } from 'react-boo
 import DateTimeField from 'react-bootstrap-datetimepicker'
 import Select from 'react-select'
 import moment from 'moment'
+import {sentence as toSentenceCase} from 'change-case'
 
 import { getComponentMessages, getMessage } from '../../common/util/config'
 
@@ -52,9 +53,17 @@ export default class OrganizationSettings extends Component {
   render () {
     console.log(this.state)
     const { organization, projects } = this.props
+    const extensions = [
+      'GTFS_PLUS',
+      'DEPLOYMENT',
+      'VALIDATOR',
+      'ALERTS',
+      'SIGN_CONFIG'
+    ]
     const messages = getComponentMessages('OrganizationSettings')
     const orgFields = ['name', 'logoUrl']
     const projectToOption = project => ({label: project.name, value: project.id, project})
+    const extensionToOption = e => ({value: e, label: toSentenceCase(e.replace('_', ' '))})
     const USAGE_TIERS = [
       {
         label: getMessage(messages, 'usageTier.low'),
@@ -89,8 +98,8 @@ export default class OrganizationSettings extends Component {
             <ControlLabel>{getMessage(messages, 'projects')}</ControlLabel>
             <Select
               multi
-              options={projects.filter(p => p.organizationId === null || p.organizationId === organization.id).map(projectToOption)}
-              value={this.state.projects.map(projectToOption)}
+              options={projects.filter(p => p.organizationId === null || organization && p.organizationId === organization.id).map(projectToOption)}
+              value={this.state.projects && this.state.projects.map(projectToOption)}
               onChange={(values) => {
                 console.log(values)
                 this.setState({projects: values && values.map(v => v.project) || []})
@@ -130,6 +139,22 @@ export default class OrganizationSettings extends Component {
                   mode='date'
                   dateTime={this.state.subscriptionEndDate}
                   onChange={(value) => this.handleDateChange('subscriptionEndDate', value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <FormGroup>
+                <ControlLabel>{getMessage(messages, 'extensions')}</ControlLabel>
+                <Select
+                  multi
+                  options={extensions.map(extensionToOption)}
+                  value={this.state.extensions && this.state.extensions.map(extensionToOption)}
+                  onChange={(values) => {
+                    console.log(values)
+                    this.setState({extensions: values && values.map(v => v.value) || []})
+                  }}
                 />
               </FormGroup>
             </Col>

@@ -36,6 +36,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
       // always load projects to prevent interference with public feeds viewer loading of projects
       dispatch(fetchProjects())
+
+      // load orgs because they're needed both in org and user creation
+      dispatch(fetchOrganizations())
     },
     fetchProjectFeeds: (project) => { dispatch(fetchProjectFeeds(project)) },
     fetchOrganizations: () => { dispatch(fetchOrganizations()) },

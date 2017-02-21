@@ -96,7 +96,7 @@ export default class UserAccount extends Component {
               }
             >
               <ul>
-                {subscriptions.length ? subscriptions.map(sub => {
+                {subscriptions && subscriptions.length ? subscriptions.map(sub => {
                   return (
                     <li>
                       {sub.type.replace('-', ' ')}{' '}

@@ -43,7 +43,12 @@ export default class CreateUser extends Component {
 
   render () {
     const messages = getComponentMessages('CreateUser')
-    const {creatingUser} = this.props
+    const {
+      creatingUser,
+      organizations,
+      projects,
+      fetchProjectFeeds
+    } = this.props
     return (
       <div>
         <Button
@@ -69,10 +74,12 @@ export default class CreateUser extends Component {
               <FormControl ref='password' type='password' />
             </FormGroup>
             <UserSettings
-              projects={this.props.projects}
-              fetchProjectFeeds={this.props.fetchProjectFeeds}
+              projects={projects}
+              organizations={organizations}
+              fetchProjectFeeds={fetchProjectFeeds}
               creatingUser={creatingUser}
               permissions={new UserPermissions()}
+              isCreating
               ref='userSettings'
             />
           </Modal.Body>

@@ -32,6 +32,8 @@ export default class UserAccountInfoPanel extends Component {
             <div><Badge className='text-muted'>
               {user.permissions.isApplicationAdmin()
                 ? 'Application admin'
+                : user.permissions.canAdministerAnOrganization()
+                ? 'Organization admin'
                 : 'Standard user'
               }
             </Badge></div>
@@ -42,7 +44,7 @@ export default class UserAccountInfoPanel extends Component {
                     <Icon type='cog' /> Manage account
                   </Button>
                 </LinkContainer>
-                {user.permissions.isApplicationAdmin()
+                {user.permissions.isApplicationAdmin() || user.permissions.canAdministerAnOrganization()
                   ? <LinkContainer to='/admin/users'>
                     <Button bsStyle='default' bsSize='small'>
                       <Icon type='cog' /> Admin

@@ -12,6 +12,7 @@ import { getComponentMessages, getMessage } from '../../common/util/config'
 export default class UserAdmin extends Component {
   static propTypes = {
     user: PropTypes.object,
+    users: PropTypes.object,
 
     onComponentMount: PropTypes.func,
     setUserPermission: PropTypes.func,
@@ -24,6 +25,7 @@ export default class UserAdmin extends Component {
 
     admin: PropTypes.object,
     activeComponent: PropTypes.string,
+    organizations: PropTypes.object,
     projects: PropTypes.array
 
   }
@@ -34,6 +36,7 @@ export default class UserAdmin extends Component {
     const {
       user,
       users,
+      organizations,
       projects,
       activeComponent,
       setUserPermission,
@@ -45,7 +48,8 @@ export default class UserAdmin extends Component {
       userSearch
     } = this.props
     const messages = getComponentMessages('UserAdmin')
-    const isAdmin = user && user.permissions && user.permissions.isApplicationAdmin()
+    const isAdmin = user && user.permissions && (user.permissions.isApplicationAdmin() || user.permissions.canAdministerAnOrganization())
+    const isApplicationAdmin = user.permissions.isApplicationAdmin()
     return (
       <ManagerPage ref='page'>
         <Helmet
@@ -71,8 +75,9 @@ export default class UserAdmin extends Component {
                   <Panel>
                     <ListGroup fill>
                       <LinkContainer to='/admin/users'><ListGroupItem>User management</ListGroupItem></LinkContainer>
-                      <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>
-                      <LinkContainer to='/admin/logs'><ListGroupItem>Application logs</ListGroupItem></LinkContainer>
+                      {/* Do not show non-appAdmin users these application-level settings */}
+                      {isApplicationAdmin && <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>}
+                      {isApplicationAdmin && <LinkContainer to='/admin/logs'><ListGroupItem>Application logs</ListGroupItem></LinkContainer>}
                       {/*
                         <LinkContainer to='/admin/regions'><ListGroupItem>Regions</ListGroupItem></LinkContainer>
                       */}
@@ -83,10 +88,12 @@ export default class UserAdmin extends Component {
                   {
                     users.data &&
                     projects &&
+                    organizations.data &&
                     activeComponent === 'users'
                     ? <UserList
                       token={user.token}
                       projects={projects}
+                      organizations={organizations.data}
                       users={users.data}
                       userCount={users.userCount}
                       page={users.page}
@@ -110,7 +117,7 @@ export default class UserAdmin extends Component {
                       <Icon type='star' /> View application logs on Auth0.com
                     </Button>
                   </p>
-                  : activeComponent === 'organizations'
+                  : activeComponent === 'organizations' && isApplicationAdmin
                   ? <OrganizationList
                     {...this.props}
                     />

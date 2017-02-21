@@ -214,10 +214,19 @@ ProjectSettings:
 UserAdmin:
   title: User Management
 UserList:
+  filterByOrg: Filter by org.
   title: User Management
   showing: Showing Users
   of: of
   search: Search by username
+UserRow:
+  appAdmin: App admin
+  orgAdmin: Org admin
+  cancel: Cancel
+  delete: Delete
+  deleteConfirm: Are you sure you want to permanently delete this user?
+  edit: Edit
+  save: Save
 UserHomePage:
   title: Projects
   noProjects: You currently do not have any projects.
@@ -235,6 +244,7 @@ OrganizationList:
 OrganizationSettings:
   orgDetails: Organization details
   projects: Projects
+  extensions: Extensions
   subDetails: Subscription details
   name:
     label: Name
@@ -257,6 +267,10 @@ UserSettings:
   cancel: Cancel
   save: Save
   application: Application Settings
+  org:
+    admin: Organization administrator
+    description: Organization administrators have full access to projects within the organization.
+    billing: Billing admin
   admin:
     title: Application Admininistrator
     description: Application administrators have full access to all projects.

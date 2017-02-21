@@ -2,8 +2,10 @@ import React, { PropTypes, Component} from 'react'
 import ReactDOM from 'react-dom'
 import { Panel, Row, Col, Button, Label, ButtonGroup, InputGroup, FormControl, Image, ListGroup, ListGroupItem } from 'react-bootstrap'
 import {Icon} from '@conveyal/woonerf'
+// import Select from 'react-select'
 
 import CreateUser from './CreateUser'
+import ConfirmModal from '../../common/components/ConfirmModal'
 import UserSettings from './UserSettings'
 import UserPermissions from '../../common/user/UserPermissions'
 import { getComponentMessages, getMessage } from '../../common/util/config'
@@ -25,45 +27,65 @@ export default class UserList extends Component {
     deleteUser: PropTypes.func,
     token: PropTypes.string
   }
-
+  constructor (props) {
+    super(props)
+    this.state = {}
+  }
   userSearch () {
     this.props.userSearch(ReactDOM.findDOMNode(this.refs.searchInput).value)
   }
 
   render () {
-    const {creatingUser} = this.props
+    const {
+      creatingUser,
+      organizations,
+      page,
+      perPage,
+      userCount,
+      setPage,
+      userSearch,
+      projects,
+      fetchProjectFeeds,
+      createUser,
+      isFetching,
+      users,
+      saveUser,
+      deleteUser,
+      token
+    } = this.props
     const headerStyle = {
       fontSize: '18px',
       marginLeft: '12px'
     }
 
     const messages = getComponentMessages('UserList')
-    const minUserIndex = this.props.page * this.props.perPage + 1
-    const maxUserIndex = Math.min((this.props.page + 1) * this.props.perPage, this.props.userCount)
-    const maxPage = Math.ceil(this.props.userCount / this.props.perPage) - 1
-
+    const minUserIndex = page * perPage + 1
+    const maxUserIndex = Math.min((page + 1) * perPage, userCount)
+    const maxPage = Math.ceil(userCount / perPage) - 1
+    // const isApplicationAdmin = creatingUser.permissions.isApplicationAdmin()
+    // const orgToOption = organization => ({organization, value: organization.id, label: organization.name})
     return (
       <div>
         <Row style={{ marginBottom: '18px' }}>
           <Col xs={12}>
             <ButtonGroup>
               <Button
-                disabled={this.props.page <= 0}
+                disabled={page <= 0}
                 onClick={() => {
-                  this.props.setPage(this.props.page - 1)
+                  setPage(page - 1)
                 }}>
                 <Icon type='arrow-left' />
               </Button>
               <Button
-                disabled={this.props.page >= maxPage}
+                disabled={page >= maxPage}
                 onClick={() => {
-                  this.props.setPage(this.props.page + 1)
+                  setPage(page + 1)
                 }}>
                 <Icon type='arrow-right' />
               </Button>
             </ButtonGroup>
-            {this.props.userCount > 0
-              ? <span style={headerStyle}>{getMessage(messages, 'showing')} {minUserIndex } - {maxUserIndex} {getMessage(messages, 'of')} {this.props.userCount}</span>
+            {userCount > 0
+              ? <span style={headerStyle}>{getMessage(messages, 'showing')} {minUserIndex } - {maxUserIndex} {getMessage(messages, 'of')} {userCount}</span>
               : <span style={headerStyle}>(No results to show)</span>
             }
           </Col>
@@ -85,7 +107,7 @@ export default class UserList extends Component {
                       style={{ cursor: 'pointer' }}
                       onClick={() => {
                         ReactDOM.findDOMNode(this.refs.searchInput).value = ''
-                        this.props.userSearch('')
+                        userSearch('')
                       }} />
                   </InputGroup.Addon>
                 </InputGroup>
@@ -95,32 +117,48 @@ export default class UserList extends Component {
                 >
                   <Icon type='search' />
                 </Button>
+                {/* TODO: add filter for organization */}
+                {/* isApplicationAdmin &&
+                  <FormGroup
+                    style={{marginLeft: '8px', width: '200px'}}
+                  >
+                    <Select
+                      value={this.state.organization && orgToOption(this.state.organization)}
+                      options={organizations.map(orgToOption)}
+                      onChange={value => this.setState({organization: value ? value.organization : null})}
+                      placeholder={getMessage(messages, 'filterByOrg')}
+                    />
+                  </FormGroup>
+                */}
               </Col>
               <Col xs={2}>
                 <CreateUser
-                  projects={this.props.projects}
+                  projects={projects}
+                  organizations={organizations}
                   creatingUser={creatingUser}
-                  fetchProjectFeeds={this.props.fetchProjectFeeds}
-                  createUser={this.props.createUser.bind(this)} />
+                  fetchProjectFeeds={fetchProjectFeeds}
+                  createUser={createUser.bind(this)} />
               </Col>
             </Row>
           }
         >
           <ListGroup fill>
-            {this.props.isFetching
+            {isFetching
             ? <ListGroupItem style={{ fontSize: '18px', textAlign: 'center' }}>
               <Icon className='fa-2x fa-spin' type='refresh' />
             </ListGroupItem>
-            : this.props.users.map((user, i) => {
+            : users.map((user, i) => {
               return <UserRow
-                projects={this.props.projects}
+                projects={projects}
+                organizations={organizations}
+                creatingUser={creatingUser}
                 user={user}
                 key={i}
-                fetchProjectFeeds={this.props.fetchProjectFeeds}
-                // setUserPermission={this.props.setUserPermission}
-                saveUser={this.props.saveUser.bind(this)}
-                deleteUser={this.props.deleteUser.bind(this)}
-                token={this.props.token}
+                fetchProjectFeeds={fetchProjectFeeds}
+                // setUserPermission={setUserPermission}
+                saveUser={saveUser.bind(this)}
+                deleteUser={deleteUser.bind(this)}
+                token={token}
               />
             })
           }
@@ -137,6 +175,7 @@ class UserRow extends Component {
     saveUser: PropTypes.func,
     deleteUser: PropTypes.func,
     fetchProjectFeeds: PropTypes.func,
+    organizations: PropTypes.array,
     projects: PropTypes.array
   }
   constructor (props) {
@@ -163,12 +202,33 @@ class UserRow extends Component {
   }
 
   delete () {
-    this.props.deleteUser(this.props.user)
-    this.toggleExpansion()
+    const messages = getComponentMessages('UserRow')
+    this.refs.confirm.open({
+      title: `${getMessage(messages, 'delete')} ${this.props.user.email}?`,
+      body: getMessage(messages, 'deleteConfirm'),
+      onConfirm: () => {
+        this.props.deleteUser(this.props.user)
+        this.toggleExpansion()
+      }
+    })
   }
 
   render () {
-    let permissions = new UserPermissions(this.props.user.app_metadata && this.props.user.app_metadata.datatools ? this.props.user.app_metadata.datatools : null)
+    const {
+      creatingUser,
+      user,
+      organizations,
+      projects,
+      fetchProjectFeeds
+    } = this.props
+    const messages = getComponentMessages('UserRow')
+    let permissions = new UserPermissions(user.app_metadata && user.app_metadata.datatools ? user.app_metadata.datatools : null)
+    const creatorIsApplicationAdmin = creatingUser.permissions.isApplicationAdmin()
+    const userOrganization = organizations.find(o => o.id === permissions.getOrganizationId())
+    // return null if creating user is not app admin and list item user is part of a different org
+    if (!creatorIsApplicationAdmin && !creatingUser.permissions.hasOrganization(permissions.getOrganizationId())) {
+      return null
+    }
     return (
       <ListGroupItem
         collapsible
@@ -180,19 +240,30 @@ class UserRow extends Component {
               <Image
                 // style={{maxWidth: '120px', maxHeight: '120px'}}
                 responsive rounded
-                src={this.props.user.picture}
-                alt={this.props.user.email}
+                src={user.picture}
+                alt={user.email}
               />
             </Col>
             <Col xs={8} sm={5} md={6}>
-              <h5>{this.props.user.email} {permissions.isApplicationAdmin() ? <Label bsStyle='warning'>Admin</Label> : null}</h5>
+              <h5>
+                {user.email}{' '}
+                {permissions.isApplicationAdmin()
+                  ? <Label bsStyle='danger'>{getMessage(messages, 'appAdmin')}</Label>
+                  : permissions.canAdministerAnOrganization()
+                  ? <Label bsStyle='warning'>{getMessage(messages, 'orgAdmin')}</Label>
+                  : null
+                }{' '}
+                {userOrganization && creatorIsApplicationAdmin ? <Label bsStyle='default'>{userOrganization.name}</Label> : null}
+              </h5>
               <small />
             </Col>
             <Col xs={12} sm={5} md={5}>
-              <Button className='pull-right' onClick={() => this.toggleExpansion()}>
+              <Button
+                className='pull-right'
+                onClick={() => this.toggleExpansion()}>
                 {this.state.isEditing
-                   ? <span><Icon type='remove' /> Cancel</span>
-                   : <span><Icon type='edit' /> Edit</span>
+                   ? <span><Icon type='remove' /> {getMessage(messages, 'cancel')}</span>
+                   : <span><Icon type='edit' /> {getMessage(messages, 'edit')}</span>
                  }
               </Button>
               {this.state.isEditing
@@ -201,7 +272,7 @@ class UserRow extends Component {
                   bsStyle='primary'
                   style={{marginRight: '5px'}}
                   onClick={this.save.bind(this)}>
-                  <Icon type='save' /> Save
+                  <Icon type='save' /> {getMessage(messages, 'save')}
                 </Button>
                 : null
               }
@@ -211,7 +282,7 @@ class UserRow extends Component {
                   bsStyle='danger'
                   style={{marginRight: '5px'}}
                   onClick={this.delete.bind(this)}>
-                  <Icon type='trash' /> Delete
+                  <Icon type='trash' /> {getMessage(messages, 'delete')}
                 </Button>
                 : null
               }
@@ -219,10 +290,13 @@ class UserRow extends Component {
           </Row>
         }
       >
+        <ConfirmModal ref='confirm' />
         { this.state.isEditing
           ? <UserSettings ref='userSettings'
-            projects={this.props.projects}
-            fetchProjectFeeds={this.props.fetchProjectFeeds}
+            organizations={organizations}
+            projects={projects}
+            creatingUser={creatingUser}
+            fetchProjectFeeds={fetchProjectFeeds}
             permissions={permissions} />
           : ''
         }

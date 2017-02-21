@@ -15,7 +15,7 @@ export default class UserPermissions {
     }
 
     this.organizationLookup = {}
-    const orgs = datatoolsJson.organizations
+    const orgs = datatoolsJson && datatoolsJson.organizations
     if (orgs) {
       for (var organization of orgs) {
         this.organizationLookup[organization.organization_id] = organization
@@ -43,10 +43,24 @@ export default class UserPermissions {
   }
 
   hasOrganization (orgId) {
-    return orgId === objectPath.get(datatoolsJson, `organizations.0.organization_id`)
+    if (this.isApplicationAdmin()) return true
+    return (orgId in this.organizationLookup)
   }
-  isOrganizationAdmin (orgId) {
+
+  getOrganizationId () {
+    const keys = Object.keys(this.organizationLookup)
+    return keys && keys.length ? keys[0] : null
+  }
+
+  // as opposed to the specific isOrganizationAdmin, this method checks for generic admin access to some organization
+  canAdministerAnOrganization () {
+    if (this.isApplicationAdmin()) return true
     return ('administer-organization' in this.orgPermissionLookup)
+  }
+
+  isOrganizationAdmin (orgId = null) {
+    if (this.isApplicationAdmin()) return true
+    return this.hasOrganization(orgId) && this.getOrganizationPermission(orgId, 'administer-organization') != null
   }
 
   getOrganizationPermission (organizationId, permissionType) {
@@ -57,12 +71,21 @@ export default class UserPermissions {
     }
     return null
   }
-  hasProject (projectId) {
+
+  getOrganizationPermissions (organizationId) {
+    if (!this.hasOrganization(organizationId)) return null
+    return this.organizationLookup[organizationId].permissions
+  }
+
+  hasProject (projectId, organizationId = null) {
+    if (this.isOrganizationAdmin(organizationId)) return true
     return (projectId in this.projectLookup)
   }
 
-  isProjectAdmin (projectId) {
+  isProjectAdmin (projectId, organizationId) {
     if (this.isApplicationAdmin()) return true
+    // TODO: make project admin subject to org admin
+    if (this.isOrganizationAdmin(organizationId)) return true
     return this.hasProject(projectId) && this.getProjectPermission(projectId, 'administer-project') != null
   }
 

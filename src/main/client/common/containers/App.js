@@ -59,7 +59,7 @@ class App extends Component {
         if (this.props.user.profile === null) {
           console.log('profile null', this.props.user)
           browserHistory.push('/')
-        } else if (this.props.user.permissions.isApplicationAdmin() || this.props.user.permissions.isOrganizationAdmin()) {
+        } else if (this.props.user.permissions.isApplicationAdmin() || this.props.user.permissions.canAdministerAnOrganization()) {
           console.log('user is admin')
           callback()
         } else {
