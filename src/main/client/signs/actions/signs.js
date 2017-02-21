@@ -11,12 +11,12 @@ let nextStopEntityId = 100
 export function createSign (entity, agency) {
   return function (dispatch, getState) {
     nextSignId--
-    let entities = []
+    const entities = []
 
     if (entity) {
       nextStopEntityId++
-      let type = typeof entity.stop_id !== 'undefined' ? 'STOP' : 'ROUTE'
-      let newEntity = {
+      const type = typeof entity.stop_id !== 'undefined' ? 'STOP' : 'ROUTE'
+      const newEntity = {
         id: nextStopEntityId,
         type: type
       }
@@ -60,8 +60,8 @@ export function deleteSign (sign) {
       return res.json()
     }).then(json => {
       console.log(json)
-      let saveDisplays = []
-      let newSignId = null
+      const saveDisplays = []
+      const newSignId = null
       if (sign.displays) {
         sign.displays.map(display => {
           display.DraftDisplayConfigurationId = newSignId
@@ -165,7 +165,7 @@ export function editSign (sign) {
 export const createDisplay = (name) => {
   return function (dispatch, getState) {
     console.log('creating display', name)
-    let display = {
+    const display = {
       Id: -1,
       DisplayTitle: name,
       PrimaryCptAgencyId: null,
@@ -205,7 +205,7 @@ export function saveSign (sign) {
   return function (dispatch, getState) {
     console.log('saving...')
     const user = getState().user
-    let detailsArray = sign.affectedEntities.map((entity) => {
+    const detailsArray = sign.affectedEntities.map((entity) => {
       console.log('ent', entity)
       return entity.route ? entity.route.map(r => {
         return {
@@ -218,7 +218,7 @@ export function saveSign (sign) {
       }) : []
     })
     // flatten array
-    let details = [].concat.apply([], detailsArray)
+    const details = [].concat.apply([], detailsArray)
     var json = {
       Id: sign.id < 0 ? null : sign.id,
       ConfigurationDescription: sign.title || 'New Configuration',
@@ -242,8 +242,8 @@ export function saveSign (sign) {
       return res.json()
     }).then(json => {
       console.log(json)
-      let saveDisplays = []
-      let newSignId = json.SequenceId ? json.SequenceId : sign.id
+      const saveDisplays = []
+      const newSignId = json.SequenceId ? json.SequenceId : sign.id
       console.log(newSignId)
       if (sign.displays) {
         sign.displays.map(display => {

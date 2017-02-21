@@ -14,7 +14,7 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
   if (!alerts) return []
   let visibleAlerts = alerts.filter(alert =>
     alert.title.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1)
-  let now = moment()
+  const now = moment()
 
   if (visibilityFilter.feedId && visibilityFilter.feedId !== 'ALL') {
     console.log('filtering alerts by feedId' + visibilityFilter.feedId)
@@ -59,7 +59,7 @@ const getVisibleAlerts = (alerts, visibilityFilter) => {
 
 const mapStateToProps = (state, ownProps) => {
   // if (state.projects.active !== null && state.projects.active.feeds !== null )
-  let filterCounts = {}
+  const filterCounts = {}
   FILTERS.map(f => {
     filterCounts[f] = getVisibleAlerts(state.alerts.all, {filter: f}).length
   })

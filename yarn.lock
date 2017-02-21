@@ -5857,6 +5857,10 @@ redux-logger@^2.6.1, redux-logger@^2.7.4:
   dependencies:
     deep-diff "0.3.4"
 
+redux-merge-reducers@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/redux-merge-reducers/-/redux-merge-reducers-0.0.2.tgz#2d83da42de18636bd526be183de19e9a3a0d647b"
+
 redux-thunk@^2.0.1:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.1.0.tgz#c724bfee75dbe352da2e3ba9bc14302badd89a98"

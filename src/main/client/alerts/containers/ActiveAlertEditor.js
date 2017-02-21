@@ -11,7 +11,7 @@ import { getFeedsForPermission } from '../../common/util/permissions'
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    alert: state.activeAlert,
+    alert: state.alerts.active,
     activeFeeds: state.gtfs.filter.activeFeeds,
     project: state.projects.active,
     user: state.user,

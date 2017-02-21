@@ -58,7 +58,7 @@ export const setActivePublished = (published) => {
 let nextEntityId = 0
 export const addActiveEntity = (field = 'AGENCY', value = null, agency = null, newEntityId = 0) => {
   nextEntityId++
-  let newEntity = {
+  const newEntity = {
     type: 'ADD_ACTIVE_ALERT_AFFECTED_ENTITY',
     entity: {
       id: newEntityId || nextEntityId,

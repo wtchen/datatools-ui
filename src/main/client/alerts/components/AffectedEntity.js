@@ -27,7 +27,7 @@ export default class AffectedEntity extends Component {
       agencyName = typeof feed !== 'undefined' ? feed.name : 'Unknown agency'
     }
     const routeName = entity.route ? getRouteNameAlerts(entity.route) : entity.route_id
-    let stopName = entity.stop
+    const stopName = entity.stop
       ? `${entity.stop.stop_name} (${entity.stop.stop_id}) ${agencyName}`
       : entity.stop_id
     let summary = ''
@@ -92,9 +92,9 @@ export default class AffectedEntity extends Component {
     var indent = {
       paddingLeft: '30px'
     }
-    let selectedFeeds = [this.props.entity.agency] || this.props.activeFeeds
-    let selectedRoute = this.props.entity.route
-    let selectedStop = this.props.entity.stop
+    const selectedFeeds = [this.props.entity.agency] || this.props.activeFeeds
+    const selectedRoute = this.props.entity.route
+    const selectedStop = this.props.entity.stop
     switch (this.props.entity.type) {
       case 'AGENCY':
         return (

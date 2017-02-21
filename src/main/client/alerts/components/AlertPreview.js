@@ -47,7 +47,7 @@ export default class AlertPreview extends Component {
               title={deleteButtonMessage}
               disabled={deleteIsDisabled}
               onClick={(evt) => {
-                let r = window.confirm('Are you sure you want to delete this alert?')
+                const r = window.confirm('Are you sure you want to delete this alert?')
                 if (r === true) {
                   onDeleteClick(alert)
                 } else {

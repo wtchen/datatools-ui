@@ -1,5 +1,6 @@
 import update from 'react-addons-update'
 import clone from 'clone'
+import mergeable from 'redux-merge-reducers'
 
 import { getFeedId } from '../../common/util/modules'
 
@@ -35,9 +36,9 @@ const signs = (state = {
       signs = clone(state.all)
       // for those entities we requested, assign the gtfs data to the saved entities
       for (let i = 0; i < entities.length; i++) {
-        let feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
+        const feed = action.results.feeds.find(f => f.feed_id === entities[i].entity.AgencyId)
         if (feed) {
-          let gtfs = entities[i].type === 'stop'
+          const gtfs = entities[i].type === 'stop'
             ? feed.stops.find(s => s.stop_id === entities[i].entity.StopId)
             : entities[i].type === 'route'
             ? feed.routes.find(s => s.route_id === entities[i].entity.RouteId)
@@ -50,16 +51,16 @@ const signs = (state = {
       }
       // iterate over processed gtfs entities
       for (let i = 0; i < entities.length; i++) {
-        let ent = entities[i]
+        const ent = entities[i]
         if (ent.gtfs && signs) {
-          let sign = signs.find(s => s.id === ent.entity.DisplayConfigurationId)
-          let selectedEnt = sign && sign.affectedEntities.find(e => e.agencyAndStop === ent.entity.agencyAndStop)
+          const sign = signs.find(s => s.id === ent.entity.DisplayConfigurationId)
+          const selectedEnt = sign && sign.affectedEntities.find(e => e.agencyAndStop === ent.entity.agencyAndStop)
           if (selectedEnt && ent.type === 'stop') {
             selectedEnt.stop = ent.gtfs
           }
           // route is an array for signs
           if (ent.type === 'route') {
-            let route = ent.gtfs ? ent.gtfs : ent.entity
+            const route = ent.gtfs ? ent.gtfs : ent.entity
             selectedEnt.route.push(route)
           }
         }
@@ -76,9 +77,9 @@ const signs = (state = {
       }
     case 'RECEIVED_RTD_DISPLAYS':
       if (state.all !== null) {
-        let displayMap = {}
+        const displayMap = {}
         for (let i = 0; i < action.rtdDisplays.length; i++) {
-          let d = action.rtdDisplays[i]
+          const d = action.rtdDisplays[i]
           if (!d.DraftDisplayConfigurationId && !d.PublishedDisplayConfigurationId) {
             continue
           }
@@ -99,7 +100,7 @@ const signs = (state = {
             }
           }
         }
-        let newSigns = state.all.map(s => {
+        const newSigns = state.all.map(s => {
           s.displays = displayMap[s.id] ? displayMap[s.id] : []
           return s
         })
@@ -110,10 +111,10 @@ const signs = (state = {
       const entityList = []
       signs = action.rtdSigns
       for (var i = 0; i < signs.length; i++) {
-        let action = signs[i]
+        const action = signs[i]
         if (typeof action !== 'undefined' && action.DisplayConfigurationDetails && action.DisplayConfigurationDetails.length > 0) {
           for (var j = 0; j < action.DisplayConfigurationDetails.length; j++) {
-            let ent = action.DisplayConfigurationDetails[j]
+            const ent = action.DisplayConfigurationDetails[j]
             ent.agencyAndStop = ent.AgencyId + ent.StopId
             if (ent.StopId !== null) {
               entityList.push({type: 'stop', entity: ent, gtfs: {}})
@@ -125,18 +126,18 @@ const signs = (state = {
         }
       }
       const allSigns = action.rtdSigns.map((rtdSign) => {
-        let project = action.activeProject
-        let details = rtdSign.DisplayConfigurationDetails || []
-        let entities = {}
+        const project = action.activeProject
+        const details = rtdSign.DisplayConfigurationDetails || []
+        const entities = {}
         for (var i = 0; i < details.length; i++) {
-          let ent = details[i]
-          let currentEntity = entities[ent.AgencyId + ent.StopId]
+          const ent = details[i]
+          const currentEntity = entities[ent.AgencyId + ent.StopId]
           // if entity already exists, push RouteId to existing array
           if (currentEntity) {
             entities[ent.AgencyId + ent.StopId].route_id.push(ent.RouteId)
           } else {
             // else, construct new object for entity
-            let feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
+            const feed = project.feedSources.find(f => getFeedId(f) === ent.AgencyId)
             entities[ent.AgencyId + ent.StopId] = {
               id: ent.Id,
               agencyAndStop: ent.AgencyId + ent.StopId
@@ -154,7 +155,7 @@ const signs = (state = {
             }
           }
         }
-        let sign = {
+        const sign = {
           id: rtdSign.Id,
           title: rtdSign.ConfigurationDescription,
           editedBy: rtdSign.EditedBy,
@@ -178,4 +179,5 @@ const signs = (state = {
   }
 }
 
-export default signs
+// export default signs
+export default mergeable(signs)

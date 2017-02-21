@@ -40,7 +40,7 @@ export default class SignPreview extends React.Component {
                 disabled={deleteIsDisabled}
                 onClick={
                   (evt) => {
-                    let r = window.confirm('Are you sure you want to delete this sign configuration?')
+                    const r = window.confirm('Are you sure you want to delete this sign configuration?')
                     if (r) {
                       this.props.onDeleteClick(this.props.sign)
                     } else {

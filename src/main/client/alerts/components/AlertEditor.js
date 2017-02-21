@@ -46,7 +46,24 @@ export default class AlertEditor extends React.Component {
     this.props.onSaveClick(this.props.alert)
   }
   render () {
-    if (!this.props.alert) {
+    const {
+      alert,
+      publishableFeeds,
+      editableFeeds,
+      onPublishClick,
+      onDeleteClick,
+      titleChanged,
+      startChanged,
+      endChanged,
+      causeChanged,
+      effectChanged,
+      descriptionChanged,
+      urlChanged,
+      activeFeeds,
+      editorStopClick,
+      editorRouteClick
+    } = this.props
+    if (!alert) {
       return (
         <ManagerPage>
           <Loading />
@@ -63,27 +80,27 @@ export default class AlertEditor extends React.Component {
       if (aName > bName) return 1
       return 0
     }
-    const canPublish = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.publishableFeeds)
-    const canEdit = checkEntitiesForFeeds(this.props.alert.affectedEntities, this.props.editableFeeds)
+    const canPublish = checkEntitiesForFeeds(alert.affectedEntities, publishableFeeds)
+    const canEdit = checkEntitiesForFeeds(alert.affectedEntities, editableFeeds)
 
-    const editingIsDisabled = this.props.alert.published && !canPublish ? true : !canEdit
-    const sortedFeeds = this.props.editableFeeds.sort(compare)
+    const editingIsDisabled = alert.published && !canPublish ? true : !canEdit
+    const sortedFeeds = editableFeeds.sort(compare)
     // if user has edit rights and alert is unpublished, user can delete alert, else check if they have publish rights
-    const deleteIsDisabled = !editingIsDisabled && !this.props.alert.published ? false : !canPublish
-    const deleteButtonMessage = this.props.alert.published && deleteIsDisabled ? 'Cannot delete because alert is published'
+    const deleteIsDisabled = !editingIsDisabled && !alert.published ? false : !canPublish
+    const deleteButtonMessage = alert.published && deleteIsDisabled ? 'Cannot delete because alert is published'
       : !canEdit ? 'Cannot alter alerts for other agencies' : 'Delete alert'
 
-    const editButtonMessage = this.props.alert.published && deleteIsDisabled ? 'Cannot edit because alert is published'
+    const editButtonMessage = alert.published && deleteIsDisabled ? 'Cannot edit because alert is published'
       : !canEdit ? 'Cannot alter alerts for other agencies' : 'Edit alert'
 
-    const newEntityId = this.props.alert.affectedEntities.length
-      ? 1 + this.props.alert.affectedEntities.map(e => e.id).reduce((initial, current) => initial > current ? initial : current)
+    const newEntityId = alert.affectedEntities && alert.affectedEntities.length
+      ? 1 + alert.affectedEntities.map(e => e.id).reduce((initial, current) => initial > current ? initial : current)
       : 1
 
     return (
       <ManagerPage ref='page'>
         <Helmet
-          title={this.props.alert.id > 0 ? `Alert ${this.props.alert.id}` : 'New Alert'}
+          title={alert.id > 0 ? `Alert ${alert.id}` : 'New Alert'}
         />
         <Grid fluid>
           <Row>
@@ -103,22 +120,22 @@ export default class AlertEditor extends React.Component {
 
                 <Button
                   disabled={!canPublish}
-                  bsStyle={this.props.alert.published ? 'warning' : 'success'}
+                  bsStyle={alert.published ? 'warning' : 'success'}
                   onClick={(evt) => {
-                    this.props.onPublishClick(this.props.alert, !this.props.alert.published)
+                    onPublishClick(alert, !alert.published)
                   }}
                 >
-                  {this.props.alert.published ? 'Unpublish' : 'Publish'}</Button>
+                  {alert.published ? 'Unpublish' : 'Publish'}</Button>
                 <Button
                   title={deleteButtonMessage}
                   bsStyle='danger'
                   disabled={deleteIsDisabled}
                   onClick={(evt) => {
                     this.refs.page.showConfirmModal({
-                      title: 'Delete Alert #' + this.props.alert.id + '?',
-                      body: <p>Are you sure you want to delete <strong>Alert {this.props.alert.id}</strong>?</p>,
+                      title: 'Delete Alert #' + alert.id + '?',
+                      body: <p>Are you sure you want to delete <strong>Alert {alert.id}</strong>?</p>,
                       onConfirm: () => {
-                        this.props.onDeleteClick(this.props.alert)
+                        onDeleteClick(alert)
                       }
                     })
                   }}
@@ -136,34 +153,35 @@ export default class AlertEditor extends React.Component {
                     <FormControl
                       bsSize='large'
                       placeholder='E.g., Sig. Delays due to Golden Gate Bridge Closure'
-                      defaultValue={this.props.alert.title || ''}
-                      onChange={evt => this.props.titleChanged(evt.target.value)}
+                      defaultValue={alert.title || ''}
+                      onChange={evt => titleChanged(evt.target.value)}
                     />
                   </FormGroup>
                 </Col>
                 <Col xs={6}>
                   <div style={{marginBottom: '5px'}}><strong>Start</strong></div>
-                  {this.props.alert.start
+                  {alert.start
                     ? <DateTimeField
-                      dateTime={this.props.alert.start}
-                      onChange={time => this.props.startChanged(time)}
-                    />
+                      disabled
+                      dateTime={alert.start}
+                      onChange={time => startChanged(time)}
+                      />
                     : <DateTimeField
                       defaultText='Please select a date'
-                      onChange={time => this.props.startChanged(time)}
+                      onChange={time => startChanged(time)}
                     />
                   }
                 </Col>
                 <Col xs={6}>
                   <div style={{marginBottom: '5px'}}><strong>End</strong></div>
-                  {this.props.alert.end
+                  {alert.end
                     ? <DateTimeField
-                      dateTime={this.props.alert.end}
-                      onChange={time => this.props.endChanged(time)}
+                      dateTime={alert.end}
+                      onChange={time => endChanged(time)}
                     />
                     : <DateTimeField
                       defaultText='Please select a date'
-                      onChange={time => this.props.endChanged(time)}
+                      onChange={time => endChanged(time)}
                     />
                   }
                 </Col>
@@ -174,8 +192,8 @@ export default class AlertEditor extends React.Component {
                     <ControlLabel>Cause</ControlLabel>
                     <FormControl
                       componentClass='select'
-                      onChange={(evt) => this.props.causeChanged(evt.target.value)}
-                      value={this.props.alert.cause}
+                      onChange={(evt) => causeChanged(evt.target.value)}
+                      value={alert.cause}
                     >
                       {CAUSES.map((cause) => {
                         return <option key={cause} value={cause}>{toSentenceCase(cause.replace('_', ' '))}</option>
@@ -188,8 +206,8 @@ export default class AlertEditor extends React.Component {
                     <ControlLabel>Effect</ControlLabel>
                     <FormControl
                       componentClass='select'
-                      onChange={(evt) => this.props.effectChanged(evt.target.value)}
-                      value={this.props.alert.effect}
+                      onChange={(evt) => effectChanged(evt.target.value)}
+                      value={alert.effect}
                     >
                       {EFFECTS.map((effect) => {
                         return <option key={effect} value={effect}>{toSentenceCase(effect.replace('_', ' '))}</option>
@@ -205,8 +223,8 @@ export default class AlertEditor extends React.Component {
                     <FormControl
                       componentClass='textarea'
                       placeholder='Detailed description of alert...'
-                      defaultValue={this.props.alert.description}
-                      onChange={(evt) => this.props.descriptionChanged(evt.target.value)}
+                      defaultValue={alert.description}
+                      onChange={(evt) => descriptionChanged(evt.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -216,8 +234,8 @@ export default class AlertEditor extends React.Component {
                     <FormControl
                       type='text'
                       placeholder='http://511.org/alerts/transit/123'
-                      defaultValue={this.props.alert.url}
-                      onChange={(evt) => this.props.urlChanged(evt.target.value)}
+                      defaultValue={alert.url}
+                      onChange={(evt) => urlChanged(evt.target.value)}
                     />
                   </FormGroup>
                 </Col>
@@ -242,9 +260,9 @@ export default class AlertEditor extends React.Component {
                 </Col>
               </Row>
               <GtfsMapSearch
-                feeds={this.props.activeFeeds}
-                onStopClick={this.props.editorStopClick}
-                onRouteClick={this.props.editorRouteClick}
+                feeds={activeFeeds}
+                onStopClick={editorStopClick}
+                onRouteClick={editorRouteClick}
                 popupAction='Add'
                 newEntityId={newEntityId}
               />

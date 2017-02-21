@@ -76,7 +76,7 @@ export default class SignEditor extends React.Component {
                     }
                     // check for entities without routes
                     for (var i = 0; i < this.props.sign.affectedEntities.length; i++) {
-                      let ent = this.props.sign.affectedEntities[i]
+                      const ent = this.props.sign.affectedEntities[i]
                       if (!ent.route || ent.route.length === 0) {
                         window.alert('You must specify at least one route for ' + ent.stop.stop_name)
                         return
@@ -84,7 +84,7 @@ export default class SignEditor extends React.Component {
                     }
                     // check for published displays for unpublished config
                     for (let i = 0; i < this.props.sign.displays.length; i++) {
-                      let disp = this.props.sign.displays[i]
+                      const disp = this.props.sign.displays[i]
                       if (disp.PublishedDisplayConfigurationId === this.props.sign.id && !this.props.sign.published) {
                         window.alert('Published displays may not be associated with an unpublished sign configuration.')
                         return

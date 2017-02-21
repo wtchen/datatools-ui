@@ -32,7 +32,7 @@ export default class AlertsList extends Component {
       if (aName > bName) return 1
       return 0
     }
-    let sortedFeeds = this.props.editableFeeds.sort(compare)
+    const sortedFeeds = this.props.editableFeeds.sort(compare)
     return (
       <div>
         <Row>
@@ -70,8 +70,8 @@ export default class AlertsList extends Component {
               <FormControl
                 componentClass='select'
                 onChange={(evt) => {
-                  let values = evt.target.value.split(':')
-                  let sort = {
+                  const values = evt.target.value.split(':')
+                  const sort = {
                     type: values[0],
                     direction: values[1]
                   }

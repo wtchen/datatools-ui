@@ -8,7 +8,7 @@ import { FILTERS } from '../util'
 
 const getVisibleSigns = (signs, visibilityFilter) => {
   if (!signs) return []
-  let visibleSigns = signs.filter(sign =>
+  const visibleSigns = signs.filter(sign =>
     sign.title.toLowerCase().indexOf((visibilityFilter.searchText || '').toLowerCase()) !== -1)
   switch (visibilityFilter.filter) {
     case 'ALL':
@@ -24,7 +24,7 @@ const getVisibleSigns = (signs, visibilityFilter) => {
 
 const mapStateToProps = (state, ownProps) => {
   // if (state.projects.active !== null && state.projects.active.feeds !== null )
-  let filterCounts = {}
+  const filterCounts = {}
   if (!state.signs.isFetching) {
     FILTERS.map(f => {
       filterCounts[f] = getVisibleSigns(state.signs.all, {filter: f}).length
