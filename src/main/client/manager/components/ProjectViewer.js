@@ -141,14 +141,16 @@ export default class ProjectViewer extends Component {
           </InputGroup>
         </Col>
         <Col xs={8}>
-          <Button
-            bsStyle='primary'
-            disabled={projectEditDisabled}
-            className='pull-right'
-            onClick={() => onNewFeedSourceClick()}
-          >
-            <Glyphicon glyph='plus' /> {getMessage(messages, 'feeds.new')}
-          </Button>
+          {!projectEditDisabled &&
+            <Button
+              bsStyle='primary'
+              disabled={projectEditDisabled}
+              className='pull-right'
+              onClick={() => onNewFeedSourceClick()}
+            >
+              <Glyphicon glyph='plus' /> {getMessage(messages, 'feeds.new')}
+            </Button>
+          }
           <ButtonToolbar>
             {isExtensionEnabled('transitland') || isExtensionEnabled('transitfeeds') || isExtensionEnabled('mtc')
               ? <ThirdPartySyncButton
@@ -247,7 +249,7 @@ export default class ProjectViewer extends Component {
                   </Panel>
                 </Col>
                 <Col xs={12} sm={3}>
-                  {isModuleEnabled('enterprise') &&
+                  {isModuleEnabled('enterprise') && !projectEditDisabled &&
                     <div style={{marginBottom: '20px'}}>
                       <Button
                         bsStyle='primary'
