@@ -42,11 +42,17 @@ export default class GtfsVersionSummary extends Component {
   }
 
   render () {
-    const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'edit-gtfs')
-    const publishingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.version.feedSource.projectId, this.props.version.feedSource.id, 'approve-gtfs')
+    const {
+      gtfsPlusDataRequested,
+      user,
+      version,
+      publishClicked
+    } = this.props
+    const editingIsDisabled = !user.permissions.hasFeedPermission(version.feedSource.organizationId, version.feedSource.projectId, version.feedSource.id, 'edit-gtfs')
+    const publishingIsDisabled = !user.permissions.hasFeedPermission(version.feedSource.organizationId, version.feedSource.projectId, version.feedSource.id, 'approve-gtfs')
     const header = (
       <h3 onClick={() => {
-        if (!this.state.expanded) this.props.gtfsPlusDataRequested(this.props.version)
+        if (!this.state.expanded) gtfsPlusDataRequested(version)
         this.setState({ expanded: !this.state.expanded })
       }}>
         <Glyphicon glyph='check' /> GTFS+ for this Version
@@ -68,7 +74,7 @@ export default class GtfsVersionSummary extends Component {
               bsSize='large'
               disabled={editingIsDisabled}
               bsStyle='primary'
-              onClick={() => { browserHistory.push(`/editor/${this.props.version.feedSource.id}/${this.props.version.id}`) }}
+              onClick={() => { browserHistory.push(`/editor/${version.feedSource.id}/${version.id}`) }}
             >
               <Glyphicon glyph='edit' /> Edit GTFS+
             </Button>
@@ -79,7 +85,7 @@ export default class GtfsVersionSummary extends Component {
                 bsStyle='primary'
                 style={{ marginLeft: '6px' }}
                 onClick={() => {
-                  this.props.publishClicked(this.props.version)
+                  publishClicked(this.props.version)
                   this.setState({ expanded: false })
                 }}
               >

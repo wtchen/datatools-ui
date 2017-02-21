@@ -268,12 +268,10 @@ export function resetPassword () {
 export function getRecentActivity (user) {
   return function (dispatch, getState) {
     const userId = user.profile.user_id
-    console.log('getRecentActivity for ' + userId)
     const url = `/api/manager/secure/user/${userId}/recentactivity`
     return secureFetch(url, getState())
       .then(response => response.json())
       .then(activity => {
-        console.log('got recent activity', activity)
         return dispatch(receiveRecentActivity(activity))
       })
   }

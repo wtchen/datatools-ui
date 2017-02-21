@@ -55,8 +55,21 @@ export default class GtfsPlusEditor extends Component {
   }
 
   render () {
-    if (!this.props.feedSource) return null
-    const editingIsDisabled = !this.props.user.permissions.hasFeedPermission(this.props.feedSource.projectId, this.props.feedSource.id, 'edit-gtfs')
+    const {
+      feedSource,
+      user,
+      project,
+      validation,
+      tableData,
+      newRowClicked,
+      deleteRowClicked,
+      fieldEdited,
+      gtfsEntitySelected,
+      gtfsEntityLookup,
+      newRowsDisplayed
+    } = this.props
+    if (!feedSource) return null
+    const editingIsDisabled = !user.permissions.hasFeedPermission(feedSource.organizationId, feedSource.projectId, feedSource.id, 'edit-gtfs')
     const buttonStyle = {
       display: 'block',
       width: '100%'
@@ -73,15 +86,15 @@ export default class GtfsPlusEditor extends Component {
               <ul className='breadcrumb'>
                 <li><Link to='/'>Explore</Link></li>
                 <li><Link to='/project'>Projects</Link></li>
-                <li><Link to={`/project/${this.props.project.id}`}>{this.props.project.name}</Link></li>
-                <li><Link to={`/feed/${this.props.feedSource.id}`}>{this.props.feedSource.name}</Link></li>
+                <li><Link to={`/project/${project.id}`}>{project.name}</Link></li>
+                <li><Link to={`/feed/${feedSource.id}`}>{feedSource.name}</Link></li>
                 <li className='active'>Edit GTFS+</li>
               </ul>
             </Col>
           </Row>
           <Row>
             <Col xs={12}>
-              <PageHeader>Editing GTFS+ for {this.props.feedSource.name}
+              <PageHeader>Editing GTFS+ for {feedSource.name}
                 <Button
                   bsStyle='primary'
                   bsSize='large'
@@ -108,7 +121,7 @@ export default class GtfsPlusEditor extends Component {
                       this.setState({ activeTableId: table.id })
                     }}
                   >
-                    {this.props.validation && (table.id in this.props.validation)
+                    {validation && (table.id in validation)
                       ? <Glyphicon glyph='alert' style={{ color: 'red', marginRight: '8px' }} />
                       : null
                     }
@@ -120,18 +133,18 @@ export default class GtfsPlusEditor extends Component {
             <Col xs={10}>
               <GtfsPlusTable
                 ref='activeTable'
-                feedSource={this.props.feedSource}
+                feedSource={feedSource}
                 table={activeTable}
-                tableData={this.props.tableData[activeTable.id]}
-                validation={this.props.validation[activeTable.id]}
-                newRowClicked={this.props.newRowClicked}
-                deleteRowClicked={this.props.deleteRowClicked}
-                fieldEdited={this.props.fieldEdited}
+                tableData={tableData[activeTable.id]}
+                validation={validation[activeTable.id]}
+                newRowClicked={newRowClicked}
+                deleteRowClicked={deleteRowClicked}
+                fieldEdited={fieldEdited}
                 gtfsEntitySelected={(type, entity) => {
-                  this.props.gtfsEntitySelected(type, entity)
+                  gtfsEntitySelected(type, entity)
                 }}
                 getGtfsEntity={(type, id) => {
-                  return this.props.gtfsEntityLookup[`${type}_${id}`]
+                  return gtfsEntityLookup[`${type}_${id}`]
                 }}
                 showHelpClicked={(tableId, fieldName) => {
                   const helpContent = fieldName
@@ -146,7 +159,7 @@ export default class GtfsPlusEditor extends Component {
                   })
                 }}
                 newRowsDisplayed={(rows) => {
-                  this.props.newRowsDisplayed(activeTable.id, rows, this.props.feedSource)
+                  newRowsDisplayed(activeTable.id, rows, feedSource)
                 }}
               />
             </Col>

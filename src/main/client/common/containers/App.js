@@ -56,10 +56,15 @@ class App extends Component {
       this.props.checkExistingLogin({required: 'ADMIN'})
       .then((action) => {
         console.log('requiring admin')
-        if (this.props.user.profile === null || !this.props.user.permissions.isApplicationAdmin()) {
+        if (this.props.user.profile === null) {
+          console.log('profile null', this.props.user)
           browserHistory.push('/')
-        } else {
+        } else if (this.props.user.permissions.isApplicationAdmin() || this.props.user.permissions.canAdministerAnOrganization()) {
+          console.log('user is admin')
           callback()
+        } else {
+          console.log('fail to verify')
+          browserHistory.push('/')
         }
       })
     }

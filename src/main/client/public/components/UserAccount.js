@@ -107,41 +107,52 @@ export default class UserAccount extends Component {
                 onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
                       />
               <ul>
-                {sub.target.length ? sub.target.map(target => {
-                  let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
-                  if (this.props.projects) {
-                    for (var i = 0; i < this.props.projects.length; i++) {
-                      const feed = this.props.projects[i].feedSources
-                                ? this.props.projects[i].feedSources.find(fs => fs.id === target)
-                                : null
-                      fs = feed || fs
-                    }
-                  }
+                {subscriptions && subscriptions.length ? subscriptions.map(sub => {
                   return (
                     <li>
-                      {
-                                fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
-                                : <span>{target}</span>
-                              } {' '}
+                      {sub.type.replace('-', ' ')}{' '}
                       <Icon
                         type='trash'
                         className='text-danger'
                         style={removeIconStyle}
-                        onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
+                        onClick={() => { this.props.removeUserSubscription(this.props.user.profile, sub.type) }}
+                      />
+                      <ul>
+                        {sub.target.length ? sub.target.map(target => {
+                          let fs = null // this.props.projects ? this.props.projects.reduce(proj => proj.feedSources.filter(fs => fs.id === target)) : null
+                          if (this.props.projects) {
+                            for (var i = 0; i < this.props.projects.length; i++) {
+                              let feed = this.props.projects[i].feedSources
+                                ? this.props.projects[i].feedSources.find(fs => fs.id === target)
+                                : null
+                              fs = feed || fs
+                            }
+                          }
+                          return (
+                            <li>
+                              {
+                                fs ? <Link to={fs.isPublic ? `/public/feed/${fs.id}` : `/feed/${fs.id}`}>{fs.name}</Link>
+                                : <span>{target}</span>
+                              } {' '}
+                              <Icon
+                                type='trash'
+                                className='text-danger'
+                                style={removeIconStyle}
+                                onClick={() => { this.props.updateUserSubscription(this.props.user.profile, target, sub.type) }}
                               />
+                            </li>
+                          )
+                        }) : <li>No feeds subscribed to.</li>
+                      }
+                      </ul>
                     </li>
                   )
-                }) : <li>No feeds subscribed to.</li>
-                      }
-              </ul>
-            </li>
-          )
-        })
+                })
                 : <li>No subscriptions.</li>
               }
-      </ul>
-    </Panel>
-  </div>
+              </ul>
+            </Panel>
+          </div>
       },
       {
         id: 'billing',

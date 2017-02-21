@@ -1,14 +1,17 @@
 import React, { Component, PropTypes } from 'react'
 import { Row, Col, Checkbox, Panel, SplitButton, MenuItem, Label, ButtonGroup, Button } from 'react-bootstrap'
 import update from 'react-addons-update'
-import ReactDOM from 'react-dom'
+import Select from 'react-select'
 
 import allPermissions from './permissions'
 import { getComponentMessages, getMessage, getConfigProperty } from '../../common/util/config'
 
 export default class UserSettings extends Component {
   static propTypes = {
+    creatingUser: PropTypes.object,
     fetchProjectFeeds: PropTypes.func,
+    isCreating: PropTypes.bool,
+    organizations: PropTypes.array,
     permissions: PropTypes.object,
     projects: PropTypes.array
   }
@@ -17,14 +20,26 @@ export default class UserSettings extends Component {
     this.state = {
       appAdminChecked: this.props.permissions.isApplicationAdmin(),
       currentProjectIndex: 0,
-      projectSettings: {}
+      projectSettings: {},
+      organization: null
     }
+
+    this.props.organizations.forEach((organization, i) => {
+      if (this.props.permissions.hasOrganization(organization.id)) {
+        this.state.organization = organization
+        if (this.props.permissions.isOrganizationAdmin(organization.id)) {
+          this.state.orgAdminChecked = true
+        }
+      } else if (this.props.isCreating && this.props.creatingUser.permissions.getOrganizationId() === organization.id) {
+        this.state.organization = organization
+      }
+    })
     this.props.projects.forEach((project, i) => {
       let access = 'none'
       let defaultFeeds = []
       let permissions = []
-      if (this.props.permissions.hasProject(project.id)) {
-        if (this.props.permissions.isProjectAdmin(project.id)) {
+      if (this.props.permissions.hasProject(project.id, project.organizationId)) {
+        if (this.props.permissions.isProjectAdmin(project.id, project.organizationId)) {
           access = 'admin'
         } else {
           access = 'custom'
@@ -50,9 +65,18 @@ export default class UserSettings extends Component {
     const settings = {
       permissions: [],
       projects: [],
+      organizations: [],
       client_id: getConfigProperty('auth0.client_id')
     }
-
+    if (this.state.organization) {
+      const orgSettings = {
+        organization_id: this.state.organization.id,
+        permissions: this.state.orgAdminChecked
+          ? [{type: 'administer-organization'}] // this.state.orgPermissions[this.state.organization.id]
+          : []
+      }
+      settings.organizations.push(orgSettings)
+    }
     this.props.projects.forEach((project, i) => {
       const stateProjectSettings = this.state.projectSettings[project.id]
       if (stateProjectSettings.access === 'none') return
@@ -86,33 +110,39 @@ export default class UserSettings extends Component {
     this.setState({
       currentProjectIndex: key
     })
-    // this.props.projects.forEach((project, i) => {
-    //   let access = 'none'
-    //   let defaultFeeds = []
-    //   let permissions = []
-    //   if (this.props.permissions.hasProject(project.id)) {
-    //     if (this.props.permissions.isProjectAdmin(project.id)) {
-    //       access = 'admin'
-    //     } else {
-    //       access = 'custom'
-    //       let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
-    //       permissions = projectPermissions.map((p) => { return p.type })
-    //       defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
-    //     }
-    //   }
-    //   this.state.projectSettings[project.id] = { access, defaultFeeds, permissions }
-    // })
   }
 
   appAdminClicked (value) {
-    console.log(ReactDOM.findDOMNode(this.refs.appAdminCheckbox))
-    this.setState({
+    let stateUpdate = {
       appAdminChecked: value
-    })
+    }
+    if (value) {
+      stateUpdate.organization = null
+      stateUpdate.orgAdminChecked = false
+    }
+    this.setState(stateUpdate)
   }
 
+  orgAdminClicked (value, projects, org) {
+    this.setState({orgAdminChecked: value})
+  }
+  orgUpdated = (val) => {
+    let stateUpdate = {
+      organization: val && val.organization || null,
+      orgAdminChecked: false,
+      projectSettings: {}
+    }
+    this.props.projects.forEach(p => {
+      const access = 'none'
+      const defaultFeeds = []
+      const permissions = []
+      stateUpdate.projectSettings[p.id] = {access, defaultFeeds, permissions}
+    })
+    this.setState(stateUpdate)
+  }
   projectAccessUpdated (projectId, newAccess) {
     var stateUpdate = {projectSettings: {[projectId]: {$merge: {access: newAccess}}}}
+    console.log(stateUpdate)
     this.setState(update(this.state, stateUpdate))
   }
 
@@ -128,7 +158,14 @@ export default class UserSettings extends Component {
 
   render () {
     const messages = getComponentMessages('UserSettings')
-    const currentProject = this.props.projects[this.state.currentProjectIndex]
+    const { creatingUser, fetchProjectFeeds, organizations, projects } = this.props
+    const orgToOption = organization => ({label: organization.name, value: organization.id, organization})
+    const creatorIsApplicationAdmin = creatingUser.permissions.isApplicationAdmin()
+
+    // limit available projects to those that either have no org or match the current state org
+    const orgProjects = projects.filter(p => !p.organizationId || this.state.organization && this.state.organization.id === p.organizationId)
+    console.log(this.state.organization, projects, orgProjects, this.state.projectSettings)
+    const currentProject = orgProjects[this.state.currentProjectIndex]
 
     const getProjectLabel = (access) => {
       switch (access) {
@@ -142,16 +179,16 @@ export default class UserSettings extends Component {
       <Panel
         header={
           <h3>
-            Project Settings for&nbsp;
+            Project Settings for{' '}
             <SplitButton
-              title={currentProject.name}
-              id={currentProject.name}
+              disabled={!currentProject}
+              title={currentProject ? currentProject.name : 'No projects available'}
+              id={currentProject ? currentProject.name : 'No projects available'}
               onSelect={(key) => this.projectSelected(key)}
-
             >
-              {this.props.projects.map((project, i) => {
+              {orgProjects.map((project, i) => {
                 const settings = this.state.projectSettings[project.id]
-                if (typeof settings !== 'undefined') {
+                if (settings) {
                   return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
                 }
               })}
@@ -159,14 +196,14 @@ export default class UserSettings extends Component {
           </h3>
         }
       >
-        {this.props.projects.map((project, i) => {
+        {orgProjects.map((project, i) => {
           if (i !== this.state.currentProjectIndex) return null
           const settings = this.state.projectSettings[project.id]
           return <ProjectSettings
             project={project}
             key={project.id}
             settings={settings}
-            fetchProjectFeeds={this.props.fetchProjectFeeds}
+            fetchProjectFeeds={fetchProjectFeeds}
             visible={(i === this.state.currentProjectIndex)}
             projectAccessUpdated={this.projectAccessUpdated.bind(this)}
             projectFeedsUpdated={this.projectFeedsUpdated.bind(this)}
@@ -179,19 +216,49 @@ export default class UserSettings extends Component {
     return (
       <Row>
         <Col xs={4}>
-          <Panel header={<h3>{getMessage(messages, 'application')}</h3>}>
-            <Checkbox
-              checked={this.state.appAdminChecked}
-              onChange={(evt) => this.appAdminClicked(evt.target.checked)}
-              ref='appAdminCheckbox'
-            >
-              {getMessage(messages, 'admin.title')}
-            </Checkbox>
+          <Panel header={
+            <h3>
+              Organization settings
+              {
+                // getMessage(messages, 'application')
+              }
+            </h3>
+          }>
+            {creatorIsApplicationAdmin &&
+              <Checkbox
+                checked={this.state.appAdminChecked}
+                onChange={(evt) => this.appAdminClicked(evt.target.checked)}
+                ref='appAdminCheckbox'
+              >
+                {getMessage(messages, 'admin.title')}
+              </Checkbox>
+            }
+            {!this.state.appAdminChecked &&
+              <div className='orgDetails'>
+                <Select
+                  options={organizations.map(orgToOption)}
+                  disabled={!creatorIsApplicationAdmin}
+                  value={this.state.organization && orgToOption(this.state.organization)}
+                  onChange={this.orgUpdated}
+                />
+                {this.state.organization &&
+                  <Checkbox
+                    checked={this.state.orgAdminChecked}
+                    onChange={(evt) => this.orgAdminClicked(evt.target.checked, orgProjects, this.state.organization)}
+                    ref='orgAdminCheckbox'
+                  >
+                    {getMessage(messages, 'org.admin')}
+                  </Checkbox>
+                }
+              </div>
+            }
           </Panel>
         </Col>
         <Col xs={8}>
           {this.state.appAdminChecked
             ? <i>{getMessage(messages, 'admin.description')}</i>
+            : this.state.orgAdminChecked
+            ? <i>{getMessage(messages, 'org.description')}</i>
             : projectPanel
           }
         </Col>
@@ -247,9 +314,14 @@ class ProjectSettings extends Component {
     this.props.projectPermissionsUpdated(this.props.project.id, selectedPermissions)
   }
   render () {
+    const {
+      project,
+      visible,
+      settings
+    } = this.props
     const messages = getComponentMessages('UserSettings')
 
-    let feedSources = this.props.project.feedSources
+    let feedSources = project.feedSources
     if (feedSources) {
       feedSources = feedSources.slice(0).sort((a, b) => {
         if (a.name < b.name) return -1
@@ -258,27 +330,27 @@ class ProjectSettings extends Component {
       })
     }
     return (
-      <Row style={{display: this.props.visible ? 'block' : 'none'}}>
+      <Row style={{display: visible ? 'block' : 'none'}}>
         <Col xs={12}>
           <Row>
             <Col xs={12}>
               <ButtonGroup>
                 <Button
-                  active={this.props.settings.access === 'none'}
+                  active={settings.access === 'none'}
                   onClick={this.setAccess.bind(this, 'none')}
                 >
                   {getMessage(messages, 'project.noAccess')}
                 </Button>
 
                 <Button
-                  active={this.props.settings.access === 'admin'}
+                  active={settings.access === 'admin'}
                   onClick={this.setAccess.bind(this, 'admin')}
                 >
                   {getMessage(messages, 'project.admin')}
                 </Button>
 
                 <Button
-                  active={this.props.settings.access === 'custom'}
+                  active={settings.access === 'custom'}
                   onClick={this.setAccess.bind(this, 'custom')}
                 >
                   {getMessage(messages, 'project.custom')}
@@ -286,15 +358,15 @@ class ProjectSettings extends Component {
               </ButtonGroup>
             </Col>
           </Row>
-          {this.props.settings.access === 'custom' ? (
+          {settings.access === 'custom' ? (
             <Row>
               <Col xs={6}>
                 <h4>{getMessage(messages, 'project.feeds')}</h4>
                 {feedSources
                   ? feedSources.map((feed, i) => {
-                    const name = (feed.name === '') ? '(unnamed feed)' : feed.name
-                    const refName = 'feed-' + feed.id
-                    const checked = this.props.settings.defaultFeeds.indexOf(feed.id) !== -1
+                    let name = (feed.name === '') ? '(unnamed feed)' : feed.name
+                    let refName = 'feed-' + feed.id
+                    let checked = settings.defaultFeeds.indexOf(feed.id) !== -1
                     return <Checkbox
                       inputRef={ref => { this[refName] = ref }}
                       key={feed.id}
@@ -310,8 +382,8 @@ class ProjectSettings extends Component {
               <Col xs={6}>
                 <h4>{getMessage(messages, 'project.permissions')}</h4>
                 {allPermissions.map((permission, i) => {
-                  const refName = 'permission-' + permission.type
-                  const checked = this.props.settings.permissions.indexOf(permission.type) !== -1
+                  let refName = 'permission-' + permission.type
+                  let checked = settings.permissions.indexOf(permission.type) !== -1
                   return <Checkbox
                     inputRef={ref => { this[refName] = ref }}
                     key={permission.type}

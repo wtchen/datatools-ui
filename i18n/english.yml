@@ -52,6 +52,7 @@ ProjectViewer:
   mergeFeeds: Merge all
   makePublic: Update public feeds
   settings: Settings
+  makePublic: Publish public feeds
   deployments: Deployments
   feeds:
     title: Feed Sources
@@ -260,21 +261,51 @@ UserAdmin:
   title: Administration
   noAccess: You do not have sufficient user privileges to access this area.
 UserList:
+  filterByOrg: Filter by org.
   title: User Management
   showing: Showing Users
   of: of
   search: Search by username
+UserRow:
+  appAdmin: App admin
+  orgAdmin: Org admin
+  cancel: Cancel
+  delete: Delete
+  deleteConfirm: Are you sure you want to permanently delete this user?
+  edit: Edit
+  save: Save
 UserHomePage:
   title: Projects
   noProjects: You currently do not have any projects.
   createFirst: Create my first project
-  search: Search feeds
   table:
     name: Project Name
   new: New Project
   help:
     title: What's a project?
     content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+FeedSourcePanel:
+  search: Search feeds
+OrganizationList:
+  search: Search orgs
+  new: Create org
+OrganizationSettings:
+  orgDetails: Organization details
+  projects: Projects
+  extensions: Extensions
+  subDetails: Subscription details
+  name:
+    label: Name
+    placeholder: Big City Transit
+  logoUrl:
+    label: Logo URL
+    placeholder: http://example.com/logo_30x30.png
+  subscriptionBeginDate: Subscription begins
+  subscriptionEndDate: Subscription ends
+  usageTier:
+    low: Low
+    medium: Medium
+    high: High
 
 CreateUser:
   new: Create User
@@ -284,6 +315,10 @@ UserSettings:
   cancel: Cancel
   save: Save
   application: Application Settings
+  org:
+    admin: Organization administrator
+    description: Organization administrators have full access to projects within the organization.
+    billing: Billing admin
   admin:
     title: Application Admininistrator
     description: Application administrators have full access to all projects.

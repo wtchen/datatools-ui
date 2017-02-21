@@ -1,3 +1,9 @@
-module.exports = {
-  admin: require('./admin')
-}
+import { combineReducers } from 'redux'
+
+import users from './users'
+import organizations from './organizations'
+
+export default combineReducers({
+  users,
+  organizations
+})

@@ -1,6 +1,7 @@
 package com.conveyal.datatools.manager.controllers.api;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.conveyal.datatools.manager.DataManager;
 import com.conveyal.datatools.manager.auth.Auth0UserProfile;
 import com.conveyal.datatools.manager.jobs.FetchSingleFeedJob;
@@ -49,9 +50,10 @@ public class FeedSourceController {
 
         if (projectId != null) {
             for (FeedSource source: FeedSource.getAll()) {
+                String orgId = source.getOrganizationId();
                 if (
                     source != null && source.projectId != null && source.projectId.equals(projectId)
-                    && requestingUser != null && (requestingUser.canManageFeed(source.projectId, source.id) || requestingUser.canViewFeed(source.projectId, source.id))
+                    && requestingUser != null && (requestingUser.canManageFeed(orgId, source.projectId, source.id) || requestingUser.canViewFeed(orgId, source.projectId, source.id))
                 ) {
                     // if requesting public sources and source is not public; skip source
                     if (publicFilter && !source.isPublic)
@@ -66,9 +68,10 @@ public class FeedSourceController {
             if (user == null) return sources;
 
             for (FeedSource source: FeedSource.getAll()) {
+                String orgId = source.getOrganizationId();
                 if (
                     source != null && source.projectId != null &&
-                    (user.canManageFeed(source.projectId, source.id) || user.canViewFeed(source.projectId, source.id))
+                    (user.canManageFeed(orgId, source.projectId, source.id) || user.canViewFeed(orgId, source.projectId, source.id))
                 ) {
 
                     sources.add(source);
@@ -78,8 +81,9 @@ public class FeedSourceController {
         // request feed sources that are public
         else {
             for (FeedSource source: FeedSource.getAll()) {
+                String orgId = source.getOrganizationId();
                 // if user is logged in and cannot view feed; skip source
-                if ((requestingUser != null && !requestingUser.canManageFeed(source.projectId, source.id) && !requestingUser.canViewFeed(source.projectId, source.id)))
+                if ((requestingUser != null && !requestingUser.canManageFeed(orgId, source.projectId, source.id) && !requestingUser.canViewFeed(orgId, source.projectId, source.id)))
                     continue;
 
                 // if requesting public sources and source is not public; skip source
@@ -110,6 +114,9 @@ public class FeedSourceController {
         source = new FeedSource();
 
         applyJsonToFeedSource(source, req.body());
+
+        // check permissions before saving
+        requestFeedSource(req, source, "create");
         source.save();
 
         for(String resourceType : DataManager.feedResources.keySet()) {
@@ -176,14 +183,14 @@ public class FeedSourceController {
 
             if(entry.getKey().equals("isPublic")) {
                 source.isPublic = entry.getValue().asBoolean();
-                // TODO: set AWS GTFS zips to publix/private after "isPublic" change
+                // TODO: set AWS GTFS zips to public/private after "isPublic" change
                 if (DataManager.useS3) {
-//                    if (source.isPublic) {
-//                        FeedStore.s3Client.setObjectAcl(DataManager.feedBucket, keyName, CannedAccessControlList.PublicRead);
-//                    }
-//                    else {
-//                        FeedStore.s3Client.setObjectAcl(DataManager.feedBucket, keyName, CannedAccessControlList.AuthenticatedRead);
-//                    }
+                    if (source.isPublic) {
+                        source.makePublic();
+                    }
+                    else {
+                        source.makePrivate();
+                    }
                 }
             }
 
@@ -273,19 +280,27 @@ public class FeedSourceController {
     }
     public static FeedSource requestFeedSource(Request req, FeedSource s, String action) {
         Auth0UserProfile userProfile = req.attribute("user");
-        Boolean publicFilter = Boolean.valueOf(req.queryParams("public"));
+        Boolean publicFilter = Boolean.valueOf(req.queryParams("public")) || req.url().split("/api/manager/")[1].startsWith("public");
+//        System.out.println(req.url().split("/api/manager/")[1].startsWith("public"));
 
         // check for null feedsource
         if (s == null)
             halt(400, "Feed source ID does not exist");
-
+        String orgId = s.getOrganizationId();
         boolean authorized;
         switch (action) {
+            case "create":
+                authorized = userProfile.canAdministerProject(s.projectId, orgId);
+                break;
             case "manage":
-                authorized = userProfile.canManageFeed(s.projectId, s.id);
+                authorized = userProfile.canManageFeed(orgId, s.projectId, s.id);
                 break;
             case "view":
-                authorized = userProfile.canViewFeed(s.projectId, s.id);
+                if (!publicFilter) {
+                    authorized = userProfile.canViewFeed(orgId, s.projectId, s.id);
+                } else {
+                    authorized = false;
+                }
                 break;
             default:
                 authorized = false;

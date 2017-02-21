@@ -19,7 +19,8 @@ const projects = (state = {
     case 'CREATE_PROJECT':
       projects = [{
         isCreating: true,
-        name: ''
+        name: '',
+        ...action.project
       }, ...state.all]
       return update(state, { all: { $set: projects } })
 
@@ -127,13 +128,19 @@ const projects = (state = {
             [projectIndex]: {$merge: {feedSources: feeds}}
           }
         })
-      } else { // if projectId does not match active project
+      } else if (feeds.length) { // if projectId does not match active project
         return update(state,
           {
             isFetching: {$set: false},
             all: {
               [projectIndex]: {$merge: {feedSources: feeds}}
             }
+          }
+        )
+      } else {
+        return update(state,
+          {
+            isFetching: {$set: false}
           }
         )
       }

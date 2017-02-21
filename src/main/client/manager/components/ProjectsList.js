@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component, PropTypes} from 'react'
 import Helmet from 'react-helmet'
 import { Grid, Row, Col, Button, Table, FormControl, Panel, OverlayTrigger, Popover, Glyphicon } from 'react-bootstrap'
 
@@ -7,19 +7,43 @@ import EditableTextField from '../../common/components/EditableTextField'
 import defaultSorter from '../../common/util/util'
 import { getComponentMessages, getMessage } from '../../common/util/config'
 
-export default class ProjectsList extends React.Component {
+export default class ProjectsList extends Component {
+  static propTypes = {
+    projects: PropTypes.array,
+    user: PropTypes.object,
+    visibilitySearchText: PropTypes.object,
+    onNewProjectClick: PropTypes.func,
+    searchTextChanged: PropTypes.func,
+    saveProject: PropTypes.func,
+    projectNameChanged: PropTypes.func
+  }
   componentWillMount () {
     this.props.onComponentMount(this.props)
   }
+  _newProjectClicked = () => {
+    const project = {}
+    if (this.props.user.permissions.getOrganizationId()) {
+      project.organizationId = this.props.user.permissions.getOrganizationId()
+    }
+    this.props.onNewProjectClick(project)
+  }
   render () {
-    if (!this.props.projects) {
+    const {
+      projects,
+      user,
+      visibilitySearchText,
+      searchTextChanged,
+      saveProject,
+      projectNameChanged
+    } = this.props
+    if (!projects) {
       return <ManagerPage />
     }
     const messages = getComponentMessages('ProjectsList')
-    const projectCreationDisabled = !this.props.user.permissions.isApplicationAdmin()
-    const visibleProjects = this.props.projects.filter((project) => {
+    const projectCreationDisabled = !user.permissions.isApplicationAdmin() && !user.permissions.canAdministerAnOrganization()
+    const visibleProjects = projects.filter((project) => {
       if (project.isCreating) return true // projects actively being created are always visible
-      return project.name.toLowerCase().indexOf((this.props.visibilitySearchText || '').toLowerCase()) !== -1
+      return project.name.toLowerCase().indexOf((visibilitySearchText || '').toLowerCase()) !== -1
     }).sort(defaultSorter)
 
     return (
@@ -33,7 +57,7 @@ export default class ProjectsList extends React.Component {
               <Col xs={4}>
                 <FormControl
                   placeholder={getMessage(messages, 'search')}
-                  onChange={evt => this.props.searchTextChanged(evt.target.value)}
+                  onChange={evt => searchTextChanged(evt.target.value)}
                 />
               </Col>
               <Col xs={8}>
@@ -41,7 +65,7 @@ export default class ProjectsList extends React.Component {
                   bsStyle='primary'
                   disabled={projectCreationDisabled}
                   className='pull-right'
-                  onClick={() => this.props.onNewProjectClick()}
+                  onClick={this._newProjectClicked}
                 >
                   {getMessage(messages, 'new')}
                 </Button>
@@ -61,7 +85,7 @@ export default class ProjectsList extends React.Component {
                   </thead>
                   <tbody>
                     {visibleProjects.length > 0 ? visibleProjects.map((project) => {
-                      const disabled = !this.props.user.permissions.isProjectAdmin(project.id)
+                      const disabled = !user.permissions.isProjectAdmin(project.id, project.organizationId)
                       return (
                         <tr key={project.id}>
                           <td className='col-md-4'>
@@ -70,9 +94,11 @@ export default class ProjectsList extends React.Component {
                                 isEditing={(project.isCreating === true)}
                                 value={project.name}
                                 disabled={disabled}
-                                onChange={(value) => {
-                                  if (project.isCreating) this.props.newProjectNamed(value)
-                                  else this.props.projectNameChanged(project, value)
+                                onChange={(name) => {
+                                  const proj = {name}
+                                  if (project.organizationId) proj.organizationId = project.organizationId
+                                  if (project.isCreating) saveProject(proj)
+                                  else projectNameChanged(project, name)
                                 }}
                                 link={`/project/${project.id}`}
                               />
@@ -89,7 +115,7 @@ export default class ProjectsList extends React.Component {
                         <Button
                           bsStyle='primary'
                           disabled={projectCreationDisabled}
-                          onClick={() => this.props.onNewProjectClick()}
+                          onClick={this._newProjectClicked}
                         >
                           {getMessage(messages, 'createFirst')}
                         </Button>
