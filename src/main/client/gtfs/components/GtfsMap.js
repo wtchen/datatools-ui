@@ -50,8 +50,8 @@ export default class GtfsMap extends Component {
     }
   }
   mapMoved (e) {
-    let bounds = this.refs.map && this.refs.map.leafletElement.getBounds()
-    let zoom = this.refs.map && this.refs.map.leafletElement.getBoundsZoom(bounds)
+    const bounds = this.refs.map && this.refs.map.leafletElement.getBounds()
+    const zoom = this.refs.map && this.refs.map.leafletElement.getBoundsZoom(bounds)
     this.props.updateMapState && this.props.updateMapState({bounds, zoom})
     this.refs.map && !this.props.disableRefresh && this.refreshGtfsElements()
   }
@@ -181,7 +181,7 @@ export default class GtfsMap extends Component {
     } = this.props
     let mapWidth = width
     if (width.indexOf('px') !== -1) {
-      let diff = sidebarExpanded ? 30 : 0
+      const diff = sidebarExpanded ? 30 : 0
       mapWidth = `${width.split('px')[0] - diff}px`
     }
     var mapStyle = {

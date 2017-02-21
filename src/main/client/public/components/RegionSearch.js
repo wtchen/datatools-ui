@@ -65,7 +65,7 @@ export default class RegionSearch extends React.Component {
     }
     const getOptions = (input) => {
       const entities = typeof this.props.entities !== 'undefined' ? this.props.entities : ['regions', 'feeds']
-      let entitySearches = []
+      const entitySearches = []
       if (entities.indexOf('regions') > -1) {
         entitySearches.push(getRegions(input))
       }

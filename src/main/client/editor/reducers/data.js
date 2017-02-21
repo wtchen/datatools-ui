@@ -73,7 +73,7 @@ const data = (state = defaultState, action) => {
           }
           break
       }
-      let active = {
+      const active = {
         feedSourceId: action.feedSourceId,
         entity: activeEntity,
         entityId: action.entityId,
@@ -289,7 +289,7 @@ const data = (state = defaultState, action) => {
       routes.sort(gtfsSort)
       routeIndex = state.active.entity && routes.findIndex(r => r.id === state.active.entity.id)
       if (routeIndex !== -1) {
-        let activeRoute = routes[routeIndex]
+        const activeRoute = routes[routeIndex]
         if (state.active.entity && state.active.entity.tripPatterns) {
           activeRoute.tripPatterns = clone(state.active.entity.tripPatterns)
         }
@@ -447,7 +447,7 @@ const data = (state = defaultState, action) => {
         if (entity.hasOwnProperty('stop_id')) return 'stop'
       }
       const newLookupEntries = {}
-      for (let entity of action.gtfsEntities) {
+      for (const entity of action.gtfsEntities) {
         const type = getType(entity)
         const key = type + '_' + entity[type + '_id']
         newLookupEntries[key] = entity

@@ -146,7 +146,7 @@ function getRGBComponents (color) {
 // })
 
 export function isValidZipFile (file) {
-  let nameArray = file.name.split('.')
+  const nameArray = file.name.split('.')
   return (
     ( // check for various possible zip file types
       file.type === 'application/zip' ||

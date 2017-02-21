@@ -80,7 +80,7 @@ export default class EditorMap extends Component {
     switch (this.props.activeComponent) {
       case 'stop':
         // if newly created stop is selected
-        let stopLatLng = clickToLatLng(e.latlng)
+        const stopLatLng = clickToLatLng(e.latlng)
         if (this.props.activeEntity && this.props.activeEntity.id === 'new') {
           this.props.updateActiveEntity(this.props.activeEntity, this.props.activeComponent, stopLatLng)
           this.refs[this.props.activeEntity.id].leafletElement.setLatLng(e.latlng)
@@ -240,8 +240,8 @@ export default class EditorMap extends Component {
       editSettings
     } = this.props
     const { zoomToTarget, width, willMount } = this.state
-    let fsBounds = getFeedBounds(feedSource, 0.005)
-    let bounds = zoomToTarget
+    const fsBounds = getFeedBounds(feedSource, 0.005)
+    const bounds = zoomToTarget
       ? mapState.bounds
       : this.refs.map
       ? this.refs.map.leafletElement.getBounds()
@@ -253,7 +253,7 @@ export default class EditorMap extends Component {
       left: `${offset}px`,
       display: hidden ? 'none' : 'initial'
     }
-    let mapProps = {
+    const mapProps = {
       ref: 'map',
       zoomControl: false,
       style: mapStyle,

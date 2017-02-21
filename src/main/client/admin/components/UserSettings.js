@@ -43,7 +43,7 @@ export default class UserSettings extends Component {
           access = 'admin'
         } else {
           access = 'custom'
-          let projectPermissions = this.props.permissions.getProjectPermissions(project.id)
+          const projectPermissions = this.props.permissions.getProjectPermissions(project.id)
           permissions = projectPermissions.map((p) => { return p.type })
           defaultFeeds = this.props.permissions.getProjectDefaultFeeds(project.id)
         }
@@ -62,7 +62,7 @@ export default class UserSettings extends Component {
       }
     }
 
-    let settings = {
+    const settings = {
       permissions: [],
       projects: [],
       organizations: [],
@@ -78,10 +78,10 @@ export default class UserSettings extends Component {
       settings.organizations.push(orgSettings)
     }
     this.props.projects.forEach((project, i) => {
-      let stateProjectSettings = this.state.projectSettings[project.id]
+      const stateProjectSettings = this.state.projectSettings[project.id]
       if (stateProjectSettings.access === 'none') return
 
-      let projectSettings = {
+      const projectSettings = {
         project_id: project.id,
         permissions: []
       }
@@ -175,7 +175,7 @@ export default class UserSettings extends Component {
       }
     }
 
-    let projectPanel = (
+    const projectPanel = (
       <Panel
         header={
           <h3>
@@ -187,7 +187,7 @@ export default class UserSettings extends Component {
               onSelect={(key) => this.projectSelected(key)}
             >
               {orgProjects.map((project, i) => {
-                let settings = this.state.projectSettings[project.id]
+                const settings = this.state.projectSettings[project.id]
                 if (settings) {
                   return <MenuItem key={project.id} eventKey={i}>{project.name} {getProjectLabel(settings.access)}</MenuItem>
                 }
@@ -198,7 +198,7 @@ export default class UserSettings extends Component {
       >
         {orgProjects.map((project, i) => {
           if (i !== this.state.currentProjectIndex) return null
-          let settings = this.state.projectSettings[project.id]
+          const settings = this.state.projectSettings[project.id]
           return <ProjectSettings
             project={project}
             key={project.id}
@@ -298,7 +298,7 @@ class ProjectSettings extends Component {
     this.inputRef = ref
   }
   feedsUpdated () {
-    let selectedFeeds = []
+    const selectedFeeds = []
     this.props.project.feedSources.forEach((feed) => {
       var checkbox = this['feed-' + feed.id]
       if (checkbox.checked) selectedFeeds.push(feed.id)
@@ -306,7 +306,7 @@ class ProjectSettings extends Component {
     this.props.projectFeedsUpdated(this.props.project.id, selectedFeeds)
   }
   permissionsUpdated () {
-    let selectedPermissions = []
+    const selectedPermissions = []
     allPermissions.forEach((permission) => {
       var checkbox = this['permission-' + permission.type]
       if (checkbox.checked) selectedPermissions.push(permission.type)

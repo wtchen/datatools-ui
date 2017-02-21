@@ -54,9 +54,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateEditSetting: (setting, value, activePattern) => dispatch(updateEditSetting(setting, value, activePattern)),
     updateMapSetting: (props) => dispatch(updateMapSetting(props)),
     setActiveEntity: (feedSourceId, component, entity, subComponent, subEntity, subSubComponent, subSubEntity) => {
-      let entityId = entity && entity.id
-      let subEntityId = subEntity && subEntity.id
-      let subSubEntityId = subSubEntity && subSubEntity.id
+      const entityId = entity && entity.id
+      const subEntityId = subEntity && subEntity.id
+      const subSubEntityId = subSubEntity && subSubEntity.id
       dispatch(setActiveGtfsEntity(feedSourceId, component, entityId, subComponent, subEntityId, subSubComponent, subSubEntityId))
     },
     updateActiveEntity: (entity, component, props) => {

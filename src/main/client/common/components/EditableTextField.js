@@ -96,8 +96,15 @@ export default class EditableTextField extends Component {
     const style = {
       ...this.props.style
     }
+    const spanStyle = {}
     if (this.props.inline) {
       style.display = 'inline-block'
+    }
+    if (this.props.maxWidth) {
+      spanStyle.maxWidth = this.props.maxWidth
+      spanStyle.textOverflow = 'ellipsis'
+      spanStyle.whiteSpace = 'nowrap'
+      spanStyle.overflow = 'hidden'
     }
     return (
       <div style={style}>
@@ -122,7 +129,7 @@ export default class EditableTextField extends Component {
           </Form>
           : <span
             title={this.state.value}
-          >
+            style={spanStyle}>
             {this.props.link
               ? <Link to={this.props.link}>{displayValue}</Link>
               : displayValue || '(none)'

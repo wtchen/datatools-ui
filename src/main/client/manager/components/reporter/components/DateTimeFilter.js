@@ -41,12 +41,12 @@ export default class DateTimeFilter extends Component {
   }
   render () {
     const dateTime = this.props.dateTime || {date: null, from: null, to: null}
-    let dateTimeProps = {
+    const dateTimeProps = {
       mode: 'date',
       dateTime: dateTime.date ? +moment(dateTime.date, 'YYYY-MM-DD') : +moment(),
       onChange: (millis) => {
         console.log(+millis)
-        let date = moment(+millis).format('YYYY-MM-DD')
+        const date = moment(+millis).format('YYYY-MM-DD')
         console.log(date)
         this.props.updateDateTimeFilter({date})
         this.props.onChange && this.props.onChange({date})

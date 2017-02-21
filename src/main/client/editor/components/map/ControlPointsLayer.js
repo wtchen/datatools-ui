@@ -15,13 +15,13 @@ export default class ControlPointsLayer extends Component {
     removeControlPoint: PropTypes.func
   }
   getPrevious (index, controlPoints, pattern) {
-    let prevControlPoint = controlPoints[index - 1]
+    const prevControlPoint = controlPoints[index - 1]
     return prevControlPoint
       ? prevControlPoint.point
       : along(pattern.shape, 0, 'meters')
   }
   getNext (index, controlPoints) {
-    let nextControlPoint = controlPoints[index + 1]
+    const nextControlPoint = controlPoints[index + 1]
     if (nextControlPoint) {
       return nextControlPoint.point
     } else {
@@ -43,7 +43,7 @@ export default class ControlPointsLayer extends Component {
             if (cp.stopId && editSettings.snapToStops) {
               return null
             }
-            let position = cp.point
+            const position = cp.point
             const color = cp.permanent ? '#000' : '#888'
             const iconType = cp.stopId ? 'fa-square' : 'fa-times'
             if (!position || !position.geometry || !position.geometry.coordinates) {

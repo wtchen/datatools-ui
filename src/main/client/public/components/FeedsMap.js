@@ -21,13 +21,21 @@ export default class FeedsMap extends React.Component {
       height: '500px',
       width: '100%'
     }
-    let feeds = []
+    const feeds = []
+    this.props.projects.map(p => {
+      if (p.feedSources) {
+        return p.feedSources.map(f => {
+          feeds.push(f)
+          return f
+        })
+      }
+    })
     const getFeedLocation = (bounds) => {
       if (!bounds) return null
-      let lngEast = bounds.east ? bounds.east : bounds.west // check for 0 values
-      let lngWest = bounds.west ? bounds.west : bounds.east // check for 0 values
-      let latNorth = bounds.north ? bounds.north : bounds.south // check for 0 values
-      let latSouth = bounds.south ? bounds.south : bounds.north // check for 0 values
+      const lngEast = bounds.east ? bounds.east : bounds.west // check for 0 values
+      const lngWest = bounds.west ? bounds.west : bounds.east // check for 0 values
+      const latNorth = bounds.north ? bounds.north : bounds.south // check for 0 values
+      const latSouth = bounds.south ? bounds.south : bounds.north // check for 0 values
 
       // return averaged location
       return [(latNorth + latSouth) / 2, (lngWest + lngEast) / 2]
@@ -50,7 +58,7 @@ export default class FeedsMap extends React.Component {
 
     let bounds = getFeedsBounds(feeds)
 
-    let markers = []
+    const markers = []
     feeds.map(feed => {
       if (feed.latestValidation && feed.latestValidation.bounds) {
         markers.push(

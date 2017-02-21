@@ -1,5 +1,5 @@
 export const getFeedsBounds = (feeds) => {
-  let feedsWithBounds = feeds.filter(feed => feed.latestValidation && feed.latestValidation.bounds)
+  const feedsWithBounds = feeds.filter(feed => feed.latestValidation && feed.latestValidation.bounds)
   if (feedsWithBounds.length === 1) {
     return feedsWithBounds[0].latestValidation.bounds
   } else if (feedsWithBounds.length === 0) {

@@ -10,7 +10,7 @@ const mapStateToProps = (state, ownProps) => {
     : state.editor.data.active && state.editor.data.active.entity && ownProps.activeComponent === 'feedinfo'
     ? state.editor.data.active.entity
     : null
-  let activeEntity = entity
+  const activeEntity = entity
     ? {
       name: getEntityName(ownProps.activeComponent, entity),
       id: entity.id

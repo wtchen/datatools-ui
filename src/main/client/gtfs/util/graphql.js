@@ -158,7 +158,7 @@ export const stopsAndRoutes = (feedId, routeId, stopId) => `
 export const stopsFiltered = (feedId, routeId, patternId, date, from, to) => {
   const hasFrom = typeof from !== 'undefined' && from !== null
   const hasTo = typeof to !== 'undefined' && to !== null
-  let query = `
+  const query = `
   query filteredStopsQuery(
     ${feedId ? '$feedId: [String],' : ''}
     ${routeId ? '$routeId: [String],' : ''}

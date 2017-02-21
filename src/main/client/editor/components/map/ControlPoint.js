@@ -35,7 +35,7 @@ export default class ControlPoint extends Component {
             })
           }
           timerFunction()
-          let timer = setInterval(timerFunction, 500)
+          const timer = setInterval(timerFunction, 500)
           this.setState({timer})
         }}
         onDragEnd={(e) => {

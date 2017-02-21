@@ -16,7 +16,7 @@ export default class HourMinuteInput extends Component {
     }
   }
   onChange (value) {
-    let seconds = this.convertStringToSeconds(value)
+    const seconds = this.convertStringToSeconds(value)
     if (seconds === this.state.seconds) {
       this.setState({string: value})
     } else {
@@ -49,7 +49,7 @@ export default class HourMinuteInput extends Component {
     }
   }
   render () {
-    let seconds = this.state.seconds
+    const seconds = this.state.seconds
     return (
       <FormControl
         value={typeof this.state.string !== 'undefined' ? this.state.string : this.convertSecondsToString(seconds)}

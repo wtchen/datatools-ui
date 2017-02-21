@@ -24,8 +24,8 @@ export default class TripPatternListControls extends Component {
                     title: `Reverse trip pattern?`,
                     body: `Are you sure you want to reverse this trip pattern?`,
                     onConfirm: () => {
-                      let newCoords = [...activePattern.shape.coordinates].reverse()
-                      let newStops = [...activePattern.patternStops].reverse()
+                      const newCoords = [...activePattern.shape.coordinates].reverse()
+                      const newStops = [...activePattern.patternStops].reverse()
                       this.props.updateActiveEntity(activePattern, 'trippattern', {patternStops: newStops, shape: {type: 'LineString', coordinates: newCoords}})
                       this.props.saveActiveEntity('trippattern')
                     }

@@ -37,9 +37,9 @@ export function getTimetableColumns (pattern, stops) {
   if (pattern && pattern.patternStops) {
     if (!pattern.useFrequency) {
       pattern.patternStops.map((ps, index) => {
-        let stop = stops ? stops.find(st => st.id === ps.stopId) : null
-        let stopName = stop ? stop.stop_name : ps.stopId
-        let abbreviatedStopName = stop ? getAbbreviatedStopName(stop) : ps.stopId
+        const stop = stops ? stops.find(st => st.id === ps.stopId) : null
+        const stopName = stop ? stop.stop_name : ps.stopId
+        const abbreviatedStopName = stop ? getAbbreviatedStopName(stop) : ps.stopId
         const TIME_WIDTH = 80
         columns.push({
           name: abbreviatedStopName,
@@ -105,10 +105,10 @@ export function sortAndFilterTrips (trips, useFrequency) {
 }
 
 export function getZones (stops, activeStop) {
-  let zones = {}
+  const zones = {}
   if (stops) {
     for (var i = 0; i < stops.length; i++) {
-      let stop = stops[i]
+      const stop = stops[i]
       if (stop.zone_id) {
         let zone = zones[stop.zone_id]
         if (!zone) {
@@ -128,7 +128,7 @@ export function getZones (stops, activeStop) {
       zones[activeStop.zone_id] = zone
     }
   }
-  let zoneOptions = Object.keys(zones).map(key => {
+  const zoneOptions = Object.keys(zones).map(key => {
     return {
       value: key,
       label: `${key} zone (${zones[key] ? zones[key].length : 0} stops)`

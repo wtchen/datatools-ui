@@ -150,7 +150,7 @@ const projects = (state = {
         return update(state, { isFetching: { $set: false } })
       }
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
-      let existingSources = state.all[projectIndex].feedSources || []
+      const existingSources = state.all[projectIndex].feedSources || []
       let updatedSources
       sourceIndex = existingSources.findIndex(s => s.id === action.feedSource.id)
       if (sourceIndex === -1) { // source does not currently; add it
@@ -179,7 +179,7 @@ const projects = (state = {
     case 'RECEIVE_FEEDVERSIONS':
       projectIndex = state.all.findIndex(p => p.id === action.feedSource.projectId)
       sourceIndex = state.all[projectIndex].feedSources.findIndex(s => s.id === action.feedSource.id)
-      let versionSort = (a, b) => {
+      const versionSort = (a, b) => {
         if (a.version < b.version) return -1
         if (a.version > b.version) return 1
         return 0
@@ -205,7 +205,7 @@ const projects = (state = {
       versionIndex = state.all[projectIndex].feedSources[sourceIndex].feedVersions
         ? state.all[projectIndex].feedSources[sourceIndex].feedVersions.findIndex(v => v.id === action.feedVersion.id)
         : -1
-      let existingVersions = state.all[projectIndex].feedSources[sourceIndex].feedVersions || []
+      const existingVersions = state.all[projectIndex].feedSources[sourceIndex].feedVersions || []
       let updatedVersions
       if (versionIndex === -1) { // version does not currently; add it
         updatedVersions = [
@@ -334,7 +334,7 @@ const projects = (state = {
       }
     case 'RECEIVE_DEPLOYMENT':
       projectIndex = state.all.findIndex(p => p.id === action.deployment.project.id)
-      let existingDeployments = state.all[projectIndex].deployments || []
+      const existingDeployments = state.all[projectIndex].deployments || []
       let updatedDeployments
       sourceIndex = existingDeployments.findIndex(s => s.id === action.deployment.id)
       if (sourceIndex === -1) { // source does not currently; add it

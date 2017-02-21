@@ -28,7 +28,7 @@ export default class FeedInfoPanel extends Component {
       title: 'Upload route shapefile',
       body: 'Select a zipped shapefile to display on map:',
       onConfirm: (files) => {
-        let nameArray = files[0].name.split('.')
+        const nameArray = files[0].name.split('.')
         if (files[0].type !== 'application/zip' || nameArray[nameArray.length - 1] !== 'zip') {
           return false
         } else {
@@ -40,11 +40,11 @@ export default class FeedInfoPanel extends Component {
     })
   }
   render () {
-    let { feedSource, feedInfo } = this.props
+    const { feedSource, feedInfo } = this.props
     if (!feedInfo) return null
-    let panelWidth = 400
+    const panelWidth = 400
     // let panelHeight = '100px'
-    let panelStyle = {
+    const panelStyle = {
       // backgroundColor: 'white',
       position: 'absolute',
       right: this.state.right,
@@ -121,7 +121,7 @@ export default class FeedInfoPanel extends Component {
             >
               {gtfsIcons.map(c => {
                 if (!c.addable) return null
-                let name = c.id === 'scheduleexception' ? 'schedule exception' : c.id
+                const name = c.id === 'scheduleexception' ? 'schedule exception' : c.id
                 return (
                   <MenuItem key={c.id} eventKey={c.id}><Icon type={c.icon} /> Add {name}</MenuItem>
                 )
@@ -134,7 +134,7 @@ export default class FeedInfoPanel extends Component {
                 pullRight
                 id='snapshot-dropdown'
                 onSelect={key => {
-                  let snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
+                  const snapshot = this.props.feedSource.editorSnapshots.find(s => s.id === key)
                   this.props.showConfirmModal({
                     title: `Restore ${key}?`,
                     body: `Are you sure you want to restore this snapshot?`,

@@ -42,9 +42,8 @@ class Breadcrumbs extends React.Component {
       : null
     return (
       <ol
-        style={{
-          // backgroundColor: 'rgba(0,0,0,0)'
-        }}
+        style={{}}
+          // backgroundColor: 'rgba(0,0,0,0)'}
         className='breadcrumb' // col-sm-6'
       >
         <li><Link to='/'>{getMessage(messages, 'root')}</Link></li>

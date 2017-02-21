@@ -11,7 +11,7 @@ import { getFeedId } from '../../common/util/modules'
 export function addGtfsPlusRow (tableId) {
   const table = getConfigProperty('modules.gtfsplus.spec').find(t => t.id === tableId)
 
-  let rowData = {}
+  const rowData = {}
   for (const field of table.fields) {
     rowData[field.name] = null
   }
@@ -86,8 +86,8 @@ export function downloadGtfsPlusFeed (feedVersionId) {
 
     Promise.all([fetchFeed, fetchTimestamp]).then(([feed, timestamp]) => {
       JSZip.loadAsync(feed).then((zip) => {
-        let filenames = []
-        let filePromises = []
+        const filenames = []
+        const filePromises = []
         zip.forEach((path, file) => {
           filenames.push(path)
           filePromises.push(file.async('string'))

@@ -52,8 +52,8 @@ export default class Timetable extends Component {
     return moment(date + 'T' + timeString, TIMETABLE_FORMATS).diff(date, 'seconds')
   }
   handlePastedRows (pastedRows, rowIndex, colIndex) {
-    let newRows = [...this.props.data]
-    let editedRows = []
+    const newRows = [...this.props.data]
+    const editedRows = []
     let activeRow = rowIndex
     let activeCol = colIndex
     // iterate over rows in pasted selection
@@ -68,25 +68,25 @@ export default class Timetable extends Component {
       // iterate over number of this.props.columns in pasted selection
       for (var j = 0; j < pastedRows[0].length; j++) {
         activeCol = colIndex + j
-        let path = `${rowIndex + i}.${this.props.columns[colIndex + j].key}`
+        const path = `${rowIndex + i}.${this.props.columns[colIndex + j].key}`
 
         // // construct new row if it doesn't exist
         // if (typeof newRows[i + rowIndex] === 'undefined' || typeof objectPath.get(newRows, path) === 'undefined') {
         //   // newRows.push(this.props.constructNewRow())
         //   // this.props.addNewRow()
         // }
-        let value = this.parseTime(pastedRows[i][j])
+        const value = this.parseTime(pastedRows[i][j])
         // objectPath.set(newRows, path, value)
         this.props.updateCellValue(value, rowIndex + i, path)
         // if departure times are hidden, paste into adjacent time column
-        let adjacentPath = `${rowIndex + i}.${this.props.columns[colIndex + j + 2].key}`
+        const adjacentPath = `${rowIndex + i}.${this.props.columns[colIndex + j + 2].key}`
         if (this.props.timetable.hideDepartureTimes && isTimeFormat(this.props.columns[colIndex + j].type) && typeof objectPath.get(newRows, adjacentPath) !== 'undefined') {
           // objectPath.set(newRows, adjacentPath, value)
           this.props.updateCellValue(value, rowIndex + i, adjacentPath)
         }
       }
     }
-    let stateUpdate = {
+    const stateUpdate = {
       activeCell: {$set: `${activeRow}-${activeCol}`},
       scrollToRow: {$set: activeRow},
       scrollToColumn: {$set: activeCol}
@@ -130,7 +130,7 @@ export default class Timetable extends Component {
     const previousCol = this.props.columns[colIndex - 1]
     const row = this.props.data[rowIndex]
 
-    let rowIsChecked = this.props.selected[0] === '*' &&
+    const rowIsChecked = this.props.selected[0] === '*' &&
       this.props.selected.indexOf(rowIndex) === -1 || this.props.selected[0] !== '*' &&
       this.props.selected.indexOf(rowIndex) !== -1
 
@@ -138,7 +138,7 @@ export default class Timetable extends Component {
     if (col.key === 'gtfsTripId' && val === null) {
       val = objectPath.get(this.props.data[rowIndex], 'id') !== 'new' ? objectPath.get(this.props.data[rowIndex], 'id') : null
     }
-    let previousValue = previousCol && row && objectPath.get(row, previousCol.key)
+    const previousValue = previousCol && row && objectPath.get(row, previousCol.key)
     const isInvalid = isTimeFormat(col.type) && val >= 0 && val < previousValue && val !== null
     return (
       <EditableCell
@@ -206,7 +206,7 @@ export default class Timetable extends Component {
     )
   }
   _renderLeftColumnCell ({ columnIndex, key, rowIndex, style }) {
-    let rowSelected = this.props.selected.indexOf(rowIndex) !== -1
+    const rowSelected = this.props.selected.indexOf(rowIndex) !== -1
     // Select row checkbox
     return (
       <HeaderCell
@@ -258,8 +258,8 @@ export default class Timetable extends Component {
       if (value === 0) {
         return moment().startOf('day').seconds(value).format('HH:mm:ss')
       } else if (value && value >= 86400) {
-        let text = moment().startOf('day').seconds(value).format('HH:mm:ss')
-        let parts = text.split(':')
+        const text = moment().startOf('day').seconds(value).format('HH:mm:ss')
+        const parts = text.split(':')
         parts[0] = +parts[0] + 24
         return parts.join(':')
       } else if (value && value > 0) {

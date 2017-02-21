@@ -85,7 +85,7 @@ export default class ProjectsList extends Component {
                   </thead>
                   <tbody>
                     {visibleProjects.length > 0 ? visibleProjects.map((project) => {
-                      let disabled = !user.permissions.isProjectAdmin(project.id, project.organizationId)
+                      const disabled = !user.permissions.isProjectAdmin(project.id, project.organizationId)
                       return (
                         <tr key={project.id}>
                           <td className='col-md-4'>

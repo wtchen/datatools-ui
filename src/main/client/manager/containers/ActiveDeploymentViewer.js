@@ -11,7 +11,7 @@ import { fetchDeploymentAndProject,
 import { fetchProjectFeeds } from '../actions/feeds'
 
 const mapStateToProps = (state, ownProps) => {
-  let user = state.user
+  const user = state.user
   return {
     user
   }
@@ -44,19 +44,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // searchTextChanged: (text) => { dispatch(setVisibilitySearchText(text))},
     getDeploymentStatus: (deployment, target) => { dispatch(fetchDeploymentStatus(deployment, target)) },
     updateVersionForFeedSource: (deployment, feedSource, feedVersion) => {
-      let feedVersions = [...deployment.feedVersions]
-      let index = feedVersions.findIndex(v => v.feedSource.id === feedSource.id)
+      const feedVersions = [...deployment.feedVersions]
+      const index = feedVersions.findIndex(v => v.feedSource.id === feedSource.id)
       feedVersions.splice(index, 1)
       feedVersions.push(feedVersion)
       dispatch(updateDeployment(deployment, {feedVersions}))
     },
     addFeedVersion: (deployment, feedVersion) => {
-      let feedVersions = [...deployment.feedVersions, feedVersion]
+      const feedVersions = [...deployment.feedVersions, feedVersion]
       dispatch(updateDeployment(deployment, {feedVersions}))
     },
     deleteFeedVersion: (deployment, feedVersion) => {
-      let feedVersions = deployment.feedVersions
-      let index = feedVersions.findIndex(v => v.id === feedVersion.id)
+      const feedVersions = deployment.feedVersions
+      const index = feedVersions.findIndex(v => v.id === feedVersion.id)
       feedVersions.splice(index, 1)
       dispatch(updateDeployment(deployment, {feedVersions}))
     }

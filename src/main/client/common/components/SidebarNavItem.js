@@ -67,7 +67,7 @@ export default class SidebarNavItem extends Component {
     }
     const icon = this.props.image
       ? <div style={imageContainerStyle}>
-        <img width={40} height={40} src={this.props.image} />
+        <img alt='App logo' width={40} height={40} src={this.props.image} />
       </div>
       : <div style={iconContainerStyle}>
         <Icon
@@ -82,7 +82,7 @@ export default class SidebarNavItem extends Component {
         />
       </div>
     const tooltip = <Tooltip id={this.props.label}>{this.props.label}</Tooltip>
-    let containerProps = {
+    const containerProps = {
       onMouseEnter: () => this.toggleHover(),
       onMouseLeave: () => this.toggleHover()
     }

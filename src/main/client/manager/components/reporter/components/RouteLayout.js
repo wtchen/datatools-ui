@@ -16,7 +16,6 @@ export default class RouteLayout extends Component {
 
   render () {
     const self = this
-
     return (
       <div>
 

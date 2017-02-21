@@ -25,8 +25,8 @@ export default class VirtualizedEntitySelect extends Component {
     this.props.onChange(value)
   }
   render () {
-    let { entities, component, entityKey } = this.props
-    let key = entityKey || 'id'
+    const { entities, component, entityKey } = this.props
+    const key = entityKey || 'id'
     return (
       <VirtualizedSelect
         // maxHeight={500}

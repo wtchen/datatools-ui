@@ -49,7 +49,7 @@ DeploymentsPanel:
 ProjectViewer:
   mergeFeeds: Merge Feeds
   settings: Settings
-  makePublic: Publish public feeds
+  makePublic: Update public feeds
   feeds:
     title: Feed Sources
     search: Search by name

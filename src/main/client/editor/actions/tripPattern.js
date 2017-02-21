@@ -164,7 +164,7 @@ export function saveTripPattern (feedId, tripPattern) {
   return function (dispatch, getState) {
     const method = tripPattern.id !== 'new' ? 'put' : 'post'
     const routeId = tripPattern.routeId
-    let data = {...tripPattern}
+    const data = {...tripPattern}
     const url = tripPattern.id !== 'new'
       ? `/api/manager/secure/trippattern/${tripPattern.id}?feedId=${feedId}`
       : `/api/manager/secure/trippattern?feedId=${feedId}`

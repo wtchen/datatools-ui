@@ -30,11 +30,11 @@ import { loadFeedVersionForEditing } from '../../editor/actions/snapshots'
 import { downloadGtfsPlusFeed } from '../../gtfsplus/actions/gtfsplus'
 
 const mapStateToProps = (state, ownProps) => {
-  let feedSourceId = ownProps.routeParams.feedSourceId
-  let user = state.user
+  const feedSourceId = ownProps.routeParams.feedSourceId
+  const user = state.user
   // find the containing project
 
-  let project = state.projects.all
+  const project = state.projects.all
     ? state.projects.all.find(p => {
       if (!p.feedSources) return false
       return (p.feedSources.findIndex(fs => fs.id === feedSourceId) !== -1)
@@ -47,7 +47,7 @@ const mapStateToProps = (state, ownProps) => {
   } else if (!project && !state.projects.isFetching) {
     feedSource = null
   }
-  let isFetching = state.projects.isFetching
+  const isFetching = state.projects.isFetching
 
   return {
     feedSource,

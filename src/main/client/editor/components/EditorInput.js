@@ -110,7 +110,7 @@ export default class EditorInput extends Component {
               value={currentValue}
               placeholder={field.placeholder ? field.placeholder : ''}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }}
@@ -130,7 +130,7 @@ export default class EditorInput extends Component {
               value={currentValue || ''}
               placeholder={field.placeholder ? field.placeholder : ''}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }}
@@ -138,14 +138,14 @@ export default class EditorInput extends Component {
           </FormGroup>
         )
       case 'URL':
-        let elements = [
+        const elements = [
           <FormGroup {...formProps}>
             {basicLabel}
             <FormControl
               value={currentValue}
               placeholder={field.placeholder ? field.placeholder : ''}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }}
@@ -167,7 +167,7 @@ export default class EditorInput extends Component {
                 }}>
                 <div style={{marginBottom: '10px'}}>Drop {activeComponent} image here, or click to select image to upload.</div>
                 {activeEntity && activeEntity[field.name]
-                  ? <img className='img-responsive' src={this.state.file && this.state.file.preview || activeEntity[field.name]} />
+                  ? <img alt='agency branding' className='img-responsive' src={this.state.file && this.state.file.preview || activeEntity[field.name]} />
                   : null
                 }
               </Dropzone>
@@ -184,7 +184,7 @@ export default class EditorInput extends Component {
               value={currentValue}
               placeholder={field.placeholder ? field.placeholder : ''}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }}
@@ -202,14 +202,14 @@ export default class EditorInput extends Component {
               key={Math.random()}
               value={currentValue}
               onChange={(input) => {
-                let props = {}
-                let val = input ? input.value : null
+                const props = {}
+                const val = input ? input.value : null
                 props[field.name] = val
                 updateActiveEntity(activeEntity, activeComponent, props)
               }}
               filterOptions={(options, filter, values) => {
                 // Filter already selected values
-                let valueKeys = values && values.map(i => i.value)
+                const valueKeys = values && values.map(i => i.value)
                 let filteredOptions = options.filter(option => {
                   return valueKeys ? valueKeys.indexOf(option.value) === -1 : []
                 })
@@ -243,7 +243,7 @@ export default class EditorInput extends Component {
               value={currentValue}
               clearable={!field.required}
               onChange={(option) => {
-                let props = {}
+                const props = {}
                 props[field.name] = option.value
                 this.setState({[editorField]: option.value})
                 updateActiveEntity(activeEntity, activeComponent, props)
@@ -258,7 +258,7 @@ export default class EditorInput extends Component {
               value={currentValue}
               clearable={false}
               onChange={(option) => {
-                let props = {}
+                const props = {}
                 props[field.name] = option.value
                 this.setState({[editorField]: option.value})
                 updateActiveEntity(activeEntity, activeComponent, props)
@@ -273,7 +273,7 @@ export default class EditorInput extends Component {
               value={currentValue}
               placeholder='HH:MM:SS'
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }} />
@@ -289,7 +289,7 @@ export default class EditorInput extends Component {
               type='number'
               // readOnly
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
               //   this.setState({[editorField]: evt.target.value})
                 updateActiveEntity(activeEntity, activeComponent, props)
@@ -304,19 +304,19 @@ export default class EditorInput extends Component {
               value={currentValue}
               type='number'
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }} />
           </FormGroup>
         )
       case 'DATE':
-        let defaultValue = /end/.test(editorField) ? +moment().startOf('day').add(3, 'months') : +moment().startOf('day')
-        let dateTimeProps = {
+        const defaultValue = /end/.test(editorField) ? +moment().startOf('day').add(3, 'months') : +moment().startOf('day')
+        const dateTimeProps = {
           mode: 'date',
           dateTime: currentValue ? +moment(currentValue) : defaultValue,
           onChange: (millis) => {
-            let props = {}
+            const props = {}
             props[field.name] = +millis
             updateActiveEntity(activeEntity, activeComponent, props)
           }
@@ -346,18 +346,35 @@ export default class EditorInput extends Component {
           <FormGroup {...simpleFormProps}>
             {basicLabel}
             {
-              <div style={styles.swatch} onClick={() => this.handleClick(editorField)}>
+              <button
+                style={styles.swatch}
+                onClick={(e) => {
+                  e.preventDefault()
+                  this.handleClick(editorField)
+                }}>
                 <div style={colorStyle} />
-              </div>
+              </button>
             }
             {this.state[editorField]
               ? <div style={styles.popover}>
-                <div style={styles.cover} onClick={() => this.handleClose(editorField)} />
+                <div
+                  role='button'
+                  tabIndex='0'
+                  style={styles.cover}
+                  // TODO: jsx-a11y probably wants this here even though it's useless
+                  onKeyPress={(e) => {
+                    e.preventDefault()
+                    // if [Esc] is pressed (for accessibility)
+                    if (e.keyCode === 27) {
+                      this.handleClose(editorField)
+                    }
+                  }}
+                  onClick={() => this.handleClose(editorField)} />
                 <div style={wrapper}>
                   <SketchPicker
                     color={hexColor}
                     onChange={(color) => {
-                      let props = {}
+                      const props = {}
                       props[field.name] = color.hex.split('#')[1]
                       updateActiveEntity(activeEntity, activeComponent, props)
                     }} />
@@ -377,7 +394,7 @@ export default class EditorInput extends Component {
               min={0}
               step={1}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }} />
@@ -392,7 +409,7 @@ export default class EditorInput extends Component {
               type='number'
               min={0}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }} />
@@ -411,7 +428,7 @@ export default class EditorInput extends Component {
                 inline
                 checked={this.state[editorField] === 1 || currentValue === 1}
                 onChange={(evt) => {
-                  let props = {}
+                  const props = {}
                   props[field.name] = evt.target.checked ? 1 : 0
                   updateActiveEntity(activeEntity, activeComponent, props)
                 }}>
@@ -432,7 +449,7 @@ export default class EditorInput extends Component {
               value={currentValue !== null ? currentValue : false}
               disabled={approveGtfsDisabled && field.adminOnly}
               onChange={(evt) => {
-                let props = {}
+                const props = {}
                 props[field.name] = evt.target.value
                 updateActiveEntity(activeEntity, activeComponent, props)
               }}>
@@ -479,8 +496,8 @@ export default class EditorInput extends Component {
               value={agency ? {value: currentValue, label: agency.agency_name} : {value: currentValue}}
               onChange={(input) => {
                 console.log(input)
-                let props = {}
-                let val = input ? input.value : null
+                const props = {}
+                const val = input ? input.value : null
                 props[field.name] = val
                 this.setState({[editorField]: val})
                 updateActiveEntity(activeEntity, activeComponent, props)
@@ -500,7 +517,7 @@ export default class EditorInput extends Component {
       case 'GTFS_STOP':
         const stopIndex = tableData.stop && tableData.stop.findIndex(s => s.id === activeEntity.id)
         const stop = tableData.stop.find(s => s.id === currentValue)
-        let stops = [...tableData.stop]
+        const stops = [...tableData.stop]
         // remove current entity from list of stops
         if (stopIndex !== -1) {
           stops.splice(stopIndex, 1)
@@ -514,8 +531,8 @@ export default class EditorInput extends Component {
               entities={stops}
               onChange={(input) => {
                 console.log(input)
-                let props = {}
-                let val = input ? input.value : null
+                const props = {}
+                const val = input ? input.value : null
                 props[field.name] = val
                 this.setState({[editorField]: val})
                 updateActiveEntity(activeEntity, activeComponent, props)

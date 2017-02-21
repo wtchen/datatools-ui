@@ -45,10 +45,10 @@ export const receivedStopsAndRoutes = (results, module) => {
 }
 export function fetchStopsAndRoutes (entities, module) {
   return function (dispatch, getState) {
-    let activeProject = getState().projects.active
-    let feedId = []
-    let routeId = []
-    let stopId = []
+    const activeProject = getState().projects.active
+    const feedId = []
+    const routeId = []
+    const stopId = []
     // map entities to entity IDs requested
     entities.map(e => {
       const feed = activeProject.feedSources.find(f => {

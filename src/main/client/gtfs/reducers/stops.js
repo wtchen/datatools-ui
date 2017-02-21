@@ -53,22 +53,22 @@ export default function reducer (state = defaultState, action) {
         data: {$set: action.stops}
       })
     case 'FETCH_GRAPHQL_STOPS_FULFILLED':
-      let allRoutes = action.data.routes || []
-      let allPatterns = []
-      let allStops = action.data.stops || []
+      const allRoutes = action.data.routes || []
+      const allPatterns = []
+      const allStops = action.data.stops || []
 
       for (let i = 0; i < allRoutes.length; i++) {
-        let route = allRoutes[i]
+        const route = allRoutes[i]
         const curRouteId = route.route_id
         const curRouteName = getRouteName(route)
 
         for (let j = 0; j < route.patterns.length; j++) {
-          let pattern = allRoutes[i].patterns[j]
+          const pattern = allRoutes[i].patterns[j]
           pattern.route_id = curRouteId
           pattern.route_name = curRouteName
           allPatterns.push(pattern)
           for (let k = 0; k < pattern.stops.length; k++) {
-            let stop = pattern.stops[k]
+            const stop = pattern.stops[k]
             allStops.push(stop)
           }
         }

@@ -9,7 +9,7 @@ import { CLICK_OPTIONS } from '../../util'
 
 export default class EditShapePanel extends Component {
   async drawPatternFromStops (pattern, stops) {
-    let newShape = await getPolyline(stops)
+    const newShape = await getPolyline(stops)
     if (newShape) {
       this.props.updateActiveEntity(pattern, 'trippattern', {shape: {type: 'LineString', coordinates: newShape}})
       this.props.saveActiveEntity('trippattern')
@@ -178,9 +178,9 @@ export default class EditShapePanel extends Component {
             title: `Create pattern shape from stops?`,
             body: `Are you sure you want to overwrite this trip pattern?`,
             onConfirm: () => {
-              let stopLocations = this.props.stops && activePattern.patternStops && activePattern.patternStops.length
+              const stopLocations = this.props.stops && activePattern.patternStops && activePattern.patternStops.length
                 ? activePattern.patternStops.map((s, index) => {
-                  let stop = this.props.stops.find(st => st.id === s.stopId)
+                  const stop = this.props.stops.find(st => st.id === s.stopId)
                   return {lng: stop.stop_lon, lat: stop.stop_lat}
                 })
                 : []

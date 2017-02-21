@@ -27,19 +27,19 @@ export default class StopLayer extends BaseTileLayer {
   //   console.log(e)
   // }
   drawTile = (cvs, tilePt, z) => {
-    let tileLength = 256
+    const tileLength = 256
     const {map} = this.context
     const {minZoom, stops} = this.props
 
     if (z < minZoom) return // don't draw every transit stop in a country
 
-    let ctx = cvs.getContext('2d')
+    const ctx = cvs.getContext('2d')
     ctx.strokeStyle = '#888'
 
     // get the bounds
-    let topLeft = map.unproject([tilePt.x * tileLength, tilePt.y * tileLength], z)
-    let brPoint = point([tilePt.x + 1, tilePt.y + 1])
-    let botRight = map.unproject([brPoint.x * tileLength, brPoint.y * tileLength], z)
+    const topLeft = map.unproject([tilePt.x * tileLength, tilePt.y * tileLength], z)
+    const brPoint = point([tilePt.x + 1, tilePt.y + 1])
+    const botRight = map.unproject([brPoint.x * tileLength, brPoint.y * tileLength], z)
 
     // find relevant stops
     stops

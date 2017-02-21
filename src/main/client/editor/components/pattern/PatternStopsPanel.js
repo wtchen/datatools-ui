@@ -19,7 +19,7 @@ export default class PatternStopsPanel extends Pure {
     if (!input) {
       return
     }
-    let stop = input.entity
+    const stop = input.entity
     return this.props.addStopToPattern(this.props.activePattern, stop)
   }
   render () {

@@ -63,7 +63,7 @@ export function getEntityName (component, entity) {
   if (!entity) {
     return '[Unnamed]'
   }
-  let nameKey =
+  const nameKey =
       'route_id' in entity
     ? 'route_short_name'
     : 'patternStops' in entity
@@ -103,8 +103,8 @@ export function getEntityName (component, entity) {
 }
 
 export function getAbbreviatedStopName (stop, maxCharactersPerWord = 10) {
-  let stopName = getEntityName('stop', stop)
-  let stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:|\+)+/i) : null
+  const stopName = getEntityName('stop', stop)
+  const stopNameParts = stopName ? stopName.split(/(\band\b|&|@|:|\+)+/i) : null
   return stopNameParts && stopNameParts.length === 3 && stop.stop_name.length > maxCharactersPerWord * 2
     ? `${stopNameParts[0].substr(0, maxCharactersPerWord).trim()}... ${stopNameParts[2].substr(0, maxCharactersPerWord).trim()}`
     : stop.stop_name
@@ -114,20 +114,20 @@ export function getControlPoints (pattern, snapToStops) {
   if (!pattern) {
     return []
   }
-  let controlPoints = []
+  const controlPoints = []
   pattern.shape && pattern.patternStops && pattern.patternStops.map((ps, index) => {
     // set distance to average of patternStop and next patternStop, if last stop set to end of segment
-    let distance = pattern.patternStops[index + 1]
+    const distance = pattern.patternStops[index + 1]
       ? (pattern.patternStops[index + 1].shapeDistTraveled + ps.shapeDistTraveled) / 2
       : lineDistance(pattern.shape, 'meters')
-    let point = pattern.shape && along(pattern.shape, distance, 'meters')
-    let controlPoint = {
+    const point = pattern.shape && along(pattern.shape, distance, 'meters')
+    const controlPoint = {
       point,
       distance: distance,
       permanent: true
     }
-    let stopPoint = pattern.shape && along(pattern.shape, ps.shapeDistTraveled, 'meters')
-    let stopControl = {
+    const stopPoint = pattern.shape && along(pattern.shape, ps.shapeDistTraveled, 'meters')
+    const stopControl = {
       point: stopPoint,
       permanent: true,
       distance: ps.shapeDistTraveled,
@@ -143,7 +143,7 @@ export function getControlPoints (pattern, snapToStops) {
 }
 
 export function getRouteNameAlerts (route) {
-  let routeName = route.route_short_name && route.route_long_name
+  const routeName = route.route_short_name && route.route_long_name
     ? `${route.route_short_name} - ${route.route_long_name}`
     : route.route_long_name ? route.route_long_name
     : route.route_short_name ? route.route_short_name

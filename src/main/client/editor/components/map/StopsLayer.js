@@ -73,8 +73,8 @@ export default class StopsLayer extends Component {
                 draggable={isActive}
                 onDragEnd={(e) => {
                   console.log(e)
-                  let latlng = e.target.getLatLng()
-                  let stopLatLng = clickToLatLng(latlng)
+                  const latlng = e.target.getLatLng()
+                  const stopLatLng = clickToLatLng(latlng)
                   updateActiveEntity(activeEntity, 'stop', stopLatLng)
                   this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
                 }}

@@ -44,7 +44,7 @@ export default class GtfsSearch extends Component {
   }
   render () {
     const getRouteName = (route) => {
-      let routeName = route.route_short_name && route.route_long_name
+      const routeName = route.route_short_name && route.route_long_name
         ? `${route.route_short_name} - ${route.route_long_name}`
         : route.route_long_name
         ? route.route_long_name
@@ -133,7 +133,7 @@ export default class GtfsSearch extends Component {
     }
     const getOptions = (input) => {
       const entities = typeof this.props.entities !== 'undefined' ? this.props.entities : ['routes', 'stops']
-      let entitySearches = []
+      const entitySearches = []
       if (entities.indexOf('stops') > -1) {
         entitySearches.push(getStops(input))
       }

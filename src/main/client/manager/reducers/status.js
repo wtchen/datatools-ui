@@ -91,6 +91,8 @@ const config = (state = {
       return update(state, {message: {$set: 'Renaming feed version...'}})
     case 'LOADING_FEEDVERSION_FOR_EDITING':
       return update(state, {message: {$set: 'Loading version into editor...'}})
+    case 'REQUESTING_ORGANIZATIONS':
+      return update(state, {message: {$set: 'Loading organizations...'}})
 
     // Status Modal
     case 'SET_ERROR_MESSAGE':
@@ -120,17 +122,17 @@ const config = (state = {
     case 'SET_JOBMONITOR_VISIBLE':
       return update(state, { jobMonitor: { $merge: { visible: action.visible } } })
     case 'REMOVE_RETIRED_JOB':
-      let jobIndex = state.jobMonitor.retired.findIndex(job => job.jobId === action.job.jobId)
+      const jobIndex = state.jobMonitor.retired.findIndex(job => job.jobId === action.job.jobId)
       if (jobIndex === -1) {
         return state
       }
       return update(state, { jobMonitor: { retired: { $splice: [[jobIndex, 1]] } } })
     case 'RECEIVE_JOBS':
       // let visible = state.jobMonitor.visible
-      let jobs = action.jobs || []
-      let retired = state.jobMonitor.retired
+      const jobs = action.jobs || []
+      const retired = state.jobMonitor.retired
       for (var i = 0; i < state.jobMonitor.jobs.length; i++) {
-        let jobIndex = jobs.findIndex(j => j.jobId === state.jobMonitor.jobs[i].jobId)
+        const jobIndex = jobs.findIndex(j => j.jobId === state.jobMonitor.jobs[i].jobId)
         if (jobIndex === -1) retired.push(state.jobMonitor.jobs[i])
       }
       return update(state, { jobMonitor: { $merge: { jobs, retired } } })
@@ -166,6 +168,7 @@ const config = (state = {
     case 'DELETED_TRIPS_FOR_CALENDAR':
     case 'RECEIVE_TRIPS_FOR_CALENDAR':
     case 'RECEIVE_GTFSEDITOR_SNAPSHOTS':
+    case 'RECEIVE_ORGANIZATIONS':
       return update(state, {message: {$set: null}})
     default:
       return state

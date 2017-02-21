@@ -15,7 +15,7 @@ export default class StopMarkersLayer extends FeatureGroup {
     entityEdited: PropTypes.bool
   }
   render () {
-    let { stops, activeEntity, feedSource, mapState, setActiveEntity, updateActiveEntity, entityEdited } = this.props
+    const { stops, activeEntity, feedSource, mapState, setActiveEntity, updateActiveEntity, entityEdited } = this.props
     return (
       <FeatureGroup>
         {stops
@@ -71,8 +71,8 @@ export default class StopMarkersLayer extends FeatureGroup {
                 draggable={isActive}
                 onDragEnd={(e) => {
                   console.log(e)
-                  let latlng = e.target.getLatLng()
-                  let stopLatLng = clickToLatLng(latlng)
+                  const latlng = e.target.getLatLng()
+                  const stopLatLng = clickToLatLng(latlng)
                   updateActiveEntity(activeEntity, 'stop', stopLatLng)
                   this.refs[`${stop.id}`].leafletElement.setLatLng(latlng)
                 }}

@@ -31,7 +31,7 @@ export default class FareRulesForm extends Component {
         <Button
           style={{marginBottom: '15px'}}
           onClick={() => {
-            let rules = [...activeEntity.fareRules]
+            const rules = [...activeEntity.fareRules]
             rules.unshift({fare_id: activeEntity.fare_id})
             updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
           }}
@@ -52,7 +52,7 @@ export default class FareRulesForm extends Component {
                 style={{marginLeft: '5px'}}
                 key={Math.random()}
                 onClick={() => {
-                  let rules = [...activeEntity.fareRules]
+                  const rules = [...activeEntity.fareRules]
                   rules.splice(index, 1)
                   updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
                 }}
@@ -63,7 +63,7 @@ export default class FareRulesForm extends Component {
                   key={Math.random()}
                   checked={rule.route_id}
                   onChange={(evt) => {
-                    let rules = [...activeEntity.fareRules]
+                    const rules = [...activeEntity.fareRules]
                     rules[index] = {fare_id: activeEntity.fare_id}
                     rules[index].route_id = true
                     updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
@@ -77,7 +77,7 @@ export default class FareRulesForm extends Component {
                   key={Math.random()}
                   checked={rule.origin_id || rule.destination_id}
                   onChange={(evt) => {
-                    let rules = [...activeEntity.fareRules]
+                    const rules = [...activeEntity.fareRules]
                     rules[index] = {fare_id: activeEntity.fare_id}
                     rules[index].origin_id = true
                     updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
@@ -91,7 +91,7 @@ export default class FareRulesForm extends Component {
                   key={Math.random()}
                   checked={rule.contains_id}
                   onChange={(evt) => {
-                    let rules = [...activeEntity.fareRules]
+                    const rules = [...activeEntity.fareRules]
                     rules[index] = {fare_id: activeEntity.fare_id}
                     rules[index].contains_id = true
                     updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
@@ -108,7 +108,7 @@ export default class FareRulesForm extends Component {
                   entities={tableData.route}
                   onChange={(input) => {
                     console.log(input)
-                    let rules = [...activeEntity.fareRules]
+                    const rules = [...activeEntity.fareRules]
                     rules[index].route_id = input ? input.value : null
                     updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
                   }}
@@ -125,7 +125,7 @@ export default class FareRulesForm extends Component {
                   }
                   onChange={(input) => {
                     console.log(input)
-                    let rules = [...activeEntity.fareRules]
+                    const rules = [...activeEntity.fareRules]
                     rules[index].contains_id = input ? input.value : null
                     updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
                   }}
@@ -144,7 +144,7 @@ export default class FareRulesForm extends Component {
                     }
                     onChange={(input) => {
                       console.log(input)
-                      let rules = [...activeEntity.fareRules]
+                      const rules = [...activeEntity.fareRules]
                       rules[index].origin_id = input ? input.value : null
                       updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
                     }}
@@ -161,7 +161,7 @@ export default class FareRulesForm extends Component {
                     }
                     onChange={(input) => {
                       console.log(input)
-                      let rules = [...activeEntity.fareRules]
+                      const rules = [...activeEntity.fareRules]
                       rules[index].destination_id = input ? input.value : null
                       updateActiveEntity(activeEntity, activeComponent, {fareRules: rules})
                     }}
