@@ -8,9 +8,11 @@
 @import url(node_modules/react-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css);
 
 @import url(node_modules/react-select/dist/react-select.css);
+
 @import url(node_modules/react-virtualized/styles.css);
 @import url(node_modules/react-virtualized-select/styles.css);
 @import url(node_modules/rc-slider/assets/index.css);
+@import url(node_modules/react-toggle/style.css);
 
 @import url(src/main/client/common/style.css);
 @import url(src/main/client/alerts/style.css);

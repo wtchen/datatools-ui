@@ -23,7 +23,7 @@ export default class ModeSelector extends Component {
             entityUpdated(entity, 'MODE', getMode(evt.target.value))
           }}
         >
-          {modes.map((mode) => (<option value={mode.gtfsType}>{mode.name}</option>))}
+          {modes.map((mode, i) => (<option key={i} value={mode.gtfsType}>{mode.name}</option>))}
         </FormControl>
       </div>
     )

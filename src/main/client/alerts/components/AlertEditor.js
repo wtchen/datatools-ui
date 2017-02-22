@@ -2,8 +2,10 @@ import {Icon} from '@conveyal/woonerf'
 import React from 'react'
 import Helmet from 'react-helmet'
 import { sentence as toSentenceCase } from 'change-case'
-import { Grid, Row, Col, ButtonGroup, Button, FormControl, ControlLabel, FormGroup } from 'react-bootstrap'
+import { Grid, Row, Col, ButtonToolbar, Button, FormControl, ControlLabel, FormGroup } from 'react-bootstrap'
 import DateTimeField from 'react-bootstrap-datetimepicker'
+import Toggle from 'react-toggle'
+// import Switch from 'rc-switch'
 
 import ManagerPage from '../../common/components/ManagerPage'
 import Loading from '../../common/components/Loading'
@@ -104,28 +106,19 @@ export default class AlertEditor extends React.Component {
         />
         <Grid fluid>
           <Row>
-            <Col xs={4} sm={8} md={9}>
+            <Col xs={4} sm={7} md={8}>
               <Button
                 onClick={(evt) => browserHistory.push('/alerts')}
               ><Icon type='chevron-left' /> Back</Button>
             </Col>
-            <Col xs={8} sm={4} md={3}>
-              <ButtonGroup className='pull-right'>
+            <Col xs={8} sm={5} md={4}>
+              <ButtonToolbar className='pull-right' style={{marginLeft: '5px'}}>
                 <Button
                   title={editButtonMessage}
-                  bsStyle='default'
+                  bsStyle='primary'
                   disabled={editingIsDisabled}
                   onClick={this.validateAndSave}
-                >Save</Button>
-
-                <Button
-                  disabled={!canPublish}
-                  bsStyle={alert.published ? 'warning' : 'success'}
-                  onClick={(evt) => {
-                    onPublishClick(alert, !alert.published)
-                  }}
-                >
-                  {alert.published ? 'Unpublish' : 'Publish'}</Button>
+                ><Icon type='save' /> Save</Button>
                 <Button
                   title={deleteButtonMessage}
                   bsStyle='danger'
@@ -139,8 +132,25 @@ export default class AlertEditor extends React.Component {
                       }
                     })
                   }}
-                >Delete</Button>
-              </ButtonGroup>
+                ><Icon type='trash' /> Delete</Button>
+              </ButtonToolbar>
+              <FormGroup
+                className='pull-right'
+                style={{position: 'relative', top: '5px'}}
+              >
+                <Toggle
+                  id='alert-published'
+                  disabled={!canPublish}
+                  // checkedChildren={<Icon type='check' />}
+                  // unCheckedChildren={<Icon type='remove' />}
+                  checked={alert.published}
+                  onChange={(evt) => onPublishClick(alert, !alert.published)} />
+                <label
+                  htmlFor='alert-published'
+                  style={{position: 'relative', top: '-5px', marginLeft: '5px'}}
+                  // onClick={(evt) => onPublishClick(alert, !alert.published)}
+                  >Published?</label>
+              </FormGroup>
             </Col>
           </Row>
 
@@ -149,7 +159,10 @@ export default class AlertEditor extends React.Component {
               <Row>
                 <Col xs={12} style={{marginTop: '10px'}}>
                   <FormGroup controlId='formControlsTitle'>
-                    <ControlLabel>Alert Title</ControlLabel>
+                    <ControlLabel>
+                      Alert Title
+                      <h5 style={{margin: '0px'}}><small>Note: alert title serves as text for eTID alerts. Use descriptive language so it can serve as a standalone alert.</small></h5>
+                    </ControlLabel>
                     <FormControl
                       bsSize='large'
                       placeholder='E.g., Sig. Delays due to Golden Gate Bridge Closure'

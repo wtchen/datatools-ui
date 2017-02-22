@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Panel, Label, ListGroup, ListGroupItem, Row, Col, Button } from 'react-bootstrap'
 
 import AffectedEntity from './AffectedEntity'
+import { isExtensionEnabled } from '../../common/util/config'
 import GtfsSearch from '../../gtfs/components/gtfssearch'
 
 export default class AffectedServices extends Component {
@@ -21,9 +22,11 @@ export default class AffectedServices extends Component {
                 }}>
                   Add Agency
                 </Button>
-                <Button onClick={(evt) => onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0], newEntityId)}>
-                  Add Mode
-                </Button>
+                {!isExtensionEnabled('mtc') &&
+                  <Button onClick={(evt) => onAddEntityClick('MODE', {gtfsType: 0, name: 'Tram/LRT'}, sortedFeeds[0], newEntityId)}>
+                    Add Mode
+                  </Button>
+                }
               </Col>
               <Col xs={7}>
                 <GtfsSearch
@@ -91,17 +94,19 @@ class ServicesHeader extends Component {
         count: entities.filter(e => e.type === 'MODE').length
       }
     ]
+    const summary = counts.map(c => {
+      return c.count
+        ? <span key={c.singular}> <Label
+          bsStyle={c.singular === 'agency' || c.singular === 'mode' ? 'warning' : 'default'}
+        >
+          {`${c.count} ${c.count > 1 ? c.plural : c.singular}`}
+        </Label> </span>
+        : null
+    }).filter(c => c !== null)
     return (
       <span>
-        <b>Affected Service</b>{counts.map(c => {
-          return c.count
-            ? <span key={c.singular}> <Label
-              bsStyle={c.singular === 'agency' || c.singular === 'mode' ? 'warning' : 'default'}
-            >
-              {`${c.count} ${c.count > 1 ? c.plural : c.singular}`}
-            </Label> </span>
-            : null
-        })}
+        <b>Alert applies to:</b>{' '}
+        {summary.length ? summary : <span>[make selection below]</span>}
       </span>
     )
   }

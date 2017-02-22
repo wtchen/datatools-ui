@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Icon} from '@conveyal/woonerf'
 
-import { ListGroupItem, Row, Col, Button, Collapse, Glyphicon } from 'react-bootstrap'
+import { ListGroupItem, Row, Col, Button, Collapse, Glyphicon, Label } from 'react-bootstrap'
 import { getFeed } from '../../common/util/modules'
 import { getRouteNameAlerts } from '../../editor/util/gtfs'
 import AgencySelector from './AgencySelector'
@@ -35,6 +35,7 @@ export default class AffectedEntity extends Component {
       case 'AGENCY' :
         return (
           <span>
+            <Label bsStyle='warning'><Icon type='building' /></Label>{' '}
             {agencyName}<br />
             <small style={{marginLeft: '18px'}}>Note: this selection will apply to all stops and routes for {agencyName}.</small>
           </span>
