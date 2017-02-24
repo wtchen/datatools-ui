@@ -76,7 +76,7 @@ export default class UserAdmin extends Component {
                     <ListGroup fill>
                       <LinkContainer to='/admin/users'><ListGroupItem>User management</ListGroupItem></LinkContainer>
                       {/* Do not show non-appAdmin users these application-level settings */}
-                      {isApplicationAdmin && <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>}
+                      {!isModuleEnabled('enterprise') && isApplicationAdmin && <LinkContainer to='/admin/organizations'><ListGroupItem>Organizations</ListGroupItem></LinkContainer>}
                       {isApplicationAdmin && <LinkContainer to='/admin/logs'><ListGroupItem>Application logs</ListGroupItem></LinkContainer>}
                       {/*
                         <LinkContainer to='/admin/regions'><ListGroupItem>Regions</ListGroupItem></LinkContainer>

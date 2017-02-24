@@ -234,8 +234,8 @@ export default class UserSettings extends Component {
               </Checkbox>
             }
             {/* Organizations selector. Only show if there exist organizations already. */}
-            {!this.state.appAdminChecked && organizations &&
-              <div className='orgDetails'>
+            {!this.state.appAdminChecked && organizations && organizations.length
+              ? <div className='orgDetails'>
                 <Select
                   options={organizations.map(orgToOption)}
                   disabled={!creatorIsApplicationAdmin}
@@ -252,6 +252,7 @@ export default class UserSettings extends Component {
                   </Checkbox>
                 }
               </div>
+              : null
             }
           </Panel>
         </Col>
