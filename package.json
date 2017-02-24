@@ -1,10 +1,10 @@
 {
   "name": "datatools-manager",
-  "version": "0.1.0",
+  "version": "0.0.0-development",
   "description": "Core application for the Conveyal transit data tools suite",
   "repository": {
     "type": "git",
-    "url": "https://github.com/conveyal/datatools-manager.git"
+    "url": "https://github.com/conveyal/datatools-ui.git"
   },
   "author": "Conveyal LLC",
   "license": "MIT",
@@ -16,7 +16,8 @@
     "prestart": "yarn",
     "start": "mastarm build --serve --proxy http://localhost:4000/api",
     "test": "npm run lint && npm run test-client",
-    "test-client": "mastarm test"
+    "test-client": "mastarm test",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
     "@conveyal/woonerf": "^0.2.0",
@@ -96,7 +97,8 @@
     "validator": "^5.5.0"
   },
   "devDependencies": {
-    "mastarm": "^3.3.0"
+    "mastarm": "^3.3.0",
+    "semantic-release": "^6.3.2"
   },
   "standard": {
     "parser": "babel-eslint"
