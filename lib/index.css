@@ -14,5 +14,5 @@
 @import url(node_modules/rc-slider/assets/index.css);
 @import url(node_modules/react-toggle/style.css);
 
-@import url(src/main/client/common/style.css);
-@import url(src/main/client/alerts/style.css);
+@import url(lib/common/style.css);
+@import url(lib/alerts/style.css);

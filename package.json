@@ -10,9 +10,9 @@
   "license": "MIT",
   "scripts": {
     "build": "mastarm build --env production",
-    "cover-client": "npm run test-client -- --coverage --coverage-paths \"src/main/client/**/*.js\"",
+    "cover-client": "npm run test-client -- --coverage --coverage-paths \"lib/**/*.js\"",
     "deploy": "mastarm build --minify --env production && aws s3 cp --recursive --acl public-read dist",
-    "lint": "mastarm lint \"src/main/client/**/*.js\"",
+    "lint": "mastarm lint \"lib/**/*.js\"",
     "prestart": "yarn",
     "start": "mastarm build --serve --proxy http://localhost:4000/api",
     "test": "npm run lint && npm run test-client",
