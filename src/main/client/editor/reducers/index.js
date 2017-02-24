@@ -1,1 +1,0 @@
-export editor from './editor'

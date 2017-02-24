@@ -1,0 +1,9 @@
+
+.leaflet-top,
+.leaflet-bottom {
+	z-index: 0;
+}
+
+.Select-menu-outer {
+	z-index: 3;
+}

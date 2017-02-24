@@ -2,6 +2,7 @@
 # load the database to a fresh server
 # usage: load.py dump.json http://localhost:9000
 # validation: curl -X POST http://localhost:9000/validateAll (add force=true query param to force validation)
+# if validating multiple large feeds, you may need to run application with more GBs, e.g. java -Xmx6G -jar target/datatools.jar
 
 from sys import argv
 import urllib2

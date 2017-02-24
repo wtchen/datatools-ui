@@ -1,1 +1,0 @@
-export gtfsFilter from './gtfsFilter'

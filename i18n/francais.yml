@@ -48,6 +48,8 @@ DeploymentsPanel:
     feedCount: Number of feeds
 ProjectViewer:
   mergeFeeds: Merge Feeds
+  settings: Settings
+  makePublic: Update public feeds
   feeds:
     title: Feed Sources
     search: Search by name
@@ -84,13 +86,21 @@ FeedSourceViewer:
   update: Update
 FeedVersionViewer:
   status: Status
-  validDates: Valid Dates
+  version: Version
+  noVersionsExist: No versions exist for this feed source.
   timestamp: File Timestamp
-  size: File Size
+  download: Download
+  load: Load for Editing
+  confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
+  feed: Feed
+  delete: Delete
+  confirmDelete: Are you sure you want to delete this version? This cannot be undone.
+FeedVersionReport:
   agencyCount: Agency Count
   routeCount: Route Count
   tripCount: Trip Count
   stopTimesCount: Stop time Count
+  validDates: Valid Dates
 GtfsValidationExplorer:
   title: Validation Explorer
   validationIssues: Validation Issues
@@ -113,6 +123,7 @@ ResultTable:
   problemType: Problem Type
   priority: Priority
   affectedIds: Affected ID(s)
+  line: Line
   description: Description
 DeploymentViewer:
   versions: Feed Versions
@@ -182,6 +193,7 @@ ProjectSettings:
       stairsReluctance: Stairs Reluctance
       carDropoffTime: Car Dropoff Time
       brandingUrlRoot: Branding URL Root
+      requestLogFile: Request log file
     servers:
       title: Servers
       new: Add server
@@ -192,6 +204,7 @@ ProjectSettings:
       public: Public URL
       internal: Internal URLs
       admin: Admin access only?
+      s3Bucket: S3 bucket name
     osm:
       title: OSM Extract
       gtfs: Use GTFS-Derived Extract Bounds
@@ -201,10 +214,53 @@ ProjectSettings:
 UserAdmin:
   title: User Management
 UserList:
+  filterByOrg: Filter by org.
   title: User Management
   showing: Showing Users
   of: of
   search: Search by username
+UserRow:
+  appAdmin: App admin
+  orgAdmin: Org admin
+  cancel: Cancel
+  delete: Delete
+  deleteConfirm: Are you sure you want to permanently delete this user?
+  edit: Edit
+  save: Save
+UserHomePage:
+  title: Projects
+  noProjects: You currently do not have any projects.
+  createFirst: Create my first project
+  search: Search feeds
+  table:
+    name: Project Name
+  new: New Project
+  help:
+    title: What's a project?
+    content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+FeedSourcePanel:
+  search: Search feeds
+OrganizationList:
+  search: Search orgs
+  new: Create org
+OrganizationSettings:
+  orgDetails: Organization details
+  projects: Projects
+  extensions: Extensions
+  subDetails: Subscription details
+  name:
+    label: Name
+    placeholder: Big City Transit
+  logoUrl:
+    label: Logo URL
+    placeholder: http://example.com/logo_30x30.png
+  subscriptionBeginDate: Subscription begins
+  subscriptionEndDate: Subscription ends
+  usageTier:
+    low: Low
+    medium: Medium
+    high: High
+
 CreateUser:
   new: Create User
 UserSettings:
@@ -213,6 +269,10 @@ UserSettings:
   cancel: Cancel
   save: Save
   application: Application Settings
+  org:
+    admin: Organization administrator
+    description: Organization administrators have full access to projects within the organization.
+    billing: Billing admin
   admin:
     title: Application Admininistrator
     description: Application administrators have full access to all projects.
