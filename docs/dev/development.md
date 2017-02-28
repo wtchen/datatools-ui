@@ -11,3 +11,9 @@ npm start
 ```
 
 This will use `mastarm` to run a browserify server at the above port along with a proxy for the back-end API, which is assumed to be running on http://localhost:4000.
+
+To optionally substitute the default configuration, provide your own directory:
+
+```
+npm start -- --config /path/to/config
+```
