@@ -61,7 +61,6 @@
     "react-dom": "^15.4.1",
     "react-dropzone": "^3.5.3",
     "react-file-download": "^0.3.2",
-    "react-helmet": "^3.1.0",
     "react-leaflet": "^0.12.1",
     "react-pure-render": "^1.0.2",
     "react-redux": "^4.4.0",
