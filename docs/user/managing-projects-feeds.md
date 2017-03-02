@@ -22,32 +22,50 @@ Feed Sources are created from a Project's main profile page. Click the "New Feed
 
 ## Managing Feed Sources
 
-After a Feed Source has been created, it will appear in the Project's table of Feed Sources. From this table, the **name** of the Feed Source can be changed, the **public visibility** of the feed can be toggled, and basic summary information for the feed is presented. Users with sufficient permissions can also **delete** a Feed Source using the "X" button to the far right of its table listing.
+After a Feed Source has been created, it will appear in the Project's table of Feed Sources. From this table, a basic summary of information for the feed is presented (including if the latest version has expired and how many validation issues it has).
 
-To access all other settings for this Feed Source, click on the its name to access the full Feed Source profile page:
+To access all settings for this Feed Source, click on the its name to access the full Feed Source profile page:
 
 ![screenshot](../img/feed-profile.png)
 
-At the top of the page is the **Feed Source Settings** panel, which allows editing of basic Feed Source properties such as name and public visibility, and is also used to manage the retrieval of GTFS data (covered in more detail below). Any settings provided by custom extensions are also listed in this section.
+At the top of the page is a set of tabs, which include:
 
-Below the Settings panel is **Comments** panel, where users can leave and view comments specific to this Feed Source, and the **Feed Version Navigator**, which is used to view individual Feed Versions and is covered in more detail below.
+- **GTFS** - main point of entry for Feed Source
+    - Feed Version Navigator (covered in more detail below)
+    - Feed Version Summary - view feed info and discover information about routes, patterns and stops
+    - Validation issues - view and filter list of validation issues
+    - Version comments - leave and view comments specific to a Feed Version
+- **Snapshots** - list of Editor snapshots (or save points)
+- **Comments** - where users can leave and view comments specific to this Feed Source
+- **Settings** - access to Feed Source settings
+    - Editing basic Feed Source properties such as name, fetch URL, and public visibility
+    - Viewing/editing settings provided by custom extensions
+    - Deleting a Feed Source (for users with sufficient permissions) in the **Danger zone** properties.
 
 ## Creating Feed Versions
 
 Feed Versions are created from the main Feed Source profile page. There are three methods for creating new versions:
 
-1. **Manually Upload a File**: Select "Manually Uploaded" from the "Retrieval Method" dropdown. The button next the the dropdown should now say "Upload." Click the "Upload" button to select a GTFS file from your local machine.
+1. **Manually Upload a File**: Select "Manually Uploaded" from the `+ Create new version` dropdown. The button next the the dropdown should now say "Upload." Click the "Upload" button to select a GTFS file from your local machine.
 
-2. **Fetch From A Remote URL**: Select "Fetched Automatically" from the "Retrieval Method" dropdown. A "Retrieval URL" field should now be visible. Enter the URL of remote feed into the field and click the "Update" button to fetch the file currently available from the specified URL.
+2. **Fetch From A Remote URL**: Select "Fetch" from the `+ Create new version` dropdown. **Note:** to fetch a new version, the "Feed source fetch URL" property must be set to a valid GTFS URL under `Feed Source > Settings`.
 
-3. **Import From the GTFS Editor**: Select "Produced In-house" from the "Retrieval Method" dropdown. A "Snapshot" dropdown selector should now be visible showing any available snapshots of the feed in the GTFS Editor. Select the desired snapshot and click the "Update" button to import the feed.
+3. **Import From the GTFS Editor**: Select "From snapshot" from the `+ Create new version` dropdown. The list of snapshots should now be visible showing any available snapshots of the feed in the Editor. Select the desired snapshot by clicking the "Publish" button to publish the snapshot as a new version.
 
-Note: when uploading or fetching a feed, and the file being uploaded or fetched is not different from the latest version, no new Feed Version will be created.
+**Note:** when uploading or fetching a feed, and the file being uploaded or fetched is not different from the latest version, no new Feed Version will be created.
+
+## Loading Feed Versions into Editor
+
+
 
 ## Viewing and Managing Feed Versions
 
-The Feed Version navigator allows you to navigate through all available versions of a given feed using the "Next" and "Previous" buttons. You may also use this interface to download a Feed Version to your local machine as a GTFS data file and delete a Feed Version from the Data Manager. (Note: deleting a Feed Version cannot be undone.)
+The Feed Version navigator allows you to navigate through all available versions of a given feed using the `←` and `→` buttons (or view a list of all versions). You can also use this interface to:
+
+- download a Feed Version to your local machine as a GTFS data file,
+- load a version into the Editor, and
+- delete a Feed Version from the Data Manager. (Note: deleting a Feed Version cannot be undone.)
 
 ![screenshot](../img/feed-version-navigator.png)
 
-Below the navigator is information specific to the currently active version. This including basic feed statistics, the detailed feed validation report, and any user comments specific to this feed.
+To the left of the navigator is a list of views available for to the currently active version. These include basic feed statistics, the detailed feed validation report, and any user comments specific to this feed.
