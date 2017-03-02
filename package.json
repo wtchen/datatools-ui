@@ -20,9 +20,8 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
-    "@conveyal/woonerf": "^0.2.0",
+    "@conveyal/woonerf": "^2.1.0",
     "array-unique": "^0.2.1",
-    "auth0-lock": "9",
     "babel-polyfill": "^6.22.0",
     "body-parser": "^1.14.2",
     "bootstrap": "^3.3.7",
