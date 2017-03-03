@@ -20,7 +20,6 @@
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
-    "@conveyal/lonlat": "^1.1.2",
     "@conveyal/woonerf": "^2.1.0",
     "babel-polyfill": "^6.22.0",
     "bootstrap": "^3.3.7",
@@ -75,8 +74,6 @@
     "redux-logger": "^2.6.1",
     "redux-merge-reducers": "^0.0.2",
     "redux-thunk": "^2.0.1",
-    "request": "^2.67.0",
-    "selectn": "^1.0.20",
     "shp-write": "^0.3.2",
     "shpjs": "^3.3.2",
     "truncate": "^2.0.0",
