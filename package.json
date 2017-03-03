@@ -91,7 +91,7 @@
     "validator": "^5.5.0"
   },
   "devDependencies": {
-    "mastarm": "^3.3.0",
+    "mastarm": "^3.5.1",
     "semantic-release": "^6.3.2"
   },
   "standard": {
