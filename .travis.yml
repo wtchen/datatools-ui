@@ -7,13 +7,11 @@ cache:
   yarn: true
 before_install:
   - npm i -g codecov
-  - sudo pip install mkdocs
 script:
   - yarn run lint
   - yarn run cover-client
   - codecov
   - yarn run build
-  - mkdocs build
 
 # If sudo is disabled, CI runs on container based infrastructure (allows caching &c.)
 sudo: false
