@@ -39,7 +39,6 @@
     "lodash.upperfirst": "^4.3.1",
     "lonlng": "0.0.2",
     "moment": "^2.11.2",
-    "moment-timezone": "^0.5.3",
     "numeral": "^1.5.3",
     "object-path": "^0.11.1",
     "polyline": "^0.2.0",
