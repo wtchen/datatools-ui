@@ -1,5 +1,5 @@
 var token = '[MANAGEMENT_API_TOKEN]'
-var ManagementClient = require('auth0').ManagementClient;
+var ManagementClient = require('auth0').ManagementClient
 var client_id = '[CLIENT_ID]'
 
 // load nysdot users
@@ -12,7 +12,7 @@ for (var i = 0; i < users.length; i++) {
 var management = new ManagementClient({
   token: token,
   domain: 'conveyal.eu.auth0.com'
-});
+})
 
 var updateOldUser = (user, datatools) => {
   if ('permissions' in datatools) {
@@ -69,8 +69,7 @@ var convertUserData = (user) => {
   var projects = []
   if (user.admin) {
     permissions.push({type: 'administer-application'})
-  }
-  else if (user.projectPermissions) {
+  } else if (user.projectPermissions) {
     var feedList = user.projectPermissions.map(f => f.project_id)
     projects.push({
       project_id: '8a6c4e0f-8c70-444e-95b8-6abeb9793d47',
