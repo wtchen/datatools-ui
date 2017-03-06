@@ -11,21 +11,22 @@ Auth0 allows for access via internally defined user accounts as well as third-pa
 The Data Tools suite uses a system of user permissions to regulate access to various functions within the application. Two types of administrator-level users exist:
 
 - **Application-level administrator**: has full access to the Data Tools suite, including access to all projects and feed sources, the ability to create new projects, and the ability to create and manage users.
+- **Organization-level administrator**: has full access to all projects and feed sources for an organization. **Note:** this user type is only for users of non-enterprise implementations (i.e., https://gtfs.conveyal.com).
 - **Project-level administrator**: has full access to a single project, including all project-level permissions. Is not able to create new projects or administer users.
 
 For non-administrative users, permissions may be assigned on an individual basis. A non-administrative user's permissions can also be set to only apply to particular feeds within a project (note that all users have read-only access to all feeds by default).
 
 ## Managing Users
 
-To create or manage users, you must be logged in as and application-level administrator. Click the "User" tab at the top navigation bar to access the user management console. You will then see a list of all users in the system:
+To create or manage users, you must be logged in as an application- or organization-level administrator. From the `Home` page, click the `Admin` button in the top right-hand box to access the user management console. You will then see a list of all users in the system:
 
-![screenshot](../img/user-admin.png)
+![screenshot](../img/user-admin.png?)
 
-Click a user name to see an expanded user profile where specific permissions can be set:
+Click `Edit` next to a user name to see an expanded user profile where specific permissions can be set:
 
 ![screenshot](../img/user-profile.png)
 
-To create a new user, click the "Create User" button:
+To create a new user, click the `Create User` button:
 
 ![screenshot](../img/create-user.png)
 
