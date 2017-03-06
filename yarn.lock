@@ -2056,10 +2056,6 @@ deep-diff@0.3.4:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/deep-diff/-/deep-diff-0.3.4.tgz#aac5c39952236abe5f037a2349060ba01b00ae48"
 
-deep-equal@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
-
 deep-extend@~0.4.0:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.4.1.tgz#efe4113d08085f4e6f9687759810f807469e2253"
@@ -2202,13 +2198,13 @@ dom-align@1.x:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/dom-align/-/dom-align-1.5.3.tgz#b906b616822a5e599f579ec8505e367c51da7588"
 
-dom-helpers@^2.4.0, "dom-helpers@^2.4.0 || ^3.0.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-2.4.0.tgz#9bb4b245f637367b1fa670274272aa28fe06c367"
-
-dom-helpers@^3.2.0:
+dom-helpers@3.2.1, "dom-helpers@^2.4.0 || ^3.0.0", dom-helpers@^3.2.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
+
+dom-helpers@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-2.4.0.tgz#9bb4b245f637367b1fa670274272aa28fe06c367"
 
 domain-browser@~1.1.0:
   version "1.1.7"
@@ -3218,15 +3214,6 @@ highlight.js@^8.6.0:
   version "8.9.1"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-8.9.1.tgz#b8a9c5493212a9392f0222b649c9611497ebfb88"
 
-history@^2.0.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/history/-/history-2.1.2.tgz#4aa2de897a0e4867e4539843be6ecdb2986bfdec"
-  dependencies:
-    deep-equal "^1.0.0"
-    invariant "^2.0.0"
-    query-string "^3.0.0"
-    warning "^2.0.0"
-
 history@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/history/-/history-3.3.0.tgz#fcedcce8f12975371545d735461033579a6dae9c"
@@ -4125,17 +4112,9 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
-leaflet-draw@^0.4.0:
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.9.tgz#44105088310f47e4856d5ede37d47ecfad0cf2d5"
-
-leaflet-editable@^1.0.0-rc.1:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/leaflet-editable/-/leaflet-editable-1.0.0.tgz#1befcefdbece550da8b432a9e8413a6c1d7017f6"
-
-leaflet@^0.7.7:
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-0.7.7.tgz#1e352ba54e63d076451fa363c900890cb2cf75ee"
+leaflet@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.0.3.tgz#1f401b98b45c8192134c6c8d69686253805007c8"
 
 leven@^2.0.0:
   version "2.1.0"
@@ -4360,9 +4339,9 @@ longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
 
-lonlng@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/lonlng/-/lonlng-0.0.2.tgz#46d85e634a9e0c8d8e468eb61b375fd479b7973a"
+lonlng@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/lonlng/-/lonlng-0.2.0.tgz#2137c2b2426535738f5994d046f316a7076d62dc"
 
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.2.0, loose-envify@^1.3.0:
   version "1.3.1"
@@ -4797,9 +4776,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-numeral@^1.5.3:
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/numeral/-/numeral-1.5.6.tgz#3831db968451b9cf6aff9bf95925f1ef8e37b33f"
+numeral@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/numeral/-/numeral-2.0.4.tgz#545a0c709e090a9cf79bebec802b93f60061f038"
 
 "nwmatcher@>= 1.3.9 < 2.0.0":
   version "1.3.9"
@@ -5536,12 +5515,6 @@ qs@~6.3.0:
   version "6.3.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.2.tgz#e75bd5f6e268122a2a0e0bda630b2550c166502c"
 
-query-string@^3.0.0:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-3.0.3.tgz#ae2e14b4d05071d4e9b9eb4873c35b0dcd42e638"
-  dependencies:
-    strict-uri-encode "^1.0.0"
-
 query-string@^4.2.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-4.3.2.tgz#ec0fd765f58a50031a3968c2431386f8947a5cdd"
@@ -5618,9 +5591,9 @@ rc-animate@2.x:
   dependencies:
     css-animation "^1.3.0"
 
-rc-slider@^5.1.1:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-5.4.3.tgz#b4b93181f57398112303404b16782443771b279d"
+rc-slider@6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-6.1.2.tgz#4509e813075f478dd64f03762634723e0970976b"
   dependencies:
     babel-runtime "6.x"
     classnames "^2.2.5"
@@ -5764,9 +5737,9 @@ react-is-deprecated@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/react-is-deprecated/-/react-is-deprecated-0.1.2.tgz#301148f86ea428fe8e673eca7a372160b7579dbd"
 
-react-leaflet@^0.12.1:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-0.12.3.tgz#db37372e2f9bca7c45cc6d8c2e720bee7788845b"
+react-leaflet@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-1.1.0.tgz#0ec55ff030fae8c90e6e00a48163dcbccbadb4d8"
   dependencies:
     lodash "^4.0.0"
     warning "^3.0.0"
@@ -5808,9 +5781,9 @@ react-redux@^5.0.2, react-redux@^5.0.3:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
 
-react-router-bootstrap@^0.20.1:
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/react-router-bootstrap/-/react-router-bootstrap-0.20.1.tgz#fc2059660e268b022b05abc69db5281ca32b63b3"
+react-router-bootstrap@0.23.1:
+  version "0.23.1"
+  resolved "https://registry.yarnpkg.com/react-router-bootstrap/-/react-router-bootstrap-0.23.1.tgz#a1e0b82f49d25a6083c72202ad16aaa64bba0e0c"
 
 react-router-redux@^4.0.0, react-router-redux@^4.0.7:
   version "4.0.8"
@@ -5833,10 +5806,6 @@ react-select@^1.0.0-beta14:
     classnames "^2.2.4"
     react-input-autosize "^1.1.0"
 
-react-sidebar@^2.1.2:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/react-sidebar/-/react-sidebar-2.3.0.tgz#8a86df1f7cb7a1bf98b6dd75c47c6689a1877cbe"
-
 react-toggle@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/react-toggle/-/react-toggle-3.0.1.tgz#60d462007ea52ad13442eee4fef262fa53c5ec6f"
@@ -5851,7 +5820,16 @@ react-virtualized-select@^2.1.0:
     react-select "^1.0.0-beta14"
     react-virtualized "^8.0.5"
 
-react-virtualized@^8.0.5, react-virtualized@^8.5.0:
+react-virtualized@9.2.1:
+  version "9.2.1"
+  resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-9.2.1.tgz#6408bf870b07e5c669399c4be30eba2c2f66b2d7"
+  dependencies:
+    babel-runtime "^6.11.6"
+    classnames "^2.2.3"
+    dom-helpers "^2.4.0 || ^3.0.0"
+    loose-envify "^1.3.0"
+
+react-virtualized@^8.0.5:
   version "8.11.4"
   resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-8.11.4.tgz#0bb94f1ecbd286d07145ce63983d0a11724522c0"
   dependencies:
@@ -5998,7 +5976,7 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-reduce-reducers@^0.1.0, reduce-reducers@^0.1.2:
+reduce-reducers@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/reduce-reducers/-/reduce-reducers-0.1.2.tgz#fa1b4718bc5292a71ddd1e5d839c9bea9770f14b"
 
@@ -7022,12 +7000,6 @@ turf-distance@^3.0.12:
     turf-helpers "^3.0.12"
     turf-invariant "^3.0.12"
 
-turf-extent@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/turf-extent/-/turf-extent-1.0.4.tgz#9f28ce11af916ada88862a062074658ba3fe0f01"
-  dependencies:
-    turf-meta "^1.0.2"
-
 turf-helpers@^3.0.12:
   version "3.0.12"
   resolved "https://registry.yarnpkg.com/turf-helpers/-/turf-helpers-3.0.12.tgz#dd4272e74b3ad7c96eecb7ae5c57fe8eca544b7b"
@@ -7056,10 +7028,6 @@ turf-line-slice@^3.0.11:
 turf-linestring@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/turf-linestring/-/turf-linestring-1.0.2.tgz#604a63a7c54c9346ab9f39f273bbb7ece05a3096"
-
-turf-meta@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/turf-meta/-/turf-meta-1.0.2.tgz#74d4c495938eb24772a70b31a157ee3d4fd6ba1b"
 
 turf-point-on-line@^3.0.11, turf-point-on-line@^3.0.12:
   version "3.0.12"
@@ -7236,9 +7204,9 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "~1.0.0"
     spdx-expression-parse "~1.0.0"
 
-validator@^5.5.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-5.7.0.tgz#7a87a58146b695ac486071141c0c49d67da05e5c"
+validator@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-7.0.0.tgz#c74deb8063512fac35547938e6f0b1504a282fd2"
 
 verror@1.3.6:
   version "1.3.6"
@@ -7267,12 +7235,6 @@ walker@~1.0.5:
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
   dependencies:
     makeerror "1.0.x"
-
-warning@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/warning/-/warning-2.1.0.tgz#21220d9c63afc77a8c92111e011af705ce0c6901"
-  dependencies:
-    loose-envify "^1.0.0"
 
 warning@^3.0.0:
   version "3.0.0"
