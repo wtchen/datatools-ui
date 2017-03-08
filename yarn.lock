@@ -382,8 +382,8 @@ auth0-lock@9:
     underscore "~1.5.2"
 
 auth0-lock@^10.10.2:
-  version "10.12.2"
-  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-10.12.2.tgz#3ae13646f63dd954ed9f1f51a9ff46d6bc760bbc"
+  version "10.12.3"
+  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-10.12.3.tgz#b3cb2339e8327eac890a5e0774a20b8c2559ef4e"
   dependencies:
     auth0-js "~8.3.0"
     blueimp-md5 "2.3.1"
