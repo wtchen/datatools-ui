@@ -104,7 +104,7 @@
   font-weight: bold;
   text-align: center;
   line-height: 120%;
-  background-image: url(../assets/application_icon.png);
+  background-image: url(assets/application_icon.png);
   background-size: contain;
 }
 
@@ -122,4 +122,9 @@
 
 .react-bs-table-tool-bar {
   margin: 0px;
+}
+
+
+.gtfs-map-select > .Select > .Select-menu-outer {
+	z-index: 2000;
 }

@@ -95,7 +95,7 @@ AUTH0_TOKEN: your-auth0-api-token
 
 **Note**: to generate the `api_token`, go to Documentation > Management API. After adding scopes, your token will appear in the input field.
 
-![Auth0 token generator](/img/auth0-token-generator.png =50x)
+![Auth0 token generator](../img/auth0-token-generator.png)
 
 To allow for the creation, deletion and editing of users you must generate a token for the following scopes:
 
