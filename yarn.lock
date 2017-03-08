@@ -378,8 +378,8 @@ auth0-lock@9:
     underscore "~1.5.2"
 
 auth0-lock@^10.10.2:
-  version "10.12.2"
-  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-10.12.2.tgz#3ae13646f63dd954ed9f1f51a9ff46d6bc760bbc"
+  version "10.12.3"
+  resolved "https://registry.yarnpkg.com/auth0-lock/-/auth0-lock-10.12.3.tgz#b3cb2339e8327eac890a5e0774a20b8c2559ef4e"
   dependencies:
     auth0-js "~8.3.0"
     blueimp-md5 "2.3.1"
@@ -2202,11 +2202,11 @@ dom-align@1.x:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/dom-align/-/dom-align-1.5.3.tgz#b906b616822a5e599f579ec8505e367c51da7588"
 
-dom-helpers@^2.4.0:
+dom-helpers@^2.4.0, "dom-helpers@^2.4.0 || ^3.0.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-2.4.0.tgz#9bb4b245f637367b1fa670274272aa28fe06c367"
 
-"dom-helpers@^2.4.0 || ^3.0.0", dom-helpers@^3.2.0:
+dom-helpers@^3.2.0:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/dom-helpers/-/dom-helpers-3.2.1.tgz#3203e07fed217bd1f424b019735582fc37b2825a"
 
