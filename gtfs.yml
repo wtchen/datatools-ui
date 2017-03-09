@@ -42,14 +42,14 @@
     required: false
     inputType: DROPDOWN
     options:
+    - value: 3
+      text: Bus
     - value: 0
       text: Tram
     - value: 1
       text: Subway
     - value: 2
       text: Rail
-    - value: 3
-      text: Bus
     - value: 4
       text: Ferry
     - value: 5
