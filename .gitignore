@@ -11,3 +11,19 @@ config_server.yml
 configurations/*
 !configurations/default
 tmp/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Configurations
+configurations/*
+!configurations/default
+dist
+assets
+
+# Secret config files
+env.yml
+env.yml-original

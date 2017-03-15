@@ -1,7 +1,6 @@
 
 @import url(node_modules/font-awesome/css/font-awesome.css);
-@import url(node_modules/leaflet/dist/leaflet.css);
-@import url(node_modules/leaflet-draw/dist/leaflet.draw.css);
+@import url(https://unpkg.com/leaflet@1.0.3/dist/leaflet.css);
 
 @import url(node_modules/bootstrap/dist/css/bootstrap.min.css);
 @import url(node_modules/react-bootstrap-table/dist/react-bootstrap-table.min.css);
@@ -14,5 +13,4 @@
 @import url(node_modules/rc-slider/assets/index.css);
 @import url(node_modules/react-toggle/style.css);
 
-@import url(lib/common/style.css);
-@import url(lib/alerts/style.css);
+@import url(lib/style.css);

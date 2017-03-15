@@ -104,7 +104,7 @@
   font-weight: bold;
   text-align: center;
   line-height: 120%;
-  background-image: url(../assets/application_icon.png);
+  background-image: url(assets/application_icon.png);
   background-size: contain;
 }
 
@@ -122,4 +122,31 @@
 
 .react-bs-table-tool-bar {
   margin: 0px;
+}
+
+
+.gtfs-map-select > .Select > .Select-menu-outer {
+	z-index: 2000;
+}
+
+.loading-ellipsis:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 900ms infinite;
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
 }
