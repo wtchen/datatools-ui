@@ -63,6 +63,31 @@ ProjectViewer:
       validRange: Valid Range
     new: New Feed Source
     update: Update all
+EditorFeedSourcePanel:
+  title: Snapshots
+  version: Version
+  publish: Publish
+  createFromScratch: Create GTFS from Scratch
+  loadLatest: Load latest for editing
+  help:
+    title: What are snapshots?
+    body:
+      - Snapshots are save points you can always revert back to when editing a GTFS feed.
+      - A snapshot might represent a work-in-progress, future planning scenario or even different service patterns (e.g., summer schedule markup).
+  of: of
+  noVersions: (No Versions)
+  noVersionsExist: No versions exist for this feed source.
+  date: Date
+  name: Name
+  download: Download
+  active: Active
+  restore: Make active
+  load: Load for Editing
+  snapshot: snapshot
+  confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
+  confirmDelete: This will permanently delete this snapshot. Any data saved here cannot be recovered. Are you sure you want to continue?
+  feed: Feed
+  delete: Delete
 FeedSourceViewer:
   deploy: Deploy
   private: Private view
