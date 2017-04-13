@@ -1,11 +1,19 @@
 # Development
 
-## Using `combine-serve`
+## mastarm
 
-Spark does not hot-reload static web files, i.e. the application frontend. To make life easier when doing frontend development, we recommend using [combine-serve](https://github.com/conveyal/combine-serve) to serve both the backend and frontend as a unified service. Used in conjunction with `webpack --watch`, this will eliminate the need to constantly rebuild/reload the frontend for testing.
+We use Conveyal's front-end JS tool-belt [`mastarm`](https://github.com/conveyal/mastarm) to build, run, and lint while developing.
 
-For example, if running the Java backend on port 9000 (typically via an IDE such as IntelliJ), and you want to serve the combined application on port 9001 for development purposes, use:
+To kick off a development server at [http://localhost:9966](http://localhost:9966):
 
 ```
-combine-serve --serve / src/main/resources/public/ --proxy / http://localhost:9000 --port 9001
+npm start
+```
+
+This will use `mastarm` to run a browserify server at the above port along with a proxy for the back-end API, which is assumed to be running on http://localhost:4000.
+
+To optionally substitute the default configuration, provide your own directory:
+
+```
+npm start -- --config /path/to/config
 ```

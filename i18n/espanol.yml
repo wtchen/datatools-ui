@@ -1,0 +1,318 @@
+id: es
+name: Español
+DatatoolsNavbar:
+  manager: Administrador
+  editor: Editor
+  alerts: Alertas
+  users: Usuarios
+  signConfig: eTID Config
+  guide: Manual del usuario
+  account: My Account
+  resetPassword: Reset Password
+  logout: Cerrar sesión
+  login: Iniciar sesión
+Breadcrumbs:
+  root: Explore
+  projects: Projects
+  deployments: Deployments
+RegionSearch:
+  placeholder: Search for regions or agencies
+PublicFeedsTable:
+  search: Search
+  name: Feed Name
+  region: Region
+  stateProvince: State or Province
+  country: Country
+  lastUpdated: Last Updated
+  link: Link to GTFS
+PublicFeedsViewer:
+  title: Catalogue
+ProjectsList:
+  title: Projects
+  noProjects: You currently do not have any projects.
+  createFirst: Create my first project
+  search: Search by project name
+  table:
+    name: Project Name
+  new: New Project
+  help:
+    title: What's a project?
+    content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+DeploymentsPanel:
+  title: Deployments
+  new: New Deployment
+  delete: Remove deployment
+  table:
+    name: Name
+    creationDate: Creation date
+    feedCount: Number of feeds
+ProjectViewer:
+  mergeFeeds: Merge Feeds
+  settings: Settings
+  makePublic: Update public feeds
+  feeds:
+    title: Feed Sources
+    search: Search by name
+    table:
+      name: Name
+      public: Public?
+      deployable: Deployable?
+      retrievalMethod: Retrieval Method
+      lastUpdated: GTFS Last Updated
+      errorCount: Error Count
+      validRange: Valid Range
+    new: New Feed Source
+    update: Update all
+EditorFeedSourcePanel:
+  title: Snapshots
+  version: Version
+  publish: Publish
+  createFromScratch: Create GTFS from Scratch
+  loadLatest: Load latest for editing
+  help:
+    title: What are snapshots?
+    body:
+      - Snapshots are save points you can always revert back to when editing a GTFS feed.
+      - A snapshot might represent a work-in-progress, future planning scenario or even different service patterns (e.g., summer schedule markup).
+  of: of
+  noVersions: (No Versions)
+  noVersionsExist: No versions exist for this feed source.
+  date: Date
+  name: Name
+  download: Download
+  active: Active
+  restore: Make active
+  load: Load for Editing
+  snapshot: snapshot
+  confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
+  confirmDelete: This will permanently delete this snapshot. Any data saved here cannot be recovered. Are you sure you want to continue?
+  feed: Feed
+  delete: Delete
+FeedSourceViewer:
+  deploy: Deploy
+  private: Private view
+  viewPublic: View public page
+  versions: Feed Versions
+  properties:
+    title: Feed Source Properties
+    property: Property
+    value: Value
+    name: Name
+    noneSelected: (None Selected)
+    retrievalMethod:
+      title: Retrieval Method
+      fetchedAutomatically: Fetched Automatically
+      manuallyUploaded: Manually Uploaded
+      producedInHouse: Produced In-house
+    public: Public?
+    deployable: Deployable?
+    snapshot: Editor Snapshot
+  upload: Upload
+  update: Update
+FeedVersionViewer:
+  status: Status
+  version: Version
+  noVersionsExist: No versions exist for this feed source.
+  timestamp: File Timestamp
+  download: Download
+  load: Load for Editing
+  confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
+  feed: Feed
+  delete: Delete
+  confirmDelete: Are you sure you want to delete this version? This cannot be undone.
+FeedVersionReport:
+  agencyCount: Agency Count
+  routeCount: Route Count
+  tripCount: Trip Count
+  stopTimesCount: Stop time Count
+  validDates: Valid Dates
+GtfsValidationExplorer:
+  title: Validation Explorer
+  validationIssues: Validation Issues
+  accessibilityValidation: Accessibility Explorer
+  timeValidation: Time-based Validation
+  table:
+    file: File
+    issue: Issue
+    priority: Priority
+    count: Count
+GtfsValidationViewer:
+  title: Validation Results
+  routeIssues: Route Issues
+  stopIssues: Stop Issues
+  tripIssues: Trip Issues
+  shapeIssues: Shape Issues
+  noResults: No validation results to show.
+  explorer: Validation Explorer
+ResultTable:
+  problemType: Problem Type
+  priority: Priority
+  affectedIds: Affected ID(s)
+  line: Line
+  description: Description
+DeploymentViewer:
+  versions: Feed Versions
+  search: Search by name
+  download: Download
+  noServers: No servers defined
+  addFeedSource: Add Feed Source
+  allFeedsAdded: All feeds added
+  deploy: Deploy
+  table:
+    name: Name
+    version: Version
+    dateRetrieved: Date Retrieved
+    loadStatus: Loaded Successfully
+    errorCount: Error Count
+    routeCount: Route Count
+    tripCount: Trip Count
+    stopTimesCount: Stop time count
+    validFrom: Valid from
+    expires: Expires
+FeedVersionNavigator:
+  version: Version
+  of: of
+  noVersions: (No Versions)
+  noVersionsExist: No versions exist for this feed source.
+  previous: Previous
+  next: Next
+  download: Download
+  edit: Edit
+  feed: Feed
+  delete: Delete
+NotesViewer:
+  title: Comments for this
+  feedSource: Feed Source
+  feedVersion: Version
+  all: All Comments
+  none: No comments.
+  refresh: Refresh
+  postComment: Post a New Comment
+  new: Post
+ProjectSettings:
+  title: Project Settings
+  save: Save
+  general:
+    title: General
+    location:
+      title: Location
+      defaultLocation: Default location (lat, lng)
+      defaultTimeZone: Default time zone
+      boundingBox: Bounding box (W,S,E,N)
+      defaultLanguage: Default language
+    updates:
+      title: Updates
+      autoFetchFeeds: Auto fetch feed sources?
+  deployment:
+    title: Deployment
+    buildConfig:
+      title: Build Config
+      fetchElevationUS: Fetch Elevation
+      stationTransfers: Sta. Transfers
+      subwayAccessTime: Subway Access Time
+      fares: Fares
+    routerConfig:
+      title: Router Config
+      numItineraries: "# of itineraries"
+      walkSpeed: Walk Speed
+      stairsReluctance: Stairs Reluctance
+      carDropoffTime: Car Dropoff Time
+      brandingUrlRoot: Branding URL Root
+      requestLogFile: Request log file
+    servers:
+      title: Servers
+      new: Add server
+      serverPlaceholder: Server name
+      name: Name
+      namePlaceholder: Production
+      delete: Remove
+      public: Public URL
+      internal: Internal URLs
+      admin: Admin access only?
+      s3Bucket: S3 bucket name
+    osm:
+      title: OSM Extract
+      gtfs: Use GTFS-Derived Extract Bounds
+      custom: Use Custom Extract Bounds
+      bounds: Custom Extract Bounds
+
+UserAdmin:
+  title: User Management
+UserList:
+  filterByOrg: Filter by org.
+  title: User Management
+  showing: Showing Users
+  of: of
+  search: Search by username
+UserRow:
+  appAdmin: App admin
+  orgAdmin: Org admin
+  cancel: Cancel
+  delete: Delete
+  deleteConfirm: Are you sure you want to permanently delete this user?
+  edit: Edit
+  save: Save
+UserHomePage:
+  title: Projects
+  noProjects: You currently do not have any projects.
+  createFirst: Create my first project
+  search: Search feeds
+  table:
+    name: Project Name
+  new: New Project
+  help:
+    title: What's a project?
+    content: A project is used to group GTFS feeds. For example, the feeds in a project may be in the same region or they may collectively define a planning scenario.
+FeedSourcePanel:
+  search: Search feeds
+OrganizationList:
+  search: Search orgs
+  new: Create org
+OrganizationSettings:
+  orgDetails: Organization details
+  projects: Projects
+  extensions: Extensions
+  subDetails: Subscription details
+  name:
+    label: Name
+    placeholder: Big City Transit
+  logoUrl:
+    label: Logo URL
+    placeholder: http://example.com/logo_30x30.png
+  subscriptionBeginDate: Subscription begins
+  subscriptionEndDate: Subscription ends
+  usageTier:
+    low: Low
+    medium: Medium
+    high: High
+
+CreateUser:
+  new: Create User
+UserSettings:
+  edit: Edit
+  delete: Delete
+  cancel: Cancel
+  save: Save
+  application: Application Settings
+  org:
+    admin: Organization administrator
+    description: Organization administrators have full access to projects within the organization.
+    billing: Billing admin
+  admin:
+    title: Application Admininistrator
+    description: Application administrators have full access to all projects.
+  project:
+    title: Project Settings for
+    noAccess: No Access
+    admin: Admin
+    custom: Custom
+    feeds: Feed Sources
+    cannotFetchFeeds: Cannot fetch feeds
+    permissions: Permissions
+WatchButton:
+  watch: Watch
+  unwatch: Unwatch
+TimezoneSelect:
+  placeholder: Select timezone...
+LanguageSelect:
+  placeholder: Select language...

@@ -1,0 +1,156 @@
+
+.nav-tabs {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.nav-tabs > .active {
+  font-weight: bold;
+}
+
+.tab-content {
+  margin-top: 30px;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover {
+  outline: 0;
+}
+
+/* EDITOR ENTITY LIST */
+
+.entity-list-row {
+  /*background-color: '#f5f5f5';*/
+  outline: 'none';
+}
+
+/* IMPORTANT (!) for date picker to show up aligned correctly with form input */
+.bootstrap-datetimepicker-widget.dropdown-menu.bottom {
+  top: 65px !important;
+  right: 23px !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+/* EDITOR MAP */
+
+.bus-stop-icon:hover {
+  color: yellow;
+}
+
+.bus-stop-icon-bg:hover {
+  color: yellow;
+}
+.bus-stop-icon-bg:active {
+  color: blue;
+}
+
+.bus-stop-icon-fg:hover {
+  color: yellow;
+}
+
+/*Sticky footer styles*/
+
+.container .text-muted {
+  margin: 20px 0;
+}
+
+/* ICON HELPER CLASSES */
+.icon-link {
+  color: #777;
+  margin-right: 10px;
+}
+
+/* SIDEBAR */
+.Sidebar {
+
+}
+
+.Sidebar > nav {
+  height: 100%;
+  position: fixed;
+  border-radius: 0;
+}
+
+.Sidebar .TopNav {
+  position: absolute;
+  top: 60px;
+}
+
+.Sidebar .BottomNav {
+  position: absolute;
+  bottom: 10px;
+}
+
+.Sidebar .LogoContainer {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.Sidebar .LogoContainer > .Logo {
+  float: left;
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 120%;
+  background-image: url(assets/application_icon.png);
+  background-size: contain;
+}
+
+.Sidebar .LogoContainer > .LogoLabel {
+  margin-left: 40px;
+  margin-top: 6px;
+  line-height: 95%;
+  color: #bbb;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+
+/* React Bootstrap Table adjustments (no way to change toolbar class otherwise) */
+
+.react-bs-table-tool-bar {
+  margin: 0px;
+}
+
+
+.gtfs-map-select > .Select > .Select-menu-outer {
+	z-index: 2000;
+}
+
+.loading-ellipsis:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 900ms infinite;
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0px;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+/* TIMETABLE EDITOR */
+
+.editable-cell:focus {outline:0;}
