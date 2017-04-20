@@ -120,7 +120,7 @@ FeedVersionViewer:
   feed: Feed
   delete: Delete
   confirmDelete: Are you sure you want to delete this version? This cannot be undone.
-FeedVersionReport:
+FeedVersionTabs:
   agencyCount: Agency Count
   routeCount: Route Count
   tripCount: Trip Count
