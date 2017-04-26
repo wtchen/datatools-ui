@@ -18,20 +18,10 @@ modules:
     enabled: false
   editor:
     enabled: true
-  alerts:
-    enabled: false
-    use_extension: mtc
-  sign_config:
-    enabled: false
   user_admin:
     enabled: true
   validator:
     enabled: true
-  deployment:
-    enabled: false
-  gtfsapi:
-    enabled: false
-    use_extension: mtc
 extensions:
   transitland:
     enabled: false
