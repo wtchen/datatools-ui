@@ -118,11 +118,11 @@ FeedSourceViewer:
   update: Update
 FeedVersionViewer:
   status: Status
-  version: Version
+  version: version
   noVersionsExist: No versions exist for this feed source.
   timestamp: File Timestamp
   download: Download
-  load: Load for Editing
+  load: Load
   confirmLoad: This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?
   feed: Feed
   delete: Delete
