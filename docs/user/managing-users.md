@@ -31,3 +31,12 @@ To create a new user, click the `Create User` button:
 ![screenshot](../img/create-user.png)
 
  You will be asked to provide an email address (which serves as the user's username), an initial password for the user, and any initial permission settings. Once created, the user will receive a confirmation email at the specified email address.
+
+## Password Reset
+Did you forget your password or need to otherwise change it? While logged out, click the `Log In` button and then "Don't remember your password". After submitting the email address associated with your user account, an email will be sent to you containing a link to reset your password.
+
+![screenshot](../img/password-reset-logged-out.png)
+
+Already logged in, but still need to change your password? Simply click the user icon at the bottom of the lefthand sidebar and click "Change Password" to submit your email address.
+
+![screenshot](../img/password-reset-logged-in.png)
