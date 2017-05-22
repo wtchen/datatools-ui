@@ -40,3 +40,5 @@ Did you forget your password or need to otherwise change it? While logged out, c
 Already logged in, but still need to change your password? Simply click the user icon at the bottom of the lefthand sidebar and click "Change Password" to submit your email address.
 
 ![screenshot](../img/password-reset-logged-in.png)
+
+**Note:** if you do receive a password reset email within a few minutes, please check your spam/junk folder.
