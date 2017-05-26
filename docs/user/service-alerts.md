@@ -28,6 +28,7 @@ The list of alerts may be filtered in a couple of ways:
     - **Archived** - shows all archived alerts (alerts that have already terminated)
     - **Draft** - shows all draft alerts (alerts that have not yet been published/approved)
     - **All** - shows all alerts
+3. Filtering by agency or sorting by title, start/end date, or date last edited.
 
 ### Creating a New Alert
 
@@ -61,7 +62,7 @@ Upon creating a new or editing an existing Service Alert, a user will see the Al
 
 ### Adding Affected Service to a Service Alert
 
-Adding affected service to a Service Alert can be done through clicking the **Add Agency/Mode** buttons or searching for and selecting a stop or route in the Affected Service panel. Users may also add stop/route service by searching for stops and routes through the map/search interface on the right side of the Alert Editor (similarly to creating a Service Alert for a stop/route).
+Adding affected service to a Service Alert can be done through clicking the **Add Agency** buttons or searching for and selecting a stop or route in the Affected Service panel. Users may also add stop/route service by searching for stops and routes through the map/search interface on the right side of the Alert Editor (similarly to creating a Service Alert for a stop/route).
 
 Once a new Affected Service has been added, it will appear in the Affected Service panel. Clicking the newly added item will allow the user to change the selected service and/or refine the service further. For example, after adding a stop to the Affected Service list, the user may want to refine that stop to only include a certain route rather than affecting all service at this stop.
 
@@ -71,6 +72,6 @@ Once a new Affected Service has been added, it will appear in the Affected Servi
 
 Once finished, editing an alert, a user can save the alert by clicking the **Save** button in the upper righthand corner of the Alert Editor. After saving, the user will be redirected to the full list of alerts.
 
-If the user has the **Approve Alert** permission, she may toggle the alert between unpublished (draft) and published states by clicking the green **Publish** button or (if already published) the yellow **Unpublish** button.
+If the user has the **Approve Alert** permission, she may toggle the alert between unpublished (draft) and published states by clicking the toggle **Published?** button to the "checked" state or (if already published) to the "unchecked" state.
 
 To delete the alert, click the red **Delete** button.  You will be asked to confirm this decision.  You may also delete alerts by clicking the **X** button for a given alert in the Alerts Viewer.
