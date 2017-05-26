@@ -8,13 +8,21 @@ Auth0 allows for access via internally defined user accounts as well as third-pa
 
 ## User Permissions
 
-The Data Tools suite uses a system of user permissions to regulate access to various functions within the application. Two types of administrator-level users exist:
+The Data Tools suite uses a system of user permissions to regulate access to various functions within the application.
+
+### Admin users
+Three types of administrator-level users exist:
 
 - **Application-level administrator**: has full access to the Data Tools suite, including access to all projects and feed sources, the ability to create new projects, and the ability to create and manage users.
 - **Organization-level administrator**: has full access to all projects and feed sources for an organization. **Note:** this user type is only for users of non-enterprise implementations (i.e., https://gtfs.conveyal.com).
 - **Project-level administrator**: has full access to a single project, including all project-level permissions. Is not able to create new projects or administer users.
 
-For non-administrative users, permissions may be assigned on an individual basis. A non-administrative user's permissions can also be set to only apply to particular feeds within a project (note that all users have read-only access to all feeds by default).
+### Non-admin users
+For non-administrative users, permissions may be assigned on an individual basis by choosing `Custom`. A non-administrative user's permissions can also be set to only apply to particular feeds within a project. All users with project access have read-only access to all project feeds by default.
+
+#### User permissions examples
+1. A user may need edit privileges to only one feed source. In this case, the `Edit GTFS feeds` and the specific feed (e.g., Agency X) would be checked.
+2. Agencies may wish to grant access to users that can view basic reporting info, but should not have the ability to modify or manage anything in the application. Here, `Custom` should be selected, but no other permissions or feeds should be checked.
 
 ## Managing Users
 
