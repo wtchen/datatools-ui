@@ -56,7 +56,7 @@ Upon creating a new or editing an existing Service Alert, a user will see the Al
 5. **URL** (optional) - a fully qualified URL (http://example.com/alert/123) where riders can view information about the alert
 6. **Affected Service** (required) - one or more services that are affected by the Service Alert.  Affected Service types are:
     - **Agency** - affects the entire Agency
-    - **Mode** - affects an entire mode for a particular agency (e.g., all tram service for Muni) and can optionally apply to a single stop
+    <!-- - **Mode** - affects an entire mode for a particular agency (e.g., all tram service for Muni) and can optionally apply to a single stop -->
     - **Stop/Route** - affects a single stop or route and can optionally be refined further by, respectively, a route or stop (e.g., Main St & 4th St Stop for Route 10 only)
 
 ### Adding Affected Service to a Service Alert
