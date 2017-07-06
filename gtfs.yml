@@ -203,11 +203,11 @@
     required: false
     inputType: DROPDOWN
     options:
-    - value: '0'
+    - value: 'UNKNOWN'
       text: No information (0)
-    - value: '1'
+    - value: 'AVAILABLE'
       text: At least some vehicles (1)
-    - value: '2'
+    - value: 'UNAVAILABLE'
       text: Not possible (2)
     columnWidth: 12
     helpContent: "The wheelchair_boarding field identifies whether wheelchair boardings are possible from the specified stop or station. The field can have the following values:"
@@ -314,6 +314,19 @@
         text: Black
     columnWidth: 6
     helpContent: The route_text_color field can be used to specify a legible color to use for text drawn against a background of route_color. The color must be provided as a six-character hexadecimal number, for example, FFD700. If no color is specified, the default text color is black (000000).
+  - name: wheelchair_boarding
+    required: false
+    displayName: Is route wheelchair accessible?
+    inputType: DROPDOWN
+    columnWidth: 12
+    helpContent: Indicates whether vehicles that operate on this route are wheelchair accessible.
+    options:
+      - value: 'UNKNOWN'
+        text: No information (0)
+      - value: 'AVAILABLE'
+        text: Yes (1)
+      - value: 'UNAVAILABLE'
+        text: No (2)
   - name: route_branding_url
     required: false
     displayName: Route branding URL
