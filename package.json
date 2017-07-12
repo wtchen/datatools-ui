@@ -21,8 +21,9 @@
   },
   "dependencies": {
     "@conveyal/lonlat": "^1.1.2",
-    "@conveyal/woonerf": "^2.2.1",
-    "auth0-lock": "9",
+    "@conveyal/woonerf": "^2.4.1",
+    "auth0-js": "^8.8.0",
+    "auth0-lock": "^10.18.0",
     "babel-polyfill": "^6.22.0",
     "bootstrap": "^3.3.7",
     "dom-helpers": "3.2.1",
@@ -68,6 +69,7 @@
     "react-virtualized-select": "^2.1.0",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.3.1",
+    "redux-actions": "^2.2.1",
     "redux-merge-reducers": "^0.0.2",
     "reselect": "^3.0.0",
     "shpjs": "^3.3.2",
@@ -81,10 +83,11 @@
     "turf-linestring": "^1.0.2",
     "turf-point": "^2.0.1",
     "turf-point-on-line": "^3.0.11",
+    "uuid": "^3.1.0",
     "validator": "7.0.0"
   },
   "devDependencies": {
-    "mastarm": "^3.5.1",
+    "mastarm": "^3.11.0",
     "semantic-release": "^6.3.2"
   },
   "standard": {
