@@ -87,6 +87,7 @@
     "validator": "7.0.0"
   },
   "devDependencies": {
+    "jsonwebtoken": "^7.4.1",
     "mastarm": "^3.11.0",
     "semantic-release": "^6.3.2"
   },
