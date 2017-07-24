@@ -181,6 +181,10 @@ ProjectSettings:
   deleteProject: Delete Project?
   deployment:
     buildConfig:
+      elevationBucket:
+        accessKey: Access Key
+        bucketName: S3 Bucket Name
+        secretKey: Secret Key
       fares: Fares
       fetchElevationUS: Fetch Elevation
       stationTransfers: Sta. Transfers
@@ -198,6 +202,15 @@ ProjectSettings:
       requestLogFile: Request log file
       stairsReluctance: Stairs Reluctance
       title: Router Config
+      updaters:
+        $index:
+          defaultAgencyId: Default agency ID
+          frequencySec: Frequency (in seconds)
+          sourceType: Source type
+          type: Type
+          url: URL
+        new: Add updater
+        title: Real-time updaters
       walkSpeed: Walk Speed
     servers:
       admin: Admin access only?
@@ -218,6 +231,7 @@ ProjectSettings:
       defaultLocation: 'Default location (lat, lng)'
       defaultTimeZone: Default time zone
       title: Location
+    name: Project name
     title: General
     updates:
       autoFetchFeeds: Auto fetch feed sources?
