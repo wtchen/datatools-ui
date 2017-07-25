@@ -24,7 +24,9 @@ Array [
   Object {
     "type": "CHECKING_EXISTING_LOGIN",
   },
-  Array [],
+  Object {
+    "type": "USER_LOGGED_OUT",
+  },
 ]
 `;
 
