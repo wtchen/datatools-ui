@@ -11,6 +11,7 @@
   "scripts": {
     "build": "mastarm build --env production",
     "cover-client": "npm run test-client -- --coverage --coverage-paths \"lib/**/*.js\"",
+    "cover-flow": "flow-coverage-report -t html -t text -i 'lib/**/*.js' -o coverage-flow",
     "deploy": "mastarm build --minify --env production && aws s3 cp --recursive --acl public-read dist",
     "lint": "mastarm lint \"lib/**/*.js\"",
     "prestart": "yarn",
@@ -84,6 +85,8 @@
     "validator": "7.0.0"
   },
   "devDependencies": {
+    "flow-bin": "^0.53.1",
+    "flow-coverage-report": "^0.3.0",
     "mastarm": "^3.5.1",
     "semantic-release": "^6.3.2"
   },
