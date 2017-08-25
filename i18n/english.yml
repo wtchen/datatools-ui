@@ -246,7 +246,7 @@ ProjectSettings:
           sourceType: Source type
           url: URL
           defaultAgencyId: Default agency ID
-    servers:
+    otpServers:
       title: Servers
       new: Add server
       serverPlaceholder: Server name
