@@ -394,6 +394,59 @@ Object {
         "type": "Feature",
       },
     },
+    Object {
+      "defaultDwellTime": 0,
+      "defaultTravelTime": 120,
+      "distance": 691.729078104771,
+      "hidden": true,
+      "id": "fyz2",
+      "permanent": true,
+      "point": Object {
+        "geometry": Object {
+          "coordinates": Array [
+            -77.92252574804179,
+            42.09235127309673,
+          ],
+          "type": "Point",
+        },
+        "properties": Object {},
+        "type": "Feature",
+      },
+      "shapeDistTraveled": 691.729078104771,
+      "stopId": "a9c9cd55-ca3f-4ce7-9a93-96f2f4eaf089",
+      "timepoint": null,
+    },
+  ],
+}
+`;
+
+exports[`editor > util > map > recalculateShape > deleting > should delete the last stop when there are control points after the last stop 1`] = `
+Object {
+  "coordinates": null,
+  "dragId": null,
+  "updatedControlPoints": Array [
+    Object {
+      "defaultDwellTime": 0,
+      "defaultTravelTime": 0,
+      "distance": 0,
+      "hidden": true,
+      "id": "2zu5",
+      "permanent": true,
+      "point": Object {
+        "geometry": Object {
+          "coordinates": Array [
+            -122.00743318,
+            37.06121322,
+          ],
+          "type": "Point",
+        },
+        "properties": Object {},
+        "type": "Feature",
+      },
+      "shapeDistTraveled": 0,
+      "stopId": "aad0f374-0f29-4300-ae05-6affbe0f1562",
+      "timepoint": null,
+    },
   ],
 }
 `;
