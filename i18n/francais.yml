@@ -15,6 +15,11 @@ Breadcrumbs:
   root: Explore
   projects: Projects
   deployments: Deployments
+FeedInfoPanel:
+  uploadShapefile:
+    title: Upload route shapefile
+    body: Select a zipped shapefile to display on map. Note: this is only for use as a visual aid.
+    error: Uploaded file must be a valid zip file (.zip).
 RegionSearch:
   placeholder: Search for regions or agencies
 PublicFeedsTable:

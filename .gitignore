@@ -8,8 +8,6 @@ src/main/client/config.js
 datatools-manager.iml
 config.yml
 config_server.yml
-configurations/*
-!configurations/default
 tmp/
 
 # Optional npm cache directory
@@ -21,6 +19,7 @@ tmp/
 # Configurations
 configurations/*
 !configurations/default
+!configurations/test
 dist
 assets
 
@@ -28,3 +27,4 @@ assets
 env.yml
 env.yml-original
 .env
+!configurations/test/env.yml
