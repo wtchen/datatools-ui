@@ -104,7 +104,7 @@ Object {
       42.096168018547736,
     ],
   ],
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
@@ -228,7 +228,7 @@ Object {
       42.096168018547736,
     ],
   ],
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
@@ -354,7 +354,7 @@ Object {
       42.09235127309673,
     ],
   ],
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
@@ -423,7 +423,7 @@ Object {
 exports[`editor > util > map > recalculateShape > deleting > should delete the last stop when there are control points after the last stop 1`] = `
 Object {
   "coordinates": null,
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
@@ -587,7 +587,7 @@ Object {
       42.096168018547736,
     ],
   ],
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
@@ -819,7 +819,7 @@ Object {
       42.096168018547736,
     ],
   ],
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
@@ -1027,7 +1027,7 @@ Object {
       42.097988,
     ],
   ],
-  "dragId": null,
+  "dragId": undefined,
   "updatedControlPoints": Array [
     Object {
       "defaultDwellTime": 0,
