@@ -89,7 +89,7 @@
   "devDependencies": {
     "flow-bin": "^0.53.1",
     "flow-coverage-report": "^0.3.0",
-    "mastarm": "^3.5.1",
+    "mastarm": "^3.11.0",
     "nock": "^9.0.14",
     "semantic-release": "^6.3.2"
   },
