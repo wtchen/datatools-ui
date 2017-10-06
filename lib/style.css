@@ -201,3 +201,14 @@ h4.line:after {
   max-height: 400px;
   overflow-x: hidden;
 }
+
+
+/* GTFS+ Editor */
+
+.gtfsplus-table-button {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
