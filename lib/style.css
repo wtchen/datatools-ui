@@ -179,7 +179,6 @@
 .editable-cell .cell-div {
   display: inline-block;
   height: 100%;
-  user-select: none;
 }
 
 /* Bootstrap button dropdown fix for menu showing up underneath leaflet zoom controls */
