@@ -210,7 +210,7 @@ ProjectSettings:
   rename: Rename
   confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
   deleteProject: Delete Project?
-  general:
+  fields:
     title: General
     name: Project name
     location:
