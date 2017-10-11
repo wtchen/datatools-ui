@@ -38,6 +38,7 @@
     "jwt-decode": "^2.1.0",
     "leaflet": "1.0.3",
     "lodash.clonedeep": "^4.5.0",
+    "lodash.memoize": "^4.1.2",
     "lodash.omit": "^4.5.0",
     "lodash.throttle": "^4.1.1",
     "lodash.tolower": "^4.1.2",
@@ -85,6 +86,7 @@
     "turf-linestring": "^1.0.2",
     "turf-point": "^2.0.1",
     "turf-point-on-line": "^3.0.11",
+    "valid-url": "^1.0.9",
     "validator": "7.0.0"
   },
   "devDependencies": {
