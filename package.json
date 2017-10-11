@@ -13,6 +13,7 @@
     "cover-client": "npm run test-client -- --coverage --coverage-paths \"lib/**/*.js\"",
     "cover-flow": "flow-coverage-report -t html -t text -i 'lib/**/*.js' -o coverage-flow",
     "deploy": "mastarm deploy --minify --env production",
+    "flow": "mastarm flow",
     "lint": "mastarm lint \"lib/**/*.js\"",
     "predeploy": "yarn",
     "prestart": "yarn",
@@ -90,7 +91,6 @@
     "validator": "7.0.0"
   },
   "devDependencies": {
-    "flow-bin": "^0.53.1",
     "flow-coverage-report": "^0.3.0",
     "mastarm": "^3.11.0",
     "nock": "^9.0.14",
