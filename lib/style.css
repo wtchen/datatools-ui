@@ -169,9 +169,31 @@
 
 /* TIMETABLE EDITOR */
 
+.editable-cell {
+  cursor: default;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
 /* remove blue focus outline from timetable cell */
 .editable-cell:focus {
-  outline:0;
+  outline: 0;
+}
+
+.editable-cell .cell-input {
+  background-color: rgba(0,0,0,0);
+  border: 0;
+  height: 100%;
+  width: 100%;
+  margin: 1px;
+  margin-left: 2px;
+  outline: none;
+  padding: 1px;
+}
+
+.editable-cell .cell-div {
+  display: inline-block;
+  height: 100%;
 }
 
 /* Bootstrap button dropdown fix for menu showing up underneath leaflet zoom controls */
