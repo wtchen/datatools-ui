@@ -223,7 +223,7 @@ components:
           title: Real-time updaters
         walkSpeed: Walk Speed
       title: Deployment
-    general:
+    fields:
       location:
         boundingBox: 'Bounding box (W,S,E,N)'
         defaultLanguage: Default language
