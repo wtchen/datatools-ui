@@ -188,7 +188,10 @@ The application contains a number of optional modules that each require their
 own configuration settings and resources. At minimum, each module must be set to
 `enabled: true` and may require additional configuration.
 
-**Note:** for datatools-server v2.0.0, the `editor` and `r5_network`
+**Note:** for `datatools-server` `v3.0.0`, the `editor` and `r5_network` should be
+disabled because they have not been refactored to handle updates to the loading
+of GTFS data into an RDBMS. Please use `v2.0.0` or wait for releases following
+`v3.0.0`.
 
 ### Editor
 
