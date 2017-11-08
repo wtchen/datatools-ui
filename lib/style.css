@@ -212,3 +212,31 @@ h4.line:after {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Job Monitor */
+
+.job-list {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.job-container {
+  margin-bottom: 20px;
+}
+
+.job-container-inner {
+  margin-left: 25px;
+}
+
+.job-status-progress-bar {
+  margin-bottom: 2px;
+}
+
+.job-status-message {
+  font-size: 12px;
+  color: darkGray;
+}
+
+.job-spinner-div {
+  float: left;
+}
