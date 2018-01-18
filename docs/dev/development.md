@@ -20,7 +20,8 @@ First, create a new Project in IntelliJ: **File -> New -> Project from existing 
 Next, add gtfs-lib as another module to this new project already containing datatools-backend. There are multiple ways to do this, including **File -> New -> Module From Existing Sources** but we'll use the Maven Projects tool window: **View -> Tool Windows -> Maven Projects**. In this pane, click the green plus button at the top. In the Select Path dialog that pops up, choose the pom.xml file in the gtfs-lib you just cloned. Again click through all the pages accepting the defaults. You should now have one IntelliJ project with two Maven modules.
 
 You will then need to modify the POM of datatools-backend to ensure that it includes your local copy of gtfs-lib rather than one fetched from Maven Central. The key thing is to make sure the version numbers match, i.e. that the version of gtfs-lib listed as a dependency in datatools-backend matches the version of gtfs-lib declared in the POM of your local copy of gtfs-lib. Once the version numbers match, hit the refresh button ("reload" icon on) the IntelliJ Maven tool window to recompute the dependencies.
-Use a run configuration inside the IDE rather than building and running a JAR file on the command line. Go to **Run -> Edit configurations**, click the plus button and choose Application. Specify the following settings:
+
+To start up the backend, use a run configuration inside the IDE rather than building and running a JAR file on the command line. In IntelliJ go to **Run -> Edit configurations**, click the plus button and choose Application. Specify the following settings:
 - Main class: `com.conveyal.datatools.manager.DataManager`
 - VM options: `-Xmx4G`
 - Program arguments: `/path/to/your/env.yml /path/to/your/server.yml`
@@ -28,14 +29,18 @@ Use a run configuration inside the IDE rather than building and running a JAR fi
 After running this configuration, the Java application should be running at [http://localhost:4000](http://localhost:4000) (or some other port that you specified).
 
 ## Front end
+
 We use Conveyal's front-end JS tool-belt [`mastarm`](https://github.com/conveyal/mastarm) to build, run, and lint while developing.
 To kick off a development server at [http://localhost:9966](http://localhost:9966):
+
 ```
 yarn start
 ```
+
 This will use `mastarm` to run a `browserify` server at the above port, along with a proxy for the back-end API, which is assumed to be running on `http://localhost:4000`.
 
-To optionally substitute the default configuration, provide your own directory:
+To specify your own configuration that overrides the defaults:
+
 ```
 yarn start -- --config /path/to/config
 ```
