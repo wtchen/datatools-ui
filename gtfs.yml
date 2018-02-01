@@ -223,24 +223,24 @@
     required: true
     inputType: DROPDOWN
     options:
-    - value: 'IN_PROGRESS'
+    - value: 0
       text: 'In Progress'
-    - value: 'PENDING_APPROVAL'
+    - value: 1
       text: 'Pending Approval'
-    - value: 'APPROVED'
+    - value: 2
       text: 'Approved'
     columnWidth: 6
     adminOnly: true
     # helpContent: The route_id field contains an ID that uniquely identifies a route. The route_id is dataset unique.
-  - name: publiclyVisible
+  - name: publicly_visible
     datatools: true
     displayName: Public?
     required: true
     inputType: DROPDOWN
     options:
-    - value: false
+    - value: 0
       text: 'No'
-    - value: true
+    - value: 1
       text: 'Yes'
     columnWidth: 6
     adminOnly: true
@@ -359,7 +359,7 @@
     required: false
     inputType: TEXT
     columnWidth: 6
-    helpContent: "The trip_headsign field contains the text that appears on a sign that identifies the trip's destination to passengers. Use this field to distinguish between different patterns of service in the same route. If the headsign changes during a trip, you can override the trip_headsign by specifying values for the thestop_headsign field in stop_times.txt."
+    helpContent: "The trip_headsign field contains the text that appears on a sign that identifies the trip's destination to passengers. Use this field to distinguish between different patterns of service in the same route. If the headsign changes during a trip, you can override the trip_headsign by specifying values for the the stop_headsign field in stop_times.txt."
   - name: "trip_short_name"
     required: false
     inputType: TEXT
