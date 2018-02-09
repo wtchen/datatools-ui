@@ -1,9 +1,9 @@
 # API Interaction Transcript
-Instructions on API calls to upload and validate a feed, wait for the tasks'
-completion, and then browse its contents. All of the endpoints needed to load and
-process a GTFS file are REST-based. The endpoints used to explore a feed's
-contents (i.e., retrieve routes, stops, trips, etc.) or its validation issues
-are [GraphQL](http://graphql.org/)-based.
+The following is a set of instructions on API calls needed to upload and validate
+a feed, wait for the tasks' completion, and then browse its contents. All of the
+endpoints needed to load and process a GTFS file are REST-based. The endpoints
+used to explore a feed's contents (i.e., retrieve routes, stops, trips, etc.)
+or its validation issues are [GraphQL](http://graphql.org/)-based.
 
 NOTE: for all curl commands shown below, be sure to replace `$your_auth_token`
 with a valid [Auth0 access token](https://auth0.com/docs/tokens/access-token).
