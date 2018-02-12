@@ -269,3 +269,12 @@ h4.line:after {
   font-size: 18px;
   text-align: center;
 }
+
+
+.link-disabled {
+  cursor: not-allowed
+}
+
+.link-disabled * {
+  pointer-events: none
+}
