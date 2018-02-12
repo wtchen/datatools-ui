@@ -37,13 +37,14 @@ curl 'http://localhost:4000/api/manager/secure/feedsource' \
 ## Creating a new feed version
 There are multiple ways to create a feed version (uploading a GTFS zip file,
 triggering a fetch from a URL, publishing from the GTFS editor, etc.). However,
-the instructions that follow describe the simplest method: uploading a zip file
-directly.
+the instructions that follow describe the two simplest methods: 1) uploading a zip file
+directly and 2) fetching a zip file by URL.
 
 Each time a feed version is created, a series of standard steps are run on the
 GTFS: 1) loading the feed into the SQL database and 2) validating the feed.
 There is a simple way to monitor the progress of the tasks, described below.
 
+### GTFS retrieval methods
 ### Uploading a GTFS file
 Once a feed source has been created, a GTFS file can be uploaded as a new feed
 version. The following POST command should supply `feedSourceId` and optionally
@@ -58,8 +59,31 @@ curl 'http://localhost:4000/api/manager/secure/feedversion?feedSourceId=$your_fe
   -H 'Content-Type: application/zip' -T /path/to/gtfs.zip
 ```
 
-### Following the progress of the upload
-When a successful upload request is made, the response will be:
+### Fetching by URL
+In order to fetch a GTFS file by URL, you must first modify the feed source so
+that it contains a valid, publicly-accessible URL string in the `url` field (supplying
+this field when creating the feed source is OK, too).
+
+```
+curl 'http://localhost:4000/api/manager/secure/feedsource/$your_feed_source_id' -X PUT \
+  -H 'Authorization: Bearer $your_auth_token' -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' --data-binary '{"url":"http://example.com/gtfs.zip"}'
+```
+
+Once the feed source has this property, you can trigger a fetch by making the following
+POST request:
+
+```
+curl 'http://localhost:4000/api/manager/secure/feedsource/$your_feed_source_id/fetch' \
+  -X POST -H 'Authorization: Bearer $your_auth_token' -H 'Accept: application/json'
+```
+
+Note: if a version already exists for the feed source and the file found at the fetch URL
+has not been modified since the latest version, no new version will be created and the
+job status message (see below) will indicate as such.
+
+### Following the progress of the upload/fetch
+When a successful upload or fetch request is made, the response will be:
 
 ```
 {
