@@ -733,10 +733,16 @@
   name: (none)
   helpContent: Conveyal-specific table for classifying schedule exceptions.
   fields:
-  - name: "name"
+  - name: name
     required: true
-  - name: "dates"
+  - name: dates
     required: true
     inputType: EXCEPTION_DATE
-  - name: "exemplar"
+  - name: exemplar
     required: true
+  - name: custom_schedule
+    required: false
+  - name: removed_service
+    required: false
+  - name: added_service
+    required: false
