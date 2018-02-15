@@ -202,14 +202,15 @@ components:
         gtfs: Use GTFS-Derived Extract Bounds
         title: OSM Extract
       otpServers:
-        admin: Admin access only?
-        delete: Remove
-        internal: Internal URLs
-        name: Name
-        namePlaceholder: Production
+        $index:
+          admin: Admin access only?
+          delete: Remove
+          internalUrl: Internal URLs
+          name: Name
+          namePlaceholder: Production
+          publicUrl: Public URL
+          s3Bucket: S3 bucket name
         new: Add server
-        public: Public URL
-        s3Bucket: S3 bucket name
         serverPlaceholder: Server name
         title: Servers
       routerConfig:
@@ -228,6 +229,7 @@ components:
             url: URL
           new: Add updater
           title: Real-time updaters
+          placeholder: Updater name
         walkSpeed: Walk Speed
       title: Deployment
     general:
