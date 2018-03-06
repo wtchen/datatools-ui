@@ -203,11 +203,11 @@
     required: false
     inputType: DROPDOWN
     options:
-    - value: 'UNKNOWN'
+    - value: 0
       text: No information (0)
-    - value: 'AVAILABLE'
+    - value: 1
       text: At least some vehicles (1)
-    - value: 'UNAVAILABLE'
+    - value: 2
       text: Not possible (2)
     columnWidth: 12
     helpContent: "The wheelchair_boarding field identifies whether wheelchair boardings are possible from the specified stop or station. The field can have the following values:"
