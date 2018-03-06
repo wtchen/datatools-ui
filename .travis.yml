@@ -11,7 +11,8 @@ before_install:
   # Use updated python to avoid SSL insecure warnings:
   # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
   - python --version
-  - pyenv global 2.7.9
+  - pyenv versions
+  - pyenv global 3.3.3
   - pip install --user mkdocs
 script:
   - yarn run lint
