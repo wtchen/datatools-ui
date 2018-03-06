@@ -8,9 +8,10 @@ cache:
   yarn: true
 before_install:
   - npm i -g codecov
-  # Install secure urllib3 to avoid SSL insecure warnings:
+  # Use updated python to avoid SSL insecure warnings:
   # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
-  - pip install urllib3[secure]
+  - python --version
+  - pyenv global 2.7.9
   - pip install --user mkdocs
 script:
   - yarn run lint
