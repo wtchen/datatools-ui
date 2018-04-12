@@ -314,18 +314,18 @@
         text: Black
     columnWidth: 6
     helpContent: The route_text_color field can be used to specify a legible color to use for text drawn against a background of route_color. The color must be provided as a six-character hexadecimal number, for example, FFD700. If no color is specified, the default text color is black (000000).
-  - name: wheelchair_boarding
+  - name: wheelchair_accessible
     required: false
     displayName: Is route wheelchair accessible?
     inputType: DROPDOWN
     columnWidth: 12
     helpContent: Indicates whether vehicles that operate on this route are wheelchair accessible.
     options:
-      - value: 'UNKNOWN'
+      - value: 0
         text: No information (0)
-      - value: 'AVAILABLE'
+      - value: 1
         text: Yes (1)
-      - value: 'UNAVAILABLE'
+      - value: 2
         text: No (2)
   - name: route_branding_url
     required: false
