@@ -51,6 +51,7 @@ components:
     active: Active
     confirmDelete: This will permanently delete this snapshot. Any data saved here cannot be recovered. Are you sure you want to continue?
     confirmLoad: 'This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?'
+    created: created
     createFromScratch: Create GTFS from Scratch
     date: Date
     delete: Delete
