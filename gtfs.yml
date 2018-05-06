@@ -63,21 +63,6 @@
     inputType: TEXT
     columnWidth: 12
     helpContent: "The feed publisher can specify a string here that indicates the current version of their GTFS feed. GTFS-consuming applications can display this value to help feed publishers determine whether the latest version of their feed has been incorporated."
-  - name: "defaultLat"
-    required: false
-    displayName: Default lat
-    datatools: true
-    inputType: LATITUDE
-    columnWidth: 6
-    # helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
-  - name: "defaultLon"
-    displayName: Default lon
-    required: false
-    datatools: true
-    inputType: LONGITUDE
-    columnWidth: 6
-    # helpContent: "The stop_lon field contains the longitude of a stop or station. The field value must be a valid WGS 84 longitude value from -180 to 180."
-
 
 - id: agency
   name: agency.txt
