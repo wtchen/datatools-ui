@@ -28,14 +28,13 @@
     inputType: DATE
     columnWidth: 12
     helpContent: "The feed provides complete and reliable schedule information for service in the period from the beginning of the feed_start_date day to the end of the feed_end_date day. Both days are given as dates in YYYYMMDD format as for calendar.txt, or left empty if unavailable. The feed_end_date date must not precede the feed_start_date date if both are given. Feed providers are encouraged to give schedule data outside this period to advise of likely future service, but feed consumers should treat it mindful of its non-authoritative status. If feed_start_date or feed_end_date extend beyond the active calendar dates defined in calendar.txt and calendar_dates.txt, the feed is making an explicit assertion that there is no service for dates within the feed_start_date or feed_end_date range but not included in the active calendar dates."
-  - name: color
+  - name: default_route_color
     displayName: Default color
     datatools: true
     required: false
     inputType: COLOR
     columnWidth: 6
-    # helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
-  - name: defaultRouteType
+  - name: default_route_type
     displayName: Default route type
     datatools: true
     columnWidth: 6
