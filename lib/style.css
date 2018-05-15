@@ -52,6 +52,7 @@ body {
 
 .entity-details-header {
   height: 15%;
+  min-height: 105px;
 }
 
 .entity-details-heading {
