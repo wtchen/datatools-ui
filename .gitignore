@@ -3,12 +3,8 @@ node_modules/
 dist
 *.log
 coverage*
-target/
-src/main/client/config.js
-datatools-manager.iml
-config.yml
-config_server.yml
 tmp/
+.tags
 
 # Optional npm cache directory
 .npm
