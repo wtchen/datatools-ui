@@ -237,35 +237,52 @@ h4.line:after {
 
 /* Job Monitor */
 
-.job-list {
-  max-height: 200px;
-  overflow-y: scroll;
+.job-monitor .job-list {
+  height: 210px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.job-container {
-  margin-bottom: 20px;
+.job-monitor ul {
+  margin-bottom: 0px;
 }
 
-.job-container-inner {
+.job-monitor .job-container {
+  margin-top: 15px;
+}
+
+.job-monitor .job-container-inner {
   margin-left: 25px;
 }
 
-.job-status-progress-bar {
+.job-monitor .job-status-progress-bar {
   margin-bottom: 2px;
 }
 
-.job-status-message {
+.job-monitor .job-status-message {
   font-size: 12px;
   color: darkGray;
 }
 
-.job-spinner-div {
+.job-monitor .job-spinner-div {
   float: left;
 }
 
+.job-monitor .close-job-button {
+  padding: 0px 5px 0px 0px;
+}
 
 /* Validation viewer */
 .validation-item {
   font-size: 18px;
   text-align: center;
+}
+
+
+.link-disabled {
+  cursor: not-allowed
+}
+
+.link-disabled * {
+  pointer-events: none
 }
