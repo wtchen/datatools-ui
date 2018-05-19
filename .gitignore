@@ -16,6 +16,7 @@ tmp/
 configurations/*
 !configurations/default
 !configurations/test
+!configurations/end-to-end
 dist
 assets
 
