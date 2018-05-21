@@ -300,6 +300,36 @@ components:
   StarButton:
     star: Star
     unstar: Unstar
+  TimetableHelpModal:
+    title: Timetable editor keyboard shortcuts
+    shortcuts:
+      offset:
+        title: Offsetting times
+        desc:
+          - Offset selected trips' stop times by adding offset time
+          - Offset selected trips' stop times by subtracting offset time
+          - Offset only active cell's time by adding offset time
+          - Offset only active cell's time by subtracting offset time
+          - Decrease offset time by 1 minute
+          - Decrease offset time by 10 minutes
+          - Increase offset time by 1 minute
+          - Increase offset time by 10 minutes
+      navigate:
+        title: Navigating and selecting trips
+        desc:
+          - Previous/next trip
+          - Previous/next column
+          - Select trip
+          - Select all trips
+          - Deselect all trips
+      modify:
+        title: Modify trips
+        desc:
+          - Delete selected trip(s)
+          - New trip
+          - Clone selected trip(s)
+          - Copy time value from adjacent cell (the cell immediately to the left)
+          - Copy value from cell directly above
   TimezoneSelect:
     placeholder: Select timezone...
   UserAccount:
