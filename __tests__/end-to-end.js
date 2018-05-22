@@ -11,11 +11,19 @@ const config: {
   password: string
 } = safeLoad(fs.readFileSync('configurations/end-to-end/env.yml'))
 
+let page
 const testTime = moment().format()
 const testProjectName = `test-project-${testTime}`
+const testFeedSourceName = `test-feed-source-${testTime}`
 let testProjectId
+let feedSourceId
 
-async function createProject (page: any, projectName: string) {
+async function expectSelectorToContainHtml (selector: string, html: string) {
+  const innerHTML = await page.$eval(selector, e => e.innerHTML)
+  expect(innerHTML).toContain(html)
+}
+
+async function createProject (projectName: string) {
   await page.click('#context-dropdown')
   await page.waitForSelector('a[href="/project"]')
   await page.click('a[href="/project"]')
@@ -29,17 +37,36 @@ async function createProject (page: any, projectName: string) {
   // wait 2 seconds for project to get saved
   await page.waitFor(2000)
   // verify that the project is listed
-  await expectSelectorToContainHtml(page, '[data-test-id="project-list-table"]', projectName)
+  await expectSelectorToContainHtml('[data-test-id="project-list-table"]', projectName)
 }
 
-async function expectSelectorToContainHtml (page: any, selector: string, html: string) {
-  const innerHTML = await page.$eval(selector, e => e.innerHTML)
-  expect(innerHTML).toContain(html)
+async function deleteProject (projectId: string) {
+  // navigate to that project's settings
+  await page.goto(
+    `http://localhost:9966/project/${projectId}/settings`,
+    {
+      waitUntil: 'networkidle0'
+    }
+  )
+
+  // delete that project
+  await page.click('[data-test-id="delete-project-button"]')
+  await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+  await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+  // verify deletion
+  await page.goto(
+    `http://localhost:9966/project/${projectId}`,
+    {
+      waitUntil: 'networkidle0'
+    }
+  )
+  await expectSelectorToContainHtml('.modal-body', 'Project ID does not exist')
+  await page.click('[data-test-id="status-modal-close-button"]')
 }
 
 describe('end-to-end', async () => {
   let browser
-  let page
 
   beforeAll(async () => {
     browser = await puppeteer.launch({headless: false})
@@ -48,6 +75,7 @@ describe('end-to-end', async () => {
 
   afterAll(async () => {
     // delete test project
+    // await deleteProject(testProjectId)
 
     // close browser
     // browser.close()
@@ -55,7 +83,7 @@ describe('end-to-end', async () => {
 
   it('should load the page', async () => {
     await page.goto('http://localhost:9966')
-    await expectSelectorToContainHtml(page, 'h1', 'Conveyal Datatools')
+    await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
   })
 
   it('should login', async () => {
@@ -70,9 +98,9 @@ describe('end-to-end', async () => {
     await page.waitFor(2000)
   }, 10000)
 
-  describe('projects', () => {
+  describe('project', () => {
     it('should create a project', async () => {
-      await createProject(page, testProjectName)
+      await createProject(testProjectName)
 
       // go into the project page and verify that it looks ok-ish
       const projectEls = await page.$$('.project-name-editable a')
@@ -91,7 +119,7 @@ describe('end-to-end', async () => {
       if (!projectFound) throw new Error('Created project not found')
 
       await page.waitForSelector('#project-viewer-tabs')
-      await expectSelectorToContainHtml(page, '#project-viewer-tabs', 'What is a feed source?')
+      await expectSelectorToContainHtml('#project-viewer-tabs', 'What is a feed source?')
     }, 20000)
 
     it('should update a project by adding a otp server', async () => {
@@ -113,7 +141,7 @@ describe('end-to-end', async () => {
 
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
-      await expectSelectorToContainHtml(page, '#project-viewer-tabs', 'test-otp-server')
+      await expectSelectorToContainHtml('#project-viewer-tabs', 'test-otp-server')
     }, 20000)
 
     it('should delete a project', async () => {
@@ -129,7 +157,7 @@ describe('end-to-end', async () => {
       await page.waitForSelector('#context-dropdown')
 
       // create a new project
-      await createProject(page, testProjectToDeleteName)
+      await createProject(testProjectToDeleteName)
 
       // get the created project id
       // go into the project page and verify that it looks ok-ish
@@ -148,28 +176,71 @@ describe('end-to-end', async () => {
       }
       if (!projectFound) throw new Error('Created project not found')
 
-      // navigate to that project's settings
-      await page.goto(
-        `http://localhost:9966/project/${projectToDeleteId}/settings`,
-        {
-          waitUntil: 'networkidle0'
-        }
-      )
-
-      // delete that project
-      await page.click('[data-test-id="delete-project-button"]')
-      await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-      await page.click('[data-test-id="modal-confirm-ok-button"]')
-
-      // verify deletion
-      await page.goto(
-        `http://localhost:9966/project/${projectToDeleteId}`,
-        {
-          waitUntil: 'networkidle0'
-        }
-      )
-      await expectSelectorToContainHtml(page, '.modal-body', 'Project ID does not exist')
-      await page.click('[data-test-id="status-modal-close-button"]')
+      await deleteProject(projectToDeleteId)
     }, 20000)
+  })
+
+  describe('feed source', () => {
+    it('should create feed source', async () => {
+      // go to project page
+      await page.goto(
+        `http://localhost:9966/project/${testProjectId}`,
+        {
+          waitUntil: 'networkidle0'
+        }
+      )
+      await page.waitForSelector('[data-test-id="create-first-feed-source-button"]')
+      await page.click('[data-test-id="create-first-feed-source-button"]')
+
+      // TODO replace with less generic selector
+      await page.waitForSelector('h4 input')
+      await page.type('h4 input', testFeedSourceName)
+
+      // TODO replace with less generic selector
+      await page.click('h4 button')
+
+      // wait for feed source to be created and saved
+      await page.waitFor(2000)
+
+      // verify that the feed source is listed
+      await expectSelectorToContainHtml('#project-viewer-tabs', testFeedSourceName)
+
+      // find feed source id
+      // enter into feed source
+      const feedSourceEls = await page.$$('h4 a')
+      let feedSourceFound = false
+      feedSourceId = ''
+      for (const feedSourceEl of feedSourceEls) {
+        const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceEl)
+        if (innerHtml.indexOf(testFeedSourceName) > -1) {
+          const href = await page.evaluate(el => el.href, feedSourceEl)
+          feedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
+          feedSourceFound = true
+          await feedSourceEl.click()
+          break
+        }
+      }
+      if (!feedSourceFound) throw new Error('Created feedSource not found')
+
+      await page.waitForSelector('#feed-source-viewer-tabs')
+      // wait for 2 seconds for feed versions to load
+      await page.waitFor(2000)
+      expectSelectorToContainHtml(
+        '#feed-source-viewer-tabs',
+        'No versions exist for this feed source.'
+      )
+    }, 20000)
+
+    // it('should process uploaded gtfs', async () => {
+    //
+    // })
+
+    // it('should process fetched gtfs', async () => {
+    //
+    // })
+
+    // it('should delete feed source', async () => {
+    //
+    // })
   })
 })
