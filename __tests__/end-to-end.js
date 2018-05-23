@@ -231,9 +231,28 @@ describe('end-to-end', async () => {
       )
     }, 20000)
 
-    // it('should process uploaded gtfs', async () => {
-    //
-    // })
+    it('should process uploaded gtfs', async () => {
+      await page.click('[data-test-id="create-new-feed-dropdown-button"]')
+      // TODO replace with more specific selector
+      await page.waitForSelector('.dropdown-menu a')
+      const uploadLinks = await page.$$('.dropdown-menu a')
+      await uploadLinks[1].click()
+      // TODO replace with more specific selector
+      await page.waitForSelector('.modal-body input')
+      const uploadInput = await page.$('.modal-body input')
+      await uploadInput.uploadFile('./configurations/end-to-end/test-gtfs.zip')
+      // TODO replace with more specific selector
+      const footerButtons = await page.$$('.modal-footer button')
+      await footerButtons[0].click()
+
+      // wait for gtfs to process
+      await page.waitFor(10000)
+      await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
+      await page.click('[data-test-id="clear-completed-jobs-button"]')
+
+      // verify feed was uploaded
+      expectSelectorToContainHtml('#feed-source-viewer-tabs', 'Valid from Jan. 01, 2014 to Dec. 31, 2018')
+    }, 20000)
 
     // it('should process fetched gtfs', async () => {
     //
@@ -242,5 +261,6 @@ describe('end-to-end', async () => {
     // it('should delete feed source', async () => {
     //
     // })
+
   })
 })
