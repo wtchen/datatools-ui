@@ -232,35 +232,86 @@ describe('end-to-end', async () => {
     }, 20000)
 
     it('should process uploaded gtfs', async () => {
-      await page.click('[data-test-id="create-new-feed-dropdown-button"]')
+      // create new feed version by clicking on dropdown and upload link
+      await page.click('#bg-nested-dropdown')
       // TODO replace with more specific selector
-      await page.waitForSelector('.dropdown-menu a')
-      const uploadLinks = await page.$$('.dropdown-menu a')
-      await uploadLinks[1].click()
+      await page.waitForSelector('[data-test-id="upload-feed-button"]')
+      await page.click('[data-test-id="upload-feed-button"]')
+
+      // set file to upload in modal dialog
       // TODO replace with more specific selector
       await page.waitForSelector('.modal-body input')
       const uploadInput = await page.$('.modal-body input')
-      await uploadInput.uploadFile('./configurations/end-to-end/test-gtfs.zip')
+      await uploadInput.uploadFile('./configurations/end-to-end/test-gtfs-to-upload.zip')
+
+      // confirm file upload
       // TODO replace with more specific selector
       const footerButtons = await page.$$('.modal-footer button')
       await footerButtons[0].click()
 
-      // wait for gtfs to process
+      // wait for gtfs to be uploaded and processed
       await page.waitFor(10000)
       await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
       await page.click('[data-test-id="clear-completed-jobs-button"]')
 
       // verify feed was uploaded
-      expectSelectorToContainHtml('#feed-source-viewer-tabs', 'Valid from Jan. 01, 2014 to Dec. 31, 2018')
+      await expectSelectorToContainHtml(
+        '#feed-source-viewer-tabs',
+        'Valid from Jan. 01, 2014 to Dec. 31, 2018'
+      )
     }, 20000)
 
-    // it('should process fetched gtfs', async () => {
-    //
-    // })
+    // this test also sets the feed source as deployable
+    it('should process fetched gtfs', async () => {
+      // navigate to feed source settings
+      await page.click('#feed-source-viewer-tabs-tab-settings')
+
+      // make feed source deployable
+      await page.waitForSelector(
+        '[data-test-id="make-feed-source-deployable-button"]',
+        { visible: true }
+      )
+      await page.click('[data-test-id="make-feed-source-deployable-button"]')
+
+      // set fetch url
+      await page.type(
+        '[data-test-id="feed-source-url-input-group"] input',
+        'http://feed.rvtd.org/googleFeeds/static/google_transit.zip'
+      )
+      await page.click('[data-test-id="feed-source-url-input-group"] button')
+
+      // wait for feed source to update
+      await page.waitFor(2000)
+
+      // go back to feed source GTFS tab
+      await page.click('#feed-source-viewer-tabs-tab-')
+      await page.waitForSelector(
+        '#bg-nested-dropdown',
+        { visible: true }
+      )
+
+      // create new version by fetching
+      await page.click('#bg-nested-dropdown')
+      await page.waitForSelector(
+        '[data-test-id="fetch-feed-button"]',
+        { visible: true }
+      )
+      await page.click('[data-test-id="fetch-feed-button"]')
+
+      // wait for gtfs to be fetched and processed
+      await page.waitFor(10000)
+      await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
+      await page.click('[data-test-id="clear-completed-jobs-button"]')
+
+      // verify that feed was fetched and processed
+      await expectSelectorToContainHtml(
+        '#feed-source-viewer-tabs',
+        'Valid from Apr. 08, 2018 to Jun. 30, 2018'
+      )
+    }, 20000)
 
     // it('should delete feed source', async () => {
     //
-    // })
-
+    // }, 10000)
   })
 })
