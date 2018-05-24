@@ -14,6 +14,7 @@ const config: {
   password: string
 } = safeLoad(fs.readFileSync('configurations/end-to-end/env.yml'))
 
+let browser
 let page
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
 const testTime = moment().format()
@@ -73,9 +74,31 @@ async function deleteProject (projectId: string) {
   await page.click('[data-test-id="status-modal-close-button"]')
 }
 
-describe('end-to-end', async () => {
-  let browser
+async function uploadGtfs () {
+  // create new feed version by clicking on dropdown and upload link
+  await page.click('#bg-nested-dropdown')
+  // TODO replace with more specific selector
+  await page.waitForSelector('[data-test-id="upload-feed-button"]')
+  await page.click('[data-test-id="upload-feed-button"]')
 
+  // set file to upload in modal dialog
+  // TODO replace with more specific selector
+  await page.waitForSelector('.modal-body input')
+  const uploadInput = await page.$('.modal-body input')
+  await uploadInput.uploadFile(gtfsUploadFile)
+
+  // confirm file upload
+  // TODO replace with more specific selector
+  const footerButtons = await page.$$('.modal-footer button')
+  await footerButtons[0].click()
+
+  // wait for gtfs to be uploaded and processed
+  await page.waitFor(15000)
+  await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
+  await page.click('[data-test-id="clear-completed-jobs-button"]')
+}
+
+describe('end-to-end', async () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({headless: false})
     page = await browser.newPage()
@@ -242,27 +265,7 @@ describe('end-to-end', async () => {
     }, 30000)
 
     it('should process uploaded gtfs', async () => {
-      // create new feed version by clicking on dropdown and upload link
-      await page.click('#bg-nested-dropdown')
-      // TODO replace with more specific selector
-      await page.waitForSelector('[data-test-id="upload-feed-button"]')
-      await page.click('[data-test-id="upload-feed-button"]')
-
-      // set file to upload in modal dialog
-      // TODO replace with more specific selector
-      await page.waitForSelector('.modal-body input')
-      const uploadInput = await page.$('.modal-body input')
-      await uploadInput.uploadFile(gtfsUploadFile)
-
-      // confirm file upload
-      // TODO replace with more specific selector
-      const footerButtons = await page.$$('.modal-footer button')
-      await footerButtons[0].click()
-
-      // wait for gtfs to be uploaded and processed
-      await page.waitFor(15000)
-      await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
-      await page.click('[data-test-id="clear-completed-jobs-button"]')
+      await uploadGtfs()
 
       // verify feed was uploaded
       await expectSelectorToContainHtml(
@@ -434,5 +437,37 @@ describe('end-to-end', async () => {
         await md5File(path.join(downloadsDir, feedVersionDownloadFile))
       ).toEqual(await md5File(gtfsUploadFile))
     }, 30000)
+
+    if (doNonEssentialSteps) {
+      // this uploads a feed source again because we want to end up with 2
+      // feed versions after this test takes place
+      it('should delete a feed version', async () => {
+        // browse to feed source page
+        await page.goto(`http://localhost:9966/feed/${feedSourceId}`)
+
+        // for whatever reason, waitUntil: networkidle0 was not working with the
+        // above goto, so wait for a few seconds here
+        await page.waitFor(5000)
+
+        // upload gtfs
+        await uploadGtfs()
+
+        // click delete button
+        await page.click('[data-test-id="delete-feed-version-button"]')
+
+        // confirm action in modal
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for data to refresh
+        await page.waitFor(2000)
+
+        // verify that the fetched feed is now the displayed feed
+        await expectSelectorToContainHtml(
+          '#feed-source-viewer-tabs',
+          'Valid from Apr. 08, 2018 to Jun. 30, 2018'
+        )
+      }, 30000)
+    }
   })
 })
