@@ -1,8 +1,11 @@
 // @flow
 
-import fs from 'fs'
+import os from 'os'
+import path from 'path'
 
+import fs from 'fs-extra'
 import {safeLoad} from 'js-yaml'
+import md5File from 'md5-file/promise'
 import moment from 'moment'
 import puppeteer from 'puppeteer'
 
@@ -12,6 +15,7 @@ const config: {
 } = safeLoad(fs.readFileSync('configurations/end-to-end/env.yml'))
 
 let page
+const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
 const testTime = moment().format()
 const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
@@ -33,7 +37,7 @@ async function createProject (projectName: string) {
   await page.click('a[href="/project"]')
   await page.waitForSelector('[data-test-id="create-new-project-button"]')
   // wait for 2 seconds for projects to load
-  await page.waitFor(2000)
+  await page.waitFor(5000)
   await page.click('[data-test-id="create-new-project-button"]')
   await page.waitForSelector('.project-name-editable input')
   await page.type('.project-name-editable input', projectName)
@@ -98,9 +102,9 @@ describe('end-to-end', async () => {
     await page.type('#a0-signin_easy_password', config.password)
     await page.click('.a0-action button')
     await page.waitForSelector('#context-dropdown')
-    // wait for 2 seconds for projects to load
-    await page.waitFor(2000)
-  }, 10000)
+    // wait for 5 seconds for projects to load
+    await page.waitFor(5000)
+  }, 20000)
 
   describe('project', () => {
     it('should create a project', async () => {
@@ -248,7 +252,7 @@ describe('end-to-end', async () => {
       // TODO replace with more specific selector
       await page.waitForSelector('.modal-body input')
       const uploadInput = await page.$('.modal-body input')
-      await uploadInput.uploadFile('./configurations/end-to-end/test-gtfs-to-upload.zip')
+      await uploadInput.uploadFile(gtfsUploadFile)
 
       // confirm file upload
       // TODO replace with more specific selector
@@ -389,5 +393,46 @@ describe('end-to-end', async () => {
         if (deletedFeedSourceFound) throw new Error('Feed source did not get deleted!')
       }, 30000)
     }
+  })
+
+  describe('feed version', () => {
+    it('should download a feed version', async () => {
+      await page.goto(`http://localhost:9966/feed/${feedSourceId}`)
+
+      // for whatever reason, waitUntil: networkidle0 was not working with the
+      // above goto, so wait for a few seconds here
+      await page.waitFor(5000)
+
+      await page.waitForSelector('[data-test-id="decrement-feed-version-button"]')
+      await page.click('[data-test-id="decrement-feed-version-button"]')
+
+      // wait for previous version to be active
+      await page.waitFor(1000)
+      await page.click('[data-test-id="download-feed-version-button"]')
+
+      // wait for file to download
+      await page.waitFor(5000)
+
+      // file should get saved to the ~/Downloads directory, go looking for it
+      // verify that file exists
+      const downloadsDir = path.join(os.homedir(), 'Downloads')
+      const files = await fs.readdir(downloadsDir)
+      let feedVersionDownloadFile = ''
+      // assume that this file will be the only one matching the feed source ID
+      for (const file of files) {
+        if (file.indexOf(feedSourceId.replace(/:/g, '')) > -1) {
+          feedVersionDownloadFile = file
+          break
+        }
+      }
+      if (!feedVersionDownloadFile) {
+        throw new Error('Feed Version gtfs file not found in Downloads folder!')
+      }
+
+      // verify that file has same hash as gtfs file that was uploaded
+      expect(
+        await md5File(path.join(downloadsDir, feedVersionDownloadFile))
+      ).toEqual(await md5File(gtfsUploadFile))
+    }, 30000)
   })
 })
