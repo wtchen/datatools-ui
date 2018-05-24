@@ -18,6 +18,10 @@ const testFeedSourceName = `test-feed-source-${testTime}`
 let testProjectId
 let feedSourceId
 
+// this can be turned off in development mode to skip some tests that do not
+// need to be run in order for other tests to work properly
+const doNonEssentialSteps = true
+
 async function expectSelectorToContainHtml (selector: string, html: string) {
   const innerHTML = await page.$eval(selector, e => e.innerHTML)
   expect(innerHTML).toContain(html)
@@ -120,7 +124,7 @@ describe('end-to-end', async () => {
 
       await page.waitForSelector('#project-viewer-tabs')
       await expectSelectorToContainHtml('#project-viewer-tabs', 'What is a feed source?')
-    }, 20000)
+    }, 30000)
 
     it('should update a project by adding a otp server', async () => {
       // open settings tab
@@ -142,42 +146,44 @@ describe('end-to-end', async () => {
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
       await expectSelectorToContainHtml('#project-viewer-tabs', 'test-otp-server')
-    }, 20000)
+    }, 30000)
 
-    it('should delete a project', async () => {
-      const testProjectToDeleteName = `test-project-that-will-get-deleted-${testTime}`
+    if (doNonEssentialSteps) {
+      it('should delete a project', async () => {
+        const testProjectToDeleteName = `test-project-that-will-get-deleted-${testTime}`
 
-      // navigate to home project view
-      await page.goto(
-        `http://localhost:9966/home/${testProjectId}`,
-        {
-          waitUntil: 'networkidle0'
+        // navigate to home project view
+        await page.goto(
+          `http://localhost:9966/home/${testProjectId}`,
+          {
+            waitUntil: 'networkidle0'
+          }
+        )
+        await page.waitForSelector('#context-dropdown')
+
+        // create a new project
+        await createProject(testProjectToDeleteName)
+
+        // get the created project id
+        // go into the project page and verify that it looks ok-ish
+        const projectEls = await page.$$('.project-name-editable a')
+
+        let projectFound = false
+        let projectToDeleteId = ''
+        for (const projectEl of projectEls) {
+          const innerHtml = await page.evaluate(el => el.innerHTML, projectEl)
+          if (innerHtml.indexOf(testProjectToDeleteName) > -1) {
+            const href = await page.evaluate(el => el.href, projectEl)
+            projectToDeleteId = href.match(/\/project\/([\w-]*)/)[1]
+            projectFound = true
+            break
+          }
         }
-      )
-      await page.waitForSelector('#context-dropdown')
+        if (!projectFound) throw new Error('Created project not found')
 
-      // create a new project
-      await createProject(testProjectToDeleteName)
-
-      // get the created project id
-      // go into the project page and verify that it looks ok-ish
-      const projectEls = await page.$$('.project-name-editable a')
-
-      let projectFound = false
-      let projectToDeleteId = ''
-      for (const projectEl of projectEls) {
-        const innerHtml = await page.evaluate(el => el.innerHTML, projectEl)
-        if (innerHtml.indexOf(testProjectToDeleteName) > -1) {
-          const href = await page.evaluate(el => el.href, projectEl)
-          projectToDeleteId = href.match(/\/project\/([\w-]*)/)[1]
-          projectFound = true
-          break
-        }
-      }
-      if (!projectFound) throw new Error('Created project not found')
-
-      await deleteProject(projectToDeleteId)
-    }, 20000)
+        await deleteProject(projectToDeleteId)
+      }, 30000)
+    }
   })
 
   describe('feed source', () => {
@@ -229,7 +235,7 @@ describe('end-to-end', async () => {
         '#feed-source-viewer-tabs',
         'No versions exist for this feed source.'
       )
-    }, 20000)
+    }, 30000)
 
     it('should process uploaded gtfs', async () => {
       // create new feed version by clicking on dropdown and upload link
@@ -250,7 +256,7 @@ describe('end-to-end', async () => {
       await footerButtons[0].click()
 
       // wait for gtfs to be uploaded and processed
-      await page.waitFor(10000)
+      await page.waitFor(15000)
       await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
       await page.click('[data-test-id="clear-completed-jobs-button"]')
 
@@ -259,7 +265,7 @@ describe('end-to-end', async () => {
         '#feed-source-viewer-tabs',
         'Valid from Jan. 01, 2014 to Dec. 31, 2018'
       )
-    }, 20000)
+    }, 30000)
 
     // this test also sets the feed source as deployable
     it('should process fetched gtfs', async () => {
@@ -276,7 +282,7 @@ describe('end-to-end', async () => {
       // set fetch url
       await page.type(
         '[data-test-id="feed-source-url-input-group"] input',
-        'http://feed.rvtd.org/googleFeeds/static/google_transit.zip'
+        'https://github.com/catalogueglobal/datatools-ui/raw/end-to-end/configurations/end-to-end/test-gtfs-to-fetch.zip'
       )
       await page.click('[data-test-id="feed-source-url-input-group"] button')
 
@@ -299,7 +305,7 @@ describe('end-to-end', async () => {
       await page.click('[data-test-id="fetch-feed-button"]')
 
       // wait for gtfs to be fetched and processed
-      await page.waitFor(10000)
+      await page.waitFor(15000)
       await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
       await page.click('[data-test-id="clear-completed-jobs-button"]')
 
@@ -308,10 +314,80 @@ describe('end-to-end', async () => {
         '#feed-source-viewer-tabs',
         'Valid from Apr. 08, 2018 to Jun. 30, 2018'
       )
-    }, 20000)
+    }, 30000)
 
-    // it('should delete feed source', async () => {
-    //
-    // }, 10000)
+    if (doNonEssentialSteps) {
+      it('should delete feed source', async () => {
+        // create a new feed source to delete
+        // go to project page
+        await page.goto(
+          `http://localhost:9966/project/${testProjectId}`,
+          {
+            waitUntil: 'networkidle0'
+          }
+        )
+        await page.waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
+        await page.click('[data-test-id="project-header-create-new-feed-source-button"]')
+
+        // TODO replace with less generic selector
+        await page.waitForSelector('h4 input')
+        const testFeedSourceToDeleteName = `test-feed-source-to-delete-${testTime}`
+        await page.type('h4 input', testFeedSourceToDeleteName + String.fromCharCode(13))
+
+        // wait for feed source to be created and saved
+        await page.waitFor(2000)
+
+        // find created feed source
+        const listItemEls = await page.$$('.list-group-item')
+        let feedSourceFound = false
+        for (const listItemEl of listItemEls) {
+          const feedSourceNameEl = await listItemEl.$('h4 a')
+          const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceNameEl)
+          if (innerHtml.indexOf(testFeedSourceToDeleteName) > -1) {
+            // hover over container to display FeedSourceDropdown
+            // I tried to use the puppeteer hover method, but that didn't trigger
+            // a mouseEnter event.  I needed to simulate the mouse being outside
+            // the element and then moving inside
+            const listItemBBox = await listItemEl.boundingBox()
+            await page.mouse.move(
+              listItemBBox.x - 10,
+              listItemBBox.y
+            )
+            await page.mouse.move(
+              listItemBBox.x + listItemBBox.width / 2,
+              listItemBBox.y + listItemBBox.height / 2
+            )
+            await page.waitForSelector('#feed-source-action-button')
+
+            // click dropdown and delete menu item button
+            await page.click('#feed-source-action-button')
+            await page.waitForSelector('[data-test-id="feed-source-dropdown-delete-project-button"]')
+            await page.click('[data-test-id="feed-source-dropdown-delete-project-button"]')
+
+            // confirm action in modal
+            await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+            await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+            // wait for data to refresh
+            await page.waitFor(2000)
+            feedSourceFound = true
+            break
+          }
+        }
+        if (!feedSourceFound) throw new Error('Created feedSource not found')
+
+        // verify deletion
+        const feedSourceEls = await page.$$('h4 a')
+        let deletedFeedSourceFound = false
+        for (const feedSourceEl of feedSourceEls) {
+          const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceEl)
+          if (innerHtml.indexOf(testFeedSourceToDeleteName) > -1) {
+            deletedFeedSourceFound = true
+            break
+          }
+        }
+        if (deletedFeedSourceFound) throw new Error('Feed source did not get deleted!')
+      }, 30000)
+    }
   })
 })
