@@ -22,6 +22,7 @@ const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
 let testProjectId
 let feedSourceId
+let scratchFeedSourceId
 
 // this can be turned off in development mode to skip some tests that do not
 // need to be run in order for other tests to work properly
@@ -96,6 +97,25 @@ async function uploadGtfs () {
   await page.waitFor(15000)
   await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
   await page.click('[data-test-id="clear-completed-jobs-button"]')
+}
+
+async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
+  // go to project page
+  await page.goto(
+    `http://localhost:9966/project/${testProjectId}`,
+    {
+      waitUntil: 'networkidle0'
+    }
+  )
+  await page.waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
+  await page.click('[data-test-id="project-header-create-new-feed-source-button"]')
+
+  // TODO replace with less generic selector
+  await page.waitForSelector('h4 input')
+  await page.type('h4 input', feedSourceName + String.fromCharCode(13))
+
+  // wait for feed source to be created and saved
+  await page.waitFor(3000)
 }
 
 describe('end-to-end', async () => {
@@ -325,24 +345,10 @@ describe('end-to-end', async () => {
 
     if (doNonEssentialSteps) {
       it('should delete feed source', async () => {
-        // create a new feed source to delete
-        // go to project page
-        await page.goto(
-          `http://localhost:9966/project/${testProjectId}`,
-          {
-            waitUntil: 'networkidle0'
-          }
-        )
-        await page.waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
-        await page.click('[data-test-id="project-header-create-new-feed-source-button"]')
-
-        // TODO replace with less generic selector
-        await page.waitForSelector('h4 input')
         const testFeedSourceToDeleteName = `test-feed-source-to-delete-${testTime}`
-        await page.type('h4 input', testFeedSourceToDeleteName + String.fromCharCode(13))
 
-        // wait for feed source to be created and saved
-        await page.waitFor(2000)
+        // create a new feed source to delete
+        await createFeedSourceViaProjectHeaderButton(testFeedSourceToDeleteName)
 
         // find created feed source
         const listItemEls = await page.$$('.list-group-item')
@@ -469,5 +475,85 @@ describe('end-to-end', async () => {
         )
       }, 30000)
     }
+  })
+
+  describe('editor', () => {
+    it('should load a feed version into the editor', async () => {
+      // click edit feed button
+      await page.click('[data-test-id="edit-feed-version-button"]')
+
+      // wait for editor to get ready and show starting dialog
+      await page.waitForSelector('[data-test-id="import-latest-version-button"]')
+      await page.click('[data-test-id="import-latest-version-button"]')
+
+      // wait for snapshot to get created
+      await page.waitForSelector('[data-test-id="begin-editing-button"]')
+
+      // close jobs dialog
+      await page.click('[data-test-id="clear-completed-jobs-button"]')
+
+      // begin editing
+      await page.click('[data-test-id="begin-editing-button"]')
+
+      // wait for dialog to close
+      await page.waitFor(1000)
+    }, 20000)
+
+    // prepare a new feed source to use the editor from scratch
+    it('should edit a feed from scratch', async () => {
+      // browse to feed source page
+      const feedSourceName = `feed-source-to-edit-from-scratch-${testTime}`
+      await createFeedSourceViaProjectHeaderButton(feedSourceName)
+
+      // find created feed source
+      const listItemEls = await page.$$('.list-group-item')
+      let feedSourceFound = false
+      for (const listItemEl of listItemEls) {
+        const feedSourceNameEl = await listItemEl.$('h4 a')
+        const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceNameEl)
+        if (innerHtml.indexOf(feedSourceName) > -1) {
+          const href = await page.evaluate(el => el.href, feedSourceNameEl)
+          scratchFeedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
+          feedSourceFound = true
+          await feedSourceNameEl.click()
+          // apparently the first click does not work entirely, it may trigger
+          // a load of the FeedSourceDropdown, but the event for clicking the link
+          // needs a second try I guess
+          await feedSourceNameEl.click()
+          break
+        }
+      }
+      if (!feedSourceFound) throw new Error('Created feedSource not found')
+
+      // wait for navigation to feed source
+      await page.waitForSelector('#feed-source-viewer-tabs')
+
+      // wait for 2 seconds for feed versions to load
+      await page.waitFor(2000)
+
+      // click edit feed button
+      await page.click('[data-test-id="edit-feed-version-button"]')
+
+      // wait for editor to get ready and show starting dialog
+      await page.waitForSelector('[data-test-id="edit-from-scratch-button"]')
+      await page.click('[data-test-id="edit-from-scratch-button"]')
+
+      // wait for snapshot to get created
+      await page.waitForSelector('[data-test-id="begin-editing-button"]')
+
+      // close jobs dialog
+      await page.click('[data-test-id="clear-completed-jobs-button"]')
+
+      // wait for jobs dialog to close
+      await page.waitFor(1000)
+
+      // begin editing
+      await page.click('[data-test-id="begin-editing-button"]')
+
+      // wait for welcome dialog to close
+      await page.waitFor(1000)
+    }, 30000)
+
+    // all of the following editor tests assume the use of the scratch feed
   })
 })
