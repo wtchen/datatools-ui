@@ -118,6 +118,34 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   await page.waitFor(3000)
 }
 
+async function clearInput (inputSelector: string) {
+  await page.$eval(inputSelector, input => { input.value = '' })
+}
+
+async function pickColor (containerSelector: string, color: string) {
+  await page.click(`${containerSelector} button`)
+  await page.waitForSelector(`${containerSelector} .sketch-picker`)
+  await clearInput(`${containerSelector} input`)
+  await page.type(`${containerSelector} input`, color)
+}
+
+async function reactSelectOption (
+  containerSelector: string,
+  initalText: string,
+  optionToSelect: number
+) {
+  await page.click(`${containerSelector} .Select-control`)
+  await page.type(`${containerSelector} input`, initalText)
+  const optionSelector = `.Select-option:nth-child(${optionToSelect})`
+  await page.waitForSelector(optionSelector)
+  await page.click(optionSelector)
+}
+
+async function typeDate (dateSelector: string, date: string) {
+  await clearInput(dateSelector)
+  await page.type(dateSelector, date)
+}
+
 describe('end-to-end', async () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({headless: false})
@@ -555,5 +583,43 @@ describe('end-to-end', async () => {
     }, 30000)
 
     // all of the following editor tests assume the use of the scratch feed
+    describe('feed info', () => {
+      it('should create feed info data', async () => {
+        // open feed info sidebar
+        await page.click('[data-test-id="editor-feedinfo-nav-button"]')
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector('#feed_publisher_name')
+
+        // fill out form
+        await page.type('#feed_publisher_name', 'end-to-end automated test')
+        await page.type('#feed_publisher_url', 'example.test')
+        await reactSelectOption(
+          '[data-test-id="feedinfo-feed_lang-input-container"]',
+          'eng',
+          2
+        )
+        await typeDate('[data-test-id="feedinfo-feed_start_date-input-container"] input', '05/29/18')
+        await typeDate('[data-test-id="feedinfo-feed_end_date-input-container"] input', '05/29/38')
+        await pickColor('[data-test-id="feedinfo-default_route_color-input-container"]', '3D65E2')
+        await page.select('[data-test-id="feedinfo-default_route_type-input-container"] select', '6')
+        await page.type('[data-test-id="feedinfo-feed_version-input-container"] input', testTime)
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector('#feed_publisher_name')
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml('[data-test-id="feedinfo-feed_publisher_name-input-container"]', 'end-to-end automated test')
+      }, 20000)
+    })
   })
 })
