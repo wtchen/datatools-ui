@@ -599,11 +599,26 @@ describe('end-to-end', async () => {
           'eng',
           2
         )
-        await typeDate('[data-test-id="feedinfo-feed_start_date-input-container"] input', '05/29/18')
-        await typeDate('[data-test-id="feedinfo-feed_end_date-input-container"] input', '05/29/38')
-        await pickColor('[data-test-id="feedinfo-default_route_color-input-container"]', '3D65E2')
-        await page.select('[data-test-id="feedinfo-default_route_type-input-container"] select', '6')
-        await page.type('[data-test-id="feedinfo-feed_version-input-container"] input', testTime)
+        await typeDate(
+          '[data-test-id="feedinfo-feed_start_date-input-container"] input',
+          '05/29/18'
+        )
+        await typeDate(
+          '[data-test-id="feedinfo-feed_end_date-input-container"] input',
+          '05/29/38'
+        )
+        await pickColor(
+          '[data-test-id="feedinfo-default_route_color-input-container"]',
+          '3D65E2'
+        )
+        await page.select(
+          '[data-test-id="feedinfo-default_route_type-input-container"] select',
+          '6'
+        )
+        await page.type(
+          '[data-test-id="feedinfo-feed_version-input-container"] input',
+          testTime
+        )
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -618,7 +633,43 @@ describe('end-to-end', async () => {
         await page.waitForSelector('#feed_publisher_name')
 
         // verify data was saved and retrieved from server
-        await expectSelectorToContainHtml('[data-test-id="feedinfo-feed_publisher_name-input-container"]', 'end-to-end automated test')
+        await expectSelectorToContainHtml(
+          '[data-test-id="feedinfo-feed_publisher_name-input-container"]',
+          'end-to-end automated test'
+        )
+      }, 20000)
+
+      it('should update feed info data', async () => {
+        // go to editor page
+        await page.goto(
+          `http://localhost:9966/feed/${scratchFeedSourceId}/edit/feedinfo`,
+          {
+            waitUntil: 'networkidle0'
+          }
+        )
+
+        // update publisher name by appending to end
+        await page.focus('#feed_publisher_name')
+        await page.keyboard.press('End')
+        await page.keyboard.type(' runner')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector('#feed_publisher_name')
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="feedinfo-feed_publisher_name-input-container"]',
+          'end-to-end automated test runner'
+        )
       }, 20000)
     })
   })
