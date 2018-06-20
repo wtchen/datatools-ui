@@ -11,6 +11,7 @@ exports[`manager > selectors > getRouteDetailsData should output blank array whe
 exports[`manager > selectors > getRouteDetailsData should output data when route data exists 1`] = `
 Array [
   Object {
+    "numPatterns": 1,
     "numStops": 2,
     "numTrips": 1,
     "routeId": "10",
