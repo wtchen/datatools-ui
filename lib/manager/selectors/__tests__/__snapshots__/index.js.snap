@@ -6,6 +6,48 @@ Object {
 }
 `;
 
+exports[`manager > selectors > getPatternData should output blank array when no pattern data exists 1`] = `Array []`;
+
+exports[`manager > selectors > getPatternData should output data when route data exists 1`] = `
+Array [
+  Object {
+    "numStops": 2,
+    "numTrips": 2,
+    "patternName": "10 stops from 1ST & METRO @ LR STATION to SANTA CLARA CALTRAIN STATION (133 trips)",
+    "tripsPerHour": Array [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ],
+  },
+]
+`;
+
 exports[`manager > selectors > getRouteDetailsData should output blank array when no route data exists 1`] = `Array []`;
 
 exports[`manager > selectors > getRouteDetailsData should output data when route data exists 1`] = `
