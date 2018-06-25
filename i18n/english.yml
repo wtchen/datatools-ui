@@ -52,6 +52,7 @@ components:
       tripCount: Trip Count
       validFrom: Valid from
       version: Version
+    to: to
     versions: Feed Versions
   DeploymentsPanel:
     delete: Remove deployment
