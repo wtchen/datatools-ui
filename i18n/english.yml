@@ -25,6 +25,7 @@ components:
       expiredFeeds: The following feeds have expired (all scheduled trips are for past dates)
       missingBounds: There are no bounds defined for the set of feeds. Deployment is disabled.
       missingFeeds: There are no feeds defined for this deployment. Deployment is disabled.
+      success: Deployment successfully deployed.
     cancel: Cancel
     close: Close
     danger: Danger!
@@ -32,6 +33,7 @@ components:
     invalidBounds: Bounds are invalid!
     to: to
     warning: Warning!
+    success: Success!
   DeploymentViewer:
     addFeedSource: Add Feed Source
     allFeedsAdded: All feeds added
