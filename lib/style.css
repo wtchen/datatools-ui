@@ -1,3 +1,20 @@
+/* PREVENT BOUNCE SCROLL ON OSX */
+
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100%;
+  padding: 0;
+  overflow: auto;
+  margin: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* MODIFY STYLE FOR BOOTSTRAP NAV TABS */
 
 .nav-tabs {
   margin-top: 20px;
@@ -21,6 +38,77 @@
 .entity-list-row {
   /*background-color: '#f5f5f5';*/
   outline: 'none';
+}
+
+.EntityList input:focus, textarea:focus {
+    outline: none;
+}
+
+/* EDITOR ENTITY DETAILS */
+
+.entity-details {
+  height: 100%;
+}
+
+.entity-details-header {
+  height: 15%;
+  min-height: 105px;
+}
+
+.entity-details-heading {
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+.entity-details-title {
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-top: 6px;
+}
+
+.entity-details-body {
+  height: 83%;
+  overflow-y: scroll;
+  width: 102%;
+}
+
+/* EDITOR TRIP PATTERN STYLES */
+
+.trip-pattern-controls {
+  padding-right: 5px;
+  margin-bottom: 5px;
+}
+
+.trip-pattern-list {
+  height: 90%;
+  overflow-y: scroll
+}
+
+.pattern-stop-card {
+  border: 1px solid #ccc;
+  padding: 0.5rem 0.5rem;
+  margin-bottom: .5rem;
+  background-color: #FAFFFD;
+  border-radius: 3px;
+}
+
+/* EDITOR SCROLL STYLES */
+
+/* width */
+.GtfsEditor ::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+/* Handle */
+.GtfsEditor ::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+/* Handle on hover */
+.GtfsEditor ::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* IMPORTANT (!) for date picker to show up aligned correctly with form input */
@@ -237,32 +325,40 @@ h4.line:after {
 
 /* Job Monitor */
 
-.job-list {
-  max-height: 200px;
-  overflow-y: scroll;
+.job-monitor .job-list {
+  height: 210px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.job-container {
-  margin-bottom: 20px;
+.job-monitor ul {
+  margin-bottom: 0px;
 }
 
-.job-container-inner {
+.job-monitor .job-container {
+  margin-top: 15px;
+}
+
+.job-monitor .job-container-inner {
   margin-left: 25px;
 }
 
-.job-status-progress-bar {
+.job-monitor .job-status-progress-bar {
   margin-bottom: 2px;
 }
 
-.job-status-message {
+.job-monitor .job-status-message {
   font-size: 12px;
   color: darkGray;
 }
 
-.job-spinner-div {
+.job-monitor .job-spinner-div {
   float: left;
 }
 
+.job-monitor .close-job-button {
+  padding: 0px 5px 0px 0px;
+}
 
 /* Validation viewer */
 .validation-item {
