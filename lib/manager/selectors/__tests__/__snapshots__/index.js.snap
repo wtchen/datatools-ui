@@ -182,7 +182,7 @@ Object {
       "hidden": undefined,
       "row": "0",
       "stopId": "14",
-      "width": "150",
+      "width": "170",
     },
     Object {
       "children": "Arrive",
@@ -210,7 +210,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "14",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": "Dwell",
@@ -219,7 +219,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "14",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": <span>
@@ -253,7 +253,7 @@ Object {
       "hidden": undefined,
       "row": "0",
       "stopId": "15",
-      "width": "150",
+      "width": "170",
     },
     Object {
       "children": "Arrive",
@@ -281,7 +281,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "15",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": "Dwell",
@@ -290,7 +290,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "15",
-      "width": "75",
+      "width": "85",
     },
   ],
   "rows": Array [
@@ -378,7 +378,7 @@ Object {
       "hidden": undefined,
       "row": "0",
       "stopId": "14",
-      "width": "150",
+      "width": "170",
     },
     Object {
       "children": "Arrive",
@@ -406,7 +406,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "14",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": "Dwell",
@@ -415,7 +415,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "14",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": <span>
@@ -449,7 +449,7 @@ Object {
       "hidden": undefined,
       "row": "0",
       "stopId": "15",
-      "width": "150",
+      "width": "170",
     },
     Object {
       "children": "Arrive",
@@ -477,7 +477,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "15",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": "Dwell",
@@ -486,7 +486,7 @@ Object {
       "hidden": undefined,
       "row": "1",
       "stopId": "15",
-      "width": "75",
+      "width": "85",
     },
   ],
   "rows": Array [
@@ -574,7 +574,7 @@ Object {
       "hidden": false,
       "row": "0",
       "stopId": "14",
-      "width": "150",
+      "width": "170",
     },
     Object {
       "children": "Arrive",
@@ -602,7 +602,7 @@ Object {
       "hidden": false,
       "row": "1",
       "stopId": "14",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": "Dwell",
@@ -611,7 +611,7 @@ Object {
       "hidden": false,
       "row": "1",
       "stopId": "14",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": <span>
@@ -645,7 +645,7 @@ Object {
       "hidden": true,
       "row": "0",
       "stopId": "15",
-      "width": "150",
+      "width": "170",
     },
     Object {
       "children": "Arrive",
@@ -673,7 +673,7 @@ Object {
       "hidden": true,
       "row": "1",
       "stopId": "15",
-      "width": "75",
+      "width": "85",
     },
     Object {
       "children": "Dwell",
@@ -682,7 +682,7 @@ Object {
       "hidden": true,
       "row": "1",
       "stopId": "15",
-      "width": "75",
+      "width": "85",
     },
   ],
   "rows": Array [
