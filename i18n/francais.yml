@@ -18,6 +18,22 @@ components:
     resetPassword: Reset Password
     signConfig: eTID Config
     users: Utilisateurs
+  DeploymentConfirmModal:
+    alert:
+      alreadyDeployed: is already deployed to this server at the same router. (Deploying would evict the current graph.)
+      boundsTooLarge: Bounds are much too large to successfully deploy to OpenTripPlanner. Deployment is disabled.
+      expiredFeeds: The following feeds have expired (all scheduled trips are for past dates)
+      missingBounds: There are no bounds defined for the set of feeds. Deployment is disabled.
+      missingFeeds: There are no feeds defined for this deployment. Deployment is disabled.
+      success: Deployment successfully deployed.
+    cancel: Cancel
+    close: Close
+    danger: Danger!
+    deploy: Deploy
+    invalidBounds: Bounds are invalid!
+    to: to
+    warning: Warning!
+    success: Success!
   DeploymentViewer:
     addFeedSource: Add Feed Source
     allFeedsAdded: All feeds added
@@ -36,15 +52,18 @@ components:
       tripCount: Trip Count
       validFrom: Valid from
       version: Version
+    to: to
     versions: Feed Versions
   DeploymentsPanel:
     delete: Remove deployment
     new: New Deployment
-    search: Search for deployments by name
+    search: Search for deployments
     table:
-      creationDate: Creation date
+      creationDate: Created
+      lastDeployed: Last deployed
       deployedTo: Deployed to
-      feedCount: Number of feeds
+      feedCount: '# of feeds'
+      testDeployment: Test?
       name: Name
     title: Deployments
   EditorFeedSourcePanel:
@@ -155,6 +174,8 @@ components:
     title: Validation Results
   LanguageSelect:
     placeholder: Select language...
+  Login:
+    title: Se connecter
   NotesViewer:
     all: All Comments
     feedSource: Feed Source
