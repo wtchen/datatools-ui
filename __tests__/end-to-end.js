@@ -168,10 +168,10 @@ describe('end-to-end', async () => {
   it('should login', async () => {
     await page.goto('http://localhost:9966')
     await page.click('[data-test-id="header-log-in-button"]')
-    await page.waitForSelector('#a0-signin_easy_email')
-    await page.type('#a0-signin_easy_email', config.username)
-    await page.type('#a0-signin_easy_password', config.password)
-    await page.click('.a0-action button')
+    await page.waitForSelector('button[class="auth0-lock-submit"]')
+    await page.type('input[class="auth0-lock-input"][name="email"]', config.username)
+    await page.type('input[class="auth0-lock-input"][name="password"]', config.password)
+    await page.click('button[class="auth0-lock-submit"]')
     await page.waitForSelector('#context-dropdown')
     // wait for 5 seconds for projects to load
     await page.waitFor(5000)
