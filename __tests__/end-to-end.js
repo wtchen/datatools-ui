@@ -33,6 +33,11 @@ async function expectSelectorToContainHtml (selector: string, html: string) {
   expect(innerHTML).toContain(html)
 }
 
+async function expectSelectorToNotContainHtml (selector: string, html: string) {
+  const innerHTML = await page.$eval(selector, e => e.innerHTML)
+  expect(innerHTML).not.toContain(html)
+}
+
 async function createProject (projectName: string) {
   await page.click('#context-dropdown')
   await page.waitForSelector('a[href="/project"]')
@@ -669,6 +674,170 @@ describe('end-to-end', async () => {
         await expectSelectorToContainHtml(
           '[data-test-id="feedinfo-feed_publisher_name-input-container"]',
           'end-to-end automated test runner'
+        )
+      }, 20000)
+    })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('agencies', () => {
+      it('should create agency', async () => {
+        // open feed info sidebar
+        await page.click('[data-test-id="editor-agency-nav-button"]')
+
+        // wait for agency sidebar form to appear
+        await page.waitForSelector('[data-test-id="create-first-agency-button"]')
+
+        // click button to open form to create agency
+        await page.click('[data-test-id="create-first-agency-button"]')
+
+        // wait for entity details sidebar to appear
+        await page.waitForSelector('[data-test-id="agency-agency_id-input-container"]')
+
+        // fill out form
+        await page.type(
+          '[data-test-id="agency-agency_id-input-container"] input',
+          'test-agency-id'
+        )
+        await page.type(
+          '[data-test-id="agency-agency_name-input-container"] input',
+          'test agency name'
+        )
+        await page.type(
+          '[data-test-id="agency-agency_url-input-container"] input',
+          'example.test'
+        )
+        await reactSelectOption(
+          '[data-test-id="agency-agency_timezone-input-container"]',
+          'america/lo',
+          1
+        )
+        // the below doesn't save the language unless chrome debugger is on.
+        // Don't know why, spent way too much time trying to figure out.
+        await reactSelectOption(
+          '[data-test-id="agency-agency_lang-input-container"]',
+          'eng',
+          2
+        )
+        await page.focus(
+          '[data-test-id="agency-agency_phone-input-container"] input'
+        )
+        await page.type(
+          '[data-test-id="agency-agency_phone-input-container"] input',
+          '555-555-5555'
+        )
+        await page.type(
+          '[data-test-id="agency-agency_fare_url-input-container"] input',
+          'example.fare.test'
+        )
+        await page.type(
+          '[data-test-id="agency-agency_email-input-container"] input',
+          'test@example.com'
+        )
+        await page.type(
+          '[data-test-id="agency-agency_branding_url-input-container"] input',
+          'example.branding.url'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(10000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="agency-agency_id-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="agency-agency_id-input-container"]',
+          'test-agency-id'
+        )
+      }, 20000)
+
+      it('should update agency data', async () => {
+        // update agency name by appending to end
+        await page.focus(
+          '[data-test-id="agency-agency_name-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type(' updated')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="agency-agency_name-input-container"] input'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="agency-agency_name-input-container"]',
+          'test agency name updated'
+        )
+      }, 20000)
+
+      it('should delete agency data', async () => {
+        // create a new agency that will get deleted
+        await page.click('[data-test-id="clone-agency-button"]')
+
+        // update agency id by appending to end
+        await page.focus(
+          '[data-test-id="agency-agency_id-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type('-copied')
+
+        // update agency name
+        await page.focus(
+          '[data-test-id="agency-agency_name-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type(' to delete')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="agency-agency_name-input-container"] input'
+        )
+
+        // verify that agency to delete is listed
+        await expectSelectorToContainHtml(
+          '.entity-list',
+          'test agency name updated to delete'
+        )
+
+        // delete the agency
+        await page.click('[data-test-id="delete-agency-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(1000)
+
+        // verify that agency to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.entity-list',
+          'test agency name updated to delete'
         )
       }, 20000)
     })
