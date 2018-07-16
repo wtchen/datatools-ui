@@ -718,9 +718,6 @@ describe('end-to-end', async () => {
           'eng',
           2
         )
-        await page.focus(
-          '[data-test-id="agency-agency_phone-input-container"] input'
-        )
         await page.type(
           '[data-test-id="agency-agency_phone-input-container"] input',
           '555-555-5555'
@@ -742,7 +739,7 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(10000)
+        await page.waitFor(1000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -838,6 +835,190 @@ describe('end-to-end', async () => {
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test agency name updated to delete'
+        )
+      }, 20000)
+    })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('routes', () => {
+      it('should create route', async () => {
+        // open feed info sidebar
+        await page.click('[data-test-id="editor-route-nav-button"]')
+
+        // wait for route sidebar form to appear
+        await page.waitForSelector('[data-test-id="create-first-route-button"]')
+
+        // click button to open form to create route
+        await page.click('[data-test-id="create-first-route-button"]')
+
+        // wait for entity details sidebar to appear
+        await page.waitForSelector('[data-test-id="route-route_id-input-container"]')
+
+        // fill out form
+        // set status to approved
+        await page.select(
+          '[data-test-id="route-status-input-container"] select',
+          '2'
+        )
+
+        // set public to yes
+        await page.select(
+          '[data-test-id="route-publicly_visible-input-container"] select',
+          '1'
+        )
+
+        // set route_id
+        const routeIdSelector = '[data-test-id="route-route_id-input-container"] input'
+        await clearInput(routeIdSelector)
+        await page.type(routeIdSelector, 'test-route-id')
+
+        // set route short name
+        const routeShortNameSelector = '[data-test-id="route-route_short_name-input-container"] input'
+        await clearInput(routeShortNameSelector)
+        await page.type(routeShortNameSelector, 'test1')
+
+        // long name
+        await page.type(
+          '[data-test-id="route-route_long_name-input-container"] input',
+          'test route 1'
+        )
+
+        // description
+        await page.type(
+          '[data-test-id="route-route_desc-input-container"] input',
+          'test route 1 description'
+        )
+
+        // route type
+        await page.select(
+          '[data-test-id="route-route_type-input-container"] select',
+          '3'
+        )
+
+        // route color
+        await pickColor(
+          '[data-test-id="route-route_color-input-container"]',
+          '1cff32'
+        )
+
+        // route text color
+        await page.select(
+          '[data-test-id="route-route_text_color-input-container"] select',
+          '000000'
+        )
+
+        // wheelchair accessible
+        await page.select(
+          '[data-test-id="route-wheelchair_accessible-input-container"] select',
+          '1'
+        )
+
+        // branding url
+        await page.type(
+          '[data-test-id="route-route_branding_url-input-container"] input',
+          'example.branding.test'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="route-route_id-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="route-route_id-input-container"]',
+          'test-route-id'
+        )
+      }, 20000)
+
+      it('should update route data', async () => {
+        // update route name by appending to end
+        await page.focus(
+          '[data-test-id="route-route_long_name-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type(' updated')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="route-route_long_name-input-container"] input'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="route-route_long_name-input-container"]',
+          'test route 1 updated'
+        )
+      }, 20000)
+
+      it('should delete route data', async () => {
+        // create a new route that will get deleted
+        await page.click('[data-test-id="clone-route-button"]')
+
+        // update route id by appending to end
+        await page.focus(
+          '[data-test-id="route-route_id-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type('-copied')
+
+        // update route name
+        await page.focus(
+          '[data-test-id="route-route_long_name-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type(' to delete')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="route-route_long_name-input-container"] input'
+        )
+
+        // verify that route to delete is listed
+        await expectSelectorToContainHtml(
+          '.entity-list',
+          'test route 1 updated to delete'
+        )
+
+        // delete the route
+        await page.click('[data-test-id="delete-route-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(1000)
+
+        // verify that route to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.entity-list',
+          'test route 1 updated to delete'
         )
       }, 20000)
     })
