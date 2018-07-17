@@ -1256,5 +1256,157 @@ describe('end-to-end', async () => {
         )
       }, 20000)
     })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('calendars', () => {
+      it('should create calendar', async () => {
+        // open calendar sidebar
+        await page.click('[data-test-id="editor-calendar-nav-button"]')
+
+        // wait for calendar sidebar form to appear
+        await page.waitForSelector('[data-test-id="create-first-calendar-button"]')
+
+        // click button to open form to create calendar
+        await page.click('[data-test-id="create-first-calendar-button"]')
+
+        // wait for entity details sidebar to appear
+        await page.waitForSelector('[data-test-id="calendar-service_id-input-container"]')
+
+        // fill out form
+
+        // service_id
+        await page.type(
+          '[data-test-id="calendar-service_id-input-container"] input',
+          'test-service-id'
+        )
+
+        // description
+        await page.type(
+          '[data-test-id="calendar-description-input-container"] input',
+          'test calendar'
+        )
+
+        // monday
+        await page.click(
+          '[data-test-id="calendar-monday-input-container"] input'
+        )
+
+        // tuesday
+        await page.click(
+          '[data-test-id="calendar-tuesday-input-container"] input'
+        )
+
+        // start date
+        await clearAndType(
+          '[data-test-id="calendar-start_date-input-container"] input',
+          '05/29/18'
+        )
+
+        // end date
+        await clearAndType(
+          '[data-test-id="calendar-end_date-input-container"] input',
+          '05/29/28'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for calendar sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="calendar-service_id-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="calendar-service_id-input-container"]',
+          'test-service-id'
+        )
+      }, 20000)
+
+      it('should update calendar data', async () => {
+        // update calendar name by appending to end
+        await appendText(
+          '[data-test-id="calendar-description-input-container"] input',
+          ' updated'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for calendar sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="calendar-description-input-container"] input'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="calendar-description-input-container"]',
+          'test calendar updated'
+        )
+      }, 20000)
+
+      it('should delete calendar data', async () => {
+        // create a new calendar that will get deleted
+        await page.click('[data-test-id="clone-calendar-button"]')
+
+        // update service id by appending to end
+        await appendText(
+          '[data-test-id="calendar-service_id-input-container"] input',
+          '-copied'
+        )
+
+        // update description
+        await appendText(
+          '[data-test-id="calendar-description-input-container"] input',
+          ' to delete'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for calendar sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="calendar-description-input-container"] input'
+        )
+
+        // verify that calendar to delete is listed
+        await expectSelectorToContainHtml(
+          '.entity-list',
+          'test-service-id-copied (test calendar updated to delete)'
+        )
+
+        // delete the calendar
+        await page.click('[data-test-id="delete-calendar-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(1000)
+
+        // verify that calendar to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.entity-list',
+          'test-service-id-copied (test calendar updated to delete)'
+        )
+      }, 20000)
+    })
   })
 })
