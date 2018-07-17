@@ -112,6 +112,22 @@
     "semantic-release": "^6.3.2"
   },
   "standard": {
-    "parser": "babel-eslint"
+    "parser": "babel-eslint",
+    "globals": [
+      "HTMLInputElement",
+      "ReactComponent",
+      "ReactElement",
+      "SyntheticEvent",
+      "SyntheticClipboardEvent",
+      "SyntheticCompositionEvent",
+      "SyntheticInputEvent",
+      "SyntheticUIEvent",
+      "SyntheticFocusEvent",
+      "SyntheticKeyboardEvent",
+      "SyntheticMouseEvent",
+      "SyntheticDragEvent",
+      "SyntheticWheelEvent",
+      "SyntheticTouchEvent"
+    ]
   }
 }
