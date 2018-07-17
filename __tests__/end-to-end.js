@@ -22,7 +22,6 @@ const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
 let testProjectId
 let feedSourceId
-let scratchFeedSourceId
 
 // this can be turned off in development mode to skip some tests that do not
 // need to be run in order for other tests to work properly
@@ -163,9 +162,10 @@ async function createStop ({
   // fill out form
 
   // set stop_id
-  const stopIdSelector = '[data-test-id="stop-stop_id-input-container"] input'
-  await clearInput(stopIdSelector)
-  await page.type(stopIdSelector, id)
+  await clearAndType(
+    '[data-test-id="stop-stop_id-input-container"] input',
+    id
+  )
 
   // code
   await page.type(
@@ -174,9 +174,10 @@ async function createStop ({
   )
 
   // set stop name
-  const stopNameSelector = '[data-test-id="stop-stop_name-input-container"] input'
-  await clearInput(stopNameSelector)
-  await page.type(stopNameSelector, name)
+  await clearAndType(
+    '[data-test-id="stop-stop_name-input-container"] input',
+    name
+  )
 
   // description
   await page.type(
@@ -185,14 +186,16 @@ async function createStop ({
   )
 
   // lat
-  const latInputSelector = '[data-test-id="stop-stop_lat-input-container"] input'
-  await clearInput(latInputSelector)
-  await page.type(latInputSelector, lat)
+  await clearAndType(
+    '[data-test-id="stop-stop_lat-input-container"] input',
+    lat
+  )
 
   // lon
-  const lonInputSelector = '[data-test-id="stop-stop_lon-input-container"] input'
-  await clearInput(lonInputSelector)
-  await page.type(lonInputSelector, lon)
+  await clearAndType(
+    '[data-test-id="stop-stop_lon-input-container"] input',
+    lon
+  )
 
   // zone
   const zoneIdSelector = '[data-test-id="stop-zone_id-input-container"]'
@@ -241,8 +244,7 @@ async function clearInput (inputSelector: string) {
 async function pickColor (containerSelector: string, color: string) {
   await page.click(`${containerSelector} button`)
   await page.waitForSelector(`${containerSelector} .sketch-picker`)
-  await clearInput(`${containerSelector} input`)
-  await page.type(`${containerSelector} input`, color)
+  await clearAndType(`${containerSelector} input`, color)
 }
 
 async function reactSelectOption (
@@ -257,9 +259,15 @@ async function reactSelectOption (
   await page.click(optionSelector)
 }
 
-async function typeDate (dateSelector: string, date: string) {
-  await clearInput(dateSelector)
-  await page.type(dateSelector, date)
+async function clearAndType (selector: string, text: string) {
+  await clearInput(selector)
+  await page.type(selector, text)
+}
+
+async function appendText (selector: string, text: string) {
+  await page.focus(selector)
+  await page.keyboard.press('End')
+  await page.keyboard.type(text)
 }
 
 describe('end-to-end', async () => {
@@ -656,8 +664,6 @@ describe('end-to-end', async () => {
         const feedSourceNameEl = await listItemEl.$('h4 a')
         const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceNameEl)
         if (innerHtml.indexOf(feedSourceName) > -1) {
-          const href = await page.evaluate(el => el.href, feedSourceNameEl)
-          scratchFeedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
           feedSourceFound = true
           await feedSourceNameEl.click()
           // apparently the first click does not work entirely, it may trigger
@@ -715,11 +721,11 @@ describe('end-to-end', async () => {
           'eng',
           2
         )
-        await typeDate(
+        await clearAndType(
           '[data-test-id="feedinfo-feed_start_date-input-container"] input',
           '05/29/18'
         )
-        await typeDate(
+        await clearAndType(
           '[data-test-id="feedinfo-feed_end_date-input-container"] input',
           '05/29/38'
         )
@@ -756,18 +762,8 @@ describe('end-to-end', async () => {
       }, 20000)
 
       it('should update feed info data', async () => {
-        // go to editor page
-        await page.goto(
-          `http://localhost:9966/feed/${scratchFeedSourceId}/edit/feedinfo`,
-          {
-            waitUntil: 'networkidle0'
-          }
-        )
-
         // update publisher name by appending to end
-        await page.focus('#feed_publisher_name')
-        await page.keyboard.press('End')
-        await page.keyboard.type(' runner')
+        await appendText('#feed_publisher_name', ' runner')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -869,11 +865,10 @@ describe('end-to-end', async () => {
 
       it('should update agency data', async () => {
         // update agency name by appending to end
-        await page.focus(
-          '[data-test-id="agency-agency_name-input-container"] input'
+        await appendText(
+          '[data-test-id="agency-agency_name-input-container"] input',
+          ' updated'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type(' updated')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -901,18 +896,16 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="clone-agency-button"]')
 
         // update agency id by appending to end
-        await page.focus(
-          '[data-test-id="agency-agency_id-input-container"] input'
+        await appendText(
+          '[data-test-id="agency-agency_id-input-container"] input',
+          '-copied'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type('-copied')
 
         // update agency name
-        await page.focus(
-          '[data-test-id="agency-agency_name-input-container"] input'
+        await appendText(
+          '[data-test-id="agency-agency_name-input-container"] input',
+          ' to delete'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type(' to delete')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -979,14 +972,16 @@ describe('end-to-end', async () => {
         )
 
         // set route_id
-        const routeIdSelector = '[data-test-id="route-route_id-input-container"] input'
-        await clearInput(routeIdSelector)
-        await page.type(routeIdSelector, 'test-route-id')
+        await clearAndType(
+          '[data-test-id="route-route_id-input-container"] input',
+          'test-route-id'
+        )
 
         // set route short name
-        const routeShortNameSelector = '[data-test-id="route-route_short_name-input-container"] input'
-        await clearInput(routeShortNameSelector)
-        await page.type(routeShortNameSelector, 'test1')
+        await clearAndType(
+          '[data-test-id="route-route_short_name-input-container"] input',
+          'test1'
+        )
 
         // long name
         await page.type(
@@ -1053,11 +1048,10 @@ describe('end-to-end', async () => {
 
       it('should update route data', async () => {
         // update route name by appending to end
-        await page.focus(
-          '[data-test-id="route-route_long_name-input-container"] input'
+        await appendText(
+          '[data-test-id="route-route_long_name-input-container"] input',
+          ' updated'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type(' updated')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -1085,18 +1079,16 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="clone-route-button"]')
 
         // update route id by appending to end
-        await page.focus(
-          '[data-test-id="route-route_id-input-container"] input'
+        await appendText(
+          '[data-test-id="route-route_id-input-container"] input',
+          '-copied'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type('-copied')
 
         // update route name
-        await page.focus(
-          '[data-test-id="route-route_long_name-input-container"] input'
+        await appendText(
+          '[data-test-id="route-route_long_name-input-container"] input',
+          ' to delete'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type(' to delete')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -1181,11 +1173,10 @@ describe('end-to-end', async () => {
         })
 
         // update stop name by appending to end
-        await page.focus(
-          '[data-test-id="stop-stop_desc-input-container"] input'
+        await appendText(
+          '[data-test-id="stop-stop_desc-input-container"] input',
+          ' updated'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type(' updated')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
@@ -1213,22 +1204,22 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="clone-stop-button"]')
 
         // update stop id by appending to end
-        await page.focus(
-          '[data-test-id="stop-stop_id-input-container"] input'
+        await appendText(
+          '[data-test-id="stop-stop_id-input-container"] input',
+          '-copied'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type('-copied')
 
         // update stop code
-        await clearInput('[data-test-id="stop-stop_code-input-container"] input')
-        await page.type('[data-test-id="stop-stop_code-input-container"] input', '3')
+        await clearAndType(
+          '[data-test-id="stop-stop_code-input-container"] input',
+          '3'
+        )
 
         // update stop name
-        await page.focus(
-          '[data-test-id="stop-stop_name-input-container"] input'
+        await appendText(
+          '[data-test-id="stop-stop_name-input-container"] input',
+          ' to delete'
         )
-        await page.keyboard.press('End')
-        await page.keyboard.type(' to delete')
 
         // save
         await page.click('[data-test-id="save-entity-button"]')
