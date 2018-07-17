@@ -123,6 +123,117 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   await page.waitFor(3000)
 }
 
+async function createStop ({
+  code,
+  description,
+  id,
+  lat,
+  locationType = '0',
+  lon,
+  name,
+  timezone = { initalText: 'america/lo', option: 1 },
+  url,
+  wheelchairBoarding = '1',
+  zoneId = '1'
+}: {
+  code: string,
+  description: string,
+  id: string,
+  lat: string,
+  locationType?: string,  // make optional due to https://github.com/facebook/flow/issues/183
+  lon: string,
+  name: string,
+  timezone?: {  // make optional due to https://github.com/facebook/flow/issues/183
+    initalText: string,
+    option: number
+  },
+  url: string,
+  wheelchairBoarding?: string,  // make optional due to https://github.com/facebook/flow/issues/183
+  zoneId?: string  // make optional due to https://github.com/facebook/flow/issues/183
+}) {
+  // right click on map to create stop
+  await page.mouse.click(700, 200, { button: 'right' })
+
+  // wait for entity details sidebar to appear
+  await page.waitForSelector('[data-test-id="stop-stop_id-input-container"]')
+
+  // wait for initial data to load
+  await page.waitFor(1000)
+
+  // fill out form
+
+  // set stop_id
+  const stopIdSelector = '[data-test-id="stop-stop_id-input-container"] input'
+  await clearInput(stopIdSelector)
+  await page.type(stopIdSelector, id)
+
+  // code
+  await page.type(
+    '[data-test-id="stop-stop_code-input-container"] input',
+    code
+  )
+
+  // set stop name
+  const stopNameSelector = '[data-test-id="stop-stop_name-input-container"] input'
+  await clearInput(stopNameSelector)
+  await page.type(stopNameSelector, name)
+
+  // description
+  await page.type(
+    '[data-test-id="stop-stop_desc-input-container"] input',
+    description
+  )
+
+  // lat
+  const latInputSelector = '[data-test-id="stop-stop_lat-input-container"] input'
+  await clearInput(latInputSelector)
+  await page.type(latInputSelector, lat)
+
+  // lon
+  const lonInputSelector = '[data-test-id="stop-stop_lon-input-container"] input'
+  await clearInput(lonInputSelector)
+  await page.type(lonInputSelector, lon)
+
+  // zone
+  const zoneIdSelector = '[data-test-id="stop-zone_id-input-container"]'
+  await page.click(
+    `${zoneIdSelector} .Select-control`
+  )
+  await page.type(`${zoneIdSelector} input`, zoneId)
+  await page.keyboard.press('Enter')
+
+  // stop url
+  await page.type(
+    '[data-test-id="stop-stop_url-input-container"]',
+    url
+  )
+
+  // stop location type
+  await page.select(
+    '[data-test-id="stop-location_type-input-container"] select',
+    locationType
+  )
+
+  // timezone
+  await reactSelectOption(
+    '[data-test-id="stop-stop_timezone-input-container"]',
+    timezone.initalText,
+    timezone.option
+  )
+
+  // wheelchair boarding
+  await page.select(
+    '[data-test-id="stop-wheelchair_boarding-input-container"] select',
+    wheelchairBoarding
+  )
+
+  // save
+  await page.click('[data-test-id="save-entity-button"]')
+
+  // wait for save to happen
+  await page.waitFor(1000)
+}
+
 async function clearInput (inputSelector: string) {
   await page.$eval(inputSelector, input => { input.value = '' })
 }
@@ -681,7 +792,7 @@ describe('end-to-end', async () => {
     // all of the following editor tests assume the use of the scratch feed
     describe('agencies', () => {
       it('should create agency', async () => {
-        // open feed info sidebar
+        // open agency sidebar
         await page.click('[data-test-id="editor-agency-nav-button"]')
 
         // wait for agency sidebar form to appear
@@ -744,7 +855,7 @@ describe('end-to-end', async () => {
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for feed info sidebar form to appear
+        // wait for agency sidebar form to appear
         await page.waitForSelector(
           '[data-test-id="agency-agency_id-input-container"]'
         )
@@ -773,7 +884,7 @@ describe('end-to-end', async () => {
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for feed info sidebar form to appear
+        // wait for agency sidebar form to appear
         await page.waitForSelector(
           '[data-test-id="agency-agency_name-input-container"] input'
         )
@@ -812,7 +923,7 @@ describe('end-to-end', async () => {
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for feed info sidebar form to appear
+        // wait for agency sidebar form to appear
         await page.waitForSelector(
           '[data-test-id="agency-agency_name-input-container"] input'
         )
@@ -842,7 +953,7 @@ describe('end-to-end', async () => {
     // all of the following editor tests assume the use of the scratch feed
     describe('routes', () => {
       it('should create route', async () => {
-        // open feed info sidebar
+        // open routes sidebar
         await page.click('[data-test-id="editor-route-nav-button"]')
 
         // wait for route sidebar form to appear
@@ -928,7 +1039,7 @@ describe('end-to-end', async () => {
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for feed info sidebar form to appear
+        // wait for routes sidebar form to appear
         await page.waitForSelector(
           '[data-test-id="route-route_id-input-container"]'
         )
@@ -957,7 +1068,7 @@ describe('end-to-end', async () => {
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for feed info sidebar form to appear
+        // wait for routes sidebar form to appear
         await page.waitForSelector(
           '[data-test-id="route-route_long_name-input-container"] input'
         )
@@ -996,7 +1107,7 @@ describe('end-to-end', async () => {
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for feed info sidebar form to appear
+        // wait for routes sidebar form to appear
         await page.waitForSelector(
           '[data-test-id="route-route_long_name-input-container"] input'
         )
@@ -1019,6 +1130,138 @@ describe('end-to-end', async () => {
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test route 1 updated to delete'
+        )
+      }, 20000)
+    })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('stops', () => {
+      it('should create stop', async () => {
+        // open stop info sidebar
+        await page.click('[data-test-id="editor-stop-nav-button"]')
+
+        // wait for stop sidebar form to appear
+        await page.waitForSelector('[data-test-id="create-stop-instructions"]')
+
+        await createStop({
+          code: '1',
+          description: 'test 1',
+          id: 'test-stop-1',
+          lat: '37.04671717',
+          lon: '-122.07529759',
+          name: 'Laurel Dr and Valley Dr',
+          url: 'example.stop/1'
+        })
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="stop-stop_id-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="stop-stop_id-input-container"]',
+          'test-stop-1'
+        )
+      }, 20000)
+
+      it('should update stop data', async () => {
+        // create a 2nd stop
+        await createStop({
+          code: '2',
+          description: 'test 2',
+          id: 'test-stop-2',
+          lat: '37.04783038',
+          lon: '-122.07521176',
+          name: 'Russell Ave and Valley Dr',
+          url: 'example.stop/2'
+        })
+
+        // update stop name by appending to end
+        await page.focus(
+          '[data-test-id="stop-stop_desc-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type(' updated')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="stop-stop_desc-input-container"] input'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="stop-stop_desc-input-container"]',
+          'test 2 updated'
+        )
+      }, 20000)
+
+      it('should delete stop data', async () => {
+        // create a new stop that will get deleted
+        await page.click('[data-test-id="clone-stop-button"]')
+
+        // update stop id by appending to end
+        await page.focus(
+          '[data-test-id="stop-stop_id-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type('-copied')
+
+        // update stop code
+        await clearInput('[data-test-id="stop-stop_code-input-container"] input')
+        await page.type('[data-test-id="stop-stop_code-input-container"] input', '3')
+
+        // update stop name
+        await page.focus(
+          '[data-test-id="stop-stop_name-input-container"] input'
+        )
+        await page.keyboard.press('End')
+        await page.keyboard.type(' to delete')
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for feed info sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="stop-stop_name-input-container"] input'
+        )
+
+        // verify that stop to delete is listed
+        await expectSelectorToContainHtml(
+          '.entity-list',
+          'Russell Ave and Valley Dr to delete (3)'
+        )
+
+        // delete the stop
+        await page.click('[data-test-id="delete-stop-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(1000)
+
+        // verify that stop to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.entity-list',
+          'Russell Ave and Valley Dr to delete (3)'
         )
       }, 20000)
     })
