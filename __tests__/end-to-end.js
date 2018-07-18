@@ -1408,5 +1408,145 @@ describe('end-to-end', async () => {
         )
       }, 20000)
     })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('exceptions', () => {
+      it('should create exception', async () => {
+        // open exception sidebar
+        await page.click('[data-test-id="exception-tab-button"]')
+
+        // wait for exception sidebar form to appear
+        await page.waitForSelector('[data-test-id="create-first-scheduleexception-button"]')
+
+        // click button to open form to create exception
+        await page.click('[data-test-id="create-first-scheduleexception-button"]')
+
+        // wait for entity details sidebar to appear
+        await page.waitForSelector('[data-test-id="exception-name-input-container"]')
+
+        // fill out form
+
+        // name
+        await page.type(
+          '[data-test-id="exception-name-input-container"] input',
+          'test exception'
+        )
+
+        // exception type
+        await page.select(
+          '[data-test-id="exception-type-input-container"] select',
+          '7'  // no service
+        )
+
+        // add exception date
+        await page.click('[data-test-id="exception-add-date-button"]')
+        await page.waitForSelector(
+          '[data-test-id="exception-dates-container"] input'
+        )
+        await clearAndType(
+          '[data-test-id="exception-dates-container"] input',
+          '07/04/18'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(2000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for exception sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="exception-name-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="exception-name-input-container"]',
+          'test exception'
+        )
+      }, 20000)
+
+      it('should update exception data', async () => {
+        // update exception name by appending to end
+        await appendText(
+          '[data-test-id="exception-name-input-container"] input',
+          ' updated'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for exception sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="exception-name-input-container"] input'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="exception-name-input-container"]',
+          'test exception updated'
+        )
+      }, 20000)
+      //
+      it('should delete exception data', async () => {
+        // create a new exception that will get deleted
+        await page.click('[data-test-id="clone-scheduleexception-button"]')
+
+        // update description
+        await appendText(
+          '[data-test-id="exception-name-input-container"] input',
+          ' to delete'
+        )
+
+        // set new date
+        await clearAndType(
+          '[data-test-id="exception-dates-container"] input',
+          '07/05/18'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for exception sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="exception-name-input-container"] input'
+        )
+
+        // verify that exception to delete is listed
+        await expectSelectorToContainHtml(
+          '.entity-list',
+          'test exception updated to delete'
+        )
+
+        // delete the exception
+        await page.click('[data-test-id="delete-scheduleexception-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(1000)
+
+        // verify that exception to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.entity-list',
+          'test exception updated to delete'
+        )
+      }, 20000)
+    })
   })
 })
