@@ -250,11 +250,13 @@ async function pickColor (containerSelector: string, color: string) {
 async function reactSelectOption (
   containerSelector: string,
   initalText: string,
-  optionToSelect: number
+  optionToSelect: number,
+  virtualized: boolean = false
 ) {
   await page.click(`${containerSelector} .Select-control`)
   await page.type(`${containerSelector} input`, initalText)
-  const optionSelector = `.Select-option:nth-child(${optionToSelect})`
+  const optionSelector =
+    `.${virtualized ? 'VirtualizedSelectOption' : 'Select-option'}:nth-child(${optionToSelect})`
   await page.waitForSelector(optionSelector)
   await page.click(optionSelector)
 }
@@ -1496,7 +1498,7 @@ describe('end-to-end', async () => {
           'test exception updated'
         )
       }, 20000)
-      //
+
       it('should delete exception data', async () => {
         // create a new exception that will get deleted
         await page.click('[data-test-id="clone-scheduleexception-button"]')
@@ -1545,6 +1547,200 @@ describe('end-to-end', async () => {
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test exception updated to delete'
+        )
+      }, 20000)
+    })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('fares', () => {
+      it('should create fare', async () => {
+        // open fare sidebar
+        await page.click('[data-test-id="editor-fare-nav-button"]')
+
+        // wait for fare sidebar form to appear
+        await page.waitForSelector('[data-test-id="create-first-fare-button"]')
+
+        // click button to open form to create fare
+        await page.click('[data-test-id="create-first-fare-button"]')
+
+        // wait for entity details sidebar to appear
+        await page.waitForSelector('[data-test-id="fare-fare_id-input-container"]')
+
+        // fill out form
+
+        // fare_id
+        await page.type(
+          '[data-test-id="fare-fare_id-input-container"] input',
+          'test-fare-id'
+        )
+
+        // price
+        await page.type(
+          '[data-test-id="fare-price-input-container"] input',
+          '1'
+        )
+
+        // currency
+        await page.select(
+          '[data-test-id="fare-currency_type-input-container"] select',
+          'USD'
+        )
+
+        // payment method
+        await page.select(
+          '[data-test-id="fare-payment_method-input-container"] select',
+          '0'
+        )
+
+        // transfers
+        await page.select(
+          '[data-test-id="fare-transfers-input-container"] select',
+          '2'
+        )
+
+        // transfer duration
+        await page.type(
+          '[data-test-id="fare-transfer_duration-input-container"] input',
+          '12345'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for fare sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="fare-fare_id-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="fare-fare_id-input-container"]',
+          'test-fare-id'
+        )
+
+        // add a fare rule
+        await page.click('[data-test-id="fare-rules-tab-button"]')
+        await page.waitForSelector('[data-test-id="add-fare-rule-button"]')
+        await page.click('[data-test-id="add-fare-rule-button"]')
+
+        // select route type
+        await page.waitForSelector('input[name="fareRuleType-0-route_id"]')
+        await page.click('input[name="fareRuleType-0-route_id"]')
+
+        // select zone
+        await page.waitForSelector('[data-test-id="fare-rule-selections"] input')
+        await reactSelectOption(
+          '[data-test-id="fare-rule-selections"]',
+          '1',
+          1,
+          true
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for fare sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="fare-fare_id-input-container"]'
+        )
+
+        // go to rules tab
+        await page.click('[data-test-id="fare-rules-tab-button"]')
+        await page.waitForSelector('[data-test-id="add-fare-rule-button"]')
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="fare-rule-selections"]',
+          'test route 1 updated'
+        )
+      }, 20000)
+
+      it('should update fare data', async () => {
+        // browse back to fare attributes tab
+        await page.click('[data-test-id="fare-attributes-tab-button"]')
+        await page.waitForSelector('[data-test-id="fare-fare_id-input-container"]')
+
+        // update fare id by appending to end
+        await appendText(
+          '[data-test-id="fare-fare_id-input-container"] input',
+          '-updated'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for fare sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="fare-fare_id-input-container"] input'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="fare-fare_id-input-container"]',
+          'test-fare-id-updated'
+        )
+      }, 20000)
+
+      it('should delete fare data', async () => {
+        // create a new fare that will get deleted
+        await page.click('[data-test-id="clone-fare-button"]')
+
+        // update service id by appending to end
+        await appendText(
+          '[data-test-id="fare-fare_id-input-container"] input',
+          '-copied'
+        )
+
+        // save
+        await page.click('[data-test-id="save-entity-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for fare sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="fare-fare_id-input-container"] input'
+        )
+
+        // verify that fare to delete is listed
+        await expectSelectorToContainHtml(
+          '.entity-list',
+          'test-fare-id-updated-copied'
+        )
+
+        // delete the fare
+        await page.click('[data-test-id="delete-fare-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(1000)
+
+        // verify that fare to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.entity-list',
+          'test-fare-id-updated-copied'
         )
       }, 20000)
     })
