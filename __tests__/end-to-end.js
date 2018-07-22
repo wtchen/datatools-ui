@@ -1744,5 +1744,136 @@ describe('end-to-end', async () => {
         )
       }, 20000)
     })
+
+    // all of the following editor tests assume the use of the scratch feed
+    describe('patterns', () => {
+      it('should create pattern', async () => {
+        // open route sidebar
+        await page.click('[data-test-id="editor-route-nav-button"]')
+
+        // wait for route sidebar form to appear
+        await page.waitForSelector('.entity-list-row')
+
+        // select first route
+        await page.click('.entity-list-row')
+
+        // wait for route details sidebar to appear
+        await page.waitForSelector('[data-test-id="trippattern-tab-button"]')
+
+        // go to trip pattern tab
+        await page.click('[data-test-id="trippattern-tab-button"]')
+
+        // wait for tab to load
+        await page.waitForSelector('[data-test-id="new-pattern-button"]')
+
+        // click button to create pattern
+        await page.click('[data-test-id="new-pattern-button"]')
+
+        // wait for new pattern to appear
+        await page.waitForSelector('[data-test-id="pattern-title-New Pattern"]')
+
+        // toggle the FeedInfoPanel in case it gets in the way of panel stuff
+        await page.click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
+
+        // wait for page to catch up with itself
+        await page.waitFor(1000)
+
+        // click add stop by name
+        await page.click('[data-test-id="add-stop-by-name-button"]')
+
+        // wait for stop selector to show up
+        await page.waitForSelector('.pattern-stop-card .Select-control')
+
+        // add 1st stop
+        await reactSelectOption('.pattern-stop-card', 'la', 1, true)
+
+        // wait for 1st stop to save
+        await page.waitFor(2000)
+
+        // add 2nd stop
+        await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
+
+        // wait for auto-save to happen
+        await page.waitFor(2000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for pattern sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="pattern-title-New Pattern"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '.trip-pattern-list',
+          'Russell Av'
+        )
+      }, 20000)
+
+      it('should update pattern data', async () => {
+        // change pattern name by appending to end
+        // begin editing
+        await page.click('[data-test-id="editable-text-field-edit-button"]')
+
+        // wait for text field to appear
+        await page.waitForSelector('[data-test-id="editable-text-field-edit-container"]')
+        await appendText(
+          '[data-test-id="editable-text-field-edit-container"] input',
+          ' updated'
+        )
+
+        // save
+        await page.click('[data-test-id="editable-text-field-edit-container"] button')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for pattern sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="pattern-title-New Pattern updated"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="pattern-title-New Pattern updated"]',
+          'New Pattern updated'
+        )
+      }, 20000)
+
+      it('should delete pattern data', async () => {
+        // create a new pattern that will get deleted
+        await page.click('[data-test-id="duplicate-pattern-button"]')
+
+        // wait for save to happen
+        await page.waitFor(2000)
+
+        // verify that pattern to delete is listed
+        await expectSelectorToContainHtml(
+          '.trip-pattern-list',
+          'New Pattern updated copy'
+        )
+
+        // delete the pattern
+        await page.click('[data-test-id="delete-pattern-button"]')
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for page to catch up?
+        await page.waitFor(2000)
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(2000)
+
+        // verify that pattern to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '.trip-pattern-list',
+          'New Pattern updated copy'
+        )
+      }, 20000)
+    })
   })
 })
