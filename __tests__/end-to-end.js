@@ -42,14 +42,14 @@ async function createProject (projectName: string) {
   await page.waitForSelector('a[href="/project"]')
   await page.click('a[href="/project"]')
   await page.waitForSelector('[data-test-id="create-new-project-button"]')
-  // wait for 2 seconds for projects to load
+  // wait for for projects to load
   await page.waitFor(5000)
   await page.click('[data-test-id="create-new-project-button"]')
   await page.waitForSelector('.project-name-editable input')
   await page.type('.project-name-editable input', projectName)
   await page.click('.project-name-editable button')
-  // wait 2 seconds for project to get saved
-  await page.waitFor(2000)
+  // wait for project to get saved
+  await page.waitFor(5000)
   // verify that the project is listed
   await expectSelectorToContainHtml('[data-test-id="project-list-table"]', projectName)
 }
@@ -299,9 +299,9 @@ describe('end-to-end', async () => {
     await page.type('input[class="auth0-lock-input"][name="password"]', config.password)
     await page.click('button[class="auth0-lock-submit"]')
     await page.waitForSelector('#context-dropdown')
-    // wait for 5 seconds for projects to load
-    await page.waitFor(5000)
-  }, 20000)
+    // wait for 10 seconds for projects to load
+    await page.waitFor(10000)
+  }, 30000)
 
   describe('project', () => {
     it('should create a project', async () => {
@@ -945,7 +945,8 @@ describe('end-to-end', async () => {
       }, 20000)
     })
 
-    // all of the following editor tests assume the use of the scratch feed
+    // all of the following editor tests assume the use of the scratch feed and
+    // successful completion of the agencies test suite
     describe('routes', () => {
       it('should create route', async () => {
         // open routes sidebar
@@ -1411,7 +1412,8 @@ describe('end-to-end', async () => {
       }, 20000)
     })
 
-    // all of the following editor tests assume the use of the scratch feed
+    // all of the following editor tests assume the use of the scratch feed and
+    // successful completion of the calendars test suite
     describe('exceptions', () => {
       it('should create exception', async () => {
         // open exception sidebar
@@ -1551,7 +1553,8 @@ describe('end-to-end', async () => {
       }, 20000)
     })
 
-    // all of the following editor tests assume the use of the scratch feed
+    // all of the following editor tests assume the use of the scratch feed and
+    // successful completion of the routes test suite
     describe('fares', () => {
       it('should create fare', async () => {
         // open fare sidebar
@@ -1633,7 +1636,7 @@ describe('end-to-end', async () => {
         await page.waitForSelector('input[name="fareRuleType-0-route_id"]')
         await page.click('input[name="fareRuleType-0-route_id"]')
 
-        // select zone
+        // select route
         await page.waitForSelector('[data-test-id="fare-rule-selections"] input')
         await reactSelectOption(
           '[data-test-id="fare-rule-selections"]',
@@ -1745,7 +1748,8 @@ describe('end-to-end', async () => {
       }, 20000)
     })
 
-    // all of the following editor tests assume the use of the scratch feed
+    // all of the following editor tests assume the use of the scratch feed and
+    // successful completion of the routes test suite
     describe('patterns', () => {
       it('should create pattern', async () => {
         // open route sidebar
@@ -1872,6 +1876,197 @@ describe('end-to-end', async () => {
         await expectSelectorToNotContainHtml(
           '.trip-pattern-list',
           'New Pattern updated copy'
+        )
+      }, 20000)
+    })
+
+    // all of the following editor tests assume the use of the scratch feed and
+    // successful completion of the patterns and calendars test suites
+    describe('timetables', () => {
+      it('should create trip', async () => {
+        // expand pattern
+        await page.click('[data-test-id="pattern-title-New Pattern updated"]')
+
+        // wait for edit schedules button to appear
+        await page.waitForSelector('[data-test-id="edit-schedules-button"]')
+
+        // click edit schedules
+        await page.click('[data-test-id="edit-schedules-button"]')
+
+        // wait for calendar selector to appear
+        await page.waitForSelector('[data-test-id="calendar-select-container"]')
+
+        // select first calendar
+        await reactSelectOption(
+          '[data-test-id="calendar-select-container"]',
+          'te',
+          1
+        )
+
+        // wait for new trip button to appear
+        await page.waitForSelector('[data-test-id="add-new-trip-button"]')
+
+        // wait for page to catch up with iteself?
+        await page.waitFor(2000)
+
+        // click button to create trip
+        await page.click('[data-test-id="add-new-trip-button"]')
+
+        // wait for new trip to appear
+        await page.waitForSelector('[data-test-id="timetable-area"]')
+
+        // get the first editable cell element
+        const blockIdCell = await page.$('.editable-cell')
+
+        // click cell to begin editing
+        await blockIdCell.click()
+
+        // enter block id
+        await page.keyboard.type('test-block-id')
+        await page.keyboard.press('Tab')
+
+        // trip id
+        await page.keyboard.type('test-trip-id')
+        await page.keyboard.press('Tab')
+
+        // trip headsign
+        await page.keyboard.type('test-headsign')
+        await page.keyboard.press('Tab')
+
+        // Laurel Dr arrival
+        await page.keyboard.type('1234')
+        await page.keyboard.press('Tab')
+
+        // Laurel Dr departure
+        await page.keyboard.type('1235')
+        await page.keyboard.press('Tab')
+
+        // Russell Av arrival
+        await page.keyboard.type('1244')
+        await page.keyboard.press('Tab')
+
+        // Russell Av departure
+        await page.keyboard.type('1245')
+        await page.keyboard.press('Enter')
+
+        // save
+        await page.click('[data-test-id="save-trip-button"]')
+
+        // wait for save to happen
+        await page.waitFor(2000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for trip sidebar form to appear
+        await page.waitForSelector(
+          '[data-test-id="timetable-area"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="timetable-area"]',
+          'test-trip-id'
+        )
+      }, 20000)
+
+      it('should update trip data', async () => {
+        // get the first editable cell element
+        const blockIdCell = await page.$('.editable-cell')
+
+        // click cell to begin editing
+        await blockIdCell.click()
+
+        // advance to right to trip id
+        await page.keyboard.press('Tab')
+
+        // change trip id by appending to end
+        // begin editing
+        await page.keyboard.press('Enter')
+        await page.keyboard.press('End')
+        await page.keyboard.type('-updated')
+        await page.keyboard.press('Enter')
+
+        // save
+        await page.click('[data-test-id="save-trip-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for timetable  to appear
+        await page.waitForSelector(
+          '[data-test-id="timetable-area"]'
+        )
+
+        // verify data was saved and retrieved from server
+        await expectSelectorToContainHtml(
+          '[data-test-id="timetable-area"]',
+          'test-trip-id-updated'
+        )
+      }, 20000)
+
+      it('should delete trip data', async () => {
+        // create a new trip that will get deleted
+        await page.click('[data-test-id="duplicate-trip-button"]')
+
+        // wait for new trip to appear
+        await page.waitFor(2000)
+
+        // get the first editable cell element
+        const blockIdCell = await page.$('.editable-cell')
+
+        // click cell to begin editing
+        await blockIdCell.click()
+
+        // advance down and to right to trip id
+        await page.keyboard.press('ArrowDown')
+        await page.keyboard.press('ArrowRight')
+
+        // change trip id by appending to end
+        // begin editing
+        await page.keyboard.press('Enter')
+        await page.keyboard.type('test-trip-to-delete')
+        await page.keyboard.press('Enter')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // save
+        await page.click('[data-test-id="save-trip-button"]')
+
+        // wait for save to happen
+        await page.waitFor(1000)
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for timetable  to appear
+        await page.waitForSelector(
+          '[data-test-id="timetable-area"]'
+        )
+
+        // verify that trip to delete is listed
+        await expectSelectorToContainHtml(
+          '[data-test-id="timetable-area"]',
+          'test-trip-to-delete'
+        )
+
+        // select the row
+        await page.click('.timetable-left-grid .text-center:nth-child(2)')
+
+        // delete the trip
+        await page.click('[data-test-id="delete-trip-button"]')
+
+        // wait for delete to happen
+        await page.waitFor(2000)
+
+        // verify that trip to delete is no longer listed
+        await expectSelectorToNotContainHtml(
+          '[data-test-id="timetable-area"]',
+          'test-trip-to-delete'
         )
       }, 20000)
     })
