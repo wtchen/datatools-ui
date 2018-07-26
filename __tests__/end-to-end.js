@@ -620,9 +620,9 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for data to refresh
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
-        // verify that the fetched feed is now the displayed feed
+        // verify that the previous feed is now the displayed feed
         await expectSelectorToContainHtml(
           '#feed-source-viewer-tabs',
           'Valid from Apr. 08, 2018 to Jun. 30, 2018'
