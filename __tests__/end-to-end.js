@@ -22,6 +22,7 @@ const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
 let testProjectId
 let feedSourceId
+let scratchFeedSourceId
 
 // this can be turned off in development mode to skip some tests that do not
 // need to be run in order for other tests to work properly
@@ -97,10 +98,7 @@ async function uploadGtfs () {
   const footerButtons = await page.$$('.modal-footer button')
   await footerButtons[0].click()
 
-  // wait for gtfs to be uploaded and processed
-  await page.waitFor(15000)
-  await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
-  await page.click('[data-test-id="clear-completed-jobs-button"]')
+  await waitAndClearCompletedJobs()
 }
 
 async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
@@ -186,13 +184,13 @@ async function createStop ({
   )
 
   // lat
-  await clearAndType(
+  await clearAndTypeNumber(
     '[data-test-id="stop-stop_lat-input-container"] input',
     lat
   )
 
   // lon
-  await clearAndType(
+  await clearAndTypeNumber(
     '[data-test-id="stop-stop_lon-input-container"] input',
     lon
   )
@@ -261,9 +259,27 @@ async function reactSelectOption (
   await page.click(optionSelector)
 }
 
+async function waitAndClearCompletedJobs () {
+  // wait for jobs to get completed
+  await page.waitFor(15000)
+  await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
+  await page.click('[data-test-id="clear-completed-jobs-button"]')
+}
+
 async function clearAndType (selector: string, text: string) {
   await clearInput(selector)
   await page.type(selector, text)
+}
+
+async function clearAndTypeNumber (selector: string, text: string) {
+  await clearAndType(selector, text)
+
+  if (parseFloat(text) < 0) {
+    for (let i = 0; i < text.length; i++) {
+      await page.keyboard.press('ArrowLeft')
+    }
+    await page.keyboard.type('-')
+  }
 }
 
 async function appendText (selector: string, text: string) {
@@ -486,9 +502,7 @@ describe('end-to-end', async () => {
       await page.click('[data-test-id="fetch-feed-button"]')
 
       // wait for gtfs to be fetched and processed
-      await page.waitFor(15000)
-      await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
-      await page.click('[data-test-id="clear-completed-jobs-button"]')
+      await waitAndClearCompletedJobs()
 
       // verify that feed was fetched and processed
       await expectSelectorToContainHtml(
@@ -667,6 +681,8 @@ describe('end-to-end', async () => {
         const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceNameEl)
         if (innerHtml.indexOf(feedSourceName) > -1) {
           feedSourceFound = true
+          const href = await page.evaluate(el => el.href, feedSourceNameEl)
+          scratchFeedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
           await feedSourceNameEl.click()
           // apparently the first click does not work entirely, it may trigger
           // a load of the FeedSourceDropdown, but the event for clicking the link
@@ -2069,6 +2085,69 @@ describe('end-to-end', async () => {
           'test-trip-to-delete'
         )
       }, 20000)
+    })
+
+    // all of the following tests depend on the editor tests completing successfully
+    describe('snapshot', () => {
+      it('should create snapshot', async () => {
+        // open create snapshot dialog
+        await page.click('[data-test-id="take-snapshot-button"]')
+
+        // wait for dialog to appear
+        await page.waitForSelector('[data-test-id="snapshot-dialog-name"]')
+
+        // enter name
+        await page.type('[data-test-id="snapshot-dialog-name"]', 'test-snapshot')
+
+        // confrim snapshot creation
+        await page.click('[data-test-id="confirm-snapshot-create-button"]')
+
+        // wait for jobs to complete
+        await waitAndClearCompletedJobs()
+      }, 20000)
+
+      it('should make snapshot active version', async () => {
+        // go back to feed
+        // not sure why, but clicking on the nav home button doesn't work
+        await page.goto(
+          `http://localhost:9966/feed/${scratchFeedSourceId}`,
+          {
+            waitUntil: 'networkidle0'
+          }
+        )
+
+        // wait for page to be visible
+        await page.waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
+
+        // go to snapshots tab
+        await page.click('#feed-source-viewer-tabs-tab-snapshots')
+
+        // wait for page to load?
+        await page.waitFor(2000)
+
+        // wait for snapshots tab to load
+        await page.waitForSelector('[data-test-id="publish-snapshot-button"]')
+
+        // publish snapshot
+        await page.click('[data-test-id="publish-snapshot-button"]')
+
+        // wait for version to get created
+        await waitAndClearCompletedJobs()
+
+        // go to main feed tab
+        await page.click('#feed-source-viewer-tabs-tab-')
+
+        // wait for main tab to show up
+        await page.waitForSelector('#feed-source-viewer-tabs-pane-')
+
+        // verify that feed was fetched and processed
+        await expectSelectorToContainHtml(
+          '#feed-source-viewer-tabs',
+          'Valid from May. 29, 2018 to May. 29, 2028'
+        )
+      }, 30000)
+
+      // TODO: download and validate gtfs??
     })
   })
 })
