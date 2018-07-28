@@ -2151,65 +2151,65 @@ describe('end-to-end', async () => {
 
       // TODO: download and validate gtfs??
     })
+  })
 
-    // the following tests depend on the snapshot test suite to have passed
-    // successfully and also assumes a local instance of OTP is running
-    describe('deployment', () => {
-      it('should create deployment', async () => {
-        // open create snapshot dialog
-        await page.click('[data-test-id="deploy-feed-version-button"]')
+  // the following tests depend on the snapshot test suite to have passed
+  // successfully and also assumes a local instance of OTP is running
+  describe('deployment', () => {
+    it('should create deployment', async () => {
+      // open create snapshot dialog
+      await page.click('[data-test-id="deploy-feed-version-button"]')
 
-        // wait for deployment to get created
-        await page.waitFor(5000)
+      // wait for deployment to get created
+      await page.waitFor(5000)
 
-        // wait for deploy dropdown buttun to appear
-        await page.waitForSelector('#deploy-server-dropdown')
+      // wait for deploy dropdown buttun to appear
+      await page.waitForSelector('#deploy-server-dropdown')
 
-        // open dropdown
-        await page.click('#deploy-server-dropdown')
+      // open dropdown
+      await page.click('#deploy-server-dropdown')
 
-        // wait for dropdown to open
-        await page.waitForSelector('[data-test-id="deploy-server-0-button"]')
+      // wait for dropdown to open
+      await page.waitForSelector('[data-test-id="deploy-server-0-button"]')
 
-        // click to deploy to server
-        await page.click('[data-test-id="deploy-server-0-button"]')
+      // click to deploy to server
+      await page.click('[data-test-id="deploy-server-0-button"]')
 
-        // wait for deployment dialog to appear
-        await page.waitForSelector('[data-test-id="confirm-deploy-server-button"]')
+      // wait for deployment dialog to appear
+      await page.waitForSelector('[data-test-id="confirm-deploy-server-button"]')
 
-        // get the router name
-        const innerHTML = await page.$eval(
-          '[data-test-id="deployment-router-id"]',
-          e => e.innerHTML
-        )
-        // get rid of router id text and react tags
-        routerId = innerHTML.replace('Router ID: ', '').replace(/<!--[\s\w-:/]*-->/g, '')
+      // get the router name
+      const innerHTML = await page.$eval(
+        '[data-test-id="deployment-router-id"]',
+        e => e.innerHTML
+      )
+      // get rid of router id text and react tags
+      routerId = innerHTML.replace('Router ID: ', '').replace(/<!--[\s\w-:/]*-->/g, '')
 
-        // confirm deployment
-        await page.click('[data-test-id="confirm-deploy-server-button"]')
+      // confirm deployment
+      await page.click('[data-test-id="confirm-deploy-server-button"]')
 
-        // wait for jobs to complete
-        await waitAndClearCompletedJobs()
-      }, 30000)
+      // wait for jobs to complete
+      await waitAndClearCompletedJobs()
+    }, 30000)
 
-      it('should be able to do a trip plan on otp', async () => {
-        // hit the otp endpoint
-        const response = await fetch(
-          `http://localhost:8080/otp/routers/${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
-          {
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8'
-            }
+    it('should be able to do a trip plan on otp', async () => {
+      // hit the otp endpoint
+      const response = await fetch(
+        `http://localhost:8080/otp/routers/${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
           }
-        )
+        }
+      )
 
-        // expect response to be successful
-        expect(response.status).toBe(200)
+      // expect response to be successful
+      expect(response.status).toBe(200)
 
-        // expect response to include text of a created stop
-        const text = await response.text()
-        expect(text).toContain('Laurel Dr and Valley Dr')
-      })
+      // expect response to include text of a created stop
+      const text = await response.text()
+      expect(text).toContain('Laurel Dr and Valley Dr')
     })
   })
 })
