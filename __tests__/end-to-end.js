@@ -2107,50 +2107,52 @@ describe('end-to-end', async () => {
         // wait for jobs to complete
         await waitAndClearCompletedJobs()
       }, 20000)
-
-      it('should make snapshot active version', async () => {
-        // go back to feed
-        // not sure why, but clicking on the nav home button doesn't work
-        await page.goto(
-          `http://localhost:9966/feed/${scratchFeedSourceId}`,
-          {
-            waitUntil: 'networkidle0'
-          }
-        )
-
-        // wait for page to be visible
-        await page.waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
-
-        // go to snapshots tab
-        await page.click('#feed-source-viewer-tabs-tab-snapshots')
-
-        // wait for page to load?
-        await page.waitFor(2000)
-
-        // wait for snapshots tab to load
-        await page.waitForSelector('[data-test-id="publish-snapshot-button"]')
-
-        // publish snapshot
-        await page.click('[data-test-id="publish-snapshot-button"]')
-
-        // wait for version to get created
-        await waitAndClearCompletedJobs()
-
-        // go to main feed tab
-        await page.click('#feed-source-viewer-tabs-tab-')
-
-        // wait for main tab to show up
-        await page.waitForSelector('#feed-source-viewer-tabs-pane-')
-
-        // verify that feed was fetched and processed
-        await expectSelectorToContainHtml(
-          '#feed-source-viewer-tabs',
-          'Valid from May. 29, 2018 to May. 29, 2028'
-        )
-      }, 30000)
-
-      // TODO: download and validate gtfs??
     })
+  })
+
+  describe('feed source snapshot', () => {
+    it('should make snapshot active version', async () => {
+      // go back to feed
+      // not sure why, but clicking on the nav home button doesn't work
+      await page.goto(
+        `http://localhost:9966/feed/${scratchFeedSourceId}`,
+        {
+          waitUntil: 'networkidle0'
+        }
+      )
+
+      // wait for page to be visible
+      await page.waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
+
+      // go to snapshots tab
+      await page.click('#feed-source-viewer-tabs-tab-snapshots')
+
+      // wait for page to load?
+      await page.waitFor(2000)
+
+      // wait for snapshots tab to load
+      await page.waitForSelector('[data-test-id="publish-snapshot-button"]')
+
+      // publish snapshot
+      await page.click('[data-test-id="publish-snapshot-button"]')
+
+      // wait for version to get created
+      await waitAndClearCompletedJobs()
+
+      // go to main feed tab
+      await page.click('#feed-source-viewer-tabs-tab-')
+
+      // wait for main tab to show up
+      await page.waitForSelector('#feed-source-viewer-tabs-pane-')
+
+      // verify that feed was fetched and processed
+      await expectSelectorToContainHtml(
+        '#feed-source-viewer-tabs',
+        'Valid from May. 29, 2018 to May. 29, 2028'
+      )
+    }, 30000)
+
+    // TODO: download and validate gtfs??
   })
 
   // the following tests depend on the snapshot test suite to have passed
