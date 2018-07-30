@@ -1933,35 +1933,38 @@ describe('end-to-end', async () => {
         // wait for new trip to appear
         await page.waitForSelector('[data-test-id="timetable-area"]')
 
-        // get the first editable cell element
-        const blockIdCell = await page.$('.editable-cell')
-
-        // click cell to begin editing
-        await blockIdCell.click()
+        // click first cell to begin editing
+        await page.click('.editable-cell')
 
         // enter block id
         await page.keyboard.type('test-block-id')
         await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
 
         // trip id
         await page.keyboard.type('test-trip-id')
         await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
 
         // trip headsign
         await page.keyboard.type('test-headsign')
         await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
 
         // Laurel Dr arrival
         await page.keyboard.type('1234')
         await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
 
         // Laurel Dr departure
         await page.keyboard.type('1235')
         await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
 
         // Russell Av arrival
         await page.keyboard.type('1244')
         await page.keyboard.press('Tab')
+        await page.keyboard.press('Enter')
 
         // Russell Av departure
         await page.keyboard.type('1245')
@@ -1989,11 +1992,8 @@ describe('end-to-end', async () => {
       }, 20000)
 
       it('should update trip data', async () => {
-        // get the first editable cell element
-        const blockIdCell = await page.$('.editable-cell')
-
-        // click cell to begin editing
-        await blockIdCell.click()
+        // click first editable cell to begin editing
+        await page.click('.editable-cell')
 
         // advance to right to trip id
         await page.keyboard.press('Tab')
@@ -2033,11 +2033,8 @@ describe('end-to-end', async () => {
         // wait for new trip to appear
         await page.waitFor(2000)
 
-        // get the first editable cell element
-        const blockIdCell = await page.$('.editable-cell')
-
-        // click cell to begin editing
-        await blockIdCell.click()
+        // click first editable cell to begin editing
+        await page.click('.editable-cell')
 
         // advance down and to right to trip id
         await page.keyboard.press('ArrowDown')
@@ -2077,6 +2074,10 @@ describe('end-to-end', async () => {
 
         // delete the trip
         await page.click('[data-test-id="delete-trip-button"]')
+
+        // confirm delete
+        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
         await page.waitFor(2000)
