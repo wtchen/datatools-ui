@@ -6,6 +6,7 @@
 .*/node_modules/npmconf/.*
 .*/node_modules/react-leaflet/src/.*
 .*/node_modules/reqwest/.*
+.*/node_modules/module-deps/test/invalid_pkg/package.json
 
 [include]
 
