@@ -114,6 +114,7 @@
   "standard": {
     "parser": "babel-eslint",
     "globals": [
+      "Blob",
       "File",
       "HTMLInputElement",
       "ReactComponent",
