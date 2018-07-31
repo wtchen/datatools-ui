@@ -116,6 +116,7 @@
     "globals": [
       "Blob",
       "File",
+      "IntervalID",
       "HTMLInputElement",
       "ReactComponent",
       "ReactElement",
