@@ -9,6 +9,7 @@ import {safeLoad} from 'js-yaml'
 import md5File from 'md5-file/promise'
 import moment from 'moment'
 import puppeteer from 'puppeteer'
+import SimpleNodeLogger from 'simple-node-logger'
 
 const config: {
   username: string,
@@ -25,6 +26,58 @@ let testProjectId
 let feedSourceId
 let scratchFeedSourceId
 let routerId
+const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
+const testResults = {}
+
+function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
+  if (!(defaultDependentTests instanceof Array)) {
+    defaultDependentTests = [defaultDependentTests]
+  }
+  return (
+    name: string,
+    fn: Function,
+    timeout?: number,
+    dependentTests: Array<string> | string = []
+  ) => {
+    it(name, async () => {
+      log.info(`Begin test: "${name}"`)
+
+      // first make sure all dependent tests have passed
+      if (!(dependentTests instanceof Array)) {
+        dependentTests = [dependentTests]
+      }
+      dependentTests = [...defaultDependentTests, ...dependentTests]
+
+      dependentTests.forEach(test => {
+        if (!testResults[test]) {
+          log.error(`Dependent test "${test}" has not completed yet`)
+          throw new Error(`Dependent test "${test}" has not completed yet`)
+        }
+      })
+
+      // do actual test
+      try {
+        await fn()
+      } catch (e) {
+        log.error(`test "${name}" failed due to error: ${e}`)
+        throw e
+      }
+
+      // note successful completion
+      testResults[name] = true
+      log.info(`successful test: "${name}"`)
+    }, timeout)
+  }
+}
+
+const makeTest = makeMakeTest()
+const makeTestPostLogin = makeMakeTest('should login')
+const makeTestPostFeedSource = makeMakeTest(['should login', 'should create feed source'])
+const makeEditorEntityTest = makeMakeTest([
+  'should login',
+  'should create feed source',
+  'should edit a feed from scratch'
+])
 
 // this can be turned off in development mode to skip some tests that do not
 // need to be run in order for other tests to work properly
@@ -41,23 +94,28 @@ async function expectSelectorToNotContainHtml (selector: string, html: string) {
 }
 
 async function createProject (projectName: string) {
+  log.info(`creating project with name: ${projectName}`)
   await page.click('#context-dropdown')
-  await page.waitForSelector('a[href="/project"]')
+  await waitForSelector('a[href="/project"]')
   await page.click('a[href="/project"]')
-  await page.waitForSelector('[data-test-id="create-new-project-button"]')
+  await waitForSelector('[data-test-id="create-new-project-button"]')
+  log.info('waiting for projects to load')
   // wait for for projects to load
   await page.waitFor(5000)
   await page.click('[data-test-id="create-new-project-button"]')
-  await page.waitForSelector('.project-name-editable input')
+  await waitForSelector('.project-name-editable input')
   await page.type('.project-name-editable input', projectName)
   await page.click('.project-name-editable button')
+  log.info('saving new project')
   // wait for project to get saved
   await page.waitFor(5000)
   // verify that the project is listed
   await expectSelectorToContainHtml('[data-test-id="project-list-table"]', projectName)
+  log.info(`confirmed successful creation of project with name: ${projectName}`)
 }
 
 async function deleteProject (projectId: string) {
+  log.info(`deleting project with id: ${projectId}`)
   // navigate to that project's settings
   await page.goto(
     `http://localhost:9966/project/${projectId}/settings`,
@@ -68,8 +126,9 @@ async function deleteProject (projectId: string) {
 
   // delete that project
   await page.click('[data-test-id="delete-project-button"]')
-  await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+  await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
   await page.click('[data-test-id="modal-confirm-ok-button"]')
+  log.info('deleted project')
 
   // verify deletion
   await page.goto(
@@ -80,18 +139,20 @@ async function deleteProject (projectId: string) {
   )
   await expectSelectorToContainHtml('.modal-body', 'Project ID does not exist')
   await page.click('[data-test-id="status-modal-close-button"]')
+  log.info(`confirmed successful deletion of project with id ${projectId}`)
 }
 
 async function uploadGtfs () {
+  log.info('uploading gtfs')
   // create new feed version by clicking on dropdown and upload link
   await page.click('#bg-nested-dropdown')
   // TODO replace with more specific selector
-  await page.waitForSelector('[data-test-id="upload-feed-button"]')
+  await waitForSelector('[data-test-id="upload-feed-button"]')
   await page.click('[data-test-id="upload-feed-button"]')
 
   // set file to upload in modal dialog
   // TODO replace with more specific selector
-  await page.waitForSelector('.modal-body input')
+  await waitForSelector('.modal-body input')
   const uploadInput = await page.$('.modal-body input')
   await uploadInput.uploadFile(gtfsUploadFile)
 
@@ -101,9 +162,11 @@ async function uploadGtfs () {
   await footerButtons[0].click()
 
   await waitAndClearCompletedJobs()
+  log.info('completed gtfs upload')
 }
 
 async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
+  log.info(`create Feed Source with name: ${feedSourceName} via project header button`)
   // go to project page
   await page.goto(
     `http://localhost:9966/project/${testProjectId}`,
@@ -111,15 +174,16 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
       waitUntil: 'networkidle0'
     }
   )
-  await page.waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
+  await waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
   await page.click('[data-test-id="project-header-create-new-feed-source-button"]')
 
   // TODO replace with less generic selector
-  await page.waitForSelector('h4 input')
+  await waitForSelector('h4 input')
   await page.type('h4 input', feedSourceName + String.fromCharCode(13))
 
   // wait for feed source to be created and saved
   await page.waitFor(3000)
+  log.info(`created Feed Source with name: ${feedSourceName} via project header button`)
 }
 
 async function createStop ({
@@ -150,11 +214,12 @@ async function createStop ({
   wheelchairBoarding?: string,  // make optional due to https://github.com/facebook/flow/issues/183
   zoneId?: string  // make optional due to https://github.com/facebook/flow/issues/183
 }) {
+  log.info(`creating stop with name: ${name}`)
   // right click on map to create stop
   await page.mouse.click(700, 200, { button: 'right' })
 
   // wait for entity details sidebar to appear
-  await page.waitForSelector('[data-test-id="stop-stop_id-input-container"]')
+  await waitForSelector('[data-test-id="stop-stop_id-input-container"]')
 
   // wait for initial data to load
   await page.waitFor(1000)
@@ -235,6 +300,7 @@ async function createStop ({
 
   // wait for save to happen
   await page.waitFor(1000)
+  log.info(`created stop with name: ${name}`)
 }
 
 async function clearInput (inputSelector: string) {
@@ -243,7 +309,7 @@ async function clearInput (inputSelector: string) {
 
 async function pickColor (containerSelector: string, color: string) {
   await page.click(`${containerSelector} button`)
-  await page.waitForSelector(`${containerSelector} .sketch-picker`)
+  await waitForSelector(`${containerSelector} .sketch-picker`)
   await clearAndType(`${containerSelector} input`, color)
 }
 
@@ -253,19 +319,23 @@ async function reactSelectOption (
   optionToSelect: number,
   virtualized: boolean = false
 ) {
+  log.info(`selecting option from react-select container: ${containerSelector}`)
   await page.click(`${containerSelector} .Select-control`)
   await page.type(`${containerSelector} input`, initalText)
   const optionSelector =
     `.${virtualized ? 'VirtualizedSelectOption' : 'Select-option'}:nth-child(${optionToSelect})`
-  await page.waitForSelector(optionSelector)
+  await waitForSelector(optionSelector)
   await page.click(optionSelector)
+  log.info('selected option')
 }
 
 async function waitAndClearCompletedJobs () {
   // wait for jobs to get completed
+  log.info('waiting 15 seconds for jobs to complete')
   await page.waitFor(15000)
-  await page.waitForSelector('[data-test-id="clear-completed-jobs-button"]')
+  await waitForSelector('[data-test-id="clear-completed-jobs-button"]')
   await page.click('[data-test-id="clear-completed-jobs-button"]')
+  log.info('cleared completed jobs')
 }
 
 async function clearAndType (selector: string, text: string) {
@@ -290,7 +360,12 @@ async function appendText (selector: string, text: string) {
   await page.keyboard.type(text)
 }
 
-describe('end-to-end', async () => {
+async function waitForSelector (selector: string, options?: any) {
+  log.info(`waiting for selector: ${selector}`)
+  await page.waitForSelector(selector, options)
+}
+
+describe('end-to-end', () => {
   beforeAll(async () => {
     browser = await puppeteer.launch({headless: false})
     page = await browser.newPage()
@@ -304,25 +379,26 @@ describe('end-to-end', async () => {
     // browser.close()
   })
 
-  it('should load the page', async () => {
+  makeTest('should load the page', async () => {
     await page.goto('http://localhost:9966')
     await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
+    testResults['should load the page'] = true
   })
 
-  it('should login', async () => {
+  makeTest('should login', async () => {
     await page.goto('http://localhost:9966')
     await page.click('[data-test-id="header-log-in-button"]')
-    await page.waitForSelector('button[class="auth0-lock-submit"]')
+    await waitForSelector('button[class="auth0-lock-submit"]')
     await page.type('input[class="auth0-lock-input"][name="email"]', config.username)
     await page.type('input[class="auth0-lock-input"][name="password"]', config.password)
     await page.click('button[class="auth0-lock-submit"]')
-    await page.waitForSelector('#context-dropdown')
+    await waitForSelector('#context-dropdown')
     // wait for 10 seconds for projects to load
     await page.waitFor(10000)
-  }, 30000)
+  }, 30000, 'should load the page')
 
   describe('project', () => {
-    it('should create a project', async () => {
+    makeTestPostLogin('should create a project', async () => {
       await createProject(testProjectName)
 
       // go into the project page and verify that it looks ok-ish
@@ -341,22 +417,22 @@ describe('end-to-end', async () => {
       }
       if (!projectFound) throw new Error('Created project not found')
 
-      await page.waitForSelector('#project-viewer-tabs')
+      await waitForSelector('#project-viewer-tabs')
       await expectSelectorToContainHtml('#project-viewer-tabs', 'What is a feed source?')
     }, 30000)
 
-    it('should update a project by adding a otp server', async () => {
+    makeTestPostLogin('should update a project by adding a otp server', async () => {
       // open settings tab
       await page.click('#project-viewer-tabs-tab-settings')
 
       // navigate to deployments
-      await page.waitForSelector('[data-test-id="deployment-settings-link"]', { visible: true })
+      await waitForSelector('[data-test-id="deployment-settings-link"]', { visible: true })
       await page.click('[data-test-id="deployment-settings-link"]')
-      await page.waitForSelector('[data-test-id="add-server-button"]')
+      await waitForSelector('[data-test-id="add-server-button"]')
 
       // add a server
       await page.click('[data-test-id="add-server-button"]')
-      await page.waitForSelector('input[name="otpServers.$index.name"]')
+      await waitForSelector('input[name="otpServers.$index.name"]')
       await page.type('input[name="otpServers.$index.name"]', 'test-otp-server')
       await page.type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
       await page.type('input[name="otpServers.$index.internalUrl"]', 'http://localhost:8080/otp')
@@ -368,7 +444,7 @@ describe('end-to-end', async () => {
     }, 30000)
 
     if (doNonEssentialSteps) {
-      it('should delete a project', async () => {
+      makeTestPostLogin('should delete a project', async () => {
         const testProjectToDeleteName = `test-project-that-will-get-deleted-${testTime}`
 
         // navigate to home project view
@@ -378,7 +454,7 @@ describe('end-to-end', async () => {
             waitUntil: 'networkidle0'
           }
         )
-        await page.waitForSelector('#context-dropdown')
+        await waitForSelector('#context-dropdown')
 
         // create a new project
         await createProject(testProjectToDeleteName)
@@ -406,7 +482,7 @@ describe('end-to-end', async () => {
   })
 
   describe('feed source', () => {
-    it('should create feed source', async () => {
+    makeTestPostLogin('should create feed source', async () => {
       // go to project page
       await page.goto(
         `http://localhost:9966/project/${testProjectId}`,
@@ -414,11 +490,11 @@ describe('end-to-end', async () => {
           waitUntil: 'networkidle0'
         }
       )
-      await page.waitForSelector('[data-test-id="create-first-feed-source-button"]')
+      await waitForSelector('[data-test-id="create-first-feed-source-button"]')
       await page.click('[data-test-id="create-first-feed-source-button"]')
 
       // TODO replace with less generic selector
-      await page.waitForSelector('h4 input')
+      await waitForSelector('h4 input')
       await page.type('h4 input', testFeedSourceName)
 
       // TODO replace with less generic selector
@@ -447,16 +523,16 @@ describe('end-to-end', async () => {
       }
       if (!feedSourceFound) throw new Error('Created feedSource not found')
 
-      await page.waitForSelector('#feed-source-viewer-tabs')
+      await waitForSelector('#feed-source-viewer-tabs')
       // wait for 2 seconds for feed versions to load
       await page.waitFor(2000)
       expectSelectorToContainHtml(
         '#feed-source-viewer-tabs',
         'No versions exist for this feed source.'
       )
-    }, 30000)
+    }, 30000, 'should create a project')
 
-    it('should process uploaded gtfs', async () => {
+    makeTestPostFeedSource('should process uploaded gtfs', async () => {
       await uploadGtfs()
 
       // verify feed was uploaded
@@ -467,12 +543,12 @@ describe('end-to-end', async () => {
     }, 30000)
 
     // this test also sets the feed source as deployable
-    it('should process fetched gtfs', async () => {
+    makeTestPostFeedSource('should process fetched gtfs', async () => {
       // navigate to feed source settings
       await page.click('#feed-source-viewer-tabs-tab-settings')
 
       // make feed source deployable
-      await page.waitForSelector(
+      await waitForSelector(
         '[data-test-id="make-feed-source-deployable-button"]',
         { visible: true }
       )
@@ -490,14 +566,14 @@ describe('end-to-end', async () => {
 
       // go back to feed source GTFS tab
       await page.click('#feed-source-viewer-tabs-tab-')
-      await page.waitForSelector(
+      await waitForSelector(
         '#bg-nested-dropdown',
         { visible: true }
       )
 
       // create new version by fetching
       await page.click('#bg-nested-dropdown')
-      await page.waitForSelector(
+      await waitForSelector(
         '[data-test-id="fetch-feed-button"]',
         { visible: true }
       )
@@ -514,7 +590,7 @@ describe('end-to-end', async () => {
     }, 30000)
 
     if (doNonEssentialSteps) {
-      it('should delete feed source', async () => {
+      makeTestPostLogin('should delete feed source', async () => {
         const testFeedSourceToDeleteName = `test-feed-source-to-delete-${testTime}`
 
         // create a new feed source to delete
@@ -540,15 +616,15 @@ describe('end-to-end', async () => {
               listItemBBox.x + listItemBBox.width / 2,
               listItemBBox.y + listItemBBox.height / 2
             )
-            await page.waitForSelector('#feed-source-action-button')
+            await waitForSelector('#feed-source-action-button')
 
             // click dropdown and delete menu item button
             await page.click('#feed-source-action-button')
-            await page.waitForSelector('[data-test-id="feed-source-dropdown-delete-project-button"]')
+            await waitForSelector('[data-test-id="feed-source-dropdown-delete-project-button"]')
             await page.click('[data-test-id="feed-source-dropdown-delete-project-button"]')
 
             // confirm action in modal
-            await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+            await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
             await page.click('[data-test-id="modal-confirm-ok-button"]')
 
             // wait for data to refresh
@@ -575,14 +651,14 @@ describe('end-to-end', async () => {
   })
 
   describe('feed version', () => {
-    it('should download a feed version', async () => {
+    makeTestPostFeedSource('should download a feed version', async () => {
       await page.goto(`http://localhost:9966/feed/${feedSourceId}`)
 
       // for whatever reason, waitUntil: networkidle0 was not working with the
       // above goto, so wait for a few seconds here
       await page.waitFor(5000)
 
-      await page.waitForSelector('[data-test-id="decrement-feed-version-button"]')
+      await waitForSelector('[data-test-id="decrement-feed-version-button"]')
       await page.click('[data-test-id="decrement-feed-version-button"]')
 
       // wait for previous version to be active
@@ -617,7 +693,7 @@ describe('end-to-end', async () => {
     if (doNonEssentialSteps) {
       // this uploads a feed source again because we want to end up with 2
       // feed versions after this test takes place
-      it('should delete a feed version', async () => {
+      makeTestPostLogin('should delete a feed version', async () => {
         // browse to feed source page
         await page.goto(`http://localhost:9966/feed/${feedSourceId}`)
 
@@ -632,7 +708,7 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="delete-feed-version-button"]')
 
         // confirm action in modal
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for data to refresh
@@ -648,16 +724,16 @@ describe('end-to-end', async () => {
   })
 
   describe('editor', () => {
-    it('should load a feed version into the editor', async () => {
+    makeTestPostFeedSource('should load a feed version into the editor', async () => {
       // click edit feed button
       await page.click('[data-test-id="edit-feed-version-button"]')
 
       // wait for editor to get ready and show starting dialog
-      await page.waitForSelector('[data-test-id="import-latest-version-button"]')
+      await waitForSelector('[data-test-id="import-latest-version-button"]')
       await page.click('[data-test-id="import-latest-version-button"]')
 
       // wait for snapshot to get created
-      await page.waitForSelector('[data-test-id="begin-editing-button"]')
+      await waitForSelector('[data-test-id="begin-editing-button"]')
 
       // close jobs dialog
       await page.click('[data-test-id="clear-completed-jobs-button"]')
@@ -670,7 +746,7 @@ describe('end-to-end', async () => {
     }, 20000)
 
     // prepare a new feed source to use the editor from scratch
-    it('should edit a feed from scratch', async () => {
+    makeTestPostFeedSource('should edit a feed from scratch', async () => {
       // browse to feed source page
       const feedSourceName = `feed-source-to-edit-from-scratch-${testTime}`
       await createFeedSourceViaProjectHeaderButton(feedSourceName)
@@ -696,7 +772,7 @@ describe('end-to-end', async () => {
       if (!feedSourceFound) throw new Error('Created feedSource not found')
 
       // wait for navigation to feed source
-      await page.waitForSelector('#feed-source-viewer-tabs')
+      await waitForSelector('#feed-source-viewer-tabs')
 
       // wait for 2 seconds for feed versions to load
       await page.waitFor(2000)
@@ -705,11 +781,11 @@ describe('end-to-end', async () => {
       await page.click('[data-test-id="edit-feed-version-button"]')
 
       // wait for editor to get ready and show starting dialog
-      await page.waitForSelector('[data-test-id="edit-from-scratch-button"]')
+      await waitForSelector('[data-test-id="edit-from-scratch-button"]')
       await page.click('[data-test-id="edit-from-scratch-button"]')
 
       // wait for snapshot to get created
-      await page.waitForSelector('[data-test-id="begin-editing-button"]')
+      await waitForSelector('[data-test-id="begin-editing-button"]')
 
       // close jobs dialog
       await page.click('[data-test-id="clear-completed-jobs-button"]')
@@ -726,12 +802,12 @@ describe('end-to-end', async () => {
 
     // all of the following editor tests assume the use of the scratch feed
     describe('feed info', () => {
-      it('should create feed info data', async () => {
+      makeEditorEntityTest('should create feed info data', async () => {
         // open feed info sidebar
         await page.click('[data-test-id="editor-feedinfo-nav-button"]')
 
         // wait for feed info sidebar form to appear
-        await page.waitForSelector('#feed_publisher_name')
+        await waitForSelector('#feed_publisher_name')
 
         // fill out form
         await page.type('#feed_publisher_name', 'end-to-end automated test')
@@ -772,7 +848,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for feed info sidebar form to appear
-        await page.waitForSelector('#feed_publisher_name')
+        await waitForSelector('#feed_publisher_name')
 
         // verify data was saved and retrieved from server
         await expectSelectorToContainHtml(
@@ -781,7 +857,7 @@ describe('end-to-end', async () => {
         )
       }, 20000)
 
-      it('should update feed info data', async () => {
+      makeEditorEntityTest('should update feed info data', async () => {
         // update publisher name by appending to end
         await appendText('#feed_publisher_name', ' runner')
 
@@ -795,30 +871,30 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for feed info sidebar form to appear
-        await page.waitForSelector('#feed_publisher_name')
+        await waitForSelector('#feed_publisher_name')
 
         // verify data was saved and retrieved from server
         await expectSelectorToContainHtml(
           '[data-test-id="feedinfo-feed_publisher_name-input-container"]',
           'end-to-end automated test runner'
         )
-      }, 20000)
+      }, 20000, 'should create feed info data')
     })
 
     // all of the following editor tests assume the use of the scratch feed
     describe('agencies', () => {
-      it('should create agency', async () => {
+      makeEditorEntityTest('should create agency', async () => {
         // open agency sidebar
         await page.click('[data-test-id="editor-agency-nav-button"]')
 
         // wait for agency sidebar form to appear
-        await page.waitForSelector('[data-test-id="create-first-agency-button"]')
+        await waitForSelector('[data-test-id="create-first-agency-button"]')
 
         // click button to open form to create agency
         await page.click('[data-test-id="create-first-agency-button"]')
 
         // wait for entity details sidebar to appear
-        await page.waitForSelector('[data-test-id="agency-agency_id-input-container"]')
+        await waitForSelector('[data-test-id="agency-agency_id-input-container"]')
 
         // fill out form
         await page.type(
@@ -872,7 +948,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for agency sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="agency-agency_id-input-container"]'
         )
 
@@ -883,7 +959,7 @@ describe('end-to-end', async () => {
         )
       }, 20000)
 
-      it('should update agency data', async () => {
+      makeEditorEntityTest('should update agency data', async () => {
         // update agency name by appending to end
         await appendText(
           '[data-test-id="agency-agency_name-input-container"] input',
@@ -900,7 +976,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for agency sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="agency-agency_name-input-container"] input'
         )
 
@@ -909,9 +985,9 @@ describe('end-to-end', async () => {
           '[data-test-id="agency-agency_name-input-container"]',
           'test agency name updated'
         )
-      }, 20000)
+      }, 20000, 'should create agency')
 
-      it('should delete agency data', async () => {
+      makeEditorEntityTest('should delete agency data', async () => {
         // create a new agency that will get deleted
         await page.click('[data-test-id="clone-agency-button"]')
 
@@ -937,7 +1013,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for agency sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="agency-agency_name-input-container"] input'
         )
 
@@ -949,7 +1025,7 @@ describe('end-to-end', async () => {
 
         // delete the agency
         await page.click('[data-test-id="delete-agency-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -966,18 +1042,18 @@ describe('end-to-end', async () => {
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the agencies test suite
     describe('routes', () => {
-      it('should create route', async () => {
+      makeEditorEntityTest('should create route', async () => {
         // open routes sidebar
         await page.click('[data-test-id="editor-route-nav-button"]')
 
         // wait for route sidebar form to appear
-        await page.waitForSelector('[data-test-id="create-first-route-button"]')
+        await waitForSelector('[data-test-id="create-first-route-button"]')
 
         // click button to open form to create route
         await page.click('[data-test-id="create-first-route-button"]')
 
         // wait for entity details sidebar to appear
-        await page.waitForSelector('[data-test-id="route-route_id-input-container"]')
+        await waitForSelector('[data-test-id="route-route_id-input-container"]')
 
         // fill out form
         // set status to approved
@@ -1056,7 +1132,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for routes sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="route-route_id-input-container"]'
         )
 
@@ -1065,9 +1141,9 @@ describe('end-to-end', async () => {
           '[data-test-id="route-route_id-input-container"]',
           'test-route-id'
         )
-      }, 20000)
+      }, 20000, 'should create agency')
 
-      it('should update route data', async () => {
+      makeEditorEntityTest('should update route data', async () => {
         // update route name by appending to end
         await appendText(
           '[data-test-id="route-route_long_name-input-container"] input',
@@ -1084,7 +1160,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for routes sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="route-route_long_name-input-container"] input'
         )
 
@@ -1093,9 +1169,9 @@ describe('end-to-end', async () => {
           '[data-test-id="route-route_long_name-input-container"]',
           'test route 1 updated'
         )
-      }, 20000)
+      }, 20000, ['should create agency', 'should create route'])
 
-      it('should delete route data', async () => {
+      makeEditorEntityTest('should delete route data', async () => {
         // create a new route that will get deleted
         await page.click('[data-test-id="clone-route-button"]')
 
@@ -1121,7 +1197,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for routes sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="route-route_long_name-input-container"] input'
         )
 
@@ -1133,7 +1209,7 @@ describe('end-to-end', async () => {
 
         // delete the route
         await page.click('[data-test-id="delete-route-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -1144,17 +1220,17 @@ describe('end-to-end', async () => {
           '.entity-list',
           'test route 1 updated to delete'
         )
-      }, 20000)
+      }, 20000, 'should create agency')
     })
 
     // all of the following editor tests assume the use of the scratch feed
     describe('stops', () => {
-      it('should create stop', async () => {
+      makeEditorEntityTest('should create stop', async () => {
         // open stop info sidebar
         await page.click('[data-test-id="editor-stop-nav-button"]')
 
         // wait for stop sidebar form to appear
-        await page.waitForSelector('[data-test-id="create-stop-instructions"]')
+        await waitForSelector('[data-test-id="create-stop-instructions"]')
 
         await createStop({
           code: '1',
@@ -1170,7 +1246,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for feed info sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="stop-stop_id-input-container"]'
         )
 
@@ -1181,7 +1257,7 @@ describe('end-to-end', async () => {
         )
       }, 20000)
 
-      it('should update stop data', async () => {
+      makeEditorEntityTest('should update stop data', async () => {
         // create a 2nd stop
         await createStop({
           code: '2',
@@ -1209,7 +1285,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for feed info sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="stop-stop_desc-input-container"] input'
         )
 
@@ -1220,7 +1296,7 @@ describe('end-to-end', async () => {
         )
       }, 20000)
 
-      it('should delete stop data', async () => {
+      makeEditorEntityTest('should delete stop data', async () => {
         // create a new stop that will get deleted
         await page.click('[data-test-id="clone-stop-button"]')
 
@@ -1252,7 +1328,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for feed info sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="stop-stop_name-input-container"] input'
         )
 
@@ -1264,7 +1340,7 @@ describe('end-to-end', async () => {
 
         // delete the stop
         await page.click('[data-test-id="delete-stop-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -1275,23 +1351,23 @@ describe('end-to-end', async () => {
           '.entity-list',
           'Russell Ave and Valley Dr to delete (3)'
         )
-      }, 20000)
+      }, 20000, 'should create stop')
     })
 
     // all of the following editor tests assume the use of the scratch feed
     describe('calendars', () => {
-      it('should create calendar', async () => {
+      makeEditorEntityTest('should create calendar', async () => {
         // open calendar sidebar
         await page.click('[data-test-id="editor-calendar-nav-button"]')
 
         // wait for calendar sidebar form to appear
-        await page.waitForSelector('[data-test-id="create-first-calendar-button"]')
+        await waitForSelector('[data-test-id="create-first-calendar-button"]')
 
         // click button to open form to create calendar
         await page.click('[data-test-id="create-first-calendar-button"]')
 
         // wait for entity details sidebar to appear
-        await page.waitForSelector('[data-test-id="calendar-service_id-input-container"]')
+        await waitForSelector('[data-test-id="calendar-service_id-input-container"]')
 
         // fill out form
 
@@ -1339,7 +1415,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for calendar sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="calendar-service_id-input-container"]'
         )
 
@@ -1350,7 +1426,7 @@ describe('end-to-end', async () => {
         )
       }, 20000)
 
-      it('should update calendar data', async () => {
+      makeEditorEntityTest('should update calendar data', async () => {
         // update calendar name by appending to end
         await appendText(
           '[data-test-id="calendar-description-input-container"] input',
@@ -1367,7 +1443,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for calendar sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="calendar-description-input-container"] input'
         )
 
@@ -1376,9 +1452,9 @@ describe('end-to-end', async () => {
           '[data-test-id="calendar-description-input-container"]',
           'test calendar updated'
         )
-      }, 20000)
+      }, 20000, 'should create calendar')
 
-      it('should delete calendar data', async () => {
+      makeEditorEntityTest('should delete calendar data', async () => {
         // create a new calendar that will get deleted
         await page.click('[data-test-id="clone-calendar-button"]')
 
@@ -1404,7 +1480,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for calendar sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="calendar-description-input-container"] input'
         )
 
@@ -1416,7 +1492,7 @@ describe('end-to-end', async () => {
 
         // delete the calendar
         await page.click('[data-test-id="delete-calendar-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -1433,18 +1509,18 @@ describe('end-to-end', async () => {
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the calendars test suite
     describe('exceptions', () => {
-      it('should create exception', async () => {
+      makeEditorEntityTest('should create exception', async () => {
         // open exception sidebar
         await page.click('[data-test-id="exception-tab-button"]')
 
         // wait for exception sidebar form to appear
-        await page.waitForSelector('[data-test-id="create-first-scheduleexception-button"]')
+        await waitForSelector('[data-test-id="create-first-scheduleexception-button"]')
 
         // click button to open form to create exception
         await page.click('[data-test-id="create-first-scheduleexception-button"]')
 
         // wait for entity details sidebar to appear
-        await page.waitForSelector('[data-test-id="exception-name-input-container"]')
+        await waitForSelector('[data-test-id="exception-name-input-container"]')
 
         // fill out form
 
@@ -1462,7 +1538,7 @@ describe('end-to-end', async () => {
 
         // add exception date
         await page.click('[data-test-id="exception-add-date-button"]')
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="exception-dates-container"] input'
         )
         await clearAndType(
@@ -1480,7 +1556,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for exception sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="exception-name-input-container"]'
         )
 
@@ -1489,9 +1565,9 @@ describe('end-to-end', async () => {
           '[data-test-id="exception-name-input-container"]',
           'test exception'
         )
-      }, 20000)
+      }, 20000, 'should create calendar')
 
-      it('should update exception data', async () => {
+      makeEditorEntityTest('should update exception data', async () => {
         // update exception name by appending to end
         await appendText(
           '[data-test-id="exception-name-input-container"] input',
@@ -1508,7 +1584,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for exception sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="exception-name-input-container"] input'
         )
 
@@ -1517,9 +1593,9 @@ describe('end-to-end', async () => {
           '[data-test-id="exception-name-input-container"]',
           'test exception updated'
         )
-      }, 20000)
+      }, 20000, 'should create exception')
 
-      it('should delete exception data', async () => {
+      makeEditorEntityTest('should delete exception data', async () => {
         // create a new exception that will get deleted
         await page.click('[data-test-id="clone-scheduleexception-button"]')
 
@@ -1545,7 +1621,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for exception sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="exception-name-input-container"] input'
         )
 
@@ -1557,7 +1633,7 @@ describe('end-to-end', async () => {
 
         // delete the exception
         await page.click('[data-test-id="delete-scheduleexception-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -1568,24 +1644,24 @@ describe('end-to-end', async () => {
           '.entity-list',
           'test exception updated to delete'
         )
-      }, 20000)
+      }, 20000, 'should create calendar')
     })
 
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the routes test suite
     describe('fares', () => {
-      it('should create fare', async () => {
+      makeEditorEntityTest('should create fare', async () => {
         // open fare sidebar
         await page.click('[data-test-id="editor-fare-nav-button"]')
 
         // wait for fare sidebar form to appear
-        await page.waitForSelector('[data-test-id="create-first-fare-button"]')
+        await waitForSelector('[data-test-id="create-first-fare-button"]')
 
         // click button to open form to create fare
         await page.click('[data-test-id="create-first-fare-button"]')
 
         // wait for entity details sidebar to appear
-        await page.waitForSelector('[data-test-id="fare-fare_id-input-container"]')
+        await waitForSelector('[data-test-id="fare-fare_id-input-container"]')
 
         // fill out form
 
@@ -1635,7 +1711,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for fare sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="fare-fare_id-input-container"]'
         )
 
@@ -1647,15 +1723,15 @@ describe('end-to-end', async () => {
 
         // add a fare rule
         await page.click('[data-test-id="fare-rules-tab-button"]')
-        await page.waitForSelector('[data-test-id="add-fare-rule-button"]')
+        await waitForSelector('[data-test-id="add-fare-rule-button"]')
         await page.click('[data-test-id="add-fare-rule-button"]')
 
         // select route type
-        await page.waitForSelector('input[name="fareRuleType-0-route_id"]')
+        await waitForSelector('input[name="fareRuleType-0-route_id"]')
         await page.click('input[name="fareRuleType-0-route_id"]')
 
         // select route
-        await page.waitForSelector('[data-test-id="fare-rule-selections"] input')
+        await waitForSelector('[data-test-id="fare-rule-selections"] input')
         await reactSelectOption(
           '[data-test-id="fare-rule-selections"]',
           '1',
@@ -1673,25 +1749,25 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for fare sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="fare-fare_id-input-container"]'
         )
 
         // go to rules tab
         await page.click('[data-test-id="fare-rules-tab-button"]')
-        await page.waitForSelector('[data-test-id="add-fare-rule-button"]')
+        await waitForSelector('[data-test-id="add-fare-rule-button"]')
 
         // verify data was saved and retrieved from server
         await expectSelectorToContainHtml(
           '[data-test-id="fare-rule-selections"]',
           'test route 1 updated'
         )
-      }, 20000)
+      }, 20000, 'should create route')
 
-      it('should update fare data', async () => {
+      makeEditorEntityTest('should update fare data', async () => {
         // browse back to fare attributes tab
         await page.click('[data-test-id="fare-attributes-tab-button"]')
-        await page.waitForSelector('[data-test-id="fare-fare_id-input-container"]')
+        await waitForSelector('[data-test-id="fare-fare_id-input-container"]')
 
         // update fare id by appending to end
         await appendText(
@@ -1709,7 +1785,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for fare sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="fare-fare_id-input-container"] input'
         )
 
@@ -1718,9 +1794,9 @@ describe('end-to-end', async () => {
           '[data-test-id="fare-fare_id-input-container"]',
           'test-fare-id-updated'
         )
-      }, 20000)
+      }, 20000, 'should create fare')
 
-      it('should delete fare data', async () => {
+      makeEditorEntityTest('should delete fare data', async () => {
         // create a new fare that will get deleted
         await page.click('[data-test-id="clone-fare-button"]')
 
@@ -1740,7 +1816,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for fare sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="fare-fare_id-input-container"] input'
         )
 
@@ -1752,7 +1828,7 @@ describe('end-to-end', async () => {
 
         // delete the fare
         await page.click('[data-test-id="delete-fare-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -1763,36 +1839,36 @@ describe('end-to-end', async () => {
           '.entity-list',
           'test-fare-id-updated-copied'
         )
-      }, 20000)
+      }, 20000, 'should create fare')
     })
 
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the routes test suite
     describe('patterns', () => {
-      it('should create pattern', async () => {
+      makeEditorEntityTest('should create pattern', async () => {
         // open route sidebar
         await page.click('[data-test-id="editor-route-nav-button"]')
 
         // wait for route sidebar form to appear
-        await page.waitForSelector('.entity-list-row')
+        await waitForSelector('.entity-list-row')
 
         // select first route
         await page.click('.entity-list-row')
 
         // wait for route details sidebar to appear
-        await page.waitForSelector('[data-test-id="trippattern-tab-button"]')
+        await waitForSelector('[data-test-id="trippattern-tab-button"]')
 
         // go to trip pattern tab
         await page.click('[data-test-id="trippattern-tab-button"]')
 
         // wait for tab to load
-        await page.waitForSelector('[data-test-id="new-pattern-button"]')
+        await waitForSelector('[data-test-id="new-pattern-button"]')
 
         // click button to create pattern
         await page.click('[data-test-id="new-pattern-button"]')
 
         // wait for new pattern to appear
-        await page.waitForSelector('[data-test-id="pattern-title-New Pattern"]')
+        await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
 
         // toggle the FeedInfoPanel in case it gets in the way of panel stuff
         await page.click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
@@ -1804,7 +1880,7 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="add-stop-by-name-button"]')
 
         // wait for stop selector to show up
-        await page.waitForSelector('.pattern-stop-card .Select-control')
+        await waitForSelector('.pattern-stop-card .Select-control')
 
         // add 1st stop
         await reactSelectOption('.pattern-stop-card', 'la', 1, true)
@@ -1822,7 +1898,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for pattern sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="pattern-title-New Pattern"]'
         )
 
@@ -1831,15 +1907,15 @@ describe('end-to-end', async () => {
           '.trip-pattern-list',
           'Russell Av'
         )
-      }, 20000)
+      }, 20000, 'should create route')
 
-      it('should update pattern data', async () => {
+      makeEditorEntityTest('should update pattern data', async () => {
         // change pattern name by appending to end
         // begin editing
         await page.click('[data-test-id="editable-text-field-edit-button"]')
 
         // wait for text field to appear
-        await page.waitForSelector('[data-test-id="editable-text-field-edit-container"]')
+        await waitForSelector('[data-test-id="editable-text-field-edit-container"]')
         await appendText(
           '[data-test-id="editable-text-field-edit-container"] input',
           ' updated'
@@ -1855,7 +1931,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for pattern sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="pattern-title-New Pattern updated"]'
         )
 
@@ -1864,9 +1940,9 @@ describe('end-to-end', async () => {
           '[data-test-id="pattern-title-New Pattern updated"]',
           'New Pattern updated'
         )
-      }, 20000)
+      }, 20000, 'should create pattern')
 
-      it('should delete pattern data', async () => {
+      makeEditorEntityTest('should delete pattern data', async () => {
         // create a new pattern that will get deleted
         await page.click('[data-test-id="duplicate-pattern-button"]')
 
@@ -1881,7 +1957,7 @@ describe('end-to-end', async () => {
 
         // delete the pattern
         await page.click('[data-test-id="delete-pattern-button"]')
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for page to catch up?
         await page.waitFor(2000)
@@ -1895,24 +1971,24 @@ describe('end-to-end', async () => {
           '.trip-pattern-list',
           'New Pattern updated copy'
         )
-      }, 20000)
+      }, 20000, 'should create pattern')
     })
 
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the patterns and calendars test suites
     describe('timetables', () => {
-      it('should create trip', async () => {
+      makeEditorEntityTest('should create trip', async () => {
         // expand pattern
         await page.click('[data-test-id="pattern-title-New Pattern updated"]')
 
         // wait for edit schedules button to appear
-        await page.waitForSelector('[data-test-id="edit-schedules-button"]')
+        await waitForSelector('[data-test-id="edit-schedules-button"]')
 
         // click edit schedules
         await page.click('[data-test-id="edit-schedules-button"]')
 
         // wait for calendar selector to appear
-        await page.waitForSelector('[data-test-id="calendar-select-container"]')
+        await waitForSelector('[data-test-id="calendar-select-container"]')
 
         // select first calendar
         await reactSelectOption(
@@ -1922,7 +1998,7 @@ describe('end-to-end', async () => {
         )
 
         // wait for new trip button to appear
-        await page.waitForSelector('[data-test-id="add-new-trip-button"]')
+        await waitForSelector('[data-test-id="add-new-trip-button"]')
 
         // wait for page to catch up with iteself?
         await page.waitFor(2000)
@@ -1931,7 +2007,7 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="add-new-trip-button"]')
 
         // wait for new trip to appear
-        await page.waitForSelector('[data-test-id="timetable-area"]')
+        await waitForSelector('[data-test-id="timetable-area"]')
 
         // click first cell to begin editing
         await page.click('.editable-cell')
@@ -1980,7 +2056,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for trip sidebar form to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="timetable-area"]'
         )
 
@@ -1989,9 +2065,9 @@ describe('end-to-end', async () => {
           '[data-test-id="timetable-area"]',
           'test-trip-id'
         )
-      }, 20000)
+      }, 20000, ['should create calendar', 'should create pattern'])
 
-      it('should update trip data', async () => {
+      makeEditorEntityTest('should update trip data', async () => {
         // click first editable cell to begin editing
         await page.click('.editable-cell')
 
@@ -2015,7 +2091,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for timetable  to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="timetable-area"]'
         )
 
@@ -2024,9 +2100,9 @@ describe('end-to-end', async () => {
           '[data-test-id="timetable-area"]',
           'test-trip-id-updated'
         )
-      }, 20000)
+      }, 20000, 'should create trip')
 
-      it('should delete trip data', async () => {
+      makeEditorEntityTest('should delete trip data', async () => {
         // create a new trip that will get deleted
         await page.click('[data-test-id="duplicate-trip-button"]')
 
@@ -2059,7 +2135,7 @@ describe('end-to-end', async () => {
         await page.reload({ waitUntil: 'networkidle0' })
 
         // wait for timetable  to appear
-        await page.waitForSelector(
+        await waitForSelector(
           '[data-test-id="timetable-area"]'
         )
 
@@ -2076,7 +2152,7 @@ describe('end-to-end', async () => {
         await page.click('[data-test-id="delete-trip-button"]')
 
         // confirm delete
-        await page.waitForSelector('[data-test-id="modal-confirm-ok-button"]')
+        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
@@ -2087,17 +2163,17 @@ describe('end-to-end', async () => {
           '[data-test-id="timetable-area"]',
           'test-trip-to-delete'
         )
-      }, 20000)
+      }, 20000, 'should create trip')
     })
 
     // all of the following tests depend on the editor tests completing successfully
     describe('snapshot', () => {
-      it('should create snapshot', async () => {
+      makeEditorEntityTest('should create snapshot', async () => {
         // open create snapshot dialog
         await page.click('[data-test-id="take-snapshot-button"]')
 
         // wait for dialog to appear
-        await page.waitForSelector('[data-test-id="snapshot-dialog-name"]')
+        await waitForSelector('[data-test-id="snapshot-dialog-name"]')
 
         // enter name
         await page.type('[data-test-id="snapshot-dialog-name"]', 'test-snapshot')
@@ -2107,12 +2183,12 @@ describe('end-to-end', async () => {
 
         // wait for jobs to complete
         await waitAndClearCompletedJobs()
-      }, 20000)
+      }, 20000, 'should create trip')
     })
   })
 
   describe('feed source snapshot', () => {
-    it('should make snapshot active version', async () => {
+    makeEditorEntityTest('should make snapshot active version', async () => {
       // go back to feed
       // not sure why, but clicking on the nav home button doesn't work
       await page.goto(
@@ -2123,7 +2199,7 @@ describe('end-to-end', async () => {
       )
 
       // wait for page to be visible
-      await page.waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
+      await waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
 
       // go to snapshots tab
       await page.click('#feed-source-viewer-tabs-tab-snapshots')
@@ -2132,7 +2208,7 @@ describe('end-to-end', async () => {
       await page.waitFor(2000)
 
       // wait for snapshots tab to load
-      await page.waitForSelector('[data-test-id="publish-snapshot-button"]')
+      await waitForSelector('[data-test-id="publish-snapshot-button"]')
 
       // publish snapshot
       await page.click('[data-test-id="publish-snapshot-button"]')
@@ -2144,14 +2220,14 @@ describe('end-to-end', async () => {
       await page.click('#feed-source-viewer-tabs-tab-')
 
       // wait for main tab to show up
-      await page.waitForSelector('#feed-source-viewer-tabs-pane-')
+      await waitForSelector('#feed-source-viewer-tabs-pane-')
 
       // verify that feed was fetched and processed
       await expectSelectorToContainHtml(
         '#feed-source-viewer-tabs',
         'Valid from May. 29, 2018 to May. 29, 2028'
       )
-    }, 30000)
+    }, 30000, 'should create snapshot')
 
     // TODO: download and validate gtfs??
   })
@@ -2159,7 +2235,7 @@ describe('end-to-end', async () => {
   // the following tests depend on the snapshot test suite to have passed
   // successfully and also assumes a local instance of OTP is running
   describe('deployment', () => {
-    it('should create deployment', async () => {
+    makeTestPostFeedSource('should create deployment', async () => {
       // open create snapshot dialog
       await page.click('[data-test-id="deploy-feed-version-button"]')
 
@@ -2167,19 +2243,19 @@ describe('end-to-end', async () => {
       await page.waitFor(5000)
 
       // wait for deploy dropdown buttun to appear
-      await page.waitForSelector('#deploy-server-dropdown')
+      await waitForSelector('#deploy-server-dropdown')
 
       // open dropdown
       await page.click('#deploy-server-dropdown')
 
       // wait for dropdown to open
-      await page.waitForSelector('[data-test-id="deploy-server-0-button"]')
+      await waitForSelector('[data-test-id="deploy-server-0-button"]')
 
       // click to deploy to server
       await page.click('[data-test-id="deploy-server-0-button"]')
 
       // wait for deployment dialog to appear
-      await page.waitForSelector('[data-test-id="confirm-deploy-server-button"]')
+      await waitForSelector('[data-test-id="confirm-deploy-server-button"]')
 
       // get the router name
       const innerHTML = await page.$eval(
@@ -2194,9 +2270,9 @@ describe('end-to-end', async () => {
 
       // wait for jobs to complete
       await waitAndClearCompletedJobs()
-    }, 30000)
+    }, 50000)
 
-    it('should be able to do a trip plan on otp', async () => {
+    makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
       // hit the otp endpoint
       const response = await fetch(
         `http://localhost:8080/otp/routers/${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
@@ -2213,6 +2289,6 @@ describe('end-to-end', async () => {
       // expect response to include text of a created stop
       const text = await response.text()
       expect(text).toContain('Laurel Dr and Valley Dr')
-    })
+    }, 5000, 'should create snapshot')
   })
 })

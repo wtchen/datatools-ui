@@ -114,7 +114,8 @@
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
     "puppeteer": "^1.4.0",
-    "semantic-release": "^6.3.2"
+    "semantic-release": "^6.3.2",
+    "simple-node-logger": "^0.93.37"
   },
   "standard": {
     "parser": "babel-eslint",

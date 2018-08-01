@@ -5611,7 +5611,7 @@ lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.4, l
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
-lodash@^4.17.10, lodash@^4.17.5:
+lodash@^4.17.10, lodash@^4.17.2, lodash@^4.17.5:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
@@ -6044,6 +6044,10 @@ mold-source-map@~0.4.0:
 moment@2.x.x, moment@^2.11.2, moment@^2.8.2:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
+
+moment@^2.20.1:
+  version "2.22.2"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
 
 ms@0.7.2:
   version "0.7.2"
@@ -8627,6 +8631,13 @@ simple-html-index@^1.4.0:
   resolved "https://registry.yarnpkg.com/simple-html-index/-/simple-html-index-1.5.0.tgz#2c93eeaebac001d8a135fc0022bd4ade8f58996f"
   dependencies:
     from2-string "^1.1.0"
+
+simple-node-logger@^0.93.37:
+  version "0.93.37"
+  resolved "https://registry.yarnpkg.com/simple-node-logger/-/simple-node-logger-0.93.37.tgz#4e1235917b3b4a8d6cc10e0208d157189afb2106"
+  dependencies:
+    lodash "^4.17.2"
+    moment "^2.20.1"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"
