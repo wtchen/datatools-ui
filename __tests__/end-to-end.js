@@ -28,6 +28,7 @@ let scratchFeedSourceId
 let routerId
 const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
 const testResults = {}
+const defaultTestTimeout = 60000
 
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
@@ -182,7 +183,7 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   await page.type('h4 input', feedSourceName + String.fromCharCode(13))
 
   // wait for feed source to be created and saved
-  await page.waitFor(3000)
+  await page.waitFor(5000)
   log.info(`created Feed Source with name: ${feedSourceName} via project header button`)
 }
 
@@ -222,7 +223,7 @@ async function createStop ({
   await waitForSelector('[data-test-id="stop-stop_id-input-container"]')
 
   // wait for initial data to load
-  await page.waitFor(1000)
+  await page.waitFor(5000)
 
   // fill out form
 
@@ -299,7 +300,7 @@ async function createStop ({
   await page.click('[data-test-id="save-entity-button"]')
 
   // wait for save to happen
-  await page.waitFor(1000)
+  await page.waitFor(5000)
   log.info(`created stop with name: ${name}`)
 }
 
@@ -367,16 +368,20 @@ async function waitForSelector (selector: string, options?: any) {
 
 describe('end-to-end', () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({headless: false})
+    browser = await puppeteer.launch({headless: true})
     page = await browser.newPage()
+    page._client.send(
+      'Page.setDownloadBehavior',
+      { behavior: 'allow', downloadPath: './' }
+    )
   })
 
   afterAll(async () => {
     // delete test project
-    // await deleteProject(testProjectId)
+    await deleteProject(testProjectId)
 
     // close browser
-    // browser.close()
+    browser.close()
   })
 
   makeTest('should load the page', async () => {
@@ -395,7 +400,7 @@ describe('end-to-end', () => {
     await waitForSelector('#context-dropdown')
     // wait for 10 seconds for projects to load
     await page.waitFor(10000)
-  }, 30000, 'should load the page')
+  }, defaultTestTimeout, 'should load the page')
 
   describe('project', () => {
     makeTestPostLogin('should create a project', async () => {
@@ -419,7 +424,7 @@ describe('end-to-end', () => {
 
       await waitForSelector('#project-viewer-tabs')
       await expectSelectorToContainHtml('#project-viewer-tabs', 'What is a feed source?')
-    }, 30000)
+    }, defaultTestTimeout)
 
     makeTestPostLogin('should update a project by adding a otp server', async () => {
       // open settings tab
@@ -441,7 +446,7 @@ describe('end-to-end', () => {
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
       await expectSelectorToContainHtml('#project-viewer-tabs', 'test-otp-server')
-    }, 30000)
+    }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
       makeTestPostLogin('should delete a project', async () => {
@@ -477,7 +482,7 @@ describe('end-to-end', () => {
         if (!projectFound) throw new Error('Created project not found')
 
         await deleteProject(projectToDeleteId)
-      }, 30000)
+      }, defaultTestTimeout)
     }
   })
 
@@ -501,7 +506,7 @@ describe('end-to-end', () => {
       await page.click('h4 button')
 
       // wait for feed source to be created and saved
-      await page.waitFor(2000)
+      await page.waitFor(5000)
 
       // verify that the feed source is listed
       await expectSelectorToContainHtml('#project-viewer-tabs', testFeedSourceName)
@@ -525,12 +530,12 @@ describe('end-to-end', () => {
 
       await waitForSelector('#feed-source-viewer-tabs')
       // wait for 2 seconds for feed versions to load
-      await page.waitFor(2000)
+      await page.waitFor(5000)
       expectSelectorToContainHtml(
         '#feed-source-viewer-tabs',
         'No versions exist for this feed source.'
       )
-    }, 30000, 'should create a project')
+    }, defaultTestTimeout, 'should create a project')
 
     makeTestPostFeedSource('should process uploaded gtfs', async () => {
       await uploadGtfs()
@@ -540,7 +545,7 @@ describe('end-to-end', () => {
         '#feed-source-viewer-tabs',
         'Valid from Jan. 01, 2014 to Dec. 31, 2018'
       )
-    }, 30000)
+    }, defaultTestTimeout)
 
     // this test also sets the feed source as deployable
     makeTestPostFeedSource('should process fetched gtfs', async () => {
@@ -562,7 +567,7 @@ describe('end-to-end', () => {
       await page.click('[data-test-id="feed-source-url-input-group"] button')
 
       // wait for feed source to update
-      await page.waitFor(2000)
+      await page.waitFor(5000)
 
       // go back to feed source GTFS tab
       await page.click('#feed-source-viewer-tabs-tab-')
@@ -587,7 +592,7 @@ describe('end-to-end', () => {
         '#feed-source-viewer-tabs',
         'Valid from Apr. 08, 2018 to Jun. 30, 2018'
       )
-    }, 30000)
+    }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
       makeTestPostLogin('should delete feed source', async () => {
@@ -628,7 +633,7 @@ describe('end-to-end', () => {
             await page.click('[data-test-id="modal-confirm-ok-button"]')
 
             // wait for data to refresh
-            await page.waitFor(2000)
+            await page.waitFor(5000)
             feedSourceFound = true
             break
           }
@@ -646,7 +651,7 @@ describe('end-to-end', () => {
           }
         }
         if (deletedFeedSourceFound) throw new Error('Feed source did not get deleted!')
-      }, 30000)
+      }, defaultTestTimeout)
     }
   })
 
@@ -662,15 +667,15 @@ describe('end-to-end', () => {
       await page.click('[data-test-id="decrement-feed-version-button"]')
 
       // wait for previous version to be active
-      await page.waitFor(1000)
+      await page.waitFor(5000)
       await page.click('[data-test-id="download-feed-version-button"]')
 
       // wait for file to download
       await page.waitFor(5000)
 
-      // file should get saved to the ~/Downloads directory, go looking for it
+      // file should get saved to the current root directory, go looking for it
       // verify that file exists
-      const downloadsDir = path.join(os.homedir(), 'Downloads')
+      const downloadsDir = './'
       const files = await fs.readdir(downloadsDir)
       let feedVersionDownloadFile = ''
       // assume that this file will be the only one matching the feed source ID
@@ -685,10 +690,12 @@ describe('end-to-end', () => {
       }
 
       // verify that file has same hash as gtfs file that was uploaded
-      expect(
-        await md5File(path.join(downloadsDir, feedVersionDownloadFile))
-      ).toEqual(await md5File(gtfsUploadFile))
-    }, 30000)
+      const filePath = path.join(downloadsDir, feedVersionDownloadFile)
+      expect(await md5File(filePath)).toEqual(await md5File(gtfsUploadFile))
+
+      // delete file
+      await fs.remove(filePath)
+    }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
       // this uploads a feed source again because we want to end up with 2
@@ -719,7 +726,7 @@ describe('end-to-end', () => {
           '#feed-source-viewer-tabs',
           'Valid from Apr. 08, 2018 to Jun. 30, 2018'
         )
-      }, 30000)
+      }, defaultTestTimeout)
     }
   })
 
@@ -742,8 +749,8 @@ describe('end-to-end', () => {
       await page.click('[data-test-id="begin-editing-button"]')
 
       // wait for dialog to close
-      await page.waitFor(1000)
-    }, 20000)
+      await page.waitFor(5000)
+    }, defaultTestTimeout)
 
     // prepare a new feed source to use the editor from scratch
     makeTestPostFeedSource('should edit a feed from scratch', async () => {
@@ -774,8 +781,8 @@ describe('end-to-end', () => {
       // wait for navigation to feed source
       await waitForSelector('#feed-source-viewer-tabs')
 
-      // wait for 2 seconds for feed versions to load
-      await page.waitFor(2000)
+      // wait for feed versions to load
+      await page.waitFor(5000)
 
       // click edit feed button
       await page.click('[data-test-id="edit-feed-version-button"]')
@@ -791,14 +798,14 @@ describe('end-to-end', () => {
       await page.click('[data-test-id="clear-completed-jobs-button"]')
 
       // wait for jobs dialog to close
-      await page.waitFor(1000)
+      await page.waitFor(5000)
 
       // begin editing
       await page.click('[data-test-id="begin-editing-button"]')
 
       // wait for welcome dialog to close
-      await page.waitFor(1000)
-    }, 30000)
+      await page.waitFor(5000)
+    }, defaultTestTimeout)
 
     // all of the following editor tests assume the use of the scratch feed
     describe('feed info', () => {
@@ -842,7 +849,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -855,7 +862,7 @@ describe('end-to-end', () => {
           '[data-test-id="feedinfo-feed_publisher_name-input-container"]',
           'end-to-end automated test'
         )
-      }, 20000)
+      }, defaultTestTimeout)
 
       makeEditorEntityTest('should update feed info data', async () => {
         // update publisher name by appending to end
@@ -865,7 +872,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -878,7 +885,7 @@ describe('end-to-end', () => {
           '[data-test-id="feedinfo-feed_publisher_name-input-container"]',
           'end-to-end automated test runner'
         )
-      }, 20000, 'should create feed info data')
+      }, defaultTestTimeout, 'should create feed info data')
     })
 
     // all of the following editor tests assume the use of the scratch feed
@@ -942,7 +949,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -957,7 +964,7 @@ describe('end-to-end', () => {
           '[data-test-id="agency-agency_id-input-container"]',
           'test-agency-id'
         )
-      }, 20000)
+      }, defaultTestTimeout)
 
       makeEditorEntityTest('should update agency data', async () => {
         // update agency name by appending to end
@@ -970,7 +977,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -985,7 +992,7 @@ describe('end-to-end', () => {
           '[data-test-id="agency-agency_name-input-container"]',
           'test agency name updated'
         )
-      }, 20000, 'should create agency')
+      }, defaultTestTimeout, 'should create agency')
 
       makeEditorEntityTest('should delete agency data', async () => {
         // create a new agency that will get deleted
@@ -1007,7 +1014,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1029,14 +1036,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // verify that agency to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test agency name updated to delete'
         )
-      }, 20000)
+      }, defaultTestTimeout)
     })
 
     // all of the following editor tests assume the use of the scratch feed and
@@ -1126,7 +1133,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1141,7 +1148,7 @@ describe('end-to-end', () => {
           '[data-test-id="route-route_id-input-container"]',
           'test-route-id'
         )
-      }, 20000, 'should create agency')
+      }, defaultTestTimeout, 'should create agency')
 
       makeEditorEntityTest('should update route data', async () => {
         // update route name by appending to end
@@ -1154,7 +1161,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1169,7 +1176,7 @@ describe('end-to-end', () => {
           '[data-test-id="route-route_long_name-input-container"]',
           'test route 1 updated'
         )
-      }, 20000, ['should create agency', 'should create route'])
+      }, defaultTestTimeout, ['should create agency', 'should create route'])
 
       makeEditorEntityTest('should delete route data', async () => {
         // create a new route that will get deleted
@@ -1191,7 +1198,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1213,14 +1220,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // verify that route to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test route 1 updated to delete'
         )
-      }, 20000, 'should create agency')
+      }, defaultTestTimeout, 'should create agency')
     })
 
     // all of the following editor tests assume the use of the scratch feed
@@ -1255,7 +1262,7 @@ describe('end-to-end', () => {
           '[data-test-id="stop-stop_id-input-container"]',
           'test-stop-1'
         )
-      }, 20000)
+      }, defaultTestTimeout)
 
       makeEditorEntityTest('should update stop data', async () => {
         // create a 2nd stop
@@ -1279,7 +1286,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1294,7 +1301,7 @@ describe('end-to-end', () => {
           '[data-test-id="stop-stop_desc-input-container"]',
           'test 2 updated'
         )
-      }, 20000)
+      }, defaultTestTimeout)
 
       makeEditorEntityTest('should delete stop data', async () => {
         // create a new stop that will get deleted
@@ -1322,7 +1329,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1344,14 +1351,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // verify that stop to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'Russell Ave and Valley Dr to delete (3)'
         )
-      }, 20000, 'should create stop')
+      }, defaultTestTimeout, 'should create stop')
     })
 
     // all of the following editor tests assume the use of the scratch feed
@@ -1409,7 +1416,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1424,7 +1431,7 @@ describe('end-to-end', () => {
           '[data-test-id="calendar-service_id-input-container"]',
           'test-service-id'
         )
-      }, 20000)
+      }, defaultTestTimeout)
 
       makeEditorEntityTest('should update calendar data', async () => {
         // update calendar name by appending to end
@@ -1437,7 +1444,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1452,7 +1459,7 @@ describe('end-to-end', () => {
           '[data-test-id="calendar-description-input-container"]',
           'test calendar updated'
         )
-      }, 20000, 'should create calendar')
+      }, defaultTestTimeout, 'should create calendar')
 
       makeEditorEntityTest('should delete calendar data', async () => {
         // create a new calendar that will get deleted
@@ -1474,7 +1481,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1496,14 +1503,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // verify that calendar to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test-service-id-copied (test calendar updated to delete)'
         )
-      }, 20000)
+      }, defaultTestTimeout)
     })
 
     // all of the following editor tests assume the use of the scratch feed and
@@ -1533,7 +1540,7 @@ describe('end-to-end', () => {
         // exception type
         await page.select(
           '[data-test-id="exception-type-input-container"] select',
-          '7'  // no service
+          '7' // no service
         )
 
         // add exception date
@@ -1550,7 +1557,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1565,7 +1572,7 @@ describe('end-to-end', () => {
           '[data-test-id="exception-name-input-container"]',
           'test exception'
         )
-      }, 20000, 'should create calendar')
+      }, defaultTestTimeout, 'should create calendar')
 
       makeEditorEntityTest('should update exception data', async () => {
         // update exception name by appending to end
@@ -1578,7 +1585,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1593,7 +1600,7 @@ describe('end-to-end', () => {
           '[data-test-id="exception-name-input-container"]',
           'test exception updated'
         )
-      }, 20000, 'should create exception')
+      }, defaultTestTimeout, 'should create exception')
 
       makeEditorEntityTest('should delete exception data', async () => {
         // create a new exception that will get deleted
@@ -1615,7 +1622,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1637,14 +1644,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // verify that exception to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test exception updated to delete'
         )
-      }, 20000, 'should create calendar')
+      }, defaultTestTimeout, 'should create calendar')
     })
 
     // all of the following editor tests assume the use of the scratch feed and
@@ -1705,7 +1712,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1743,7 +1750,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1762,7 +1769,7 @@ describe('end-to-end', () => {
           '[data-test-id="fare-rule-selections"]',
           'test route 1 updated'
         )
-      }, 20000, 'should create route')
+      }, defaultTestTimeout, 'should create route')
 
       makeEditorEntityTest('should update fare data', async () => {
         // browse back to fare attributes tab
@@ -1779,7 +1786,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1794,7 +1801,7 @@ describe('end-to-end', () => {
           '[data-test-id="fare-fare_id-input-container"]',
           'test-fare-id-updated'
         )
-      }, 20000, 'should create fare')
+      }, defaultTestTimeout, 'should create fare')
 
       makeEditorEntityTest('should delete fare data', async () => {
         // create a new fare that will get deleted
@@ -1810,7 +1817,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-entity-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1832,14 +1839,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // verify that fare to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test-fare-id-updated-copied'
         )
-      }, 20000, 'should create fare')
+      }, defaultTestTimeout, 'should create fare')
     })
 
     // all of the following editor tests assume the use of the scratch feed and
@@ -1874,7 +1881,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
 
         // wait for page to catch up with itself
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // click add stop by name
         await page.click('[data-test-id="add-stop-by-name-button"]')
@@ -1886,13 +1893,13 @@ describe('end-to-end', () => {
         await reactSelectOption('.pattern-stop-card', 'la', 1, true)
 
         // wait for 1st stop to save
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // add 2nd stop
         await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
 
         // wait for auto-save to happen
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1907,7 +1914,7 @@ describe('end-to-end', () => {
           '.trip-pattern-list',
           'Russell Av'
         )
-      }, 20000, 'should create route')
+      }, defaultTestTimeout, 'should create route')
 
       makeEditorEntityTest('should update pattern data', async () => {
         // change pattern name by appending to end
@@ -1925,7 +1932,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="editable-text-field-edit-container"] button')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1940,14 +1947,14 @@ describe('end-to-end', () => {
           '[data-test-id="pattern-title-New Pattern updated"]',
           'New Pattern updated'
         )
-      }, 20000, 'should create pattern')
+      }, defaultTestTimeout, 'should create pattern')
 
       makeEditorEntityTest('should delete pattern data', async () => {
         // create a new pattern that will get deleted
         await page.click('[data-test-id="duplicate-pattern-button"]')
 
         // wait for save to happen
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // verify that pattern to delete is listed
         await expectSelectorToContainHtml(
@@ -1960,18 +1967,18 @@ describe('end-to-end', () => {
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for page to catch up?
-        await page.waitFor(2000)
+        await page.waitFor(5000)
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // verify that pattern to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '.trip-pattern-list',
           'New Pattern updated copy'
         )
-      }, 20000, 'should create pattern')
+      }, defaultTestTimeout, 'should create pattern')
     })
 
     // all of the following editor tests assume the use of the scratch feed and
@@ -2001,7 +2008,7 @@ describe('end-to-end', () => {
         await waitForSelector('[data-test-id="add-new-trip-button"]')
 
         // wait for page to catch up with iteself?
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // click button to create trip
         await page.click('[data-test-id="add-new-trip-button"]')
@@ -2050,7 +2057,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-trip-button"]')
 
         // wait for save to happen
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -2065,7 +2072,7 @@ describe('end-to-end', () => {
           '[data-test-id="timetable-area"]',
           'test-trip-id'
         )
-      }, 20000, ['should create calendar', 'should create pattern'])
+      }, defaultTestTimeout, ['should create calendar', 'should create pattern'])
 
       makeEditorEntityTest('should update trip data', async () => {
         // click first editable cell to begin editing
@@ -2085,7 +2092,7 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="save-trip-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -2100,14 +2107,14 @@ describe('end-to-end', () => {
           '[data-test-id="timetable-area"]',
           'test-trip-id-updated'
         )
-      }, 20000, 'should create trip')
+      }, defaultTestTimeout, 'should create trip')
 
       makeEditorEntityTest('should delete trip data', async () => {
         // create a new trip that will get deleted
         await page.click('[data-test-id="duplicate-trip-button"]')
 
         // wait for new trip to appear
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // click first editable cell to begin editing
         await page.click('.editable-cell')
@@ -2123,13 +2130,13 @@ describe('end-to-end', () => {
         await page.keyboard.press('Enter')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // save
         await page.click('[data-test-id="save-trip-button"]')
 
         // wait for save to happen
-        await page.waitFor(1000)
+        await page.waitFor(5000)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -2156,14 +2163,14 @@ describe('end-to-end', () => {
         await page.click('[data-test-id="modal-confirm-ok-button"]')
 
         // wait for delete to happen
-        await page.waitFor(2000)
+        await page.waitFor(5000)
 
         // verify that trip to delete is no longer listed
         await expectSelectorToNotContainHtml(
           '[data-test-id="timetable-area"]',
           'test-trip-to-delete'
         )
-      }, 20000, 'should create trip')
+      }, defaultTestTimeout, 'should create trip')
     })
 
     // all of the following tests depend on the editor tests completing successfully
@@ -2183,7 +2190,7 @@ describe('end-to-end', () => {
 
         // wait for jobs to complete
         await waitAndClearCompletedJobs()
-      }, 20000, 'should create trip')
+      }, defaultTestTimeout, 'should create trip')
     })
   })
 
@@ -2205,7 +2212,7 @@ describe('end-to-end', () => {
       await page.click('#feed-source-viewer-tabs-tab-snapshots')
 
       // wait for page to load?
-      await page.waitFor(2000)
+      await page.waitFor(5000)
 
       // wait for snapshots tab to load
       await waitForSelector('[data-test-id="publish-snapshot-button"]')
@@ -2227,7 +2234,7 @@ describe('end-to-end', () => {
         '#feed-source-viewer-tabs',
         'Valid from May. 29, 2018 to May. 29, 2028'
       )
-    }, 30000, 'should create snapshot')
+    }, defaultTestTimeout, 'should create snapshot')
 
     // TODO: download and validate gtfs??
   })
@@ -2270,7 +2277,7 @@ describe('end-to-end', () => {
 
       // wait for jobs to complete
       await waitAndClearCompletedJobs()
-    }, 50000)
+    }, defaultTestTimeout)
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
       // hit the otp endpoint
@@ -2289,6 +2296,6 @@ describe('end-to-end', () => {
       // expect response to include text of a created stop
       const text = await response.text()
       expect(text).toContain('Laurel Dr and Valley Dr')
-    }, 5000, 'should create snapshot')
+    }, defaultTestTimeout, 'should create snapshot')
   })
 })
