@@ -1,6 +1,5 @@
 // @flow
 
-import os from 'os'
 import path from 'path'
 
 import fs from 'fs-extra'
@@ -11,24 +10,56 @@ import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 
+// TODO: Allow the below options (puppeteer and test) to be enabled via command
+// line options parsed by mastarm.
+const puppeteerOptions = {
+  headless: true
+  // The following options can be enabled manually to help with debugging.
+  // dumpio: true, // Logs all of browser console to stdout
+  // slowMo: 30 // throws xx milliseconds between events (for easier watching in non-headless)
+}
+const testOptions = {
+  // If enabled, failFast will break out of the test script immediately.
+  failFast: false
+}
 const config: {
   username: string,
   password: string
 } = safeLoad(fs.readFileSync('configurations/end-to-end/env.yml'))
-
+const REACT_TAG_REGEX = /<!--[\s\w-:/]*-->/g
 let browser
 let page
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
+const OTP_ROOT = 'http://localhost:8080/otp/routers/'
 const testTime = moment().format()
 const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
+const dummyStop1 = {
+  code: '1',
+  description: 'test 1',
+  id: 'test-stop-1',
+  lat: '37.04671717',
+  lon: '-122.07529759',
+  name: 'Laurel Dr and Valley Dr',
+  url: 'example.stop/1'
+}
+const dummyStop2 = {
+  code: '2',
+  description: 'test 2',
+  id: 'test-stop-2',
+  lat: '37.04783038',
+  lon: '-122.07521176',
+  name: 'Russell Ave and Valley Dr',
+  url: 'example.stop/2'
+}
 let testProjectId
 let feedSourceId
 let scratchFeedSourceId
 let routerId
 const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
 const testResults = {}
-const defaultTestTimeout = 60000
+const defaultTestTimeout = 100000
+const defaultJobTimeout = 100000
 
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
@@ -61,6 +92,17 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         await fn()
       } catch (e) {
         log.error(`test "${name}" failed due to error: ${e}`)
+        // TODO: Add option to take screenshots
+        // Take screenshot of page to help debugging.
+        // page.screenshot({
+        //   path: `e2e-error-${errorCount++}-${name.replace(' ', '_')}-${testTime}.png`,
+        //   fullPage: true
+        // })
+        if (testOptions.failFast) {
+          log.info('Fail fast option enabled. Shutting down end-to-end test immediately following single test failure.')
+          // Delay by a second so that log statement is processed.
+          setTimeout(() => process.exit(2), 1000)
+        }
         throw e
       }
 
@@ -84,15 +126,25 @@ const makeEditorEntityTest = makeMakeTest([
 // need to be run in order for other tests to work properly
 const doNonEssentialSteps = true
 
+async function getHtml (selector: string) {
+  return page.$eval(selector, e => e.innerHTML)
+}
+
 async function expectSelectorToContainHtml (selector: string, html: string) {
-  const innerHTML = await page.$eval(selector, e => e.innerHTML)
-  expect(innerHTML).toContain(html)
+  const innerHTML = await getHtml(selector)
+  const cleanHTML = innerHTML.replace(REACT_TAG_REGEX, '')
+  expect(cleanHTML).toContain(html)
 }
 
 async function expectSelectorToNotContainHtml (selector: string, html: string) {
-  const innerHTML = await page.$eval(selector, e => e.innerHTML)
-  expect(innerHTML).not.toContain(html)
+  const innerHTML = await getHtml(selector)
+  const cleanHTML = innerHTML.replace(REACT_TAG_REGEX, '')
+  expect(cleanHTML).not.toContain(html)
 }
+
+// function testId (id: string) {
+//   return `[data-test-id="${id}"]`
+// }
 
 async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
@@ -100,16 +152,13 @@ async function createProject (projectName: string) {
   await waitForSelector('a[href="/project"]')
   await click('a[href="/project"]')
   await waitForSelector('[data-test-id="create-new-project-button"]')
-  log.info('waiting for projects to load')
-  // wait for for projects to load
-  await page.waitFor(5000)
+  await wait(2000, 'for projects to load')
   await click('[data-test-id="create-new-project-button"]')
   await waitForSelector('.project-name-editable input')
   await page.type('.project-name-editable input', projectName)
   await click('.project-name-editable button')
   log.info('saving new project')
-  // wait for project to get saved
-  await page.waitFor(5000)
+  await wait(2000, 'for project to get saved')
   // verify that the project is listed
   await expectSelectorToContainHtml('[data-test-id="project-list-table"]', projectName)
   log.info(`confirmed successful creation of project with name: ${projectName}`)
@@ -118,27 +167,19 @@ async function createProject (projectName: string) {
 async function deleteProject (projectId: string) {
   log.info(`deleting project with id: ${projectId}`)
   // navigate to that project's settings
-  await page.goto(
-    `http://localhost:9966/project/${projectId}/settings`,
-    {
-      waitUntil: 'networkidle0'
-    }
-  )
+  await goto(`http://localhost:9966/project/${projectId}/settings`)
 
   // delete that project
+  await waitForSelector('[data-test-id="delete-project-button"]')
   await click('[data-test-id="delete-project-button"]')
   await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
   await click('[data-test-id="modal-confirm-ok-button"]')
   log.info('deleted project')
 
   // verify deletion
-  await page.goto(
-    `http://localhost:9966/project/${projectId}`,
-    {
-      waitUntil: 'networkidle0'
-    }
-  )
-  await expectSelectorToContainHtml('.modal-body', 'Project ID does not exist')
+  await goto(`http://localhost:9966/project/${projectId}`)
+  await waitForSelector('.project-not-found')
+  await expectSelectorToContainHtml('.project-not-found', projectId)
   await click('[data-test-id="status-modal-close-button"]')
   log.info(`confirmed successful deletion of project with id ${projectId}`)
 }
@@ -169,7 +210,7 @@ async function uploadGtfs () {
 async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   log.info(`create Feed Source with name: ${feedSourceName} via project header button`)
   // go to project page
-  await page.goto(
+  await goto(
     `http://localhost:9966/project/${testProjectId}`,
     {
       waitUntil: 'networkidle0'
@@ -181,9 +222,7 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   // TODO replace with less generic selector
   await waitForSelector('h4 input')
   await page.type('h4 input', feedSourceName + String.fromCharCode(13))
-
-  // wait for feed source to be created and saved
-  await page.waitFor(5000)
+  await wait(2000, 'for feed source to be created and saved')
   log.info(`created Feed Source with name: ${feedSourceName} via project header button`)
 }
 
@@ -204,16 +243,16 @@ async function createStop ({
   description: string,
   id: string,
   lat: string,
-  locationType?: string,  // make optional due to https://github.com/facebook/flow/issues/183
+  locationType?: string, // make optional due to https://github.com/facebook/flow/issues/183
   lon: string,
   name: string,
-  timezone?: {  // make optional due to https://github.com/facebook/flow/issues/183
+  timezone?: { // make optional due to https://github.com/facebook/flow/issues/183
     initalText: string,
     option: number
   },
   url: string,
-  wheelchairBoarding?: string,  // make optional due to https://github.com/facebook/flow/issues/183
-  zoneId?: string  // make optional due to https://github.com/facebook/flow/issues/183
+  wheelchairBoarding?: string, // make optional due to https://github.com/facebook/flow/issues/183
+  zoneId?: string // make optional due to https://github.com/facebook/flow/issues/183
 }) {
   log.info(`creating stop with name: ${name}`)
   // right click on map to create stop
@@ -221,9 +260,7 @@ async function createStop ({
 
   // wait for entity details sidebar to appear
   await waitForSelector('[data-test-id="stop-stop_id-input-container"]')
-
-  // wait for initial data to load
-  await page.waitFor(5000)
+  await wait(2000, 'for initial data to load')
 
   // fill out form
 
@@ -298,9 +335,7 @@ async function createStop ({
 
   // save
   await click('[data-test-id="save-entity-button"]')
-
-  // wait for save to happen
-  await page.waitFor(5000)
+  await wait(2000, 'for save to happen')
   log.info(`created stop with name: ${name}`)
 }
 
@@ -332,9 +367,14 @@ async function reactSelectOption (
 
 async function waitAndClearCompletedJobs () {
   // wait for jobs to get completed
-  log.info('waiting 15 seconds for jobs to complete')
-  await page.waitFor(15000)
+  await wait(1000, 'for job monitoring to begin')
+  // All jobs completed span will appear when all jobs are done.
+  await waitForSelector(
+    '[data-test-id="all-jobs-completed"]',
+    {timeout: defaultJobTimeout}
+  )
   await waitForSelector('[data-test-id="clear-completed-jobs-button"]')
+  // Clear retired jobs to remove all jobs completed span.
   await click('[data-test-id="clear-completed-jobs-button"]')
   log.info('cleared completed jobs')
 }
@@ -371,40 +411,73 @@ async function click (selector: string) {
   await page.click(selector)
 }
 
+async function wait (milliseconds: number, reason?: string) {
+  log.info(`waiting ${milliseconds} ms${reason ? ` ${reason}` : ''}...`)
+  await page.waitFor(milliseconds)
+}
+
+async function goto (url: string, options?: any) {
+  log.info(`navigating to: ${url}`)
+  await page.goto(url, options)
+  await wait(1000, 'for page to load')
+}
+
 describe('end-to-end', () => {
   beforeAll(async () => {
-    browser = await puppeteer.launch({headless: true})
+    // Ping the otp endpoint to ensure the server is running.
+    try {
+      log.info(`Pinging OTP at ${OTP_ROOT}`)
+      const response = await fetch(`${OTP_ROOT}`)
+      if (response.status !== 200) throw new Error('OTP not ready!')
+      else log.info('OTP is OK.')
+    } catch (e) {
+      if (testOptions.failFast) {
+        log.error('OpenTripPlanner not accepting requests. Exiting due to fail fast option.')
+        // Exit immediately if failing fast.
+        process.exit(9)
+      } else log.warn('OpenTripPlanner not accepting requests. Start it up for deployment tests!!')
+    }
+    log.info('Launching chromium for testing...')
+    browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
+    page.on('console', msg => {
+      const messageText = msg.text()
+      // Log any errors or warnings encountered in browser console to stdout
+      if (messageText.search(/warning|error/i) !== -1) {
+        log.warn(messageText)
+      }
+    })
     page._client.send(
       'Page.setDownloadBehavior',
       { behavior: 'allow', downloadPath: './' }
     )
+    log.info('Setup complete.')
   })
 
   afterAll(async () => {
     // delete test project
     await deleteProject(testProjectId)
-
+    log.info('End-to-end testing complete. Closing Chromium...')
     // close browser
-    browser.close()
+    await browser.close()
+    log.info('Chromium closed.')
   })
 
   makeTest('should load the page', async () => {
-    await page.goto('http://localhost:9966')
+    await goto('http://localhost:9966')
     await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
     testResults['should load the page'] = true
   })
 
   makeTest('should login', async () => {
-    await page.goto('http://localhost:9966')
+    await goto('http://localhost:9966')
     await click('[data-test-id="header-log-in-button"]')
     await waitForSelector('button[class="auth0-lock-submit"]')
     await page.type('input[class="auth0-lock-input"][name="email"]', config.username)
     await page.type('input[class="auth0-lock-input"][name="password"]', config.password)
     await click('button[class="auth0-lock-submit"]')
     await waitForSelector('#context-dropdown')
-    // wait for 10 seconds for projects to load
-    await page.waitFor(10000)
+    await wait(2000, 'for projects to load')
   }, defaultTestTimeout, 'should load the page')
 
   describe('project', () => {
@@ -458,7 +531,7 @@ describe('end-to-end', () => {
         const testProjectToDeleteName = `test-project-that-will-get-deleted-${testTime}`
 
         // navigate to home project view
-        await page.goto(
+        await goto(
           `http://localhost:9966/home/${testProjectId}`,
           {
             waitUntil: 'networkidle0'
@@ -494,7 +567,7 @@ describe('end-to-end', () => {
   describe('feed source', () => {
     makeTestPostLogin('should create feed source', async () => {
       // go to project page
-      await page.goto(
+      await goto(
         `http://localhost:9966/project/${testProjectId}`,
         {
           waitUntil: 'networkidle0'
@@ -509,9 +582,7 @@ describe('end-to-end', () => {
 
       // TODO replace with less generic selector
       await click('h4 button')
-
-      // wait for feed source to be created and saved
-      await page.waitFor(5000)
+      await wait(2000, 'for feed source to be created and saved')
 
       // verify that the feed source is listed
       await expectSelectorToContainHtml('#project-viewer-tabs', testFeedSourceName)
@@ -534,8 +605,7 @@ describe('end-to-end', () => {
       if (!feedSourceFound) throw new Error('Created feedSource not found')
 
       await waitForSelector('#feed-source-viewer-tabs')
-      // wait for 2 seconds for feed versions to load
-      await page.waitFor(5000)
+      await wait(2000, 'for feed versions to load')
       expectSelectorToContainHtml(
         '#feed-source-viewer-tabs',
         'No versions exist for this feed source.'
@@ -570,9 +640,7 @@ describe('end-to-end', () => {
         'https://github.com/catalogueglobal/datatools-ui/raw/end-to-end/configurations/end-to-end/test-gtfs-to-fetch.zip'
       )
       await click('[data-test-id="feed-source-url-input-group"] button')
-
-      // wait for feed source to update
-      await page.waitFor(5000)
+      await wait(2000, 'for feed source to update')
 
       // go back to feed source GTFS tab
       await click('#feed-source-viewer-tabs-tab-')
@@ -630,15 +698,13 @@ describe('end-to-end', () => {
 
             // click dropdown and delete menu item button
             await click('#feed-source-action-button')
-            await waitForSelector('[data-test-id="feed-source-dropdown-delete-project-button"]')
-            await click('[data-test-id="feed-source-dropdown-delete-project-button"]')
+            await waitForSelector('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
+            await click('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
 
             // confirm action in modal
             await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
             await click('[data-test-id="modal-confirm-ok-button"]')
-
-            // wait for data to refresh
-            await page.waitFor(5000)
+            await wait(2000, 'for data to refresh')
             feedSourceFound = true
             break
           }
@@ -662,21 +728,14 @@ describe('end-to-end', () => {
 
   describe('feed version', () => {
     makeTestPostFeedSource('should download a feed version', async () => {
-      await page.goto(`http://localhost:9966/feed/${feedSourceId}`)
-
-      // for whatever reason, waitUntil: networkidle0 was not working with the
-      // above goto, so wait for a few seconds here
-      await page.waitFor(5000)
-
+      await goto(`http://localhost:9966/feed/${feedSourceId}`)
+      // Select previous version
       await waitForSelector('[data-test-id="decrement-feed-version-button"]')
       await click('[data-test-id="decrement-feed-version-button"]')
-
-      // wait for previous version to be active
-      await page.waitFor(5000)
+      await wait(2000, 'for previous version to be active')
+      // Download version
       await click('[data-test-id="download-feed-version-button"]')
-
-      // wait for file to download
-      await page.waitFor(5000)
+      await wait(5000, 'for file to download')
 
       // file should get saved to the current root directory, go looking for it
       // verify that file exists
@@ -707,25 +766,20 @@ describe('end-to-end', () => {
       // feed versions after this test takes place
       makeTestPostLogin('should delete a feed version', async () => {
         // browse to feed source page
-        await page.goto(`http://localhost:9966/feed/${feedSourceId}`)
-
+        await goto(`http://localhost:9966/feed/${feedSourceId}`)
         // for whatever reason, waitUntil: networkidle0 was not working with the
         // above goto, so wait for a few seconds here
-        await page.waitFor(5000)
-
+        await wait(3000, 'additional time for page to load')
         // upload gtfs
         await uploadGtfs()
-
         // click delete button
+        await waitForSelector('[data-test-id="delete-feed-version-button"]')
         await click('[data-test-id="delete-feed-version-button"]')
-
         // confirm action in modal
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for data to refresh
-        await page.waitFor(5000)
-
+        await wait(2000, 'for data to refresh')
+        await waitForSelector('#feed-source-viewer-tabs')
         // verify that the previous feed is now the displayed feed
         await expectSelectorToContainHtml(
           '#feed-source-viewer-tabs',
@@ -743,18 +797,13 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForSelector('[data-test-id="import-latest-version-button"]')
       await click('[data-test-id="import-latest-version-button"]')
-
       // wait for snapshot to get created
-      await waitForSelector('[data-test-id="begin-editing-button"]')
-
-      // close jobs dialog
-      await click('[data-test-id="clear-completed-jobs-button"]')
+      waitAndClearCompletedJobs()
 
       // begin editing
+      await waitForSelector('[data-test-id="begin-editing-button"]')
       await click('[data-test-id="begin-editing-button"]')
-
-      // wait for dialog to close
-      await page.waitFor(5000)
+      await wait(2000, 'for dialog to close')
     }, defaultTestTimeout)
 
     // prepare a new feed source to use the editor from scratch
@@ -785,9 +834,7 @@ describe('end-to-end', () => {
 
       // wait for navigation to feed source
       await waitForSelector('#feed-source-viewer-tabs')
-
-      // wait for feed versions to load
-      await page.waitFor(5000)
+      await wait(2000, 'for feed versions to load')
 
       // click edit feed button
       await click('[data-test-id="edit-feed-version-button"]')
@@ -797,19 +844,12 @@ describe('end-to-end', () => {
       await click('[data-test-id="edit-from-scratch-button"]')
 
       // wait for snapshot to get created
-      await waitForSelector('[data-test-id="begin-editing-button"]')
-
-      // close jobs dialog
-      await click('[data-test-id="clear-completed-jobs-button"]')
-
-      // wait for jobs dialog to close
-      await page.waitFor(5000)
+      waitAndClearCompletedJobs()
 
       // begin editing
+      await waitForSelector('[data-test-id="begin-editing-button"]')
       await click('[data-test-id="begin-editing-button"]')
-
-      // wait for welcome dialog to close
-      await page.waitFor(5000)
+      await wait(2000, 'for welcome dialog to close')
     }, defaultTestTimeout)
 
     // all of the following editor tests assume the use of the scratch feed
@@ -852,9 +892,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -875,9 +913,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -952,9 +988,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -980,9 +1014,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1017,9 +1049,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1039,9 +1069,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-agency-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that agency to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -1136,9 +1164,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1164,9 +1190,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1201,9 +1225,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1223,9 +1245,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-route-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that route to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -1244,15 +1264,7 @@ describe('end-to-end', () => {
         // wait for stop sidebar form to appear
         await waitForSelector('[data-test-id="create-stop-instructions"]')
 
-        await createStop({
-          code: '1',
-          description: 'test 1',
-          id: 'test-stop-1',
-          lat: '37.04671717',
-          lon: '-122.07529759',
-          name: 'Laurel Dr and Valley Dr',
-          url: 'example.stop/1'
-        })
+        await createStop(dummyStop1)
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1271,15 +1283,7 @@ describe('end-to-end', () => {
 
       makeEditorEntityTest('should update stop data', async () => {
         // create a 2nd stop
-        await createStop({
-          code: '2',
-          description: 'test 2',
-          id: 'test-stop-2',
-          lat: '37.04783038',
-          lon: '-122.07521176',
-          name: 'Russell Ave and Valley Dr',
-          url: 'example.stop/2'
-        })
+        await createStop(dummyStop2)
 
         // update stop name by appending to end
         await appendText(
@@ -1289,9 +1293,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1332,9 +1334,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1354,9 +1354,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-stop-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that stop to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -1419,9 +1417,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1447,9 +1443,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1484,9 +1478,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1506,9 +1498,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-calendar-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that calendar to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -1560,9 +1550,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1588,9 +1576,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1625,9 +1611,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1647,9 +1631,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-scheduleexception-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that exception to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -1715,9 +1697,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1753,9 +1733,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1789,9 +1767,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1820,9 +1796,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-entity-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1842,9 +1816,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-fare-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that fare to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -1884,9 +1856,7 @@ describe('end-to-end', () => {
 
         // toggle the FeedInfoPanel in case it gets in the way of panel stuff
         await click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
-
-        // wait for page to catch up with itself
-        await page.waitFor(5000)
+        await wait(2000, 'for page to catch up with itself')
 
         // click add stop by name
         await click('[data-test-id="add-stop-by-name-button"]')
@@ -1896,15 +1866,11 @@ describe('end-to-end', () => {
 
         // add 1st stop
         await reactSelectOption('.pattern-stop-card', 'la', 1, true)
-
-        // wait for 1st stop to save
-        await page.waitFor(5000)
+        await wait(2000, 'for 1st stop to save')
 
         // add 2nd stop
         await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
-
-        // wait for auto-save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for auto-save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1935,9 +1901,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="editable-text-field-edit-container"] button')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -1957,9 +1921,7 @@ describe('end-to-end', () => {
       makeEditorEntityTest('should delete pattern data', async () => {
         // create a new pattern that will get deleted
         await click('[data-test-id="duplicate-pattern-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // verify that pattern to delete is listed
         await expectSelectorToContainHtml(
@@ -1970,13 +1932,9 @@ describe('end-to-end', () => {
         // delete the pattern
         await click('[data-test-id="delete-pattern-button"]')
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for page to catch up?
-        await page.waitFor(5000)
+        await wait(2000, 'for page to catch up?')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that pattern to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -2011,9 +1969,7 @@ describe('end-to-end', () => {
 
         // wait for new trip button to appear
         await waitForSelector('[data-test-id="add-new-trip-button"]')
-
-        // wait for page to catch up with iteself?
-        await page.waitFor(5000)
+        await wait(2000, 'for page to catch up with itself?')
 
         // click button to create trip
         await click('[data-test-id="add-new-trip-button"]')
@@ -2060,9 +2016,7 @@ describe('end-to-end', () => {
 
         // save
         await click('[data-test-id="save-trip-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -2097,7 +2051,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="save-trip-button"]')
 
         // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -2117,9 +2071,7 @@ describe('end-to-end', () => {
       makeEditorEntityTest('should delete trip data', async () => {
         // create a new trip that will get deleted
         await click('[data-test-id="duplicate-trip-button"]')
-
-        // wait for new trip to appear
-        await page.waitFor(5000)
+        await wait(2000, 'for new trip to appear')
 
         // click first editable cell to begin editing
         await click('.editable-cell')
@@ -2133,15 +2085,11 @@ describe('end-to-end', () => {
         await page.keyboard.press('Enter')
         await page.keyboard.type('test-trip-to-delete')
         await page.keyboard.press('Enter')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // save
         await click('[data-test-id="save-trip-button"]')
-
-        // wait for save to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for save to happen')
 
         // reload to make sure stuff was saved
         await page.reload({ waitUntil: 'networkidle0' })
@@ -2166,9 +2114,7 @@ describe('end-to-end', () => {
         // confirm delete
         await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
         await click('[data-test-id="modal-confirm-ok-button"]')
-
-        // wait for delete to happen
-        await page.waitFor(5000)
+        await wait(2000, 'for delete to happen')
 
         // verify that trip to delete is no longer listed
         await expectSelectorToNotContainHtml(
@@ -2203,7 +2149,7 @@ describe('end-to-end', () => {
     makeEditorEntityTest('should make snapshot active version', async () => {
       // go back to feed
       // not sure why, but clicking on the nav home button doesn't work
-      await page.goto(
+      await goto(
         `http://localhost:9966/feed/${scratchFeedSourceId}`,
         {
           waitUntil: 'networkidle0'
@@ -2215,9 +2161,7 @@ describe('end-to-end', () => {
 
       // go to snapshots tab
       await click('#feed-source-viewer-tabs-tab-snapshots')
-
-      // wait for page to load?
-      await page.waitFor(5000)
+      await wait(2000, 'for page to load?')
 
       // wait for snapshots tab to load
       await waitForSelector('[data-test-id="publish-snapshot-button"]')
@@ -2250,11 +2194,10 @@ describe('end-to-end', () => {
     makeTestPostFeedSource('should create deployment', async () => {
       // open create snapshot dialog
       await click('[data-test-id="deploy-feed-version-button"]')
-
-      // wait for deployment to get created
-      await page.waitFor(5000)
-
-      // wait for deploy dropdown buttun to appear
+      await wait(5000, 'deployment to get created')
+      // Cause page reload on deployment viewer.
+      await page.reload({ waitUntil: 'networkidle0' })
+      // wait for deploy dropdown button to appear
       await waitForSelector('#deploy-server-dropdown')
 
       // open dropdown
@@ -2270,12 +2213,9 @@ describe('end-to-end', () => {
       await waitForSelector('[data-test-id="confirm-deploy-server-button"]')
 
       // get the router name
-      const innerHTML = await page.$eval(
-        '[data-test-id="deployment-router-id"]',
-        e => e.innerHTML
-      )
+      const innerHTML = await getHtml('[data-test-id="deployment-router-id"]')
       // get rid of router id text and react tags
-      routerId = innerHTML.replace('Router ID: ', '').replace(/<!--[\s\w-:/]*-->/g, '')
+      routerId = innerHTML.replace('Router ID: ', '').replace(REACT_TAG_REGEX, '')
 
       // confirm deployment
       await click('[data-test-id="confirm-deploy-server-button"]')
@@ -2287,7 +2227,7 @@ describe('end-to-end', () => {
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
       // hit the otp endpoint
       const response = await fetch(
-        `http://localhost:8080/otp/routers/${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
+        `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
         {
           headers: {
             'Content-Type': 'application/json; charset=utf-8'
@@ -2300,7 +2240,7 @@ describe('end-to-end', () => {
 
       // expect response to include text of a created stop
       const text = await response.text()
-      expect(text).toContain('Laurel Dr and Valley Dr')
+      expect(text).toContain(dummyStop1.name)
     }, defaultTestTimeout, 'should create snapshot')
   })
 })

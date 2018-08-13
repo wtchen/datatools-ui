@@ -118,6 +118,7 @@
     "simple-node-logger": "^0.93.37"
   },
   "standard": {
+    "env": [ "jest" ],
     "parser": "babel-eslint",
     "globals": [
       "Blob",
