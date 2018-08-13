@@ -13,10 +13,12 @@ import SimpleNodeLogger from 'simple-node-logger'
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
 const puppeteerOptions = {
-  headless: true
+  headless: false
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
-  // slowMo: 30 // throws xx milliseconds between events (for easier watching in non-headless)
+  // slowMo: 30 // puts xx milliseconds between events (for easier watching in non-headless)
+  // NOTE: In order to run on Travis CI, use args --no-sandbox option
+  // args: ['--no-sandbox']
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
@@ -365,7 +367,12 @@ async function reactSelectOption (
   log.info('selected option')
 }
 
+function formatSecondsElapsed (startTime: number) {
+  return `${(new Date() - startTime) / 1000} seconds`
+}
+
 async function waitAndClearCompletedJobs () {
+  const startTime = new Date()
   // wait for jobs to get completed
   await wait(1000, 'for job monitoring to begin')
   // All jobs completed span will appear when all jobs are done.
@@ -376,7 +383,7 @@ async function waitAndClearCompletedJobs () {
   await waitForSelector('[data-test-id="clear-completed-jobs-button"]')
   // Clear retired jobs to remove all jobs completed span.
   await click('[data-test-id="clear-completed-jobs-button"]')
-  log.info('cleared completed jobs')
+  log.info(`cleared completed jobs in ${formatSecondsElapsed(startTime)}`)
 }
 
 async function clearAndType (selector: string, text: string) {
@@ -402,8 +409,10 @@ async function appendText (selector: string, text: string) {
 }
 
 async function waitForSelector (selector: string, options?: any) {
+  const startTime = new Date()
   log.info(`waiting for selector: ${selector}`)
   await page.waitForSelector(selector, options)
+  log.info(`selector ${selector} took ${formatSecondsElapsed(startTime)}`)
 }
 
 async function click (selector: string) {
@@ -769,7 +778,7 @@ describe('end-to-end', () => {
         await goto(`http://localhost:9966/feed/${feedSourceId}`)
         // for whatever reason, waitUntil: networkidle0 was not working with the
         // above goto, so wait for a few seconds here
-        await wait(3000, 'additional time for page to load')
+        await wait(5000, 'additional time for page to load')
         // upload gtfs
         await uploadGtfs()
         // click delete button
@@ -2149,12 +2158,7 @@ describe('end-to-end', () => {
     makeEditorEntityTest('should make snapshot active version', async () => {
       // go back to feed
       // not sure why, but clicking on the nav home button doesn't work
-      await goto(
-        `http://localhost:9966/feed/${scratchFeedSourceId}`,
-        {
-          waitUntil: 'networkidle0'
-        }
-      )
+      await goto(`http://localhost:9966/feed/${scratchFeedSourceId}`)
 
       // wait for page to be visible
       await waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
@@ -2193,19 +2197,14 @@ describe('end-to-end', () => {
   describe('deployment', () => {
     makeTestPostFeedSource('should create deployment', async () => {
       // open create snapshot dialog
+      await waitForSelector('[data-test-id="deploy-feed-version-button"]')
       await click('[data-test-id="deploy-feed-version-button"]')
-      await wait(5000, 'deployment to get created')
-      // Cause page reload on deployment viewer.
-      await page.reload({ waitUntil: 'networkidle0' })
       // wait for deploy dropdown button to appear
       await waitForSelector('#deploy-server-dropdown')
-
       // open dropdown
       await click('#deploy-server-dropdown')
-
       // wait for dropdown to open
       await waitForSelector('[data-test-id="deploy-server-0-button"]')
-
       // click to deploy to server
       await click('[data-test-id="deploy-server-0-button"]')
 
@@ -2222,7 +2221,7 @@ describe('end-to-end', () => {
 
       // wait for jobs to complete
       await waitAndClearCompletedJobs()
-    }, defaultTestTimeout)
+    }, defaultTestTimeout + 30000) // Add thirty seconds for deployment job
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
       // hit the otp endpoint
