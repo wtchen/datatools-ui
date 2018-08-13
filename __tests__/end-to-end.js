@@ -2134,7 +2134,9 @@ describe('end-to-end', () => {
       // trigger creation of feed source-based deployment.
       await waitForAndClick('[data-test-id="deploy-feed-version-button"]')
       // wait for deploy dropdown button to appear and open dropdown
-      await waitForAndClick('#deploy-server-dropdown')
+      await waitForSelector('#deploy-server-dropdown')
+      await wait(1000, 'for dropdown to fully render')
+      await click('#deploy-server-dropdown')
       // wait for dropdown to open and click to deploy to server
       await waitForAndClick('[data-test-id="deploy-server-0-button"]')
       // wait for deployment dialog to appear
