@@ -1,5 +1,4 @@
 [ignore]
-.*/node_modules/auth0-lock/.*
 .*/node_modules/config-chain/.*
 .*/node_modules/fbjs/flow/.*
 .*/node_modules/immutable/.*
@@ -8,7 +7,8 @@
 .*/node_modules/npmconf/.*
 .*/node_modules/react-leaflet/src/.*
 .*/node_modules/reqwest/.*
-.*node_modules/module-deps/test/invalid_pkg/package.json
+.*/node_modules/module-deps/test/invalid_pkg/package.json
+.*/node_modules/immutable/dist/immutable.js.flow
 
 [include]
 
