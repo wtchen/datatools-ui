@@ -420,6 +420,11 @@ async function click (selector: string) {
   await page.click(selector)
 }
 
+async function waitForAndClick (selector: string, waitOptions?: any) {
+  await waitForSelector(selector, waitOptions)
+  await click(selector)
+}
+
 async function wait (milliseconds: number, reason?: string) {
   log.info(`waiting ${milliseconds} ms${reason ? ` ${reason}` : ''}...`)
   await page.waitFor(milliseconds)
@@ -518,12 +523,9 @@ describe('end-to-end', () => {
       await click('#project-viewer-tabs-tab-settings')
 
       // navigate to deployments
-      await waitForSelector('[data-test-id="deployment-settings-link"]', { visible: true })
-      await click('[data-test-id="deployment-settings-link"]')
-      await waitForSelector('[data-test-id="add-server-button"]')
-
+      await waitForAndClick('[data-test-id="deployment-settings-link"]', { visible: true })
       // add a server
-      await click('[data-test-id="add-server-button"]')
+      await waitForAndClick('[data-test-id="add-server-button"]')
       await waitForSelector('input[name="otpServers.$index.name"]')
       await page.type('input[name="otpServers.$index.name"]', 'test-otp-server')
       await page.type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
@@ -582,8 +584,7 @@ describe('end-to-end', () => {
           waitUntil: 'networkidle0'
         }
       )
-      await waitForSelector('[data-test-id="create-first-feed-source-button"]')
-      await click('[data-test-id="create-first-feed-source-button"]')
+      await waitForAndClick('[data-test-id="create-first-feed-source-button"]')
 
       // TODO replace with less generic selector
       await waitForSelector('h4 input')
@@ -637,12 +638,10 @@ describe('end-to-end', () => {
       await click('#feed-source-viewer-tabs-tab-settings')
 
       // make feed source deployable
-      await waitForSelector(
+      await waitForAndClick(
         '[data-test-id="make-feed-source-deployable-button"]',
         { visible: true }
       )
-      await click('[data-test-id="make-feed-source-deployable-button"]')
-
       // set fetch url
       await page.type(
         '[data-test-id="feed-source-url-input-group"] input',
@@ -653,18 +652,16 @@ describe('end-to-end', () => {
 
       // go back to feed source GTFS tab
       await click('#feed-source-viewer-tabs-tab-')
-      await waitForSelector(
+      // Open dropdown
+      await waitForAndClick(
         '#bg-nested-dropdown',
         { visible: true }
       )
-
       // create new version by fetching
-      await click('#bg-nested-dropdown')
-      await waitForSelector(
+      await waitForAndClick(
         '[data-test-id="fetch-feed-button"]',
         { visible: true }
       )
-      await click('[data-test-id="fetch-feed-button"]')
 
       // wait for gtfs to be fetched and processed
       await waitAndClearCompletedJobs()
@@ -703,16 +700,12 @@ describe('end-to-end', () => {
               listItemBBox.x + listItemBBox.width / 2,
               listItemBBox.y + listItemBBox.height / 2
             )
-            await waitForSelector('#feed-source-action-button')
-
             // click dropdown and delete menu item button
-            await click('#feed-source-action-button')
-            await waitForSelector('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
-            await click('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
+            await waitForAndClick('#feed-source-action-button')
+            await waitForAndClick('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
 
             // confirm action in modal
-            await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-            await click('[data-test-id="modal-confirm-ok-button"]')
+            await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
             await wait(2000, 'for data to refresh')
             feedSourceFound = true
             break
@@ -739,8 +732,7 @@ describe('end-to-end', () => {
     makeTestPostFeedSource('should download a feed version', async () => {
       await goto(`http://localhost:9966/feed/${feedSourceId}`)
       // Select previous version
-      await waitForSelector('[data-test-id="decrement-feed-version-button"]')
-      await click('[data-test-id="decrement-feed-version-button"]')
+      await waitForAndClick('[data-test-id="decrement-feed-version-button"]')
       await wait(2000, 'for previous version to be active')
       // Download version
       await click('[data-test-id="download-feed-version-button"]')
@@ -782,11 +774,9 @@ describe('end-to-end', () => {
         // upload gtfs
         await uploadGtfs()
         // click delete button
-        await waitForSelector('[data-test-id="delete-feed-version-button"]')
-        await click('[data-test-id="delete-feed-version-button"]')
+        await waitForAndClick('[data-test-id="delete-feed-version-button"]')
         // confirm action in modal
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for data to refresh')
         await waitForSelector('#feed-source-viewer-tabs')
         // verify that the previous feed is now the displayed feed
@@ -804,14 +794,12 @@ describe('end-to-end', () => {
       await click('[data-test-id="edit-feed-version-button"]')
 
       // wait for editor to get ready and show starting dialog
-      await waitForSelector('[data-test-id="import-latest-version-button"]')
-      await click('[data-test-id="import-latest-version-button"]')
+      await waitForAndClick('[data-test-id="import-latest-version-button"]')
       // wait for snapshot to get created
       waitAndClearCompletedJobs()
 
       // begin editing
-      await waitForSelector('[data-test-id="begin-editing-button"]')
-      await click('[data-test-id="begin-editing-button"]')
+      await waitForAndClick('[data-test-id="begin-editing-button"]')
       await wait(2000, 'for dialog to close')
     }, defaultTestTimeout)
 
@@ -849,15 +837,12 @@ describe('end-to-end', () => {
       await click('[data-test-id="edit-feed-version-button"]')
 
       // wait for editor to get ready and show starting dialog
-      await waitForSelector('[data-test-id="edit-from-scratch-button"]')
-      await click('[data-test-id="edit-from-scratch-button"]')
-
+      await waitForAndClick('[data-test-id="edit-from-scratch-button"]')
       // wait for snapshot to get created
       waitAndClearCompletedJobs()
 
       // begin editing
-      await waitForSelector('[data-test-id="begin-editing-button"]')
-      await click('[data-test-id="begin-editing-button"]')
+      await waitForAndClick('[data-test-id="begin-editing-button"]')
       await wait(2000, 'for welcome dialog to close')
     }, defaultTestTimeout)
 
@@ -944,12 +929,8 @@ describe('end-to-end', () => {
         // open agency sidebar
         await click('[data-test-id="editor-agency-nav-button"]')
 
-        // wait for agency sidebar form to appear
-        await waitForSelector('[data-test-id="create-first-agency-button"]')
-
-        // click button to open form to create agency
-        await click('[data-test-id="create-first-agency-button"]')
-
+        // wait for agency sidebar form to appear and click to create agency
+        await waitForAndClick('[data-test-id="create-first-agency-button"]')
         // wait for entity details sidebar to appear
         await waitForSelector('[data-test-id="agency-agency_id-input-container"]')
 
@@ -1076,8 +1057,7 @@ describe('end-to-end', () => {
 
         // delete the agency
         await click('[data-test-id="delete-agency-button"]')
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that agency to delete is no longer listed
@@ -1095,12 +1075,9 @@ describe('end-to-end', () => {
         // open routes sidebar
         await click('[data-test-id="editor-route-nav-button"]')
 
-        // wait for route sidebar form to appear
-        await waitForSelector('[data-test-id="create-first-route-button"]')
-
-        // click button to open form to create route
-        await click('[data-test-id="create-first-route-button"]')
-
+        // wait for route sidebar form to appear and click button to open form
+        // to create route
+        await waitForAndClick('[data-test-id="create-first-route-button"]')
         // wait for entity details sidebar to appear
         await waitForSelector('[data-test-id="route-route_id-input-container"]')
 
@@ -1252,8 +1229,7 @@ describe('end-to-end', () => {
 
         // delete the route
         await click('[data-test-id="delete-route-button"]')
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that route to delete is no longer listed
@@ -1361,8 +1337,7 @@ describe('end-to-end', () => {
 
         // delete the stop
         await click('[data-test-id="delete-stop-button"]')
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that stop to delete is no longer listed
@@ -1379,12 +1354,9 @@ describe('end-to-end', () => {
         // open calendar sidebar
         await click('[data-test-id="editor-calendar-nav-button"]')
 
-        // wait for calendar sidebar form to appear
-        await waitForSelector('[data-test-id="create-first-calendar-button"]')
-
-        // click button to open form to create calendar
-        await click('[data-test-id="create-first-calendar-button"]')
-
+        // wait for calendar sidebar form to appear and click button to open
+        // form to create calendar
+        await waitForAndClick('[data-test-id="create-first-calendar-button"]')
         // wait for entity details sidebar to appear
         await waitForSelector('[data-test-id="calendar-service_id-input-container"]')
 
@@ -1505,8 +1477,7 @@ describe('end-to-end', () => {
 
         // delete the calendar
         await click('[data-test-id="delete-calendar-button"]')
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that calendar to delete is no longer listed
@@ -1524,12 +1495,9 @@ describe('end-to-end', () => {
         // open exception sidebar
         await click('[data-test-id="exception-tab-button"]')
 
-        // wait for exception sidebar form to appear
-        await waitForSelector('[data-test-id="create-first-scheduleexception-button"]')
-
-        // click button to open form to create exception
-        await click('[data-test-id="create-first-scheduleexception-button"]')
-
+        // wait for exception sidebar form to appear and click button to open
+        // form to create exception
+        await waitForAndClick('[data-test-id="create-first-scheduleexception-button"]')
         // wait for entity details sidebar to appear
         await waitForSelector('[data-test-id="exception-name-input-container"]')
 
@@ -1638,8 +1606,7 @@ describe('end-to-end', () => {
 
         // delete the exception
         await click('[data-test-id="delete-scheduleexception-button"]')
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that exception to delete is no longer listed
@@ -1657,12 +1624,9 @@ describe('end-to-end', () => {
         // open fare sidebar
         await click('[data-test-id="editor-fare-nav-button"]')
 
-        // wait for fare sidebar form to appear
-        await waitForSelector('[data-test-id="create-first-fare-button"]')
-
-        // click button to open form to create fare
-        await click('[data-test-id="create-first-fare-button"]')
-
+        // wait for fare sidebar form to appear and click button to open form
+        // to create fare
+        await waitForAndClick('[data-test-id="create-first-fare-button"]')
         // wait for entity details sidebar to appear
         await waitForSelector('[data-test-id="fare-fare_id-input-container"]')
 
@@ -1724,13 +1688,9 @@ describe('end-to-end', () => {
 
         // add a fare rule
         await click('[data-test-id="fare-rules-tab-button"]')
-        await waitForSelector('[data-test-id="add-fare-rule-button"]')
-        await click('[data-test-id="add-fare-rule-button"]')
-
+        await waitForAndClick('[data-test-id="add-fare-rule-button"]')
         // select route type
-        await waitForSelector('input[name="fareRuleType-0-route_id"]')
-        await click('input[name="fareRuleType-0-route_id"]')
-
+        await waitForAndClick('input[name="fareRuleType-0-route_id"]')
         // select route
         await waitForSelector('[data-test-id="fare-rule-selections"] input')
         await reactSelectOption(
@@ -1823,8 +1783,7 @@ describe('end-to-end', () => {
 
         // delete the fare
         await click('[data-test-id="delete-fare-button"]')
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that fare to delete is no longer listed
@@ -1842,24 +1801,12 @@ describe('end-to-end', () => {
         // open route sidebar
         await click('[data-test-id="editor-route-nav-button"]')
 
-        // wait for route sidebar form to appear
-        await waitForSelector('.entity-list-row')
-
-        // select first route
-        await click('.entity-list-row')
-
-        // wait for route details sidebar to appear
-        await waitForSelector('[data-test-id="trippattern-tab-button"]')
-
-        // go to trip pattern tab
-        await click('[data-test-id="trippattern-tab-button"]')
-
-        // wait for tab to load
-        await waitForSelector('[data-test-id="new-pattern-button"]')
-
-        // click button to create pattern
-        await click('[data-test-id="new-pattern-button"]')
-
+        // wait for route sidebar form to appear and select first route
+        await waitForAndClick('.entity-list-row')
+        // wait for route details sidebar to appear and go to trip pattern tab
+        await waitForAndClick('[data-test-id="trippattern-tab-button"]')
+        // wait for tab to load and click button to create pattern
+        await waitForAndClick('[data-test-id="new-pattern-button"]')
         // wait for new pattern to appear
         await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
 
@@ -1960,12 +1907,8 @@ describe('end-to-end', () => {
         // expand pattern
         await click('[data-test-id="pattern-title-New Pattern updated"]')
 
-        // wait for edit schedules button to appear
-        await waitForSelector('[data-test-id="edit-schedules-button"]')
-
-        // click edit schedules
-        await click('[data-test-id="edit-schedules-button"]')
-
+        // wait for edit schedules button to appear and click edit schedules
+        await waitForAndClick('[data-test-id="edit-schedules-button"]')
         // wait for calendar selector to appear
         await waitForSelector('[data-test-id="calendar-select-container"]')
 
@@ -2121,8 +2064,7 @@ describe('end-to-end', () => {
         await click('[data-test-id="delete-trip-button"]')
 
         // confirm delete
-        await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-        await click('[data-test-id="modal-confirm-ok-button"]')
+        await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
         await wait(2000, 'for delete to happen')
 
         // verify that trip to delete is no longer listed
@@ -2160,19 +2102,12 @@ describe('end-to-end', () => {
       // not sure why, but clicking on the nav home button doesn't work
       await goto(`http://localhost:9966/feed/${scratchFeedSourceId}`)
 
-      // wait for page to be visible
-      await waitForSelector('#feed-source-viewer-tabs-tab-snapshots')
-
-      // go to snapshots tab
-      await click('#feed-source-viewer-tabs-tab-snapshots')
+      // wait for page to be visible and go to snapshots tab
+      await waitForAndClick('#feed-source-viewer-tabs-tab-snapshots')
       await wait(2000, 'for page to load?')
 
-      // wait for snapshots tab to load
-      await waitForSelector('[data-test-id="publish-snapshot-button"]')
-
-      // publish snapshot
-      await click('[data-test-id="publish-snapshot-button"]')
-
+      // wait for snapshots tab to load and publish snapshot
+      await waitForAndClick('[data-test-id="publish-snapshot-button"]')
       // wait for version to get created
       await waitAndClearCompletedJobs()
 
@@ -2196,18 +2131,12 @@ describe('end-to-end', () => {
   // successfully and also assumes a local instance of OTP is running
   describe('deployment', () => {
     makeTestPostFeedSource('should create deployment', async () => {
-      // open create snapshot dialog
-      await waitForSelector('[data-test-id="deploy-feed-version-button"]')
-      await click('[data-test-id="deploy-feed-version-button"]')
-      // wait for deploy dropdown button to appear
-      await waitForSelector('#deploy-server-dropdown')
-      // open dropdown
-      await click('#deploy-server-dropdown')
-      // wait for dropdown to open
-      await waitForSelector('[data-test-id="deploy-server-0-button"]')
-      // click to deploy to server
-      await click('[data-test-id="deploy-server-0-button"]')
-
+      // trigger creation of feed source-based deployment.
+      await waitForAndClick('[data-test-id="deploy-feed-version-button"]')
+      // wait for deploy dropdown button to appear and open dropdown
+      await waitForAndClick('#deploy-server-dropdown')
+      // wait for dropdown to open and click to deploy to server
+      await waitForAndClick('[data-test-id="deploy-server-0-button"]')
       // wait for deployment dialog to appear
       await waitForSelector('[data-test-id="confirm-deploy-server-button"]')
 
