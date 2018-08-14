@@ -987,6 +987,10 @@ declare module 'puppeteer' {
 
   /** Page provides methods to interact with a single tab in Chromium. One Browser instance might have multiple Page instances. */
   declare interface Page extends OverridableEventEmitter, FrameBase {
+
+    // manually added by Evan Siroky
+    _client: any;
+
     /**
      * Provide credentials for http authentication.
      * To disable authentication, pass `null`.
