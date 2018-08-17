@@ -477,6 +477,8 @@ describe('end-to-end', () => {
     log.info('Chromium closed.')
   })
 
+  /// Begin tests
+
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
     await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
@@ -485,7 +487,7 @@ describe('end-to-end', () => {
 
   makeTest('should login', async () => {
     await goto('http://localhost:9966')
-    await click('[data-test-id="header-log-in-button"]')
+    await waitForAndClick('[data-test-id="header-log-in-button"]')
     await waitForSelector('button[class="auth0-lock-submit"]')
     await page.type('input[class="auth0-lock-input"][name="email"]', config.username)
     await page.type('input[class="auth0-lock-input"][name="password"]', config.password)

@@ -122,8 +122,11 @@
     "parser": "babel-eslint",
     "globals": [
       "Blob",
+      "ClipboardEvent",
       "File",
       "IntervalID",
+      "HTMLCanvasElement",
+      "HTMLElement",
       "HTMLInputElement",
       "ReactComponent",
       "ReactElement",

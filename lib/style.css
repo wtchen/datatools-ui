@@ -349,6 +349,17 @@ h4.line:after {
   overflow-x: hidden;
 }
 
+.manager-header {
+  background-color: #F5F5F5;
+  margin: -40px;
+  padding-top: 40px;
+  margin-bottom: -64px;
+  padding-bottom: 60px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-bottom: 1px #e3e3e3 solid;
+}
+
 
 /* GTFS+ Editor */
 
@@ -358,6 +369,14 @@ h4.line:after {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+
+.gtfs-plus-column-header {
+  background: gray;
+  border-right: 4px solid white;
+  border-bottom: 0px;
+  color: white;
 }
 
 /* Job Monitor */
