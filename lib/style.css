@@ -200,6 +200,13 @@ kbd {
   border-radius: 0;
 }
 
+.Sidebar .sidebar-nav-label {
+  font-weight: bold;
+  margin-top: 3;
+  font-size: 12;
+  margin-left: 30;
+}
+
 .Sidebar .TopNav {
   position: absolute;
   top: 60px;
