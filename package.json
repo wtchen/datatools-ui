@@ -121,6 +121,9 @@
     "env": [ "jest" ],
     "parser": "babel-eslint",
     "globals": [
+      "$Diff",
+      "$Keys",
+      "$Values",
       "Blob",
       "ClipboardEvent",
       "File",
