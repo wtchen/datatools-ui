@@ -200,6 +200,20 @@ kbd {
   border-radius: 0;
 }
 
+.SidebarNavItemImage {
+  width: 20;
+  height: 20;
+  text-align: center;
+  float: left;
+}
+
+.SidebarNavItemIcon {
+  width: 30;
+  height: 30;
+  text-align: center;
+  float: left;
+}
+
 .Sidebar .sidebar-nav-label {
   font-weight: bold;
   margin-top: 3;
