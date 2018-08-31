@@ -144,11 +144,8 @@ async function expectSelectorToNotContainHtml (selector: string, html: string) {
 async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await click('#context-dropdown')
-  await waitForSelector('a[href="/project"]')
-  await click('a[href="/project"]')
-  await waitForSelector('[data-test-id="create-new-project-button"]')
-  await wait(2000, 'for projects to load')
-  await click('[data-test-id="create-new-project-button"]')
+  await waitForAndClick('a[href="/project"]')
+  await waitForAndClick('[data-test-id="create-new-project-button"]')
   await waitForSelector('.project-name-editable input')
   await page.type('.project-name-editable input', projectName)
   await click('.project-name-editable button')
@@ -165,17 +162,15 @@ async function deleteProject (projectId: string) {
   await goto(`http://localhost:9966/project/${projectId}/settings`)
 
   // delete that project
-  await waitForSelector('[data-test-id="delete-project-button"]')
-  await click('[data-test-id="delete-project-button"]')
-  await waitForSelector('[data-test-id="modal-confirm-ok-button"]')
-  await click('[data-test-id="modal-confirm-ok-button"]')
+  await waitForAndClick('[data-test-id="delete-project-button"]')
+  await wait(500, 'for modal to appear')
+  await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
   log.info('deleted project')
 
   // verify deletion
   await goto(`http://localhost:9966/project/${projectId}`)
   await waitForSelector('.project-not-found')
   await expectSelectorToContainHtml('.project-not-found', projectId)
-  await click('[data-test-id="status-modal-close-button"]')
   log.info(`confirmed successful deletion of project with id ${projectId}`)
 }
 
@@ -414,6 +409,7 @@ async function appendText (selector: string, text: string) {
 
 async function waitForSelector (selector: string, options?: any) {
   const startTime = new Date()
+  await wait(100, 'delay before looking for selector...')
   log.info(`waiting for selector: ${selector}`)
   await page.waitForSelector(selector, options)
   log.info(`selector ${selector} took ${formatSecondsElapsed(startTime)}`)
@@ -421,7 +417,7 @@ async function waitForSelector (selector: string, options?: any) {
 
 async function click (selector: string) {
   log.info(`clicking selector: ${selector}`)
-  await page.click(selector)
+  await page.click(selector) // , {delay: 3})
 }
 
 async function waitForAndClick (selector: string, waitOptions?: any) {
@@ -496,9 +492,10 @@ describe('end-to-end', () => {
     // Ping the otp endpoint to ensure the server is running.
     try {
       log.info(`Pinging OTP at ${OTP_ROOT}`)
-      const response = await fetch(`${OTP_ROOT}`)
-      if (response.status !== 200) throw new Error('OTP not ready!')
-      else log.info('OTP is OK.')
+      await fetch(`${OTP_ROOT}`)
+      log.info('OTP is OK.')
+      // if (response.status !== 200) throw new Error('OTP not ready!')
+      // else log.info('OTP is OK.')
     } catch (e) {
       if (testOptions.failFast) {
         log.error('OpenTripPlanner not accepting requests. Exiting due to fail fast option.')
@@ -532,15 +529,18 @@ describe('end-to-end', () => {
     log.info('Chromium closed.')
   })
 
+  /// Begin tests
+
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
+    await waitForSelector('h1')
     await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
     testResults['should load the page'] = true
   })
 
   makeTest('should login', async () => {
     await goto('http://localhost:9966')
-    await click('[data-test-id="header-log-in-button"]')
+    await waitForAndClick('[data-test-id="header-log-in-button"]')
     await waitForSelector('button[class="auth0-lock-submit"]')
     await page.type('input[class="auth0-lock-input"][name="email"]', config.username)
     await page.type('input[class="auth0-lock-input"][name="password"]', config.password)
@@ -575,7 +575,7 @@ describe('end-to-end', () => {
 
     makeTestPostLogin('should update a project by adding a otp server', async () => {
       // open settings tab
-      await click('#project-viewer-tabs-tab-settings')
+      await waitForAndClick('#project-viewer-tabs-tab-settings')
 
       // navigate to deployments
       await waitForAndClick('[data-test-id="deployment-settings-link"]', { visible: true })
