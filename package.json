@@ -16,7 +16,7 @@
     "cover-client": "npm run test-client -- --coverage --coverage-paths \"lib/**/*.js\"",
     "cover-flow": "flow-coverage-report -t html -t text -i 'lib/**/*.js' -o coverage-flow",
     "deploy": "mastarm deploy --minify --env production",
-    "lint": "mastarm lint \"lib/**/*.js\"",
+    "lint": "mastarm lint lib",
     "predeploy": "yarn",
     "prestart": "yarn",
     "start": "mastarm build --env dev --serve --proxy http://localhost:4000/api",
