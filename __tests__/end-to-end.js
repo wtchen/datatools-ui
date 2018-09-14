@@ -27,8 +27,7 @@ const testOptions = {
 const config: {
   username: string,
   password: string
-} = safeLoad(fs.readFileSync('configurations/end-to-end/env.yml'))
-const REACT_TAG_REGEX = /<!--[\s\w-:/]*-->/g
+} = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
 let browser
 let page
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
@@ -128,20 +127,14 @@ const makeEditorEntityTest = makeMakeTest([
 // need to be run in order for other tests to work properly
 const doNonEssentialSteps = true
 
-async function getHtml (selector: string) {
-  return page.$eval(selector, e => e.innerHTML)
-}
-
 async function expectSelectorToContainHtml (selector: string, html: string) {
-  const innerHTML = await getHtml(selector)
-  const cleanHTML = innerHTML.replace(REACT_TAG_REGEX, '')
-  expect(cleanHTML).toContain(html)
+  const innerHTML = await getInnerHTMLFromSelector(selector)
+  expect(innerHTML).toContain(html)
 }
 
 async function expectSelectorToNotContainHtml (selector: string, html: string) {
-  const innerHTML = await getHtml(selector)
-  const cleanHTML = innerHTML.replace(REACT_TAG_REGEX, '')
-  expect(cleanHTML).not.toContain(html)
+  const innerHTML = await getInnerHTMLFromSelector(selector)
+  expect(innerHTML).not.toContain(html)
 }
 
 // function testId (id: string) {
@@ -193,11 +186,12 @@ async function uploadGtfs () {
   // TODO replace with more specific selector
   await waitForSelector('.modal-body input')
   const uploadInput = await page.$('.modal-body input')
+  if (!uploadInput) throw new Error('Could not find upload input')
   await uploadInput.uploadFile(gtfsUploadFile)
 
   // confirm file upload
   // TODO replace with more specific selector
-  const footerButtons = await page.$$('.modal-footer button')
+  const footerButtons = await getAllElements('.modal-footer button')
   await footerButtons[0].click()
 
   await waitAndClearCompletedJobs()
@@ -337,7 +331,17 @@ async function createStop ({
 }
 
 async function clearInput (inputSelector: string) {
-  await page.$eval(inputSelector, input => { input.value = '' })
+  await page.$eval(
+    inputSelector,
+    input => {
+      if (!input) {
+        throw new Error(`Could not find input with selector: ${inputSelector}`)
+      }
+      // make flow happy cause flow-typed page.$eval doesn't get specifc enough
+      const _input = (input: any)
+      _input.value = ''
+    }
+  )
 }
 
 async function pickColor (containerSelector: string, color: string) {
@@ -432,6 +436,57 @@ async function goto (url: string, options?: any) {
   await wait(1000, 'for page to load')
 }
 
+function stripReactTags (str: any): any {
+  return str.replace(/<!--[\s\w-:/]*-->/g, '')
+}
+
+// There was a weird error of not being able to dynamically get the attribute,
+// so the following 2 functions look very similar
+async function getHref (element: any) {
+  log.info(`getting href for element: ${element}`)
+  const href = await page.evaluate(
+    el => {
+      const _el = (el: any)
+      // make flow happy cause flow-typed page.$eval doesn't get specifc enough
+      return _el.href
+    },
+    element
+  )
+  return href
+}
+
+async function getInnerHTML (element: any) {
+  log.info(`getting innerHTML for element: ${element}`)
+  const html = await page.evaluate(
+    el => {
+      const _el = (el: any)
+      // make flow happy cause flow-typed page.$eval doesn't get specifc enough
+      return _el.innerHTML
+    },
+    element
+  )
+  return stripReactTags(html)
+}
+
+async function getInnerHTMLFromSelector (selector: string) {
+  log.info(`getting innerHTML for selector: ${selector}`)
+  const html = (await page.$eval(selector, el => {
+    const _el = (el: any)
+    // make flow happy cause flow-typed page.$eval doesn't get specifc enough
+    return _el.innerHTML
+  }): any)
+  return stripReactTags(html)
+}
+
+async function getAllElements (selector: string) {
+  log.info(`getting all elements for selector: ${selector}`)
+  const elements = await page.$$(selector)
+  if (!elements || elements.length === 0) {
+    throw new Error(`Could not find any elements for selector: ${selector}`)
+  }
+  return elements
+}
+
 describe('end-to-end', () => {
   beforeAll(async () => {
     // Ping the otp endpoint to ensure the server is running.
@@ -499,13 +554,13 @@ describe('end-to-end', () => {
       await createProject(testProjectName)
 
       // go into the project page and verify that it looks ok-ish
-      const projectEls = await page.$$('.project-name-editable a')
+      const projectEls = await getAllElements('.project-name-editable a')
 
       let projectFound = false
       for (const projectEl of projectEls) {
-        const innerHtml = await page.evaluate(el => el.innerHTML, projectEl)
+        const innerHtml = await getInnerHTML(projectEl)
         if (innerHtml.indexOf(testProjectName) > -1) {
-          const href = await page.evaluate(el => el.href, projectEl)
+          const href = await getHref(projectEl)
           testProjectId = href.match(/\/project\/([\w-]*)/)[1]
           await projectEl.click()
           projectFound = true
@@ -555,14 +610,14 @@ describe('end-to-end', () => {
 
         // get the created project id
         // go into the project page and verify that it looks ok-ish
-        const projectEls = await page.$$('.project-name-editable a')
+        const projectEls = await getAllElements('.project-name-editable a')
 
         let projectFound = false
         let projectToDeleteId = ''
         for (const projectEl of projectEls) {
-          const innerHtml = await page.evaluate(el => el.innerHTML, projectEl)
+          const innerHtml = await getInnerHTML(projectEl)
           if (innerHtml.indexOf(testProjectToDeleteName) > -1) {
-            const href = await page.evaluate(el => el.href, projectEl)
+            const href = await getHref(projectEl)
             projectToDeleteId = href.match(/\/project\/([\w-]*)/)[1]
             projectFound = true
             break
@@ -599,13 +654,13 @@ describe('end-to-end', () => {
 
       // find feed source id
       // enter into feed source
-      const feedSourceEls = await page.$$('h4 a')
+      const feedSourceEls = await getAllElements('h4 a')
       let feedSourceFound = false
       feedSourceId = ''
       for (const feedSourceEl of feedSourceEls) {
-        const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceEl)
+        const innerHtml = await getInnerHTML(feedSourceEl)
         if (innerHtml.indexOf(testFeedSourceName) > -1) {
-          const href = await page.evaluate(el => el.href, feedSourceEl)
+          const href = await getHref(feedSourceEl)
           feedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
           feedSourceFound = true
           await feedSourceEl.click()
@@ -681,11 +736,12 @@ describe('end-to-end', () => {
         await createFeedSourceViaProjectHeaderButton(testFeedSourceToDeleteName)
 
         // find created feed source
-        const listItemEls = await page.$$('.list-group-item')
+        const listItemEls = await getAllElements('.list-group-item')
         let feedSourceFound = false
-        for (const listItemEl of listItemEls) {
+        // cast to any to avoid flow errors
+        for (const listItemEl: any of listItemEls) {
           const feedSourceNameEl = await listItemEl.$('h4 a')
-          const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceNameEl)
+          const innerHtml = await getInnerHTML(feedSourceNameEl)
           if (innerHtml.indexOf(testFeedSourceToDeleteName) > -1) {
             // hover over container to display FeedSourceDropdown
             // I tried to use the puppeteer hover method, but that didn't trigger
@@ -714,10 +770,10 @@ describe('end-to-end', () => {
         if (!feedSourceFound) throw new Error('Created feedSource not found')
 
         // verify deletion
-        const feedSourceEls = await page.$$('h4 a')
+        const feedSourceEls = await getAllElements('h4 a')
         let deletedFeedSourceFound = false
         for (const feedSourceEl of feedSourceEls) {
-          const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceEl)
+          const innerHtml = await getInnerHTML(feedSourceEl)
           if (innerHtml.indexOf(testFeedSourceToDeleteName) > -1) {
             deletedFeedSourceFound = true
             break
@@ -810,14 +866,14 @@ describe('end-to-end', () => {
       await createFeedSourceViaProjectHeaderButton(feedSourceName)
 
       // find created feed source
-      const listItemEls = await page.$$('.list-group-item')
+      const listItemEls = await getAllElements('.list-group-item')
       let feedSourceFound = false
-      for (const listItemEl of listItemEls) {
+      for (const listItemEl: any of listItemEls) {
         const feedSourceNameEl = await listItemEl.$('h4 a')
-        const innerHtml = await page.evaluate(el => el.innerHTML, feedSourceNameEl)
+        const innerHtml = await getInnerHTML(feedSourceNameEl)
         if (innerHtml.indexOf(feedSourceName) > -1) {
           feedSourceFound = true
-          const href = await page.evaluate(el => el.href, feedSourceNameEl)
+          const href = await getHref(feedSourceNameEl)
           scratchFeedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
           await feedSourceNameEl.click()
           // apparently the first click does not work entirely, it may trigger
@@ -2143,9 +2199,11 @@ describe('end-to-end', () => {
       await waitForSelector('[data-test-id="confirm-deploy-server-button"]')
 
       // get the router name
-      const innerHTML = await getHtml('[data-test-id="deployment-router-id"]')
+      const innerHTML = await getInnerHTMLFromSelector(
+        '[data-test-id="deployment-router-id"]'
+      )
       // get rid of router id text and react tags
-      routerId = innerHTML.replace('Router ID: ', '').replace(REACT_TAG_REGEX, '')
+      routerId = innerHTML.replace('Router ID: ', '')
 
       // confirm deployment
       await click('[data-test-id="confirm-deploy-server-button"]')
