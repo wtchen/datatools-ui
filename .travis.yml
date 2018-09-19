@@ -16,6 +16,7 @@ before_install:
   - pip install --user mkdocs
 script:
   - yarn run lint
+  - yarn run lint-messages
   - yarn run flow
   - yarn run cover-client
   - codecov
