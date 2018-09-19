@@ -32,9 +32,6 @@ components:
     deploy: Deploy
     invalidBounds: Bounds are invalid!
     to: to
-    warning: Warning!
-  DeploymentConfirmModalAlert:
-    danger: Danger!
     success: Success!
     warning: Warning!
   DeploymentSettings:
@@ -116,18 +113,6 @@ components:
       version: Version
     to: to
     versions: Feed Versions
-  DeploymentsList:
-    delete: Remove deployment
-    new: New Deployment
-    search: Search for deployments
-    table:
-      creationDate: Created
-      lastDeployed: Last deployed
-      deployedTo: Deployed to
-      feedCount: '# of feeds'
-      testDeployment: Test?
-      name: Name
-    title: Deployments
   DeploymentsPanel:
     delete: Remove deployment
     new: New Deployment
@@ -172,17 +157,12 @@ components:
       body: 'Select a zipped shapefile to display on map. Note: this is only for use as a visual aid.'
       error: Uploaded file must be a valid zip file (.zip).
       title: Upload route shapefile
-  FeedSourceAttributes:
-    lastUpdated: Updated
   FeedSourcePanel:
     search: Search feeds
-  FeedSourceTable:
-    createFirst: Create first feed source!
   FeedSourceViewer:
     deploy: Deploy
     edit: Edit GTFS
     gtfs: GTFS
-    notesTitle: Notes
     private: Private view
     properties:
       deployable: Deployable?
@@ -198,7 +178,6 @@ components:
       snapshot: Editor Snapshot
       title: Settings
       value: Value
-    snapshotsTitle: Snapshots
     update: Update
     upload: Upload
     versions: Versions
@@ -438,25 +417,6 @@ components:
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
-  ProjectViewerHeader:
-    deployments: Deployments
-    feeds:
-      createFirst: Create first feed source!
-      new: New Feed Source
-      search: Search by name
-      table:
-        deployable: Deployable?
-        errorCount: Errors
-        lastUpdated: Updated
-        name: Name
-        public: Public?
-        retrievalMethod: Retrieval Method
-        validRange: Valid Range
-      title: Feed Sources
-      update: Fetch all
-    makePublic: Publish public feeds
-    mergeFeeds: Merge all
-    settings: Settings
   ProjectsList:
     createFirst: Create my first project
     help:
@@ -486,27 +446,6 @@ components:
     line: Line
     priority: Priority
     problemType: Problem Type
-  SnapshotItem:
-    active: Active
-    confirmDelete: This will permanently delete this snapshot. Any data saved here cannot be recovered. Are you sure you want to continue?
-    confirmLoad: 'This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?'
-    created: created
-    createFromScratch: Create GTFS from Scratch
-    date: Date
-    delete: Delete
-    download: Download
-    feed: Feed
-    load: Load for Editing
-    loadLatest: Load latest for editing
-    name: Name
-    noVersions: (No Versions)
-    noVersionsExist: No versions exist for this feed source.
-    of: of
-    publish: Publish
-    restore: Restore
-    snapshot: snapshot
-    title: Snapshots
-    version: Version
   StarButton:
     star: Star
     unstar: Unstar
@@ -608,17 +547,6 @@ components:
       permissions: Permissions
       title: Project Settings for
     save: Save
-  VersionButtonToolbar:
-    confirmDelete: Are you sure you want to delete this version? This cannot be undone.
-    confirmLoad: 'This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?'
-    delete: Delete
-    download: Download
-    feed: Feed
-    load: Load
-    noVersionsExist: No versions exist for this feed source.
-    status: Status
-    timestamp: File Timestamp
-    version: version
   WatchButton:
     unwatch: Unwatch
     watch: Watch
