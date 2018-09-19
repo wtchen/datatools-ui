@@ -91,8 +91,8 @@ Object.keys(messages).forEach(langFile => {
           .forEach(compareLangFile => {
             const compareLangMessages = messages[compareLangFile]['components']
             if (obj[key] === objectPath.get(compareLangMessages, nextPath)) {
-              // FIXME: make this cause an error once variables and
-              // template strings are accounted for
+              // FIXME: make this cause an error once we decide to have actual
+              // translations for all languages
               console.warn(`WARNING: message ${nextPath} in ${langFile} is the same as the message in ${compareLangFile}`)
             }
           })
