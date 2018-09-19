@@ -17,8 +17,6 @@ languages.forEach(langFile => {
   messages[langFile] = safeLoad(fs.readFileSync(path.join('i18n', langFile)))
 })
 
-
-
 /**
  * Recursively explore a directory looking for .js files to analyze
  */
@@ -151,4 +149,6 @@ reconcileFoundObject(foundMessages)
 
 if (atLeastOneErrorFound) {
   process.exit(2)
+} else {
+  console.log('no errors found with messages!')
 }
