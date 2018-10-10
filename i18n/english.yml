@@ -18,6 +18,22 @@ components:
     resetPassword: Reset Password
     signConfig: eTID Config
     users: Users
+  DeploymentConfirmModal:
+    alert:
+      alreadyDeployed: is already deployed to this server at the same router. (Deploying would evict the current graph.)
+      boundsTooLarge: Bounds are much too large to successfully deploy to OpenTripPlanner. Deployment is disabled.
+      expiredFeeds: The following feeds have expired (all scheduled trips are for past dates)
+      missingBounds: There are no bounds defined for the set of feeds. Deployment is disabled.
+      missingFeeds: There are no feeds defined for this deployment. Deployment is disabled.
+      success: Deployment successfully deployed.
+    cancel: Cancel
+    close: Close
+    danger: Danger!
+    deploy: Deploy
+    invalidBounds: Bounds are invalid!
+    to: to
+    warning: Warning!
+    success: Success!
   DeploymentViewer:
     addFeedSource: Add Feed Source
     allFeedsAdded: All feeds added
@@ -36,21 +52,25 @@ components:
       tripCount: Trip Count
       validFrom: Valid from
       version: Version
+    to: to
     versions: Feed Versions
   DeploymentsPanel:
     delete: Remove deployment
     new: New Deployment
-    search: Search for deployments by name
+    search: Search for deployments
     table:
-      creationDate: Creation date
+      creationDate: Created
+      lastDeployed: Last deployed
       deployedTo: Deployed to
-      feedCount: Number of feeds
+      feedCount: '# of feeds'
+      testDeployment: Test?
       name: Name
     title: Deployments
   EditorFeedSourcePanel:
     active: Active
     confirmDelete: This will permanently delete this snapshot. Any data saved here cannot be recovered. Are you sure you want to continue?
     confirmLoad: 'This will override all active GTFS Editor data for this Feed Source with the data from this version. If there is unsaved work in the Editor you want to keep, you must snapshot the current Editor data first. Are you sure you want to continue?'
+    created: created
     createFromScratch: Create GTFS from Scratch
     date: Date
     delete: Delete
@@ -64,11 +84,12 @@ components:
     load: Load for Editing
     loadLatest: Load latest for editing
     name: Name
+    noSnapshotsExist: No snapshots currently exist for this feed. Snapshots can be created within the Editor. Click "Edit Feed" to enter editing mode.
     noVersions: (No Versions)
     noVersionsExist: No versions exist for this feed source.
     of: of
     publish: Publish
-    restore: Make active
+    restore: Restore
     snapshot: snapshot
     title: Snapshots
     version: Version
@@ -153,6 +174,8 @@ components:
     title: Validation Results
   LanguageSelect:
     placeholder: Select language...
+  Login:
+    title: Log in
   NotesViewer:
     all: All Comments
     feedSource: Feed Source
@@ -202,14 +225,15 @@ components:
         gtfs: Use GTFS-Derived Extract Bounds
         title: OSM Extract
       otpServers:
-        admin: Admin access only?
-        delete: Remove
-        internal: Internal URLs
-        name: Name
-        namePlaceholder: Production
+        $index:
+          admin: Admin access only?
+          delete: Remove
+          internalUrl: Internal URLs
+          name: Name
+          namePlaceholder: Production
+          publicUrl: Public URL
+          s3Bucket: S3 bucket name
         new: Add server
-        public: Public URL
-        s3Bucket: S3 bucket name
         serverPlaceholder: Server name
         title: Servers
       routerConfig:
@@ -228,6 +252,7 @@ components:
             url: URL
           new: Add updater
           title: Real-time updaters
+          placeholder: Updater name
         walkSpeed: Walk Speed
       title: Deployment
     fields:
@@ -296,6 +321,36 @@ components:
   StarButton:
     star: Star
     unstar: Unstar
+  TimetableHelpModal:
+    title: Timetable editor keyboard shortcuts
+    shortcuts:
+      offset:
+        title: Offsetting times
+        desc:
+          - Offset selected trips' stop times by adding offset time
+          - Offset selected trips' stop times by subtracting offset time
+          - Offset only active cell's time by adding offset time
+          - Offset only active cell's time by subtracting offset time
+          - Decrease offset time by 1 minute
+          - Decrease offset time by 10 minutes
+          - Increase offset time by 1 minute
+          - Increase offset time by 10 minutes
+      navigate:
+        title: Navigating and selecting trips
+        desc:
+          - Previous/next trip
+          - Previous/next column
+          - Select trip
+          - Select all trips
+          - Deselect all trips
+      modify:
+        title: Modify trips
+        desc:
+          - Delete selected trip(s)
+          - New trip
+          - Clone selected trip(s)
+          - Copy time value from adjacent cell (the cell immediately to the left)
+          - Copy value from cell directly above
   TimezoneSelect:
     placeholder: Select timezone...
   UserAccount:
