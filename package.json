@@ -103,6 +103,7 @@
     "turf-point-on-line": "^3.0.11",
     "turf-polygon": "^1.0.3",
     "uuid": "^3.1.0",
+    "valid-url": "^1.0.9",
     "validator": "7.0.0"
   },
   "devDependencies": {
@@ -111,7 +112,7 @@
     "fs-extra": "^6.0.1",
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^7.4.1",
-    "mastarm": "^4.1.0",
+    "mastarm": "^4.4.0",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
     "puppeteer": "^1.4.0",
