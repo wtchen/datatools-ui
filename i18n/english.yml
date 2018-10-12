@@ -488,6 +488,8 @@ components:
     line: Line
     priority: Priority
     problemType: Problem Type
+  Sidebar:
+    unknown: Unknown
   SnapshotItem:
     active: Active
     confirmDelete: This will permanently delete this snapshot. Any data saved here cannot be recovered. Are you sure you want to continue?
