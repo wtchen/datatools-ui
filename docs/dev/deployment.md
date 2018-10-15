@@ -86,6 +86,7 @@ MONGO_DB_NAME: application_db
 ```
 
 ### Setting up Auth0
+Auth0 is used for authentication in the application. If you don't need authentication (e.g., if you're running locally or on a secured network), you can set `DISABLE_AUTH` to true for both the server and UI configurations (`env.yml`).
 
 #### Creating account and application (client)
 1. Create an [Auth0](https://auth0.com) account (free).
@@ -132,10 +133,13 @@ AUTH0_DOMAIN: your-auth0-domain.auth.com
 AUTH0_CLIENT_ID: your-auth0-client-id
 ```
 
-Update the following properties in `datatools-server` `env.yml` to reflect the secure Auth0 application settings:
+Update the following properties in `datatools-server` `env.yml` to reflect the secure Auth0 application settings.
+
+**Note:** for older Auth0 accounts/tenants, it is possible to use the Auth0 secret token, which uses the HS256 algorithm, but newer Auth0 tenants will need to specify the absolute path of their `.pem` file in the `AUTH0_PUBLIC_KEY` property. This public key only needs to be downloaded one time for your Auth0 tenant at `https://[your_domain].auth0.com/pem`.
 
 ```yaml
-AUTH0_SECRET: your-auth0-client-secret
+AUTH0_SECRET: your-auth0-client-secret # used for pre-September 2017 Auth0 accounts
+AUTH0_PUBLIC_KEY: /location/of/auth0-account.pem # used for post-September 2017 Auth0 accounts
 AUTH0_TOKEN: your-auth0-api-token
 ```
 
@@ -149,6 +153,24 @@ To allow for the creation, deletion and editing of users you must generate a tok
     - read, update, create and delete
 - **users_app_metadata**:
     - read, update, create and delete`
+
+#### Auth0 Rule Configuration: making app_metadata and user_metadata visible via token (only required for "new" Auth0 accounts/tenants)
+If using OIDC-conformant clients/APIs (which appears to be mandatory for new Auth0 tenants), you must set up a custom Auth0 rule to add app_metadata and user_metadata to the user's token (Note: this is not the default for older, "legacy" Auth0 accounts). Go to Rules > Create Rule > empty rule and add the following code snippet. If you'd like the rule to only apply to certain clients, you can keep the conditional block that checks for `context.clientID` value. Otherwise, this conditional block is unnecessary.
+
+```
+function (user, context, callback) {
+  if (context.clientID === 'YOUR_CLIENT_ID') {
+    var namespace = 'http://datatools/';
+    if (context.idToken && user.user_metadata) {
+      context.idToken[namespace + 'user_metadata'] = user.user_metadata;
+    }
+    if (context.idToken && user.app_metadata) {
+      context.idToken[namespace + 'app_metadata'] = user.app_metadata;
+    }
+  }
+  callback(null, user, context);
+}
+```
 
 ## Building and Running the Application
 
