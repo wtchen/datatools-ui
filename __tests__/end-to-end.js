@@ -25,8 +25,8 @@ const testOptions = {
   failFast: false
 }
 const config: {
-  username: string,
-  password: string
+  password: string,
+  username: string
 } = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
 let browser
 let page
@@ -137,21 +137,27 @@ async function expectSelectorToNotContainHtml (selector: string, html: string) {
   expect(innerHTML).not.toContain(html)
 }
 
-// function testId (id: string) {
-//   return `[data-test-id="${id}"]`
-// }
-
+/**
+ * Create a new project.  Assumes that this is called while the browser is on
+ * the home page.
+ */
 async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await click('#context-dropdown')
-  await waitForAndClick('a[href="/project"]')
-  await waitForAndClick('[data-test-id="create-new-project-button"]')
-  await waitForSelector('.project-name-editable input')
-  await page.type('.project-name-editable input', projectName)
-  await click('.project-name-editable button')
+  await waitForAndClick('a[href="/project/new"]')
+  await waitForSelector('[data-test-id="project-name-input-container"]')
+  await page.type('[data-test-id="project-name-input-container"] input', projectName)
+  await click('[data-test-id="project-settings-form-save-button"]')
   log.info('saving new project')
   await wait(2000, 'for project to get saved')
-  // verify that the project is listed
+
+  // verify that the project was created with the proper name
+  await expectSelectorToContainHtml('.project-header', projectName)
+
+  // go back to project list
+  await goto('http://localhost:9966/project', {waitUntil: 'networkidle0'})
+
+  // verify the new project is listed in the project list
   await expectSelectorToContainHtml('[data-test-id="project-list-table"]', projectName)
   log.info(`confirmed successful creation of project with name: ${projectName}`)
 }
@@ -198,6 +204,38 @@ async function uploadGtfs () {
   log.info('completed gtfs upload')
 }
 
+/**
+ * Fill out create feed source form, save feed source, verify creation and also
+ * that it is presnt in the list of project feed sources.
+ */
+async function createFeedSourceViaForm (feedSourceName) {
+  // wait for form to be visible
+  await waitForSelector('[data-test-id="feed-source-name-input-container"]')
+
+  // enter feed source name
+  await page.type(
+    '[data-test-id="feed-source-name-input-container"] input',
+    feedSourceName
+  )
+
+  // save and wait
+  await click('[data-test-id="create-feed-source-button"]')
+  await wait(2000, 'for feed source to be created and saved')
+
+  // verify that feed source was created
+  await waitForSelector('.manager-header')
+  await expectSelectorToContainHtml('.manager-header', feedSourceName)
+
+  // goto feed source's project page
+  await click('[data-test-id="feed-project-link"]')
+
+  // verify that the feed source is listed in project feed sources
+  await waitForSelector('#project-viewer-tabs')
+  await expectSelectorToContainHtml('#project-viewer-tabs', feedSourceName)
+
+  log.info(`Successfully created Feed Source with name: ${feedSourceName}`)
+}
+
 async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   log.info(`create Feed Source with name: ${feedSourceName} via project header button`)
   // go to project page
@@ -209,12 +247,7 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   )
   await waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
   await click('[data-test-id="project-header-create-new-feed-source-button"]')
-
-  // TODO replace with less generic selector
-  await waitForSelector('h4 input')
-  await page.type('h4 input', feedSourceName + String.fromCharCode(13))
-  await wait(2000, 'for feed source to be created and saved')
-  log.info(`created Feed Source with name: ${feedSourceName} via project header button`)
+  await createFeedSourceViaForm(feedSourceName)
 }
 
 async function createStop ({
@@ -487,6 +520,12 @@ async function getAllElements (selector: string) {
   return elements
 }
 
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Start of test suite
+// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+
 describe('end-to-end', () => {
   beforeAll(async () => {
     // Ping the otp endpoint to ensure the server is running.
@@ -529,7 +568,9 @@ describe('end-to-end', () => {
     log.info('Chromium closed.')
   })
 
-  /// Begin tests
+  // ---------------------------------------------------------------------------
+  // Begin tests
+  // ---------------------------------------------------------------------------
 
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
@@ -548,6 +589,10 @@ describe('end-to-end', () => {
     await waitForSelector('#context-dropdown')
     await wait(2000, 'for projects to load')
   }, defaultTestTimeout, 'should load the page')
+
+  // ---------------------------------------------------------------------------
+  // Project tests
+  // ---------------------------------------------------------------------------
 
   describe('project', () => {
     makeTestPostLogin('should create a project', async () => {
@@ -590,7 +635,7 @@ describe('end-to-end', () => {
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
       await expectSelectorToContainHtml('#project-viewer-tabs', 'test-otp-server')
-    }, defaultTestTimeout)
+    }, defaultTestTimeout, 'should create a project')
 
     if (doNonEssentialSteps) {
       makeTestPostLogin('should delete a project', async () => {
@@ -626,9 +671,13 @@ describe('end-to-end', () => {
         if (!projectFound) throw new Error('Created project not found')
 
         await deleteProject(projectToDeleteId)
-      }, defaultTestTimeout)
+      }, defaultTestTimeout, 'should create a project')
     }
   })
+
+  // ---------------------------------------------------------------------------
+  // Feed Source tests
+  // ---------------------------------------------------------------------------
 
   describe('feed source', () => {
     makeTestPostLogin('should create feed source', async () => {
@@ -640,17 +689,7 @@ describe('end-to-end', () => {
         }
       )
       await waitForAndClick('[data-test-id="create-first-feed-source-button"]')
-
-      // TODO replace with less generic selector
-      await waitForSelector('h4 input')
-      await page.type('h4 input', testFeedSourceName)
-
-      // TODO replace with less generic selector
-      await click('h4 button')
-      await wait(2000, 'for feed source to be created and saved')
-
-      // verify that the feed source is listed
-      await expectSelectorToContainHtml('#project-viewer-tabs', testFeedSourceName)
+      await createFeedSourceViaForm(testFeedSourceName)
 
       // find feed source id
       // enter into feed source
@@ -729,7 +768,7 @@ describe('end-to-end', () => {
     }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
-      makeTestPostLogin('should delete feed source', async () => {
+      makeTestPostFeedSource('should delete feed source', async () => {
         const testFeedSourceToDeleteName = `test-feed-source-to-delete-${testTime}`
 
         // create a new feed source to delete
@@ -784,6 +823,10 @@ describe('end-to-end', () => {
     }
   })
 
+  // ---------------------------------------------------------------------------
+  // Feed Version tests
+  // ---------------------------------------------------------------------------
+
   describe('feed version', () => {
     makeTestPostFeedSource('should download a feed version', async () => {
       await goto(`http://localhost:9966/feed/${feedSourceId}`)
@@ -821,7 +864,7 @@ describe('end-to-end', () => {
     if (doNonEssentialSteps) {
       // this uploads a feed source again because we want to end up with 2
       // feed versions after this test takes place
-      makeTestPostLogin('should delete a feed version', async () => {
+      makeTestPostFeedSource('should delete a feed version', async () => {
         // browse to feed source page
         await goto(`http://localhost:9966/feed/${feedSourceId}`)
         // for whatever reason, waitUntil: networkidle0 was not working with the
@@ -843,6 +886,10 @@ describe('end-to-end', () => {
       }, defaultTestTimeout)
     }
   })
+
+  // ---------------------------------------------------------------------------
+  // Editor tests
+  // ---------------------------------------------------------------------------
 
   describe('editor', () => {
     makeTestPostFeedSource('should load a feed version into the editor', async () => {
@@ -902,6 +949,9 @@ describe('end-to-end', () => {
       await wait(2000, 'for welcome dialog to close')
     }, defaultTestTimeout)
 
+    // ---------------------------------------------------------------------------
+    // Feed Info tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed
     describe('feed info', () => {
       makeEditorEntityTest('should create feed info data', async () => {
@@ -979,6 +1029,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create feed info data')
     })
 
+    // ---------------------------------------------------------------------------
+    // Agency tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed
     describe('agencies', () => {
       makeEditorEntityTest('should create agency', async () => {
@@ -1124,6 +1177,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout)
     })
 
+    // ---------------------------------------------------------------------------
+    // Route tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the agencies test suite
     describe('routes', () => {
@@ -1296,6 +1352,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create agency')
     })
 
+    // ---------------------------------------------------------------------------
+    // Stops tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed
     describe('stops', () => {
       makeEditorEntityTest('should create stop', async () => {
@@ -1404,6 +1463,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create stop')
     })
 
+    // ---------------------------------------------------------------------------
+    // Calenadar tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed
     describe('calendars', () => {
       makeEditorEntityTest('should create calendar', async () => {
@@ -1544,6 +1606,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout)
     })
 
+    // ---------------------------------------------------------------------------
+    // Exceptions tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the calendars test suite
     describe('exceptions', () => {
@@ -1673,6 +1738,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create calendar')
     })
 
+    // ---------------------------------------------------------------------------
+    // Fares tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the routes test suite
     describe('fares', () => {
@@ -1850,6 +1918,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create fare')
     })
 
+    // ---------------------------------------------------------------------------
+    // Pattern tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the routes test suite
     describe('patterns', () => {
@@ -1956,6 +2027,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create pattern')
     })
 
+    // ---------------------------------------------------------------------------
+    // Timetable tests
+    // ---------------------------------------------------------------------------
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the patterns and calendars test suites
     describe('timetables', () => {
@@ -2131,6 +2205,9 @@ describe('end-to-end', () => {
       }, defaultTestTimeout, 'should create trip')
     })
 
+    // ---------------------------------------------------------------------------
+    // Snapshot tests
+    // ---------------------------------------------------------------------------
     // all of the following tests depend on the editor tests completing successfully
     describe('snapshot', () => {
       makeEditorEntityTest('should create snapshot', async () => {
@@ -2152,6 +2229,9 @@ describe('end-to-end', () => {
     })
   })
 
+  // ---------------------------------------------------------------------------
+  // Feed Source Snapshot tests
+  // ---------------------------------------------------------------------------
   describe('feed source snapshot', () => {
     makeEditorEntityTest('should make snapshot active version', async () => {
       // go back to feed
@@ -2183,6 +2263,9 @@ describe('end-to-end', () => {
     // TODO: download and validate gtfs??
   })
 
+  // ---------------------------------------------------------------------------
+  // Deployment tests
+  // ---------------------------------------------------------------------------
   // the following tests depend on the snapshot test suite to have passed
   // successfully and also assumes a local instance of OTP is running
   describe('deployment', () => {
