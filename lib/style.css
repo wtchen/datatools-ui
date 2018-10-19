@@ -49,6 +49,15 @@ kbd {
   outline: 0;
 }
 
+/* App Info */
+.app-info {
+  font-size: 12px;
+}
+
+.app-info td {
+  padding-right: 10px;
+}
+
 /* Project */
 
 .project-header {
