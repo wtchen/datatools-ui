@@ -353,8 +353,6 @@ components:
       low: Low
       medium: Medium
   ProjectSettings:
-    confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
-    deleteProject: Delete Project?
     deployment:
       buildConfig:
         elevationBucket:
@@ -402,6 +400,16 @@ components:
           placeholder: Updater name
         walkSpeed: Walk Speed
       title: Deployment
+    project:
+      cannotFetchFeeds: Cannot fetch feeds
+      feeds: Feeds
+      permissions: Permissions
+    rename: Rename
+    save: Save
+    title: Settings
+  ProjectSettingsForm:
+    confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
+    deleteProject: Delete Project?
     fields:
       location:
         boundingBox: 'Bounding box (W,S,E,N)'
@@ -414,11 +422,6 @@ components:
       updates:
         autoFetchFeeds: Auto fetch feed sources?
         title: Updates
-    project:
-      cannotFetchFeeds: Cannot fetch feeds
-      feeds: Feeds
-      permissions: Permissions
-    rename: Rename
     save: Save
     title: Settings
   ProjectViewer:
