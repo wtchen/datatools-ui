@@ -24,7 +24,7 @@
     "start": "mastarm build --env dev --serve --proxy http://localhost:4000/api",
     "test": "npm run lint && npm run lint-messages && yarn run flow && npm run test-client",
     "test-client": "mastarm test -c configurations/test --test-path-ignore-patterns \"__tests__/end-to-end __tests__/test-utils\"",
-    "test-end-to-end": "mastarm test --test-path-ignore-patterns lib",
+    "test-end-to-end": "mastarm test --test-path-ignore-patterns \"lib __tests__/test-utils\"",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {

@@ -72,7 +72,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
     timeout?: number,
     dependentTests: Array<string> | string = []
   ) => {
-    it(name, async () => {
+    test(name, async () => {
       log.info(`Begin test: "${name}"`)
 
       // first make sure all dependent tests have passed
@@ -406,7 +406,9 @@ function formatSecondsElapsed (startTime: number) {
 async function waitAndClearCompletedJobs () {
   const startTime = new Date()
   // wait for jobs to get completed
-  await wait(1000, 'for job monitoring to begin')
+  await wait(500, 'for job monitoring to begin')
+  // wait for an active job to appear
+  await waitForSelector('[data-test-id="possibly-active-jobs"]')
   // All jobs completed span will appear when all jobs are done.
   await waitForSelector(
     '[data-test-id="all-jobs-completed"]',
@@ -709,7 +711,7 @@ describe('end-to-end', () => {
       if (!feedSourceFound) throw new Error('Created feedSource not found')
 
       await waitForSelector('#feed-source-viewer-tabs')
-      await wait(2000, 'for feed versions to load')
+      await wait(4000, 'for feed versions to load')
       expectSelectorToContainHtml(
         '#feed-source-viewer-tabs',
         'No versions exist for this feed source.'
@@ -721,7 +723,7 @@ describe('end-to-end', () => {
 
       // verify feed was uploaded
       await expectSelectorToContainHtml(
-        '#feed-source-viewer-tabs',
+        '[data-test-id="feed-version-validity"]',
         'Valid from Jan. 01, 2014 to Dec. 31, 2018'
       )
     }, defaultTestTimeout)
@@ -762,7 +764,7 @@ describe('end-to-end', () => {
 
       // verify that feed was fetched and processed
       await expectSelectorToContainHtml(
-        '#feed-source-viewer-tabs',
+        '[data-test-id="feed-version-validity"]',
         'Valid from Apr. 08, 2018 to Jun. 30, 2018'
       )
     }, defaultTestTimeout)
@@ -880,7 +882,7 @@ describe('end-to-end', () => {
         await waitForSelector('#feed-source-viewer-tabs')
         // verify that the previous feed is now the displayed feed
         await expectSelectorToContainHtml(
-          '#feed-source-viewer-tabs',
+          '[data-test-id="feed-version-validity"]',
           'Valid from Apr. 08, 2018 to Jun. 30, 2018'
         )
       }, defaultTestTimeout)
@@ -2255,7 +2257,7 @@ describe('end-to-end', () => {
 
       // verify that feed was fetched and processed
       await expectSelectorToContainHtml(
-        '#feed-source-viewer-tabs',
+        '[data-test-id="feed-version-validity"]',
         'Valid from May. 29, 2018 to May. 29, 2028'
       )
     }, defaultTestTimeout, 'should create snapshot')
