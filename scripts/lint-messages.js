@@ -9,10 +9,13 @@ const safeLoad = require('js-yaml').safeLoad
 const objectPath = require('object-path')
 
 const issueTypes = {
+  dynamicMessageWithoutPossibilitiesComment: 'warning',
   languageMessageSimilarity: 'warning',
-  unusedMessageDefinition: 'warning',
+  mismatchingComponentMessagesClass: 'error',
+  undefinedComponentMessages: 'error',
   undefinedMessage: 'error',
-  dynamicMessageWithoutPossibilitiesComment: 'warning'
+  unneccessaryComponentMessageDefinition: 'error',
+  unusedMessageDefinition: 'warning',
 }
 const error = []
 const jsMessageCounts = {}
@@ -21,7 +24,8 @@ const warning = []
 
 function addIssue (type, issue) {
   const issueErrorLevel = issueTypes[type]
-  console[issueErrorLevel === 'warning' ? 'warn' : 'error'](`${issueErrorLevel.toUpperCase()}: ${issue}`)
+  if (issueErrorLevel === 'error' || process.argv.indexOf('--no-warn') == -1)
+    console[issueErrorLevel === 'warning' ? 'warn' : 'error'](`${issueErrorLevel.toUpperCase()}: ${issue}`)
   if (issueErrorLevel === 'error') {
     error.push({ issue, type })
   } else {
@@ -57,24 +61,63 @@ function exploreDir (filePath) {
  * Analyze a .js file to keep track of messages found within .js code
  */
 function analyzeFile (filePath) {
-  const classRegex = /class (\w*) extends MessageComponent/gm
+  const classRegex = /class (\w*) extends Component/gm
+  const componentMessagesRegex = /^\s*messages = getComponentMessages\('(\w*)'\)/gm
   const contents = fs.readFileSync(filePath, { encoding: 'utf8' }).split('\n')
   let curClass
   let lineIdx = 0
+  let foundComponetMessagesDefinition = false
+  let messagesInCurClass = 0
+
+  function checkForUnneccessaryComponentMessagesDefinition () {
+    if (curClass && foundComponetMessagesDefinition && messagesInCurClass === 0)
+      addIssue(
+        'unneccessaryComponentMessageDefinition',
+        `Unneccessary component definition found in class '${curClass}' in file '${filePath}'`
+      )
+  }
+
   contents.forEach(line => {
     lineIdx++
 
     // find a MessageComponent class
     const classMatch = classRegex.exec(line)
     if (classMatch) {
+      checkForUnneccessaryComponentMessagesDefinition()
       curClass = classMatch[1]
+      foundComponetMessagesDefinition = false
+      messagesInCurClass = 0
       return
     }
 
     // look for a message
     if (curClass) {
+      // find initialization of component messages
+      const componentMessagesDefinitionMatch = componentMessagesRegex.exec(line)
+      if (componentMessagesDefinitionMatch) {
+        const componentMessagesClassname = componentMessagesDefinitionMatch[1]
+        if (componentMessagesClassname !== curClass) {
+          addIssue(
+            'mismatchingComponentMessagesClass',
+            `The component messages definition of '${componentMessagesClassname}' differs from the component name of ${curClass} in file ${filePath}`
+          )
+        }
+        foundComponetMessagesDefinition = true
+      }
+
       const messageIndex = line.indexOf('this.messages(')
       if (messageIndex > -1) {
+        // found a message
+        messagesInCurClass++
+
+        // make sure component messages have been defined
+        if (!foundComponetMessagesDefinition) {
+          addIssue(
+            'undefinedComponentMessages',
+            `Encountered a message in component '${curClass}' in file '${filePath}' before finding the component message definition`
+          )
+        }
+
         // determine what the message path is
         // if the first character is not ', it's a variable or a template string
         const firstChar = line[messageIndex + 14]
@@ -94,12 +137,14 @@ function analyzeFile (filePath) {
           // TODO: analyze some kind of comment outlining message possibilities
           addIssue(
             'dynamicMessageWithoutPossibilitiesComment',
-            `unable to determine message object path from variable or template string in file ${filePath} on line ${lineIdx}`
+            `unable to determine message object path from variable or template string in file '${filePath}' on line ${lineIdx}`
           )
         }
       }
     }
   })
+
+  checkForUnneccessaryComponentMessagesDefinition()
 }
 
 // iterate through js files and find all places where messages are used
