@@ -319,6 +319,11 @@
     inputType: URL
     columnWidth: 12
     helpContent:
+  - name: "route_sort_order"
+    required: false
+    inputType: NUMBER
+    columnWidth: 6
+    helpContent: "The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values."
 
 - id: trip
   name: trips.txt
