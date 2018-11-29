@@ -138,6 +138,7 @@
       "MouseEvent",
       "ReactComponent",
       "ReactElement",
+      "Response",
       "SyntheticEvent",
       "SyntheticClipboardEvent",
       "SyntheticCompositionEvent",
