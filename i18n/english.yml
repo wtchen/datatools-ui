@@ -26,6 +26,7 @@ components:
         $index:
           admin: Admin access only?
           delete: Remove
+          instanceType: Instance type
           internalUrl: Internal URLs
           name: Name
           namePlaceholder: Production
