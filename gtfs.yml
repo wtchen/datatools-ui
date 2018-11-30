@@ -276,6 +276,11 @@
       text: Funicular
     columnWidth: 12
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
+  - name: route_sort_order
+    required: false
+    inputType: POSITIVE_INT
+    columnWidth: 12
+    helpContent: The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values.
   - name: route_url
     required: false
     inputType: URL
@@ -319,11 +324,6 @@
     inputType: URL
     columnWidth: 12
     helpContent:
-  - name: route_sort_order
-    required: false
-    inputType: NUMBER
-    columnWidth: 6
-    helpContent: The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values.
 
 - id: trip
   name: trips.txt
