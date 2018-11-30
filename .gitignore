@@ -2,15 +2,9 @@ node_modules/
 .DS_Store
 dist
 *.log
-coverage
-target/
-src/main/client/config.js
-datatools-manager.iml
-config.yml
-config_server.yml
-configurations/*
-!configurations/default
+coverage*
 tmp/
+.tags
 
 # Optional npm cache directory
 .npm
@@ -21,6 +15,8 @@ tmp/
 # Configurations
 configurations/*
 !configurations/default
+!configurations/test
+!configurations/end-to-end
 dist
 assets
 
@@ -28,3 +24,4 @@ assets
 env.yml
 env.yml-original
 .env
+!configurations/test/env.yml
