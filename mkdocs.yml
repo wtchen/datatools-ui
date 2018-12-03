@@ -12,6 +12,7 @@ pages:
   - Data Manager:
     - 'Introduction': 'user/introduction.md'
     - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
+    - Feed Version Summary: 'user/feed-version-summary.md'
     - 'Managing Users': 'user/managing-users.md'
     - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
   - 'GTFS Editor':
@@ -19,10 +20,11 @@ pages:
     - Routes: 'user/editor/routes.md'
     - Patterns: 'user/editor/patterns.md'
     - Stops: 'user/editor/stops.md'
-    - Schedules: 'user/editor/schedules.md'
+    - 'Schedules/Timetables': 'user/editor/schedules.md'
     - Calendars: 'user/editor/calendars.md'
     - Fares: 'user/editor/fares.md'
 - Development Guide:
     - Deployment: dev/deployment.md
     - Development: dev/development.md
+    - API Interaction: dev/api_interaction.md
     - Migration: dev/migration.md
