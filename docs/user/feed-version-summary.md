@@ -26,5 +26,5 @@ This chart shows the total number of service hours by date for each mode contain
 ![trips per hour chart](../img/trips-per-hour-histogram.png)
 By clicking the route or pattern tabs, users can view histograms showing the total trips per hour for any given date in the GTFS feed. Note: route histograms contain multiple patterns (or sets of unique stop sequences).
 
-![trips per hour chart](../img/trips-per-hour-histogram.png)
+![timetable view](../img/version-timetables.png)
 By clicking the timetable tab, users can view detailed timetable information for any trip pattern and date in the GTFS feed. If there is variation in the headways or travel time between stops over the course of the day, red or green indicators will indicate speed ups and slow downs, respectively.
