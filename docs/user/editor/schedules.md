@@ -1,5 +1,12 @@
 # Trips
 
+## Keyboard shortcuts
+There are a number of keyboard shortcuts for jumping between and modifying trips. To view these, click the `?` in the top righthand corner of the timetable editor. You can also view these at any time while editing trips by typing `?`. The shortcuts are shown below:
+
+<div class="img-center">
+  ![timetable keyboard shortcuts](../../img/timetable-shortcuts.png)
+</div>
+
 ## Selecting schedules
 The schedule editor allows users to create trips/frequencies for any route, pattern, and calendar combination.  The selectors at the top of the page allow users to navigate between calendars for a given pattern or switch between patterns for a route or even routes within the feed.
 
