@@ -9,10 +9,8 @@ Each selection has a set of statistics associated with it to give you a sense of
     - \# of trips for the entire route
 - **Pattern**
     - \# of trips for pattern
-    - \# of calendars containing these trips.
 - **Calendar**
-    - \# of trips for selected pattern / \# of trips for entire route
-    - \# of routes with trips in calendar
+    - \# of trips for selected pattern
     - \# of trips in calendar for entire feed
 
 ![schedule selector](../../img/timetable-selector.png)
