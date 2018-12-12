@@ -347,6 +347,14 @@ components:
       high: High
       low: Low
       medium: Medium
+  ProjectAccessSettings:
+    admin: Admin
+    cannotFetchFeeds: Cannot fetch feeds
+    custom: Custom
+    feeds: Feed Sources
+    noAccess: No Access
+    permissions: Permissions
+    title: Project Settings for
   ProjectSettings:
     confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
     deleteProject: Delete Project?
