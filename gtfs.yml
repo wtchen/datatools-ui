@@ -97,7 +97,7 @@
     required: false
     inputType: TEXT
     columnWidth: 12
-    helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's "
+    helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's \"503-238-RIDE\") is permitted, but the field must not contain any other descriptive text."
   - name: "agency_fare_url"
     required: false
     inputType: URL
@@ -274,8 +274,13 @@
       text: Gondola
     - value: 7
       text: Funicular
-    columnWidth: 12
+    columnWidth: 6
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
+  - name: route_sort_order
+    required: false
+    inputType: POSITIVE_INT
+    columnWidth: 6
+    helpContent: The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values.
   - name: route_url
     required: false
     inputType: URL
@@ -584,7 +589,7 @@
     - value: 'USD'
     - value: 'EUR'
     - value: 'GBP'
-    columnWidth: 6
+    columnWidth: 12
     helpContent: "The currency_type field defines the currency used to pay the fare. Please use the ISO 4217 alphabetical currency codes which can be found at the following URL:http://en.wikipedia.org/wiki/ISO_4217."
   - name: "payment_method"
     required: true
@@ -594,7 +599,7 @@
       text: Paid on board (0)
     - value: '1'
       text: Paid before boarding (1)
-    columnWidth: 6
+    columnWidth: 12
     helpContent: "The payment_method field indicates when the fare must be paid. Valid values for this field are:"
   - name: "transfers"
     required: true
@@ -615,6 +620,11 @@
     inputType: POSITIVE_INT
     columnWidth: 6
     helpContent: "The transfer_duration field specifies the length of time in seconds before a transfer expires."
+  - name: agency_id
+    required: false
+    inputType: GTFS_AGENCY
+    columnWidth: 12
+    helpContent: "Required for feeds with multiple agencies defined in the agency.txt file. Each fare attribute must specify an agency_id value to indicate which agency the fare applies to."
 
 
 - id: fare_rules
