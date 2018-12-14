@@ -620,6 +620,11 @@
     inputType: POSITIVE_INT
     columnWidth: 6
     helpContent: "The transfer_duration field specifies the length of time in seconds before a transfer expires."
+  - name: agency_id
+    required: false
+    inputType: GTFS_AGENCY
+    columnWidth: 12
+    helpContent: Required for feeds with multiple agencies defined in the agency.txt file. Each fare attribute must specify an agency_id value to indicate which agency the fare applies to.
 
 
 - id: fare_rules
