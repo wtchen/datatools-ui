@@ -606,14 +606,6 @@ components:
       admin: Organization administrator
       billing: Billing admin
       description: Organization administrators have full access to projects within the organization.
-    project:
-      admin: Admin
-      cannotFetchFeeds: Cannot fetch feeds
-      custom: Custom
-      feeds: Feed Sources
-      noAccess: No Access
-      permissions: Permissions
-      title: Project Settings for
     save: Save
   VersionButtonToolbar:
     confirmDelete: Are you sure you want to delete this version? This cannot be undone.
