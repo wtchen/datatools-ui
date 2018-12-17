@@ -146,7 +146,7 @@ async function createProject (projectName: string) {
   await click('#context-dropdown')
   await waitForAndClick('a[href="/project/new"]')
   await waitForSelector('[data-test-id="project-name-input-container"]')
-  await page.type('[data-test-id="project-name-input-container"] input', projectName)
+  await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
   log.info('saving new project')
   await wait(2000, 'for project to get saved')
@@ -213,7 +213,7 @@ async function createFeedSourceViaForm (feedSourceName) {
   await waitForSelector('[data-test-id="feed-source-name-input-container"]')
 
   // enter feed source name
-  await page.type(
+  await type(
     '[data-test-id="feed-source-name-input-container"] input',
     feedSourceName
   )
@@ -295,7 +295,7 @@ async function createStop ({
   )
 
   // code
-  await page.type(
+  await type(
     '[data-test-id="stop-stop_code-input-container"] input',
     code
   )
@@ -307,19 +307,19 @@ async function createStop ({
   )
 
   // description
-  await page.type(
+  await type(
     '[data-test-id="stop-stop_desc-input-container"] input',
     description
   )
 
   // lat
-  await clearAndTypeNumber(
+  await clearAndType(
     '[data-test-id="stop-stop_lat-input-container"] input',
     lat
   )
 
   // lon
-  await clearAndTypeNumber(
+  await clearAndType(
     '[data-test-id="stop-stop_lon-input-container"] input',
     lon
   )
@@ -329,11 +329,11 @@ async function createStop ({
   await click(
     `${zoneIdSelector} .Select-control`
   )
-  await page.type(`${zoneIdSelector} input`, zoneId)
+  await type(`${zoneIdSelector} input`, zoneId)
   await page.keyboard.press('Enter')
 
   // stop url
-  await page.type(
+  await type(
     '[data-test-id="stop-stop_url-input-container"]',
     url
   )
@@ -391,7 +391,7 @@ async function reactSelectOption (
 ) {
   log.info(`selecting option from react-select container: ${containerSelector}`)
   await click(`${containerSelector} .Select-control`)
-  await page.type(`${containerSelector} input`, initalText)
+  await type(`${containerSelector} input`, initalText)
   const optionSelector =
     `.${virtualized ? 'VirtualizedSelectOption' : 'Select-option'}:nth-child(${optionToSelect})`
   await waitForSelector(optionSelector)
@@ -422,18 +422,7 @@ async function waitAndClearCompletedJobs () {
 
 async function clearAndType (selector: string, text: string) {
   await clearInput(selector)
-  await page.type(selector, text)
-}
-
-async function clearAndTypeNumber (selector: string, text: string) {
-  await clearAndType(selector, text)
-
-  if (parseFloat(text) < 0) {
-    for (let i = 0; i < text.length; i++) {
-      await page.keyboard.press('ArrowLeft')
-    }
-    await page.keyboard.type('-')
-  }
+  await type(selector, text)
 }
 
 async function appendText (selector: string, text: string) {
@@ -522,6 +511,11 @@ async function getAllElements (selector: string) {
   return elements
 }
 
+async function type (selector: string, text: string) {
+  log.info(`typing text: "${text}" into selector: ${selector}`)
+  await page.type(selector, text)
+}
+
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 // Start of test suite
@@ -582,15 +576,17 @@ describe('end-to-end', () => {
   })
 
   makeTest('should login', async () => {
-    await goto('http://localhost:9966')
+    await goto('http://localhost:9966', { waitUntil: 'networkidle0' })
     await waitForAndClick('[data-test-id="header-log-in-button"]')
-    await waitForSelector('button[class="auth0-lock-submit"]')
-    await page.type('input[class="auth0-lock-input"][name="email"]', config.username)
-    await page.type('input[class="auth0-lock-input"][name="password"]', config.password)
+    await waitForSelector('button[class="auth0-lock-submit"]', { visible: true })
+    await waitForSelector('input[class="auth0-lock-input"][name="email"]')
+    await type('input[class="auth0-lock-input"][name="email"]', config.username)
+    await type('input[class="auth0-lock-input"][name="password"]', config.password)
     await click('button[class="auth0-lock-submit"]')
     await waitForSelector('#context-dropdown')
     await wait(2000, 'for projects to load')
   }, defaultTestTimeout, 'should load the page')
+
 
   // ---------------------------------------------------------------------------
   // Project tests
@@ -629,9 +625,9 @@ describe('end-to-end', () => {
       // add a server
       await waitForAndClick('[data-test-id="add-server-button"]')
       await waitForSelector('input[name="otpServers.$index.name"]')
-      await page.type('input[name="otpServers.$index.name"]', 'test-otp-server')
-      await page.type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
-      await page.type('input[name="otpServers.$index.internalUrl"]', 'http://localhost:8080/otp')
+      await type('input[name="otpServers.$index.name"]', 'test-otp-server')
+      await type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
+      await type('input[name="otpServers.$index.internalUrl"]', 'http://localhost:8080/otp')
       await click('[data-test-id="save-settings-button"]')
 
       // reload page an verify test server persists
@@ -739,7 +735,7 @@ describe('end-to-end', () => {
         { visible: true }
       )
       // set fetch url
-      await page.type(
+      await type(
         '[data-test-id="feed-source-url-input-group"] input',
         'https://github.com/catalogueglobal/datatools-ui/raw/dev/configurations/end-to-end/test-gtfs-to-fetch.zip'
       )
@@ -964,8 +960,8 @@ describe('end-to-end', () => {
         await waitForSelector('#feed_publisher_name')
 
         // fill out form
-        await page.type('#feed_publisher_name', 'end-to-end automated test')
-        await page.type('#feed_publisher_url', 'example.test')
+        await type('#feed_publisher_name', 'end-to-end automated test')
+        await type('#feed_publisher_url', 'example.test')
         await reactSelectOption(
           '[data-test-id="feedinfo-feed_lang-input-container"]',
           'eng',
@@ -987,7 +983,7 @@ describe('end-to-end', () => {
           '[data-test-id="feedinfo-default_route_type-input-container"] select',
           '6'
         )
-        await page.type(
+        await type(
           '[data-test-id="feedinfo-feed_version-input-container"] input',
           testTime
         )
@@ -1046,15 +1042,15 @@ describe('end-to-end', () => {
         await waitForSelector('[data-test-id="agency-agency_id-input-container"]')
 
         // fill out form
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_id-input-container"] input',
           'test-agency-id'
         )
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_name-input-container"] input',
           'test agency name'
         )
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_url-input-container"] input',
           'example.test'
         )
@@ -1070,19 +1066,19 @@ describe('end-to-end', () => {
           'eng',
           2
         )
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_phone-input-container"] input',
           '555-555-5555'
         )
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_fare_url-input-container"] input',
           'example.fare.test'
         )
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_email-input-container"] input',
           'test@example.com'
         )
-        await page.type(
+        await type(
           '[data-test-id="agency-agency_branding_url-input-container"] input',
           'example.branding.url'
         )
@@ -1221,13 +1217,13 @@ describe('end-to-end', () => {
         )
 
         // long name
-        await page.type(
+        await type(
           '[data-test-id="route-route_long_name-input-container"] input',
           'test route 1'
         )
 
         // description
-        await page.type(
+        await type(
           '[data-test-id="route-route_desc-input-container"] input',
           'test route 1 description'
         )
@@ -1257,7 +1253,7 @@ describe('end-to-end', () => {
         )
 
         // branding url
-        await page.type(
+        await type(
           '[data-test-id="route-route_branding_url-input-container"] input',
           'example.branding.test'
         )
@@ -1483,13 +1479,13 @@ describe('end-to-end', () => {
         // fill out form
 
         // service_id
-        await page.type(
+        await type(
           '[data-test-id="calendar-service_id-input-container"] input',
           'test-service-id'
         )
 
         // description
-        await page.type(
+        await type(
           '[data-test-id="calendar-description-input-container"] input',
           'test calendar'
         )
@@ -1627,7 +1623,7 @@ describe('end-to-end', () => {
         // fill out form
 
         // name
-        await page.type(
+        await type(
           '[data-test-id="exception-name-input-container"] input',
           'test exception'
         )
@@ -1759,13 +1755,13 @@ describe('end-to-end', () => {
         // fill out form
 
         // fare_id
-        await page.type(
+        await type(
           '[data-test-id="fare-fare_id-input-container"] input',
           'test-fare-id'
         )
 
         // price
-        await page.type(
+        await type(
           '[data-test-id="fare-price-input-container"] input',
           '1'
         )
@@ -1789,7 +1785,7 @@ describe('end-to-end', () => {
         )
 
         // transfer duration
-        await page.type(
+        await type(
           '[data-test-id="fare-transfer_duration-input-container"] input',
           '12345'
         )
@@ -1970,7 +1966,7 @@ describe('end-to-end', () => {
           '.trip-pattern-list',
           'Russell Av'
         )
-      }, defaultTestTimeout, 'should create route')
+      }, defaultTestTimeout, ['should create route', 'should create stop'])
 
       makeEditorEntityTest('should update pattern data', async () => {
         // change pattern name by appending to end
@@ -2220,7 +2216,7 @@ describe('end-to-end', () => {
         await waitForSelector('[data-test-id="snapshot-dialog-name"]')
 
         // enter name
-        await page.type('[data-test-id="snapshot-dialog-name"]', 'test-snapshot')
+        await type('[data-test-id="snapshot-dialog-name"]', 'test-snapshot')
 
         // confrim snapshot creation
         await click('[data-test-id="confirm-snapshot-create-button"]')
