@@ -58,6 +58,16 @@ kbd {
   padding-right: 10px;
 }
 
+/* Project */
+
+.project-header {
+  background-color: #F5F5F5;
+  border-bottom: 1px #e3e3e3 solid;
+  margin: -40px;
+  margin-bottom: -64px;
+  padding: 40px 20px 60px 20px;
+}
+
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {
