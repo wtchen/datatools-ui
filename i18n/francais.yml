@@ -5,6 +5,54 @@ components:
     deployments: Deployments
     projects: Projects
     root: Explore
+  CollapsiblePanel:
+    deployment:
+      buildConfig:
+        elevationBucket:
+          accessKey: Access Key
+          bucketName: S3 Bucket Name
+          secretKey: Secret Key
+        fares: Fares
+        fetchElevationUS: Fetch Elevation
+        stationTransfers: Sta. Transfers
+        subwayAccessTime: Subway Access Time
+        title: Build Config
+      osm:
+        bounds: Custom Extract Bounds
+        custom: Use Custom Extract Bounds
+        gtfs: Use GTFS-Derived Extract Bounds
+        title: OSM Extract
+      otpServers:
+        $index:
+          admin: Admin access only?
+          delete: Remove
+          internalUrl: Internal URLs
+          name: Name
+          namePlaceholder: Production
+          publicUrl: Public URL
+          s3Bucket: S3 bucket name
+        new: Add server
+        serverPlaceholder: Server name
+        title: Servers
+      routerConfig:
+        brandingUrlRoot: Branding URL Root
+        carDropoffTime: Car Dropoff Time
+        numItineraries: '# of itineraries'
+        requestLogFile: Request log file
+        stairsReluctance: Stairs Reluctance
+        title: Router Config
+        updaters:
+          $index:
+            defaultAgencyId: Default agency ID
+            frequencySec: Frequency (in seconds)
+            sourceType: Source type
+            type: Type
+            url: URL
+          new: Add updater
+          title: Real-time updaters
+          placeholder: Updater name
+        walkSpeed: Walk Speed
+      title: Deployment
   CreateUser:
     new: Create User
   DatatoolsNavbar:
@@ -356,8 +404,6 @@ components:
     permissions: Permissions
     title: Project Settings for
   ProjectSettings:
-    confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
-    deleteProject: Delete Project?
     deployment:
       buildConfig:
         elevationBucket:
@@ -405,7 +451,18 @@ components:
           placeholder: Updater name
         walkSpeed: Walk Speed
       title: Deployment
-    general:
+    project:
+      cannotFetchFeeds: Cannot fetch feeds
+      feeds: Feeds
+      permissions: Permissions
+    rename: Rename
+    save: Save
+    title: Settings
+  ProjectSettingsForm:
+    cancel: Cancel
+    confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
+    deleteProject: Delete Project?
+    fields:
       location:
         boundingBox: 'Bounding box (W,S,E,N)'
         defaultLanguage: Default language
@@ -417,11 +474,6 @@ components:
       updates:
         autoFetchFeeds: Auto fetch feed sources?
         title: Updates
-    project:
-      cannotFetchFeeds: Cannot fetch feeds
-      feeds: Feeds
-      permissions: Permissions
-    rename: Rename
     save: Save
     title: Settings
   ProjectViewer:
