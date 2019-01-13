@@ -10,6 +10,9 @@ import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 
+import setupE2e from '../test-utils/setup-e2e'
+import teardownE2e from '../test-utils/teardown-e2e'
+
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
 const puppeteerOptions = {
@@ -24,10 +27,10 @@ const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
   failFast: false
 }
-const config: {
+let config: {
   password: string,
   username: string
-} = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
+}
 let browser
 let page
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
@@ -61,6 +64,7 @@ const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
 const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
+const collectingCoverage = process.env.NODE_ENV === 'instrumented'
 
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
@@ -99,6 +103,11 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         //   path: `e2e-error-${errorCount++}-${name.replace(' ', '_')}-${testTime}.png`,
         //   fullPage: true
         // })
+
+        // report coverage thus far
+        await sendCoverageToServer()
+
+        // fail fast if needed
         if (testOptions.failFast) {
           log.info('Fail fast option enabled. Shutting down end-to-end test immediately following single test failure.')
           // Delay by a second so that log statement is processed.
@@ -106,6 +115,9 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         }
         throw e
       }
+
+      // report coverage thus far
+      await sendCoverageToServer()
 
       // note successful completion
       testResults[name] = true
@@ -126,6 +138,23 @@ const makeEditorEntityTest = makeMakeTest([
 // this can be turned off in development mode to skip some tests that do not
 // need to be run in order for other tests to work properly
 const doNonEssentialSteps = true
+
+/**
+ * Collect current coverage and send it to coverage collector server
+ */
+async function sendCoverageToServer () {
+  if (collectingCoverage) {
+    const coverage = await page.evaluate(() => window.__coverage__)
+
+    await fetch('http://localhost:9999/coverage/client', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(coverage)
+    })
+  }
+}
 
 async function expectSelectorToContainHtml (selector: string, html: string) {
   const innerHTML = await getInnerHTMLFromSelector(selector)
@@ -455,6 +484,9 @@ async function wait (milliseconds: number, reason?: string) {
 }
 
 async function goto (url: string, options?: any) {
+  // before navigating away from the page, collect and report coverage thus far
+  await sendCoverageToServer()
+
   log.info(`navigating to: ${url}`)
   await page.goto(url, options)
   await wait(1000, 'for page to load')
@@ -524,6 +556,12 @@ async function type (selector: string, text: string) {
 
 describe('end-to-end', () => {
   beforeAll(async () => {
+    if (collectingCoverage) {
+      await setupE2e()
+    }
+
+    config = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
+
     // Ping the otp endpoint to ensure the server is running.
     try {
       log.info(`Pinging OTP at ${OTP_ROOT}`)
@@ -553,16 +591,26 @@ describe('end-to-end', () => {
       { behavior: 'allow', downloadPath: './' }
     )
     log.info('Setup complete.')
-  })
+  }, 120000)
 
   afterAll(async () => {
     // delete test project
-    await deleteProject(testProjectId)
-    log.info('End-to-end testing complete. Closing Chromium...')
+    try {
+      await deleteProject(testProjectId)
+      log.info('End-to-end testing complete. Closing Chromium...')
+    } catch (e) {
+      log.error(`could not delete project with id "${testProjectId}" failed due to error: ${e}`)
+    }
     // close browser
+    await page.close()
     await browser.close()
     log.info('Chromium closed.')
-  })
+
+    // teardown coverage stuff if needed
+    if (collectingCoverage) {
+      await teardownE2e()
+    }
+  }, 120000)
 
   // ---------------------------------------------------------------------------
   // Begin tests
