@@ -557,7 +557,9 @@ async function type (selector: string, text: string) {
 describe('end-to-end', () => {
   beforeAll(async () => {
     if (isCi || collectingCoverage) {
+      console.log('setting up e2e environment')
       await setupE2e()
+      console.log('done setting up e2e environment')
     }
 
     config = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)

@@ -25,6 +25,8 @@ function startBackendServer () {
   if (!isUiRepo) return Promise.resolve()
 
   return new Promise((resolve, reject) => {
+    console.log('prepare to start backend server')
+
     // get all necessary required environment variables
     try {
       requireEnvVars([
@@ -52,9 +54,11 @@ function startBackendServer () {
 
     auto({
       makeServerFolder: callback => {
+        console.log('creating directory for server files')
         mkdirp(serverFolder, callback)
       },
       downloadJar: ['makeServerFolder', (results, callback) => {
+        console.log('downloading server jar')
         downloadFile(
           `https://s3.amazonaws.com/datatools-builds/${serverJarFilename}`,
           serverJarFile,
@@ -62,6 +66,7 @@ function startBackendServer () {
         )
       }],
       downloadEnvTemplate: ['makeServerFolder', (results, callback) => {
+        console.log('downloading backend env.yml template')
         downloadFile(
           `${baseDtServerGithubConfigUrl}env.yml.tmp`,
           envFile,
@@ -69,6 +74,7 @@ function startBackendServer () {
         )
       }],
       downloadServerTemplate: ['makeServerFolder', (results, callback) => {
+        console.log('downloading backend server.yml template')
         downloadFile(
           `${baseDtServerGithubConfigUrl}server.yml.tmp`,
           serverFile,
@@ -76,12 +82,16 @@ function startBackendServer () {
         )
       }],
       readEnvTemplate: ['downloadEnvTemplate', (results, callback) => {
+        console.log('loading backend env template')
         loadYamlFile(envFile, callback)
       }],
       readServerTemplate: ['downloadServerTemplate', (results, callback) => {
+        console.log('loading backend server template')
         loadYamlFile(serverFile, callback)
       }],
       writeEnvFile: ['readEnvTemplate', (results, callback) => {
+        console.log('writing backend env.yml')
+
         writeYamlFile(
           'env.yml',
           merge(
@@ -103,6 +113,8 @@ function startBackendServer () {
         )
       }],
       writeServerFile: ['readServerTemplate', (results, callback) => {
+        console.log('writing backend server.yml')
+
         const {
           S3_BUCKET,
           TRANSITFEEDS_KEY
@@ -123,6 +135,8 @@ function startBackendServer () {
         'writeEnvFile',
         'writeServerFile',
         (results, callback) => {
+          console.log('starting backend server')
+
           try {
             spawnDetachedProcess(
               'java',
@@ -143,7 +157,11 @@ function startBackendServer () {
         }
       ]
     }, (err, results) => {
-      if (err) return reject(err)
+      if (err) {
+        console.error(`failed to start backed server due to error: ${err}`)
+        return reject(err)
+      }
+      console.log('backend server started successfully')
       resolve()
     })
   })
@@ -154,6 +172,8 @@ function startBackendServer () {
  */
 function startClientServer () {
   return new Promise((resolve, reject) => {
+    console.log('prepare to start client dev server')
+
     // get all necessary required environment variables
     try {
       requireEnvVars([
@@ -182,6 +202,8 @@ function startClientServer () {
     // writing that can be performed asynchronously.
     auto({
       writeE2eEnvYml: callback => {
+        console.log('writing e2e env.yml')
+
         // create e2e config file with valid auth0 login
         // > configurations/end-to-end/env.yml
         writeYamlFile(
@@ -194,12 +216,18 @@ function startClientServer () {
         )
       },
       loadDefaultEnvYml: callback => {
+        console.log('loading client env.yml template')
+
         loadYamlFile(path.join(defaultConfigFolder, 'env.yml.tmp'), callback)
       },
       loadDefaultSettingsYml: callback => {
+        console.log('loading client settings.yml template')
+
         loadYamlFile(path.join(defaultConfigFolder, 'settings.yml'), callback)
       },
       writeDefaultEnvYml: ['loadDefaultEnvYml', (results, callback) => {
+        console.log('writing client env.yml template')
+
         writeYamlFile(
           path.join(defaultConfigFolder, 'env.yml'),
           merge(
@@ -218,6 +246,8 @@ function startClientServer () {
         )
       }],
       writeDefaultSettingsYml: ['loadDefaultSettingsYml', (results, callback) => {
+        console.log('writing client settings.yml template')
+
         const {
           S3_BUCKET,
           TRANSITFEEDS_KEY
@@ -238,6 +268,8 @@ function startClientServer () {
         'writeDefaultEnvYml',
         'writeDefaultSettingsYml',
         (results, callback) => {
+          console.log('starting client dev server')
+
           try {
             spawnDetachedProcess(
               'npm',
@@ -258,7 +290,11 @@ function startClientServer () {
         }
       ]
     }, (err, results) => {
-      if (err) return reject(err)
+      if (err) {
+        console.error(`failed to start client dev server due to error: ${err}`)
+        return reject(err)
+      }
+      console.log('successfully started client dev server')
       resolve()
     })
   })
@@ -271,12 +307,16 @@ function startOtp () {
   return new Promise((resolve, reject) => {
     const otpJarFilename = 'otp-1.2.0-shaded.jar'
 
+    console.log('downloading otp jar')
+
     // download otp
     downloadFile(
       'https://repo1.maven.org/maven2/org/opentripplanner/otp/1.2.0/otp-1.2.0-shaded.jar',
       otpJarFilename,
       err => {
         if (err) return reject(err)
+
+        console.log('starting otp')
 
         // start otp
         try {
@@ -297,6 +337,7 @@ function startOtp () {
           console.error(`error starting dev server: ${e}`)
           return reject(e)
         }
+        console.log('successfully started otp')
         resolve()
       }
     )
@@ -320,6 +361,8 @@ function startCoverageServer () {
   if (!collectingCoverage) return Promise.resolve()
 
   return new Promise((resolve, reject) => {
+    console.log('starting coverage server')
+
     try {
       spawnDetachedProcess(
         'node',
@@ -331,6 +374,7 @@ function startCoverageServer () {
       return reject(e)
     }
 
+    console.log('successfully started coverage server')
     resolve()
   })
 }
