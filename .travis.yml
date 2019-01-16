@@ -7,7 +7,6 @@ node_js:
 cache:
   yarn: true
 before_install:
-  - npm i -g codecov
   # Use updated python to avoid SSL insecure warnings:
   # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
   - python --version
@@ -19,7 +18,11 @@ script:
   - yarn run lint-messages
   - yarn run flow
   - yarn run cover-client
-  - codecov
+  # upload coverage results from unit tests and then delete coverage reports
+  - bash <(curl -s https://codecov.io/bash) -c -F unit_tests
+  - yarn run cover-end-to-end
+  # upload coverage results from e2e tests and then delete coverage reports
+  - bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests
   - yarn run build -- --minify
   - mkdocs build
 
@@ -28,5 +31,4 @@ sudo: false
 
 # Push results to codecov.io
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
   - yarn run semantic-release

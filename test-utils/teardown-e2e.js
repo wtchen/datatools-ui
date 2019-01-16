@@ -1,45 +1,12 @@
-const {exec} = require('child_process')
 const fs = require('fs')
 const path = require('path')
 
 const extractZip = require('extract-zip')
-const request = require('request')
 
-/**
- * Helper to find and kill a process
- */
-function killDetachedProcess (processName, callback) {
-  const pidFilename = `${processName}.pid`
+const {downloadFile, killDetachedProcess} = require('./utils')
 
-  // open pid file to get pid
-  fs.readFile(pidFilename, (err, data) => {
-    if (err) {
-      console.error(`pid file ${pidFilename} could not be read!`)
-      return callback(err)
-    }
-
-    // attempt to kill process running with pid
-    const cmd = `kill ${data}`
-    console.log(cmd)
-    exec(cmd, err => {
-      if (err) {
-        console.error(`pid ${data} could not be killed!`)
-        return callback(err)
-      }
-
-      console.log('Kill command successful')
-
-      // delete pid file
-      fs.unlink(pidFilename, err => {
-        if (err) {
-          console.error(`pid file ${pidFilename} could not be deleted!`)
-          return callback(err)
-        }
-        callback()
-      })
-    })
-  })
-}
+const isCi = process.env.CI
+const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
 
 /**
  * Function to kill the coverage server
@@ -70,33 +37,33 @@ function collectCoverageAndStopSever () {
 
     // download and save coverage report
     console.log('Downloading coverage report')
-    const reportStream = request('http://localhost:9999/coverage/download')
-      .pipe(fs.createWriteStream('e2e-coverage.zip'))
-
-    // handle any error occurred while downloading coverage report
-    console.log('Extracting coverage report')
-    reportStream.on('error', (err) => {
-      console.error(`Error downloading coverage: ${err}`)
-      stopCoverageServer(handleCoverageServerStop(reject))
-    })
-
-    // unzip the coverage report once it's done downloading
-    reportStream.on('finish', () => {
-      extractZip(
-        'e2e-coverage.zip',
-        {dir: path.join(process.cwd(), 'coverage-e2e')},
-        (err) => {
-          if (err) {
-            console.error(`error unzipping coverage report: ${err}`)
-            return stopCoverageServer(handleCoverageServerStop(reject))
-          }
-          fs.unlink('e2e-coverage.zip', err => {
-            if (err) console.error(`Error deleting coverage zip file: ${err}`)
-          })
-          stopCoverageServer(handleCoverageServerStop(resolve))
+    downloadFile(
+      'http://localhost:9999/coverage/download',
+      'e2e-coverage.zip',
+      (err) => {
+        if (err) {
+          console.error(`Error downloading coverage: ${err}`)
+          return stopCoverageServer(handleCoverageServerStop(reject))
         }
-      )
-    })
+
+        // unzip the coverage report once it's done downloading
+        console.log('Extracting coverage report')
+        extractZip(
+          'e2e-coverage.zip',
+          {dir: path.join(process.cwd(), 'coverage-e2e')},
+          (err) => {
+            if (err) {
+              console.error(`error unzipping coverage report: ${err}`)
+              return stopCoverageServer(handleCoverageServerStop(reject))
+            }
+            fs.unlink('e2e-coverage.zip', err => {
+              if (err) console.error(`Error deleting coverage zip file: ${err}`)
+            })
+            stopCoverageServer(handleCoverageServerStop(resolve))
+          }
+        )
+      }
+    )
   })
 }
 
@@ -104,14 +71,30 @@ function collectCoverageAndStopSever () {
  * Stub for shutting down a datatools-server instance if needed
  */
 function shutdownDatatoolsServer () {
-  return Promise.resolve()
+  if (!isCi || !isUiRepo) return Promise.resolve()
+
+  return new Promise((resolve, reject) => {
+    console.log('stopping datatools-server')
+    killDetachedProcess('datatools-server', err => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
 }
 
 /**
  * Stub for shutting down a client if needed
  */
 function shutdownClient () {
-  return Promise.resolve()
+  if (!isCi) return Promise.resolve()
+
+  return new Promise((resolve, reject) => {
+    console.log('stopping client dev server')
+    killDetachedProcess('client-dev-server', err => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
 }
 
 module.exports = function () {

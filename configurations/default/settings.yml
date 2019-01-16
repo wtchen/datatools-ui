@@ -1,30 +1,58 @@
+entries:
+  - lib/main.js:dist/index.js
+  - lib/index.css:dist/index.css
+s3bucket: your-s3-bucket
+cloudfront: your-cloudfront-token?
+
 application:
-  active_project: project-id
   changelog_url: 'https://changelog.example.com'
   data:
-    gtfs_s3_bucket: bucket-name
-    use_s3_storage: false
-  date_format: MMM Do YYYY
+    gtfs_s3_bucket: your-s3-bucket
+    use_s3_storage: true
+  # Conveyal logo image from analyst-logos bucket
+  logo: https://d2f1n6ed3ipuic.cloudfront.net/conveyal-128x128.png
+  active_project: project-id
+  notifications_enabled: true
   docs_url: 'http://docs.example.com'
-  logo: 'http://gtfs-assets-dev.conveyal.com/data_manager.png'
-  notifications_enabled: false
-  profileRefreshTime: -1
+  public_url: http://localhost:9000
   support_email: support@example.com
-  title: Data Manager
-entries:
-  - 'lib/main.js:dist/index.js'
-  - 'lib/index.css:dist/index.css'
-extensions:
-  transitfeeds:
-    enabled: false
-  transitland:
-    enabled: false
+  r5: http://example.com
+  date_format: MMM Do YYYY
+  dev: false
+  title: Conveyal Datatools
 modules:
-  editor:
-    enabled: true
   enterprise:
     enabled: true
+  editor:
+    enabled: true
+  alerts:
+    enabled: true
+    use_extension: mtc
+  sign_config:
+    enabled: true
+    use_extension: mtc
   user_admin:
     enabled: true
-  validator:
+  gtfsplus:
     enabled: true
+  deployment:
+    enabled: true
+  validator:
+    enabled: false
+  gtfsapi:
+    enabled: true
+    load_on_fetch: true
+    load_on_startup: false
+    use_extension: false
+    # update_frequency: 30 # in seconds
+  dump:
+    enabled: true
+
+extensions:
+  transitland:
+    enabled: false
+    api: https://transit.land/api/v1/feeds
+  transitfeeds:
+    enabled: false
+    api: http://api.transitfeeds.com/v1/getFeeds
+    key: your-transit-feeds-key

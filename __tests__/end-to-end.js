@@ -13,15 +13,17 @@ import SimpleNodeLogger from 'simple-node-logger'
 import setupE2e from '../test-utils/setup-e2e'
 import teardownE2e from '../test-utils/teardown-e2e'
 
+const isCi = !!process.env.CI
+
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
 const puppeteerOptions = {
-  headless: false
+  headless: isCi,
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
   // slowMo: 30 // puts xx milliseconds between events (for easier watching in non-headless)
   // NOTE: In order to run on Travis CI, use args --no-sandbox option
-  // args: ['--no-sandbox']
+  args: isCi ? ['--no-sandbox'] : []
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
