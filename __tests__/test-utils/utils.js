@@ -4,6 +4,10 @@ const fs = require('fs')
 const {safeDump, safeLoad} = require('js-yaml')
 const request = require('request')
 
+export const collectingCoverage = process.env.NODE_ENV === 'instrumented'
+export const isCi = !!process.env.CI
+export const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
+
 /**
  * Download a file using a stream
  */

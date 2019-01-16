@@ -20,7 +20,7 @@ script:
   - yarn run cover-client
   # upload coverage results from unit tests and then delete coverage reports
   - bash <(curl -s https://codecov.io/bash) -c -F unit_tests
-  - yarn run test-end-to-end
+  - yarn run cover-end-to-end
   # upload coverage results from e2e tests and then delete coverage reports
   - bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests
   - yarn run build -- --minify

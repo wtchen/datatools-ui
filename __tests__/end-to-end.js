@@ -10,10 +10,9 @@ import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 
-import setupE2e from '../test-utils/setup-e2e'
-import teardownE2e from '../test-utils/teardown-e2e'
-
-const isCi = !!process.env.CI
+import setupE2e from './test-utils/setup-e2e'
+import teardownE2e from './test-utils/teardown-e2e'
+import {collectingCoverage, isCi} from './test-utils/utils'
 
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
@@ -66,7 +65,6 @@ const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
 const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
-const collectingCoverage = process.env.NODE_ENV === 'instrumented'
 
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
@@ -558,7 +556,7 @@ async function type (selector: string, text: string) {
 
 describe('end-to-end', () => {
   beforeAll(async () => {
-    if (collectingCoverage) {
+    if (isCi || collectingCoverage) {
       await setupE2e()
     }
 
@@ -609,7 +607,7 @@ describe('end-to-end', () => {
     log.info('Chromium closed.')
 
     // teardown coverage stuff if needed
-    if (collectingCoverage) {
+    if (isCi || collectingCoverage) {
       await teardownE2e()
     }
   }, 120000)

@@ -5,25 +5,24 @@ const mkdirp = require('mkdirp')
 const auto = require('run-auto')
 
 const {
+  collectingCoverage,
   downloadFile,
+  isCi,
+  isUiRepo,
   loadYamlFile,
   requireEnvVars,
   spawnDetachedProcess,
   writeYamlFile
 } = require('./utils')
 
-const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
 const serverJarFilename = 'dt-latest-dev.jar'
 
 /**
  * download, configure and start an instance of datatools-server
- * @return {[type]} [description]
  */
 function startBackendServer () {
   // if running this from the datatools-server repo, skip this step
-  if (!isUiRepo) {
-    return Promise.resolve()
-  }
+  if (!isUiRepo) return Promise.resolve()
 
   return new Promise((resolve, reject) => {
     // get all necessary required environment variables
@@ -239,17 +238,16 @@ function startClientServer () {
         'writeDefaultEnvYml',
         'writeDefaultSettingsYml',
         (results, callback) => {
-          const args = ['start', '--prefix', datatoolsUiDir]
-          if (isUiRepo) {
-            // if being ran within the datatools-ui repo, ensure the code is
-            // instrumented
-            args.push('--')
-            args.push('--instrument')
-          }
           try {
             spawnDetachedProcess(
               'npm',
-              args,
+              [
+                // if working with the ui repo in a CI environment, start the
+                // dev server with instrumented code
+                isUiRepo ? 'start-instrumented' : 'start',
+                '--prefix',
+                datatoolsUiDir
+              ],
               'client-dev-server'
             )
           } catch (e) {
@@ -306,7 +304,7 @@ function startOtp () {
 }
 
 function setupForCIEnvironment () {
-  if (!process.env.CI) return Promise.resolve()
+  if (!isCi) return Promise.resolve()
 
   return Promise.all([
     startBackendServer(),
@@ -319,6 +317,8 @@ function setupForCIEnvironment () {
  * Start a server to collect coverage from the e2e tests.
  */
 function startCoverageServer () {
+  if (!collectingCoverage) return Promise.resolve()
+
   return new Promise((resolve, reject) => {
     try {
       spawnDetachedProcess(

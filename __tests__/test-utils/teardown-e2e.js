@@ -3,10 +3,12 @@ const path = require('path')
 
 const extractZip = require('extract-zip')
 
-const {downloadFile, killDetachedProcess} = require('./utils')
-
-const isCi = process.env.CI
-const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
+const {
+  downloadFile,
+  isCi,
+  isUiRepo,
+  killDetachedProcess
+} = require('./utils')
 
 /**
  * Function to kill the coverage server
@@ -20,6 +22,8 @@ function stopCoverageServer (callback) {
  * download e2e coverage results and then shut down e2e coverage server
  */
 function collectCoverageAndStopSever () {
+  if (!isUiRepo) return Promise.resolve()
+
   return new Promise((resolve, reject) => {
     /**
      * Helper to perform a promise fulfillment after stopping the coverage server
