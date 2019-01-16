@@ -14,7 +14,6 @@
   "scripts": {
     "build": "mastarm build --env production",
     "cover-client": "npm run test-client -- --coverage --coverage-paths \"lib/**/*.js\"",
-    "cover-end-to-end": "npm run test-end-to-end -- --instrument",
     "cover-flow": "flow-coverage-report -t html -t text -i 'lib/**/*.js' -o coverage-flow",
     "deploy": "mastarm deploy --minify --env production",
     "flow": "mastarm flow",
