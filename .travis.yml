@@ -5,7 +5,9 @@ notifications:
 node_js:
   - '8'
 cache:
-  yarn: true
+  directories:
+    - $HOME/.cache/yarn
+    - $HOME/.cache/pip
 before_install:
   # Use updated python to avoid SSL insecure warnings:
   # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
