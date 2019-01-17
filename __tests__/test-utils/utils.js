@@ -83,6 +83,16 @@ function loadYamlFile (filename, callback) {
   })
 }
 
+function promisifiedKillDetachedProcess (processName) {
+  return new Promise((resolve, reject) => {
+    console.log(`stopping ${processName}`)
+    killDetachedProcess(`${processName}`, err => {
+      if (err) return reject(err)
+      resolve()
+    })
+  })
+}
+
 /**
  * Make sure certain environment variables are definted
  */
@@ -128,6 +138,7 @@ module.exports = {
   isUiRepo,
   killDetachedProcess,
   loadYamlFile,
+  promisifiedKillDetachedProcess,
   requireEnvVars,
   spawnDetachedProcess,
   writeYamlFile
