@@ -366,7 +366,7 @@ function startCoverageServer () {
     try {
       spawnDetachedProcess(
         'node',
-        ['test-utils/e2e-coverage-collector-server.js'],
+        ['__tests__/test-utils/e2e-coverage-collector-server.js'],
         'e2e-coverage-collector-server'
       )
     } catch (e) {

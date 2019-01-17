@@ -4,6 +4,7 @@ const path = require('path')
 const extractZip = require('extract-zip')
 
 const {
+  collectingCoverage,
   downloadFile,
   isCi,
   isUiRepo,
@@ -22,7 +23,7 @@ function stopCoverageServer (callback) {
  * download e2e coverage results and then shut down e2e coverage server
  */
 function collectCoverageAndStopSever () {
-  if (!isUiRepo) return Promise.resolve()
+  if (!collectingCoverage) return Promise.resolve()
 
   return new Promise((resolve, reject) => {
     /**

@@ -10,8 +10,6 @@ import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 
-import setupE2e from './test-utils/setup-e2e'
-import teardownE2e from './test-utils/teardown-e2e'
 import {collectingCoverage, isCi} from './test-utils/utils'
 
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
@@ -556,12 +554,6 @@ async function type (selector: string, text: string) {
 
 describe('end-to-end', () => {
   beforeAll(async () => {
-    if (isCi || collectingCoverage) {
-      console.log('setting up e2e environment')
-      await setupE2e()
-      console.log('done setting up e2e environment')
-    }
-
     config = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
 
     // Ping the otp endpoint to ensure the server is running.
@@ -607,11 +599,6 @@ describe('end-to-end', () => {
     await page.close()
     await browser.close()
     log.info('Chromium closed.')
-
-    // teardown coverage stuff if needed
-    if (isCi || collectingCoverage) {
-      await teardownE2e()
-    }
   }, 120000)
 
   // ---------------------------------------------------------------------------

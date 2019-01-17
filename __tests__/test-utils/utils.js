@@ -4,14 +4,14 @@ const fs = require('fs')
 const {safeDump, safeLoad} = require('js-yaml')
 const request = require('request')
 
-export const collectingCoverage = process.env.NODE_ENV === 'instrumented'
-export const isCi = !!process.env.CI
-export const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
+const collectingCoverage = process.env.COLLECT_COVERAGE
+const isCi = !!process.env.CI
+const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
 
 /**
  * Download a file using a stream
  */
-export function downloadFile (url, filename, callback) {
+function downloadFile (url, filename, callback) {
   console.log(`downloading file: ${url}`)
   const dlStream = request(url).pipe(fs.createWriteStream(filename))
 
@@ -36,7 +36,7 @@ export function downloadFile (url, filename, callback) {
 /**
  * Find and kill a process
  */
-export function killDetachedProcess (processName, callback) {
+function killDetachedProcess (processName, callback) {
   const pidFilename = `${processName}.pid`
 
   // open pid file to get pid
@@ -72,7 +72,7 @@ export function killDetachedProcess (processName, callback) {
 /**
  * Load yaml from a file into a js object
  */
-export function loadYamlFile (filename, callback) {
+function loadYamlFile (filename, callback) {
   fs.readFile(filename, (err, data) => {
     if (err) return callback(err)
     try {
@@ -86,7 +86,7 @@ export function loadYamlFile (filename, callback) {
 /**
  * Make sure certain environment variables are definted
  */
-export function requireEnvVars (varnames) {
+function requireEnvVars (varnames) {
   const undefinedVars = []
   varnames.forEach(varname => {
     if (!process.env[varname]) {
@@ -101,7 +101,7 @@ export function requireEnvVars (varnames) {
 /**
  * Start a process that will continue to run after this script ends
  */
-export function spawnDetachedProcess (cmd, args, name) {
+function spawnDetachedProcess (cmd, args, name) {
   const processOut = fs.openSync(`./${name}-out.log`, 'w')
   const processErr = fs.openSync(`./${name}-err.log`, 'w')
   console.log(`${cmd} ${args.join(' ')}`)
@@ -117,6 +117,18 @@ export function spawnDetachedProcess (cmd, args, name) {
 /**
  * Write a js object into a yaml formatted file
  */
-export function writeYamlFile (filename, obj, callback) {
+function writeYamlFile (filename, obj, callback) {
   fs.writeFile(filename, safeDump(obj), callback)
+}
+
+module.exports = {
+  collectingCoverage,
+  downloadFile,
+  isCi,
+  isUiRepo,
+  killDetachedProcess,
+  loadYamlFile,
+  requireEnvVars,
+  spawnDetachedProcess,
+  writeYamlFile
 }
