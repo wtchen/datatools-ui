@@ -278,6 +278,7 @@ function startClientServer () {
             spawnDetachedProcess(
               'npm',
               [
+                'run',
                 // if working with the ui repo in a CI environment, start the
                 // dev server with instrumented code
                 isUiRepo ? 'start-instrumented' : 'start',
@@ -290,7 +291,11 @@ function startClientServer () {
             console.error(`error starting dev server: ${e}`)
             return callback(e)
           }
-          callback()
+
+          // wait for 120 seconds to make sure dev server can build js files and
+          // be ready to handle request
+          console.log('started dev server, waiting 120 seconds for it to start and build files')
+          setTimeout(callback, 120000)
         }
       ]
     }, (err, results) => {

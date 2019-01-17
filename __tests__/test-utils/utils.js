@@ -51,7 +51,7 @@ function killDetachedProcess (processName, callback) {
     console.log(cmd)
     exec(cmd, err => {
       if (err) {
-        console.error(`pid ${data} could not be killed!`)
+        console.error(`pid ${data} (${processName}) could not be killed!`)
         return callback(err)
       }
 
@@ -104,12 +104,12 @@ function requireEnvVars (varnames) {
 function spawnDetachedProcess (cmd, args, name) {
   const processOut = fs.openSync(`./${name}-out.log`, 'w')
   const processErr = fs.openSync(`./${name}-err.log`, 'w')
-  console.log(`${cmd} ${args.join(' ')}`)
   const child = spawn(
     cmd,
     args,
     { detached: true, stdio: [ 'ignore', processOut, processErr ] }
   )
+  console.log(`${cmd} ${args.join(' ')} running as pid ${child.pid}`)
   fs.writeFileSync(`${name}.pid`, child.pid)
   child.unref()
 }
