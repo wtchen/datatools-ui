@@ -4,6 +4,10 @@ notifications:
   slack: conveyal:WQxmWiu8PdmujwLw4ziW72Gc
 node_js:
   - '8'
+services:
+  # needed for e2e tests to start datatools-server
+  - mongodb
+  - postgresql
 cache:
   directories:
     - $HOME/.cache/yarn
