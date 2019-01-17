@@ -43,7 +43,7 @@ function startBackendServer () {
     }
 
     const serverFolder = path.join(
-      process.env.HOME,
+      process.env.TRAVIS_BUILD_DIR,
       'conveyal',
       'datatools-server'
     )
@@ -191,7 +191,7 @@ function startClientServer () {
     }
 
     // set the working directories for datatools-ui
-    const datatoolsUiDir = path.join(process.env.HOME, 'conveyal', 'datatools-ui')
+    const datatoolsUiDir = path.join(process.env.TRAVIS_BUILD_DIR, 'conveyal', 'datatools-ui')
     const defaultConfigFolder = path.join(
       datatoolsUiDir,
       'configurations',
