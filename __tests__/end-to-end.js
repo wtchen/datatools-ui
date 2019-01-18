@@ -62,6 +62,7 @@ let feedSourceId
 let scratchFeedSourceId
 let routerId
 const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
+const browserEventLogs = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}-browser-events.log`)
 const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
@@ -578,17 +579,27 @@ describe('end-to-end', () => {
     log.info('Launching chromium for testing...')
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
-    page.on('console', msg => {
-      const messageText = msg.text()
-      // Log any errors or warnings encountered in browser console to stdout
-      if (messageText.search(/warning|error/i) !== -1) {
-        log.warn(messageText)
-      }
+
+    // log certain events happening in the browser
+    page.on('console', msg => { browserEventLogs.info(msg.text()) })
+    page.on('error', error => {
+      browserEventLogs.error(error)
+      browserEventLogs.error(error.stack)
     })
+    page.on('pageerror', error => { browserEventLogs.error(`Page Error: ${error}`) })
+    page.on('requestfailed', req => {
+      browserEventLogs.error(`Request failed: ${req.method()} ${req.url()}`)
+    })
+    page.on('requestfinished', req => {
+      browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
+    })
+
+    // set the default download behavior to download files to the cwd
     page._client.send(
       'Page.setDownloadBehavior',
       { behavior: 'allow', downloadPath: './' }
     )
+
     log.info('Setup complete.')
   }, 120000)
 
