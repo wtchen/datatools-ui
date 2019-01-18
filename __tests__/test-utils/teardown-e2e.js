@@ -174,6 +174,14 @@ function uploadLogsToSlack () {
 
     // glob all log files in cwd into zip
     archive.glob('./*.log')
+    // add the datatools-server config files
+    const datatoolsServerDir = path.join(
+      process.env.TRAVIS_BUILD_DIR,
+      '..',
+      'datatools-server'
+    )
+    archive.file(path.join(datatoolsServerDir, 'env.yml'), { name: 'dt-server-env.yml' })
+    archive.file(path.join(datatoolsServerDir, 'server.yml'), { name: 'dt-server-server.yml' })
     archive.finalize()
   })
 }
