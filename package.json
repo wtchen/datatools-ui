@@ -13,6 +13,7 @@
   "license": "MIT",
   "scripts": {
     "build": "mastarm build --env production",
+    "build-dev": "mastarm build --env dev",
     "cover-client": "npm run test-client -- --coverage --coverage-paths \"lib/**/*.js\"",
     "cover-flow": "flow-coverage-report -t html -t text -i 'lib/**/*.js' -o coverage-flow",
     "cover-end-to-end": "npm run test-end-to-end -- --test-environment ./__tests__/test-utils/e2e-with-coverage-environment.js",

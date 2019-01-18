@@ -292,7 +292,7 @@ function startClientServer () {
         (results, callback) => {
           console.log('building client dist files')
 
-          const args = ['run', 'build', '--prefix', datatoolsUiDir]
+          const args = ['run', 'build-dev', '--prefix', datatoolsUiDir]
 
           // if running in the ui environment, build with instrumented code
           if (isUiRepo) {
