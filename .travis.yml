@@ -21,6 +21,8 @@ before_install:
   - pip install --user mkdocs
   # create database for e2e tests
   - psql -U postgres -c 'CREATE DATABASE catalogue;'
+  # add aws credentials for datatools-server
+  - mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=us-east-1' > ~/.aws/config
 script:
   - yarn run lint
   - yarn run lint-messages
