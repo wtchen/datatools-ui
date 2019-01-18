@@ -1,5 +1,8 @@
+const {execFile} = require('child_process')
+const fs = require('fs')
 const path = require('path')
 
+const each = require('async-each')
 const {merge, pick} = require('lodash')
 const mkdirp = require('mkdirp')
 const auto = require('run-auto')
@@ -205,6 +208,21 @@ function startClientServer () {
     // asynchronously complete the remaining tasks as they involve a lot of file
     // writing that can be performed asynchronously.
     auto({
+      startClientDevServer: callback => {
+        console.log('starting client dev server')
+
+        try {
+          spawnDetachedProcess(
+            'node', ['__tests__/test-utils/travis-client-dev-server.js'],
+            'client-dev-server'
+          )
+        } catch (e) {
+          console.error(`error starting dev server: ${e}`)
+          return callback(e)
+        }
+
+        callback()
+      },
       writeE2eEnvYml: callback => {
         console.log('writing e2e env.yml')
 
@@ -267,35 +285,55 @@ function startClientServer () {
           callback
         )
       }],
-      startClientDevServer: [
+      buildClientDistFiles: [
         'writeE2eEnvYml',
         'writeDefaultEnvYml',
         'writeDefaultSettingsYml',
         (results, callback) => {
-          console.log('starting client dev server')
+          console.log('building client dist files')
 
-          try {
-            spawnDetachedProcess(
-              'npm',
-              [
-                'run',
-                // if working with the ui repo in a CI environment, start the
-                // dev server with instrumented code
-                isUiRepo ? 'start-instrumented' : 'start',
-                '--prefix',
-                datatoolsUiDir
-              ],
-              'client-dev-server'
-            )
-          } catch (e) {
-            console.error(`error starting dev server: ${e}`)
-            return callback(e)
+          const args = ['run', 'build', '--prefix', datatoolsUiDir]
+
+          // if running in the ui environment, build with instrumented code
+          if (isUiRepo) {
+            args.push('--')
+            args.push('--instrument')
           }
 
-          // wait for 120 seconds to make sure dev server can build js files and
-          // be ready to handle request
-          console.log('started dev server, waiting 120 seconds for it to start and build files')
-          setTimeout(callback, 120000)
+          execFile(
+            'npm',
+            args,
+            (err, stdout, stderr) => {
+              if (err) {
+                console.error(`An error occurred while building client dist files: ${err}`)
+              }
+
+              // write the stdout, stderr logs regardless of whether the build
+              // was successful
+              each(
+                [
+                  { data: stdout, logType: 'out' },
+                  { data: stderr, logType: 'err' }
+                ],
+                (output, outputCallback) => {
+                  fs.writeFile(
+                    `mastarm-build-${output.logType}.log`,
+                    output.data,
+                    outputCallback
+                  )
+                },
+                (eachErr) => {
+                  if (eachErr) {
+                    console.error(`An error occurred while writing the build log files: ${err}`)
+                  }
+                  // callback for build server executing.  Don't fail this if
+                  // the log writing failed as that is not necessary for the
+                  // rest of the e2e script to run properly
+                  callback(err)
+                }
+              )
+            }
+          )
         }
       ]
     }, (err, results) => {

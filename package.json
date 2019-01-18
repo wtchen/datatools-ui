@@ -110,7 +110,9 @@
   },
   "devDependencies": {
     "archiver": "^3.0.0",
+    "async-each": "^1.0.1",
     "express": "^4.16.4",
+    "express-http-proxy": "^1.5.1",
     "extract-zip": "^1.6.7",
     "flow-bin": "^0.77.0",
     "flow-coverage-report": "^0.3.0",
