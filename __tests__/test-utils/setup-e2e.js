@@ -96,7 +96,7 @@ function startBackendServer () {
         console.log('writing backend env.yml')
 
         writeYamlFile(
-          'env.yml',
+          envFile,
           merge(
             results.readEnvTemplate,
             pick(
@@ -128,7 +128,7 @@ function startBackendServer () {
         serverEnv.application.data.gtfs_s3_bucket = S3_BUCKET
         serverEnv.extensions.transitfeeds.key = TRANSITFEEDS_KEY
         writeYamlFile(
-          'server.yml',
+          serverFile,
           serverEnv,
           callback
         )
