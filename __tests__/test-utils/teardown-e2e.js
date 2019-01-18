@@ -174,6 +174,8 @@ function uploadLogsToSlack () {
 
     // glob all log files in cwd into zip
     archive.glob('./*.log')
+    // glob all png files (e2e error screenshots) into zip
+    archive.glob('./e2e-error-*.png')
     archive.finalize()
   })
 }

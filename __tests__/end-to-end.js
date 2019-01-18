@@ -26,6 +26,8 @@ const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
   failFast: false
 }
+let failingFast = false
+let successfullyCreatedTestProject = false
 let config: {
   password: string,
   username: string
@@ -76,6 +78,10 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   ) => {
     test(name, async () => {
       log.info(`Begin test: "${name}"`)
+      if (failingFast) {
+        log.error('Failing fast due to previous failed test')
+        throw new Error('Failing fast due to previous failed test')
+      }
 
       // first make sure all dependent tests have passed
       if (!(dependentTests instanceof Array)) {
@@ -95,21 +101,21 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         await fn()
       } catch (e) {
         log.error(`test "${name}" failed due to error: ${e}`)
-        // TODO: Add option to take screenshots
+
         // Take screenshot of page to help debugging.
-        // page.screenshot({
-        //   path: `e2e-error-${errorCount++}-${name.replace(' ', '_')}-${testTime}.png`,
-        //   fullPage: true
-        // })
+        await page.screenshot({
+          path: `e2e-error-${name.replace(' ', '_')}-${testTime}.png`,
+          fullPage: true
+        })
 
         // report coverage thus far
         await sendCoverageToServer()
 
         // fail fast if needed
         if (testOptions.failFast) {
-          log.info('Fail fast option enabled. Shutting down end-to-end test immediately following single test failure.')
+          log.info('Fail fast option enabled. Failing remaining tests.')
           // Delay by a second so that log statement is processed.
-          setTimeout(() => process.exit(2), 1000)
+          failingFast = true
         }
         throw e
       }
@@ -565,9 +571,8 @@ describe('end-to-end', () => {
       // else log.info('OTP is OK.')
     } catch (e) {
       if (testOptions.failFast) {
-        log.error('OpenTripPlanner not accepting requests. Exiting due to fail fast option.')
-        // Exit immediately if failing fast.
-        process.exit(9)
+        log.error('OpenTripPlanner not accepting requests. Failing remaining tests due to fail fast option.')
+        failingFast = true
       } else log.warn('OpenTripPlanner not accepting requests. Start it up for deployment tests!!')
     }
     log.info('Launching chromium for testing...')
@@ -589,11 +594,13 @@ describe('end-to-end', () => {
 
   afterAll(async () => {
     // delete test project
-    try {
-      await deleteProject(testProjectId)
-      log.info('End-to-end testing complete. Closing Chromium...')
-    } catch (e) {
-      log.error(`could not delete project with id "${testProjectId}" failed due to error: ${e}`)
+    if (successfullyCreatedTestProject) {
+      try {
+        await deleteProject(testProjectId)
+        log.info('Successfully deleted test project. Closing Chromium...')
+      } catch (e) {
+        log.error(`could not delete project with id "${testProjectId}" due to error: ${e}`)
+      }
     }
     // close browser
     await page.close()
@@ -608,7 +615,7 @@ describe('end-to-end', () => {
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
     await waitForSelector('h1')
-    await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
+    await expectSelectorToContainHtml('h1', 'Conveyal1 Datatools')
     testResults['should load the page'] = true
   })
 
@@ -651,6 +658,7 @@ describe('end-to-end', () => {
 
       await waitForSelector('#project-viewer-tabs')
       await expectSelectorToContainHtml('#project-viewer-tabs', 'What is a feed source?')
+      successfullyCreatedTestProject = true
     }, defaultTestTimeout)
 
     makeTestPostLogin('should update a project by adding a otp server', async () => {
