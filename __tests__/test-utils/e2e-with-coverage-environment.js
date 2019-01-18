@@ -23,6 +23,7 @@ class EndToEndEnvironment extends NodeEnvironment {
   async setup () {
     await require('./setup-e2e')()
     await super.setup()
+    console.log('finished setting up EndToEndEnvironment')
   }
 
   async teardown () {
