@@ -53,7 +53,7 @@ function startBackendServer () {
     const serverJarFile = path.join(serverFolder, serverJarFilename)
     const envFile = path.join(serverFolder, 'env.yml')
     const serverFile = path.join(serverFolder, 'server.yml')
-    const baseDtServerGithubConfigUrl = 'https://raw.githubusercontent.com/conveyal/datatools-server/dev/configurations/default/'
+    const baseDtServerGithubConfigUrl = 'https://raw.githubusercontent.com/conveyal/datatools-server/e2e-coverage/configurations/default/'
 
     auto({
       makeServerFolder: callback => {
