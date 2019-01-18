@@ -19,6 +19,8 @@ before_install:
   - pyenv versions
   - pyenv global 2.7.14
   - pip install --user mkdocs
+  # create database for e2e tests
+  - psql -U postgres -c 'CREATE DATABASE catalogue;'
 script:
   - yarn run lint
   - yarn run lint-messages
