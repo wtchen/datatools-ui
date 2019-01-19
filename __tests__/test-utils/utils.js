@@ -1,4 +1,4 @@
-const {exec, spawn} = require('child_process')
+const {execFile, spawn} = require('child_process')
 const fs = require('fs')
 
 const {safeDump, safeLoad} = require('js-yaml')
@@ -40,18 +40,26 @@ function killDetachedProcess (processName, callback) {
   const pidFilename = `${processName}.pid`
 
   // open pid file to get pid
-  fs.readFile(pidFilename, (err, data) => {
+  fs.readFile(pidFilename, (err, pid) => {
     if (err) {
       console.error(`pid file ${pidFilename} could not be read!`)
       return callback(err)
     }
 
+    // make absolutely sure that the pid file contains a numeric string.  This
+    // is to make sure that the file we're reading didn't somehow change and now
+    // includes a harmful command that could be executed
+    if (!pid.match(/^\d*$/)) {
+      console.error(`pid file ${pidFilename} has unexpected data!`)
+      return callback(new Error(`pid file ${pidFilename} has unexpected data!`))
+    }
+
     // attempt to kill process running with pid
-    const cmd = `kill ${data}`
+    const cmd = `kill ${pid}`
     console.log(cmd)
-    exec(cmd, err => {
+    execFile('kill', [pid], err => {
       if (err) {
-        console.error(`pid ${data} (${processName}) could not be killed!`)
+        console.error(`pid ${pid} (${processName}) could not be killed!`)
         return callback(err)
       }
 
