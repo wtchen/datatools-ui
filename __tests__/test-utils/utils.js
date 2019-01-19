@@ -49,6 +49,7 @@ function killDetachedProcess (processName, callback) {
     // make absolutely sure that the pid file contains a numeric string.  This
     // is to make sure that the file we're reading didn't somehow change and now
     // includes a harmful command that could be executed
+    pid = pid.toString()
     if (!pid.match(/^\d*$/)) {
       console.error(`pid file ${pidFilename} has unexpected data!`)
       return callback(new Error(`pid file ${pidFilename} has unexpected data!`))
