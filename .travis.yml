@@ -8,6 +8,8 @@ services:
   # needed for e2e tests to start datatools-server
   - mongodb
   - postgresql
+addons:
+  postgresql: 9.6
 cache:
   directories:
     - $HOME/.cache/yarn
