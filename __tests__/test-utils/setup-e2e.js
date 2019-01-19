@@ -30,7 +30,7 @@ function startBackendServer () {
   return new Promise((resolve, reject) => {
     console.log('prepare to start backend server')
 
-    // get all necessary required environment variables
+    // make sure required environment variables are set
     try {
       requireEnvVars([
         'AUTH0_CLIENT_ID',
@@ -177,7 +177,7 @@ function startClientServer () {
   return new Promise((resolve, reject) => {
     console.log('prepare to start client dev server')
 
-    // get all necessary required environment variables
+    // make sure required environment variables are set
     try {
       requireEnvVars([
         'AUTH0_CLIENT_ID',
