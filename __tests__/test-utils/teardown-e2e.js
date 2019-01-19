@@ -151,7 +151,7 @@ function uploadLogsToSlack () {
           {
             channels: process.env.SLACK_CHANNEL,
             file: fs.createReadStream(logsZipfile),
-            filename: `${repo}-build-${process.env.TRAVIS_BUILD_NUMBER}-logs.zip`,
+            filename: `${repo}-build-${process.env.TRAVIS_BUILD_NUMBER}-e2e-logs.zip`,
             filetype: 'zip',
             initial_comment: `View build logs here: ${process.env.TRAVIS_BUILD_WEB_URL}`
           },
