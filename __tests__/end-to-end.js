@@ -773,6 +773,9 @@ describe('end-to-end', () => {
     makeTestPostFeedSource('should process uploaded gtfs', async () => {
       await uploadGtfs()
 
+      // wait for main tab to show up with version validity info
+      await waitForSelector('[data-test-id="feed-version-validity"]')
+
       // verify feed was uploaded
       await expectSelectorToContainHtml(
         '[data-test-id="feed-version-validity"]',
@@ -2304,10 +2307,10 @@ describe('end-to-end', () => {
       // go to main feed tab
       await click('#feed-source-viewer-tabs-tab-')
 
-      // wait for main tab to show up
-      await waitForSelector('#feed-source-viewer-tabs-pane-')
+      // wait for main tab to show up with version validity info
+      await waitForSelector('[data-test-id="feed-version-validity"]')
 
-      // verify that feed was fetched and processed
+      // verify that snapshot was made active version
       await expectSelectorToContainHtml(
         '[data-test-id="feed-version-validity"]',
         'Valid from May. 29, 2018 to May. 29, 2028'
