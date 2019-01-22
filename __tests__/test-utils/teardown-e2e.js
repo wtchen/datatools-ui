@@ -144,7 +144,7 @@ function uploadLogsToSlack () {
       console.log(`Successfully zipped ${archive.pointer()} total bytes`)
       if (!calledResolveOrReject) {
         const slack = new Slack({ token: process.env.SLACK_TOKEN })
-        const repo = process.cwd().split(path.sep).pop()
+        const repo = process.env.TRAVIS_BUILD_DIR.split(path.sep).pop()
 
         console.log('uploading log zipfiles to slack')
         slack.files.upload(
