@@ -39,7 +39,9 @@ function startBackendServer () {
         'AUTH0_TOKEN',
         'OSM_VEX',
         'SPARKPOST_EMAIL',
-        'SPARKPOST_KEY'
+        'SPARKPOST_KEY',
+        'S3_BUCKET',
+        'TRANSITFEEDS_KEY'
       ])
     } catch (e) {
       return reject(e)
