@@ -1,5 +1,6 @@
 const {execFile, spawn} = require('child_process')
 const fs = require('fs')
+const path = require('path')
 
 const {safeDump, safeLoad} = require('js-yaml')
 const request = require('request')
@@ -121,15 +122,21 @@ function requireEnvVars (varnames) {
  * Start a process that will continue to run after this script ends
  */
 function spawnDetachedProcess (cmd, args, name) {
-  const processOut = fs.openSync(`./${name}-out.log`, 'w')
-  const processErr = fs.openSync(`./${name}-err.log`, 'w')
+  const stdOutFile = path.resolve(`./${name}-out.log`)
+  const processOut = fs.openSync(stdOutFile, 'w')
+  const stdErrFile = path.resolve(`./${name}-err.log`)
+  const processErr = fs.openSync(stdErrFile, 'w')
   const child = spawn(
     cmd,
     args,
     { detached: true, stdio: [ 'ignore', processOut, processErr ] }
   )
   console.log(`${cmd} ${args.join(' ')} running as pid ${child.pid}`)
-  fs.writeFileSync(`${name}.pid`, child.pid)
+  const pidFilename = path.resolve(`${name}.pid`)
+  fs.writeFileSync(pidFilename, child.pid)
+  console.log(`wrote pid file ${pidFilename}`)
+  console.log(`writing ${name} stdout to ${stdOutFile}`)
+  console.log(`writing ${name} stderr to ${stdErrFile}`)
   child.unref()
 }
 
