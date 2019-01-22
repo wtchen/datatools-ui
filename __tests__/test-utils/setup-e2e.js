@@ -44,6 +44,7 @@ function startBackendServer () {
         'TRANSITFEEDS_KEY'
       ])
     } catch (e) {
+      console.error(`A required env var is missin: ${e}`)
       return reject(e)
     }
 
@@ -192,6 +193,7 @@ function startClientServer () {
         'TRANSITFEEDS_KEY'
       ])
     } catch (e) {
+      console.error(`A required env var is missin: ${e}`)
       return reject(e)
     }
 
