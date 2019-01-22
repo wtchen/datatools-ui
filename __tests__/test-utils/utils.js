@@ -38,9 +38,10 @@ function downloadFile (url, filename, callback) {
  * Find and kill a process
  */
 function killDetachedProcess (processName, callback) {
-  const pidFilename = `${processName}.pid`
+  const pidFilename = path.resolve(`${processName}.pid`)
 
   // open pid file to get pid
+  console.log(`Begin killing detached process... reading pid file ${pidFilename}`)
   fs.readFile(pidFilename, (err, pid) => {
     if (err) {
       console.error(`pid file ${pidFilename} could not be read!`)

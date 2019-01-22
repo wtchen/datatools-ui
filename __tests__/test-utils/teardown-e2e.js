@@ -172,6 +172,15 @@ function uploadLogsToSlack () {
 
     archive.pipe(output)
 
+    // FIXME remove after done debugging
+    console.log(process.cwd())
+    fs.readdir(process.cwd(), (err, files) => {
+      if (err) return console.log('could not read files in cwd')
+      files.forEach(f => {
+        console.log(f)
+      })
+    })
+
     // glob all log files in cwd into zip
     archive.glob('./*.log')
     // glob all png files (e2e error screenshots) into zip
