@@ -5,12 +5,14 @@ application:
     gtfs_s3_bucket: bucket-name
     use_s3_storage: false
   date_format: MMM Do YYYY
+  description: 'A command center for managing, editing, validating, and deploying GTFS feeds.'
   docs_url: 'http://docs.example.com'
-  logo: 'http://gtfs-assets-dev.conveyal.com/data_manager.png'
+  logo: 'https://d2f1n6ed3ipuic.cloudfront.net/conveyal-128x128.png'
+  logo_large: https://d2f1n6ed3ipuic.cloudfront.net/conveyal-512x512.png
   notifications_enabled: false
   profileRefreshTime: -1
   support_email: support@example.com
-  title: Data Manager
+  title: Conveyal Data Tools
 entries:
   - 'lib/main.js:dist/index.js'
   - 'lib/index.css:dist/index.css'
