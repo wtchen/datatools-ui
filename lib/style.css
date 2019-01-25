@@ -14,6 +14,11 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Font for entire app */
+* {
+  font-family: 'Sarabun', sans-serif;
+}
+
 kbd {
   display: inline-block;
   margin: 0 .1em;
