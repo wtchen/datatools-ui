@@ -265,10 +265,12 @@ components:
     previous: Previous
     version: Version
   FeedVersionTabs:
-    agencyCount: Agency Count
-    routeCount: Route Count
-    stopTimesCount: Stop time Count
-    tripCount: Trip Count
+    agencyCount: Agency count
+    daysActive: Days active
+    routeCount: Route count
+    stopCount: Stop count
+    stopTimesCount: Stop time count
+    tripCount: Trip count
     validDates: Valid Dates
   FeedVersionViewer:
     confirmDelete: Are you sure you want to delete this version? This cannot be undone.
