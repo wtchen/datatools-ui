@@ -22,9 +22,9 @@ before_install:
   - pyenv global 2.7.14
   - pip install --user mkdocs
   # create database for e2e tests
-  - psql -U postgres -c 'CREATE DATABASE catalogue;'
+  - if [ "$TRAVIS_REPO_SLUG" = "conveyal/datatools-ui" ]; then psql -U postgres -c 'CREATE DATABASE catalogue;' fi
   # add aws credentials for datatools-server
-  - mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=us-east-1' > ~/.aws/config
+  - if [ "$TRAVIS_REPO_SLUG" = "conveyal/datatools-ui" ]; then mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=us-east-1' > ~/.aws/config else mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=foo' 'aws_secret_access_key=bar' 'region=us-east-1' > ~/.aws/config fi
 script:
   - yarn run lint
   - yarn run lint-messages
@@ -32,9 +32,9 @@ script:
   - yarn run cover-client
   # upload coverage results from unit tests and then delete coverage reports
   - bash <(curl -s https://codecov.io/bash) -c -F unit_tests
-  - yarn run cover-end-to-end
+  - if [ "$TRAVIS_REPO_SLUG" = "conveyal/datatools-ui" ]; then yarn run cover-end-to-end fi
   # upload coverage results from e2e tests and then delete coverage reports
-  - bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests
+  - if [ "$TRAVIS_REPO_SLUG" = "conveyal/datatools-ui" ]; then bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests fi
   - yarn run build -- --minify
   - mkdocs build
 
