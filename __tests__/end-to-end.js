@@ -626,7 +626,7 @@ describe('end-to-end', () => {
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
     await waitForSelector('h1')
-    await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
+    await expectSelectorToContainHtml('h1', 'Conveyal Data Tools')
     testResults['should load the page'] = true
   })
 
