@@ -282,6 +282,7 @@ function startClientServer () {
         const clientSettings = results.loadDefaultSettingsYml
         clientSettings.S3_BUCKET = S3_BUCKET
         clientSettings.application.data.gtfs_s3_bucket = S3_BUCKET
+        clientSettings.modules.deployment = { enabled: true }
         clientSettings.extensions.transitfeeds.key = TRANSITFEEDS_KEY
         writeYamlFile(
           path.join(defaultConfigFolder, 'settings.yml'),
