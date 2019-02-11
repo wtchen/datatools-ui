@@ -62,6 +62,7 @@
     "qs": "^6.2.1",
     "randomcolor": "^0.5.3",
     "rbush": "^2.0.1",
+    "rc-menu": "^7.4.21",
     "rc-slider": "6.1.2",
     "react": "^15.4.1",
     "react-addons-shallow-compare": "^15.4.1",

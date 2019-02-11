@@ -30,6 +30,11 @@ kbd {
   white-space: nowrap;
 }
 
+/* rc-menu fixes to have less padding */
+.rc-menu-item, .rc-menu-submenu-title {
+  padding: 7px 7px 7px 16px !important;
+}
+
 /* MODIFY STYLE FOR BOOTSTRAP NAV TABS */
 
 .nav-tabs {
