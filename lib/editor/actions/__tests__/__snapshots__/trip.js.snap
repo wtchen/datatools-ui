@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`editor > actions > trip > showTimetableContextMenu can dispatch an action to show the context menu 1`] = `
+Object {
+  "activeCell": null,
+  "contextMenu": Object {
+    "context": "editable-cell",
+    "display": true,
+    "left": -49,
+    "top": 2,
+  },
+  "edited": Array [],
+  "hideDepartureTimes": false,
+  "offset": 0,
+  "scrollIndexes": Object {
+    "scrollToColumn": 0,
+    "scrollToRow": 0,
+  },
+  "selected": Array [],
+  "status": Object {
+    "error": false,
+    "fetched": false,
+    "fetching": false,
+  },
+  "trips": Array [],
+}
+`;
