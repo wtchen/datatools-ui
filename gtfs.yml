@@ -28,14 +28,13 @@
     inputType: DATE
     columnWidth: 12
     helpContent: "The feed provides complete and reliable schedule information for service in the period from the beginning of the feed_start_date day to the end of the feed_end_date day. Both days are given as dates in YYYYMMDD format as for calendar.txt, or left empty if unavailable. The feed_end_date date must not precede the feed_start_date date if both are given. Feed providers are encouraged to give schedule data outside this period to advise of likely future service, but feed consumers should treat it mindful of its non-authoritative status. If feed_start_date or feed_end_date extend beyond the active calendar dates defined in calendar.txt and calendar_dates.txt, the feed is making an explicit assertion that there is no service for dates within the feed_start_date or feed_end_date range but not included in the active calendar dates."
-  - name: color
+  - name: default_route_color
     displayName: Default color
     datatools: true
     required: false
     inputType: COLOR
     columnWidth: 6
-    # helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
-  - name: defaultRouteType
+  - name: default_route_type
     displayName: Default route type
     datatools: true
     columnWidth: 6
@@ -63,21 +62,6 @@
     inputType: TEXT
     columnWidth: 12
     helpContent: "The feed publisher can specify a string here that indicates the current version of their GTFS feed. GTFS-consuming applications can display this value to help feed publishers determine whether the latest version of their feed has been incorporated."
-  - name: "defaultLat"
-    required: false
-    displayName: Default lat
-    datatools: true
-    inputType: LATITUDE
-    columnWidth: 6
-    # helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
-  - name: "defaultLon"
-    displayName: Default lon
-    required: false
-    datatools: true
-    inputType: LONGITUDE
-    columnWidth: 6
-    # helpContent: "The stop_lon field contains the longitude of a stop or station. The field value must be a valid WGS 84 longitude value from -180 to 180."
-
 
 - id: agency
   name: agency.txt
@@ -113,7 +97,7 @@
     required: false
     inputType: TEXT
     columnWidth: 12
-    helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's "
+    helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's \"503-238-RIDE\") is permitted, but the field must not contain any other descriptive text."
   - name: "agency_fare_url"
     required: false
     inputType: URL
@@ -203,11 +187,11 @@
     required: false
     inputType: DROPDOWN
     options:
-    - value: '0'
+    - value: 0
       text: No information (0)
-    - value: '1'
+    - value: 1
       text: At least some vehicles (1)
-    - value: '2'
+    - value: 2
       text: Not possible (2)
     columnWidth: 12
     helpContent: "The wheelchair_boarding field identifies whether wheelchair boardings are possible from the specified stop or station. The field can have the following values:"
@@ -223,24 +207,24 @@
     required: true
     inputType: DROPDOWN
     options:
-    - value: 'IN_PROGRESS'
+    - value: 0
       text: 'In Progress'
-    - value: 'PENDING_APPROVAL'
+    - value: 1
       text: 'Pending Approval'
-    - value: 'APPROVED'
+    - value: 2
       text: 'Approved'
     columnWidth: 6
     adminOnly: true
     # helpContent: The route_id field contains an ID that uniquely identifies a route. The route_id is dataset unique.
-  - name: publiclyVisible
+  - name: publicly_visible
     datatools: true
     displayName: Public?
     required: true
     inputType: DROPDOWN
     options:
-    - value: false
+    - value: 0
       text: 'No'
-    - value: true
+    - value: 1
       text: 'Yes'
     columnWidth: 6
     adminOnly: true
@@ -254,22 +238,22 @@
     required: true
     inputType: TEXT
     columnWidth: 7
-    helpContent: The route_short_name contains the short name of a route. This will often be a short, abstract identifier like
-  - name: agency_id
-    required: false
-    inputType: GTFS_AGENCY
-    columnWidth: 12
-    helpContent: The agency_id field defines an agency for the specified route. This value is referenced from the agency.txt file. Use this field when you are providing data for routes from more than one agency.
+    helpContent: The route_short_name contains the short name of a route. This will often be a short, abstract identifier like "32", "100X", or "Green" that riders use to identify a route, but which doesn't give any indication of what places the route serves.
   - name: route_long_name
     required: true
     inputType: TEXT
     columnWidth: 12
     helpContent: The route_long_name contains the full name of a route. This name is generally more descriptive than the route_short_name and will often include the route's destination or stop. At least one of route_short_name or route_long_name must be specified, or potentially both if appropriate. If the route does not have a long name, please specify a route_short_name and use an empty string as the value for this field.
+  - name: agency_id
+    required: false
+    inputType: GTFS_AGENCY
+    columnWidth: 12
+    helpContent: The agency_id field defines an agency for the specified route. This value is referenced from the agency.txt file. Use this field when you are providing data for routes from more than one agency.
   - name: route_desc
     required: false
     inputType: TEXT
     columnWidth: 12
-    helpContent: The route_desc field contains a description of a route. Please provide useful, quality information. Do not simply duplicate the name of the route. For example,
+    helpContent: 'Contains a description of a route. Please provide useful, quality information. Do not simply duplicate the name of the route. For example, "A trains operate between Inwood-207 St, Manhattan and Far Rockaway-Mott Avenue, Queens at all times. Also from about 6AM until about midnight, additional A trains operate between Inwood-207 St and Lefferts Boulevard (trains typically alternate between Lefferts Blvd and Far Rockaway)."'
   - name: route_type
     required: true
     inputType: DROPDOWN
@@ -290,8 +274,13 @@
       text: Gondola
     - value: 7
       text: Funicular
-    columnWidth: 12
+    columnWidth: 6
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
+  - name: route_sort_order
+    required: false
+    inputType: POSITIVE_INT
+    columnWidth: 6
+    helpContent: The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values.
   - name: route_url
     required: false
     inputType: URL
@@ -314,6 +303,19 @@
         text: Black
     columnWidth: 6
     helpContent: The route_text_color field can be used to specify a legible color to use for text drawn against a background of route_color. The color must be provided as a six-character hexadecimal number, for example, FFD700. If no color is specified, the default text color is black (000000).
+  - name: wheelchair_accessible
+    required: false
+    displayName: Is route wheelchair accessible?
+    inputType: DROPDOWN
+    columnWidth: 12
+    helpContent: Indicates whether vehicles that operate on this route are wheelchair accessible.
+    options:
+      - value: 0
+        text: No information (0)
+      - value: 1
+        text: Yes (1)
+      - value: 2
+        text: No (2)
   - name: route_branding_url
     required: false
     displayName: Route branding URL
@@ -346,7 +348,7 @@
     required: false
     inputType: TEXT
     columnWidth: 6
-    helpContent: "The trip_headsign field contains the text that appears on a sign that identifies the trip's destination to passengers. Use this field to distinguish between different patterns of service in the same route. If the headsign changes during a trip, you can override the trip_headsign by specifying values for the thestop_headsign field in stop_times.txt."
+    helpContent: "The trip_headsign field contains the text that appears on a sign that identifies the trip's destination to passengers. Use this field to distinguish between different patterns of service in the same route. If the headsign changes during a trip, you can override the trip_headsign by specifying values for the the stop_headsign field in stop_times.txt."
   - name: "trip_short_name"
     required: false
     inputType: TEXT
@@ -587,7 +589,7 @@
     - value: 'USD'
     - value: 'EUR'
     - value: 'GBP'
-    columnWidth: 6
+    columnWidth: 12
     helpContent: "The currency_type field defines the currency used to pay the fare. Please use the ISO 4217 alphabetical currency codes which can be found at the following URL:http://en.wikipedia.org/wiki/ISO_4217."
   - name: "payment_method"
     required: true
@@ -597,7 +599,7 @@
       text: Paid on board (0)
     - value: '1'
       text: Paid before boarding (1)
-    columnWidth: 6
+    columnWidth: 12
     helpContent: "The payment_method field indicates when the fare must be paid. Valid values for this field are:"
   - name: "transfers"
     required: true
@@ -618,6 +620,11 @@
     inputType: POSITIVE_INT
     columnWidth: 6
     helpContent: "The transfer_duration field specifies the length of time in seconds before a transfer expires."
+  - name: agency_id
+    required: false
+    inputType: GTFS_AGENCY
+    columnWidth: 12
+    helpContent: "Required for feeds with multiple agencies defined in the agency.txt file. Each fare attribute must specify an agency_id value to indicate which agency the fare applies to."
 
 
 - id: fare_rules
@@ -714,3 +721,22 @@
     inputType: POSITIVE_INT
     columnWidth: 6
     helpContent: "When a connection between routes requires an amount of time between arrival and departure (transfer_type=2), the min_transfer_time field defines the amount of time that must be available in an itinerary to permit a transfer between routes at these stops. The min_transfer_time must be sufficient to permit a typical rider to move between the two stops, including buffer time to allow for schedule variance on each route."
+
+
+- id: scheduleexception
+  name: (none)
+  helpContent: Conveyal-specific table for classifying schedule exceptions.
+  fields:
+  - name: name
+    required: true
+  - name: dates
+    required: true
+    inputType: EXCEPTION_DATE
+  - name: exemplar
+    required: true
+  - name: custom_schedule
+    required: false
+  - name: removed_service
+    required: false
+  - name: added_service
+    required: false

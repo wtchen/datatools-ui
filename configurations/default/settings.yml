@@ -1,38 +1,32 @@
-entries:
-  - lib/main.js:dist/index.js
-  - lib/index.css:dist/index.css
 application:
+  active_project: project-id
+  changelog_url: 'https://changelog.example.com'
   data:
     gtfs_s3_bucket: bucket-name
-  title: Data Manager
-  logo: http://gtfs-assets-dev.conveyal.com/data_manager.png # defaults to src/main/client/assets/application_logo.png
-  active_project: project-id
-  notifications_enabled: false
-  docs_url: http://docs.example.com
-  changelog_url: https://changelog.example.com
-  support_email: support@example.com
+    use_s3_storage: false
   date_format: MMM Do YYYY
-modules:
-  enterprise:
+  description: 'A command center for managing, editing, validating, and deploying GTFS feeds.'
+  docs_url: 'http://docs.example.com'
+  logo: 'https://d2f1n6ed3ipuic.cloudfront.net/conveyal-128x128.png'
+  logo_large: https://d2f1n6ed3ipuic.cloudfront.net/conveyal-512x512.png
+  notifications_enabled: false
+  profileRefreshTime: -1
+  support_email: support@example.com
+  title: Conveyal Data Tools
+entries:
+  - 'lib/main.js:dist/index.js'
+  - 'lib/index.css:dist/index.css'
+extensions:
+  transitfeeds:
     enabled: false
+  transitland:
+    enabled: false
+modules:
   editor:
     enabled: true
-  alerts:
-    enabled: false
-    use_extension: mtc
-  sign_config:
-    enabled: false
+  enterprise:
+    enabled: true
   user_admin:
     enabled: true
   validator:
     enabled: true
-  deployment:
-    enabled: false
-  gtfsapi:
-    enabled: false
-    use_extension: mtc
-extensions:
-  transitland:
-    enabled: false
-  transitfeeds:
-    enabled: false

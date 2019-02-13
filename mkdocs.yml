@@ -23,5 +23,6 @@ pages:
     - Calendars: 'user/editor/calendars.md'
     - Fares: 'user/editor/fares.md'
 - Development Guide:
-    - 'Deployment': 'dev/deployment.md'
-    - 'Development': 'dev/development.md'
+    - Deployment: dev/deployment.md
+    - Development: dev/development.md
+    - Migration: dev/migration.md
