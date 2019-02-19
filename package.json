@@ -17,7 +17,7 @@
     "cover-flow": "flow-coverage-report -t html -t text -i 'lib/**/*.js' -o coverage-flow",
     "deploy": "mastarm deploy --minify --env production",
     "flow": "mastarm flow",
-    "lint": "mastarm lint \"lib/**/*.js\"",
+    "lint": "mastarm lint __mocks__ __tests__ lib scripts --quiet",
     "lint-messages": "node scripts/lint-messages.js",
     "predeploy": "yarn",
     "prestart": "yarn",
