@@ -587,7 +587,6 @@ describe('end-to-end', () => {
     await wait(2000, 'for projects to load')
   }, defaultTestTimeout, 'should load the page')
 
-
   // ---------------------------------------------------------------------------
   // Project tests
   // ---------------------------------------------------------------------------
