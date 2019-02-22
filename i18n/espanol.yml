@@ -496,7 +496,7 @@ components:
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
-  ProjectViewerHeader:
+  ProjectFeedListToolbar:
     deployments: Deployments
     feeds:
       createFirst: Create first feed source!
@@ -515,6 +515,31 @@ components:
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
+    sort:
+      alphabetically:
+        title: Alphabetically
+        asc: A-Z
+        desc: Z-A
+      endDate:
+        title: Expiration Date
+        asc: Soonest-Latest
+        desc: Latest-Soonest
+      lastUpdated:
+        title: Last Update
+        asc: Stale-Recent
+        desc: Recent-Stale
+      numErrors:
+        title: Number of Errors
+        asc: Least-Most
+        desc: Most-Least
+      startDate:
+        title: Start Date
+        asc: Soonest-Latest
+        desc: Latest-Soonest
+    sync:
+      transitland: Sync from transit.land
+      transitfeeds: Sync from transitfeeds
+      mtc: Sync from MTC
   ProjectsList:
     createFirst: Create my first project
     help:

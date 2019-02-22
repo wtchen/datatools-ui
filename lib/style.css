@@ -73,6 +73,10 @@ kbd {
   padding: 40px 20px 60px 20px;
 }
 
+.feed-source-toolbar-formgroup label {
+  margin-right: 10px;
+}
+
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {
