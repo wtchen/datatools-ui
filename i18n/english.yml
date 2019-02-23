@@ -516,6 +516,14 @@ components:
         validRange: Valid Range
       title: Feed Sources
       update: Fetch all
+    filter:
+      active: Active
+      all: All
+      expired: Expired
+      expiring-within-20-days: Expiring within 20 days
+      expiring-within-5-days: Expiring within 5 days
+      future: Future
+      no-version: No version
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
