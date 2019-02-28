@@ -1,9 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`manager > actions > projects > should set a new feed source display type 1`] = `
+Object {
+  "active": null,
+  "all": Array [],
+  "feedTableViewType": "detailed",
+  "filter": Object {
+    "filter": null,
+    "searchText": null,
+  },
+  "isFetching": false,
+  "sort": "alphabetically-asc",
+}
+`;
+
 exports[`manager > actions > projects > should set a new feed source sort order 1`] = `
 Object {
   "active": null,
   "all": Array [],
+  "feedTableViewType": "compact",
   "filter": Object {
     "filter": null,
     "searchText": null,
