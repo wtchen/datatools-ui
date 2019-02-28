@@ -77,6 +77,45 @@ kbd {
   margin-right: 10px;
 }
 
+.feed-source-info h4 {
+  font-size: 20px;
+  margin: 0;
+  padding-bottom: 5px;
+}
+
+.feed-source-info .large {
+  font-size: 16px;
+}
+
+.feed-source-info td {
+  padding: 2px 5px;
+}
+
+/* Feed version status styling */
+.status-active {
+  color: #59B542;
+}
+
+.status-expiring-20 {
+  color: #ada21f;
+}
+
+.status-expiring-5 {
+  color: #C44C35;
+}
+
+.status-expired {
+  color: #000;
+}
+
+.status-future {
+  color: #4366B8;
+}
+
+.status-no-version {
+  color: #853BE5;
+}
+
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {
