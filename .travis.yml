@@ -20,7 +20,7 @@ script:
   - yarn run flow
   - yarn run cover-client
   - codecov
-  - yarn run build -- --minify
+  - yarn run build --minify
   - mkdocs build
 
 # If sudo is disabled, CI runs on container based infrastructure (allows caching &c.)
