@@ -77,43 +77,99 @@ kbd {
   margin-right: 10px;
 }
 
+.feed-source-table {
+  width: 100%;
+}
+
+.feed-source-table td, .feed-source-table th {
+  padding: 10px;
+}
+
+.feed-source-table thead {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.feed-source-table thead h4 {
+  margin: 0;
+}
+
+.feed-source-table thead .top-row h4 {
+  text-align: center;
+  font-size: 20px;
+}
+
+.feed-source-table thead i {
+  margin-bottom: 5px;
+  margin-right: 5px;
+}
+
+.feed-version-column {
+  background-color: #EEEEEE;
+}
+
+.feed-source-table-row {
+  border: 1px solid #ddd;
+}
+
+.feed-source-table-row:last-child {
+  border-bottom: 0;
+}
+
+td.feed-source-info {
+  width: 33%;
+}
+
 .feed-source-info h4 {
   font-size: 20px;
   margin: 0;
   padding-bottom: 5px;
 }
 
-.feed-source-info .large {
+.feed-source-info h5 {
   font-size: 16px;
+  margin: 0;
+  padding-bottom: 5px;
 }
 
-.feed-source-info td {
-  padding: 2px 5px;
+.feed-source-info i {
+  margin-right: 5px;
+  margin-bottom: 5px;
 }
 
 /* Feed version status styling */
+.feed-status {
+  border-radius: 5px;
+  color: #fff;
+  padding: 5px;
+}
+
 .status-active {
-  color: #59B542;
+  background-color: #59B542;
 }
 
 .status-expiring-20 {
-  color: #ada21f;
+  background-color: #ada21f;
 }
 
 .status-expiring-5 {
-  color: #C44C35;
+  background-color: #C44C35;
 }
 
 .status-expired {
-  color: #000;
+  background-color: #000;
 }
 
 .status-future {
-  color: #4366B8;
+  background-color: #4366B8;
 }
 
 .status-no-version {
-  color: #853BE5;
+  background-color: #853BE5;
+}
+
+.feed-status-last-update {
+  margin-top: 8px;
 }
 
 /* EDITOR ENTITY LIST */
