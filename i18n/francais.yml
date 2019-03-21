@@ -535,7 +535,7 @@ components:
       active: Active
       all: All
       expired: Expired
-      expiring-within-20-days: Expiring soon
+      expiring: Expiring soon
       future: Future
     makePublic: Publish public feeds
     mergeFeeds: Merge all
