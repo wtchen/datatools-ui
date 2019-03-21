@@ -5,6 +5,8 @@ Object {
   "active": null,
   "all": Array [],
   "filter": Object {
+    "feedSourceTableComparisonColumn": null,
+    "feedSourceTableFilterCountStrategy": "LATEST",
     "filter": null,
     "searchText": null,
   },

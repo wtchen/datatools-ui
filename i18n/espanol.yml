@@ -223,6 +223,9 @@ components:
   FeedSourcePanel:
     search: Search feeds
   FeedSourceTable:
+    comparisonColumn:
+      DEPLOYED: Deployed Version
+      PUBLISHED: Published Version
     createFirst: Create first feed source!
   FeedSourceTableRow:
     status:
@@ -231,8 +234,12 @@ components:
         expired: Expired
         expiring-within-20-days: Expiring within 20 days
         expiring-within-5-days: Expiring within 5 days
+        feedNotInDeployment: Feed not in deployment
+        feedNotPublished: Feed not published
         future: Future
         no-version: No version
+        same-as-deployed: Same as Deployed
+        same-as-published: Same as Published
   FeedSourceViewer:
     deploy: Deploy
     edit: Edit GTFS
@@ -506,6 +513,10 @@ components:
     mergeFeeds: Merge all
     settings: Settings
   ProjectFeedListToolbar:
+    comparison:
+      DEPLOYED: Deployed
+      LATEST: Latest
+      PUBLISHED: Published
     deployments: Deployments
     feeds:
       createFirst: Create first feed source!

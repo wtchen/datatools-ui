@@ -104,6 +104,10 @@ kbd {
   margin-right: 5px;
 }
 
+.comparison-column {
+  background-color: #CCCCCC;
+}
+
 .feed-version-column {
   background-color: #EEEEEE;
 }
@@ -168,7 +172,8 @@ td.feed-source-info {
   background-color: #853BE5;
 }
 
-.feed-status-last-update {
+.feed-status-subtext {
+  font-size: 12px;
   margin-top: 8px;
 }
 
