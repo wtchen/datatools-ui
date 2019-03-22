@@ -177,6 +177,16 @@ td.feed-source-info {
   margin-top: 8px;
 }
 
+/* project deployments */
+
+.pinned-deployment {
+  background-color: #ffdf86 !important;
+}
+
+.deployment-na {
+  color: #969595;
+}
+
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {
