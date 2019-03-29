@@ -3,10 +3,16 @@
 import multi from '@conveyal/woonerf/store/multi'
 import promise from '@conveyal/woonerf/store/promise'
 import {middleware as fetchMiddleware} from '@conveyal/woonerf/fetch'
+import Enzyme, {mount} from 'enzyme'
+import EnzymeReactAdapter from 'enzyme-adapter-react-15.4'
+import {mountToJson} from 'enzyme-to-json'
 import clone from 'lodash/cloneDeep'
 import {get} from 'object-path'
+import React from 'react'
+import {Provider} from 'react-redux'
 import {routerReducer as routing} from 'react-router-redux'
 import {applyMiddleware, combineReducers, createStore} from 'redux'
+import configureStore from 'redux-mock-store'
 import thunkMiddleware from 'redux-thunk'
 
 import admin from '../../../lib/admin/reducers'
@@ -39,7 +45,11 @@ import {defaultState as defaultManagerUserState} from '../../../lib/manager/redu
 import signs from '../../../lib/signs/reducers'
 import {defaultState as defaultSignActiveState} from '../../../lib/signs/reducers/active'
 import {defaultState as defaultSignSignsState} from '../../../lib/signs/reducers/signs'
+import * as manager from './manager'
+
 import type {AppState} from '../../../lib/types/reducers'
+
+Enzyme.configure({ adapter: new EnzymeReactAdapter() })
 
 const defaultManagerState = {
   languages: defaultManagerLanguagesState,
@@ -47,6 +57,15 @@ const defaultManagerState = {
   status: defaultManagerStatusState,
   ui: defaultManagerUiState,
   user: defaultManagerUserState
+}
+
+const defaultRouterLocation = {
+  action: '',
+  hash: '',
+  key: '',
+  pathname: '',
+  query: {},
+  search: ''
 }
 
 /**
@@ -87,12 +106,38 @@ export function getMockInitialState (): AppState {
       validation: defaultGtfsValidationState
     },
     gtfsplus: defaultGtfsPlusState,
-    routing: {}, // react-router state
+    routing: {
+      location: defaultRouterLocation,
+      routeParams: {}
+    }, // react-router state
     signs: {
       ...defaultSignActiveState,
       ...defaultSignSignsState
     }
   })
+}
+
+/**
+ * This store state models the store state with a admin user logged in to the
+ * webapp.
+ */
+export function getMockStateWithAdminUser (): AppState {
+  const state = clone(getMockInitialState())
+  state.user = manager.mockAdminUser
+  return state
+}
+
+/**
+ * This store state builds on top of the admin user state by also adding a
+ * project without any feeds
+ */
+export function getMockStateWithProject (): AppState {
+  const state = clone(getMockStateWithAdminUser())
+  const {mockProject} = manager
+  state.projects.active = mockProject.id
+  state.projects.all.push(mockProject)
+  state.routing.routeParams.projectId = mockProject.id
+  return state
 }
 
 /**
@@ -102,12 +147,19 @@ export function getMockInitialState (): AppState {
  * TODO: modify the state so a feed is actually loaded in
  */
 export function getMockEditorState (): AppState {
-  const editorState = getMockInitialState()
-  return clone(editorState)
+  const editorState = clone(getMockStateWithProject())
+  return editorState
 }
 
+const storeMiddleWare = [
+  fetchMiddleware,
+  multi,
+  promise,
+  thunkMiddleware
+]
+
 /**
- * Creates a new store that has reducers that will update state.
+ * Creates a new store with reducers that will update state.
  */
 export function makeMockStore (initialState: AppState = getMockInitialState()) {
   const store = createStore(
@@ -125,12 +177,7 @@ export function makeMockStore (initialState: AppState = getMockInitialState()) {
       }
     }),
     initialState,
-    applyMiddleware(...[
-      fetchMiddleware,
-      multi,
-      promise,
-      thunkMiddleware
-    ])
+    applyMiddleware(...storeMiddleWare)
   )
   /**
    * Helper method to snapshot a part of the state. Don't snapshot the entire
@@ -141,4 +188,29 @@ export function makeMockStore (initialState: AppState = getMockInitialState()) {
     expect(get(store.getState(), subStatePath)).toMatchSnapshot()
   }
   return store
+}
+
+/**
+ * Mount a react component within a mock redux store. This mock redux store
+ * accepts actions, but doesn't send any of those results to the reducers.
+ * This function is primarily used for taking snapshots of components and
+ * containers in order to verify that they are rendering expected values.
+ */
+export function mockWithProvider (
+  ConnectedComponent: any,
+  connectedComponentProps: any = {},
+  storeState: AppState = getMockInitialState()
+) {
+  const store = configureStore(storeMiddleWare)(storeState)
+  const wrapper = mount(
+    <Provider store={store}>
+      <ConnectedComponent {...connectedComponentProps} />
+    </Provider>
+  )
+
+  return {
+    snapshot: () => mountToJson(wrapper),
+    store,
+    wrapper
+  }
 }
