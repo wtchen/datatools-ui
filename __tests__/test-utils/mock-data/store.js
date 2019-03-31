@@ -141,6 +141,22 @@ export function getMockStateWithProject (): AppState {
 }
 
 /**
+ * This store state builds on top of the admin user state by also adding a
+ * project with feeds and a deployment. The state is also made with the
+ * assumption that the all data needed to display the FeedSourceTable has been
+ * loaded.
+ */
+export function getMockStateWithProjectWithFeedsAndDeployment (): AppState {
+  const state = clone(getMockStateWithProject())
+  const {mockProjectWithDeployment} = manager
+  state.projects.active = mockProjectWithDeployment.id
+  state.projects.all.push(mockProjectWithDeployment)
+  state.projects.filter.feedSourceTableComparisonColumn = 'DEPLOYED'
+  state.routing.routeParams.projectId = mockProjectWithDeployment.id
+  return state
+}
+
+/**
  * Returns a cloned version of the state or the redux store with a feed loaded
  * for editing in the editor.
  *
