@@ -10,8 +10,10 @@ yarn, and [mastarm](https://github.com/conveyal/mastarm).
 User authentication is done via [Auth0](http://auth0.com). You will need an
 Auth0 account and application to use the Data Manager.
 
-Two databases are required for the application: [MongoDB](https://www.mongodb.com/)
-and a SQL database ([PostgreSQL](https://www.postgresql.org/) is recommended).
+Two databases are required for the application:
+
+- [MongoDB](https://www.mongodb.com/) (>=v2.6.4) is used to store application-level data (e.g., persisting projects and feed sources) and
+- [PostgreSQL](https://www.postgresql.org/) (>=v9.6) for use by [gtfs-lib](https://github.com/conveyal/gtfs-lib) to store GTFS data.
 
 ## Installation and Basic Configuration
 
