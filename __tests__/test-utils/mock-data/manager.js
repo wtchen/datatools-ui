@@ -299,10 +299,21 @@ export const mockFeedVersion = {
   version: 1
 }
 
+/**
+ * A mock project with a feed source and deployment, but in an unloaded state
+ */
+export const mockProjectWithDeploymentUnloaded = clone(mockProject)
+mockProjectWithDeploymentUnloaded.id = 'mock-project-with-deployments-id'
+mockProjectWithDeploymentUnloaded.name = 'mock-project-with-deployments'
+
+/**
+ * A mock project with a feed soure and deployment that are already loaded
+ */
 export const mockProjectWithDeployment = clone(mockProject)
 mockProjectWithDeployment.id = 'mock-project-with-deployments-id'
 mockProjectWithDeployment.name = 'mock-project-with-deployments'
-const mockDeployment = makeMockDeployment(
+
+export const mockDeployment = makeMockDeployment(
   mockProjectWithDeployment,
   [mockFeedVersion]
 )
