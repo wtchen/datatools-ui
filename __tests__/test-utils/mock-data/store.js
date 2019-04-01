@@ -195,10 +195,8 @@ export function makeMockStore (initialState: AppState = getMockInitialState()) {
     initialState,
     applyMiddleware(...storeMiddleWare)
   )
-  /**
-   * Helper method to snapshot a part of the state. Don't snapshot the entire
-   * state, because the messages are huge!
-   */
+  // Helper method to snapshot a part of the state. Don't snapshot the entire
+  // state, because the messages are huge!
   store.expectStateToMatchSnapshot = (subStatePath: ?string) => {
     if (!subStatePath) throw new Error('Snapshotting the entire state not allowed!')
     expect(get(store.getState(), subStatePath)).toMatchSnapshot()

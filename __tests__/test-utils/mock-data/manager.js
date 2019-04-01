@@ -12,6 +12,10 @@ import type {
   SummarizedFeedVersion
 } from '../../../lib/types'
 
+/**
+ * Make a mock deployment given a project and some FeedVersions. This is a
+ * function so that circular references can be defined.
+ */
 export function makeMockDeployment (
   project: Project,
   feedVersions: Array<FeedVersion> = []
@@ -51,6 +55,7 @@ export function makeMockDeployment (
   }
 }
 
+// a mock project without any feeds or deployments
 export const mockProject = {
   autoFetchFeeds: true,
   autoFetchHour: 0,
@@ -84,6 +89,7 @@ export const mockProject = {
   user: null
 }
 
+// a mock feed with a version
 export const mockFeedWithVersion = {
   dateCreated: 1536195264564,
   deployable: false,
@@ -126,6 +132,7 @@ export const mockFeedWithVersion = {
   user: null
 }
 
+// a mock feed with no versions
 export const mockFeedWithoutVersion = {
   dateCreated: 1544831411569,
   deployable: true,
@@ -146,6 +153,7 @@ export const mockFeedWithoutVersion = {
   user: null
 }
 
+// a mock feedversion that has validation data
 export const mockFeedVersion = {
   dateCreated: 1543389038810,
   feedLoadResult: {
@@ -341,6 +349,7 @@ function makeUser (profile) {
   }
 }
 
+// a mock auth0 response for an admin user
 const mockAuth0Response = {
   email: 'mock-user@conveyal.com',
   email_verified: true,
@@ -385,4 +394,5 @@ const mockAuth0Response = {
   sub: 'auth0|12345'
 }
 
+// a mock manager user state with an admin user
 export const mockAdminUser = makeUser(mockAuth0Response)
