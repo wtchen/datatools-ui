@@ -1,7 +1,8 @@
 [{
     "distance": 0,
     "id": "2zu5",
-    "permanent": true,
+    "pointType": 2,
+    "shapePtSequence": 0,
     "point": {
       "type": "Feature",
       "properties": {},
@@ -10,17 +11,13 @@
         "coordinates": [-122.00743318, 37.06121322]
       }
     },
-    "stopId": "aad0f374-0f29-4300-ae05-6affbe0f1562",
-    "defaultTravelTime": 0,
-    "defaultDwellTime": 0,
-    "timepoint": null,
-    "shapeDistTraveled": 0,
-    "hidden": true
+    "stopId": "aad0f374-0f29-4300-ae05-6affbe0f1562"
   },
   {
     "distance": 170.7245980700509,
     "id": "25p4",
-    "permanent": true,
+    "pointType": 1  ,
+    "shapePtSequence": 1,
     "point": {
       "type": "Feature",
       "properties": {},
@@ -33,7 +30,8 @@
   {
     "distance": 341.4491961401018,
     "id": "cy46",
-    "permanent": true,
+    "pointType": 2,
+    "shapePtSequence": 2,
     "point": {
       "type": "Feature",
       "properties": {},
@@ -42,17 +40,13 @@
         "coordinates": [-122.00981702504365, 37.059191439360475]
       }
     },
-    "stopId": "ec6a3479-9795-4480-9884-1c25851a163e",
-    "defaultTravelTime": 0,
-    "defaultDwellTime": 0,
-    "timepoint": null,
-    "shapeDistTraveled": 341.4491961401018,
-    "hidden": true
+    "stopId": "ec6a3479-9795-4480-9884-1c25851a163e"
   },
   {
     "distance": 358.0806866950734,
     "id": "4s05",
-    "permanent": true,
+    "pointType": 1,
+    "shapePtSequence": 3,
     "point": {
       "type": "Feature",
       "properties": {},
