@@ -64,7 +64,7 @@ function exploreDir (filePath) {
  * Analyze a .js file to keep track of messages found within .js code
  */
 function analyzeFile (filePath) {
-  const classRegex = /class (\w*) extends Component/gm
+  const classRegex = /class (\w*) extends (Pure)?Component/gm
   const componentMessagesRegex = /^\s*messages = getComponentMessages\('(\w*)'\)/gm
   const contents = fs.readFileSync(filePath, { encoding: 'utf8' }).split('\n')
   let curClass

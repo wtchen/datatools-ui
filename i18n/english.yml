@@ -227,7 +227,23 @@ components:
   FeedSourcePanel:
     search: Search feeds
   FeedSourceTable:
+    comparisonColumn:
+      DEPLOYED: Deployed Version
+      PUBLISHED: Published Version
     createFirst: Create first feed source!
+  FeedSourceTableRow:
+    status:
+        active: Active
+        all: All
+        expired: Expired
+        expiring-within-20-days: Expiring within 20 days
+        expiring-within-5-days: Expiring within 5 days
+        feedNotInDeployment: Feed not in deployment
+        feedNotPublished: Feed not published
+        future: Future
+        no-version: No version
+        same-as-deployed: Same as Deployed
+        same-as-published: Same as Published
   FeedSourceViewer:
     deploy: Deploy
     edit: Edit GTFS
@@ -506,11 +522,15 @@ components:
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
-  ProjectViewerHeader:
+  ProjectFeedListToolbar:
+    comparison:
+      DEPLOYED: Deployed
+      LATEST: Latest
+      PUBLISHED: Published
     deployments: Deployments
     feeds:
       createFirst: Create first feed source!
-      new: New Feed Source
+      new: New
       search: Search by name
       table:
         deployable: Deployable?
@@ -522,9 +542,40 @@ components:
         validRange: Valid Range
       title: Feed Sources
       update: Fetch all
+    filter:
+      active: Active
+      all: All
+      expired: Expired
+      expiring: Expiring
+      future: Future
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
+    sort:
+      alphabetically:
+        title: Alphabetically
+        asc: A-Z
+        desc: Z-A
+      endDate:
+        title: Expiration Date
+        asc: Soonest-Latest
+        desc: Latest-Soonest
+      lastUpdated:
+        title: Last Update
+        asc: Stale-Recent
+        desc: Recent-Stale
+      numErrors:
+        title: Number of Errors
+        asc: Least-Most
+        desc: Most-Least
+      startDate:
+        title: Start Date
+        asc: Soonest-Latest
+        desc: Latest-Soonest
+    sync:
+      transitland: Sync from transit.land
+      transitfeeds: Sync from transitfeeds
+      mtc: Sync from MTC
   ProjectsList:
     createFirst: Create my first project
     help:
