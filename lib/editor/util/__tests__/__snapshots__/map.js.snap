@@ -5,22 +5,22 @@ Object {
   "coordinates": Array [
     Array [
       Array [
-        -77.9230535030365,
-        42.096176462786296,
+        -77.922203,
+        42.086407,
       ],
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
     ],
     Array [
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
       Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92252574804179,
+        42.09235127309673,
       ],
     ],
     Array [
@@ -55,7 +55,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 0,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -73,7 +75,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 1,
+        },
         "type": "Feature",
       },
       "pointType": 1,
@@ -90,7 +94,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 2,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -108,7 +114,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 4,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -125,22 +133,22 @@ Object {
   "coordinates": Array [
     Array [
       Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92252574804179,
+        42.09235127309673,
       ],
       Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92276015989871,
+        42.09426187381858,
       ],
     ],
     Array [
       Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92276015989871,
+        42.09426187381858,
       ],
       Array [
-        -77.92187333106995,
-        42.08646327816015,
+        -77.92305462145765,
+        42.096168018547736,
       ],
     ],
   ],
@@ -157,7 +165,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 2,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -176,10 +186,12 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 3,
+        },
         "type": "Feature",
       },
-      "pointType": 2,
+      "pointType": 1,
       "shapeDistTraveled": NaN,
       "shapePtSequence": 2,
     },
@@ -194,7 +206,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 4,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -211,22 +225,22 @@ Object {
   "coordinates": Array [
     Array [
       Array [
-        -77.9230535030365,
-        42.096176462786296,
+        -77.922203,
+        42.086407,
       ],
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
     ],
     Array [
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
       Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92252574804179,
+        42.09235127309673,
       ],
     ],
   ],
@@ -243,7 +257,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 0,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -261,7 +277,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 1,
+        },
         "type": "Feature",
       },
       "pointType": 1,
@@ -278,7 +296,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 2,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -294,42 +314,42 @@ Object {
   "coordinates": Array [
     Array [
       Array [
-        -77.9230535030365,
-        42.096176462786296,
+        -77.922203,
+        42.086407,
       ],
       Array [
-        -77.92278528213501,
-        42.09424190611456,
-      ],
-    ],
-    Array [
-      Array [
-        -77.92278528213501,
-        42.09424190611456,
-      ],
-      Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92215494185281,
+        42.08925407008939,
       ],
     ],
     Array [
       Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92215494185281,
+        42.08925407008939,
       ],
       Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92252574804179,
+        42.09235127309673,
       ],
     ],
     Array [
       Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92252574804179,
+        42.09235127309673,
       ],
       Array [
-        -77.92187333106995,
-        42.08646327816015,
+        -77.92276015989871,
+        42.09426187381858,
+      ],
+    ],
+    Array [
+      Array [
+        -77.92276015989871,
+        42.09426187381858,
+      ],
+      Array [
+        -77.92305462145765,
+        42.096168018547736,
       ],
     ],
   ],
@@ -448,22 +468,22 @@ Object {
   "coordinates": Array [
     Array [
       Array [
-        -77.9230535030365,
-        42.096176462786296,
+        -77.922203,
+        42.086407,
       ],
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
     ],
     Array [
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
       Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92252574804179,
+        42.09235127309673,
       ],
     ],
     Array [
@@ -536,7 +556,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 0,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -554,7 +576,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 1,
+        },
         "type": "Feature",
       },
       "pointType": 1,
@@ -571,7 +595,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 2,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -592,7 +618,7 @@ Object {
         "properties": Object {},
         "type": "Feature",
       },
-      "pointType": 2,
+      "pointType": 1,
       "shapePtSequence": 3,
     },
     Object {
@@ -606,7 +632,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 4,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -665,32 +693,32 @@ Object {
     ],
     Array [
       Array [
-        -77.92278528213501,
-        42.09424190611456,
+        -77.92215494185281,
+        42.08925407008939,
       ],
       Array [
-        -77.92253851890564,
-        42.0923709824232,
-      ],
-    ],
-    Array [
-      Array [
-        -77.92253851890564,
-        42.0923709824232,
-      ],
-      Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92252574804179,
+        42.09235127309673,
       ],
     ],
     Array [
       Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92252574804179,
+        42.09235127309673,
       ],
       Array [
-        -77.92187333106995,
-        42.08646327816015,
+        -77.92276015989871,
+        42.09426187381858,
+      ],
+    ],
+    Array [
+      Array [
+        -77.92276015989871,
+        42.09426187381858,
+      ],
+      Array [
+        -77.92305462145765,
+        42.096168018547736,
       ],
     ],
   ],
@@ -725,7 +753,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 1,
+        },
         "type": "Feature",
       },
       "pointType": 1,
@@ -743,7 +773,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 2,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -762,10 +794,12 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 3,
+        },
         "type": "Feature",
       },
-      "pointType": 2,
+      "pointType": 1,
       "shapeDistTraveled": NaN,
       "shapePtSequence": NaN,
     },
@@ -780,7 +814,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 4,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -797,32 +833,32 @@ Object {
   "coordinates": Array [
     Array [
       Array [
-        -77.9230535030365,
-        42.096176462786296,
+        -77.922203,
+        42.086407,
       ],
       Array [
-        -77.92278528213501,
-        42.09424190611456,
-      ],
-    ],
-    Array [
-      Array [
-        -77.92278528213501,
-        42.09424190611456,
-      ],
-      Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92215494185281,
+        42.08925407008939,
       ],
     ],
     Array [
       Array [
-        -77.92253851890564,
-        42.0923709824232,
+        -77.92215494185281,
+        42.08925407008939,
       ],
       Array [
-        -77.9222059249878,
-        42.08925796155427,
+        -77.92252574804179,
+        42.09235127309673,
+      ],
+    ],
+    Array [
+      Array [
+        -77.92252574804179,
+        42.09235127309673,
+      ],
+      Array [
+        -77.92276015989871,
+        42.09426187381858,
       ],
     ],
     Array [
@@ -875,7 +911,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 0,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -893,7 +931,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 1,
+        },
         "type": "Feature",
       },
       "pointType": 1,
@@ -910,7 +950,9 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 2,
+        },
         "type": "Feature",
       },
       "pointType": 2,
@@ -928,10 +970,12 @@ Object {
           ],
           "type": "Point",
         },
-        "properties": Object {},
+        "properties": Object {
+          "index": 3,
+        },
         "type": "Feature",
       },
-      "pointType": 2,
+      "pointType": 1,
       "shapePtSequence": 3,
     },
     Object {
