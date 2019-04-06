@@ -2574,6 +2574,23 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                                   tabIndex="-1"
                                                                                                 >
                                                                                                   A-Z
+                                                                                                  <Icon
+                                                                                                    style={
+                                                                                                      Object {
+                                                                                                        "marginLeft": 6,
+                                                                                                      }
+                                                                                                    }
+                                                                                                    type="check"
+                                                                                                  >
+                                                                                                    <i
+                                                                                                      className="fa fa-check fa-fw "
+                                                                                                      style={
+                                                                                                        Object {
+                                                                                                          "marginLeft": 6,
+                                                                                                        }
+                                                                                                      }
+                                                                                                    />
+                                                                                                  </Icon>
                                                                                                 </a>
                                                                                               </SafeAnchor>
                                                                                             </li>
