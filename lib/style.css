@@ -288,6 +288,8 @@ td.feed-source-info {
   right: 23px !important;
 }
 
+/* UTILITY classes */
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -296,6 +298,14 @@ td.feed-source-info {
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
                                   not supported by any browser */
+}
+
+.overflow {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* NOTE: element must have a width defined in inline css */
+  white-space: nowrap;
 }
 
 /* EDITOR MAP */
