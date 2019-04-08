@@ -25,3 +25,8 @@ export function setDefaultTestTime () {
 export function restoreDateNowBehavior () {
   Date.now.mockRestore && Date.now.mockRestore()
 }
+
+export function expectArrayToMatchContents (actual: any, expected: Array<any>) {
+  expect(actual).toHaveLength(expected.length)
+  expect(actual).toEqual(expect.arrayContaining(expected))
+}
