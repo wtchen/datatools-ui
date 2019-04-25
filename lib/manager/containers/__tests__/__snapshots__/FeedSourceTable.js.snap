@@ -2399,7 +2399,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                         </MenuItem>
                                         <MenuItem
                                           bsClass="dropdown"
-                                          bsStyle="default"
                                           disabled={false}
                                           divider={false}
                                           header={false}
@@ -2441,7 +2440,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                         </MenuItem>
                                         <MenuItem
                                           bsClass="dropdown"
-                                          bsStyle="primary"
                                           disabled={false}
                                           divider={false}
                                           header={false}
@@ -2478,6 +2476,47 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                                 </Glyphicon>
                                                  
                                                 Merge all
+                                              </a>
+                                            </SafeAnchor>
+                                          </li>
+                                        </MenuItem>
+                                        <MenuItem
+                                          bsClass="dropdown"
+                                          disabled={false}
+                                          divider={false}
+                                          header={false}
+                                          key=".$csv-download-button"
+                                          onClick={[Function]}
+                                          onKeyDown={[Function]}
+                                          onSelect={[Function]}
+                                        >
+                                          <li
+                                            className=""
+                                            role="presentation"
+                                          >
+                                            <SafeAnchor
+                                              componentClass="a"
+                                              onClick={[Function]}
+                                              onKeyDown={[Function]}
+                                              role="menuitem"
+                                              tabIndex="-1"
+                                            >
+                                              <a
+                                                href="#"
+                                                onClick={[Function]}
+                                                onKeyDown={[Function]}
+                                                role="menuitem"
+                                                tabIndex="-1"
+                                              >
+                                                <Icon
+                                                  type="table"
+                                                >
+                                                  <i
+                                                    className="fa fa-table fa-fw "
+                                                  />
+                                                </Icon>
+                                                 
+                                                Download Summary as CSV
                                               </a>
                                             </SafeAnchor>
                                           </li>
