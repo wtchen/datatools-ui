@@ -524,6 +524,7 @@ components:
       LATEST: Latest
       PUBLISHED: Published
     deployments: Deployments
+    downloadCsv: Download Summary as CSV
     feeds:
       createFirst: Create first feed source!
       new: New Feed Source
