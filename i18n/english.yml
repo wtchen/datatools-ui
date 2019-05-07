@@ -562,7 +562,7 @@ components:
         asc: Stale-Recent
         desc: Recent-Stale
       numErrors:
-        title: Number of Errors
+        title: Number of Issues
         asc: Least-Most
         desc: Most-Least
       startDate:
