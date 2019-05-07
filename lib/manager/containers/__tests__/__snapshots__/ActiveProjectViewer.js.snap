@@ -2951,7 +2951,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                               onKeyDown={[Function]}
                                                                                               role="heading"
                                                                                             >
-                                                                                              Number of Errors
+                                                                                              Number of Issues
                                                                                             </li>
                                                                                           </MenuItem>
                                                                                           <MenuItem

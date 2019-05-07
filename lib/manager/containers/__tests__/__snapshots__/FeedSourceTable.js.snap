@@ -1775,7 +1775,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                             onKeyDown={[Function]}
                                             role="heading"
                                           >
-                                            Number of Errors
+                                            Number of Issues
                                           </li>
                                         </MenuItem>
                                         <MenuItem
