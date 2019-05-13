@@ -2688,7 +2688,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                                   role="menuitem"
                                                                                                   tabIndex="-1"
                                                                                                 >
-                                                                                                  Soonest-Latest
+                                                                                                  Earliest-Latest
                                                                                                 </a>
                                                                                               </SafeAnchor>
                                                                                             </li>
@@ -2721,7 +2721,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                                   role="menuitem"
                                                                                                   tabIndex="-1"
                                                                                                 >
-                                                                                                  Latest-Soonest
+                                                                                                  Latest-Earliest
                                                                                                 </a>
                                                                                               </SafeAnchor>
                                                                                             </li>
@@ -2786,7 +2786,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                                   role="menuitem"
                                                                                                   tabIndex="-1"
                                                                                                 >
-                                                                                                  Soonest-Latest
+                                                                                                  Earliest-Latest
                                                                                                 </a>
                                                                                               </SafeAnchor>
                                                                                             </li>
@@ -2819,7 +2819,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                                   role="menuitem"
                                                                                                   tabIndex="-1"
                                                                                                 >
-                                                                                                  Latest-Soonest
+                                                                                                  Latest-Earliest
                                                                                                 </a>
                                                                                               </SafeAnchor>
                                                                                             </li>
