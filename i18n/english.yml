@@ -559,20 +559,20 @@ components:
         desc: Z-A
       endDate:
         title: Expiration Date
-        asc: Soonest-Latest
-        desc: Latest-Soonest
+        asc: Earliest-Latest
+        desc: Latest-Earliest
       lastUpdated:
         title: Last Update
         asc: Stale-Recent
         desc: Recent-Stale
       numErrors:
-        title: Number of Errors
+        title: Number of Issues
         asc: Least-Most
         desc: Most-Least
       startDate:
         title: Start Date
-        asc: Soonest-Latest
-        desc: Latest-Soonest
+        asc: Earliest-Latest
+        desc: Latest-Earliest
     sync:
       transitland: Sync from transit.land
       transitfeeds: Sync from transitfeeds
