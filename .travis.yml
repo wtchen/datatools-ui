@@ -44,4 +44,5 @@ sudo: false
 
 # Push results to codecov.io
 after_success:
-  - yarn run semantic-release
+  - bash <(curl -s https://codecov.io/bash)
+  - semantic-release
