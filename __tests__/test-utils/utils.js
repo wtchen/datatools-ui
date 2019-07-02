@@ -8,6 +8,7 @@ const request = require('request')
 const collectingCoverage = process.env.COLLECT_COVERAGE
 const isCi = !!process.env.CI
 const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
+const testFolderPath = 'e2e-test-results'
 
 /**
  * Download a file using a stream
@@ -34,11 +35,15 @@ function downloadFile (url, filename, callback) {
   })
 }
 
+function getTestFolderFilename (filename) {
+  return filename ? path.join(testFolderPath, filename) : testFolderPath
+}
+
 /**
  * Find and kill a process
  */
 function killDetachedProcess (processName, callback) {
-  const pidFilename = path.resolve(`${processName}.pid`)
+  const pidFilename = path.resolve(getTestFolderFilename(`${processName}.pid`))
 
   // open pid file to get pid
   console.log(`Begin killing detached process... reading pid file ${pidFilename}`)
@@ -123,9 +128,9 @@ function requireEnvVars (varnames) {
  * Start a process that will continue to run after this script ends
  */
 function spawnDetachedProcess (cmd, args, name) {
-  const stdOutFile = path.resolve(`./${name}-out.log`)
+  const stdOutFile = path.resolve(getTestFolderFilename(`./${name}-out.log`))
   const processOut = fs.openSync(stdOutFile, 'w')
-  const stdErrFile = path.resolve(`./${name}-err.log`)
+  const stdErrFile = path.resolve(getTestFolderFilename(`./${name}-err.log`))
   const processErr = fs.openSync(stdErrFile, 'w')
   const child = spawn(
     cmd,
@@ -133,7 +138,7 @@ function spawnDetachedProcess (cmd, args, name) {
     { detached: true, stdio: [ 'ignore', processOut, processErr ] }
   )
   console.log(`${cmd} ${args.join(' ')} running as pid ${child.pid}`)
-  const pidFilename = path.resolve(`${name}.pid`)
+  const pidFilename = path.resolve(getTestFolderFilename(`${name}.pid`))
   fs.writeFileSync(pidFilename, child.pid)
   console.log(`wrote pid file ${pidFilename}`)
   console.log(`writing ${name} stdout to ${stdOutFile}`)
@@ -151,6 +156,7 @@ function writeYamlFile (filename, obj, callback) {
 module.exports = {
   collectingCoverage,
   downloadFile,
+  getTestFolderFilename,
   isCi,
   isUiRepo,
   killDetachedProcess,

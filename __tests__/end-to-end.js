@@ -10,7 +10,7 @@ import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 
-import {collectingCoverage, isCi} from './test-utils/utils'
+import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
 
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
@@ -61,8 +61,12 @@ let testProjectId
 let feedSourceId
 let scratchFeedSourceId
 let routerId
-const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
-const browserEventLogs = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}-browser-events.log`)
+const log = SimpleNodeLogger.createSimpleFileLogger(
+  getTestFolderFilename(`e2e-run-${testTime}.log`)
+)
+const browserEventLogs = SimpleNodeLogger.createSimpleFileLogger(
+  getTestFolderFilename(`e2e-run-${testTime}-browser-events.log`)
+)
 const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
@@ -105,7 +109,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
 
         // Take screenshot of page to help debugging.
         await page.screenshot({
-          path: `e2e-error-${name.replace(' ', '_')}-${testTime}.png`,
+          path: getTestFolderFilename(`e2e-error-${name.replace(' ', '_')}-${testTime}.png`),
           fullPage: true
         })
 

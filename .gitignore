@@ -3,6 +3,7 @@ node_modules/
 dist
 *.log
 coverage*
+e2e-test-results
 tmp/
 .tags
 *.pid

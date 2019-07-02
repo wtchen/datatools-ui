@@ -1,5 +1,6 @@
 const {execFile} = require('child_process')
-const fs = require('fs')
+const fs = require('fs-extra')
+const fetch = require('isomorphic-fetch')
 const path = require('path')
 
 const each = require('async-each')
@@ -10,6 +11,7 @@ const auto = require('run-auto')
 const {
   collectingCoverage,
   downloadFile,
+  getTestFolderFilename,
   isCi,
   isUiRepo,
   loadYamlFile,
@@ -24,7 +26,9 @@ const serverJarFilename = 'dt-latest-dev.jar'
  * download, configure and start an instance of datatools-server
  */
 function startBackendServer () {
-  // if running this from the datatools-server repo, skip this step
+  // if running this from the datatools-server repo, skip this step as there
+  // are special steps taken in the datatools-server repo in order to collect
+  // back-end code coverage
   if (!isUiRepo) return Promise.resolve()
 
   return new Promise((resolve, reject) => {
@@ -323,7 +327,7 @@ function startClientServer () {
                 ],
                 (output, outputCallback) => {
                   fs.writeFile(
-                    `mastarm-build-${output.logType}.log`,
+                    getTestFolderFilename(`mastarm-build-${output.logType}.log`),
                     output.data,
                     outputCallback
                   )
@@ -397,9 +401,78 @@ function startOtp () {
   })
 }
 
-function setupForCIEnvironment () {
-  if (!isCi) return Promise.resolve()
+async function recreateEndToEndTestResultDirectory () {
+  // delete test results folder
+  const testFolderFilename = getTestFolderFilename()
+  await fs.remove(testFolderFilename)
+  await fs.ensureDir(testFolderFilename)
+}
 
+/**
+ * Verifies that the needed items in order to run the e2e tests locally.
+ */
+async function verifySetupForLocalEnvironment () {
+  const errors = []
+
+  // make sure e2e.yml exists
+  try {
+    await fs.stat('configurations/end-to-end/env.yml')
+  } catch (e) {
+    errors.push(new Error('Failed to detect file `configurations/end-to-end/env.yml`'))
+  }
+
+  // make sure services are running
+  const endpointChecks = [
+    {
+      name: 'Front-end server',
+      url: 'http://localhost:9966'
+    }, {
+      name: 'Back-end server',
+      url: 'http://localhost:4000'
+    }, {
+      name: 'OTP server',
+      url: 'http://localhost:8080'
+    }
+  ]
+
+  await Promise.all(
+    endpointChecks.map(
+      endpoint => (
+        // return an executed promise
+        async () => {
+          try {
+            const fetchResult = await fetch(endpoint.url)
+            if (fetchResult.status >= 400) {
+              throw new Error('Bad response')
+            }
+          } catch (e) {
+            errors.push(
+              new Error(
+                `Unable to fetch from ${endpoint.name} (${endpoint.url})`
+              )
+            )
+          }
+        }
+      )()
+    )
+  )
+
+  // TODO: verify that aws credentials have been setup properly
+
+  if (errors.length > 0) {
+    errors.forEach(err => {
+      console.error(`LOCAL SETUP ERROR: ${err.message}`)
+    })
+    throw new Error('Local environment no setup right!')
+  }
+}
+
+/**
+ * Sets up the needed items in order to be ran in a continuous integration
+ * environment. For now, Travis CI is the only CI environment that this code is
+ * built for.
+ */
+function setupForContinuousIntegrationEnvironment () {
   return Promise.all([
     startBackendServer(),
     startClientServer(),
@@ -411,8 +484,6 @@ function setupForCIEnvironment () {
  * Start a server to collect coverage from the e2e tests.
  */
 function startCoverageServer () {
-  if (!collectingCoverage) return Promise.resolve()
-
   return new Promise((resolve, reject) => {
     console.log('starting coverage server')
 
@@ -433,8 +504,15 @@ function startCoverageServer () {
 }
 
 module.exports = function () {
-  return Promise.all([
-    setupForCIEnvironment(),
-    startCoverageServer()
-  ])
+  const setupItems = [recreateEndToEndTestResultDirectory()]
+
+  // do different setup depending on runtime environment
+  if (isCi) {
+    setupItems.push(setupForContinuousIntegrationEnvironment())
+  } else {
+    setupItems.push(verifySetupForLocalEnvironment())
+  }
+  if (collectingCoverage) setupItems.push(startCoverageServer())
+
+  return Promise.all(setupItems)
 }
