@@ -3,7 +3,7 @@ notifications:
   email: false
   slack: conveyal:WQxmWiu8PdmujwLw4ziW72Gc
 node_js:
-  - '8'
+  - '12' # must be at least v10 for mastarm 5
 services:
   # needed for e2e tests to start datatools-server
   - mongodb
