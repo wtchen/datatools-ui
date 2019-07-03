@@ -138,9 +138,12 @@ function uploadLogs () {
   }
 
   function uploadToMicrosoftTeams (teamsCallback) {
+    console.log('test teams')
     if (!process.env.MS_TEAMS_WEBHOOK_URL || !process.env.S3_BUCKET) {
       teamsCallback()
     }
+
+    console.log('uploading log zipfiles to s3 and posting message to MS Teams')
 
     // upload logs to s3
     createPushToS3({ s3bucket: process.env.S3_BUCKET })(
@@ -150,6 +153,7 @@ function uploadLogs () {
       }
     )
       .then(() => {
+        console.log('successfully uploaded to s3')
         // post a message to a channel
         const message = {
           '@context': 'https://schema.org/extensions',
@@ -190,14 +194,17 @@ function uploadLogs () {
             if (res.status >= 400) {
               return teamsCallback(new Error('Post to MS Teams failed!'))
             }
+            console.log('successfully posted to MS Teams')
             teamsCallback()
           })
           .catch(e => {
-            console.error('Failed to post to MS TEAMS: ', e)
+            console.error('Failed to post to MS Teams: ', e)
+            teamsCallback(e)
           })
       })
       .catch(e => {
         console.error('Failed to upload logs to s3: ', e)
+        teamsCallback(e)
       })
   }
 
