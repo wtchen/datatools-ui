@@ -27,7 +27,7 @@
     "start-instrumented": "mastarm build --env dev --serve --proxy http://localhost:4000/api --instrument",
     "test": "npm run lint && npm run lint-messages && yarn run flow && npm run test-client",
     "test-client": "mastarm test -c configurations/test --test-path-ignore-patterns \"__tests__/end-to-end __tests__/test-utils\"",
-    "test-end-to-end": "mastarm test --test-path-ignore-patterns \"lib __tests__/test-utils\" --test-environment ./__tests__/test-utils/e2e-environment.js --json-output-file=e2e-test-results/results.json"
+    "test-end-to-end": "mastarm test --test-path-ignore-patterns \"lib __tests__/test-utils\" --test-environment ./__tests__/test-utils/e2e-environment.js --jest-cli-args=\"--json --outputFile e2e-test-results/result2s.json\""
   },
   "dependencies": {
     "@conveyal/lonlat": "^1.3.0",
@@ -121,7 +121,7 @@
     "istanbul-middleware": "^0.2.2",
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^7.4.1",
-    "mastarm": "^4.5.0",
+    "mastarm": "^5.1.0",
     "md5-file": "^4.0.0",
     "mkdirp": "^0.5.1",
     "nock": "^9.0.14",
