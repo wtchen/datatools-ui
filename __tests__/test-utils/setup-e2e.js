@@ -401,11 +401,11 @@ function startOtp () {
   })
 }
 
-async function recreateEndToEndTestResultDirectory () {
-  // delete test results folder
+function recreateEndToEndTestResultDirectory () {
+  // delete and recreate test results folder
   const testFolderFilename = getTestFolderFilename()
-  await fs.remove(testFolderFilename)
-  await fs.ensureDir(testFolderFilename)
+  fs.removeSync(testFolderFilename)
+  fs.ensureDirSync(testFolderFilename)
 }
 
 /**
@@ -504,9 +504,12 @@ function startCoverageServer () {
 }
 
 module.exports = function () {
-  const setupItems = [recreateEndToEndTestResultDirectory()]
+  // syncrhonosuly recreate the test results directory in to avoid race
+  // conditions
+  recreateEndToEndTestResultDirectory()
 
   // do different setup depending on runtime environment
+  const setupItems = []
   if (isCi) {
     setupItems.push(setupForContinuousIntegrationEnvironment())
   } else {
