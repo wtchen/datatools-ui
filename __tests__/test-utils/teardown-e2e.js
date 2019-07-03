@@ -5,6 +5,7 @@ const archiver = require('archiver')
 const each = require('async-each')
 const extractZip = require('extract-zip')
 const fetch = require('isomorphic-fetch')
+const createPushToS3 = require('mastarm/lib/push-to-s3')
 const Slack = require('slack')
 
 const {
@@ -137,53 +138,66 @@ function uploadLogs () {
   }
 
   function uploadToMicrosoftTeams (teamsCallback) {
-    if (!process.env.MS_TEAMS_WEBHOOK_URL) {
+    if (!process.env.MS_TEAMS_WEBHOOK_URL || !process.env.S3_BUCKET) {
       teamsCallback()
     }
 
-    // TODO: upload a file to oneDrive
-
-    // post a message to a channel
-    const message = {
-      '@context': 'https://schema.org/extensions',
-      '@type': 'MessageCard',
-      themeColor: '0072C6',
-      title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
-      text: `${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed`,
-      potentialAction: [
-        {
-          '@type': 'OpenUri',
-          name: `View Travis Build #${buildNum}`,
-          targets: [
-            {
-              os: 'default',
-              uri: process.env.TRAVIS_BUILD_WEB_URL
-            }
-          ]
-        }, {
-          '@type': 'OpenUri',
-          name: 'Download Logs',
-          targets: [
-            {
-              os: 'default',
-              uri: 'https://docs.microsoft.com/outlook/actionable-messages'
-            }
-          ]
-        }
-      ]
-    }
-    fetch(
-      process.env.MS_TEAMS_WEBHOOK_URL,
+    // upload logs to s3
+    createPushToS3({ s3bucket: process.env.S3_BUCKET })(
       {
-        method: 'POST',
-        body: JSON.stringify(message)
+        body: fs.readFileSync(logsZipfile),
+        outfile: uploadedLogsFilename
       }
     )
-      .then(res => {
-        if (res.status >= 400) {
-          return teamsCallback(new Error('Post to MS Teams failed!'))
+      .then(() => {
+        // post a message to a channel
+        const message = {
+          '@context': 'https://schema.org/extensions',
+          '@type': 'MessageCard',
+          themeColor: '0072C6',
+          title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
+          text: `${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed`,
+          potentialAction: [
+            {
+              '@type': 'OpenUri',
+              name: `View Travis Build #${buildNum}`,
+              targets: [
+                {
+                  os: 'default',
+                  uri: process.env.TRAVIS_BUILD_WEB_URL
+                }
+              ]
+            }, {
+              '@type': 'OpenUri',
+              name: 'Download Logs',
+              targets: [
+                {
+                  os: 'default',
+                  uri: 'https://docs.microsoft.com/outlook/actionable-messages'
+                }
+              ]
+            }
+          ]
         }
-        teamsCallback()
+        fetch(
+          process.env.MS_TEAMS_WEBHOOK_URL,
+          {
+            method: 'POST',
+            body: JSON.stringify(message)
+          }
+        )
+          .then(res => {
+            if (res.status >= 400) {
+              return teamsCallback(new Error('Post to MS Teams failed!'))
+            }
+            teamsCallback()
+          })
+          .catch(e => {
+            console.error('Failed to post to MS TEAMS: ', e)
+          })
+      })
+      .catch(e => {
+        console.error('Failed to upload logs to s3: ', e)
       })
   }
 
