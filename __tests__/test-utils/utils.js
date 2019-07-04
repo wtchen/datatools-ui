@@ -128,9 +128,9 @@ function requireEnvVars (varnames) {
  * Start a process that will continue to run after this script ends
  */
 function spawnDetachedProcess (cmd, args, name) {
-  const stdOutFile = path.resolve(getTestFolderFilename(`./${name}-out.log`))
+  const stdOutFile = path.resolve(getTestFolderFilename(`${name}-out.log`))
   const processOut = fs.openSync(stdOutFile, 'w')
-  const stdErrFile = path.resolve(getTestFolderFilename(`./${name}-err.log`))
+  const stdErrFile = path.resolve(getTestFolderFilename(`${name}-err.log`))
   const processErr = fs.openSync(stdErrFile, 'w')
   const child = spawn(
     cmd,
