@@ -140,6 +140,8 @@ function uploadLogs () {
       teamsCallback()
     }
 
+    const {LOGS_S3_BUCKET} = process.env
+
     function sendCard (s3uploadSuccessfull) {
       console.log('posting message to MS Teams')
       const actions = [{
@@ -160,7 +162,7 @@ function uploadLogs () {
           targets: [
             {
               os: 'default',
-              uri: 'https://docs.microsoft.com/outlook/actionable-messages'
+              uri: `https:/${LOGS_S3_BUCKET}.s3.amazonaws.com/${uploadedLogsFilename}`
             }
           ]
         })
@@ -194,8 +196,8 @@ function uploadLogs () {
     }
 
     // upload logs to s3
-    if (process.env.S3_BUCKET) {
-      createPushToS3({ s3bucket: process.env.S3_BUCKET })(
+    if (LOGS_S3_BUCKET) {
+      createPushToS3({ s3bucket: LOGS_S3_BUCKET })(
         {
           body: fs.readFileSync(logsZipfile),
           outfile: uploadedLogsFilename
