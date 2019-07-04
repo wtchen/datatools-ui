@@ -272,9 +272,9 @@ function uploadLogs () {
   archive.pipe(output)
 
   // glob all log files in cwd into zip
-  archive.glob('./*.log')
+  archive.glob(getTestFolderFilename('*.log'))
   // glob all png files (e2e error screenshots) into zip
-  archive.glob('./e2e-error-*.png')
+  archive.glob(getTestFolderFilename('e2e-error-*.png'))
   archive.finalize()
 }
 
