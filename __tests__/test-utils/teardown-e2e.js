@@ -137,7 +137,7 @@ function uploadLogs () {
 
   function uploadToMicrosoftTeams (teamsCallback) {
     if (!msTeamsConfigured) {
-      teamsCallback()
+      return teamsCallback()
     }
 
     const {LOGS_S3_BUCKET} = process.env
@@ -220,7 +220,7 @@ function uploadLogs () {
     if (!slackConfigured) {
       // environment variables not defined right to upload, so callback with
       // success as there is nothing to do
-      slackCallback()
+      return slackCallback()
     }
     const slack = new Slack({ token: process.env.SLACK_TOKEN })
 
