@@ -7,7 +7,7 @@ const request = require('request')
 
 const collectingCoverage = process.env.COLLECT_COVERAGE
 const isCi = !!process.env.CI
-const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'conveyal/datatools-ui'
+const isUiRepo = process.env.TRAVIS_REPO_SLUG === 'ibi-group/datatools-ui'
 const testFolderPath = 'e2e-test-results'
 
 /**
