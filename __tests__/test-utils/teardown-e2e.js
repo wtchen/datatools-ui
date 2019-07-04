@@ -162,7 +162,7 @@ function uploadLogs () {
           targets: [
             {
               os: 'default',
-              uri: `https:/${LOGS_S3_BUCKET}.s3.amazonaws.com/${uploadedLogsFilename}`
+              uri: `https://${LOGS_S3_BUCKET}.s3.amazonaws.com/${uploadedLogsFilename}`
             }
           ]
         })
