@@ -112,11 +112,9 @@ function shutdownOtp () {
  * slack channel (if defined)
  */
 function uploadLogs () {
-  if (
-    !process.env.SLACK_TOKEN ||
-      !process.env.SLACK_CHANNEL ||
-      !process.env.MS_TEAMS_WEBHOOK_URL
-  ) {
+  const slackConfigured = process.env.SLACK_TOKEN && process.env.SLACK_CHANNEL
+  const msTeamsConfigured = process.env.MS_TEAMS_WEBHOOK_URL
+  if (!(slackConfigured || msTeamsConfigured)) {
     console.warn('Log upload environment variables undefined, not uploading logs anywhere!')
     return
   }
@@ -138,78 +136,86 @@ function uploadLogs () {
   }
 
   function uploadToMicrosoftTeams (teamsCallback) {
-    console.log('test teams')
-    if (!process.env.MS_TEAMS_WEBHOOK_URL || !process.env.S3_BUCKET) {
+    if (!msTeamsConfigured) {
       teamsCallback()
     }
 
-    console.log('uploading log zipfiles to s3 and posting message to MS Teams')
+    function sendCard (s3uploadSuccessfull) {
+      console.log('posting message to MS Teams')
+      const actions = [{
+        '@type': 'OpenUri',
+        name: `View Travis Build #${buildNum}`,
+        targets: [
+          {
+            os: 'default',
+            uri: process.env.TRAVIS_BUILD_WEB_URL
+          }
+        ]
+      }]
 
-    // upload logs to s3
-    createPushToS3({ s3bucket: process.env.S3_BUCKET })(
-      {
-        body: fs.readFileSync(logsZipfile),
-        outfile: uploadedLogsFilename
-      }
-    )
-      .then(() => {
-        console.log('successfully uploaded to s3')
-        // post a message to a channel
-        const message = {
-          '@context': 'https://schema.org/extensions',
-          '@type': 'MessageCard',
-          themeColor: '0072C6',
-          title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
-          text: `${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed`,
-          potentialAction: [
+      if (s3uploadSuccessfull) {
+        actions.push({
+          '@type': 'OpenUri',
+          name: 'Download Logs',
+          targets: [
             {
-              '@type': 'OpenUri',
-              name: `View Travis Build #${buildNum}`,
-              targets: [
-                {
-                  os: 'default',
-                  uri: process.env.TRAVIS_BUILD_WEB_URL
-                }
-              ]
-            }, {
-              '@type': 'OpenUri',
-              name: 'Download Logs',
-              targets: [
-                {
-                  os: 'default',
-                  uri: 'https://docs.microsoft.com/outlook/actionable-messages'
-                }
-              ]
+              os: 'default',
+              uri: 'https://docs.microsoft.com/outlook/actionable-messages'
             }
           ]
+        })
+      }
+
+      fetch(
+        process.env.MS_TEAMS_WEBHOOK_URL,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            '@context': 'https://schema.org/extensions',
+            '@type': 'MessageCard',
+            themeColor: '0072C6',
+            title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
+            text: `${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed`,
+            potentialAction: actions
+          })
         }
-        fetch(
-          process.env.MS_TEAMS_WEBHOOK_URL,
-          {
-            method: 'POST',
-            body: JSON.stringify(message)
+      )
+        .then(res => {
+          if (res.status >= 400) {
+            return teamsCallback(new Error('Post to MS Teams failed!'))
           }
-        )
-          .then(res => {
-            if (res.status >= 400) {
-              return teamsCallback(new Error('Post to MS Teams failed!'))
-            }
-            console.log('successfully posted to MS Teams')
-            teamsCallback()
-          })
-          .catch(e => {
-            console.error('Failed to post to MS Teams: ', e)
-            teamsCallback(e)
-          })
-      })
-      .catch(e => {
-        console.error('Failed to upload logs to s3: ', e)
-        teamsCallback(e)
-      })
+          console.log('successfully posted to MS Teams')
+          teamsCallback()
+        })
+        .catch(e => {
+          console.error('Failed to post to MS Teams: ', e)
+          teamsCallback(e)
+        })
+    }
+
+    // upload logs to s3
+    if (process.env.S3_BUCKET) {
+      createPushToS3({ s3bucket: process.env.S3_BUCKET })(
+        {
+          body: fs.readFileSync(logsZipfile),
+          outfile: uploadedLogsFilename
+        }
+      )
+        .then(() => {
+          console.log('successfully uploaded to s3')
+          sendCard(true)
+        })
+        .catch(e => {
+          console.error('Failed to upload logs to s3: ', e)
+          sendCard(false)
+        })
+    } else {
+      sendCard(false)
+    }
   }
 
   function uploadToSlack (slackCallback) {
-    if (!process.env.SLACK_TOKEN || !process.env.SLACK_CHANNEL) {
+    if (!slackConfigured) {
       // environment variables not defined right to upload, so callback with
       // success as there is nothing to do
       slackCallback()
