@@ -283,8 +283,8 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
       waitUntil: 'networkidle0'
     }
   )
-  await waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
-  await click('[data-test-id="project-header-create-new-feed-source-button"]')
+  await waitForAndClick('[data-test-id="project-header-action-dropdown-button"]')
+  await waitForAndClick('[data-test-id="project-header-create-new-feed-source-button"]')
   await createFeedSourceViaForm(feedSourceName)
 }
 
@@ -835,28 +835,17 @@ describe('end-to-end', () => {
         await createFeedSourceViaProjectHeaderButton(testFeedSourceToDeleteName)
 
         // find created feed source
-        const listItemEls = await getAllElements('.list-group-item')
+        const listItemEls = await getAllElements('.feed-source-table-row')
         let feedSourceFound = false
         // cast to any to avoid flow errors
         for (const listItemEl: any of listItemEls) {
           const feedSourceNameEl = await listItemEl.$('h4 a')
           const innerHtml = await getInnerHTML(feedSourceNameEl)
           if (innerHtml.indexOf(testFeedSourceToDeleteName) > -1) {
-            // hover over container to display FeedSourceDropdown
-            // I tried to use the puppeteer hover method, but that didn't trigger
-            // a mouseEnter event.  I needed to simulate the mouse being outside
-            // the element and then moving inside
-            const listItemBBox = await listItemEl.boundingBox()
-            await page.mouse.move(
-              listItemBBox.x - 10,
-              listItemBBox.y
-            )
-            await page.mouse.move(
-              listItemBBox.x + listItemBBox.width / 2,
-              listItemBBox.y + listItemBBox.height / 2
-            )
+            const href = await getHref(feedSourceNameEl)
+            const feedSourceToDeleteId = href.match(/\/feed\/([\w-]*)/)[1]
             // click dropdown and delete menu item button
-            await waitForAndClick('#feed-source-action-button')
+            await click(`#feed-source-action-button-${feedSourceToDeleteId}`)
             await waitForAndClick('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
 
             // confirm action in modal
@@ -973,7 +962,7 @@ describe('end-to-end', () => {
       await createFeedSourceViaProjectHeaderButton(feedSourceName)
 
       // find created feed source
-      const listItemEls = await getAllElements('.list-group-item')
+      const listItemEls = await getAllElements('.feed-source-table-row')
       let feedSourceFound = false
       for (const listItemEl: any of listItemEls) {
         const feedSourceNameEl = await listItemEl.$('h4 a')
@@ -982,10 +971,6 @@ describe('end-to-end', () => {
           feedSourceFound = true
           const href = await getHref(feedSourceNameEl)
           scratchFeedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
-          await feedSourceNameEl.click()
-          // apparently the first click does not work entirely, it may trigger
-          // a load of the FeedSourceDropdown, but the event for clicking the link
-          // needs a second try I guess
           await feedSourceNameEl.click()
           break
         }
