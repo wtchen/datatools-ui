@@ -39,7 +39,7 @@ On the main Configurations Viewer page, a user may create a new configuration a 
 
 ![Search for routes/stops by name or on the map](/img/gtfs-map-search-config.png "Search for routes/stops by name or on the map")  
 
-For more info on route/stop search, see [Searching for Routes and Stops](user/searching-routes-stops/).
+For more info on route/stop search, see [Searching for Routes and Stops](searching-routes-stops/).
 
 ## Configuration Editor
 

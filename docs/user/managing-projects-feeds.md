@@ -68,4 +68,4 @@ The Feed Version navigator allows you to navigate through all available versions
 
 ![screenshot](../img/feed-version-navigator.png)
 
-To the left of the navigator is a list of views available for to the currently active version. These include basic feed statistics, the detailed feed validation report, and any user comments specific to this feed.
+To the left of the navigator is a list of views available for to the currently active version. These include basic feed statistics, the detailed feed validation report, and any user comments specific to this feed. See [Feed Version Summary](./feed-version-summary) for more.

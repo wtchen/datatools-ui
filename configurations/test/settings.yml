@@ -1,0 +1,30 @@
+application:
+  active_project: project-id
+  changelog_url: 'https://changelog.example.com'
+  data:
+    gtfs_s3_bucket: bucket-name
+    use_s3_storage: false
+  date_format: MMM Do YYYY
+  docs_url: 'http://docs.example.com'
+  logo: 'http://example.com/data_manager.png'
+  notifications_enabled: false
+  profileRefreshTime: -1
+  support_email: support@example.com
+  title: Data Manager
+entries:
+  - 'lib/main.js:dist/index.js'
+  - 'lib/index.css:dist/index.css'
+extensions:
+  transitfeeds:
+    enabled: false
+  transitland:
+    enabled: false
+modules:
+  editor:
+    enabled: true
+  enterprise:
+    enabled: true
+  user_admin:
+    enabled: true
+  validator:
+    enabled: true
