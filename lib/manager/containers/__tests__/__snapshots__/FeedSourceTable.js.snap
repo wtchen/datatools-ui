@@ -3241,7 +3241,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 </Link>
                               </h4>
                               <h5>
-                                Last updated Nov 27, 2018
+                                Last updated Nov 28, 2018
                               </h5>
                               <Row
                                 bsClass="row"

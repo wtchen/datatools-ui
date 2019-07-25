@@ -1643,16 +1643,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                               >
                                 <li>
                                   <Icon
-                                    type="map-marker"
-                                  >
-                                    <i
-                                      className="fa fa-map-marker fa-fw "
-                                    />
-                                  </Icon>
-                                  n/a
-                                </li>
-                                <li>
-                                  <Icon
                                     type="cloud-download"
                                   >
                                     <i
