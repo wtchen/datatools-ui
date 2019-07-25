@@ -32,7 +32,9 @@ Deletes the active pattern. **Note**: deleted patterns cannot be recovered.
 - **Direction** - corresponds to the `direction_id` field in GTFS. All trips associated with this pattern will be assigned the direction provided here.
 
 ## Editing schedules
-Click `Edit schedules` to begin creating or editing trips/frequencies for a trip pattern. You will be redirected to the Schedule Editor. For more information on creating schedules for a pattern, see [Trips](schedules).
+Click `Edit schedules` to begin creating or editing trips/frequencies for a trip pattern. You will be redirected to the Schedule Editor.
+
+For more information on creating schedules for a pattern, [see the Trips section](schedules).
 
 ## Stop sequence
 ### Adding stops
@@ -73,6 +75,22 @@ Stops can be removed from the pattern by clicking the red 🗑 button found in t
 
 
 ## Stop timings
+### Pattern stop colors
+Pattern stops shown in the list with an orange color represent stops that have no travel time defined. In many cases this is acceptable -- e.g., when stops along the pattern do not represent timepoints and are intended to be interpolated or are otherwise intentionally left blank.
+
+Sometimes, however, leaving travel times blank is unintentional and these values should be filled in with a mm:ss (minutes + seconds) value. Once the value is filled and saved, the orange color will change to a pale green.
+
+### Normalize stop times
+Whenever a pattern stop is added, inserted, or removed from a pattern, a warning will appear in the upper right hand corner of the screen. This message will prompt you to to adjust the default travel time for the pattern stops based on whichever action you took. For example, if stop #3 was removed, the travel time between stops #2 and #4 (now #3) may need to be increased to account for the change in distance traveled.
+<div class="img-center">
+![pattern stop warning](../../img/pattern-stop-warning.png)
+</div>
+
+Once you have adjusted the stop timings, another warning will appear prompting you to click `Normalize stop times`. This button gives you a way to apply the change in pattern stop timings to any and all of the pre-existing trips for the pattern. It prevents you from needing to adjust these trips manually. After clicking `Normalize stop times`, you will be shown the following prompt asking you to define which stops you would like to normalize (the default is for all stops/stop times to be normalized). Once you confirm, you will receive a message confirming how many stop times were updated.
+<div class="img-center">
+![normalize pattern stops](../../img/normalize-stop-times.png)
+</div>
+
 ### Calculate timings
 The average speed for the route can be used to calculate all the time gaps between stops in one go. Once the stops have been added and the pattern alignment is drawn simply click **Calc. Times** and the time between stops will automatically fill in.
 
