@@ -63,6 +63,9 @@ function startBackendServer () {
     const baseDtServerGithubConfigUrl = 'https://raw.githubusercontent.com/ibi-group/datatools-server/e2e-coverage/configurations/default/'
 
     auto({
+      makeGtfsPlusFolder: callback => {
+        mkdirp('/tmp/gtfsplus', callback)
+      },
       makeServerFolder: callback => {
         console.log('creating directory for server files')
         mkdirp(serverFolder, callback)
@@ -142,6 +145,7 @@ function startBackendServer () {
         )
       }],
       startServer: [
+        'makeGtfsPlusFolder',
         'downloadJar',
         'writeEnvFile',
         'writeServerFile',
