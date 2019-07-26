@@ -13,6 +13,7 @@ nav:
     - 'Introduction': 'user/introduction.md'
     - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
     - 'Publishing Feeds': 'user/publishing-feeds.md'
+    - 'Merging Feeds': 'user/merging-feeds.md'
     - Feed Version Summary: 'user/feed-version-summary.md'
     - 'Managing Users': 'user/managing-users.md'
     - 'Service Alerts Manager': 'user/service-alerts.md'
