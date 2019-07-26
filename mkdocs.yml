@@ -6,7 +6,7 @@ site_dir: target/mkdocs
 theme: readthedocs
 extra_css: [style.css]
 
-nav:
+pages:
 - Home: 'index.md'
 - User Guide:
   - Data Manager:
@@ -14,7 +14,7 @@ nav:
     - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
     - 'Publishing Feeds': 'user/publishing-feeds.md'
     - 'Merging Feeds': 'user/merging-feeds.md'
-    - Feed Version Summary: 'user/feed-version-summary.md'
+    - 'Feed Version Summary': 'user/feed-version-summary.md'
     - 'Managing Users': 'user/managing-users.md'
     - 'Service Alerts Manager': 'user/service-alerts.md'
     - 'eTID Configuration Manager': 'user/sign-config.md'
