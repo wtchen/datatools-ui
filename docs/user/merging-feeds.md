@@ -5,7 +5,7 @@ For a given feed source/agency, it is possible to merge two feed versions that r
 
 To begin a feed merge, navigate to one of the feed versions to be merged (it does not matter whether this is the current or future version). Next, click the 'Merge with version' dropdown button and select the version with which to merge.
 <div class="img-center">
-  ![merge feed versions](../../img/merge-feeds-button.png)
+  ![merge feed versions](../img/merge-feeds-button.png)
 </div>
 
 ### Merge rules
@@ -54,7 +54,7 @@ There are a set of rules that govern the requirements for input feed versions an
 ### Merge Feed Versions Result
 Once the merge feeds task has been completed, a notification window will appear describing the results of the merge process. If the feeds did not meet the rules for input datasets, the merge will fail and you will see a message describing the reason for failure and any offending records (e.g., duplicate `trip_ids` shared between the feeds). Otherwise, you will see a success message, with a list of any IDs that were modified for the output feeds (note: the input feeds will never be modified). Upon success, a new Feed Version will be created as the latest version for the feed source.
 <div class="img-center">
-  ![merge feed versions result](../../img/merge-feeds-result.png)
+  ![merge feed versions result](../img/merge-feeds-result.png)
 </div>
 
 ## Merging a Project's Feed Versions
