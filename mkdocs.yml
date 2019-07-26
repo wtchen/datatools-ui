@@ -17,7 +17,6 @@ pages:
     - 'Feed Version Summary': 'user/feed-version-summary.md'
     - 'Managing Users': 'user/managing-users.md'
     - 'Service Alerts Manager': 'user/service-alerts.md'
-    - 'eTID Configuration Manager': 'user/sign-config.md'
     - 'Searching for Routes and Stops': 'user/searching-routes-stops.md'
     - 'GTFS+ Editor': 'user/gtfs-plus-editor.md'
     - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
