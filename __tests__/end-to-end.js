@@ -846,6 +846,7 @@ describe('end-to-end', () => {
             const feedSourceToDeleteId = href.match(/\/feed\/([\w-]*)/)[1]
             // click dropdown and delete menu item button
             await click(`#feed-source-action-button-${feedSourceToDeleteId}`)
+            await wait(2000, 'for dropdown menu to render')
             await waitForAndClick('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
 
             // confirm action in modal
