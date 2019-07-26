@@ -63,6 +63,9 @@ Feed Versions are created from the main Feed Source profile page. There are thre
 The Feed Version navigator allows you to navigate through all available versions of a given feed using the `←` and `→` buttons (or view a list of all versions). You can also use this interface to:
 
 - download a Feed Version to your local machine as a GTFS data file,
+- export the route patterns or stops as a shapefile (.shp),
+- merge two Feed Versions into a single version (MTC only),
+- publish a Feed Version externally (MTC only),
 - load a version into the Editor, and
 - delete a Feed Version from the Data Manager. (Note: deleting a Feed Version cannot be undone.)
 
