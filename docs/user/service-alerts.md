@@ -68,6 +68,11 @@ Once a new Affected Service has been added, it will appear in the Affected Servi
 
 ![Affected Service](/img/affected-service.png "Affected Service")
 
+### Adding Parent Station and its Children Stops to a Service Alert
+The GTFS specification supports stops that act as parent stations to a set of other stops. This is often used to model transfer centers with multiple bus bays or rail stations with multiple platforms. To create a service alert for a parent station and its children stops, first search for a known parent station. Once you have located the stop (via the text search or map), click on the stop if the pop up is not already showing. From there you can choose to create an alert for just the parent station, or the parent station and its children. If you only need a subset of the stops for the alert, once they have all been added you can remove individual stops as needed.
+
+![Creating alert for parent station](/img/alerts-parent-station.png)
+
 ### Publishing, Saving and Deleting Alerts
 
 Once finished, editing an alert, a user can save the alert by clicking the **Save** button in the upper righthand corner of the Alert Editor. After saving, the user will be redirected to the full list of alerts.
