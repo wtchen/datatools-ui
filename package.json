@@ -117,7 +117,7 @@
     "fs-extra": "^6.0.1",
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^7.4.1",
-    "mastarm": "^5.0.2",
+    "mastarm": "^5.1.3",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
     "puppeteer": "^1.11.0",
