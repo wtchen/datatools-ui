@@ -7,6 +7,10 @@ node_js:
 cache:
   yarn: true
 before_install:
+  # Set timezone to New York in order to prevent date/time strings in snapshots
+  # from not matching.
+  - export TZ=America/New_York
+  - date
   - npm i -g codecov
   # Use updated python to avoid SSL insecure warnings:
   # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
