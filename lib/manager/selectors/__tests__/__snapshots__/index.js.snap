@@ -2,7 +2,17 @@
 
 exports[`manager > selectors > getActiveProject should get the project 1`] = `
 Object {
+  "autoFetchFeeds": false,
+  "autoFetchHour": 0,
+  "autoFetchMinute": 0,
+  "bounds": null,
+  "defaultTimeZone": null,
   "id": "1",
+  "lastUpdated": 1546955864840,
+  "name": "Test Project",
+  "organizationId": null,
+  "otpServers": null,
+  "useCustomOsmBounds": false,
 }
 `;
 

@@ -134,7 +134,7 @@ export function getMockStateWithAdminUser (): AppState {
 export function getMockStateWithProject (): AppState {
   const state = clone(getMockStateWithAdminUser())
   const {mockProject} = manager
-  state.projects.active = mockProject.id
+  state.projects.active = mockProject
   state.projects.all.push(mockProject)
   state.routing.routeParams.projectId = mockProject.id
   return state
@@ -149,7 +149,7 @@ export function getMockStateWithProject (): AppState {
 export function getMockStateWithProjectWithFeedsAndDeployment (): AppState {
   const state = clone(getMockStateWithProject())
   const {mockProjectWithDeployment} = manager
-  state.projects.active = mockProjectWithDeployment.id
+  state.projects.active = mockProjectWithDeployment
   state.projects.all.push(mockProjectWithDeployment)
   state.projects.filter.feedSourceTableComparisonColumn = 'DEPLOYED'
   state.routing.routeParams.projectId = mockProjectWithDeployment.id

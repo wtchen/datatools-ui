@@ -389,6 +389,10 @@ components:
     placeholder: Select language...
   Login:
     title: Log in
+  NormalizeStopTimesTip:
+    info: "Tip: when changing travel times, consider
+    using the 'Normalize stop times' button above to automatically update
+    all stop times to the updated travel time."
   NotesViewer:
     all: All Comments
     feedSource: Feed Source

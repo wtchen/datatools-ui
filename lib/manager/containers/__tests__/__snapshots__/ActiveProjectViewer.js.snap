@@ -553,13 +553,16 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                 >
                                   <div
                                     className="Logo"
+                                    style={
+                                      Object {
+                                        "backgroundImage": "url(http://example.com/data_manager.png)",
+                                      }
+                                    }
                                   />
                                   <div
                                     className="LogoLabel"
                                   >
-                                    GTFS Data
-                                    <br />
-                                    Manager
+                                    Data Tools
                                   </div>
                                   <div
                                     className="clearfix"
@@ -1641,16 +1644,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                   }
                                 }
                               >
-                                <li>
-                                  <Icon
-                                    type="map-marker"
-                                  >
-                                    <i
-                                      className="fa fa-map-marker fa-fw "
-                                    />
-                                  </Icon>
-                                  n/a
-                                </li>
                                 <li>
                                   <Icon
                                     type="cloud-download"
