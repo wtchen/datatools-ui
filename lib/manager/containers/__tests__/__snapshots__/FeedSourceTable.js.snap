@@ -2244,6 +2244,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                       >
                         <DropdownButton
                           bsStyle="primary"
+                          data-test-id="project-header-action-dropdown-button"
                           id="project-header-actions"
                           style={
                             Object {
@@ -2278,6 +2279,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     bsClass="dropdown-toggle"
                                     bsRole="toggle"
                                     bsStyle="primary"
+                                    data-test-id="project-header-action-dropdown-button"
                                     id="project-header-actions"
                                     key=".0"
                                     onClick={[Function]}
@@ -2298,6 +2300,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       bsClass="btn"
                                       bsStyle="primary"
                                       className="dropdown-toggle"
+                                      data-test-id="project-header-action-dropdown-button"
                                       disabled={false}
                                       id="project-header-actions"
                                       onClick={[Function]}
@@ -2313,6 +2316,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                         aria-expanded={false}
                                         aria-haspopup={true}
                                         className="dropdown-toggle btn btn-primary"
+                                        data-test-id="project-header-action-dropdown-button"
                                         disabled={false}
                                         id="project-header-actions"
                                         onClick={[Function]}
