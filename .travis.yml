@@ -29,4 +29,5 @@ sudo: false
 # Push results to codecov.io
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - semantic-release
+  # only deploy the release to github as the package is not needed on npm
+  - semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github
