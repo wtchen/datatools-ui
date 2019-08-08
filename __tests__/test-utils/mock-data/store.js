@@ -17,6 +17,7 @@ import thunkMiddleware from 'redux-thunk'
 
 import admin from '../../../lib/admin/reducers'
 import {defaultState as defaultAdminOrganizationsState} from '../../../lib/admin/reducers/organizations'
+import {defaultState as defaultAdminServersState} from '../../../lib/admin/reducers/servers'
 import {defaultState as defaultAdminUsersState} from '../../../lib/admin/reducers/users'
 import alerts from '../../../lib/alerts/reducers'
 import {defaultState as defaultAlertsActiveState} from '../../../lib/alerts/reducers/active'
@@ -75,6 +76,7 @@ export function getMockInitialState (): AppState {
   return clone({
     admin: {
       organizations: defaultAdminOrganizationsState,
+      servers: defaultAdminServersState,
       users: defaultAdminUsersState
     },
     alerts: {
