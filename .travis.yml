@@ -8,11 +8,6 @@ cache:
   yarn: true
 before_install:
   - npm i -g codecov
-  # Use updated python to avoid SSL insecure warnings:
-  # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
-  - python --version
-  - pyenv versions
-  - pyenv global 2.7.15
   - pip install --user mkdocs
 script:
   - yarn run lint
