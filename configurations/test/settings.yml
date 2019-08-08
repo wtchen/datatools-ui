@@ -20,6 +20,8 @@ extensions:
   transitland:
     enabled: false
 modules:
+  deployment:
+    enabled: true
   editor:
     enabled: true
   enterprise:

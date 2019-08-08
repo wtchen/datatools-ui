@@ -1,5 +1,5 @@
-// flow-typed signature: 6457154c7e96ef3ce4b654781625f315
-// flow-typed version: 7bc41826e1/react-dnd_v2.x.x/flow_>=v0.53.x
+// flow-typed signature: d2d738b2c235ce318de1ed4d17999f94
+// flow-typed version: ae3d771aa0/react-dnd_v2.x.x/flow_>=v0.53.x
 
 declare module "react-dnd" {
   declare type Identifier = string;
@@ -200,6 +200,16 @@ declare module "react-dnd" {
 
   // Drag Drop Context
   // ----------------------------------------------------------------------
+
+  declare type ProviderProps = {
+    backend: mixed,
+    children: React$Element<any>,
+    window?: Object
+  };
+
+  declare class DragDropContextProvider<ProviderProps> extends React$Component<ProviderProps> {
+    props: ProviderProps;
+  }
 
   declare function DragDropContext<OP: {}, CP: {}>(
     backend: mixed

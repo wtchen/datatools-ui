@@ -1,65 +1,84 @@
 [{
-    "distance": 0,
-    "id": "2zu5",
-    "permanent": true,
-    "point": {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-122.00743318, 37.06121322]
-      }
-    },
-    "stopId": "aad0f374-0f29-4300-ae05-6affbe0f1562",
-    "defaultTravelTime": 0,
-    "defaultDwellTime": 0,
-    "timepoint": null,
-    "shapeDistTraveled": 0,
-    "hidden": true
-  },
-  {
-    "distance": 170.7245980700509,
-    "id": "25p4",
-    "permanent": true,
-    "point": {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-122.00872656844231, 37.060454715231224]
-      }
+  "distance": 0,
+  "id": "bv67",
+  "pointType": 2,
+  "shapePtSequence": 0,
+  "point": {
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-77.922203, 42.086407]
     }
   },
-  {
-    "distance": 341.4491961401018,
-    "id": "cy46",
-    "permanent": true,
-    "point": {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-122.00981702504365, 37.059191439360475]
-      }
-    },
-    "stopId": "ec6a3479-9795-4480-9884-1c25851a163e",
-    "defaultTravelTime": 0,
-    "defaultDwellTime": 0,
-    "timepoint": null,
-    "shapeDistTraveled": 341.4491961401018,
-    "hidden": true
-  },
-  {
-    "distance": 358.0806866950734,
-    "id": "4s05",
-    "permanent": true,
-    "point": {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-122.009919, 37.059066]
-      }
+  "stopId": "56c69e57-b007-4367-94ed-2c224662a2af"
+}, {
+  "distance": 345.8645390523855,
+  "id": "y1e5",
+  "pointType": 1,
+  "shapePtSequence": 1,
+  "point": {
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-77.92215494185281, 42.08925407008939]
     }
   }
+}, {
+  "distance": 691.729078104771,
+  "id": "fyz2",
+  "pointType": 2,
+  "shapePtSequence": 2,
+  "point": {
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-77.92252574804179, 42.09235127309673]
+    }
+  },
+  "stopId": "a9c9cd55-ca3f-4ce7-9a93-96f2f4eaf089"
+}, {
+  "distance": 905.1384059344052,
+  "id": "0cj3",
+  "pointType": 2,
+  "shapePtSequence": 3,
+  "point": {
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-77.92276015989871, 42.09426187381858]
+    }
+  }
+}, {
+  "distance": 1118.5477337640395,
+  "id": "1gwo",
+  "pointType": 2,
+  "shapePtSequence": 4,
+  "point": {
+    "type": "Feature",
+    "properties": {},
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-77.92305462145765, 42.096168018547736]
+    }
+  },
+  "stopId": "5b6afe4d-f4f2-43f3-810e-91749420af53"
+},
+{
+  "distance": 1247.47773376,
+  "id": "ab3k",
+  "pointType": 1,
+  "shapePtSequence": 5,
+  "point": {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-77.92185187339783, 42.08535651765607]
+      }
+  }
+}
 ]

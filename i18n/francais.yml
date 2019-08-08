@@ -224,7 +224,23 @@ components:
   FeedSourcePanel:
     search: Search feeds
   FeedSourceTable:
+    comparisonColumn:
+      DEPLOYED: Deployed Version
+      PUBLISHED: Published Version
     createFirst: Create first feed source!
+  FeedSourceTableRow:
+    status:
+        active: Active
+        all: All
+        expired: Expired
+        expiring-within-20-days: Expiring within 20 days
+        expiring-within-5-days: Expiring within 5 days
+        feedNotInDeployment: Feed not in deployment
+        feedNotPublished: Feed not published
+        future: Future
+        no-version: No version
+        same-as-deployed: Same as Deployed
+        same-as-published: Same as Published
   FeedSourceViewer:
     deploy: Deploy
     edit: Edit GTFS
@@ -262,10 +278,12 @@ components:
     previous: Previous
     version: Version
   FeedVersionTabs:
-    agencyCount: Agency Count
-    routeCount: Route Count
-    stopTimesCount: Stop time Count
-    tripCount: Trip Count
+    agencyCount: Agency count
+    daysActive: Days active
+    routeCount: Route count
+    stopCount: Stop count
+    stopTimesCount: Stop time count
+    tripCount: Trip count
     validDates: Valid Dates
   FeedVersionViewer:
     confirmDelete: Are you sure you want to delete this version? This cannot be undone.
@@ -368,6 +386,10 @@ components:
     placeholder: Select language...
   Login:
     title: Se connecter
+  NormalizeStopTimesTip:
+    info: "Tip: when changing travel times, consider
+    using the 'Normalize stop times' button above to automatically update
+    all stop times to the updated travel time."
   NotesViewer:
     all: All Comments
     feedSource: Feed Source
@@ -397,9 +419,15 @@ components:
       high: High
       low: Low
       medium: Medium
+  ProjectAccessSettings:
+    admin: Admin
+    cannotFetchFeeds: Cannot fetch feeds
+    custom: Custom
+    feeds: Feed Sources
+    noAccess: No Access
+    permissions: Permissions
+    title: Project Settings for
   ProjectSettings:
-    confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
-    deleteProject: Delete Project?
     deployment:
       buildConfig:
         elevationBucket:
@@ -447,7 +475,18 @@ components:
           placeholder: Updater name
         walkSpeed: Walk Speed
       title: Deployment
-    general:
+    project:
+      cannotFetchFeeds: Cannot fetch feeds
+      feeds: Feeds
+      permissions: Permissions
+    rename: Rename
+    save: Save
+    title: Settings
+  ProjectSettingsForm:
+    cancel: Cancel
+    confirmDelete: Are you sure you want to delete this project? This action cannot be undone and all feed sources and their versions will be permanently deleted.
+    deleteProject: Delete Project?
+    fields:
       location:
         boundingBox: 'Bounding box (W,S,E,N)'
         defaultLanguage: Default language
@@ -459,11 +498,6 @@ components:
       updates:
         autoFetchFeeds: Auto fetch feed sources?
         title: Updates
-    project:
-      cannotFetchFeeds: Cannot fetch feeds
-      feeds: Feeds
-      permissions: Permissions
-    rename: Rename
     save: Save
     title: Settings
   ProjectViewer:
@@ -485,8 +519,13 @@ components:
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
-  ProjectViewerHeader:
+  ProjectFeedListToolbar:
+    comparison:
+      DEPLOYED: Deployed
+      LATEST: Latest
+      PUBLISHED: Published
     deployments: Deployments
+    downloadCsv: Download Summary as CSV
     feeds:
       createFirst: Create first feed source!
       new: New Feed Source
@@ -501,9 +540,40 @@ components:
         validRange: Valid Range
       title: Feed Sources
       update: Fetch all
+    filter:
+      active: Active
+      all: All
+      expired: Expired
+      expiring: Expiring soon
+      future: Future
     makePublic: Publish public feeds
     mergeFeeds: Merge all
     settings: Settings
+    sort:
+      alphabetically:
+        title: Alphabetically
+        asc: A-Z
+        desc: Z-A
+      endDate:
+        title: Expiration Date
+        asc: Earliest-Latest
+        desc: Latest-Earliest
+      lastUpdated:
+        title: Last Update
+        asc: Stale-Recent
+        desc: Recent-Stale
+      numErrors:
+        title: Number of Issues
+        asc: Least-Most
+        desc: Most-Least
+      startDate:
+        title: Start Date
+        asc: Earliest-Latest
+        desc: Latest-Earliest
+    sync:
+      transitland: Sync from transit.land
+      transitfeeds: Sync from transitfeeds
+      mtc: Sync from MTC
   ProjectsList:
     createFirst: Create my first project
     help:
@@ -658,12 +728,8 @@ components:
       description: Organization administrators have full access to projects within the organization.
     project:
       admin: Admin
-      cannotFetchFeeds: Cannot fetch feeds
       custom: Custom
-      feeds: Feed Sources
       noAccess: No Access
-      permissions: Permissions
-      title: Project Settings for
     save: Save
   VersionButtonToolbar:
     confirmDelete: Are you sure you want to delete this version? This cannot be undone.

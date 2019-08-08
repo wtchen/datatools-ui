@@ -3,7 +3,7 @@ notifications:
   email: false
   slack: conveyal:WQxmWiu8PdmujwLw4ziW72Gc
 node_js:
-  - '8'
+  - '12' # must be at least v10 for mastarm 5
 cache:
   yarn: true
 before_install:
@@ -20,7 +20,7 @@ script:
   - yarn run flow
   - yarn run cover-client
   - codecov
-  - yarn run build -- --minify
+  - yarn run build --minify
   - mkdocs build
 
 # If sudo is disabled, CI runs on container based infrastructure (allows caching &c.)
@@ -29,4 +29,5 @@ sudo: false
 # Push results to codecov.io
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - yarn run semantic-release
+  # only deploy the release to github as the package is not needed on npm
+  - semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github
