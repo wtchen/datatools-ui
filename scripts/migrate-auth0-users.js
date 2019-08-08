@@ -20,7 +20,7 @@
  *   "clientId": "SECRET"
  * }
  *
- * To run the script simply run `node migrate-auth0-users.js`
+ * To run the script, open a cli and type `node migrate-auth0-users.js`
  */
 
 const fetch = require('isomorphic-fetch')
