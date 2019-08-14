@@ -42,9 +42,6 @@ import {defaultState as defaultManagerProjectsState} from '../../../lib/manager/
 import {defaultState as defaultManagerStatusState} from '../../../lib/manager/reducers/status'
 import {defaultState as defaultManagerUiState} from '../../../lib/manager/reducers/ui'
 import {defaultState as defaultManagerUserState} from '../../../lib/manager/reducers/user'
-import signs from '../../../lib/signs/reducers'
-import {defaultState as defaultSignActiveState} from '../../../lib/signs/reducers/active'
-import {defaultState as defaultSignSignsState} from '../../../lib/signs/reducers/signs'
 import * as manager from './manager'
 
 import type {AppState} from '../../../lib/types/reducers'
@@ -109,11 +106,7 @@ export function getMockInitialState (): AppState {
     routing: {
       location: defaultRouterLocation,
       routeParams: {}
-    }, // react-router state
-    signs: {
-      ...defaultSignActiveState,
-      ...defaultSignSignsState
-    }
+    } // react-router state
   })
 }
 
@@ -186,7 +179,6 @@ export function makeMockStore (initialState: AppState = getMockInitialState()) {
         ...managerReducers,
         admin,
         alerts,
-        signs,
         ...gtfsPlusReducers,
         editor,
         gtfs

@@ -1,8 +1,0 @@
-.leaflet-top,
-.leaflet-bottom {
-	z-index: 0;
-}
-
-.editable-cell:focus {
-	background-color: '#FFC0CB'
-}
