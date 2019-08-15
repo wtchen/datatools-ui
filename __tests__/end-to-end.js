@@ -630,7 +630,7 @@ describe('end-to-end', () => {
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
     await waitForSelector('h1')
-    await expectSelectorToContainHtml('h1', 'Conveyal Data Tools')
+    await expectSelectorToContainHtml('h1', 'Data Tools')
     testResults['should load the page'] = true
   })
 
@@ -847,7 +847,12 @@ describe('end-to-end', () => {
             // click dropdown and delete menu item button
             await click(`#feed-source-action-button-${feedSourceToDeleteId}`)
             await wait(2000, 'for dropdown menu to render')
-            await waitForAndClick('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
+            // in order to make sure puppeteer finds the correct element, we
+            // must narrow down the choices to the specific dropdown list of the
+            // feed
+            const feedDropdownSelector = `[aria-labelledby="feed-source-action-button-${feedSourceToDeleteId}"]`
+            const deleteFeedButtonSelector = '[data-test-id="feed-source-dropdown-delete-feed-source-button"]'
+            await waitForAndClick(`${feedDropdownSelector} ${deleteFeedButtonSelector}`)
 
             // confirm action in modal
             await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')

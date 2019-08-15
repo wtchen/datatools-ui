@@ -3,7 +3,9 @@
   "version": "0.0.0-development",
   "description": "Core application for the Conveyal transit data tools suite",
   "jest": {
-    "setupFilesAfterEnv": ["<rootDir>/__tests__/test-utils/setup-test-framework.js"]
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/test-utils/setup-test-framework.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -131,7 +133,7 @@
     "md5-file": "^4.0.0",
     "mkdirp": "^0.5.1",
     "nock": "^9.0.14",
-    "puppeteer": "^1.11.0",
+    "puppeteer": "^1.19.0",
     "react-addons-test-utils": "^15.6.2",
     "redux-mock-store": "^1.5.3",
     "request": "^2.88.0",
