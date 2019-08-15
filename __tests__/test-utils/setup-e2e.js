@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const fetch = require('isomorphic-fetch')
 const path = require('path')
 
+const AggregateError = require('aggregate-error')
 const each = require('async-each')
 const {merge, pick} = require('lodash')
 const mkdirp = require('mkdirp')
@@ -465,10 +466,7 @@ async function verifySetupForLocalEnvironment () {
   // TODO: verify that aws credentials have been setup properly
 
   if (errors.length > 0) {
-    errors.forEach(err => {
-      console.error(`LOCAL SETUP ERROR: ${err.message}`)
-    })
-    throw new Error('Local environment no setup right!')
+    throw new AggregateError(errors)
   }
 }
 
