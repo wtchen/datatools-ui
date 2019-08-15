@@ -27,3 +27,4 @@ env.yml
 env.yml-original
 .env
 !configurations/test/env.yml
+scripts/*client.json

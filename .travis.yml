@@ -14,11 +14,6 @@ cache:
     - $HOME/.cache/yarn
     - $HOME/.cache/pip
 before_install:
-  # Use updated python to avoid SSL insecure warnings:
-  # https://urllib3.readthedocs.io/en/latest/advanced-usage.html#ssl-warnings
-  - python --version
-  - pyenv versions
-  - pyenv global 2.7.14
   - pip install --user mkdocs
   - source ./scripts/check-if-e2e-should-run-on-travis.sh
   # create database for e2e tests
@@ -44,4 +39,5 @@ sudo: false
 # Push results to codecov.io
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - semantic-release
+  # only deploy the release to github as the package is not needed on npm
+  - semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github
