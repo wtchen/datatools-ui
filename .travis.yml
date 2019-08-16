@@ -20,6 +20,8 @@ cache:
     - $HOME/.yarn-cache
     - $HOME/.cache/pip
 before_install:
+  # install yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
   - pip install --user mkdocs
   - source ./scripts/check-if-e2e-should-run-on-travis.sh
   # create database for e2e tests
