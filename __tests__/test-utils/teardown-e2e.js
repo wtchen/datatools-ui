@@ -271,10 +271,8 @@ function uploadLogs () {
 
   archive.pipe(output)
 
-  // glob all log files in cwd into zip
-  archive.glob(getTestFolderFilename('*.log'))
-  // glob all png files (e2e error screenshots) into zip
-  archive.glob(getTestFolderFilename('e2e-error-*.jpeg'))
+  // glob all files in test folder and put them in root folder of zip file
+  archive.directory(getTestFolderFilename(), false)
   archive.finalize()
 }
 
