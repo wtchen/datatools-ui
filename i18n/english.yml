@@ -694,7 +694,7 @@ components:
       profileInformation: Profile information
       title: Profile
     title: My settings
-  UserAdmin:
+  AdminPage:
     noAccess: You do not have sufficient user privileges to access this area.
     title: Administration
   UserHomePage:
