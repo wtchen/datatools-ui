@@ -37,6 +37,7 @@ let page
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
 const OTP_ROOT = 'http://localhost:8080/otp/routers/'
 const testTime = moment().format()
+const fileSafeTestTime = moment().format('YYYY-MM-DDTHH-mm-ss')
 const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
 const dummyStop1 = {
@@ -62,10 +63,10 @@ let feedSourceId
 let scratchFeedSourceId
 let routerId
 const log = SimpleNodeLogger.createSimpleFileLogger(
-  getTestFolderFilename(`e2e-run-${testTime}.log`)
+  getTestFolderFilename(`e2e-run-${fileSafeTestTime}.log`)
 )
 const browserEventLogs = SimpleNodeLogger.createSimpleFileLogger(
-  getTestFolderFilename(`e2e-run-${testTime}-browser-events.log`)
+  getTestFolderFilename(`e2e-run-${fileSafeTestTime}-browser-events.log`)
 )
 const testResults = {}
 const defaultTestTimeout = 100000
@@ -106,11 +107,15 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         await fn()
       } catch (e) {
         log.error(`test "${name}" failed due to error: ${e}`)
-
         // Take screenshot of page to help debugging.
         await page.screenshot({
-          path: getTestFolderFilename(`e2e-error-${name.replace(' ', '_')}-${testTime}.png`),
-          fullPage: true
+          path: getTestFolderFilename(
+            `e2e-error-${name.replace(' ', '_')}-${fileSafeTestTime}.jpeg`
+          ),
+          fullPage: true,
+          // save with non-perfect quality to cut down on picture file size
+          quality: 50,
+          type: 'jpeg'
         })
 
         // report coverage thus far
