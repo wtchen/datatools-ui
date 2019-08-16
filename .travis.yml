@@ -20,6 +20,8 @@ cache:
     - $HOME/.yarn-cache
     - $HOME/.cache/pip
 before_install:
+  # install node 12
+  - nvm install 12
   # install yarn
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - pip install --user mkdocs
