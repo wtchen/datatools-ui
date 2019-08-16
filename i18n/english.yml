@@ -615,7 +615,7 @@ components:
       otpServers:
         new: Add server
         serverPlaceholder: Server name
-        title: Servers
+        title: Deployment Server Management
     save: Save
     title: Settings
   Sidebar:
