@@ -368,13 +368,13 @@ function startClientServer () {
  */
 function startOtp () {
   return new Promise((resolve, reject) => {
-    const otpJarFilename = 'otp-1.2.0-shaded.jar'
+    const otpJarFilename = 'otp-1.4.0-shaded.jar'
 
     console.log('downloading otp jar')
 
     // download otp
     downloadFile(
-      'https://repo1.maven.org/maven2/org/opentripplanner/otp/1.2.0/otp-1.2.0-shaded.jar',
+      'https://repo1.maven.org/maven2/org/opentripplanner/otp/1.4.0/otp-1.4.0-shaded.jar',
       otpJarFilename,
       err => {
         if (err) return reject(err)
