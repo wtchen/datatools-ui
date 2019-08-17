@@ -1,7 +1,8 @@
-const {execFile, spawn} = require('child_process')
-const fs = require('fs')
+const {spawn} = require('child_process')
 const path = require('path')
 
+const execa = require('execa')
+const fs = require('fs-extra')
 const {safeDump, safeLoad} = require('js-yaml')
 const request = require('request')
 
@@ -13,28 +14,33 @@ const testFolderPath = 'e2e-test-results'
 /**
  * Download a file using a stream
  */
-function downloadFile (url, filename, callback) {
-  console.log(`downloading file: ${url}`)
-  const dlStream = request(url).pipe(fs.createWriteStream(filename))
+function downloadFile (url, filename) {
+  return new Promise((resolve, reject) => {
+    console.log(`downloading file: ${url}`)
+    const dlStream = request(url).pipe(fs.createWriteStream(filename))
 
-  let callbackCalled = false
+    let callbackCalled = false
 
-  // handle any error occurred while downloading file
-  dlStream.on('error', (err) => {
-    console.error(`Error downloading from: ${url}.  Error: ${err}`)
-    callbackCalled = true
-    if (!callbackCalled) callback(err)
-  })
-
-  dlStream.on('finish', () => {
-    if (!callbackCalled) {
+    // handle any error occurred while downloading file
+    dlStream.on('error', (err) => {
+      console.error(`Error downloading from: ${url}.  Error: ${err}`)
       callbackCalled = true
-      console.log(`successfully downloaded file: ${filename}`)
-      callback()
-    }
+      if (!callbackCalled) reject(err)
+    })
+
+    dlStream.on('finish', () => {
+      if (!callbackCalled) {
+        callbackCalled = true
+        console.log(`successfully downloaded file: ${filename}`)
+        resolve()
+      }
+    })
   })
 }
 
+/**
+ * Get the path of a filename that is in the test folder.
+ */
 function getTestFolderFilename (filename) {
   return filename ? path.join(testFolderPath, filename) : testFolderPath
 }
@@ -42,71 +48,54 @@ function getTestFolderFilename (filename) {
 /**
  * Find and kill a process
  */
-function killDetachedProcess (processName, callback) {
+async function killDetachedProcess (processName, callback) {
   const pidFilename = path.resolve(getTestFolderFilename(`${processName}.pid`))
 
   // open pid file to get pid
   console.log(`Begin killing detached process... reading pid file ${pidFilename}`)
-  fs.readFile(pidFilename, (err, pid) => {
-    if (err) {
-      console.error(`pid file ${pidFilename} could not be read!`)
-      return callback(err)
-    }
+  let pid
+  try {
+    pid = await fs.readFile(pidFilename)
+  } catch (e) {
+    console.error(`pid file ${pidFilename} could not be read!`)
+    throw e
+  }
 
-    // make absolutely sure that the pid file contains a numeric string.  This
-    // is to make sure that the file we're reading didn't somehow change and now
-    // includes a harmful command that could be executed
-    pid = pid.toString()
-    if (!pid.match(/^\d*$/)) {
-      console.error(`pid file ${pidFilename} has unexpected data!`)
-      return callback(new Error(`pid file ${pidFilename} has unexpected data!`))
-    }
+  // make absolutely sure that the pid file contains a numeric string.  This
+  // is to make sure that the file we're reading didn't somehow change and now
+  // includes a harmful command that could be executed
+  pid = pid.toString()
+  if (!pid.match(/^\d*$/)) {
+    console.error(`pid file ${pidFilename} has unexpected data!`)
+    throw new Error(`pid file ${pidFilename} has unexpected data!`)
+  }
 
-    // attempt to kill process running with pid
-    const cmd = `kill ${pid}`
-    console.log(cmd)
-    execFile('kill', [pid], err => {
-      if (err) {
-        console.error(`pid ${pid} (${processName}) could not be killed!`)
-        return callback(err)
-      }
+  // attempt to kill process running with pid
+  const cmd = `kill ${pid}`
+  console.log(cmd)
+  try {
+    await execa('kill', [pid])
+  } catch (err) {
+    console.error(`pid ${pid} (${processName}) could not be killed!`)
+    throw err
+  }
 
-      console.log('Kill command successful')
+  console.log('Kill command successful')
 
-      // delete pid file
-      fs.unlink(pidFilename, err => {
-        if (err) {
-          console.error(`pid file ${pidFilename} could not be deleted!`)
-          return callback(err)
-        }
-        callback()
-      })
-    })
-  })
+  // delete pid file
+  try {
+    await fs.unlink(pidFilename)
+  } catch (e) {
+    console.error(`pid file ${pidFilename} could not be deleted!`)
+    throw e
+  }
 }
 
 /**
  * Load yaml from a file into a js object
  */
-function loadYamlFile (filename, callback) {
-  fs.readFile(filename, (err, data) => {
-    if (err) return callback(err)
-    try {
-      callback(null, safeLoad(data))
-    } catch (e) {
-      callback(e)
-    }
-  })
-}
-
-function promisifiedKillDetachedProcess (processName) {
-  return new Promise((resolve, reject) => {
-    console.log(`stopping ${processName}`)
-    killDetachedProcess(`${processName}`, err => {
-      if (err) return reject(err)
-      resolve()
-    })
-  })
+async function loadYamlFile (filename) {
+  return safeLoad(await fs.readFile(filename))
 }
 
 /**
@@ -127,7 +116,7 @@ function requireEnvVars (varnames) {
 /**
  * Start a process that will continue to run after this script ends
  */
-function spawnDetachedProcess (cmd, args, name) {
+async function spawnDetachedProcess (cmd, args, name) {
   const stdOutFile = path.resolve(getTestFolderFilename(`${name}-out.log`))
   const processOut = fs.openSync(stdOutFile, 'w')
   const stdErrFile = path.resolve(getTestFolderFilename(`${name}-err.log`))
@@ -139,7 +128,7 @@ function spawnDetachedProcess (cmd, args, name) {
   )
   console.log(`${cmd} ${args.join(' ')} running as pid ${child.pid}`)
   const pidFilename = path.resolve(getTestFolderFilename(`${name}.pid`))
-  fs.writeFileSync(pidFilename, child.pid)
+  await fs.writeFile(pidFilename, child.pid)
   console.log(`wrote pid file ${pidFilename}`)
   console.log(`writing ${name} stdout to ${stdOutFile}`)
   console.log(`writing ${name} stderr to ${stdErrFile}`)
@@ -147,10 +136,11 @@ function spawnDetachedProcess (cmd, args, name) {
 }
 
 /**
- * Write a js object into a yaml formatted file
+ * Write a js object into a yaml formatted file.
+ * Returns a promise for the write file async operation.
  */
-function writeYamlFile (filename, obj, callback) {
-  fs.writeFile(filename, safeDump(obj), callback)
+function writeYamlFile (filename, obj) {
+  return fs.writeFile(filename, safeDump(obj))
 }
 
 module.exports = {
@@ -161,7 +151,6 @@ module.exports = {
   isUiRepo,
   killDetachedProcess,
   loadYamlFile,
-  promisifiedKillDetachedProcess,
   requireEnvVars,
   spawnDetachedProcess,
   writeYamlFile

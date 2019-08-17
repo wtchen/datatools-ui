@@ -2,7 +2,6 @@ const fs = require('fs')
 const path = require('path')
 
 const archiver = require('archiver')
-const each = require('async-each')
 const extractZip = require('extract-zip')
 const fetch = require('isomorphic-fetch')
 const createPushToS3 = require('mastarm/lib/push-to-s3')
@@ -14,69 +13,78 @@ const {
   getTestFolderFilename,
   isCi,
   isUiRepo,
-  killDetachedProcess,
-  promisifiedKillDetachedProcess
+  killDetachedProcess
 } = require('./utils')
+
+const slackConfigured = process.env.SLACK_TOKEN && process.env.SLACK_CHANNEL
+const msTeamsConfigured = process.env.MS_TEAMS_WEBHOOK_URL
+const logsZipfile = 'logs.zip'
+const repo = process.env.TRAVIS_BUILD_DIR
+  ? process.env.TRAVIS_BUILD_DIR.split(path.sep).pop()
+  : ''
+const buildNum = process.env.TRAVIS_BUILD_NUMBER
+const uploadedLogsFilename = `${repo}-build-${buildNum}-e2e-logs.zip`
+const {LOGS_S3_BUCKET} = process.env
 
 /**
  * Function to kill the coverage server
  */
-function stopCoverageServer (callback) {
+async function stopCoverageServer () {
   console.log('Killing coverage collector server')
-  killDetachedProcess('e2e-coverage-collector-server', callback)
+  try {
+    await killDetachedProcess('e2e-coverage-collector-server')
+  } catch (e) {
+    console.error(`An error occurred while trying to stop the coverage server: ${e}`)
+    throw e
+  }
+  console.log('Coverage collector server killed successfully')
 }
 
 /**
  * download e2e coverage results and then shut down e2e coverage server
  */
-function collectCoverageAndStopSever () {
-  if (!collectingCoverage) return Promise.resolve()
+async function collectCoverageAndStopSever () {
+  if (!collectingCoverage) return
 
-  return new Promise((resolve, reject) => {
-    /**
-     * Helper to perform a promise fulfillment after stopping the coverage server
-     */
-    function handleCoverageServerStop (actionAfterSuccessfulStop) {
-      return (err) => {
-        if (err) {
-          console.error(`An error occurred while trying to stop the coverage server: ${err}`)
-          return reject(err)
-        }
-        console.log('Coverage collector server killed successfully')
-        actionAfterSuccessfulStop()
-      }
-    }
-
-    // download and save coverage report
-    console.log('Downloading coverage report')
-    const coverageReportFilename = getTestFolderFilename('e2e-coverage.zip')
-    downloadFile(
+  // download and save coverage report
+  console.log('Downloading coverage report')
+  const coverageReportFilename = getTestFolderFilename('e2e-coverage.zip')
+  try {
+    await downloadFile(
       'http://localhost:9999/coverage/download',
-      coverageReportFilename,
-      (err) => {
-        if (err) {
-          console.error(`Error downloading coverage: ${err}`)
-          return stopCoverageServer(handleCoverageServerStop(reject))
-        }
-
-        // unzip the coverage report once it's done downloading
-        console.log('Extracting coverage report')
-        extractZip(
-          coverageReportFilename,
-          {dir: path.join(process.cwd(), 'coverage-e2e')},
-          (err) => {
-            if (err) {
-              console.error(`error unzipping coverage report: ${err}`)
-              return stopCoverageServer(handleCoverageServerStop(reject))
-            }
-            fs.unlink(coverageReportFilename, err => {
-              if (err) console.error(`Error deleting coverage zip file: ${err}`)
-            })
-            stopCoverageServer(handleCoverageServerStop(resolve))
-          }
-        )
-      }
+      coverageReportFilename
     )
+  } catch (e) {
+    console.error(`Error downloading coverage: ${e}`)
+    return stopCoverageServer()
+  }
+
+  // unzip the coverage report once it's done downloading
+  console.log('Extracting coverage report')
+  try {
+    await promisifiedExtractZip(
+      coverageReportFilename,
+      {dir: path.join(process.cwd(), 'coverage-e2e')}
+    )
+  } catch (e) {
+    console.error(`error unzipping coverage report: ${e}`)
+    return stopCoverageServer()
+  }
+
+  await fs.unlink(coverageReportFilename)
+
+  return stopCoverageServer()
+}
+
+/**
+ * Wrapper to promisify the extractZip module.
+ */
+function promisifiedExtractZip (filename, options) {
+  return new Promise((resolve, reject) => {
+    extractZip(filename, options, err => {
+      if (err) return reject(err)
+      resolve()
+    })
   })
 }
 
@@ -86,7 +94,7 @@ function collectCoverageAndStopSever () {
 function shutdownDatatoolsServer () {
   if (!isCi || !isUiRepo) return Promise.resolve()
 
-  return promisifiedKillDetachedProcess('datatools-server')
+  return killDetachedProcess('datatools-server')
 }
 
 /**
@@ -95,152 +103,147 @@ function shutdownDatatoolsServer () {
 function shutdownClient () {
   if (!isCi) return Promise.resolve()
 
-  return promisifiedKillDetachedProcess('client-dev-server')
+  return killDetachedProcess('client-dev-server')
 }
 
 /**
- * Stub for shutting down a client if needed
+ * Stub for shutting down the OTP server if needed
  */
 function shutdownOtp () {
   if (!isCi) return Promise.resolve()
 
-  return promisifiedKillDetachedProcess('otp')
+  return killDetachedProcess('otp')
+}
+
+function makeUploadFailureHandler (handlerErrorMsg) {
+  return (err) => {
+    console.error(handlerErrorMsg)
+    console.error(`failed to upload logs due to error: ${err}`)
+  }
 }
 
 /**
- * Search for all *.log files, zip them up and then upload them to a defined
- * slack channel (if defined)
+ * Upload the logs to s3 if needed and then send a card to MS Teams.
  */
-function uploadLogs () {
-  const slackConfigured = process.env.SLACK_TOKEN && process.env.SLACK_CHANNEL
-  const msTeamsConfigured = process.env.MS_TEAMS_WEBHOOK_URL
-  if (!(slackConfigured || msTeamsConfigured)) {
-    console.warn('Log upload environment variables undefined, not uploading logs anywhere!')
-    return
-  }
+async function uploadToMicrosoftTeams (teamsCallback) {
+  if (!msTeamsConfigured) return
 
-  const logsZipfile = 'logs.zip'
-  const repo = process.env.TRAVIS_BUILD_DIR.split(path.sep).pop()
-  const buildNum = process.env.TRAVIS_BUILD_NUMBER
-  const uploadedLogsFilename = `${repo}-build-${buildNum}-e2e-logs.zip`
-  const testResults = require(path.resolve(`./${getTestFolderFilename('results.json')}`))
-
-  const output = fs.createWriteStream(logsZipfile)
-  const archive = archiver('zip')
-
-  function makeUploadFailureHandler (handlerErrorMsg) {
-    return (err) => {
-      console.error(handlerErrorMsg)
-      console.error(`failed to upload logs due to error: ${err}`)
-    }
-  }
-
-  function uploadToMicrosoftTeams (teamsCallback) {
-    if (!msTeamsConfigured) {
-      return teamsCallback()
-    }
-
-    const {LOGS_S3_BUCKET} = process.env
-
-    function sendCard (s3uploadSuccessfull) {
-      console.log('posting message to MS Teams')
-      const actions = [{
-        '@type': 'OpenUri',
-        name: `View Travis Build #${buildNum}`,
-        targets: [
-          {
-            os: 'default',
-            uri: process.env.TRAVIS_BUILD_WEB_URL
-          }
-        ]
-      }]
-
-      if (s3uploadSuccessfull) {
-        actions.push({
-          '@type': 'OpenUri',
-          name: 'Download Logs',
-          targets: [
-            {
-              os: 'default',
-              uri: `https://${LOGS_S3_BUCKET}.s3.amazonaws.com/${uploadedLogsFilename}`
-            }
-          ]
-        })
-      }
-
-      fetch(
-        process.env.MS_TEAMS_WEBHOOK_URL,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            '@context': 'https://schema.org/extensions',
-            '@type': 'MessageCard',
-            themeColor: '0072C6',
-            title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
-            text: `${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed`,
-            potentialAction: actions
-          })
-        }
-      )
-        .then(res => {
-          if (res.status >= 400) {
-            return teamsCallback(new Error('Post to MS Teams failed!'))
-          }
-          console.log('successfully posted to MS Teams')
-          teamsCallback()
-        })
-        .catch(e => {
-          console.error('Failed to post to MS Teams: ', e)
-          teamsCallback(e)
-        })
-    }
-
-    // upload logs to s3
-    if (LOGS_S3_BUCKET) {
-      createPushToS3({ s3bucket: LOGS_S3_BUCKET })(
+  // upload logs to s3 because it was easier to do this than wade through
+  // crappy MS Teams documentation about how to link to an office 365 using
+  // teams
+  let uploadedLogsToS3 = false
+  if (LOGS_S3_BUCKET) {
+    try {
+      await createPushToS3({ s3bucket: LOGS_S3_BUCKET })(
         {
           body: fs.readFileSync(logsZipfile),
           outfile: uploadedLogsFilename
         }
       )
-        .then(() => {
-          console.log('successfully uploaded to s3')
-          sendCard(true)
-        })
-        .catch(e => {
-          console.error('Failed to upload logs to s3: ', e)
-          sendCard(false)
-        })
-    } else {
-      sendCard(false)
+      console.log('successfully uploaded to s3')
+      uploadedLogsToS3 = true
+    } catch (e) {
+      console.error('Failed to upload logs to s3: ', e)
     }
+  } else {
+    console.warn('No S3 bucket defined for the log messages. Logs will not be uploaded anywhere!')
   }
 
-  function uploadToSlack (slackCallback) {
-    if (!slackConfigured) {
-      // environment variables not defined right to upload, so callback with
-      // success as there is nothing to do
-      return slackCallback()
-    }
-    const slack = new Slack({ token: process.env.SLACK_TOKEN })
+  console.log('posting message to MS Teams')
 
-    console.log('uploading log zipfiles to slack')
-    slack.files.upload(
+  const testResults = require(
+    path.resolve(`./${getTestFolderFilename('results.json')}`)
+  )
+  const actions = [{
+    '@type': 'OpenUri',
+    name: `View Travis Build #${buildNum}`,
+    targets: [
       {
-        channels: process.env.SLACK_CHANNEL,
-        file: fs.createReadStream(logsZipfile),
-        filename: uploadedLogsFilename,
-        filetype: 'zip',
-        initial_comment: `View build logs here: ${process.env.TRAVIS_BUILD_WEB_URL}`
-      },
-      err => {
-        if (err) return slackCallback(err)
+        os: 'default',
+        uri: process.env.TRAVIS_BUILD_WEB_URL
+      }
+    ]
+  }]
 
-        console.log('successfully uploaded logs to slack')
-        slackCallback()
+  if (uploadedLogsToS3) {
+    actions.push({
+      '@type': 'OpenUri',
+      name: 'Download Logs',
+      targets: [
+        {
+          os: 'default',
+          uri: `https://${LOGS_S3_BUCKET}.s3.amazonaws.com/${uploadedLogsFilename}`
+        }
+      ]
+    })
+  }
+
+  let fetchResponse
+  try {
+    fetchResponse = await fetch(
+      process.env.MS_TEAMS_WEBHOOK_URL,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          '@context': 'https://schema.org/extensions',
+          '@type': 'MessageCard',
+          themeColor: '0072C6',
+          title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
+          text: `${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed`,
+          potentialAction: actions
+        })
       }
     )
+  } catch (e) {
+    console.error('Failed to post to MS Teams: ', e)
+    throw e
   }
+
+  if (fetchResponse.status >= 400) {
+    console.error('Received an error code for MS Teams post!')
+    throw new Error('Post to MS Teams failed!')
+  }
+
+  console.log('successfully posted to MS Teams')
+}
+
+/**
+ * Upload the zip file containing the lgos to a slack channel.
+ */
+async function uploadToSlack () {
+  if (!slackConfigured) return
+
+  const slack = new Slack({ token: process.env.SLACK_TOKEN })
+
+  console.log('uploading log zipfiles to slack')
+  try {
+    await slack.files.upload({
+      channels: process.env.SLACK_CHANNEL,
+      file: fs.createReadStream(logsZipfile),
+      filename: uploadedLogsFilename,
+      filetype: 'zip',
+      initial_comment: `View build logs here: ${process.env.TRAVIS_BUILD_WEB_URL}`
+    })
+  } catch (e) {
+    console.error('failed to upload logs to slack!')
+    throw e
+  }
+
+  console.log('successfully uploaded logs to slack')
+}
+
+/**
+ * Find all outputted log files, zip them up and then upload them to a defined
+ * slack or MS Teams channel (if defined)
+ */
+function uploadLogs () {
+  if (!(slackConfigured || msTeamsConfigured)) {
+    console.warn('Log upload environment variables undefined, not uploading logs anywhere!')
+    return
+  }
+
+  const output = fs.createWriteStream(logsZipfile)
+  const archive = archiver('zip')
 
   // handle errors if they happen
   archive.on(
@@ -254,10 +257,8 @@ function uploadLogs () {
 
   output.on('close', () => {
     console.log(`Successfully zipped ${archive.pointer()} total bytes`)
-    each(
-      [uploadToSlack, uploadToMicrosoftTeams],
-      (uploader, uploaderCallback) => uploader(uploaderCallback),
-      err => {
+    Promise.all([uploadToSlack, uploadToMicrosoftTeams])
+      .catch(err => {
         if (err) {
           return makeUploadFailureHandler(
             'An error occurred while uploading the logs'
@@ -265,8 +266,7 @@ function uploadLogs () {
         }
 
         console.log('successfully uploaded logs')
-      }
-    )
+      })
   })
 
   archive.pipe(output)
