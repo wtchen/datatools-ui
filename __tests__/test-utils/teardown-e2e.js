@@ -125,7 +125,7 @@ function makeUploadFailureHandler (handlerErrorMsg) {
 /**
  * Upload the logs to s3 if needed and then send a card to MS Teams.
  */
-async function uploadToMicrosoftTeams (teamsCallback) {
+async function uploadToMicrosoftTeams () {
   if (!msTeamsConfigured) return
 
   // upload logs to s3 because it was easier to do this than wade through
@@ -257,15 +257,16 @@ function uploadLogs () {
 
   output.on('close', () => {
     console.log(`Successfully zipped ${archive.pointer()} total bytes`)
-    Promise.all([uploadToSlack, uploadToMicrosoftTeams])
+    Promise.all([uploadToSlack(), uploadToMicrosoftTeams()])
+      .then(() => {
+        console.log('successfully uploaded logs')
+      })
       .catch(err => {
         if (err) {
           return makeUploadFailureHandler(
             'An error occurred while uploading the logs'
           )(err)
         }
-
-        console.log('successfully uploaded logs')
       })
   })
 
