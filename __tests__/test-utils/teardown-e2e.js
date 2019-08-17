@@ -1,8 +1,8 @@
-const fs = require('fs')
 const path = require('path')
 
 const archiver = require('archiver')
 const extractZip = require('extract-zip')
+const fs = require('fs-extra')
 const fetch = require('isomorphic-fetch')
 const createPushToS3 = require('mastarm/lib/push-to-s3')
 const Slack = require('slack')
@@ -71,7 +71,7 @@ async function collectCoverageAndStopSever () {
     return stopCoverageServer()
   }
 
-  await fs.remove(coverageReportFilename)
+  await fs.unlink(coverageReportFilename)
 
   return stopCoverageServer()
 }
@@ -136,7 +136,7 @@ async function uploadToMicrosoftTeams (teamsCallback) {
     try {
       await createPushToS3({ s3bucket: LOGS_S3_BUCKET })(
         {
-          body: fs.readFileSync(logsZipfile),
+          body: await fs.readFile(logsZipfile),
           outfile: uploadedLogsFilename
         }
       )
