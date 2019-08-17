@@ -71,7 +71,7 @@ async function collectCoverageAndStopSever () {
     return stopCoverageServer()
   }
 
-  await fs.unlink(coverageReportFilename)
+  await fs.remove(coverageReportFilename)
 
   return stopCoverageServer()
 }

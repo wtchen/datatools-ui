@@ -84,7 +84,7 @@ async function killDetachedProcess (processName, callback) {
 
   // delete pid file
   try {
-    await fs.unlink(pidFilename)
+    await fs.remove(pidFilename)
   } catch (e) {
     console.error(`pid file ${pidFilename} could not be deleted!`)
     throw e
