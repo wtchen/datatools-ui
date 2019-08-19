@@ -33,18 +33,23 @@ async function startBackendServer () {
   console.log('prepare to start backend server')
 
   // make sure required environment variables are set
-  requireEnvVars([
-    'AUTH0_CLIENT_ID',
-    'AUTH0_DOMAIN',
-    'AUTH0_SECRET',
-    'AUTH0_API_TOKEN',
-    'AUTH0_API_SECRET',
-    'OSM_VEX',
-    'SPARKPOST_EMAIL',
-    'SPARKPOST_KEY',
-    'S3_BUCKET',
-    'TRANSITFEEDS_KEY'
-  ])
+  try {
+    requireEnvVars([
+      'AUTH0_CLIENT_ID',
+      'AUTH0_DOMAIN',
+      'AUTH0_SECRET',
+      'AUTH0_API_TOKEN',
+      'AUTH0_API_SECRET',
+      'OSM_VEX',
+      'SPARKPOST_EMAIL',
+      'SPARKPOST_KEY',
+      'S3_BUCKET',
+      'TRANSITFEEDS_KEY'
+    ])
+  } catch (e) {
+    console.error(`At least one required env var is missin: ${e}`)
+    throw e
+  }
 
   const serverFolder = path.join(
     process.env.TRAVIS_BUILD_DIR,
@@ -189,7 +194,7 @@ async function startClientServer () {
       'TRANSITFEEDS_KEY'
     ])
   } catch (e) {
-    console.error(`A required env var is missin: ${e}`)
+    console.error(`At least one required env var is missin: ${e}`)
     throw e
   }
 
@@ -443,6 +448,10 @@ function setupForContinuousIntegrationEnvironment () {
     startClientServer(),
     startOtp()
   ])
+    .catch(e => {
+      console.error(`CI environment setup failed! ${e}`)
+      throw e
+    })
 }
 
 /**
@@ -483,4 +492,8 @@ module.exports = async function () {
   if (collectingCoverage) setupItems.push(startCoverageServer())
 
   return Promise.all(setupItems)
+    .catch(e => {
+      console.error(`e2e setup failed! ${e}`)
+      throw e
+    })
 }
