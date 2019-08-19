@@ -272,6 +272,9 @@ async function createFeedSourceViaForm (feedSourceName) {
   // goto feed source's project page
   await click('[data-test-id="feed-project-link"]')
 
+  // wait for data to load
+  await wait(2000, 'additional time for deployment data to load')
+
   // verify that the feed source is listed in project feed sources
   await waitForSelector('#project-viewer-tabs')
   await expectSelectorToContainHtml('#project-viewer-tabs', feedSourceName)
