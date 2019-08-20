@@ -592,16 +592,24 @@ describe('end-to-end', () => {
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
 
-    // log certain events happening in the browser
+    // setup listeners for various events that happen in the browser. In each of
+    // the following instances, write to the browser events log that will be
+    // included in the zipped upload of the e2e logs.
+
+    // log everything that was logged to the browser console
     page.on('console', msg => { browserEventLogs.info(msg.text()) })
+    // log all errors that were logged to the browser console
     page.on('error', error => {
       browserEventLogs.error(error)
       browserEventLogs.error(error.stack)
     })
+    // log all uncaught exceptions
     page.on('pageerror', error => { browserEventLogs.error(`Page Error: ${error}`) })
+    // log all failed requests
     page.on('requestfailed', req => {
       browserEventLogs.error(`Request failed: ${req.method()} ${req.url()}`)
     })
+    // log all successful requests
     page.on('requestfinished', req => {
       browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
     })
@@ -615,21 +623,27 @@ describe('end-to-end', () => {
     log.info('Setup complete.')
   }, 120000)
 
-  afterAll(async () => {
-    // delete test project
-    if (successfullyCreatedTestProject) {
-      try {
-        await deleteProject(testProjectId)
-        log.info('Successfully deleted test project. Closing Chromium...')
-      } catch (e) {
-        log.error(`could not delete project with id "${testProjectId}" due to error: ${e}`)
+  afterAll(
+    async () => {
+      // delete test project
+      if (successfullyCreatedTestProject) {
+        try {
+          await deleteProject(testProjectId)
+          log.info('Successfully deleted test project. Closing Chromium...')
+        } catch (e) {
+          log.error(`could not delete project with id "${testProjectId}" due to error: ${e}`)
+        }
       }
-    }
-    // close browser
-    await page.close()
-    await browser.close()
-    log.info('Chromium closed.')
-  }, 120000)
+      // close browser
+      await page.close()
+      await browser.close()
+      log.info('Chromium closed.')
+    },
+    // wait for up to 2 minutes for the teardown to complete. The default of 5
+    // seconds may not be long enough to delete the test project and close the
+    // browser
+    120000
+  )
 
   // ---------------------------------------------------------------------------
   // Begin tests
@@ -827,6 +841,9 @@ describe('end-to-end', () => {
 
       // wait for gtfs to be fetched and processed
       await waitAndClearCompletedJobs()
+
+      // wait a little extra time for stuff to load
+      await wait(2000, 'for feed source to update')
 
       // verify that feed was fetched and processed
       await expectSelectorToContainHtml(

@@ -15,9 +15,7 @@ addons:
   postgresql: 9.6
 cache:
   directories:
-    # not sure which yarn directory to cache, so specify both just in case
     - $HOME/.cache/yarn
-    - $HOME/.yarn-cache
     - $HOME/.cache/pip
 before_install:
   # install node 12
@@ -36,10 +34,12 @@ script:
   - yarn run lint-messages
   - yarn run flow
   - yarn run cover-client
-  # upload coverage results from unit tests and then delete coverage reports
+  # upload coverage results from unit tests and then delete coverage reports to
+  # avoid uploading the same coverage results twice
   - bash <(curl -s https://codecov.io/bash) -c -F unit_tests
   - if [ "$SHOULD_RUN_E2E" = "true" ]; then yarn run cover-end-to-end; fi
-  # upload coverage results from e2e tests and then delete coverage reports
+  # upload coverage results from e2e tests and then delete coverage reports to
+  # avoid uploading the same coverage results twice
   - if [ "$SHOULD_RUN_E2E" = "true" ]; then bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests; fi
   - yarn run build -- --minify
   - mkdocs build

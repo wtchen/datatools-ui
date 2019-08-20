@@ -477,8 +477,12 @@ function startCoverageServer () {
   })
 }
 
+/**
+ * Perform all needed actions to get the current environment ready for
+ * performing the e2e tests. This is called from the e2e-environment.js.
+ */
 module.exports = async function () {
-  // syncrhonosuly recreate the test results directory in to avoid race
+  // syncrhonously recreate the test results directory in to avoid race
   // conditions
   recreateEndToEndTestResultDirectory()
 

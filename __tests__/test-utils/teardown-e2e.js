@@ -277,6 +277,10 @@ function uploadLogs () {
   archive.finalize()
 }
 
+/**
+ * Perform all needed teardown actions after performing the e2e tests. This is
+ * called from the e2e-environment.js.
+ */
 module.exports = function () {
   // upload the logs after teardown completes because the json results are not
   // written by Jest until after teardown 'completes'
