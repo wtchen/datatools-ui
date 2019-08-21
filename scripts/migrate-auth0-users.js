@@ -74,6 +74,9 @@ async function getManagementToken (connectionSettings) {
   return token
 }
 
+/**
+ * Create header information to perform authenticated requests to management API
+ */
 function makeHeaderWithToken (token) {
   return {
     Authorization: `Bearer ${token}`,
@@ -81,6 +84,10 @@ function makeHeaderWithToken (token) {
   }
 }
 
+/**
+ * Helper to wait for a bit
+ * @param  waitTime time in milliseconds
+ */
 function promiseTimeout (waitTime) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, waitTime)
@@ -216,12 +223,17 @@ async function main () {
       // modify the user_id so an extra prefix isn't created
       user.user_id = user.user_id.substr(6)
 
+      // attempt to create the user
       const createUserResult = await createUser(to.domain, toToken, user)
       if (!createUserResult.success) {
+        // creation of user not successful, check if script should try again by
+        // deleting an existing user
         if (
           createUserResult.responseJson.message === 'The user already exists.' &&
             deleteExistingUsersInToClient
         ) {
+          // user creation failed due to existing user. Delete that existing
+          // user and then try creating the user again
           console.log('Deleting existing user in to tenant')
           await deleteUser(to.domain, toToken, to.connectionId, user.email)
           const createUserResult2ndTry = await createUser(to.domain, toToken, user)
