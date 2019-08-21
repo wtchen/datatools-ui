@@ -11,7 +11,7 @@
  * `to-client.json` file should have information for machine-to-machine
  * connections and the client application id that will replace to old
  * applicaiton client id in their metadata. Each of these files should have the
- * following format:
+ * following base format:
  *
  * {
  *   "apiClient": "SECRET",
@@ -20,16 +20,24 @@
  *   "clientId": "SECRET"
  * }
  *
+ * If deleting existing users in the to tenant id desired, the connection id is
+ * also required. The connection id typically is only discoverd by opening up
+ * an API explorer and listing all connections.
+ *
  * To run the script, open a cli and type `node migrate-auth0-users.js`
  */
 
 const fetch = require('isomorphic-fetch')
 const omit = require('lodash/omit')
+const qs = require('qs')
 const uuid = require('uuid/v4')
 
 // load required config files
 const from = require('./from-client.json')
 const to = require('./to-client.json')
+
+const DEFAULT_CONNECTION_NAME = 'Username-Password-Authentication'
+const deleteExistingUsersInToClient = true
 
 /**
  * Get a Management API token using machine-to-machine credentials.
@@ -66,6 +74,68 @@ async function getManagementToken (connectionSettings) {
   return token
 }
 
+function makeHeaderWithToken (token) {
+  return {
+    Authorization: `Bearer ${token}`,
+    'content-type': 'application/json'
+  }
+}
+
+function promiseTimeout (waitTime) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, waitTime)
+  })
+}
+
+/**
+ * Delete a user from a tenant
+ */
+async function deleteUser (domain, token, connectionId, email) {
+  // deleting a lot of users individually can sometimes result in 429 errors
+  // from Auth0, so wait 4 seconds just in case.
+  await promiseTimeout(4000)
+
+  const response = await fetch(
+    `https://${domain}/api/v2/connections/${connectionId}/users?${qs.stringify({email})}`,
+    {
+      headers: makeHeaderWithToken(token),
+      method: 'DELETE'
+    }
+  )
+  if (response.status >= 400) {
+    console.error(`Failed to delete user! Received status: ${response.status}`)
+    console.error(await response.text())
+  }
+}
+
+/**
+ * make request to create user
+ */
+async function createUser (domain, token, user) {
+  const response = await fetch(
+    `https://${domain}/api/v2/users`,
+    {
+      body: JSON.stringify(user),
+      headers: makeHeaderWithToken(token),
+      method: 'POST'
+    }
+  )
+
+  // check if request succeeded
+  const createFailed = response.status >= 400
+  const responseJson = await response.json()
+  if (createFailed) {
+    // althought the creation failed, don't raise an error as most
+    // of the time this was caused by the user already existing
+    console.error(`created user failed for ${user.email}`)
+    return { responseJson, success: false }
+  } else {
+    // user creation successful!
+    console.log(`created user ${user.email}`)
+    return { success: true }
+  }
+}
+
 async function main () {
   // get management tokens for both from and to tenants
   const fromToken = await getManagementToken(from)
@@ -78,107 +148,92 @@ async function main () {
 
   while (numUsersFetched < totalUsers) {
     // get a batch of 100 users (a limit imposed by auth0)
-    await fetch(
+    const response = await fetch(
       `https://${from.domain}/api/v2/users?per_page=100&include_totals=true&page=${page}`,
       {
-        headers: {
-          Authorization: `Bearer ${fromToken}`,
-          'content-type': 'application/json'
-        }
+        headers: makeHeaderWithToken(fromToken)
       }
     )
-      .then((res) => res.json())
-      .then(async (json) => {
-        // update the progress of fetching users
-        numUsersFetched += json.users.length
-        console.log(`fetched ${numUsersFetched} users so far`)
-        totalUsers = json.total
-        page++
+    const json = await response.json()
 
-        // iterate through fetched users
-        for (let user of json.users) {
-          // only users that have a matching clientId should be created in the
-          // new tenant, so assume they shouldn't be created until finding a
-          // match
-          let shouldCreateInNewApp = false
+    // update the progress of fetching users
+    numUsersFetched += json.users.length
+    console.log(`fetched ${numUsersFetched} users so far`)
+    totalUsers = json.total
+    page++
 
-          // replace all user and app metadata with only the matching from
-          // client data and then replace the client id with the to client id
-          const metadatas = ['user_metadata', 'app_metadata']
-          metadatas.forEach(metadataKey => {
-            if (!user[metadataKey]) return
-            const metadata = user[metadataKey]
-            if (!metadata.datatools) return
-            metadata.datatools = metadata.datatools.filter(
-              dt => dt.client_id === from.clientId
-            )
-            if (metadata.datatools.length > 0) {
-              shouldCreateInNewApp = true
-              metadata.datatools[0].client_id = to.clientId
-            }
-          })
+    // iterate through fetched users
+    for (let user of json.users) {
+      // only users that have a matching clientId should be created in the
+      // new tenant, so assume they shouldn't be created until finding a
+      // match
+      let shouldCreateInNewApp = false
 
-          // no match found, continue to the next user in the current batch
-          if (!shouldCreateInNewApp) continue
-
-          // can't copy over passwords, so set the password of the copied user
-          // as a UUID so that it's extremely unlikely for some random person
-          // to guess the password. The user will have to reset their password
-          // to gain access.
-          user.password = uuid()
-
-          // add required connection name (this is the default value created
-          // by Auth0, so it could theoretically be different.)
-          user.connection = 'Username-Password-Authentication'
-
-          // omit items that will cause the creation to fail or cause weirdness
-          // in new data values
-          user = omit(
-            user,
-            [
-              'logins_count',
-              'last_ip',
-              'last_login',
-              'last_password_reset',
-              'created_at',
-              'updated_at',
-              'identities',
-              'user_id'
-            ]
-          )
-
-          // make request to create user in to tenant
-          let createFailed = false
-          await fetch(
-            `https://${to.domain}/api/v2/users`,
-            {
-              body: JSON.stringify(user),
-              headers: {
-                Authorization: `Bearer ${toToken}`,
-                'content-type': 'application/json'
-              },
-              method: 'POST'
-            }
-          )
-            .then(res => {
-              // check if request succeeded
-              if (res.status >= 400) createFailed = true
-              return res.json()
-            })
-            .then(json => {
-              if (createFailed) {
-                // althought the creation failed, don't raise an error as most
-                // of the time this was caused by the user already existing
-                console.error(`created user failed for ${user.email}`)
-                console.error(json)
-              } else {
-                // user creation successful!
-                console.log(`created user ${user.email}`)
-              }
-            })
-            .catch(console.error)
+      // replace all user and app metadata with only the matching from
+      // client data and then replace the client id with the to client id
+      const metadatas = ['user_metadata', 'app_metadata']
+      metadatas.forEach(metadataKey => {
+        if (!user[metadataKey]) return
+        const metadata = user[metadataKey]
+        if (!metadata.datatools) return
+        metadata.datatools = metadata.datatools.filter(
+          dt => dt.client_id === from.clientId
+        )
+        if (metadata.datatools.length > 0) {
+          shouldCreateInNewApp = true
+          metadata.datatools[0].client_id = to.clientId
         }
       })
+
+      // no match found, continue to the next user in the current batch
+      if (!shouldCreateInNewApp) continue
+
+      // can't copy over passwords, so set the password of the copied user
+      // as a UUID so that it's extremely unlikely for some random person
+      // to guess the password. The user will have to reset their password
+      // to gain access.
+      user.password = uuid()
+
+      // add required connection name (this is the default value created
+      // by Auth0, so it could theoretically be different.)
+      user.connection = DEFAULT_CONNECTION_NAME
+
+      // omit items that will cause the creation to fail or cause weirdness
+      // in new data values
+      user = omit(
+        user,
+        [
+          'logins_count',
+          'last_ip',
+          'last_login',
+          'last_password_reset',
+          'created_at',
+          'updated_at',
+          'identities'
+        ]
+      )
+
+      // modify the user_id so an extra prefix isn't created
+      user.user_id = user.user_id.substr(6)
+
+      const createUserResult = await createUser(to.domain, toToken, user)
+      if (!createUserResult.success) {
+        if (
+          createUserResult.responseJson.message === 'The user already exists.' &&
+            deleteExistingUsersInToClient
+        ) {
+          console.log('Deleting existing user in to tenant')
+          await deleteUser(to.domain, toToken, to.connectionId, user.email)
+          const createUserResult2ndTry = await createUser(to.domain, toToken, user)
+          if (!createUserResult2ndTry.success) {
+            console.log('Creating user a 2nd time failed!')
+            console.error(createUserResult.responseJson)
+          }
+        } else {
+          console.error(createUserResult.responseJson)
+        }
+      }
+    }
   }
 }
 
