@@ -7,10 +7,21 @@
  *
  * Two config files are required for this to work. The `from-client.json` will
  * contain information for machine-to-machine connections and the existing
- * client application id that users should have in their metadata. The
+ * client application ID that users should have in their metadata. The
  * `to-client.json` file should have information for machine-to-machine
- * connections and the client application id that will replace to old
- * applicaiton client id in their metadata. Each of these files should have the
+ * connections and the client application ID that will replace to old
+ * applicaiton client ID in their metadata.
+ *
+ * If deleting (and then recreating) existing users in the to tenant is desired,
+ * the connection ID is also required. A way to find the connection ID involves
+ * going to the Auth0 API explorer, setting the API token with a token generated
+ * from a machine-to-machine API for the to tenant and then executing the "Get
+ * all connections" endpoint.
+ * See here: https://auth0.com/docs/api/management/v2#!/Connections/get_connections.
+ * That endpoint will give a listing of all connections. Find the connection
+ * with the name "Username-Password-Authentication" and use that ID.
+ *
+ * Both of the `from-client.json` and `to-cleint.json` files should have the
  * following base format:
  *
  * {
@@ -18,11 +29,9 @@
  *   "apiSecret": "SECRET",
  *   "domain": "SECRET.auth0.com",
  *   "clientId": "SECRET"
+ *   "connectionId": "secrect" // optional in to-client.json for deleting users
  * }
  *
- * If deleting existing users in the to tenant id desired, the connection id is
- * also required. The connection id typically is only discoverd by opening up
- * an API explorer and listing all connections.
  *
  * To run the script, open a cli and type `node migrate-auth0-users.js`
  */
@@ -132,7 +141,7 @@ async function createUser (domain, token, user) {
   const createFailed = response.status >= 400
   const responseJson = await response.json()
   if (createFailed) {
-    // althought the creation failed, don't raise an error as most
+    // although the creation failed, don't raise an error as most
     // of the time this was caused by the user already existing
     console.error(`created user failed for ${user.email}`)
     return { responseJson, success: false }
@@ -177,7 +186,7 @@ async function main () {
       let shouldCreateInNewApp = false
 
       // replace all user and app metadata with only the matching from
-      // client data and then replace the client id with the to client id
+      // client data and then replace the client ID with the to client ID
       const metadatas = ['user_metadata', 'app_metadata']
       metadatas.forEach(metadataKey => {
         if (!user[metadataKey]) return
@@ -220,7 +229,14 @@ async function main () {
         ]
       )
 
-      // modify the user_id so an extra prefix isn't created
+      // Modify the user_id so an extra prefix isn't created. User IDs are in
+      // the format `auth0|123456`. If that exact user ID is sent over as is
+      // when creating the new user, the new user_id will look something like:
+      // `auth0|auth0|123456`. If now user_id is included in the create user
+      // request, then a completely new user_id is created. However, if a the
+      // user_id is just the data beyond the "auth0|" (ie everything from
+      // position 6 and beyond), then Auth0 will create a user_id with the
+      // exact same data.
       user.user_id = user.user_id.substr(6)
 
       // attempt to create the user
