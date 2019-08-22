@@ -1,5 +1,8 @@
-# although this is a node.js project, specify the use of java in order for OTP
-# and datatools-server to run as expected on java 8 specifically
+# although this is a node.js project, specify the use of Java in order for OTP
+# and datatools-server to run as expected on Java 8 specifically. Although not
+# confirmed in any way, another thought with using a Java-specific image is that
+# some things may be more optimized for Java thus making for more expedient and
+# reliable execution of Java code.
 dist: trusty # jdk 8 not available on xenial
 language: java
 java:
