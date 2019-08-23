@@ -12,7 +12,3 @@ else
     echo 'Will run E2E tests because this is a commit to master or dev'
   fi
 fi
-
-# temporarily set SHOULD_RUN_E2E to true on PR for e2e branch
-# remove this just before merging to dev
-export SHOULD_RUN_E2E=true;
