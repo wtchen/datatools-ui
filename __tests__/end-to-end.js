@@ -10,29 +10,34 @@ import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 
+import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
+
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
 const puppeteerOptions = {
-  headless: false
+  headless: isCi,
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
   // slowMo: 30 // puts xx milliseconds between events (for easier watching in non-headless)
   // NOTE: In order to run on Travis CI, use args --no-sandbox option
-  // args: ['--no-sandbox']
+  args: isCi ? ['--no-sandbox'] : []
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
   failFast: false
 }
-const config: {
+let failingFast = false
+let successfullyCreatedTestProject = false
+let config: {
   password: string,
   username: string
-} = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
+}
 let browser
 let page
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
 const OTP_ROOT = 'http://localhost:8080/otp/routers/'
 const testTime = moment().format()
+const fileSafeTestTime = moment().format('YYYY-MM-DDTHH-mm-ss')
 const testProjectName = `test-project-${testTime}`
 const testFeedSourceName = `test-feed-source-${testTime}`
 const dummyStop1 = {
@@ -57,7 +62,12 @@ let testProjectId
 let feedSourceId
 let scratchFeedSourceId
 let routerId
-const log = SimpleNodeLogger.createSimpleFileLogger(`e2e-run-${testTime}.log`)
+const log = SimpleNodeLogger.createSimpleFileLogger(
+  getTestFolderFilename(`e2e-run-${fileSafeTestTime}.log`)
+)
+const browserEventLogs = SimpleNodeLogger.createSimpleFileLogger(
+  getTestFolderFilename(`e2e-run-${fileSafeTestTime}-browser-events.log`)
+)
 const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
@@ -74,6 +84,10 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   ) => {
     test(name, async () => {
       log.info(`Begin test: "${name}"`)
+      if (failingFast) {
+        log.error('Failing fast due to previous failed test')
+        throw new Error('Failing fast due to previous failed test')
+      }
 
       // first make sure all dependent tests have passed
       if (!(dependentTests instanceof Array)) {
@@ -93,19 +107,31 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         await fn()
       } catch (e) {
         log.error(`test "${name}" failed due to error: ${e}`)
-        // TODO: Add option to take screenshots
         // Take screenshot of page to help debugging.
-        // page.screenshot({
-        //   path: `e2e-error-${errorCount++}-${name.replace(' ', '_')}-${testTime}.png`,
-        //   fullPage: true
-        // })
+        await page.screenshot({
+          path: getTestFolderFilename(
+            `e2e-error-${name.replace(' ', '_')}-${fileSafeTestTime}.jpeg`
+          ),
+          fullPage: true,
+          // save with non-perfect quality to cut down on picture file size
+          quality: 50,
+          type: 'jpeg'
+        })
+
+        // report coverage thus far
+        await sendCoverageToServer()
+
+        // fail fast if needed
         if (testOptions.failFast) {
-          log.info('Fail fast option enabled. Shutting down end-to-end test immediately following single test failure.')
+          log.info('Fail fast option enabled. Failing remaining tests.')
           // Delay by a second so that log statement is processed.
-          setTimeout(() => process.exit(2), 1000)
+          failingFast = true
         }
         throw e
       }
+
+      // report coverage thus far
+      await sendCoverageToServer()
 
       // note successful completion
       testResults[name] = true
@@ -126,6 +152,23 @@ const makeEditorEntityTest = makeMakeTest([
 // this can be turned off in development mode to skip some tests that do not
 // need to be run in order for other tests to work properly
 const doNonEssentialSteps = true
+
+/**
+ * Collect current coverage and send it to coverage collector server
+ */
+async function sendCoverageToServer () {
+  if (collectingCoverage) {
+    const coverage = await page.evaluate(() => window.__coverage__)
+
+    await fetch('http://localhost:9999/coverage/client', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(coverage)
+    })
+  }
+}
 
 async function expectSelectorToContainHtml (selector: string, html: string) {
   const innerHTML = await getInnerHTMLFromSelector(selector)
@@ -229,6 +272,9 @@ async function createFeedSourceViaForm (feedSourceName) {
   // goto feed source's project page
   await click('[data-test-id="feed-project-link"]')
 
+  // wait for data to load
+  await wait(2000, 'additional time for deployment data to load')
+
   // verify that the feed source is listed in project feed sources
   await waitForSelector('#project-viewer-tabs')
   await expectSelectorToContainHtml('#project-viewer-tabs', feedSourceName)
@@ -245,8 +291,8 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
       waitUntil: 'networkidle0'
     }
   )
-  await waitForSelector('[data-test-id="project-header-create-new-feed-source-button"]')
-  await click('[data-test-id="project-header-create-new-feed-source-button"]')
+  await waitForAndClick('[data-test-id="project-header-action-dropdown-button"]')
+  await waitForAndClick('[data-test-id="project-header-create-new-feed-source-button"]')
   await createFeedSourceViaForm(feedSourceName)
 }
 
@@ -455,6 +501,9 @@ async function wait (milliseconds: number, reason?: string) {
 }
 
 async function goto (url: string, options?: any) {
+  // before navigating away from the page, collect and report coverage thus far
+  await sendCoverageToServer()
+
   log.info(`navigating to: ${url}`)
   await page.goto(url, options)
   await wait(1000, 'for page to load')
@@ -524,6 +573,8 @@ async function type (selector: string, text: string) {
 
 describe('end-to-end', () => {
   beforeAll(async () => {
+    config = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
+
     // Ping the otp endpoint to ensure the server is running.
     try {
       log.info(`Pinging OTP at ${OTP_ROOT}`)
@@ -533,36 +584,66 @@ describe('end-to-end', () => {
       // else log.info('OTP is OK.')
     } catch (e) {
       if (testOptions.failFast) {
-        log.error('OpenTripPlanner not accepting requests. Exiting due to fail fast option.')
-        // Exit immediately if failing fast.
-        process.exit(9)
+        log.error('OpenTripPlanner not accepting requests. Failing remaining tests due to fail fast option.')
+        failingFast = true
       } else log.warn('OpenTripPlanner not accepting requests. Start it up for deployment tests!!')
     }
     log.info('Launching chromium for testing...')
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
-    page.on('console', msg => {
-      const messageText = msg.text()
-      // Log any errors or warnings encountered in browser console to stdout
-      if (messageText.search(/warning|error/i) !== -1) {
-        log.warn(messageText)
-      }
+
+    // setup listeners for various events that happen in the browser. In each of
+    // the following instances, write to the browser events log that will be
+    // included in the zipped upload of the e2e logs.
+
+    // log everything that was logged to the browser console
+    page.on('console', msg => { browserEventLogs.info(msg.text()) })
+    // log all errors that were logged to the browser console
+    page.on('error', error => {
+      browserEventLogs.error(error)
+      browserEventLogs.error(error.stack)
     })
+    // log all uncaught exceptions
+    page.on('pageerror', error => { browserEventLogs.error(`Page Error: ${error}`) })
+    // log all failed requests
+    page.on('requestfailed', req => {
+      browserEventLogs.error(`Request failed: ${req.method()} ${req.url()}`)
+    })
+    // log all successful requests
+    page.on('requestfinished', req => {
+      browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
+    })
+
+    // set the default download behavior to download files to the cwd
     page._client.send(
       'Page.setDownloadBehavior',
       { behavior: 'allow', downloadPath: './' }
     )
-    log.info('Setup complete.')
-  })
 
-  afterAll(async () => {
-    // delete test project
-    await deleteProject(testProjectId)
-    log.info('End-to-end testing complete. Closing Chromium...')
-    // close browser
-    await browser.close()
-    log.info('Chromium closed.')
-  })
+    log.info('Setup complete.')
+  }, 120000)
+
+  afterAll(
+    async () => {
+      // delete test project
+      if (successfullyCreatedTestProject) {
+        try {
+          await deleteProject(testProjectId)
+          log.info('Successfully deleted test project. Closing Chromium...')
+        } catch (e) {
+          log.error(`could not delete project with id "${testProjectId}" due to error: ${e}`)
+        }
+      }
+      // close browser
+      await page.close()
+      await browser.close()
+      log.info('Chromium closed.')
+    },
+    // wait for up to 2 minutes for the teardown to complete. The default of 5
+    // seconds may not be long enough to delete the test project and close the
+    // browser
+    120000
+  )
 
   // ---------------------------------------------------------------------------
   // Begin tests
@@ -571,7 +652,7 @@ describe('end-to-end', () => {
   makeTest('should load the page', async () => {
     await goto('http://localhost:9966')
     await waitForSelector('h1')
-    await expectSelectorToContainHtml('h1', 'Conveyal Datatools')
+    await expectSelectorToContainHtml('h1', 'Data Tools')
     testResults['should load the page'] = true
   })
 
@@ -613,6 +694,7 @@ describe('end-to-end', () => {
 
       await waitForSelector('#project-viewer-tabs')
       await expectSelectorToContainHtml('#project-viewer-tabs', 'What is a feed source?')
+      successfullyCreatedTestProject = true
     }, defaultTestTimeout)
 
     makeTestPostLogin('should update a project by adding a otp server', async () => {
@@ -716,6 +798,9 @@ describe('end-to-end', () => {
     makeTestPostFeedSource('should process uploaded gtfs', async () => {
       await uploadGtfs()
 
+      // wait for main tab to show up with version validity info
+      await waitForSelector('[data-test-id="feed-version-validity"]')
+
       // verify feed was uploaded
       await expectSelectorToContainHtml(
         '[data-test-id="feed-version-validity"]',
@@ -757,6 +842,9 @@ describe('end-to-end', () => {
       // wait for gtfs to be fetched and processed
       await waitAndClearCompletedJobs()
 
+      // wait a little extra time for stuff to load
+      await wait(2000, 'for feed source to update')
+
       // verify that feed was fetched and processed
       await expectSelectorToContainHtml(
         '[data-test-id="feed-version-validity"]',
@@ -772,29 +860,24 @@ describe('end-to-end', () => {
         await createFeedSourceViaProjectHeaderButton(testFeedSourceToDeleteName)
 
         // find created feed source
-        const listItemEls = await getAllElements('.list-group-item')
+        const listItemEls = await getAllElements('.feed-source-table-row')
         let feedSourceFound = false
         // cast to any to avoid flow errors
         for (const listItemEl: any of listItemEls) {
           const feedSourceNameEl = await listItemEl.$('h4 a')
           const innerHtml = await getInnerHTML(feedSourceNameEl)
           if (innerHtml.indexOf(testFeedSourceToDeleteName) > -1) {
-            // hover over container to display FeedSourceDropdown
-            // I tried to use the puppeteer hover method, but that didn't trigger
-            // a mouseEnter event.  I needed to simulate the mouse being outside
-            // the element and then moving inside
-            const listItemBBox = await listItemEl.boundingBox()
-            await page.mouse.move(
-              listItemBBox.x - 10,
-              listItemBBox.y
-            )
-            await page.mouse.move(
-              listItemBBox.x + listItemBBox.width / 2,
-              listItemBBox.y + listItemBBox.height / 2
-            )
+            const href = await getHref(feedSourceNameEl)
+            const feedSourceToDeleteId = href.match(/\/feed\/([\w-]*)/)[1]
             // click dropdown and delete menu item button
-            await waitForAndClick('#feed-source-action-button')
-            await waitForAndClick('[data-test-id="feed-source-dropdown-delete-feed-source-button"]')
+            await click(`#feed-source-action-button-${feedSourceToDeleteId}`)
+            await wait(2000, 'for dropdown menu to render')
+            // in order to make sure puppeteer finds the correct element, we
+            // must narrow down the choices to the specific dropdown list of the
+            // feed
+            const feedDropdownSelector = `[aria-labelledby="feed-source-action-button-${feedSourceToDeleteId}"]`
+            const deleteFeedButtonSelector = '[data-test-id="feed-source-dropdown-delete-feed-source-button"]'
+            await waitForAndClick(`${feedDropdownSelector} ${deleteFeedButtonSelector}`)
 
             // confirm action in modal
             await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
@@ -910,7 +993,7 @@ describe('end-to-end', () => {
       await createFeedSourceViaProjectHeaderButton(feedSourceName)
 
       // find created feed source
-      const listItemEls = await getAllElements('.list-group-item')
+      const listItemEls = await getAllElements('.feed-source-table-row')
       let feedSourceFound = false
       for (const listItemEl: any of listItemEls) {
         const feedSourceNameEl = await listItemEl.$('h4 a')
@@ -919,10 +1002,6 @@ describe('end-to-end', () => {
           feedSourceFound = true
           const href = await getHref(feedSourceNameEl)
           scratchFeedSourceId = href.match(/\/feed\/([\w-]*)/)[1]
-          await feedSourceNameEl.click()
-          // apparently the first click does not work entirely, it may trigger
-          // a load of the FeedSourceDropdown, but the event for clicking the link
-          // needs a second try I guess
           await feedSourceNameEl.click()
           break
         }
@@ -2247,10 +2326,10 @@ describe('end-to-end', () => {
       // go to main feed tab
       await click('#feed-source-viewer-tabs-tab-')
 
-      // wait for main tab to show up
-      await waitForSelector('#feed-source-viewer-tabs-pane-')
+      // wait for main tab to show up with version validity info
+      await waitForSelector('[data-test-id="feed-version-validity"]')
 
-      // verify that feed was fetched and processed
+      // verify that snapshot was made active version
       await expectSelectorToContainHtml(
         '[data-test-id="feed-version-validity"]',
         'Valid from May. 29, 2018 to May. 29, 2028'
