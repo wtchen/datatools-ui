@@ -79,3 +79,36 @@ Array [
   "test feed with no version",
 ]
 `;
+
+exports[`manager > util > index > parseBounds > invalid > should fail to parse invalid lat/lon coordinates 1`] = `
+Object {
+  "errors": Array [
+    "West value is invalid. Expected a value between 180 and -180, but found -200",
+    "East value is invalid. Expected a value between 180 and -180, but found 210",
+    "North value is invalid. Expected a value between 90 and -90, but found 120",
+    "South value is invalid. Expected a value between 90 and -90, but found -100",
+  ],
+  "valid": false,
+}
+`;
+
+exports[`manager > util > index > parseBounds > invalid > should fail to parse less than 3 values 1`] = `
+Object {
+  "errors": Array [
+    "Incorrect amount of values. Found 3, expected 4.",
+  ],
+  "valid": false,
+}
+`;
+
+exports[`manager > util > index > parseBounds > valid > should parse valid bounds 1`] = `
+Object {
+  "bounds": Object {
+    "east": -122.696827,
+    "north": 45.525433,
+    "south": 45.503841,
+    "west": -122.723842,
+  },
+  "valid": true,
+}
+`;
