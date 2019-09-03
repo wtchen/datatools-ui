@@ -89,6 +89,7 @@ components:
     success: Success!
     warning: Warning!
   DeploymentSettings:
+    boundsPlaceholder: 'min_lon, min_lat, max_lon, max_lat'
     buildConfig:
       elevationBucket:
         accessKey: Access Key
@@ -496,6 +497,7 @@ components:
     fields:
       location:
         boundingBox: 'Bounding box (W,S,E,N)'
+        boundingBoxPlaceHolder: 'min_lon, min_lat, max_lon, max_lat'
         defaultLanguage: Default language
         defaultLocation: 'Default location (lat, lng)'
         defaultTimeZone: Default time zone

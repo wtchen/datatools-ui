@@ -239,24 +239,13 @@ validation.
 - `OSM_VEX` - `datatools-server:env.yml` the validator requires the URL of a
 running instance of the [OSM vex server](https://github.com/conveyal/vanilla-extract).
 
-
-### Sign Configurations
-
-Enables the sign configuration module.
-
-#### List of configuration settings
-
-- `use_extension` - extension key to use for sign configuration
-- `url`
-- Requires `gtfsapi` module
-
 ### Alerts
 
 Enables the real-time alerts module.
 
 #### List of configuration settings
 
-- `use_extension` - extension key to use for sign configuration
+- `use_extension` - extension key to use for alerts
 - `url`
 - Requires `gtfsapi` module
 
