@@ -132,7 +132,7 @@ async function startBackendServer () {
         } = process.env
 
         const serverEnv = results.readServerTemplate
-        serverEnv.application.assets_bucket = S3_BUCKET
+        serverEnv.application.client_assets_url = 'http://localhost:4000'
         serverEnv.application.data.gtfs_s3_bucket = S3_BUCKET
         serverEnv.application.data.use_s3_storage = true
         serverEnv.extensions.transitfeeds.key = TRANSITFEEDS_KEY
