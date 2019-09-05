@@ -1369,7 +1369,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                 <SidebarPopover
                   close={[Function]}
                   expanded={true}
-                  onMount={[Function]}
                   title="Settings"
                   visible={false}
                   width={300}
