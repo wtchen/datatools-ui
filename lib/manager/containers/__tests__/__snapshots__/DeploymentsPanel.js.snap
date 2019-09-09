@@ -840,78 +840,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "dateCreated": 1553292345720,
                                 "deployedTo": null,
                                 "feedSourceId": null,
-                                "feedVersions": Array [
-                                  Object {
-                                    "feedSource": Object {
-                                      "dateCreated": 1536195264564,
-                                      "deployable": false,
-                                      "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
-                                      "externalProperties": Object {},
-                                      "id": "mock-feed-with-version-id",
-                                      "isPublic": false,
-                                      "lastFetched": 1543389038810,
-                                      "lastUpdated": 1543389038810,
-                                      "latestValidation": Object {
-                                        "agencies": null,
-                                        "agencyCount": 1,
-                                        "avgDailyRevenueTime": 0,
-                                        "bounds": Object {
-                                          "east": -76.481211,
-                                          "north": 39.0486949672717,
-                                          "south": 38.92884,
-                                          "west": -76.5673055566884,
-                                        },
-                                        "endDate": "20190801",
-                                        "errorCount": 78,
-                                        "feedVersionId": "mock-feed-version-id",
-                                        "loadFailureReason": null,
-                                        "loadStatus": "SUCCESS",
-                                        "routeCount": 10,
-                                        "startDate": "20180801",
-                                        "stopCount": 237,
-                                        "stopTimesCount": 11170,
-                                        "tripCount": 415,
-                                      },
-                                      "latestVersionId": "mock-feed-version-id",
-                                      "name": "test feed with a version",
-                                      "noteCount": 0,
-                                      "organizationId": null,
-                                      "projectId": "mock-project-id",
-                                      "publishedVersionId": null,
-                                      "retrievalMethod": "MANUALLY_UPLOADED",
-                                      "s3Url": null,
-                                      "snapshotVersion": null,
-                                      "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
-                                      "user": null,
-                                    },
-                                    "id": "mock-feed-version-id",
-                                    "nextVersionId": null,
-                                    "previousVersionId": null,
-                                    "updated": 1543389038810,
-                                    "validationResult": Object {
-                                      "agencies": null,
-                                      "agencyCount": 1,
-                                      "avgDailyRevenueTime": 0,
-                                      "bounds": Object {
-                                        "east": -76.481211,
-                                        "north": 39.0486949672717,
-                                        "south": 38.92884,
-                                        "west": -76.5673055566884,
-                                      },
-                                      "endDate": "20190801",
-                                      "errorCount": 78,
-                                      "feedVersionId": "mock-feed-version-id",
-                                      "loadFailureReason": null,
-                                      "loadStatus": "SUCCESS",
-                                      "routeCount": 10,
-                                      "startDate": "20180801",
-                                      "stopCount": 237,
-                                      "stopTimesCount": 11170,
-                                      "tripCount": 415,
-                                    },
-                                    "version": 1,
-                                  },
-                                ],
+                                "feedVersions": Array [],
                                 "id": "mock-deployment-id",
                                 "invalidFeedSources": Array [],
                                 "lastDeployed": null,
@@ -934,14 +863,84 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "dateCreated": 1526305321824,
                                   "defaultTimeZone": null,
                                   "deployments": Array [
-                                    [Circular],
                                     Object {
                                       "customBuildConfig": null,
                                       "customRouterConfig": null,
                                       "dateCreated": 1553292345720,
                                       "deployedTo": null,
                                       "feedSourceId": null,
-                                      "feedVersions": Array [],
+                                      "feedVersions": Array [
+                                        Object {
+                                          "feedSource": Object {
+                                            "dateCreated": 1536195264564,
+                                            "deployable": false,
+                                            "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                            "externalProperties": Object {},
+                                            "id": "mock-feed-with-version-id",
+                                            "isPublic": false,
+                                            "lastFetched": 1543389038810,
+                                            "lastUpdated": 1543389038810,
+                                            "latestValidation": Object {
+                                              "agencies": null,
+                                              "agencyCount": 1,
+                                              "avgDailyRevenueTime": 0,
+                                              "bounds": Object {
+                                                "east": -76.481211,
+                                                "north": 39.0486949672717,
+                                                "south": 38.92884,
+                                                "west": -76.5673055566884,
+                                              },
+                                              "endDate": "20190801",
+                                              "errorCount": 78,
+                                              "feedVersionId": "mock-feed-version-id",
+                                              "loadFailureReason": null,
+                                              "loadStatus": "SUCCESS",
+                                              "routeCount": 10,
+                                              "startDate": "20180801",
+                                              "stopCount": 237,
+                                              "stopTimesCount": 11170,
+                                              "tripCount": 415,
+                                            },
+                                            "latestVersionId": "mock-feed-version-id",
+                                            "name": "test feed with a version",
+                                            "noteCount": 0,
+                                            "organizationId": null,
+                                            "projectId": "mock-project-id",
+                                            "publishedVersionId": null,
+                                            "retrievalMethod": "MANUALLY_UPLOADED",
+                                            "s3Url": null,
+                                            "snapshotVersion": null,
+                                            "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                            "user": null,
+                                          },
+                                          "id": "mock-feed-version-id",
+                                          "nextVersionId": null,
+                                          "previousVersionId": null,
+                                          "updated": 1543389038810,
+                                          "validationResult": Object {
+                                            "agencies": null,
+                                            "agencyCount": 1,
+                                            "avgDailyRevenueTime": 0,
+                                            "bounds": Object {
+                                              "east": -76.481211,
+                                              "north": 39.0486949672717,
+                                              "south": 38.92884,
+                                              "west": -76.5673055566884,
+                                            },
+                                            "endDate": "20190801",
+                                            "errorCount": 78,
+                                            "feedVersionId": "mock-feed-version-id",
+                                            "loadFailureReason": null,
+                                            "loadStatus": "SUCCESS",
+                                            "routeCount": 10,
+                                            "startDate": "20180801",
+                                            "stopCount": 237,
+                                            "stopTimesCount": 11170,
+                                            "tripCount": 415,
+                                          },
+                                          "version": 1,
+                                        },
+                                      ],
                                       "id": "mock-deployment-id",
                                       "invalidFeedSources": Array [],
                                       "lastDeployed": null,
@@ -955,6 +954,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "routerId": null,
                                       "user": null,
                                     },
+                                    [Circular],
                                   ],
                                   "feedSources": Array [
                                     Object {
@@ -1282,7 +1282,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               </td>
                               <td>
                                 <span
-                                  title="Mar 22nd 2019, 3:03pm"
+                                  title="Mar 22nd 2019, 3:05pm"
                                 >
                                    
                                   2 months ago
@@ -1304,7 +1304,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               </td>
                               <td>
                                 <span>
-                                  1
+                                  0
                                 </span>
                               </td>
                               <td>
@@ -1438,13 +1438,13 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         active={false}
                         block={true}
                         bsClass="btn"
-                        bsStyle="primary"
+                        bsStyle="default"
                         disabled={false}
                         onClick={[Function]}
                       >
                         <button
                           action="push"
-                          className="btn btn-primary btn-block"
+                          className="btn btn-default btn-block"
                           disabled={false}
                           onClick={[Function]}
                           type="button"
@@ -1457,6 +1457,39 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             />
                           </Icon>
                            Edit deployment settings
+                        </button>
+                      </Button>
+                    </LinkContainer>
+                    <LinkContainer
+                      action="push"
+                      key=".2"
+                      onlyActiveOnIndex={false}
+                      to="/admin/servers"
+                    >
+                      <Button
+                        action="push"
+                        active={false}
+                        block={true}
+                        bsClass="btn"
+                        bsStyle="default"
+                        disabled={false}
+                        onClick={[Function]}
+                      >
+                        <button
+                          action="push"
+                          className="btn btn-default btn-block"
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <Icon
+                            type="server"
+                          >
+                            <i
+                              className="fa fa-server fa-fw "
+                            />
+                          </Icon>
+                           Manage deployment servers
                         </button>
                       </Button>
                     </LinkContainer>
