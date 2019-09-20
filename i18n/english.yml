@@ -296,7 +296,7 @@ components:
           amiId: AMI ID
           instanceCount: Instance count
           instanceType: Instance type
-          iamRoleArn: IAM Role ARN
+          iamInstanceProfileArn: IAM Instance Profile ARN
           keyName: Key file name
           securityGroupId: Security Group ID
           subnetId: Subnet ID
