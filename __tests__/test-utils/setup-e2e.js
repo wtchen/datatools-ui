@@ -19,7 +19,7 @@ const {
   writeYamlFile
 } = require('./utils')
 
-const serverJarFilename = 'dt-latest-dev.jar'
+const serverJarFilename = 'dt-v3.2.0-532-g41c21a8.jar'
 
 /**
  * download, configure and start an instance of datatools-server
