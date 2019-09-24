@@ -59,7 +59,7 @@ async function startBackendServer () {
   const serverJarFile = path.join(serverFolder, serverJarFilename)
   const envFile = path.join(serverFolder, 'env.yml')
   const serverFile = path.join(serverFolder, 'server.yml')
-  const baseDtServerGithubConfigUrl = 'https://raw.githubusercontent.com/ibi-group/datatools-server/e2e-coverage/configurations/default/'
+  const baseDtServerGithubConfigUrl = 'https://raw.githubusercontent.com/ibi-group/datatools-server/dev/configurations/default/'
 
   try {
     await auto({
@@ -273,16 +273,11 @@ async function startClientServer () {
         console.log('writing client settings.yml template')
 
         const {
-          S3_BUCKET,
-          TRANSITFEEDS_KEY
+          S3_BUCKET
         } = process.env
 
         const clientSettings = results.loadDefaultSettingsYml
         clientSettings.S3_BUCKET = S3_BUCKET
-        clientSettings.application.data.gtfs_s3_bucket = S3_BUCKET
-        clientSettings.application.data.use_s3_storage = true
-        clientSettings.modules.deployment = { enabled: true }
-        clientSettings.extensions.transitfeeds.key = TRANSITFEEDS_KEY
         return writeYamlFile(
           path.join(defaultConfigFolder, 'settings.yml'),
           clientSettings
@@ -325,8 +320,9 @@ async function startClientServer () {
         }
       ]
     })
-  } catch (e) {
-
+  } catch (err) {
+    console.error(`failed to start frontend server due to error: ${err}`)
+    throw err
   }
 
   console.log('successfully started client dev server')
