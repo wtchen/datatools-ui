@@ -1,9 +1,10 @@
 /**
  * A script that will read all users from one Auth0 tenant and create new users
- * in another Auth0 tenant. The existing users' metadata will be ready and only
- * those users with a matching datatools client_id will be copied over. The new
- * users will have new passwords set, so the users will have to reset their
- * passwords to regain access.
+ * in another Auth0 tenant and optionally will also create users in a mongodb.
+ * The existing users' metadata will be ready and only those users with a
+ * matching datatools client_id will be copied over. The new users will have new
+ * passwords set, so the users will have to reset their passwords to regain
+ * access.
  *
  * Two config files are required for this to work. The `from-client.json` will
  * contain information for machine-to-machine connections and the existing
@@ -21,15 +22,29 @@
  * That endpoint will give a listing of all connections. Find the connection
  * with the name "Username-Password-Authentication" and use that ID.
  *
- * Both of the `from-client.json` and `to-cleint.json` files should have the
- * following base format:
+ * The `from-client.json` must have the following format:
  *
  * {
  *   "apiClient": "SECRET",
  *   "apiSecret": "SECRET",
  *   "domain": "SECRET.auth0.com",
  *   "clientId": "SECRET"
- *   "connectionId": "secrect" // optional in to-client.json for deleting users
+ * }
+ *
+ * The `to-client.json` must also have the above fields if migrating to a
+ * another Auth0 tenant is desired. If any existing users in the to tenant are
+ * desired to be deleted, the following attribute should be added:
+ * {
+ *   ...,
+ *   "connectionId": "secrect"
+ *  }
+ *
+ * If migration to a mongodb is desired, the following should be added to the
+ * `to-client.json` file:
+ *
+ * {
+ *   ...,
+ *   "mongoUrl": "..."
  * }
  *
  *
@@ -38,6 +53,7 @@
 
 const fetch = require('isomorphic-fetch')
 const omit = require('lodash/omit')
+const mongo = require('promised-mongo')
 const qs = require('qs')
 const uuid = require('uuid/v4')
 
@@ -47,12 +63,18 @@ const to = require('./to-client.json')
 
 const DEFAULT_CONNECTION_NAME = 'Username-Password-Authentication'
 const deleteExistingUsersInToClient = true
+let toMongoDb
 
 /**
  * Get a Management API token using machine-to-machine credentials.
  */
 async function getManagementToken (connectionSettings) {
   const { apiClient, apiSecret, domain } = connectionSettings
+
+  if (!apiClient) {
+    console.warn('no management token provided!')
+    return
+  }
 
   // make request to auth0 to get a token
   const token = await fetch(
@@ -94,6 +116,16 @@ function makeHeaderWithToken (token) {
 }
 
 /**
+ * Create an instance for interfacing with a mongo database. This currently
+ * assumes that users are only ever migrated from Auth0 to mongo.
+ */
+function connectToMongo () {
+  if (to.mongoUrl) {
+    toMongoDb = mongo(to.mongoUrl, ['users'])
+  }
+}
+
+/**
  * Helper to wait for a bit
  * @param  waitTime time in milliseconds
  */
@@ -125,37 +157,49 @@ async function deleteUser (domain, token, connectionId, email) {
 }
 
 /**
- * make request to create user
+ * Create user in Auth0, mongoDB or both.
  */
-async function createUser (domain, token, user) {
-  const response = await fetch(
-    `https://${domain}/api/v2/users`,
-    {
-      body: JSON.stringify(user),
-      headers: makeHeaderWithToken(token),
-      method: 'POST'
-    }
-  )
+async function createUser (token, user) {
+  // if Auth0 to tenant token is provided, first attempt to create the user in
+  // Auth0
+  if (token) {
+    const response = await fetch(
+      `https://${to.domain}/api/v2/users`,
+      {
+        body: JSON.stringify(user),
+        headers: makeHeaderWithToken(token),
+        method: 'POST'
+      }
+    )
 
-  // check if request succeeded
-  const createFailed = response.status >= 400
-  const responseJson = await response.json()
-  if (createFailed) {
-    // although the creation failed, don't raise an error as most
-    // of the time this was caused by the user already existing
-    console.error(`created user failed for ${user.email}`)
-    return { responseJson, success: false }
-  } else {
-    // user creation successful!
-    console.log(`created user ${user.email}`)
-    return { success: true }
+    // check if request succeeded
+    const createFailed = response.status >= 400
+    const responseJson = await response.json()
+    if (createFailed) {
+      // although the creation failed, don't raise an error as most
+      // of the time this was caused by the user already existing
+      console.error(`created user failed for ${user.email}`)
+      return { responseJson, success: false }
+    }
+
+    // user creation in Auth0 successful!
   }
+
+  if (toMongoDb) {
+    // create user in mongo
+    await toMongoDb.users.insert(user)
+  }
+
+  console.log(`created user ${user.email}`)
+  return { success: true }
 }
 
 async function main () {
   // get management tokens for both from and to tenants
   const fromToken = await getManagementToken(from)
+  if (!fromToken) throw new Error('From client not defined correctly!')
   const toToken = await getManagementToken(to)
+  connectToMongo()
 
   // iterate through all users in from manager
   let numUsersFetched = 0
@@ -240,7 +284,7 @@ async function main () {
       user.user_id = user.user_id.substr(6)
 
       // attempt to create the user
-      const createUserResult = await createUser(to.domain, toToken, user)
+      const createUserResult = await createUser(toToken, user)
       if (!createUserResult.success) {
         // creation of user not successful, check if script should try again by
         // deleting an existing user
@@ -252,7 +296,7 @@ async function main () {
           // user and then try creating the user again
           console.log('Deleting existing user in to tenant')
           await deleteUser(to.domain, toToken, to.connectionId, user.email)
-          const createUserResult2ndTry = await createUser(to.domain, toToken, user)
+          const createUserResult2ndTry = await createUser(toToken, user)
           if (!createUserResult2ndTry.success) {
             console.log('Creating user a 2nd time failed!')
             console.error(createUserResult.responseJson)
