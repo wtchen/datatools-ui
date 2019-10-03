@@ -7,7 +7,7 @@ import fetch from 'isomorphic-fetch'
 import {safeLoad} from 'js-yaml'
 import md5File from 'md5-file/promise'
 import moment from 'moment'
-import puppeteer from 'puppeteer'
+import {launch} from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
 
@@ -235,6 +235,7 @@ async function uploadGtfs () {
   // set file to upload in modal dialog
   // TODO replace with more specific selector
   await waitForSelector('.modal-body input')
+  // $FlowFixMe cryptic error that is hard to resolve :(
   const uploadInput = await page.$('.modal-body input')
   if (!uploadInput) throw new Error('Could not find upload input')
   await uploadInput.uploadFile(gtfsUploadFile)
@@ -606,7 +607,7 @@ describe('end-to-end', () => {
       } else log.warn('OpenTripPlanner not accepting requests. Start it up for deployment tests!!')
     }
     log.info('Launching chromium for testing...')
-    browser = await puppeteer.launch(puppeteerOptions)
+    browser = await launch(puppeteerOptions)
     page = await browser.newPage()
 
     // setup listeners for various events that happen in the browser. In each of
@@ -734,6 +735,7 @@ describe('end-to-end', () => {
 
       // verify that user is now an admin
       await waitForAndClick(`[data-test-id="edit-user-${testUserSlug}"]`)
+      // $FlowFixMe cryptic error that is hard to resolve :(
       const adminCheckbox = await page.$(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
       expect(await (await adminCheckbox.getProperty('checked')).jsonValue()).toBe(true)
     }, defaultTestTimeout, 'should allow admin user to create another user')
