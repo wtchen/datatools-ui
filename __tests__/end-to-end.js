@@ -9,6 +9,7 @@ import md5File from 'md5-file/promise'
 import moment from 'moment'
 import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
+import uuidv4 from 'uuid/v4'
 
 import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
 
@@ -409,6 +410,22 @@ async function createStop ({
   log.info(`created stop with name: ${name}`)
 }
 
+/**
+ * Enters in some text into the user search input, submits search and waits for
+ * results
+ * @param  {string} searchText the text to enter into the search input
+ */
+async function filterUsers (searchText: string) {
+  // type in text
+  await type('[data-test-id="search-user-input"]', searchText)
+
+  // submit search
+  await click('[data-test-id="submit-user-search-button"]')
+
+  // wait for results
+  await wait(2000, 'for user list to be updated')
+}
+
 async function clearInput (inputSelector: string) {
   await page.$eval(
     inputSelector,
@@ -668,12 +685,82 @@ describe('end-to-end', () => {
     await wait(2000, 'for projects to load')
   }, defaultTestTimeout, 'should load the page')
 
+  describe('admin', () => {
+    const testUserEmail = `e2e-test-${fileSafeTestTime}@ibigroup.com`.toLowerCase()
+    const testUserSlug = testUserEmail.split('@')[0]
+    makeTestPostLogin('should allow admin user to create another user', async () => {
+      // navigage to admin page
+      await goto('http://localhost:9966/admin/users', { waitUntil: 'networkidle0' })
+
+      // click on create user button
+      await waitForAndClick('[data-test-id="create-user-button"]')
+
+      // wait for create user dialog to show up
+      await waitForSelector('#formControlsEmail')
+
+      // enter in user data
+      await type('#formControlsEmail', testUserEmail)
+      await type('#formControlsPassword', uuidv4())
+
+      // submit form
+      await click('[data-test-id="confirm-create-user-button"]')
+
+      // wait for user to be saved
+      await wait(2000, 'for user to be created')
+
+      // filter users
+      await filterUsers(testUserSlug)
+
+      // verify that new user is found in list of filtered users
+      await waitForSelector(`[data-test-id="edit-user-${testUserSlug}"]`)
+      await expectSelectorToContainHtml('[data-test-id="user-list"]', testUserEmail)
+    }, defaultTestTimeout)
+
+    makeTestPostLogin('should update a user', async () => {
+      // click on edit button for user
+      await click(`[data-test-id="edit-user-${testUserSlug}"]`)
+
+      // make user an admin
+      await waitForAndClick(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
+
+      // save
+      await click(`[data-test-id="save-user-${testUserSlug}"]`)
+
+      // refresh page
+      await page.reload({ waitUntil: 'networkidle0' })
+
+      // filter users
+      await filterUsers(testUserSlug)
+
+      // verify that user is now an admin
+      await waitForAndClick(`[data-test-id="edit-user-${testUserSlug}"]`)
+      const adminCheckbox = await page.$(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
+      expect(await (await adminCheckbox.getProperty('checked')).jsonValue()).toBe(true)
+    }, defaultTestTimeout, 'should allow admin user to create another user')
+
+    makeTestPostLogin('should delete a user', async () => {
+      // click delete user button
+      await click(`[data-test-id="delete-user-${testUserSlug}"]`)
+
+      // confirm action in modal
+      await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
+      await wait(2000, 'for data to refresh')
+
+      // filter users
+      await filterUsers(testUserSlug)
+
+      // verify that test user is not in list
+      await expectSelectorToNotContainHtml('[data-test-id="user-list"]', testUserEmail)
+    }, defaultTestTimeout, 'should allow admin user to create another user')
+  })
+
   // ---------------------------------------------------------------------------
   // Project tests
   // ---------------------------------------------------------------------------
 
   describe('project', () => {
     makeTestPostLogin('should create a project', async () => {
+      await goto('http://localhost:9966/home', { waitUntil: 'networkidle0' })
       await createProject(testProjectName)
 
       // go into the project page and verify that it looks ok-ish
