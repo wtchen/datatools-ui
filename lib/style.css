@@ -73,6 +73,120 @@ kbd {
   padding: 40px 20px 60px 20px;
 }
 
+.feed-source-toolbar-formgroup label {
+  margin-right: 10px;
+}
+
+.feed-source-table {
+  width: 100%;
+}
+
+.feed-source-table td, .feed-source-table th {
+  padding: 10px;
+}
+
+.feed-source-table thead {
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+.feed-source-table thead h4 {
+  margin: 0;
+}
+
+.feed-source-table thead .top-row h4 {
+  text-align: center;
+  font-size: 20px;
+}
+
+.feed-source-table thead i {
+  margin-bottom: 5px;
+  margin-right: 5px;
+}
+
+.comparison-column {
+  background-color: #CCCCCC;
+}
+
+.feed-version-column {
+  background-color: #EEEEEE;
+}
+
+.feed-source-table-row {
+  border: 1px solid #ddd;
+}
+
+.feed-source-table-row:last-child {
+  border-bottom: 0;
+}
+
+td.feed-source-info {
+  width: 33%;
+}
+
+.feed-source-info h4 {
+  font-size: 20px;
+  margin: 0;
+  padding-bottom: 5px;
+}
+
+.feed-source-info h5 {
+  font-size: 16px;
+  margin: 0;
+  padding-bottom: 5px;
+}
+
+.feed-source-info i {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+/* Feed version status styling */
+.feed-status {
+  border-radius: 5px;
+  color: #fff;
+  padding: 5px;
+}
+
+.status-active {
+  background-color: #59B542;
+}
+
+.status-expiring-20 {
+  background-color: #ada21f;
+}
+
+.status-expiring-5 {
+  background-color: #C44C35;
+}
+
+.status-expired {
+  background-color: #000;
+}
+
+.status-future {
+  background-color: #4366B8;
+}
+
+.status-no-version {
+  background-color: #853BE5;
+}
+
+.feed-status-subtext {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* project deployments */
+
+.pinned-deployment {
+  background-color: #ffdf86 !important;
+}
+
+.deployment-na {
+  color: #969595;
+}
+
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {
@@ -174,6 +288,8 @@ kbd {
   right: 23px !important;
 }
 
+/* UTILITY classes */
+
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -182,6 +298,14 @@ kbd {
   -ms-user-select: none;       /* Internet Explorer/Edge */
   user-select: none;           /* Non-prefixed version, currently
                                   not supported by any browser */
+}
+
+.overflow {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* NOTE: element must have a width defined in inline css */
+  white-space: nowrap;
 }
 
 /* EDITOR MAP */
@@ -287,7 +411,6 @@ kbd {
   font-weight: bold;
   text-align: center;
   line-height: 120%;
-  background-image: url(assets/application_icon.png);
   background-size: contain;
 }
 

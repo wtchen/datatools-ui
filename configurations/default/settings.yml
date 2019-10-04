@@ -1,32 +1,8 @@
-application:
-  active_project: project-id
-  changelog_url: 'https://changelog.example.com'
-  data:
-    gtfs_s3_bucket: bucket-name
-    use_s3_storage: false
-  date_format: MMM Do YYYY
-  description: 'A command center for managing, editing, validating, and deploying GTFS feeds.'
-  docs_url: 'http://docs.example.com'
-  logo: 'https://d2f1n6ed3ipuic.cloudfront.net/conveyal-128x128.png'
-  logo_large: https://d2f1n6ed3ipuic.cloudfront.net/conveyal-512x512.png
-  notifications_enabled: false
-  profileRefreshTime: -1
-  support_email: support@example.com
-  title: Conveyal Data Tools
+# Mastarm/deployment configuration properties. Note: application configuration
+# is now taken entirely from server application (there are still some
+# UI-specific env variables are in this repository's env.yml).
+cloudfront: DEPLOY-DISTRIBUTION
 entries:
   - 'lib/main.js:dist/index.js'
   - 'lib/index.css:dist/index.css'
-extensions:
-  transitfeeds:
-    enabled: false
-  transitland:
-    enabled: false
-modules:
-  editor:
-    enabled: true
-  enterprise:
-    enabled: true
-  user_admin:
-    enabled: true
-  validator:
-    enabled: true
+s3Bucket: bucket-for-deployment

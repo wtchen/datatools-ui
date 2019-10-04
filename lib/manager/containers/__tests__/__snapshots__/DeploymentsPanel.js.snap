@@ -1,0 +1,1473 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`lib > manager > DeploymentsPanel should render with the list of deployments of a project with deployments 1`] = `
+<Provider
+  store={
+    Object {
+      "clearActions": [Function],
+      "dispatch": [Function],
+      "getActions": [Function],
+      "getState": [Function],
+      "replaceReducer": [Function],
+      "subscribe": [Function],
+    }
+  }
+>
+  <Connect(DeploymentsPanel)
+    activeSubComponent={null}
+    expanded={true}
+    project={
+      Object {
+        "autoFetchFeeds": true,
+        "autoFetchHour": 0,
+        "autoFetchMinute": 0,
+        "bounds": null,
+        "buildConfig": Object {
+          "fares": null,
+          "fetchElevationUS": null,
+          "stationTransfers": null,
+          "subwayAccessTime": null,
+        },
+        "dateCreated": 1526305321824,
+        "defaultTimeZone": null,
+        "deployments": Array [
+          Object {
+            "customBuildConfig": null,
+            "customRouterConfig": null,
+            "dateCreated": 1553292345720,
+            "deployedTo": null,
+            "feedSourceId": null,
+            "feedVersions": Array [
+              Object {
+                "feedSource": Object {
+                  "dateCreated": 1536195264564,
+                  "deployable": false,
+                  "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                  "externalProperties": Object {},
+                  "id": "mock-feed-with-version-id",
+                  "isPublic": false,
+                  "lastFetched": 1543389038810,
+                  "lastUpdated": 1543389038810,
+                  "latestValidation": Object {
+                    "agencies": null,
+                    "agencyCount": 1,
+                    "avgDailyRevenueTime": 0,
+                    "bounds": Object {
+                      "east": -76.481211,
+                      "north": 39.0486949672717,
+                      "south": 38.92884,
+                      "west": -76.5673055566884,
+                    },
+                    "endDate": "20190801",
+                    "errorCount": 78,
+                    "feedVersionId": "mock-feed-version-id",
+                    "loadFailureReason": null,
+                    "loadStatus": "SUCCESS",
+                    "routeCount": 10,
+                    "startDate": "20180801",
+                    "stopCount": 237,
+                    "stopTimesCount": 11170,
+                    "tripCount": 415,
+                  },
+                  "latestVersionId": "mock-feed-version-id",
+                  "name": "test feed with a version",
+                  "noteCount": 0,
+                  "organizationId": null,
+                  "projectId": "mock-project-id",
+                  "publishedVersionId": null,
+                  "retrievalMethod": "MANUALLY_UPLOADED",
+                  "s3Url": null,
+                  "snapshotVersion": null,
+                  "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                  "user": null,
+                },
+                "id": "mock-feed-version-id",
+                "nextVersionId": null,
+                "previousVersionId": null,
+                "updated": 1543389038810,
+                "validationResult": Object {
+                  "agencies": null,
+                  "agencyCount": 1,
+                  "avgDailyRevenueTime": 0,
+                  "bounds": Object {
+                    "east": -76.481211,
+                    "north": 39.0486949672717,
+                    "south": 38.92884,
+                    "west": -76.5673055566884,
+                  },
+                  "endDate": "20190801",
+                  "errorCount": 78,
+                  "feedVersionId": "mock-feed-version-id",
+                  "loadFailureReason": null,
+                  "loadStatus": "SUCCESS",
+                  "routeCount": 10,
+                  "startDate": "20180801",
+                  "stopCount": 237,
+                  "stopTimesCount": 11170,
+                  "tripCount": 415,
+                },
+                "version": 1,
+              },
+            ],
+            "id": "mock-deployment-id",
+            "invalidFeedSources": Array [],
+            "lastDeployed": null,
+            "lastUpdated": 1553292345726,
+            "name": "mock-deployment",
+            "organizationId": null,
+            "osmFileId": null,
+            "otpCommit": null,
+            "project": [Circular],
+            "projectBounds": null,
+            "routerId": null,
+            "user": null,
+          },
+          Object {
+            "customBuildConfig": null,
+            "customRouterConfig": null,
+            "dateCreated": 1553292345720,
+            "deployedTo": null,
+            "feedSourceId": null,
+            "feedVersions": Array [],
+            "id": "mock-deployment-id",
+            "invalidFeedSources": Array [],
+            "lastDeployed": null,
+            "lastUpdated": 1553292345726,
+            "name": "mock-deployment",
+            "organizationId": null,
+            "osmFileId": null,
+            "otpCommit": null,
+            "project": [Circular],
+            "projectBounds": null,
+            "routerId": null,
+            "user": null,
+          },
+        ],
+        "feedSources": Array [
+          Object {
+            "dateCreated": 1536195264564,
+            "deployable": false,
+            "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+            "externalProperties": Object {},
+            "id": "mock-feed-with-version-id",
+            "isPublic": false,
+            "lastFetched": 1543389038810,
+            "lastUpdated": 1543389038810,
+            "latestValidation": Object {
+              "agencies": null,
+              "agencyCount": 1,
+              "avgDailyRevenueTime": 0,
+              "bounds": Object {
+                "east": -76.481211,
+                "north": 39.0486949672717,
+                "south": 38.92884,
+                "west": -76.5673055566884,
+              },
+              "endDate": "20190801",
+              "errorCount": 78,
+              "feedVersionId": "mock-feed-version-id",
+              "loadFailureReason": null,
+              "loadStatus": "SUCCESS",
+              "routeCount": 10,
+              "startDate": "20180801",
+              "stopCount": 237,
+              "stopTimesCount": 11170,
+              "tripCount": 415,
+            },
+            "latestVersionId": "mock-feed-version-id",
+            "name": "test feed with a version",
+            "noteCount": 0,
+            "organizationId": null,
+            "projectId": "mock-project-id",
+            "publishedVersionId": null,
+            "retrievalMethod": "MANUALLY_UPLOADED",
+            "s3Url": null,
+            "snapshotVersion": null,
+            "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+            "user": null,
+          },
+        ],
+        "id": "mock-project-with-deployments-id",
+        "lastUpdated": 1553236399556,
+        "name": "mock-project-with-deployments",
+        "organizationId": null,
+        "otpServers": Array [],
+        "pinnedDeploymentId": "mock-deployment-id",
+        "routerConfig": Object {
+          "carDropoffTime": null,
+          "numItineraries": null,
+          "requestLogFile": null,
+          "stairsReluctance": null,
+          "updaters": null,
+          "walkSpeed": null,
+        },
+        "useCustomOsmBounds": false,
+        "user": null,
+      }
+    }
+  >
+    <DeploymentsPanel
+      activeSubComponent={null}
+      createDeployment={[Function]}
+      deleteDeployment={[Function]}
+      expanded={true}
+      fetchProjectDeployments={[Function]}
+      fetchProjectFeeds={[Function]}
+      project={
+        Object {
+          "autoFetchFeeds": true,
+          "autoFetchHour": 0,
+          "autoFetchMinute": 0,
+          "bounds": null,
+          "buildConfig": Object {
+            "fares": null,
+            "fetchElevationUS": null,
+            "stationTransfers": null,
+            "subwayAccessTime": null,
+          },
+          "dateCreated": 1526305321824,
+          "defaultTimeZone": null,
+          "deployments": Array [
+            Object {
+              "customBuildConfig": null,
+              "customRouterConfig": null,
+              "dateCreated": 1553292345720,
+              "deployedTo": null,
+              "feedSourceId": null,
+              "feedVersions": Array [
+                Object {
+                  "feedSource": Object {
+                    "dateCreated": 1536195264564,
+                    "deployable": false,
+                    "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                    "externalProperties": Object {},
+                    "id": "mock-feed-with-version-id",
+                    "isPublic": false,
+                    "lastFetched": 1543389038810,
+                    "lastUpdated": 1543389038810,
+                    "latestValidation": Object {
+                      "agencies": null,
+                      "agencyCount": 1,
+                      "avgDailyRevenueTime": 0,
+                      "bounds": Object {
+                        "east": -76.481211,
+                        "north": 39.0486949672717,
+                        "south": 38.92884,
+                        "west": -76.5673055566884,
+                      },
+                      "endDate": "20190801",
+                      "errorCount": 78,
+                      "feedVersionId": "mock-feed-version-id",
+                      "loadFailureReason": null,
+                      "loadStatus": "SUCCESS",
+                      "routeCount": 10,
+                      "startDate": "20180801",
+                      "stopCount": 237,
+                      "stopTimesCount": 11170,
+                      "tripCount": 415,
+                    },
+                    "latestVersionId": "mock-feed-version-id",
+                    "name": "test feed with a version",
+                    "noteCount": 0,
+                    "organizationId": null,
+                    "projectId": "mock-project-id",
+                    "publishedVersionId": null,
+                    "retrievalMethod": "MANUALLY_UPLOADED",
+                    "s3Url": null,
+                    "snapshotVersion": null,
+                    "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                    "user": null,
+                  },
+                  "id": "mock-feed-version-id",
+                  "nextVersionId": null,
+                  "previousVersionId": null,
+                  "updated": 1543389038810,
+                  "validationResult": Object {
+                    "agencies": null,
+                    "agencyCount": 1,
+                    "avgDailyRevenueTime": 0,
+                    "bounds": Object {
+                      "east": -76.481211,
+                      "north": 39.0486949672717,
+                      "south": 38.92884,
+                      "west": -76.5673055566884,
+                    },
+                    "endDate": "20190801",
+                    "errorCount": 78,
+                    "feedVersionId": "mock-feed-version-id",
+                    "loadFailureReason": null,
+                    "loadStatus": "SUCCESS",
+                    "routeCount": 10,
+                    "startDate": "20180801",
+                    "stopCount": 237,
+                    "stopTimesCount": 11170,
+                    "tripCount": 415,
+                  },
+                  "version": 1,
+                },
+              ],
+              "id": "mock-deployment-id",
+              "invalidFeedSources": Array [],
+              "lastDeployed": null,
+              "lastUpdated": 1553292345726,
+              "name": "mock-deployment",
+              "organizationId": null,
+              "osmFileId": null,
+              "otpCommit": null,
+              "project": [Circular],
+              "projectBounds": null,
+              "routerId": null,
+              "user": null,
+            },
+            Object {
+              "customBuildConfig": null,
+              "customRouterConfig": null,
+              "dateCreated": 1553292345720,
+              "deployedTo": null,
+              "feedSourceId": null,
+              "feedVersions": Array [],
+              "id": "mock-deployment-id",
+              "invalidFeedSources": Array [],
+              "lastDeployed": null,
+              "lastUpdated": 1553292345726,
+              "name": "mock-deployment",
+              "organizationId": null,
+              "osmFileId": null,
+              "otpCommit": null,
+              "project": [Circular],
+              "projectBounds": null,
+              "routerId": null,
+              "user": null,
+            },
+          ],
+          "feedSources": Array [
+            Object {
+              "dateCreated": 1536195264564,
+              "deployable": false,
+              "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+              "externalProperties": Object {},
+              "id": "mock-feed-with-version-id",
+              "isPublic": false,
+              "lastFetched": 1543389038810,
+              "lastUpdated": 1543389038810,
+              "latestValidation": Object {
+                "agencies": null,
+                "agencyCount": 1,
+                "avgDailyRevenueTime": 0,
+                "bounds": Object {
+                  "east": -76.481211,
+                  "north": 39.0486949672717,
+                  "south": 38.92884,
+                  "west": -76.5673055566884,
+                },
+                "endDate": "20190801",
+                "errorCount": 78,
+                "feedVersionId": "mock-feed-version-id",
+                "loadFailureReason": null,
+                "loadStatus": "SUCCESS",
+                "routeCount": 10,
+                "startDate": "20180801",
+                "stopCount": 237,
+                "stopTimesCount": 11170,
+                "tripCount": 415,
+              },
+              "latestVersionId": "mock-feed-version-id",
+              "name": "test feed with a version",
+              "noteCount": 0,
+              "organizationId": null,
+              "projectId": "mock-project-id",
+              "publishedVersionId": null,
+              "retrievalMethod": "MANUALLY_UPLOADED",
+              "s3Url": null,
+              "snapshotVersion": null,
+              "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+              "user": null,
+            },
+          ],
+          "id": "mock-project-with-deployments-id",
+          "lastUpdated": 1553236399556,
+          "name": "mock-project-with-deployments",
+          "organizationId": null,
+          "otpServers": Array [],
+          "pinnedDeploymentId": "mock-deployment-id",
+          "routerConfig": Object {
+            "carDropoffTime": null,
+            "numItineraries": null,
+            "requestLogFile": null,
+            "stairsReluctance": null,
+            "updaters": null,
+            "walkSpeed": null,
+          },
+          "useCustomOsmBounds": false,
+          "user": null,
+        }
+      }
+      saveDeployment={[Function]}
+      updateDeployment={[Function]}
+      updateProject={[Function]}
+    >
+      <Row
+        bsClass="row"
+        componentClass="div"
+      >
+        <div
+          className="row"
+        >
+          <ConfirmModal>
+            <Modal
+              animation={true}
+              autoFocus={true}
+              backdrop={true}
+              bsClass="modal"
+              dialogComponentClass={[Function]}
+              enforceFocus={true}
+              keyboard={true}
+              manager={
+                ModalManager {
+                  "containers": Array [],
+                  "data": Array [],
+                  "handleContainerOverflow": true,
+                  "hideSiblingNodes": true,
+                  "modals": Array [],
+                }
+              }
+              onHide={[Function]}
+              renderBackdrop={[Function]}
+              restoreFocus={true}
+              show={false}
+            >
+              <Modal
+                autoFocus={true}
+                backdrop={true}
+                backdropClassName="modal-backdrop"
+                backdropTransitionTimeout={150}
+                containerClassName="modal-open"
+                dialogTransitionTimeout={300}
+                enforceFocus={true}
+                keyboard={true}
+                manager={
+                  ModalManager {
+                    "containers": Array [],
+                    "data": Array [],
+                    "handleContainerOverflow": true,
+                    "hideSiblingNodes": true,
+                    "modals": Array [],
+                  }
+                }
+                onEntering={[Function]}
+                onExited={[Function]}
+                onHide={[Function]}
+                renderBackdrop={[Function]}
+                restoreFocus={true}
+                show={false}
+                transition={[Function]}
+              />
+            </Modal>
+          </ConfirmModal>
+          <Col
+            bsClass="col"
+            componentClass="div"
+            xs={9}
+          >
+            <div
+              className="col-xs-9"
+            >
+              <DeploymentsList
+                createDeployment={[Function]}
+                deleteDeployment={[Function]}
+                fetchProjectDeployments={[Function]}
+                fetchProjectFeeds={[Function]}
+                project={
+                  Object {
+                    "autoFetchFeeds": true,
+                    "autoFetchHour": 0,
+                    "autoFetchMinute": 0,
+                    "bounds": null,
+                    "buildConfig": Object {
+                      "fares": null,
+                      "fetchElevationUS": null,
+                      "stationTransfers": null,
+                      "subwayAccessTime": null,
+                    },
+                    "dateCreated": 1526305321824,
+                    "defaultTimeZone": null,
+                    "deployments": Array [
+                      Object {
+                        "customBuildConfig": null,
+                        "customRouterConfig": null,
+                        "dateCreated": 1553292345720,
+                        "deployedTo": null,
+                        "feedSourceId": null,
+                        "feedVersions": Array [
+                          Object {
+                            "feedSource": Object {
+                              "dateCreated": 1536195264564,
+                              "deployable": false,
+                              "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                              "externalProperties": Object {},
+                              "id": "mock-feed-with-version-id",
+                              "isPublic": false,
+                              "lastFetched": 1543389038810,
+                              "lastUpdated": 1543389038810,
+                              "latestValidation": Object {
+                                "agencies": null,
+                                "agencyCount": 1,
+                                "avgDailyRevenueTime": 0,
+                                "bounds": Object {
+                                  "east": -76.481211,
+                                  "north": 39.0486949672717,
+                                  "south": 38.92884,
+                                  "west": -76.5673055566884,
+                                },
+                                "endDate": "20190801",
+                                "errorCount": 78,
+                                "feedVersionId": "mock-feed-version-id",
+                                "loadFailureReason": null,
+                                "loadStatus": "SUCCESS",
+                                "routeCount": 10,
+                                "startDate": "20180801",
+                                "stopCount": 237,
+                                "stopTimesCount": 11170,
+                                "tripCount": 415,
+                              },
+                              "latestVersionId": "mock-feed-version-id",
+                              "name": "test feed with a version",
+                              "noteCount": 0,
+                              "organizationId": null,
+                              "projectId": "mock-project-id",
+                              "publishedVersionId": null,
+                              "retrievalMethod": "MANUALLY_UPLOADED",
+                              "s3Url": null,
+                              "snapshotVersion": null,
+                              "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                              "user": null,
+                            },
+                            "id": "mock-feed-version-id",
+                            "nextVersionId": null,
+                            "previousVersionId": null,
+                            "updated": 1543389038810,
+                            "validationResult": Object {
+                              "agencies": null,
+                              "agencyCount": 1,
+                              "avgDailyRevenueTime": 0,
+                              "bounds": Object {
+                                "east": -76.481211,
+                                "north": 39.0486949672717,
+                                "south": 38.92884,
+                                "west": -76.5673055566884,
+                              },
+                              "endDate": "20190801",
+                              "errorCount": 78,
+                              "feedVersionId": "mock-feed-version-id",
+                              "loadFailureReason": null,
+                              "loadStatus": "SUCCESS",
+                              "routeCount": 10,
+                              "startDate": "20180801",
+                              "stopCount": 237,
+                              "stopTimesCount": 11170,
+                              "tripCount": 415,
+                            },
+                            "version": 1,
+                          },
+                        ],
+                        "id": "mock-deployment-id",
+                        "invalidFeedSources": Array [],
+                        "lastDeployed": null,
+                        "lastUpdated": 1553292345726,
+                        "name": "mock-deployment",
+                        "organizationId": null,
+                        "osmFileId": null,
+                        "otpCommit": null,
+                        "project": [Circular],
+                        "projectBounds": null,
+                        "routerId": null,
+                        "user": null,
+                      },
+                      Object {
+                        "customBuildConfig": null,
+                        "customRouterConfig": null,
+                        "dateCreated": 1553292345720,
+                        "deployedTo": null,
+                        "feedSourceId": null,
+                        "feedVersions": Array [],
+                        "id": "mock-deployment-id",
+                        "invalidFeedSources": Array [],
+                        "lastDeployed": null,
+                        "lastUpdated": 1553292345726,
+                        "name": "mock-deployment",
+                        "organizationId": null,
+                        "osmFileId": null,
+                        "otpCommit": null,
+                        "project": [Circular],
+                        "projectBounds": null,
+                        "routerId": null,
+                        "user": null,
+                      },
+                    ],
+                    "feedSources": Array [
+                      Object {
+                        "dateCreated": 1536195264564,
+                        "deployable": false,
+                        "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                        "externalProperties": Object {},
+                        "id": "mock-feed-with-version-id",
+                        "isPublic": false,
+                        "lastFetched": 1543389038810,
+                        "lastUpdated": 1543389038810,
+                        "latestValidation": Object {
+                          "agencies": null,
+                          "agencyCount": 1,
+                          "avgDailyRevenueTime": 0,
+                          "bounds": Object {
+                            "east": -76.481211,
+                            "north": 39.0486949672717,
+                            "south": 38.92884,
+                            "west": -76.5673055566884,
+                          },
+                          "endDate": "20190801",
+                          "errorCount": 78,
+                          "feedVersionId": "mock-feed-version-id",
+                          "loadFailureReason": null,
+                          "loadStatus": "SUCCESS",
+                          "routeCount": 10,
+                          "startDate": "20180801",
+                          "stopCount": 237,
+                          "stopTimesCount": 11170,
+                          "tripCount": 415,
+                        },
+                        "latestVersionId": "mock-feed-version-id",
+                        "name": "test feed with a version",
+                        "noteCount": 0,
+                        "organizationId": null,
+                        "projectId": "mock-project-id",
+                        "publishedVersionId": null,
+                        "retrievalMethod": "MANUALLY_UPLOADED",
+                        "s3Url": null,
+                        "snapshotVersion": null,
+                        "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                        "user": null,
+                      },
+                    ],
+                    "id": "mock-project-with-deployments-id",
+                    "lastUpdated": 1553236399556,
+                    "name": "mock-project-with-deployments",
+                    "organizationId": null,
+                    "otpServers": Array [],
+                    "pinnedDeploymentId": "mock-deployment-id",
+                    "routerConfig": Object {
+                      "carDropoffTime": null,
+                      "numItineraries": null,
+                      "requestLogFile": null,
+                      "stairsReluctance": null,
+                      "updaters": null,
+                      "walkSpeed": null,
+                    },
+                    "useCustomOsmBounds": false,
+                    "user": null,
+                  }
+                }
+                saveDeployment={[Function]}
+                updateDeployment={[Function]}
+                updateProject={[Function]}
+              >
+                <Panel
+                  bsClass="panel"
+                  bsStyle="default"
+                  defaultExpanded={false}
+                  header={
+                    <Row
+                      bsClass="row"
+                      componentClass="div"
+                    >
+                      <Col
+                        bsClass="col"
+                        componentClass="div"
+                        xs={4}
+                      >
+                        <FormControl
+                          bsClass="form-control"
+                          componentClass="input"
+                          onChange={[Function]}
+                          placeholder="Search for deployments"
+                        />
+                      </Col>
+                      <Col
+                        bsClass="col"
+                        componentClass="div"
+                        xs={8}
+                      >
+                        <Button
+                          active={false}
+                          block={false}
+                          bsClass="btn"
+                          bsStyle="success"
+                          className="pull-right"
+                          disabled={false}
+                          onClick={[Function]}
+                        >
+                          <Glyphicon
+                            bsClass="glyphicon"
+                            glyph="plus"
+                          />
+                           
+                          New Deployment
+                        </Button>
+                      </Col>
+                    </Row>
+                  }
+                >
+                  <div
+                    className="panel panel-default"
+                  >
+                    <div
+                      className="panel-heading"
+                    >
+                      <Row
+                        bsClass="row"
+                        className="panel-title"
+                        componentClass="div"
+                      >
+                        <div
+                          className="panel-title row"
+                        >
+                          <Col
+                            bsClass="col"
+                            componentClass="div"
+                            xs={4}
+                          >
+                            <div
+                              className="col-xs-4"
+                            >
+                              <FormControl
+                                bsClass="form-control"
+                                componentClass="input"
+                                onChange={[Function]}
+                                placeholder="Search for deployments"
+                              >
+                                <input
+                                  className="form-control"
+                                  onChange={[Function]}
+                                  placeholder="Search for deployments"
+                                />
+                              </FormControl>
+                            </div>
+                          </Col>
+                          <Col
+                            bsClass="col"
+                            componentClass="div"
+                            xs={8}
+                          >
+                            <div
+                              className="col-xs-8"
+                            >
+                              <Button
+                                active={false}
+                                block={false}
+                                bsClass="btn"
+                                bsStyle="success"
+                                className="pull-right"
+                                disabled={false}
+                                onClick={[Function]}
+                              >
+                                <button
+                                  className="pull-right btn btn-success"
+                                  disabled={false}
+                                  onClick={[Function]}
+                                  type="button"
+                                >
+                                  <Glyphicon
+                                    bsClass="glyphicon"
+                                    glyph="plus"
+                                  >
+                                    <span
+                                      className="glyphicon glyphicon-plus"
+                                    />
+                                  </Glyphicon>
+                                   
+                                  New Deployment
+                                </button>
+                              </Button>
+                            </div>
+                          </Col>
+                        </div>
+                      </Row>
+                    </div>
+                    <Table
+                      bordered={false}
+                      bsClass="table"
+                      condensed={false}
+                      hover={true}
+                      key=".0"
+                      responsive={false}
+                      striped={true}
+                    >
+                      <table
+                        className="table table-striped table-hover"
+                      >
+                        <thead>
+                          <tr>
+                            <th
+                              className="col-md-4"
+                            >
+                              Name
+                            </th>
+                            <th>
+                              Created
+                            </th>
+                            <th>
+                              Last deployed
+                            </th>
+                            <th>
+                              Deployed to
+                            </th>
+                            <th>
+                              # of feeds
+                            </th>
+                            <th>
+                              Test?
+                            </th>
+                            <th />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <DeploymentListItem
+                            createDeployment={[Function]}
+                            deleteDeployment={[Function]}
+                            deployment={
+                              Object {
+                                "customBuildConfig": null,
+                                "customRouterConfig": null,
+                                "dateCreated": 1553292345720,
+                                "deployedTo": null,
+                                "feedSourceId": null,
+                                "feedVersions": Array [
+                                  Object {
+                                    "feedSource": Object {
+                                      "dateCreated": 1536195264564,
+                                      "deployable": false,
+                                      "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                      "externalProperties": Object {},
+                                      "id": "mock-feed-with-version-id",
+                                      "isPublic": false,
+                                      "lastFetched": 1543389038810,
+                                      "lastUpdated": 1543389038810,
+                                      "latestValidation": Object {
+                                        "agencies": null,
+                                        "agencyCount": 1,
+                                        "avgDailyRevenueTime": 0,
+                                        "bounds": Object {
+                                          "east": -76.481211,
+                                          "north": 39.0486949672717,
+                                          "south": 38.92884,
+                                          "west": -76.5673055566884,
+                                        },
+                                        "endDate": "20190801",
+                                        "errorCount": 78,
+                                        "feedVersionId": "mock-feed-version-id",
+                                        "loadFailureReason": null,
+                                        "loadStatus": "SUCCESS",
+                                        "routeCount": 10,
+                                        "startDate": "20180801",
+                                        "stopCount": 237,
+                                        "stopTimesCount": 11170,
+                                        "tripCount": 415,
+                                      },
+                                      "latestVersionId": "mock-feed-version-id",
+                                      "name": "test feed with a version",
+                                      "noteCount": 0,
+                                      "organizationId": null,
+                                      "projectId": "mock-project-id",
+                                      "publishedVersionId": null,
+                                      "retrievalMethod": "MANUALLY_UPLOADED",
+                                      "s3Url": null,
+                                      "snapshotVersion": null,
+                                      "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                      "user": null,
+                                    },
+                                    "id": "mock-feed-version-id",
+                                    "nextVersionId": null,
+                                    "previousVersionId": null,
+                                    "updated": 1543389038810,
+                                    "validationResult": Object {
+                                      "agencies": null,
+                                      "agencyCount": 1,
+                                      "avgDailyRevenueTime": 0,
+                                      "bounds": Object {
+                                        "east": -76.481211,
+                                        "north": 39.0486949672717,
+                                        "south": 38.92884,
+                                        "west": -76.5673055566884,
+                                      },
+                                      "endDate": "20190801",
+                                      "errorCount": 78,
+                                      "feedVersionId": "mock-feed-version-id",
+                                      "loadFailureReason": null,
+                                      "loadStatus": "SUCCESS",
+                                      "routeCount": 10,
+                                      "startDate": "20180801",
+                                      "stopCount": 237,
+                                      "stopTimesCount": 11170,
+                                      "tripCount": 415,
+                                    },
+                                    "version": 1,
+                                  },
+                                ],
+                                "id": "mock-deployment-id",
+                                "invalidFeedSources": Array [],
+                                "lastDeployed": null,
+                                "lastUpdated": 1553292345726,
+                                "name": "mock-deployment",
+                                "organizationId": null,
+                                "osmFileId": null,
+                                "otpCommit": null,
+                                "project": Object {
+                                  "autoFetchFeeds": true,
+                                  "autoFetchHour": 0,
+                                  "autoFetchMinute": 0,
+                                  "bounds": null,
+                                  "buildConfig": Object {
+                                    "fares": null,
+                                    "fetchElevationUS": null,
+                                    "stationTransfers": null,
+                                    "subwayAccessTime": null,
+                                  },
+                                  "dateCreated": 1526305321824,
+                                  "defaultTimeZone": null,
+                                  "deployments": Array [
+                                    [Circular],
+                                    Object {
+                                      "customBuildConfig": null,
+                                      "customRouterConfig": null,
+                                      "dateCreated": 1553292345720,
+                                      "deployedTo": null,
+                                      "feedSourceId": null,
+                                      "feedVersions": Array [],
+                                      "id": "mock-deployment-id",
+                                      "invalidFeedSources": Array [],
+                                      "lastDeployed": null,
+                                      "lastUpdated": 1553292345726,
+                                      "name": "mock-deployment",
+                                      "organizationId": null,
+                                      "osmFileId": null,
+                                      "otpCommit": null,
+                                      "project": [Circular],
+                                      "projectBounds": null,
+                                      "routerId": null,
+                                      "user": null,
+                                    },
+                                  ],
+                                  "feedSources": Array [
+                                    Object {
+                                      "dateCreated": 1536195264564,
+                                      "deployable": false,
+                                      "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                      "externalProperties": Object {},
+                                      "id": "mock-feed-with-version-id",
+                                      "isPublic": false,
+                                      "lastFetched": 1543389038810,
+                                      "lastUpdated": 1543389038810,
+                                      "latestValidation": Object {
+                                        "agencies": null,
+                                        "agencyCount": 1,
+                                        "avgDailyRevenueTime": 0,
+                                        "bounds": Object {
+                                          "east": -76.481211,
+                                          "north": 39.0486949672717,
+                                          "south": 38.92884,
+                                          "west": -76.5673055566884,
+                                        },
+                                        "endDate": "20190801",
+                                        "errorCount": 78,
+                                        "feedVersionId": "mock-feed-version-id",
+                                        "loadFailureReason": null,
+                                        "loadStatus": "SUCCESS",
+                                        "routeCount": 10,
+                                        "startDate": "20180801",
+                                        "stopCount": 237,
+                                        "stopTimesCount": 11170,
+                                        "tripCount": 415,
+                                      },
+                                      "latestVersionId": "mock-feed-version-id",
+                                      "name": "test feed with a version",
+                                      "noteCount": 0,
+                                      "organizationId": null,
+                                      "projectId": "mock-project-id",
+                                      "publishedVersionId": null,
+                                      "retrievalMethod": "MANUALLY_UPLOADED",
+                                      "s3Url": null,
+                                      "snapshotVersion": null,
+                                      "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                      "user": null,
+                                    },
+                                  ],
+                                  "id": "mock-project-with-deployments-id",
+                                  "lastUpdated": 1553236399556,
+                                  "name": "mock-project-with-deployments",
+                                  "organizationId": null,
+                                  "otpServers": Array [],
+                                  "pinnedDeploymentId": "mock-deployment-id",
+                                  "routerConfig": Object {
+                                    "carDropoffTime": null,
+                                    "numItineraries": null,
+                                    "requestLogFile": null,
+                                    "stairsReluctance": null,
+                                    "updaters": null,
+                                    "walkSpeed": null,
+                                  },
+                                  "useCustomOsmBounds": false,
+                                  "user": null,
+                                },
+                                "projectBounds": null,
+                                "routerId": null,
+                                "user": null,
+                              }
+                            }
+                            fetchProjectDeployments={[Function]}
+                            fetchProjectFeeds={[Function]}
+                            key="mock-deployment-id"
+                            project={
+                              Object {
+                                "autoFetchFeeds": true,
+                                "autoFetchHour": 0,
+                                "autoFetchMinute": 0,
+                                "bounds": null,
+                                "buildConfig": Object {
+                                  "fares": null,
+                                  "fetchElevationUS": null,
+                                  "stationTransfers": null,
+                                  "subwayAccessTime": null,
+                                },
+                                "dateCreated": 1526305321824,
+                                "defaultTimeZone": null,
+                                "deployments": Array [
+                                  Object {
+                                    "customBuildConfig": null,
+                                    "customRouterConfig": null,
+                                    "dateCreated": 1553292345720,
+                                    "deployedTo": null,
+                                    "feedSourceId": null,
+                                    "feedVersions": Array [
+                                      Object {
+                                        "feedSource": Object {
+                                          "dateCreated": 1536195264564,
+                                          "deployable": false,
+                                          "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                          "externalProperties": Object {},
+                                          "id": "mock-feed-with-version-id",
+                                          "isPublic": false,
+                                          "lastFetched": 1543389038810,
+                                          "lastUpdated": 1543389038810,
+                                          "latestValidation": Object {
+                                            "agencies": null,
+                                            "agencyCount": 1,
+                                            "avgDailyRevenueTime": 0,
+                                            "bounds": Object {
+                                              "east": -76.481211,
+                                              "north": 39.0486949672717,
+                                              "south": 38.92884,
+                                              "west": -76.5673055566884,
+                                            },
+                                            "endDate": "20190801",
+                                            "errorCount": 78,
+                                            "feedVersionId": "mock-feed-version-id",
+                                            "loadFailureReason": null,
+                                            "loadStatus": "SUCCESS",
+                                            "routeCount": 10,
+                                            "startDate": "20180801",
+                                            "stopCount": 237,
+                                            "stopTimesCount": 11170,
+                                            "tripCount": 415,
+                                          },
+                                          "latestVersionId": "mock-feed-version-id",
+                                          "name": "test feed with a version",
+                                          "noteCount": 0,
+                                          "organizationId": null,
+                                          "projectId": "mock-project-id",
+                                          "publishedVersionId": null,
+                                          "retrievalMethod": "MANUALLY_UPLOADED",
+                                          "s3Url": null,
+                                          "snapshotVersion": null,
+                                          "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                          "user": null,
+                                        },
+                                        "id": "mock-feed-version-id",
+                                        "nextVersionId": null,
+                                        "previousVersionId": null,
+                                        "updated": 1543389038810,
+                                        "validationResult": Object {
+                                          "agencies": null,
+                                          "agencyCount": 1,
+                                          "avgDailyRevenueTime": 0,
+                                          "bounds": Object {
+                                            "east": -76.481211,
+                                            "north": 39.0486949672717,
+                                            "south": 38.92884,
+                                            "west": -76.5673055566884,
+                                          },
+                                          "endDate": "20190801",
+                                          "errorCount": 78,
+                                          "feedVersionId": "mock-feed-version-id",
+                                          "loadFailureReason": null,
+                                          "loadStatus": "SUCCESS",
+                                          "routeCount": 10,
+                                          "startDate": "20180801",
+                                          "stopCount": 237,
+                                          "stopTimesCount": 11170,
+                                          "tripCount": 415,
+                                        },
+                                        "version": 1,
+                                      },
+                                    ],
+                                    "id": "mock-deployment-id",
+                                    "invalidFeedSources": Array [],
+                                    "lastDeployed": null,
+                                    "lastUpdated": 1553292345726,
+                                    "name": "mock-deployment",
+                                    "organizationId": null,
+                                    "osmFileId": null,
+                                    "otpCommit": null,
+                                    "project": [Circular],
+                                    "projectBounds": null,
+                                    "routerId": null,
+                                    "user": null,
+                                  },
+                                  Object {
+                                    "customBuildConfig": null,
+                                    "customRouterConfig": null,
+                                    "dateCreated": 1553292345720,
+                                    "deployedTo": null,
+                                    "feedSourceId": null,
+                                    "feedVersions": Array [],
+                                    "id": "mock-deployment-id",
+                                    "invalidFeedSources": Array [],
+                                    "lastDeployed": null,
+                                    "lastUpdated": 1553292345726,
+                                    "name": "mock-deployment",
+                                    "organizationId": null,
+                                    "osmFileId": null,
+                                    "otpCommit": null,
+                                    "project": [Circular],
+                                    "projectBounds": null,
+                                    "routerId": null,
+                                    "user": null,
+                                  },
+                                ],
+                                "feedSources": Array [
+                                  Object {
+                                    "dateCreated": 1536195264564,
+                                    "deployable": false,
+                                    "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                    "externalProperties": Object {},
+                                    "id": "mock-feed-with-version-id",
+                                    "isPublic": false,
+                                    "lastFetched": 1543389038810,
+                                    "lastUpdated": 1543389038810,
+                                    "latestValidation": Object {
+                                      "agencies": null,
+                                      "agencyCount": 1,
+                                      "avgDailyRevenueTime": 0,
+                                      "bounds": Object {
+                                        "east": -76.481211,
+                                        "north": 39.0486949672717,
+                                        "south": 38.92884,
+                                        "west": -76.5673055566884,
+                                      },
+                                      "endDate": "20190801",
+                                      "errorCount": 78,
+                                      "feedVersionId": "mock-feed-version-id",
+                                      "loadFailureReason": null,
+                                      "loadStatus": "SUCCESS",
+                                      "routeCount": 10,
+                                      "startDate": "20180801",
+                                      "stopCount": 237,
+                                      "stopTimesCount": 11170,
+                                      "tripCount": 415,
+                                    },
+                                    "latestVersionId": "mock-feed-version-id",
+                                    "name": "test feed with a version",
+                                    "noteCount": 0,
+                                    "organizationId": null,
+                                    "projectId": "mock-project-id",
+                                    "publishedVersionId": null,
+                                    "retrievalMethod": "MANUALLY_UPLOADED",
+                                    "s3Url": null,
+                                    "snapshotVersion": null,
+                                    "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                    "user": null,
+                                  },
+                                ],
+                                "id": "mock-project-with-deployments-id",
+                                "lastUpdated": 1553236399556,
+                                "name": "mock-project-with-deployments",
+                                "organizationId": null,
+                                "otpServers": Array [],
+                                "pinnedDeploymentId": "mock-deployment-id",
+                                "routerConfig": Object {
+                                  "carDropoffTime": null,
+                                  "numItineraries": null,
+                                  "requestLogFile": null,
+                                  "stairsReluctance": null,
+                                  "updaters": null,
+                                  "walkSpeed": null,
+                                },
+                                "useCustomOsmBounds": false,
+                                "user": null,
+                              }
+                            }
+                            saveDeployment={[Function]}
+                            updateDeployment={[Function]}
+                            updateProject={[Function]}
+                          >
+                            <tr
+                              className="pinned-deployment"
+                            >
+                              <td>
+                                <EditableTextField
+                                  isEditing={false}
+                                  link="/project/mock-project-with-deployments-id/deployments/mock-deployment-id"
+                                  onChange={[Function]}
+                                  rejectEmptyValue={true}
+                                  style={Object {}}
+                                  type="text"
+                                  value="mock-deployment"
+                                >
+                                  <div
+                                    style={Object {}}
+                                  >
+                                    <span>
+                                      <span
+                                        title="mock-deployment"
+                                      >
+                                        <Link
+                                          onlyActiveOnIndex={false}
+                                          style={Object {}}
+                                          to="/project/mock-project-with-deployments-id/deployments/mock-deployment-id"
+                                        >
+                                          <a
+                                            onClick={[Function]}
+                                            style={Object {}}
+                                          >
+                                            mock-deployment
+                                          </a>
+                                        </Link>
+                                      </span>
+                                      <Button
+                                        active={false}
+                                        block={false}
+                                        bsClass="btn"
+                                        bsStyle="link"
+                                        data-test-id="editable-text-field-edit-button"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                      >
+                                        <button
+                                          className="btn btn-link"
+                                          data-test-id="editable-text-field-edit-button"
+                                          disabled={false}
+                                          onClick={[Function]}
+                                          type="button"
+                                        >
+                                          <Icon
+                                            type="pencil"
+                                          >
+                                            <i
+                                              className="fa fa-pencil fa-fw "
+                                            />
+                                          </Icon>
+                                        </button>
+                                      </Button>
+                                    </span>
+                                  </div>
+                                </EditableTextField>
+                              </td>
+                              <td>
+                                <span
+                                  title="Mar 22nd 2019, 3:03pm"
+                                >
+                                   
+                                  2 months ago
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className="deployment-na"
+                                >
+                                  N/A
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className="deployment-na"
+                                >
+                                  N/A
+                                </span>
+                              </td>
+                              <td>
+                                <span>
+                                  1
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className="deployment-na"
+                                >
+                                  N/A
+                                </span>
+                              </td>
+                              <td>
+                                <ButtonGroup
+                                  block={false}
+                                  bsClass="btn-group"
+                                  className="pull-right"
+                                  justified={false}
+                                  vertical={false}
+                                >
+                                  <div
+                                    className="pull-right btn-group"
+                                  >
+                                    <Button
+                                      active={false}
+                                      block={false}
+                                      bsClass="btn"
+                                      bsSize="xsmall"
+                                      bsStyle="info"
+                                      disabled={false}
+                                      onClick={[Function]}
+                                    >
+                                      <button
+                                        className="btn btn-xs btn-info"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <Glyphicon
+                                          bsClass="glyphicon"
+                                          glyph="pushpin"
+                                        >
+                                          <span
+                                            className="glyphicon glyphicon-pushpin"
+                                          />
+                                        </Glyphicon>
+                                      </button>
+                                    </Button>
+                                    <Button
+                                      active={false}
+                                      block={false}
+                                      bsClass="btn"
+                                      bsSize="xsmall"
+                                      bsStyle="danger"
+                                      disabled={false}
+                                      onClick={[Function]}
+                                    >
+                                      <button
+                                        className="btn btn-xs btn-danger"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <Glyphicon
+                                          bsClass="glyphicon"
+                                          glyph="remove"
+                                        >
+                                          <span
+                                            className="glyphicon glyphicon-remove"
+                                          />
+                                        </Glyphicon>
+                                      </button>
+                                    </Button>
+                                  </div>
+                                </ButtonGroup>
+                              </td>
+                            </tr>
+                          </DeploymentListItem>
+                        </tbody>
+                      </table>
+                    </Table>
+                  </div>
+                </Panel>
+              </DeploymentsList>
+            </div>
+          </Col>
+          <Col
+            bsClass="col"
+            componentClass="div"
+            xs={3}
+          >
+            <div
+              className="col-xs-3"
+            >
+              <Panel
+                bsClass="panel"
+                bsStyle="default"
+                defaultExpanded={false}
+                header={
+                  <h3>
+                    Deploying feeds to OTP
+                  </h3>
+                }
+              >
+                <div
+                  className="panel panel-default"
+                >
+                  <div
+                    className="panel-heading"
+                  >
+                    <h3
+                      className="panel-title"
+                    >
+                      Deploying feeds to OTP
+                    </h3>
+                  </div>
+                  <div
+                    className="panel-body"
+                    key="0"
+                  >
+                    <p
+                      key=".0"
+                    >
+                      A collection of feeds can be deployed to OpenTripPlanner (OTP) instances that have been defined in the organization settings.
+                    </p>
+                    <LinkContainer
+                      action="push"
+                      key=".1"
+                      onlyActiveOnIndex={false}
+                      to="/project/mock-project-with-deployments-id/settings/deployment"
+                    >
+                      <Button
+                        action="push"
+                        active={false}
+                        block={true}
+                        bsClass="btn"
+                        bsStyle="primary"
+                        disabled={false}
+                        onClick={[Function]}
+                      >
+                        <button
+                          action="push"
+                          className="btn btn-primary btn-block"
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <Icon
+                            type="cog"
+                          >
+                            <i
+                              className="fa fa-cog fa-fw "
+                            />
+                          </Icon>
+                           Edit deployment settings
+                        </button>
+                      </Button>
+                    </LinkContainer>
+                  </div>
+                </div>
+              </Panel>
+            </div>
+          </Col>
+        </div>
+      </Row>
+    </DeploymentsPanel>
+  </Connect(DeploymentsPanel)>
+</Provider>
+`;

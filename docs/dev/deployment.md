@@ -10,8 +10,10 @@ yarn, and [mastarm](https://github.com/conveyal/mastarm).
 User authentication is done via [Auth0](http://auth0.com). You will need an
 Auth0 account and application to use the Data Manager.
 
-Two databases are required for the application: [MongoDB](https://www.mongodb.com/)
-and a SQL database ([PostgreSQL](https://www.postgresql.org/) is recommended).
+Two databases are required for the application:
+
+- [MongoDB](https://www.mongodb.com/) (>=v2.6.4) is used to store application-level data (e.g., persisting projects and feed sources) and
+- [PostgreSQL](https://www.postgresql.org/) (>=v9.6) for use by [gtfs-lib](https://github.com/conveyal/gtfs-lib) to store GTFS data.
 
 ## Installation and Basic Configuration
 
@@ -199,10 +201,7 @@ $ java -jar target/dt-v1.0.0.jar /path/to/env.yml /path/to/server.yml
 ```
 
 
-The application back-end should now be running at `http://localhost:9000` (or
-whatever port you specified in `server.yml`). The front-end assets are pointed
-to by the back end at whatever s3 bucket name is specified in `server.yml` at
-`application.assets_bucket`.
+The application back-end should now be running at `http://localhost:9000` (or whatever port you specified in `server.yml`). The front-end assets are obtained from the `dist` folder relative the url specified in `server.yml` at `application.client_assets_url`. While running a development server of datatools-ui, these assets are delivered to the client using budo, so the links defined in the backend `server.yml` are only used in a production setting.
 
 ## Configuring Modules
 
@@ -237,24 +236,13 @@ validation.
 - `OSM_VEX` - `datatools-server:env.yml` the validator requires the URL of a
 running instance of the [OSM vex server](https://github.com/conveyal/vanilla-extract).
 
-
-### Sign Configurations
-
-Enables the sign configuration module.
-
-#### List of configuration settings
-
-- `use_extension` - extension key to use for sign configuration
-- `url`
-- Requires `gtfsapi` module
-
 ### Alerts
 
 Enables the real-time alerts module.
 
 #### List of configuration settings
 
-- `use_extension` - extension key to use for sign configuration
+- `use_extension` - extension key to use for alerts
 - `url`
 - Requires `gtfsapi` module
 
