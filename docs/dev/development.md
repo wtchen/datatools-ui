@@ -5,14 +5,14 @@ The system is made up of two different projects:
 
 - https://github.com/catalogueglobal/datatools-ui the Javascript frontend
 - https://github.com/catalogueglobal/datatools-server the Java-based backend
- 
+
 You'll need to clone both of these repos locally.
 The backend (datatools-server) depends on another library called gtfs-lib, which we have been heavily modifying. So rather than automatically including that library as a dependency in the backend build, you'll want to clone that repo as well so you can see and edit its source code. It's at: https://github.com/conveyal/gtfs-lib
 
 NOTE: to work on the current development code, check out the `sql-editor` branch of all three repositories once they are cloned.
 
 ## Back end
-In order to work on the backend and/or on gtfs-lib, which it depends on for storing and retrieving GTFS data, you'll need to add these to a project in the IDE. We use IntelliJ IDEA. The free community edition has all the features we need. 
+In order to work on the backend and/or on gtfs-lib, which it depends on for storing and retrieving GTFS data, you'll need to add these to a project in the IDE. We use IntelliJ IDEA. The free community edition has all the features we need.
 Once you have already cloned the datatools-server and gtfs-lib Github repositories, you need to add both of these as two different "modules" to a single "project" in IntelliJ (see below). Rather than the datatools-server build fetching the pre-built gtfs-lib from the Maven central repository, we are going to configure it to use your local copy of the library, incorporating any changes you make into the build.
 
 First, create a new Project in IntelliJ: **File -> New -> Project from existing sources**. Select the POM file pom.xml in the cloned datatools-server repository. This will import it as a Maven project. Click through all the import pages leaving the defaults untouched. You now have an IntelliJ project with one module: datatools-server.
@@ -44,4 +44,3 @@ To specify your own configuration that overrides the defaults:
 ```
 yarn start -- --config /path/to/config
 ```
-
