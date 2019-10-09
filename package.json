@@ -25,6 +25,7 @@
     "lint-messages": "node scripts/lint-messages.js",
     "predeploy": "yarn",
     "prestart": "yarn",
+    "semantic-release": "semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github",
     "start": "mastarm build --env dev --serve --proxy http://localhost:4000/api",
     "test": "npm run lint && npm run lint-messages && yarn run flow && npm run test-client",
     "test-client": "TZ=America/Los_Angeles mastarm test -e test -c configurations/test --test-path-ignore-patterns \"__tests__/end-to-end __tests__/test-utils\"",
