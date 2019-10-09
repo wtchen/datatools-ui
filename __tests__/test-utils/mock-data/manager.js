@@ -6,11 +6,13 @@ import UserPermissions from '../../../lib/common/user/UserPermissions'
 import UserSubscriptions from '../../../lib/common/user/UserSubscriptions'
 
 import type {
-  Bounds,
+  Deployment,
   FeedVersion,
   Project,
   SummarizedFeedVersion
 } from '../../../lib/types'
+
+let COUNTER = 0
 
 /**
  * Make a mock deployment given a project and some FeedVersions. This is a
@@ -19,12 +21,14 @@ import type {
 export function makeMockDeployment (
   project: Project,
   feedVersions: Array<FeedVersion> = []
-) {
+): Deployment {
   return {
     customBuildConfig: null,
     customRouterConfig: null,
     dateCreated: 1553292345720,
     deployedTo: null,
+    deployJobSummaries: [],
+    ec2Instances: [],
     feedSourceId: null,
     // need to map FeedVersion to SummarizedFeedVersion
     feedVersions: (feedVersions.map(
@@ -40,18 +44,23 @@ export function makeMockDeployment (
         }
       )
     ): Array<SummarizedFeedVersion>),
-    id: 'mock-deployment-id',
+    // Use counter in ID to avoid duplicate key warnings.
+    id: `mock-deployment-id-${COUNTER++}`,
     invalidFeedSources: [],
     lastDeployed: null,
     lastUpdated: 1553292345726,
+    latest: null,
     name: 'mock-deployment',
     organizationId: null,
     osmFileId: null,
     otpCommit: null,
+    otpVersion: null,
     project,
-    projectBounds: (null: ?Bounds), // not sure why this flow type annotation is needed (see https://git.io/fjJCm)
-    routerId: (null: ?string), // not sure why this flow type annotation is needed (see https://git.io/fjJCm)
-    user: (null: ?any) // not sure why this flow type annotation is needed (see https://git.io/fjJCm)
+    projectBounds: {east: 0, west: 0, north: 0, south: 0},
+    r5: false,
+    r5Version: null,
+    routerId: null,
+    user: null
   }
 }
 
@@ -329,9 +338,7 @@ export const mockDeployment = makeMockDeployment(
   mockProjectWithDeployment,
   [mockFeedVersion]
 )
-// $FlowFixMe this mock will have a deployments array
 mockProjectWithDeployment.deployments.push(mockDeployment)
-// $FlowFixMe this mock will have a feedSources array
 mockProjectWithDeployment.feedSources.push(mockFeedWithVersion)
 
 /***************************************************************************

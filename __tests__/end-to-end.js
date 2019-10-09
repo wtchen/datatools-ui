@@ -269,7 +269,7 @@ async function createFeedSourceViaForm (feedSourceName) {
   await waitForSelector('.manager-header')
   await expectSelectorToContainHtml('.manager-header', feedSourceName)
 
-  // goto feed source's project page
+  // go to feed source's project page
   await click('[data-test-id="feed-project-link"]')
 
   // wait for data to load
@@ -697,23 +697,23 @@ describe('end-to-end', () => {
       successfullyCreatedTestProject = true
     }, defaultTestTimeout)
 
-    makeTestPostLogin('should update a project by adding a otp server', async () => {
-      // open settings tab
-      await waitForAndClick('#project-viewer-tabs-tab-settings')
-
-      // navigate to deployments
-      await waitForAndClick('[data-test-id="deployment-settings-link"]', { visible: true })
+    makeTestPostLogin('should update a project by adding an otp server', async () => {
+      // navigate to server admin page
+      await goto(`http://localhost:9966/admin/servers`)
+      const containerSelector = '.server-settings-panel'
+      await waitForSelector(containerSelector)
       // add a server
-      await waitForAndClick('[data-test-id="add-server-button"]')
+      const SERVER_NAME = 'test-otp-server'
+      await click('[data-test-id="add-server-button"]')
       await waitForSelector('input[name="otpServers.$index.name"]')
-      await type('input[name="otpServers.$index.name"]', 'test-otp-server')
+      await type('input[name="otpServers.$index.name"]', SERVER_NAME)
       await type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
       await type('input[name="otpServers.$index.internalUrl"]', 'http://localhost:8080/otp')
-      await click('[data-test-id="save-settings-button"]')
+      await click('[data-test-id="save-item-button"]')
 
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
-      await expectSelectorToContainHtml('#project-viewer-tabs', 'test-otp-server')
+      await expectSelectorToContainHtml(containerSelector, SERVER_NAME)
     }, defaultTestTimeout, 'should create a project')
 
     if (doNonEssentialSteps) {
@@ -821,7 +821,7 @@ describe('end-to-end', () => {
       // set fetch url
       await type(
         '[data-test-id="feed-source-url-input-group"] input',
-        'https://github.com/catalogueglobal/datatools-ui/raw/dev/configurations/end-to-end/test-gtfs-to-fetch.zip'
+        'https://github.com/ibi-group/datatools-ui/raw/dev/configurations/end-to-end/test-gtfs-to-fetch.zip'
       )
       await click('[data-test-id="feed-source-url-input-group"] button')
       await wait(2000, 'for feed source to update')

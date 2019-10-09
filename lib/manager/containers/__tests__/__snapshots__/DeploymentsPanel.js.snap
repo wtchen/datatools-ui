@@ -35,7 +35,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "customBuildConfig": null,
             "customRouterConfig": null,
             "dateCreated": 1553292345720,
+            "deployJobSummaries": Array [],
             "deployedTo": null,
+            "ec2Instances": Array [],
             "feedSourceId": null,
             "feedVersions": Array [
               Object {
@@ -109,16 +111,25 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                 "version": 1,
               },
             ],
-            "id": "mock-deployment-id",
+            "id": "mock-deployment-id-0",
             "invalidFeedSources": Array [],
             "lastDeployed": null,
             "lastUpdated": 1553292345726,
+            "latest": null,
             "name": "mock-deployment",
             "organizationId": null,
             "osmFileId": null,
             "otpCommit": null,
+            "otpVersion": null,
             "project": [Circular],
-            "projectBounds": null,
+            "projectBounds": Object {
+              "east": 0,
+              "north": 0,
+              "south": 0,
+              "west": 0,
+            },
+            "r5": false,
+            "r5Version": null,
             "routerId": null,
             "user": null,
           },
@@ -126,19 +137,30 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "customBuildConfig": null,
             "customRouterConfig": null,
             "dateCreated": 1553292345720,
+            "deployJobSummaries": Array [],
             "deployedTo": null,
+            "ec2Instances": Array [],
             "feedSourceId": null,
             "feedVersions": Array [],
-            "id": "mock-deployment-id",
+            "id": "mock-deployment-id-1",
             "invalidFeedSources": Array [],
             "lastDeployed": null,
             "lastUpdated": 1553292345726,
+            "latest": null,
             "name": "mock-deployment",
             "organizationId": null,
             "osmFileId": null,
             "otpCommit": null,
+            "otpVersion": null,
             "project": [Circular],
-            "projectBounds": null,
+            "projectBounds": Object {
+              "east": 0,
+              "north": 0,
+              "south": 0,
+              "west": 0,
+            },
+            "r5": false,
+            "r5Version": null,
             "routerId": null,
             "user": null,
           },
@@ -192,7 +214,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
         "name": "mock-project-with-deployments",
         "organizationId": null,
         "otpServers": Array [],
-        "pinnedDeploymentId": "mock-deployment-id",
+        "pinnedDeploymentId": "mock-deployment-id-0",
         "routerConfig": Object {
           "carDropoffTime": null,
           "numItineraries": null,
@@ -232,7 +254,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "customBuildConfig": null,
               "customRouterConfig": null,
               "dateCreated": 1553292345720,
+              "deployJobSummaries": Array [],
               "deployedTo": null,
+              "ec2Instances": Array [],
               "feedSourceId": null,
               "feedVersions": Array [
                 Object {
@@ -306,16 +330,25 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                   "version": 1,
                 },
               ],
-              "id": "mock-deployment-id",
+              "id": "mock-deployment-id-0",
               "invalidFeedSources": Array [],
               "lastDeployed": null,
               "lastUpdated": 1553292345726,
+              "latest": null,
               "name": "mock-deployment",
               "organizationId": null,
               "osmFileId": null,
               "otpCommit": null,
+              "otpVersion": null,
               "project": [Circular],
-              "projectBounds": null,
+              "projectBounds": Object {
+                "east": 0,
+                "north": 0,
+                "south": 0,
+                "west": 0,
+              },
+              "r5": false,
+              "r5Version": null,
               "routerId": null,
               "user": null,
             },
@@ -323,19 +356,30 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "customBuildConfig": null,
               "customRouterConfig": null,
               "dateCreated": 1553292345720,
+              "deployJobSummaries": Array [],
               "deployedTo": null,
+              "ec2Instances": Array [],
               "feedSourceId": null,
               "feedVersions": Array [],
-              "id": "mock-deployment-id",
+              "id": "mock-deployment-id-1",
               "invalidFeedSources": Array [],
               "lastDeployed": null,
               "lastUpdated": 1553292345726,
+              "latest": null,
               "name": "mock-deployment",
               "organizationId": null,
               "osmFileId": null,
               "otpCommit": null,
+              "otpVersion": null,
               "project": [Circular],
-              "projectBounds": null,
+              "projectBounds": Object {
+                "east": 0,
+                "north": 0,
+                "south": 0,
+                "west": 0,
+              },
+              "r5": false,
+              "r5Version": null,
               "routerId": null,
               "user": null,
             },
@@ -389,7 +433,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
           "name": "mock-project-with-deployments",
           "organizationId": null,
           "otpServers": Array [],
-          "pinnedDeploymentId": "mock-deployment-id",
+          "pinnedDeploymentId": "mock-deployment-id-0",
           "routerConfig": Object {
             "carDropoffTime": null,
             "numItineraries": null,
@@ -496,7 +540,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "customBuildConfig": null,
                         "customRouterConfig": null,
                         "dateCreated": 1553292345720,
+                        "deployJobSummaries": Array [],
                         "deployedTo": null,
+                        "ec2Instances": Array [],
                         "feedSourceId": null,
                         "feedVersions": Array [
                           Object {
@@ -570,16 +616,25 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             "version": 1,
                           },
                         ],
-                        "id": "mock-deployment-id",
+                        "id": "mock-deployment-id-0",
                         "invalidFeedSources": Array [],
                         "lastDeployed": null,
                         "lastUpdated": 1553292345726,
+                        "latest": null,
                         "name": "mock-deployment",
                         "organizationId": null,
                         "osmFileId": null,
                         "otpCommit": null,
+                        "otpVersion": null,
                         "project": [Circular],
-                        "projectBounds": null,
+                        "projectBounds": Object {
+                          "east": 0,
+                          "north": 0,
+                          "south": 0,
+                          "west": 0,
+                        },
+                        "r5": false,
+                        "r5Version": null,
                         "routerId": null,
                         "user": null,
                       },
@@ -587,19 +642,30 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "customBuildConfig": null,
                         "customRouterConfig": null,
                         "dateCreated": 1553292345720,
+                        "deployJobSummaries": Array [],
                         "deployedTo": null,
+                        "ec2Instances": Array [],
                         "feedSourceId": null,
                         "feedVersions": Array [],
-                        "id": "mock-deployment-id",
+                        "id": "mock-deployment-id-1",
                         "invalidFeedSources": Array [],
                         "lastDeployed": null,
                         "lastUpdated": 1553292345726,
+                        "latest": null,
                         "name": "mock-deployment",
                         "organizationId": null,
                         "osmFileId": null,
                         "otpCommit": null,
+                        "otpVersion": null,
                         "project": [Circular],
-                        "projectBounds": null,
+                        "projectBounds": Object {
+                          "east": 0,
+                          "north": 0,
+                          "south": 0,
+                          "west": 0,
+                        },
+                        "r5": false,
+                        "r5Version": null,
                         "routerId": null,
                         "user": null,
                       },
@@ -653,7 +719,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     "name": "mock-project-with-deployments",
                     "organizationId": null,
                     "otpServers": Array [],
-                    "pinnedDeploymentId": "mock-deployment-id",
+                    "pinnedDeploymentId": "mock-deployment-id-0",
                     "routerConfig": Object {
                       "carDropoffTime": null,
                       "numItineraries": null,
@@ -838,7 +904,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "customBuildConfig": null,
                                 "customRouterConfig": null,
                                 "dateCreated": 1553292345720,
+                                "deployJobSummaries": Array [],
                                 "deployedTo": null,
+                                "ec2Instances": Array [],
                                 "feedSourceId": null,
                                 "feedVersions": Array [
                                   Object {
@@ -912,14 +980,16 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "version": 1,
                                   },
                                 ],
-                                "id": "mock-deployment-id",
+                                "id": "mock-deployment-id-0",
                                 "invalidFeedSources": Array [],
                                 "lastDeployed": null,
                                 "lastUpdated": 1553292345726,
+                                "latest": null,
                                 "name": "mock-deployment",
                                 "organizationId": null,
                                 "osmFileId": null,
                                 "otpCommit": null,
+                                "otpVersion": null,
                                 "project": Object {
                                   "autoFetchFeeds": true,
                                   "autoFetchHour": 0,
@@ -939,19 +1009,30 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "customBuildConfig": null,
                                       "customRouterConfig": null,
                                       "dateCreated": 1553292345720,
+                                      "deployJobSummaries": Array [],
                                       "deployedTo": null,
+                                      "ec2Instances": Array [],
                                       "feedSourceId": null,
                                       "feedVersions": Array [],
-                                      "id": "mock-deployment-id",
+                                      "id": "mock-deployment-id-1",
                                       "invalidFeedSources": Array [],
                                       "lastDeployed": null,
                                       "lastUpdated": 1553292345726,
+                                      "latest": null,
                                       "name": "mock-deployment",
                                       "organizationId": null,
                                       "osmFileId": null,
                                       "otpCommit": null,
+                                      "otpVersion": null,
                                       "project": [Circular],
-                                      "projectBounds": null,
+                                      "projectBounds": Object {
+                                        "east": 0,
+                                        "north": 0,
+                                        "south": 0,
+                                        "west": 0,
+                                      },
+                                      "r5": false,
+                                      "r5Version": null,
                                       "routerId": null,
                                       "user": null,
                                     },
@@ -1005,7 +1086,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "name": "mock-project-with-deployments",
                                   "organizationId": null,
                                   "otpServers": Array [],
-                                  "pinnedDeploymentId": "mock-deployment-id",
+                                  "pinnedDeploymentId": "mock-deployment-id-0",
                                   "routerConfig": Object {
                                     "carDropoffTime": null,
                                     "numItineraries": null,
@@ -1017,14 +1098,21 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "useCustomOsmBounds": false,
                                   "user": null,
                                 },
-                                "projectBounds": null,
+                                "projectBounds": Object {
+                                  "east": 0,
+                                  "north": 0,
+                                  "south": 0,
+                                  "west": 0,
+                                },
+                                "r5": false,
+                                "r5Version": null,
                                 "routerId": null,
                                 "user": null,
                               }
                             }
                             fetchProjectDeployments={[Function]}
                             fetchProjectFeeds={[Function]}
-                            key="mock-deployment-id"
+                            key="mock-deployment-id-0"
                             project={
                               Object {
                                 "autoFetchFeeds": true,
@@ -1044,7 +1132,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "customBuildConfig": null,
                                     "customRouterConfig": null,
                                     "dateCreated": 1553292345720,
+                                    "deployJobSummaries": Array [],
                                     "deployedTo": null,
+                                    "ec2Instances": Array [],
                                     "feedSourceId": null,
                                     "feedVersions": Array [
                                       Object {
@@ -1118,16 +1208,25 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                         "version": 1,
                                       },
                                     ],
-                                    "id": "mock-deployment-id",
+                                    "id": "mock-deployment-id-0",
                                     "invalidFeedSources": Array [],
                                     "lastDeployed": null,
                                     "lastUpdated": 1553292345726,
+                                    "latest": null,
                                     "name": "mock-deployment",
                                     "organizationId": null,
                                     "osmFileId": null,
                                     "otpCommit": null,
+                                    "otpVersion": null,
                                     "project": [Circular],
-                                    "projectBounds": null,
+                                    "projectBounds": Object {
+                                      "east": 0,
+                                      "north": 0,
+                                      "south": 0,
+                                      "west": 0,
+                                    },
+                                    "r5": false,
+                                    "r5Version": null,
                                     "routerId": null,
                                     "user": null,
                                   },
@@ -1135,19 +1234,30 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "customBuildConfig": null,
                                     "customRouterConfig": null,
                                     "dateCreated": 1553292345720,
+                                    "deployJobSummaries": Array [],
                                     "deployedTo": null,
+                                    "ec2Instances": Array [],
                                     "feedSourceId": null,
                                     "feedVersions": Array [],
-                                    "id": "mock-deployment-id",
+                                    "id": "mock-deployment-id-1",
                                     "invalidFeedSources": Array [],
                                     "lastDeployed": null,
                                     "lastUpdated": 1553292345726,
+                                    "latest": null,
                                     "name": "mock-deployment",
                                     "organizationId": null,
                                     "osmFileId": null,
                                     "otpCommit": null,
+                                    "otpVersion": null,
                                     "project": [Circular],
-                                    "projectBounds": null,
+                                    "projectBounds": Object {
+                                      "east": 0,
+                                      "north": 0,
+                                      "south": 0,
+                                      "west": 0,
+                                    },
+                                    "r5": false,
+                                    "r5Version": null,
                                     "routerId": null,
                                     "user": null,
                                   },
@@ -1201,7 +1311,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "name": "mock-project-with-deployments",
                                 "organizationId": null,
                                 "otpServers": Array [],
-                                "pinnedDeploymentId": "mock-deployment-id",
+                                "pinnedDeploymentId": "mock-deployment-id-0",
                                 "routerConfig": Object {
                                   "carDropoffTime": null,
                                   "numItineraries": null,
@@ -1224,7 +1334,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               <td>
                                 <EditableTextField
                                   isEditing={false}
-                                  link="/project/mock-project-with-deployments-id/deployments/mock-deployment-id"
+                                  link="/project/mock-project-with-deployments-id/deployments/mock-deployment-id-0"
                                   onChange={[Function]}
                                   rejectEmptyValue={true}
                                   style={Object {}}
@@ -1241,7 +1351,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                         <Link
                                           onlyActiveOnIndex={false}
                                           style={Object {}}
-                                          to="/project/mock-project-with-deployments-id/deployments/mock-deployment-id"
+                                          to="/project/mock-project-with-deployments-id/deployments/mock-deployment-id-0"
                                         >
                                           <a
                                             onClick={[Function]}
@@ -1282,7 +1392,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               </td>
                               <td>
                                 <span
-                                  title="Mar 22nd 2019, 3:03pm"
+                                  title="Mar 22nd 2019, 3:05pm"
                                 >
                                    
                                   2 months ago
@@ -1336,6 +1446,600 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     >
                                       <button
                                         className="btn btn-xs btn-info"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <Glyphicon
+                                          bsClass="glyphicon"
+                                          glyph="pushpin"
+                                        >
+                                          <span
+                                            className="glyphicon glyphicon-pushpin"
+                                          />
+                                        </Glyphicon>
+                                      </button>
+                                    </Button>
+                                    <Button
+                                      active={false}
+                                      block={false}
+                                      bsClass="btn"
+                                      bsSize="xsmall"
+                                      bsStyle="danger"
+                                      disabled={false}
+                                      onClick={[Function]}
+                                    >
+                                      <button
+                                        className="btn btn-xs btn-danger"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                        type="button"
+                                      >
+                                        <Glyphicon
+                                          bsClass="glyphicon"
+                                          glyph="remove"
+                                        >
+                                          <span
+                                            className="glyphicon glyphicon-remove"
+                                          />
+                                        </Glyphicon>
+                                      </button>
+                                    </Button>
+                                  </div>
+                                </ButtonGroup>
+                              </td>
+                            </tr>
+                          </DeploymentListItem>
+                          <DeploymentListItem
+                            createDeployment={[Function]}
+                            deleteDeployment={[Function]}
+                            deployment={
+                              Object {
+                                "customBuildConfig": null,
+                                "customRouterConfig": null,
+                                "dateCreated": 1553292345720,
+                                "deployJobSummaries": Array [],
+                                "deployedTo": null,
+                                "ec2Instances": Array [],
+                                "feedSourceId": null,
+                                "feedVersions": Array [],
+                                "id": "mock-deployment-id-1",
+                                "invalidFeedSources": Array [],
+                                "lastDeployed": null,
+                                "lastUpdated": 1553292345726,
+                                "latest": null,
+                                "name": "mock-deployment",
+                                "organizationId": null,
+                                "osmFileId": null,
+                                "otpCommit": null,
+                                "otpVersion": null,
+                                "project": Object {
+                                  "autoFetchFeeds": true,
+                                  "autoFetchHour": 0,
+                                  "autoFetchMinute": 0,
+                                  "bounds": null,
+                                  "buildConfig": Object {
+                                    "fares": null,
+                                    "fetchElevationUS": null,
+                                    "stationTransfers": null,
+                                    "subwayAccessTime": null,
+                                  },
+                                  "dateCreated": 1526305321824,
+                                  "defaultTimeZone": null,
+                                  "deployments": Array [
+                                    Object {
+                                      "customBuildConfig": null,
+                                      "customRouterConfig": null,
+                                      "dateCreated": 1553292345720,
+                                      "deployJobSummaries": Array [],
+                                      "deployedTo": null,
+                                      "ec2Instances": Array [],
+                                      "feedSourceId": null,
+                                      "feedVersions": Array [
+                                        Object {
+                                          "feedSource": Object {
+                                            "dateCreated": 1536195264564,
+                                            "deployable": false,
+                                            "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                            "externalProperties": Object {},
+                                            "id": "mock-feed-with-version-id",
+                                            "isPublic": false,
+                                            "lastFetched": 1543389038810,
+                                            "lastUpdated": 1543389038810,
+                                            "latestValidation": Object {
+                                              "agencies": null,
+                                              "agencyCount": 1,
+                                              "avgDailyRevenueTime": 0,
+                                              "bounds": Object {
+                                                "east": -76.481211,
+                                                "north": 39.0486949672717,
+                                                "south": 38.92884,
+                                                "west": -76.5673055566884,
+                                              },
+                                              "endDate": "20190801",
+                                              "errorCount": 78,
+                                              "feedVersionId": "mock-feed-version-id",
+                                              "loadFailureReason": null,
+                                              "loadStatus": "SUCCESS",
+                                              "routeCount": 10,
+                                              "startDate": "20180801",
+                                              "stopCount": 237,
+                                              "stopTimesCount": 11170,
+                                              "tripCount": 415,
+                                            },
+                                            "latestVersionId": "mock-feed-version-id",
+                                            "name": "test feed with a version",
+                                            "noteCount": 0,
+                                            "organizationId": null,
+                                            "projectId": "mock-project-id",
+                                            "publishedVersionId": null,
+                                            "retrievalMethod": "MANUALLY_UPLOADED",
+                                            "s3Url": null,
+                                            "snapshotVersion": null,
+                                            "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                            "user": null,
+                                          },
+                                          "id": "mock-feed-version-id",
+                                          "nextVersionId": null,
+                                          "previousVersionId": null,
+                                          "updated": 1543389038810,
+                                          "validationResult": Object {
+                                            "agencies": null,
+                                            "agencyCount": 1,
+                                            "avgDailyRevenueTime": 0,
+                                            "bounds": Object {
+                                              "east": -76.481211,
+                                              "north": 39.0486949672717,
+                                              "south": 38.92884,
+                                              "west": -76.5673055566884,
+                                            },
+                                            "endDate": "20190801",
+                                            "errorCount": 78,
+                                            "feedVersionId": "mock-feed-version-id",
+                                            "loadFailureReason": null,
+                                            "loadStatus": "SUCCESS",
+                                            "routeCount": 10,
+                                            "startDate": "20180801",
+                                            "stopCount": 237,
+                                            "stopTimesCount": 11170,
+                                            "tripCount": 415,
+                                          },
+                                          "version": 1,
+                                        },
+                                      ],
+                                      "id": "mock-deployment-id-0",
+                                      "invalidFeedSources": Array [],
+                                      "lastDeployed": null,
+                                      "lastUpdated": 1553292345726,
+                                      "latest": null,
+                                      "name": "mock-deployment",
+                                      "organizationId": null,
+                                      "osmFileId": null,
+                                      "otpCommit": null,
+                                      "otpVersion": null,
+                                      "project": [Circular],
+                                      "projectBounds": Object {
+                                        "east": 0,
+                                        "north": 0,
+                                        "south": 0,
+                                        "west": 0,
+                                      },
+                                      "r5": false,
+                                      "r5Version": null,
+                                      "routerId": null,
+                                      "user": null,
+                                    },
+                                    [Circular],
+                                  ],
+                                  "feedSources": Array [
+                                    Object {
+                                      "dateCreated": 1536195264564,
+                                      "deployable": false,
+                                      "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                      "externalProperties": Object {},
+                                      "id": "mock-feed-with-version-id",
+                                      "isPublic": false,
+                                      "lastFetched": 1543389038810,
+                                      "lastUpdated": 1543389038810,
+                                      "latestValidation": Object {
+                                        "agencies": null,
+                                        "agencyCount": 1,
+                                        "avgDailyRevenueTime": 0,
+                                        "bounds": Object {
+                                          "east": -76.481211,
+                                          "north": 39.0486949672717,
+                                          "south": 38.92884,
+                                          "west": -76.5673055566884,
+                                        },
+                                        "endDate": "20190801",
+                                        "errorCount": 78,
+                                        "feedVersionId": "mock-feed-version-id",
+                                        "loadFailureReason": null,
+                                        "loadStatus": "SUCCESS",
+                                        "routeCount": 10,
+                                        "startDate": "20180801",
+                                        "stopCount": 237,
+                                        "stopTimesCount": 11170,
+                                        "tripCount": 415,
+                                      },
+                                      "latestVersionId": "mock-feed-version-id",
+                                      "name": "test feed with a version",
+                                      "noteCount": 0,
+                                      "organizationId": null,
+                                      "projectId": "mock-project-id",
+                                      "publishedVersionId": null,
+                                      "retrievalMethod": "MANUALLY_UPLOADED",
+                                      "s3Url": null,
+                                      "snapshotVersion": null,
+                                      "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                      "user": null,
+                                    },
+                                  ],
+                                  "id": "mock-project-with-deployments-id",
+                                  "lastUpdated": 1553236399556,
+                                  "name": "mock-project-with-deployments",
+                                  "organizationId": null,
+                                  "otpServers": Array [],
+                                  "pinnedDeploymentId": "mock-deployment-id-0",
+                                  "routerConfig": Object {
+                                    "carDropoffTime": null,
+                                    "numItineraries": null,
+                                    "requestLogFile": null,
+                                    "stairsReluctance": null,
+                                    "updaters": null,
+                                    "walkSpeed": null,
+                                  },
+                                  "useCustomOsmBounds": false,
+                                  "user": null,
+                                },
+                                "projectBounds": Object {
+                                  "east": 0,
+                                  "north": 0,
+                                  "south": 0,
+                                  "west": 0,
+                                },
+                                "r5": false,
+                                "r5Version": null,
+                                "routerId": null,
+                                "user": null,
+                              }
+                            }
+                            fetchProjectDeployments={[Function]}
+                            fetchProjectFeeds={[Function]}
+                            key="mock-deployment-id-1"
+                            project={
+                              Object {
+                                "autoFetchFeeds": true,
+                                "autoFetchHour": 0,
+                                "autoFetchMinute": 0,
+                                "bounds": null,
+                                "buildConfig": Object {
+                                  "fares": null,
+                                  "fetchElevationUS": null,
+                                  "stationTransfers": null,
+                                  "subwayAccessTime": null,
+                                },
+                                "dateCreated": 1526305321824,
+                                "defaultTimeZone": null,
+                                "deployments": Array [
+                                  Object {
+                                    "customBuildConfig": null,
+                                    "customRouterConfig": null,
+                                    "dateCreated": 1553292345720,
+                                    "deployJobSummaries": Array [],
+                                    "deployedTo": null,
+                                    "ec2Instances": Array [],
+                                    "feedSourceId": null,
+                                    "feedVersions": Array [
+                                      Object {
+                                        "feedSource": Object {
+                                          "dateCreated": 1536195264564,
+                                          "deployable": false,
+                                          "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                          "externalProperties": Object {},
+                                          "id": "mock-feed-with-version-id",
+                                          "isPublic": false,
+                                          "lastFetched": 1543389038810,
+                                          "lastUpdated": 1543389038810,
+                                          "latestValidation": Object {
+                                            "agencies": null,
+                                            "agencyCount": 1,
+                                            "avgDailyRevenueTime": 0,
+                                            "bounds": Object {
+                                              "east": -76.481211,
+                                              "north": 39.0486949672717,
+                                              "south": 38.92884,
+                                              "west": -76.5673055566884,
+                                            },
+                                            "endDate": "20190801",
+                                            "errorCount": 78,
+                                            "feedVersionId": "mock-feed-version-id",
+                                            "loadFailureReason": null,
+                                            "loadStatus": "SUCCESS",
+                                            "routeCount": 10,
+                                            "startDate": "20180801",
+                                            "stopCount": 237,
+                                            "stopTimesCount": 11170,
+                                            "tripCount": 415,
+                                          },
+                                          "latestVersionId": "mock-feed-version-id",
+                                          "name": "test feed with a version",
+                                          "noteCount": 0,
+                                          "organizationId": null,
+                                          "projectId": "mock-project-id",
+                                          "publishedVersionId": null,
+                                          "retrievalMethod": "MANUALLY_UPLOADED",
+                                          "s3Url": null,
+                                          "snapshotVersion": null,
+                                          "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                          "user": null,
+                                        },
+                                        "id": "mock-feed-version-id",
+                                        "nextVersionId": null,
+                                        "previousVersionId": null,
+                                        "updated": 1543389038810,
+                                        "validationResult": Object {
+                                          "agencies": null,
+                                          "agencyCount": 1,
+                                          "avgDailyRevenueTime": 0,
+                                          "bounds": Object {
+                                            "east": -76.481211,
+                                            "north": 39.0486949672717,
+                                            "south": 38.92884,
+                                            "west": -76.5673055566884,
+                                          },
+                                          "endDate": "20190801",
+                                          "errorCount": 78,
+                                          "feedVersionId": "mock-feed-version-id",
+                                          "loadFailureReason": null,
+                                          "loadStatus": "SUCCESS",
+                                          "routeCount": 10,
+                                          "startDate": "20180801",
+                                          "stopCount": 237,
+                                          "stopTimesCount": 11170,
+                                          "tripCount": 415,
+                                        },
+                                        "version": 1,
+                                      },
+                                    ],
+                                    "id": "mock-deployment-id-0",
+                                    "invalidFeedSources": Array [],
+                                    "lastDeployed": null,
+                                    "lastUpdated": 1553292345726,
+                                    "latest": null,
+                                    "name": "mock-deployment",
+                                    "organizationId": null,
+                                    "osmFileId": null,
+                                    "otpCommit": null,
+                                    "otpVersion": null,
+                                    "project": [Circular],
+                                    "projectBounds": Object {
+                                      "east": 0,
+                                      "north": 0,
+                                      "south": 0,
+                                      "west": 0,
+                                    },
+                                    "r5": false,
+                                    "r5Version": null,
+                                    "routerId": null,
+                                    "user": null,
+                                  },
+                                  Object {
+                                    "customBuildConfig": null,
+                                    "customRouterConfig": null,
+                                    "dateCreated": 1553292345720,
+                                    "deployJobSummaries": Array [],
+                                    "deployedTo": null,
+                                    "ec2Instances": Array [],
+                                    "feedSourceId": null,
+                                    "feedVersions": Array [],
+                                    "id": "mock-deployment-id-1",
+                                    "invalidFeedSources": Array [],
+                                    "lastDeployed": null,
+                                    "lastUpdated": 1553292345726,
+                                    "latest": null,
+                                    "name": "mock-deployment",
+                                    "organizationId": null,
+                                    "osmFileId": null,
+                                    "otpCommit": null,
+                                    "otpVersion": null,
+                                    "project": [Circular],
+                                    "projectBounds": Object {
+                                      "east": 0,
+                                      "north": 0,
+                                      "south": 0,
+                                      "west": 0,
+                                    },
+                                    "r5": false,
+                                    "r5Version": null,
+                                    "routerId": null,
+                                    "user": null,
+                                  },
+                                ],
+                                "feedSources": Array [
+                                  Object {
+                                    "dateCreated": 1536195264564,
+                                    "deployable": false,
+                                    "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                    "externalProperties": Object {},
+                                    "id": "mock-feed-with-version-id",
+                                    "isPublic": false,
+                                    "lastFetched": 1543389038810,
+                                    "lastUpdated": 1543389038810,
+                                    "latestValidation": Object {
+                                      "agencies": null,
+                                      "agencyCount": 1,
+                                      "avgDailyRevenueTime": 0,
+                                      "bounds": Object {
+                                        "east": -76.481211,
+                                        "north": 39.0486949672717,
+                                        "south": 38.92884,
+                                        "west": -76.5673055566884,
+                                      },
+                                      "endDate": "20190801",
+                                      "errorCount": 78,
+                                      "feedVersionId": "mock-feed-version-id",
+                                      "loadFailureReason": null,
+                                      "loadStatus": "SUCCESS",
+                                      "routeCount": 10,
+                                      "startDate": "20180801",
+                                      "stopCount": 237,
+                                      "stopTimesCount": 11170,
+                                      "tripCount": 415,
+                                    },
+                                    "latestVersionId": "mock-feed-version-id",
+                                    "name": "test feed with a version",
+                                    "noteCount": 0,
+                                    "organizationId": null,
+                                    "projectId": "mock-project-id",
+                                    "publishedVersionId": null,
+                                    "retrievalMethod": "MANUALLY_UPLOADED",
+                                    "s3Url": null,
+                                    "snapshotVersion": null,
+                                    "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                    "user": null,
+                                  },
+                                ],
+                                "id": "mock-project-with-deployments-id",
+                                "lastUpdated": 1553236399556,
+                                "name": "mock-project-with-deployments",
+                                "organizationId": null,
+                                "otpServers": Array [],
+                                "pinnedDeploymentId": "mock-deployment-id-0",
+                                "routerConfig": Object {
+                                  "carDropoffTime": null,
+                                  "numItineraries": null,
+                                  "requestLogFile": null,
+                                  "stairsReluctance": null,
+                                  "updaters": null,
+                                  "walkSpeed": null,
+                                },
+                                "useCustomOsmBounds": false,
+                                "user": null,
+                              }
+                            }
+                            saveDeployment={[Function]}
+                            updateDeployment={[Function]}
+                            updateProject={[Function]}
+                          >
+                            <tr
+                              className=""
+                            >
+                              <td>
+                                <EditableTextField
+                                  isEditing={false}
+                                  link="/project/mock-project-with-deployments-id/deployments/mock-deployment-id-1"
+                                  onChange={[Function]}
+                                  rejectEmptyValue={true}
+                                  style={Object {}}
+                                  type="text"
+                                  value="mock-deployment"
+                                >
+                                  <div
+                                    style={Object {}}
+                                  >
+                                    <span>
+                                      <span
+                                        title="mock-deployment"
+                                      >
+                                        <Link
+                                          onlyActiveOnIndex={false}
+                                          style={Object {}}
+                                          to="/project/mock-project-with-deployments-id/deployments/mock-deployment-id-1"
+                                        >
+                                          <a
+                                            onClick={[Function]}
+                                            style={Object {}}
+                                          >
+                                            mock-deployment
+                                          </a>
+                                        </Link>
+                                      </span>
+                                      <Button
+                                        active={false}
+                                        block={false}
+                                        bsClass="btn"
+                                        bsStyle="link"
+                                        data-test-id="editable-text-field-edit-button"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                      >
+                                        <button
+                                          className="btn btn-link"
+                                          data-test-id="editable-text-field-edit-button"
+                                          disabled={false}
+                                          onClick={[Function]}
+                                          type="button"
+                                        >
+                                          <Icon
+                                            type="pencil"
+                                          >
+                                            <i
+                                              className="fa fa-pencil fa-fw "
+                                            />
+                                          </Icon>
+                                        </button>
+                                      </Button>
+                                    </span>
+                                  </div>
+                                </EditableTextField>
+                              </td>
+                              <td>
+                                <span
+                                  title="Mar 22nd 2019, 3:05pm"
+                                >
+                                   
+                                  2 months ago
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className="deployment-na"
+                                >
+                                  N/A
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className="deployment-na"
+                                >
+                                  N/A
+                                </span>
+                              </td>
+                              <td>
+                                <span>
+                                  0
+                                </span>
+                              </td>
+                              <td>
+                                <span
+                                  className="deployment-na"
+                                >
+                                  N/A
+                                </span>
+                              </td>
+                              <td>
+                                <ButtonGroup
+                                  block={false}
+                                  bsClass="btn-group"
+                                  className="pull-right"
+                                  justified={false}
+                                  vertical={false}
+                                >
+                                  <div
+                                    className="pull-right btn-group"
+                                  >
+                                    <Button
+                                      active={false}
+                                      block={false}
+                                      bsClass="btn"
+                                      bsSize="xsmall"
+                                      bsStyle="warning"
+                                      disabled={false}
+                                      onClick={[Function]}
+                                    >
+                                      <button
+                                        className="btn btn-xs btn-warning"
                                         disabled={false}
                                         onClick={[Function]}
                                         type="button"
@@ -1438,13 +2142,13 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         active={false}
                         block={true}
                         bsClass="btn"
-                        bsStyle="primary"
+                        bsStyle="default"
                         disabled={false}
                         onClick={[Function]}
                       >
                         <button
                           action="push"
-                          className="btn btn-primary btn-block"
+                          className="btn btn-default btn-block"
                           disabled={false}
                           onClick={[Function]}
                           type="button"
@@ -1457,6 +2161,39 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             />
                           </Icon>
                            Edit deployment settings
+                        </button>
+                      </Button>
+                    </LinkContainer>
+                    <LinkContainer
+                      action="push"
+                      key=".2"
+                      onlyActiveOnIndex={false}
+                      to="/admin/servers"
+                    >
+                      <Button
+                        action="push"
+                        active={false}
+                        block={true}
+                        bsClass="btn"
+                        bsStyle="default"
+                        disabled={false}
+                        onClick={[Function]}
+                      >
+                        <button
+                          action="push"
+                          className="btn btn-default btn-block"
+                          disabled={false}
+                          onClick={[Function]}
+                          type="button"
+                        >
+                          <Icon
+                            type="server"
+                          >
+                            <i
+                              className="fa fa-server fa-fw "
+                            />
+                          </Icon>
+                           Manage deployment servers
                         </button>
                       </Button>
                     </LinkContainer>
