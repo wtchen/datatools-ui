@@ -53,4 +53,4 @@ sudo: false
 # Push results to codecov.io
 after_success:
   # only deploy the release to github as the package is not needed on npm
-  - semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github
+  - yarn run semantic-release
