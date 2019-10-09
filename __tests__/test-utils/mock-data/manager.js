@@ -6,7 +6,6 @@ import UserPermissions from '../../../lib/common/user/UserPermissions'
 import UserSubscriptions from '../../../lib/common/user/UserSubscriptions'
 
 import type {
-  Bounds,
   Deployment,
   FeedVersion,
   Project,
