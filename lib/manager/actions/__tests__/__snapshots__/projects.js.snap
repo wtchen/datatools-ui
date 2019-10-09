@@ -22,7 +22,9 @@ Object {
           "customBuildConfig": null,
           "customRouterConfig": null,
           "dateCreated": 1553292345720,
+          "deployJobSummaries": Array [],
           "deployedTo": null,
+          "ec2Instances": Array [],
           "feedSourceId": null,
           "feedVersions": Array [
             Object {
@@ -100,10 +102,12 @@ Object {
           "invalidFeedSources": Array [],
           "lastDeployed": null,
           "lastUpdated": 1553292345726,
+          "latest": null,
           "name": "mock-deployment",
           "organizationId": null,
           "osmFileId": null,
           "otpCommit": null,
+          "otpVersion": null,
           "project": Object {
             "autoFetchFeeds": true,
             "autoFetchHour": 0,
@@ -181,7 +185,14 @@ Object {
             "useCustomOsmBounds": false,
             "user": null,
           },
-          "projectBounds": null,
+          "projectBounds": Object {
+            "east": 0,
+            "north": 0,
+            "south": 0,
+            "west": 0,
+          },
+          "r5": false,
+          "r5Version": null,
           "routerId": null,
           "user": null,
         },

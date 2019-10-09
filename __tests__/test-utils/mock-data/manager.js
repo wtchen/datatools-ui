@@ -7,6 +7,7 @@ import UserSubscriptions from '../../../lib/common/user/UserSubscriptions'
 
 import type {
   Bounds,
+  Deployment,
   FeedVersion,
   Project,
   SummarizedFeedVersion
@@ -19,12 +20,14 @@ import type {
 export function makeMockDeployment (
   project: Project,
   feedVersions: Array<FeedVersion> = []
-) {
+): Deployment {
   return {
     customBuildConfig: null,
     customRouterConfig: null,
     dateCreated: 1553292345720,
     deployedTo: null,
+    deployJobSummaries: [],
+    ec2Instances: [],
     feedSourceId: null,
     // need to map FeedVersion to SummarizedFeedVersion
     feedVersions: (feedVersions.map(
@@ -44,14 +47,18 @@ export function makeMockDeployment (
     invalidFeedSources: [],
     lastDeployed: null,
     lastUpdated: 1553292345726,
+    latest: null,
     name: 'mock-deployment',
     organizationId: null,
     osmFileId: null,
     otpCommit: null,
+    otpVersion: null,
     project,
-    projectBounds: (null: ?Bounds), // not sure why this flow type annotation is needed (see https://git.io/fjJCm)
-    routerId: (null: ?string), // not sure why this flow type annotation is needed (see https://git.io/fjJCm)
-    user: (null: ?any) // not sure why this flow type annotation is needed (see https://git.io/fjJCm)
+    projectBounds: {east: 0, west: 0, north: 0, south: 0},
+    r5: false,
+    r5Version: null,
+    routerId: null,
+    user: null
   }
 }
 
