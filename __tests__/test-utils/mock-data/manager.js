@@ -12,6 +12,8 @@ import type {
   SummarizedFeedVersion
 } from '../../../lib/types'
 
+let COUNTER = 0
+
 /**
  * Make a mock deployment given a project and some FeedVersions. This is a
  * function so that circular references can be defined.
@@ -42,7 +44,8 @@ export function makeMockDeployment (
         }
       )
     ): Array<SummarizedFeedVersion>),
-    id: 'mock-deployment-id',
+    // Use counter in ID to avoid duplicate key warnings.
+    id: `mock-deployment-id-${COUNTER++}`,
     invalidFeedSources: [],
     lastDeployed: null,
     lastUpdated: 1553292345726,
@@ -335,9 +338,7 @@ export const mockDeployment = makeMockDeployment(
   mockProjectWithDeployment,
   [mockFeedVersion]
 )
-// $FlowFixMe this mock will have a deployments array
 mockProjectWithDeployment.deployments.push(mockDeployment)
-// $FlowFixMe this mock will have a feedSources array
 mockProjectWithDeployment.feedSources.push(mockFeedWithVersion)
 
 /***************************************************************************
