@@ -7,11 +7,13 @@ import fetch from 'isomorphic-fetch'
 import {safeLoad} from 'js-yaml'
 import md5File from 'md5-file/promise'
 import moment from 'moment'
-import {launch} from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
 
 import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
+
+// not imported because of weird flow error
+const puppeteer = require('puppeteer')
 
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
@@ -607,7 +609,7 @@ describe('end-to-end', () => {
       } else log.warn('OpenTripPlanner not accepting requests. Start it up for deployment tests!!')
     }
     log.info('Launching chromium for testing...')
-    browser = await launch(puppeteerOptions)
+    browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
 
     // setup listeners for various events that happen in the browser. In each of
