@@ -3,6 +3,11 @@
   name: feed_info.txt
   helpContent: The file contains information about the feed itself, rather than the services that the feed describes. GTFS currently has an agency.txt file to provide information about the agencies that operate the services described by the feed. However, the publisher of the feed is sometimes a different entity than any of the agencies (in the case of regional aggregators). In addition, there are some fields that are really feed-wide settings, rather than agency-wide.
   fields:
+  - name: "feed_id"
+    required: false
+    inputType: TEXT
+    columnWidth: 12
+    helpContent: "The feed_id field contains the feed_id which should uniquely identify the GTFS feed within trip planning applications and ideally be universally unique among public transit operators."
   - name: "feed_publisher_name"
     required: true
     inputType: TEXT

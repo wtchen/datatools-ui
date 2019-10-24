@@ -8,4 +8,4 @@ datatools-server offers a way to migrate application data (e.g., due to either b
 3. Download copy of application data to local json file `curl localhost:4000/dump > db_backup.json`.
 4. Change dump config setting back to `false`.
 5. (optional) If looking to reload into the existing server, delete the manager mapdb (`.db` and `.dbp`) files in `application:data:mapdb`
-6. Follow instructions in [`/scripts/load.py`](https://github.com/conveyal/datatools-ui/blob/master/scripts/load.py) to upload the json data to the new server.
+6. Follow instructions in [`/scripts/load.py`](https://github.com/ibi-group/datatools-ui/blob/master/scripts/load.py) to upload the json data to the new server.

@@ -41,6 +41,6 @@ From left to right, these functions are:
 
 ## GTFS tables/fields supported
 
-For a technical look at which fields are supported by the Editor, check out this [data file](https://github.com/conveyal/datatools-ui/blob/master/gtfs.yml) which contains a full listing of all of the supported tables and fields in the application.
+For a technical look at which fields are supported by the Editor, check out this [data file](https://github.com/ibi-group/datatools-ui/blob/master/gtfs.yml) which contains a full listing of all of the supported tables and fields in the application.
 
-Are there fields missing that you need? Feel free to contact us at <a href="mailto:contact@conveyal.com">contact@conveyal.com</a> to see how we might be able to help.
+Are there fields missing that you need? Feel free to contact us at <a href="mailto:transitrealtime@ibigroup.com">transitrealtime@ibigroup.com</a> to see how we might be able to help.

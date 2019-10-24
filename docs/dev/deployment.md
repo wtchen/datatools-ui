@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-The application consists of two repositories: a [Spark-powered Java backend](https://github.com/conveyal/datatools-server)
-and a [Javascript frontend written with React and Redux](https://github.com/conveyal/datatools-ui).
+The application consists of two repositories: a [Spark-powered Java backend](https://github.com/ibi-group/datatools-server)
+and a [Javascript frontend written with React and Redux](https://github.com/ibi-group/datatools-ui).
 To install and deploy the application, you will need Java 8, Maven, Node/npm,
 yarn, and [mastarm](https://github.com/conveyal/mastarm).
 
@@ -20,8 +20,8 @@ Two databases are required for the application:
 Clone the repo and change to the project directory:
 
 ```bash
-$ git clone https://github.com/conveyal/datatools-ui.git
-$ git clone https://github.com/conveyal/datatools-server.git
+$ git clone https://github.com/ibi-group/datatools-ui.git
+$ git clone https://github.com/ibi-group/datatools-server.git
 ```
 
 Copy the included configuration `env` templates for both the server and UI repos:

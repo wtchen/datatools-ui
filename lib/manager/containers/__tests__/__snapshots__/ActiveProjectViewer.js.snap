@@ -4432,13 +4432,13 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                   active={false}
                                                                   block={true}
                                                                   bsClass="btn"
-                                                                  bsStyle="primary"
+                                                                  bsStyle="default"
                                                                   disabled={false}
                                                                   onClick={[Function]}
                                                                 >
                                                                   <button
                                                                     action="push"
-                                                                    className="btn btn-primary btn-block"
+                                                                    className="btn btn-default btn-block"
                                                                     disabled={false}
                                                                     onClick={[Function]}
                                                                     type="button"
@@ -4451,6 +4451,39 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                       />
                                                                     </Icon>
                                                                      Edit deployment settings
+                                                                  </button>
+                                                                </Button>
+                                                              </LinkContainer>
+                                                              <LinkContainer
+                                                                action="push"
+                                                                key=".2"
+                                                                onlyActiveOnIndex={false}
+                                                                to="/admin/servers"
+                                                              >
+                                                                <Button
+                                                                  action="push"
+                                                                  active={false}
+                                                                  block={true}
+                                                                  bsClass="btn"
+                                                                  bsStyle="default"
+                                                                  disabled={false}
+                                                                  onClick={[Function]}
+                                                                >
+                                                                  <button
+                                                                    action="push"
+                                                                    className="btn btn-default btn-block"
+                                                                    disabled={false}
+                                                                    onClick={[Function]}
+                                                                    type="button"
+                                                                  >
+                                                                    <Icon
+                                                                      type="server"
+                                                                    >
+                                                                      <i
+                                                                        className="fa fa-server fa-fw "
+                                                                      />
+                                                                    </Icon>
+                                                                     Manage deployment servers
                                                                   </button>
                                                                 </Button>
                                                               </LinkContainer>
