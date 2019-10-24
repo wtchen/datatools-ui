@@ -2,8 +2,6 @@
 
 This document describes how to deploy OTP with a load balancer, using DataTools, prior to Pull Request #506.
 
-## Creating a Load Balancer, and copying properties to DataTools
-
 Steps:
 
 1. Create a load balancer in AWS.
@@ -16,6 +14,24 @@ Assumptions:
 3. A "key file name" exists.
 4. A Virtual Private Cloud (VPC) with two subnets exists on AWS.
 5. You are an admin for DataTools.
+
+## UI "Server": Buckets and CloudFront
+
+### Create an S3 bucket
+
+To be completed.
+
+### Create a CloudFront instance
+
+To be completed.
+
+### Create a CNAME for CloudFront
+
+To be completed.
+
+## Backend server: Create a load balancer, and copy properties to DataTools
+
+We recommend using an elastic load balancer (ELB) for deploying/upgrading an OTP server instance without interrupting the current one. In doing so, a new server is set up in the background, and when ready (preprocessing done), the new server is added to the load balancer, and the old server removed and destroyed.
 
 ### Create the load balancer in AWS
 
@@ -43,7 +59,14 @@ Assumptions:
 7. In DataTools **Target Group ARN (load balancer)**, enter the ARN value of the group selected above.
 8. Enter a valid value **Key File Name** (copy value from another deployment server).
 
+### Create a CNAME for the load balancer
 
+To be completed
 
+## CNAMES and other settings
+
+## Executing the deployment
+
+To be completed.
 
 
