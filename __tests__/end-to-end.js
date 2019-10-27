@@ -15,6 +15,11 @@ import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/util
 // not imported because of weird flow error
 const puppeteer = require('puppeteer')
 
+// if the ISOLATED_TEST is defined, only the specifed test (and any dependet
+// tests) will be ran and all others will be skipped.
+const ISOLATED_TEST = 'should update a project by adding an otp server'
+// const ISOLATED_TEST = null // null means run all tests
+
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
 const puppeteerOptions = {
@@ -75,6 +80,8 @@ const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
 
+const testDependencies = {}
+
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
     defaultDependentTests = [defaultDependentTests]
@@ -85,6 +92,16 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
     timeout?: number,
     dependentTests: Array<string> | string = []
   ) => {
+    // merge dependent tests
+    if (!(dependentTests instanceof Array)) {
+      dependentTests = [dependentTests]
+    }
+    dependentTests = [...defaultDependentTests, ...dependentTests]
+
+    // add to dependencies list
+    testDependencies[name] = dependentTests
+
+    // actual test
     test(name, async () => {
       log.info(`Begin test: "${name}"`)
       if (failingFast) {
@@ -93,17 +110,32 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
       }
 
       // first make sure all dependent tests have passed
-      if (!(dependentTests instanceof Array)) {
-        dependentTests = [dependentTests]
-      }
-      dependentTests = [...defaultDependentTests, ...dependentTests]
-
+      // $FlowFixMe, should be an array by now
       dependentTests.forEach(test => {
         if (!testResults[test]) {
           log.error(`Dependent test "${test}" has not completed yet`)
           throw new Error(`Dependent test "${test}" has not completed yet`)
         }
       })
+
+      // if the ISOLATED_TEST is set, only run a test if it is the isolated test
+      // or if it is a test that the isolated test depends on passing
+      if (ISOLATED_TEST) {
+        if (!testDependencies[ISOLATED_TEST]) {
+          throw new Error(`Isolated test not defined: "${ISOLATED_TEST}"`)
+        }
+
+        if (
+          !(
+            name === ISOLATED_TEST ||
+              testDependencies[ISOLATED_TEST].indexOf(name) > -1
+          )
+        ) {
+          testResults[name] = true
+          log.warn(`Skipping test ${name}`)
+          return
+        }
+      }
 
       // do actual test
       try {
@@ -510,6 +542,16 @@ async function click (selector: string) {
   await page.click(selector) // , {delay: 3})
 }
 
+async function elementClick (elementHandle: any, selector: string) {
+  log.info(`finding selector: ${selector} in element handle ${elementHandle}`)
+  const selectedElement = await elementHandle.$(selector)
+  if (!selectedElement) {
+    throw new Error(`Could't find "${selector}" within elementHandle ${elementHandle}`)
+  }
+  log.info(`clicking selector: ${selector} of element handle: ${elementHandle}`)
+  await selectedElement.click() // , {delay: 3})
+}
+
 async function waitForAndClick (selector: string, waitOptions?: any) {
   await waitForSelector(selector, waitOptions)
   await click(selector)
@@ -583,6 +625,16 @@ async function getAllElements (selector: string) {
 async function type (selector: string, text: string) {
   log.info(`typing text: "${text}" into selector: ${selector}`)
   await page.type(selector, text)
+}
+
+async function elementType (elementHandle: any, selector: string, text: string) {
+  log.info(`finding selector: ${selector} in element handle ${elementHandle}`)
+  const selectedElement = await elementHandle.$(selector)
+  if (!selectedElement) {
+    throw new Error(`Could't find "${selector}" within elementHandle ${elementHandle}`)
+  }
+  log.info(`typing text: "${text}" into selector: ${selector}`)
+  await selectedElement.type(text)
 }
 
 // ---------------------------------------------------------------------------
@@ -790,21 +842,39 @@ describe('end-to-end', () => {
 
     makeTestPostLogin('should update a project by adding an otp server', async () => {
       // navigate to server admin page
-      await goto(`http://localhost:9966/admin/servers`)
+      await goto(
+        `http://localhost:9966/admin/servers`,
+        {
+          waitUntil: 'networkidle0'
+        }
+      )
       const containerSelector = '.server-settings-panel'
       await waitForSelector(containerSelector)
       // add a server
-      const SERVER_NAME = 'test-otp-server'
+      const serverName = 'test-otp-server'
       await click('[data-test-id="add-server-button"]')
-      await waitForSelector('input[name="otpServers.$index.name"]')
-      await type('input[name="otpServers.$index.name"]', SERVER_NAME)
-      await type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
-      await type('input[name="otpServers.$index.internalUrl"]', 'http://localhost:8080/otp')
-      await click('[data-test-id="save-item-button"]')
+      await waitForSelector('[data-test-id="[Server name]"]')
+      const newServerPanel = await page.$('[data-test-id="[Server name]"]')
+      await elementType(
+        newServerPanel,
+        'input[name="otpServers.$index.name"]',
+        serverName
+      )
+      await elementType(
+        newServerPanel,
+        'input[name="otpServers.$index.publicUrl"]',
+        'http://localhost:8080'
+      )
+      await elementType(
+        newServerPanel,
+        'input[name="otpServers.$index.internalUrl"]',
+        'http://localhost:8080/otp'
+      )
+      await elementClick(newServerPanel, '[data-test-id="save-item-button"]')
 
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
-      await expectSelectorToContainHtml(containerSelector, SERVER_NAME)
+      await expectSelectorToContainHtml(containerSelector, serverName)
     }, defaultTestTimeout, 'should create a project')
 
     if (doNonEssentialSteps) {
