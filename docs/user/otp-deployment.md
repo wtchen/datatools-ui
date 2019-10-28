@@ -1,13 +1,13 @@
-# OTP Deployment using DataTools
+# Setting Up OTP Deployment Servers on Amazon Web Services (AWS)
 
-This document describes how to deploy OTP with a load balancer, using DataTools, prior to Pull Request #506.
+This document describes how to setup a load balancer server and an UI server for deployment using OTP DataTools, versions prior to Pull Request #506.
 
 Steps:
 
-1. Create a load balancer in AWS.
-2. Configure a load balancer in DataTools.
+1. Create the UI server (AWS S3 and CloudFront)
+2. Create the backend load balancer (AWS EC2).
 
-Assumptions:
+Assumptions for IBI-hosted deployments:
 
 1. You have access to an IBI Group Amazon Web Services (AWS) environment.
 2. Server instance types exist on AWS.
@@ -15,19 +15,33 @@ Assumptions:
 4. A Virtual Private Cloud (VPC) with two subnets exists on AWS.
 5. You are an admin for DataTools.
 
-## UI "Server": Buckets and CloudFront
+## UI "Server": S3 Buckets and CloudFront
 
 ### Create an S3 bucket
 
-To be completed.
+Select AWS Console > Storage > S3 > Create bucket. Each deployment has its own bucket.
+When specifying options, uncheck 'Block All Public Access'.
 
 ### Create a CloudFront instance
 
-To be completed.
+1. Select AWS Console > Networking & Content Delivery > CloudFront > Create Ditribution. 
+2. Select Web Distribution, then click Next.
+3. Under Origin Settings, select the S3 bucket DNS name you created above.
+4. Under Cache Behavior, select 'Redirect HTTP to HTTPS'.
+5. Under Distribution Settings, select Custom SSL certificate, and select the ibi-transit.com certificate.
+6. Under Distribution Settings, set the Default Root Object value to be index.html.
+7. (Optional) Enter a comment to make the distribution easy to search. Leave other parameters as is, and click Create Distribution.
+8. Open the properties of this CloudFront instance, and copy the Domain Name value (e.g. **abcdef0123456789.cloudfront.net**).
 
-### Create a CNAME for CloudFront
+### Create a CNAME (i.e. subdomain) for CloudFront
 
-To be completed.
+1. Select AWS Console > Networking & Content Delivery > Route 53 > Hosted Zones.
+2. Select ibi-transit.com.
+3. Select Create Record Set. Fill in the subdmain (e.g. **otp-mod-ui**.ibi-transit.com), and set the record type to **CNAME**.
+4. In the value field, paste the Domain Name value of the CloudFront instance above.
+5. Click Create.
+
+Once deployed, the OTP UI will be available at the URL configured in this section.
 
 ## Backend server: Create a load balancer, and copy properties to DataTools
 
@@ -45,6 +59,7 @@ We recommend using an elastic load balancer (ELB) for deploying/upgrading an OTP
 8. Do not register any targets. Click Finish to return to the Load Balancer view.
 9. Click on th row for your new load balancer.
 10. Under the Listeners tab, there should be two listeners. If not, add the HTTPS listener.
+11. Open the load balancer properties, and, under the Description tab, copy the load balancer's DNS name (e.g. **ibi-dev-otp-1234567890.us-east-1.elb.amazonaws.com**).
 
 ### Configure a load balancer in DataTools
 
@@ -58,15 +73,15 @@ We recommend using an elastic load balancer (ELB) for deploying/upgrading an OTP
 6. From the AWS Target Groups view (EC2 > Left Pane > Load Balancing > Target Groups), select the target group of the load balancer to use, and look at values under the Description tab.
 7. In DataTools **Target Group ARN (load balancer)**, enter the ARN value of the group selected above.
 8. Enter a valid value **Key File Name** (copy value from another deployment server).
+9. Proceed to save the deployment server.
 
-### Create a CNAME for the load balancer
+The new load balancer will appear in the list of deployment servers in the Data Tools project page.
 
-To be completed
+### Create a CNAME (i.e. subdomain) for the load balancer
 
-## CNAMES and other settings
-
-## Executing the deployment
-
-To be completed.
-
+1. Select AWS Console > Networking & Content Delivery > Route 53 > Hosted Zones.
+2. Select ibi-transit.com.
+3. Select Create Record Set. Fill in the name, and set the type to be a CNAME.
+4. In the value field, paste the DNS name of the load balancer instance above.
+5. Click Create.
 
