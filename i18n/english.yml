@@ -759,5 +759,8 @@ components:
     timestamp: File Timestamp
     version: version
   WatchButton:
+    emailVerificationConfirm: In order to receive email notification, you must first verify your email address. Would you like to resend the email verification message for your account?
     unwatch: Unwatch
+    verificationSendError: There was an error sending the email verification!
+    verificationSent: Please check your inbox and confirm your email address by clicking the verify link. You will then need to refresh this page after a moment or two and re-click the Watch button to subscribe to notifications.
     watch: Watch
