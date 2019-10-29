@@ -47,6 +47,8 @@ Once deployed, the OTP UI will be available at the URL configured in this sectio
 
 We recommend using an elastic load balancer (ELB) for deploying/upgrading an OTP server instance without interrupting the current one. In doing so, a new server is set up in the background, and when ready (preprocessing done), the new server is added to the load balancer, and the old server removed and destroyed.
 
+The load balancer also allows instantiating multiple OTP servers on large deployments. (You can start, add, or remove more than one OTP server to the load balancer.)  
+
 ### Create the load balancer in AWS
 
 1. Open the EC2 Dashboarad (AWS Home > Services > Compute > EC2, or from recents).
@@ -57,7 +59,7 @@ We recommend using an elastic load balancer (ELB) for deploying/upgrading an OTP
 6. Create a new security group, or use an existing one that supports HTTP, HTTPS, SSH. (Leave other params as is). Click Next.
 7. Create a new target group (pick a name). Click Next. 
 8. Do not register any targets. Click Finish to return to the Load Balancer view.
-9. Click on th row for your new load balancer.
+9. Click on the row corresponding to your new load balancer.
 10. Under the Listeners tab, there should be two listeners. If not, add the HTTPS listener.
 11. Open the load balancer properties, and, under the Description tab, copy the load balancer's DNS name (e.g. **ibi-dev-otp-1234567890.us-east-1.elb.amazonaws.com**).
 
