@@ -64,6 +64,15 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 10. Under the `Listeners` tab, there should be two listeners, one for HTTP and one for HTTPS. Add the HTTPS listener if it is not there.
 11. Open the load balancer properties, and, under the `Description` tab, copy the load balancer's `DNS name` (e.g. `ibi-dev-otp-1234567890.us-east-1.elb.amazonaws.com`).
 
+### Create a CNAME (i.e. subdomain) for the load balancer
+
+1. Select `AWS Console > Networking & Content Delivery > Route 53 > Hosted Zones`.
+2. Select `ibi-transit.com`.
+3. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-dev.ibi-transit.com`). Set the `Record Type` to `CNAME`.
+4. In the value field, paste the `DNS Name` of the load balancer instance above.
+5. Click `Create`.
+
+
 ### Configure a load balancer in Data Tools
 
 1. Login to `Data Tools > Home > Admin > Deployment Servers`, and add a new deployment server with the `Use ELB` option checked.
@@ -72,19 +81,12 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 * For `Subnet ID`, enter the first portion of the first AWS availability zone, e.g. if the zone value is `subnet-0123456789 - us-east-xx`, only enter `subnet-0123456789`. 
 * For `Security Group ID`, enter the security group of the AWS load balancer that supports HTTP, HTTPS, and SSH, e.g. `sg-0123456789abcdef`.
 4. From the `AWS IAM Dashboard > Roles`, pick a role to assign to the deployment servers. Open the role details in AWS.
-5. In Data Tools `IAM Instance Profile ARN`, enter the `Instance Profile ARN` value from the above details, e.g. `arn:aws:iam::0123456789:instance-profile/example-role`.
-6. From the AWS Target Groups view (`EC2 > Left Pane > Load Balancing > Target Groups`), select the target group of the load balancer to use, and look at values under the `Description` tab.
-7. In Data Tools `Target Group ARN (load balancer)`, enter the ARN value of the group selected above.
-8. Enter a valid `Key File Name` value, without the `.pem` extension (copy value from another deployment server).
-9. Proceed to save the deployment server.
+5. (optional) Select an instance type (defaults to `t2.medium`). For large deployments (e.g., large metro or statewide), you may need to scale up the instance type beyond the default. Information about instance type sizes and costs can be found at the helpful resource https://ec2instances.info or in the [AWS docs](https://aws.amazon.com/ec2/instance-types/). **Note:** Some instance types are not available in certain regions or for VPC setups. If there is a failure during the deployment process (either due to an AWS system error or an out of memory error related to the OTP graph build process), you should be notified and may need to adjust the instance type.
+6. In Data Tools `IAM Instance Profile ARN`, enter the `Instance Profile ARN` value from the above details, e.g. `arn:aws:iam::0123456789:instance-profile/example-role`.
+7. From the AWS Target Groups view (`EC2 > Left Pane > Load Balancing > Target Groups`), select the target group of the load balancer to use, and look at values under the `Description` tab.
+8. In Data Tools `Target Group ARN (load balancer)`, enter the ARN value of the group selected above.
+9. Enter a valid `Key File Name` value, without the `.pem` extension (copy value from another deployment server).
+10. Proceed to save the deployment server.
 
 The new load balancer will appear in the list of deployment servers in the Data Tools project page.
-
-### Create a CNAME (i.e. subdomain) for the load balancer
-
-1. Select `AWS Console > Networking & Content Delivery > Route 53 > Hosted Zones`.
-2. Select `ibi-transit.com`.
-3. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-dev.ibi-transit.com`). Set the `Record Type` to `CNAME`.
-4. In the value field, paste the `DNS Name` of the load balancer instance above.
-5. Click `Create`.
 
