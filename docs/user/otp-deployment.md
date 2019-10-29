@@ -77,7 +77,7 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 
 1. Login to `Data Tools > Home > Admin > Deployment Servers`, and add a new deployment server with the `Use ELB` option checked.
 2. From the `AWS Load Balancer` view, select the load balancer to use for deployment, and look at values under the `Description` tab.
-3. In Data Tools, enter the following values from above: 
+3. Fill the Data Tools server ELB-specific properties: 
 * For `Subnet ID`, enter the first portion of the first AWS availability zone, e.g. if the zone value is `subnet-0123456789 - us-east-xx`, only enter `subnet-0123456789`. 
 * For `Security Group ID`, enter the security group of the AWS load balancer that supports HTTP, HTTPS, and SSH, e.g. `sg-0123456789abcdef`.
 4. From the `AWS IAM Dashboard > Roles`, pick a role to assign to the deployment servers. Open the role details in AWS.
