@@ -6,23 +6,23 @@ Steps:
 
 1. Create the UI server (AWS S3 and CloudFront)
 2. Create the backend load balancer (AWS EC2).
+3. Configure the servers in Data Tools
 
 Assumptions for IBI-hosted deployments:
 
 1. You have access to an IBI Group Amazon Web Services (AWS) environment.
-2. Server instance types (e.g. `t2.medium`) exist on AWS.
-3. A "key file name" exists. This is the private key file used to connect to EC2 servers via ssh. It usually ends in `.pem`.
-4. A Virtual Private Cloud (VPC) with two subnets exists on AWS.
-5. You are an admin for Data Tools.
+2. A "key file name" exists. This is the private key file used to connect to EC2 servers via ssh. It usually ends in `.pem`.
+3. A Virtual Private Cloud (VPC) with two subnets exists on AWS.
+4. You are an admin for Data Tools.
 
-## UI "Server": S3 Buckets and CloudFront
+## UI Server: S3 Buckets and CloudFront
 
 The OTP user interface is delivered using a plain HTTP file server that does not perform any computations. The file server consists of one S3 bucket. For fast high-bandwidth file delivery, we mirror the S3 bucket using CloudFront.
 
 ### Create an S3 Bucket
 
-Select `AWS Console > Storage > S3 > Create Bucket`. Each deployment has its own bucket.
-When specifying options, uncheck `Block All Public Access`.
+Select `AWS Console > Storage > S3 > Create Bucket`. Each deployment uses its own bucket.
+Specify a name (write down the name for use in Data Tools later), and when specifying options, uncheck `Block All Public Access`.
 
 ### Create a CloudFront instance
 
@@ -72,12 +72,17 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 4. In the value field, paste the `DNS Name` of the load balancer instance above.
 5. Click `Create`.
 
+## Configure the S3 bucket and load balancer in Data Tools
 
-### Configure a load balancer in Data Tools
+1. Login to `DataTools > Home > Admin > Deployment Servers`, and add a new deployment server.
 
-1. Login to `Data Tools > Home > Admin > Deployment Servers`, and add a new deployment server with the `Use ELB` option checked.
+* Give the server a descriptive name.
+* The public URL, or the URL where the UI is accessible, is based on the CNAME you created for the CloudFront server (e.g., `https://otp-mod-ui.ibi-transit.com`).
+* The S3 bucket name is the one you specified in `Create an S3 bucket` above. (where Data Tools will share files with the OTP servers)
+* Check the ELB option.
+
 2. From the `AWS Load Balancer` view, select the load balancer to use for deployment, and look at values under the `Description` tab.
-3. Fill the Data Tools server ELB-specific properties: 
+3. Fill the ELB-specific properties in Data Tools: 
 * For `Subnet ID`, enter the first portion of the first AWS availability zone, e.g. if the zone value is `subnet-0123456789 - us-east-xx`, only enter `subnet-0123456789`. 
 * For `Security Group ID`, enter the security group of the AWS load balancer that supports HTTP, HTTPS, and SSH, e.g. `sg-0123456789abcdef`.
 4. From the `AWS IAM Dashboard > Roles`, pick a role to assign to the deployment servers. Open the role details in AWS.
