@@ -2,13 +2,13 @@
 
 This document describes how to:
 
-1. Create an OTP UI server (AWS S3 and CloudFront)
-2. Create an OTP backend load balancer (AWS EC2).
+1. [Create an OTP UI server (AWS S3 and CloudFront)](#ui-server-s3-bucket-and-cloudfront)
+2. [Create an OTP backend load balancer (AWS EC2)](#backend-server-load-balancer)
 
 Assumptions for IBI-hosted deployments:
 
 1. You have access to an IBI Group Amazon Web Services (AWS) environment.
-2. A Virtual Private Cloud (VPC) with two subnets exists on AWS.
+2. A Virtual Private Cloud (VPC) with two subnets exists in that AWS environment.
 
 ## UI Server: S3 Bucket and CloudFront
 
