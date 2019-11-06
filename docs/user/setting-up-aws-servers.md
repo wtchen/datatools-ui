@@ -38,6 +38,11 @@ Specify a name (write down the name for use in Data Tools later), and when speci
 4. In the value field, paste the `Domain Name` value of the CloudFront instance above.
 5. Click `Create`.
 
+### Upload files for OTP UI
+
+Upload the files [referenced here](https://github.com/ibi-group/trimet-mod-otp#to-build-a-production-bundle-for-deployment) to the S3 bucket created above.
+
+If updating the UI files, remember to invalidate the CloudFront instance (this forces an update of the files on CloudFront).
 
 ## Backend server: Load balancer
 

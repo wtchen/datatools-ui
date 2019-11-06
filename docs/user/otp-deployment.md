@@ -11,6 +11,4 @@ The figure below depicts the OTP deployment architecture.
 
 1. [Setting up OTP UI and backend servers on AWS](./setting-up-aws-servers.md)
 2. [Adding a deployment server from Data Tools](./add-deployment-server.md)
-3. TODO: Building and deploying binaries to the OTP backend server
-4. TODO: Building and deploying web contents to the OTP UI server
-3. Other steps to be added...
+3. [Deploying GTFS feeds to OTP](./deploying-feeds.md)
