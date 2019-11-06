@@ -26,3 +26,7 @@ pages:
     - Deployment: dev/deployment.md
     - Development: dev/development.md
     - Migration: dev/migration.md
+- OTP Deployment using Data Tools:
+    - Overview: user/otp-deployment.md
+    - Setting up AWS servers: user/setting-up-aws-servers.md
+    - Adding a deployment server: user/add-deployment-server.md
