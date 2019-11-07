@@ -38,3 +38,11 @@ From `Administration > Deployment servers`, click on `+ Add Server`.
 If there are EC2 instances running for the desired load balancer, you can click `Terminate EC2 Instances` before proceeding.
 
 Proceed to save the new deployment server (The `Save` button is at the top of the dialog). The new server will  appear in the list of available servers when deploying feeds.
+
+## For test deployments (from old notes)
+
+A flexible approach for test deployments is to create a stable EC2
+instance with a good amount of memory. Identify one or more `internalUrls`
+which is the URL where the OTP server is listening for a `buildGraphOverWire`
+request. (Note: the `publicUrl` should point to a user interface
+for the trip planner.)
