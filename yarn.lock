@@ -8257,10 +8257,10 @@ marked@^0.6.0:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.6.2.tgz#c574be8b545a8b48641456ca1dbe0e37b6dccc1a"
   integrity sha512-LqxwVH3P/rqKX4EKGz7+c2G9r98WeM/SW34ybhgNGhUQNKtf1GmmSkJ6cDGJ/t6tiyae49qRkpyTw2B9HOrgUA==
 
-mastarm@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/mastarm/-/mastarm-5.3.0.tgz#d518c59530154d895daf6196d92747e0ffc8394d"
-  integrity sha512-zi+LijozNztiOuBNI04tTzCdV2zvy2fNs7CNH5tVZCyj6SF+z7kIHS9yPjA1CVb19S0/X29jcJe1VN9CX71ZEg==
+mastarm@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/mastarm/-/mastarm-5.3.1.tgz#37511b77e9974e142719d00343a45ad6e51bfa47"
+  integrity sha512-SRVWXGT8x2Iwx/GiWeLZOfgh2JH/NsHo++CzV+gW3ZPv7cNglKjQjW1YvekdFQlba5OzGwSYTKfnS6C6x59XnA==
   dependencies:
     "@babel/core" "^7.3.4"
     "@babel/plugin-proposal-class-properties" "^7.3.4"
