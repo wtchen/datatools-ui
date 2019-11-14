@@ -604,13 +604,14 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                       }
                                     }
                                   >
-                                    <div
+                                    <button
                                       onClick={false}
                                       onMouseEnter={[Function]}
                                       onMouseLeave={[Function]}
                                       style={
                                         Object {
                                           "backgroundColor": "rgba(0,0,0,0)",
+                                          "border": "none",
                                           "borderLeft": "4px solid rgba(0,0,0,0)",
                                           "color": "#ccc",
                                           "cursor": "pointer",
@@ -656,7 +657,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                           }
                                         }
                                       />
-                                    </div>
+                                    </button>
                                   </a>
                                 </Link>
                               </SidebarNavItem>
@@ -674,13 +675,14 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                               loading={false}
                               onClick={[Function]}
                             >
-                              <div
+                              <button
                                 onClick={[Function]}
                                 onMouseEnter={[Function]}
                                 onMouseLeave={[Function]}
                                 style={
                                   Object {
                                     "backgroundColor": "rgba(0,0,0,0)",
+                                    "border": "none",
                                     "borderLeft": "4px solid rgba(0,0,0,0)",
                                     "color": "#ccc",
                                     "cursor": "pointer",
@@ -727,7 +729,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                     }
                                   }
                                 />
-                              </div>
+                              </button>
                             </SidebarNavItem>
                             <SidebarNavItem
                               expanded={true}
@@ -736,13 +738,14 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                               label="Account"
                               onClick={[Function]}
                             >
-                              <div
+                              <button
                                 onClick={[Function]}
                                 onMouseEnter={[Function]}
                                 onMouseLeave={[Function]}
                                 style={
                                   Object {
                                     "backgroundColor": "rgba(0,0,0,0)",
+                                    "border": "none",
                                     "borderLeft": "4px solid rgba(0,0,0,0)",
                                     "color": "#ccc",
                                     "cursor": "pointer",
@@ -788,7 +791,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                     }
                                   }
                                 />
-                              </div>
+                              </button>
                             </SidebarNavItem>
                             <SidebarNavItem
                               expanded={true}
@@ -797,13 +800,14 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                               label="Settings"
                               onClick={[Function]}
                             >
-                              <div
+                              <button
                                 onClick={[Function]}
                                 onMouseEnter={[Function]}
                                 onMouseLeave={[Function]}
                                 style={
                                   Object {
                                     "backgroundColor": "rgba(0,0,0,0)",
+                                    "border": "none",
                                     "borderLeft": "4px solid rgba(0,0,0,0)",
                                     "color": "#ccc",
                                     "cursor": "pointer",
@@ -849,7 +853,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                     }
                                   }
                                 />
-                              </div>
+                              </button>
                             </SidebarNavItem>
                           </div>
                         </div>
