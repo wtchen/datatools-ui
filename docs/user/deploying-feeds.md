@@ -2,8 +2,9 @@
 
 Assumptions:
 
-* [X] You have loaded a GTFS feed into a project.
-* [X] You have a deployment server available.
+* [X] You have [loaded a GTFS feed into a project](./managing-projects-feeds.md).
+* [X] You have a deployment server available [(example: AWS)](./add-deployment-server.md).
+* [X] [An osm-lib server has been set up](https://github.com/conveyal/osm-lib) for Data Tools to fetch Open Streets Map (OSM) data.
 
 ## Executing a deployment
 

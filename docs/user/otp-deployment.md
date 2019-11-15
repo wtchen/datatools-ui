@@ -1,5 +1,17 @@
 # OTP Deployment Guide
 
+In this guide:
+
+1. [Overview](#overview)
+2. [OTP Deployment Archtecture](#otp-deployment-architecture)
+3. [Performing an OTP Deployment](#performing-an-otp-deployment)
+
+## Overview
+
+This guide describes how to configure and deploy OTP servers using OTP Data Tools, and is for intermediate to advanced OTP Data Tools administrators. The deployment architecture diagram below depicts how OTP servers are managed by Data Tools and can be used with elastic load balancers, and how Amazon S3 servers are mirrored by CloudFront high-bandwidth content delivery.
+
+The steps to perform an OTP deployment describe how to set up and link OTP servers to load balancers, S3 servers to CloudFront, and Amazon Web Services to Data Tools. Administrators can also find how to configure optional subdomains (i.e. friendly, public URLs) for OTP servers.
+
 ## OTP Deployment Architecture
 
 The figure below depicts the OTP deployment architecture.
