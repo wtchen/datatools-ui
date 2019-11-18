@@ -12,7 +12,7 @@ This guide describes how to configure and deploy OTP servers using OTP Data Tool
 
 The deployment architecture diagram below depicts how OTP servers are managed by Data Tools and can be used with elastic load balancers. The user interface is deployed on Amazon S3 servers and optionally mirrored by CloudFront, a high-bandwidth content delivery mechanism. Data Tools prepares and sends the data bundle (set of GTFS feeds) and configuration properties to the OTP servers. OTP servers initialize and also fetch the Open Streets Map data using the osm-lib server.  Data Tools does not manage UI deployments at this time.
 
-The steps to perform an OTP deployment describe how to set up and link OTP servers to load balancers, S3 servers to CloudFront, and tie all these in Data Tools. Administrators can also find how to configure optional subdomains (i.e. public URLs) for OTP servers.
+The steps to perform an OTP deployment describe how to set up and link OTP servers to load balancers, S3 servers to CloudFront, and tie these various AWS resources in Data Tools. Administrators can also find how to configure optional subdomains (i.e. public URLs) for OTP servers.
 
 ## OTP Deployment Architecture
 
