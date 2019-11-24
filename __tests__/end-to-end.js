@@ -17,8 +17,8 @@ const puppeteer = require('puppeteer')
 
 // if the ISOLATED_TEST is defined, only the specifed test (and any dependet
 // tests) will be ran and all others will be skipped.
-const ISOLATED_TEST = 'should update a project by adding an otp server'
-// const ISOLATED_TEST = null // null means run all tests
+// const ISOLATED_TEST = 'should update a project by adding an otp server'
+const ISOLATED_TEST = null // null means run all tests
 
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
