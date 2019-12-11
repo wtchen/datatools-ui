@@ -7,8 +7,9 @@ This document describes how to:
 
 Assumptions for IBI-hosted deployments:
 
-1. You have access to an IBI Group Amazon Web Services (AWS) environment.
-2. A Virtual Private Cloud (VPC) with two subnets exists in that AWS environment.
+1. You are logged into an IBI Group AWS environment.
+2. You have selected a region (e.g. [US East (N. Virginia)](https://console.aws.amazon.com/console/home?region=us-east-1)).
+3. A Virtual Private Cloud (VPC) with two subnets exists in that AWS environment.
 
 ## UI Server: S3 Bucket and CloudFront
 
@@ -16,12 +17,13 @@ The OTP user interface is delivered using a plain HTTP file server that does not
 
 ### Create an S3 Bucket
 
-Select `AWS Console > Storage > S3 > Create Bucket`. Each deployment uses its own bucket.
-Specify a name (write down the name for use in Data Tools later), and when specifying options, uncheck `Block All Public Access`.
+1. From [AWS S3](https://console.aws.amazon.com/s3/home), click `Create Bucket`. Each deployment uses its own bucket.
+2. Specify a name (write down the name for use in Data Tools later).
+3. When specifying options, uncheck `Block All Public Access`.
 
 ### Create a CloudFront instance
 
-1. Select `AWS Console > Networking & Content Delivery > CloudFront > Create Distribution`.
+1. From [AWS CloudFront Home](https://console.aws.amazon.com/cloudfront/home), click `Create Distribution` [(direct link)](https://console.aws.amazon.com/cloudfront/home?#create-distribution:).
 2. Select `Web Distribution`, then click `Next`.
 3. Under `Origin Settings`, select the `DNS name` of the S3 bucket you created above.
 4. Under `Cache Behavior`, select `Redirect HTTP to HTTPS`.
@@ -32,11 +34,14 @@ Specify a name (write down the name for use in Data Tools later), and when speci
 
 ### Create a CNAME (i.e. subdomain) for CloudFront
 
-1. Select `AWS Console > Networking & Content Delivery > Route 53 > Hosted Zones`.
-2. Select `ibi-transit.com`.
-3. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-ui.ibi-transit.com`). The OTP UI will be available at this URL. Set the `Record Type` to `CNAME`.
-4. In the value field, paste the `Domain Name` value of the CloudFront instance above.
-5. Click `Create`.
+1. Go to the [AWS hosted zone for ibi-transit.com](https://console.aws.amazon.com/route53/home#resource-record-sets:Z37ATQUY9Y96RY).  
+   (It should be under [AWS Route 53](https://console.aws.amazon.com/route53/home), [Hosted Zones](https://console.aws.amazon.com/route53/home#hosted-zones:).)
+2. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-ui.ibi-transit.com`). The OTP UI will be available at this URL. Set the `Record Type` to `CNAME`.
+3. In the value field, paste the `Domain Name` value of the CloudFront instance above.
+4. Click `Create`.
+5. Return to [AWS CloudFront Home](https://console.aws.amazon.com/cloudfront/home).
+6. Edit the properties of the CloudFront instance you created:
+   * In `Alternate Domain Names (CNAMEs)`, paste the CNAME created above.
 
 ### Upload files for OTP UI
 
@@ -52,22 +57,21 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 
 ### Create the load balancer in AWS
 
-1. Open the EC2 Dashboard (`AWS Home > Services > Compute > EC2`, or from the AWS History pane).
-2. Open the Load Balancers view (`Resources > Load Balancers`, or from `Left Pane > Load Balancing > Load Balancers`).
-3. Click `Create Load Balancer`, then select `Application Load Balancer`.
-4. Enter a name, add a listener for HTTPS (443), pick a VPC with two subnets/availability zones available, and select two of the subnets. (Leave other params as is). Click `Next`.
-5. Choose a certificate in ACM, pick the IBI Group certificate. (Leave other params as is). Click `Next`.
-6. Create a new security group, or use an existing one that supports HTTP, HTTPS, SSH. (Leave other params as is). Click `Next`.
-7. Create a new target group (pick a name). Click `Next`.
-8. Do not register any targets. Click `Finish` to return to the `Load Balancer` view.
-9. Click on the row corresponding to your new load balancer.
-10. Under the `Listeners` tab, there should be two listeners, one for HTTP and one for HTTPS. Add the HTTPS listener if it is not there.
-11. Open the load balancer properties, and, under the `Description` tab, copy the load balancer's `DNS name` (e.g. `ibi-dev-otp-1234567890.us-east-1.elb.amazonaws.com`).
+1. Go to [Create Application Load Balancer](https://console.aws.amazon.com/ec2/home#V2CreateELBWizard:type=application:)  
+   (Under [AWS EC2 Load Balancers view](https://console.aws.amazon.com/ec2/home#LoadBalancers:), click `Create Load Balancer` then `Application Load Balancer`.)
+2. Enter a name, add a listener for HTTPS (443), pick a VPC with two subnets/availability zones available, and select two of the subnets. (Leave other params as is, the HTTP(80) listener should be there by default). Click `Next`.
+3. Choose a certificate in ACM, pick the IBI Group certificate. (Leave other params as is). Click `Next`.
+4. Create a new security group, or use an existing one that supports HTTP, HTTPS, SSH. (Leave other params as is). Click `Next`.
+5. Create a new target group (pick a name). Click `Next`.
+6.  Do not register any targets. Click `Finish`.
+7.  From the [Load Balancer view](https://console.aws.amazon.com/ec2/home?#LoadBalancers:), select the row corresponding to your new load balancer.
+8.  Under the `Listeners` tab, there should be two listeners, one for HTTP and one for HTTPS. Add the HTTPS listener if it is not there.
+9.  Open the load balancer properties, and, under the `Description` tab, copy the load balancer's `DNS name` (e.g. `ibi-dev-otp-1234567890.us-east-1.elb.amazonaws.com`).
 
 ### Create a CNAME (i.e. subdomain) for the load balancer
 
-1. Select `AWS Console > Networking & Content Delivery > Route 53 > Hosted Zones`.
-2. Select `ibi-transit.com`.
-3. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-dev.ibi-transit.com`). Set the `Record Type` to `CNAME`.
-4. In the value field, paste the `DNS Name` of the load balancer instance above.
-5. Click `Create`.
+1. Go to the [AWS hosted zone for ibi-transit.com](https://console.aws.amazon.com/route53/home#resource-record-sets:Z37ATQUY9Y96RY).\
+   (It should be under [AWS Route 53](https://console.aws.amazon.com/route53/home), [Hosted Zones](https://console.aws.amazon.com/route53/home#hosted-zones:).)
+2. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-dev.ibi-transit.com`). Set the `Record Type` to `CNAME`.
+3. In the value field, paste the `DNS Name` of the load balancer instance above.
+4. Click `Create`.
