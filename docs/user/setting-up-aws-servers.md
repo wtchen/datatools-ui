@@ -32,7 +32,7 @@ The OTP user interface is delivered using a plain HTTP file server that does not
 5. Under `Distribution Settings`, select `Custom SSL certificate`, and select the `*.ibi-transit.com` certificate.
 6. Under `Distribution Settings`, set the `Default Root Object` value to be `index.html`.
 7. (Optional) Enter a comment to make the distribution easy to search. Leave other parameters as is, and click `Create Distribution`.
-8.  Open the properties of this CloudFront instance, and copy the `Domain Name` value (e.g. `abcdef0123456789.cloudfront.net`).
+8. Open the properties of this CloudFront instance, and copy the `Domain Name` value (e.g. `abcdef0123456789.cloudfront.net`).
 
 ### Create a CNAME (i.e. subdomain) for CloudFront
 
