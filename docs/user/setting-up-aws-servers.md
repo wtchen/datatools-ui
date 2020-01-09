@@ -25,12 +25,14 @@ The OTP user interface is delivered using a plain HTTP file server that does not
 
 1. From [AWS CloudFront Home](https://console.aws.amazon.com/cloudfront/home), click `Create Distribution` [(direct link)](https://console.aws.amazon.com/cloudfront/home?#create-distribution:).
 2. Select `Web Distribution`, then click `Next`.
-3. Under `Origin Settings`, select the `DNS name` of the S3 bucket you created above.
-4. Under `Cache Behavior`, select `Redirect HTTP to HTTPS`.
+3. Under `Origin Settings > Origin Domain Name`, select the `DNS name` of the S3 bucket you created above.
+4. Under `Default Cache Behavior Settings`:
+   1. Select `Redirect HTTP to HTTPS`.
+   2. Select `Yes` to `Compress Objects Automatically` (this reduces download sizes by up to 60-70%).   
 5. Under `Distribution Settings`, select `Custom SSL certificate`, and select the `*.ibi-transit.com` certificate.
 6. Under `Distribution Settings`, set the `Default Root Object` value to be `index.html`.
 7. (Optional) Enter a comment to make the distribution easy to search. Leave other parameters as is, and click `Create Distribution`.
-8. Open the properties of this CloudFront instance, and copy the `Domain Name` value (e.g. `abcdef0123456789.cloudfront.net`).
+8.  Open the properties of this CloudFront instance, and copy the `Domain Name` value (e.g. `abcdef0123456789.cloudfront.net`).
 
 ### Create a CNAME (i.e. subdomain) for CloudFront
 
