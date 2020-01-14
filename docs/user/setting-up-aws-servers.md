@@ -4,6 +4,7 @@ This document describes how to:
 
 1. [Create an OTP UI server (AWS S3 and CloudFront)](#ui-server-s3-bucket-and-cloudfront)
 2. [Create an OTP backend load balancer (AWS EC2)](#backend-server-load-balancer)
+3. [Delegate access to Data Tools for resources in a third party AWS account via an IAM role](#delegate-third-party-account-access)
 
 Assumptions for IBI-hosted deployments:
 
@@ -75,3 +76,70 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 2. Select `Create Record Set`. Fill in the subdmain (e.g. `otp-mod-dev.ibi-transit.com`). Set the `Record Type` to `CNAME`.
 3. In the value field, paste the `DNS Name` of the load balancer instance above.
 4. Click `Create`.
+
+## Delegate Third Party Account Access
+For Data Tools to access AWS resources (e.g., S3 and EC2) in third party AWS accounts, additional setup is required. The steps provided in [this AWS tutorial](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html) detail the process to delegate access across AWS accounts. A more tailored, shorthand version of this process is provided below, but if more background information is needed about, please follow the tutorial link above.
+
+### Steps to Give Data Tools Access to Third Party Account
+1. Log into third party (i.e., other organization's) AWS account.
+2. Open the [Roles view](https://console.aws.amazon.com/iam/home#/roles) in the IAM dashboard and create a new role for `Another AWS Account` ([direct link](https://console.aws.amazon.com/iam/home#/roles$new?step=type&roleType=crossAccount)).
+3. Enter IBI Group account ID (or whichever account Data Tools is running in) and click `Next: Permissions`. Note: the additional security options (e.g., MFA) can be left unchecked.
+4. Select the appropriate permissions needed by Data Tools for OTP deployment ([see below](#sample-permissions-for-third-party-aws-role) for full sample JSON). These should include:
+ - read/write/list permissions to any S3 buckets needed,
+ - full permissions to EC2, and
+ - IAM permissions in order to read and pass IAM roles to EC2 instances.
+5. Finish creating the role.
+6. Log out of the third party account and into the IBI Group account.
+7. Find the role under which the Data Tools application is running and add the following permission to allow Data Tools to assume the new role (be sure to replace the full ARN with your new role ARN, including the third party account ID):
+
+        {
+          "Version": "2012-10-17",
+          "Statement": {
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::123456789012:role/your-role-name"
+          }
+        }
+8. You should be ready to deploy OTP servers in the third party AWS account!
+
+### Sample Permissions for Third Party AWS Role
+A sample JSON string with the permissions needed for the role created in the third party account is reproduced below. Note: this is also the base default permissions needed by any Data Tools instance application running on AWS.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListObjectsInBucket",
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::your-bucket"]
+    },
+    {
+      "Sid": "AllObjectActions",
+      "Effect": "Allow",
+      "Action": "s3:*Object",
+      "Resource": ["arn:aws:s3:::your-bucket/*"]
+    },
+    {
+      "Action": "ec2:*",
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:*",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:Get*",
+        "iam:List*",
+        "iam:PassRole"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```

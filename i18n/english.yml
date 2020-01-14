@@ -56,18 +56,6 @@ components:
       custom: Use Custom Extract Bounds
       gtfs: Use GTFS-Derived Extract Bounds
       title: OSM Extract
-    otpServers:
-      $index:
-        admin: Admin access only?
-        delete: Remove
-        internalUrl: Internal URLs
-        name: Name
-        namePlaceholder: Production
-        publicUrl: Public URL
-        s3Bucket: S3 bucket name
-      new: Add server
-      serverPlaceholder: Server name
-      title: Servers
     routerConfig:
       brandingUrlRoot: Branding URL Root
       carDropoffTime: Car Dropoff Time
@@ -305,6 +293,7 @@ components:
         name: Name
         namePlaceholder: Production
         publicUrl: Public URL
+        role: AWS Role
         s3Bucket: S3 bucket name
         serverPlaceholder: Server name
         title: Servers
