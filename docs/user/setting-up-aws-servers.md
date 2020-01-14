@@ -78,7 +78,7 @@ The load balancer also allows instantiating multiple OTP servers on large deploy
 4. Click `Create`.
 
 ## Delegate Third Party Account Access
-For Data Tools to access AWS resources (e.g., S3 and EC2) in third party AWS accounts, additional setup is required. The steps provided in [this AWS tutorial](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html) detail the process to delegate access to across AWS accounts. A more tailored, shorthand version of this process is provided below, but if more background information is needed about, please follow the tutorial link above.
+For Data Tools to access AWS resources (e.g., S3 and EC2) in third party AWS accounts, additional setup is required. The steps provided in [this AWS tutorial](https://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html) detail the process to delegate access across AWS accounts. A more tailored, shorthand version of this process is provided below, but if more background information is needed about, please follow the tutorial link above.
 
 ### Steps to Give Data Tools Access to Third Party Account
 1. Log into third party (i.e., other organization's) AWS account.
