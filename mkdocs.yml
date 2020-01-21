@@ -8,21 +8,25 @@ extra_css: [style.css]
 
 pages:
 - Home: 'index.md'
-- User Guide:
-  - Data Manager:
-    - 'Introduction': 'user/introduction.md'
-    - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
-    - 'Managing Users': 'user/managing-users.md'
-    - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
-  - 'GTFS Editor':
-    - Introduction: 'user/editor/introduction.md'
-    - Routes: 'user/editor/routes.md'
-    - Patterns: 'user/editor/patterns.md'
-    - Stops: 'user/editor/stops.md'
-    - Schedules: 'user/editor/schedules.md'
-    - Calendars: 'user/editor/calendars.md'
-    - Fares: 'user/editor/fares.md'
-- Development Guide:
-    - Deployment: dev/deployment.md
-    - Development: dev/development.md
-    - Migration: dev/migration.md
+- Data Manager:
+  - 'Introduction': 'user/introduction.md'
+  - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
+  - 'Managing Users': 'user/managing-users.md'
+  - 'Appendix: GTFS Validation Warnings': 'user/appendix-gtfs-warnings.md'
+- 'GTFS Editor':
+  - Introduction: 'user/editor/introduction.md'
+  - Routes: 'user/editor/routes.md'
+  - Patterns: 'user/editor/patterns.md'
+  - Stops: 'user/editor/stops.md'
+  - Schedules: 'user/editor/schedules.md'
+  - Calendars: 'user/editor/calendars.md'
+  - Fares: 'user/editor/fares.md'
+- Deploying to OTP:
+  - Overview: user/otp-deployment.md
+  - Setting up AWS servers: user/setting-up-aws-servers.md
+  - Adding a deployment server: user/add-deployment-server.md
+  - Deploying GTFS feeds to OTP: user/deploying-feeds.md
+- For Developers:
+  - Deployment: dev/deployment.md
+  - Development: dev/development.md
+  - Migration: dev/migration.md
