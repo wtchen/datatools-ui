@@ -82,6 +82,21 @@ const defaultJobTimeout = 100000
 
 const testDependencies = {}
 
+/**
+ * Recursively calculates all dependent tests and sets them in the
+ * testDependencies global.
+ */
+function addRecursiveDependencies (testName, dependentTests) {
+  const existingAndNew = dependentTests.concat(testDependencies[testName] || [])
+  testDependencies[testName] = [...(new Set(existingAndNew))]
+  // add additional dependencies that the dependentTests depend on
+  dependentTests.forEach(dependentTest => {
+    if (testDependencies[dependentTest]) {
+      addRecursiveDependencies(testName, testDependencies[dependentTest])
+    }
+  })
+}
+
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
     defaultDependentTests = [defaultDependentTests]
@@ -99,7 +114,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
     dependentTests = [...defaultDependentTests, ...dependentTests]
 
     // add to dependencies list
-    testDependencies[name] = dependentTests
+    addRecursiveDependencies(name, dependentTests)
 
     // actual test
     test(name, async () => {
@@ -2161,51 +2176,56 @@ describe('end-to-end', () => {
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the routes test suite
     describe('patterns', () => {
-      makeEditorEntityTest('should create pattern', async () => {
-        // open route sidebar
-        await click('[data-test-id="editor-route-nav-button"]')
+      makeEditorEntityTest(
+        'should create pattern',
+        async () => {
+          // open route sidebar
+          await click('[data-test-id="editor-route-nav-button"]')
 
-        // wait for route sidebar form to appear and select first route
-        await waitForAndClick('.entity-list-row')
-        // wait for route details sidebar to appear and go to trip pattern tab
-        await waitForAndClick('[data-test-id="trippattern-tab-button"]')
-        // wait for tab to load and click button to create pattern
-        await waitForAndClick('[data-test-id="new-pattern-button"]')
-        // wait for new pattern to appear
-        await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
+          // wait for route sidebar form to appear and select first route
+          await waitForAndClick('.entity-list-row')
+          // wait for route details sidebar to appear and go to trip pattern tab
+          await waitForAndClick('[data-test-id="trippattern-tab-button"]')
+          // wait for tab to load and click button to create pattern
+          await waitForAndClick('[data-test-id="new-pattern-button"]')
+          // wait for new pattern to appear
+          await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
 
-        // toggle the FeedInfoPanel in case it gets in the way of panel stuff
-        await click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
-        await wait(2000, 'for page to catch up with itself')
+          // toggle the FeedInfoPanel in case it gets in the way of panel stuff
+          await click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
+          await wait(2000, 'for page to catch up with itself')
 
-        // click add stop by name
-        await click('[data-test-id="add-stop-by-name-button"]')
+          // click add stop by name
+          await click('[data-test-id="add-stop-by-name-button"]')
 
-        // wait for stop selector to show up
-        await waitForSelector('.pattern-stop-card .Select-control')
+          // wait for stop selector to show up
+          await waitForSelector('.pattern-stop-card .Select-control')
 
-        // add 1st stop
-        await reactSelectOption('.pattern-stop-card', 'la', 1, true)
-        await wait(2000, 'for 1st stop to save')
+          // add 1st stop
+          await reactSelectOption('.pattern-stop-card', 'la', 1, true)
+          await wait(2000, 'for 1st stop to save')
 
-        // add 2nd stop
-        await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
-        await wait(2000, 'for auto-save to happen')
+          // add 2nd stop
+          await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
+          await wait(2000, 'for auto-save to happen')
 
-        // reload to make sure stuff was saved
-        await page.reload({ waitUntil: 'networkidle0' })
+          // reload to make sure stuff was saved
+          await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for pattern sidebar form to appear
-        await waitForSelector(
-          '[data-test-id="pattern-title-New Pattern"]'
-        )
+          // wait for pattern sidebar form to appear
+          await waitForSelector(
+            '[data-test-id="pattern-title-New Pattern"]'
+          )
 
-        // verify data was saved and retrieved from server
-        await expectSelectorToContainHtml(
-          '.trip-pattern-list',
-          'Russell Av'
-        )
-      }, defaultTestTimeout, ['should create route', 'should create stop'])
+          // verify data was saved and retrieved from server
+          await expectSelectorToContainHtml(
+            '.trip-pattern-list',
+            'Russell Av'
+          )
+        },
+        defaultTestTimeout,
+        ['should create route', 'should create stop', 'should update stop data']
+      )
 
       makeEditorEntityTest('should update pattern data', async () => {
         // change pattern name by appending to end
@@ -2261,7 +2281,7 @@ describe('end-to-end', () => {
           '.trip-pattern-list',
           'New Pattern updated copy'
         )
-      }, defaultTestTimeout, 'should create pattern')
+      }, defaultTestTimeout, 'should update pattern data')
     })
 
     // ---------------------------------------------------------------------------
@@ -2270,87 +2290,92 @@ describe('end-to-end', () => {
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the patterns and calendars test suites
     describe('timetables', () => {
-      makeEditorEntityTest('should create trip', async () => {
-        // expand pattern
-        await click('[data-test-id="pattern-title-New Pattern updated"]')
+      makeEditorEntityTest(
+        'should create trip',
+        async () => {
+          // expand pattern
+          await click('[data-test-id="pattern-title-New Pattern updated"]')
 
-        // wait for edit schedules button to appear and click edit schedules
-        await waitForAndClick('[data-test-id="edit-schedules-button"]')
-        // wait for calendar selector to appear
-        await waitForSelector('[data-test-id="calendar-select-container"]')
+          // wait for edit schedules button to appear and click edit schedules
+          await waitForAndClick('[data-test-id="edit-schedules-button"]')
+          // wait for calendar selector to appear
+          await waitForSelector('[data-test-id="calendar-select-container"]')
 
-        // select first calendar
-        await reactSelectOption(
-          '[data-test-id="calendar-select-container"]',
-          'te',
-          1
-        )
+          // select first calendar
+          await reactSelectOption(
+            '[data-test-id="calendar-select-container"]',
+            'te',
+            1
+          )
 
-        // wait for new trip button to appear
-        await waitForSelector('[data-test-id="add-new-trip-button"]')
-        await wait(2000, 'for page to catch up with itself?')
+          // wait for new trip button to appear
+          await waitForSelector('[data-test-id="add-new-trip-button"]')
+          await wait(2000, 'for page to catch up with itself?')
 
-        // click button to create trip
-        await click('[data-test-id="add-new-trip-button"]')
+          // click button to create trip
+          await click('[data-test-id="add-new-trip-button"]')
 
-        // wait for new trip to appear
-        await waitForSelector('[data-test-id="timetable-area"]')
+          // wait for new trip to appear
+          await waitForSelector('[data-test-id="timetable-area"]')
 
-        // click first cell to begin editing
-        await click('.editable-cell')
+          // click first cell to begin editing
+          await click('.editable-cell')
 
-        // enter block id
-        await page.keyboard.type('test-block-id')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // enter block id
+          await page.keyboard.type('test-block-id')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // trip id
-        await page.keyboard.type('test-trip-id')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // trip id
+          await page.keyboard.type('test-trip-id')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // trip headsign
-        await page.keyboard.type('test-headsign')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // trip headsign
+          await page.keyboard.type('test-headsign')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Laurel Dr arrival
-        await page.keyboard.type('1234')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // Laurel Dr arrival
+          await page.keyboard.type('1234')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Laurel Dr departure
-        await page.keyboard.type('1235')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // Laurel Dr departure
+          await page.keyboard.type('1235')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Russell Av arrival
-        await page.keyboard.type('1244')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // Russell Av arrival
+          await page.keyboard.type('1244')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Russell Av departure
-        await page.keyboard.type('1245')
-        await page.keyboard.press('Enter')
+          // Russell Av departure
+          await page.keyboard.type('1245')
+          await page.keyboard.press('Enter')
 
-        // save
-        await click('[data-test-id="save-trip-button"]')
-        await wait(2000, 'for save to happen')
+          // save
+          await click('[data-test-id="save-trip-button"]')
+          await wait(2000, 'for save to happen')
 
-        // reload to make sure stuff was saved
-        await page.reload({ waitUntil: 'networkidle0' })
+          // reload to make sure stuff was saved
+          await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for trip sidebar form to appear
-        await waitForSelector(
-          '[data-test-id="timetable-area"]'
-        )
+          // wait for trip sidebar form to appear
+          await waitForSelector(
+            '[data-test-id="timetable-area"]'
+          )
 
-        // verify data was saved and retrieved from server
-        await expectSelectorToContainHtml(
-          '[data-test-id="timetable-area"]',
-          'test-trip-id'
-        )
-      }, defaultTestTimeout, ['should create calendar', 'should create pattern'])
+          // verify data was saved and retrieved from server
+          await expectSelectorToContainHtml(
+            '[data-test-id="timetable-area"]',
+            'test-trip-id'
+          )
+        },
+        defaultTestTimeout,
+        ['should create calendar', 'should delete pattern data']
+      )
 
       makeEditorEntityTest('should update trip data', async () => {
         // click first editable cell to begin editing
