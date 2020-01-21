@@ -12,6 +12,3 @@ else
     echo 'Will run E2E tests because this is a commit to master or dev'
   fi
 fi
-
-echo 'Temporarily activate E2E tests on this branch'
-export SHOULD_RUN_E2E=true;
