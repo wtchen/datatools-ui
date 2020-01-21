@@ -133,7 +133,7 @@
     "mastarm": "^5.3.1",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
-    "puppeteer": "^1.20.0",
+    "puppeteer": "^2.0.0",
     "react-addons-test-utils": "^15.6.2",
     "redux-mock-store": "^1.5.3",
     "request": "^2.88.0",
