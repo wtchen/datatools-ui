@@ -177,6 +177,24 @@ td.feed-source-info {
   margin-top: 8px;
 }
 
+/* feed validation error types */
+
+.gtfs-error-high {
+  color: #c9302c;
+}
+
+.gtfs-error-medium {
+  color: #f0ad4e;
+}
+
+.gtfs-error-low {
+  color: #be8b5d;
+}
+
+.gtfs-error-unkown {
+  color: #d1d1d1;
+}
+
 /* project deployments */
 
 .pinned-deployment {
