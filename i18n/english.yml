@@ -382,7 +382,18 @@ components:
       stops: Stop issues
       trips: Trip issues
     noResults: No validation results to show.
-    title: Validation Results
+    tips:
+      DATE_NO_SERVICE: "If the transit service does not operate on weekends,
+      some or all of these validation issue may be ignored. Similarly, holidays
+      for which there is no transit service running may appear in this list."
+      FEED_TRAVEL_TIMES_ROUNDED: "This is a common feature of GTFS feeds that do
+      not use down-to-the-second precision for arrival/departure times. However,
+      if this precision is expected, there may be an issue occurring during feed
+      export."
+      MISSING_TABLE: "Missing a required table is a major issue that must be
+      resolved before most GTFS consumers can make use of the data for trip
+      planning or in other applications."
+    title: Validation issues
   LanguageSelect:
     placeholder: Select language...
   Login:
