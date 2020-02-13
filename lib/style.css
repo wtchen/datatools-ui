@@ -177,6 +177,76 @@ td.feed-source-info {
   margin-top: 8px;
 }
 
+/* feed validation error types */
+
+.gtfs-error-HIGH-label {
+  color: #c9302c;
+  background-color: #ffffff;
+  border: 1px #c9302c solid;
+}
+
+.gtfs-error-MEDIUM-label {
+  color: #d08600;
+  background-color: #ffffff;
+  border: 1px #d08600 solid;
+}
+
+.gtfs-error-LOW-label {
+  color: #757575;
+  background-color: #ffffff;
+  border: 1px #757575 solid;
+}
+
+.gtfs-error-UNKNOWN-label {
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px #000000 solid;
+}
+
+.gtfs-error-HIGH-label-solid {
+  background-color: #c9302c;
+  color: #ffffff;
+}
+
+.gtfs-error-MEDIUM-label-solid {
+  background-color: #d08600;
+  color: #ffffff;
+}
+
+.gtfs-error-LOW-label-solid {
+  background-color: #757575;
+  color: #ffffff;
+}
+
+.gtfs-error-UNKNOWN-label-solid {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.gtfs-error-HIGH {
+  color: #c9302c;
+}
+
+.gtfs-error-MEDIUM {
+  color: #d08600;
+}
+
+.gtfs-error-LOW {
+  color: #757575;
+}
+
+.gtfs-error-UNKNOWN {
+  color: #000000;
+}
+
+.error-details-list li {
+  margin-bottom: 5px;
+}
+
+.text-light {
+  color: #a9a9a9;
+}
+
 /* project deployments */
 
 .pinned-deployment {
@@ -351,6 +421,10 @@ td.feed-source-info {
 /* ICON HELPER CLASSES */
 .icon-link {
   color: #777;
+  margin-right: 10px;
+}
+
+.buffer-icon {
   margin-right: 10px;
 }
 
