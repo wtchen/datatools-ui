@@ -282,10 +282,13 @@ components:
         delete: Remove
         ec2Info:
           amiId: AMI ID
+          buildAmiId: Graph build AMI ID
+          buildInstanceType: Graph build instance type
           instanceCount: Instance count
           instanceType: Instance type
           iamInstanceProfileArn: IAM Instance Profile ARN
           keyName: Key file name
+          region: Region name
           securityGroupId: Security Group ID
           subnetId: Subnet ID
           targetGroupArn: Target Group ARN (load balancer)
