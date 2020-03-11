@@ -7,6 +7,24 @@ components:
     root: Explore
   CreateUser:
     new: Create User
+  CreateSnapshotModal:
+    cancel: Cancel
+    description: >-
+      Snapshots are save points you can always revert back to when
+      editing a GTFS feed. To auto-publish a new GTFS file (and process as a
+      new feed version), create a snapshot with the below option checked.
+    fields:
+      name:
+        label: Name
+        placeholder: Snapshot name (required)
+      comment:
+        label: Comment
+        placeholder: Additional information (optional)
+      publishNewVersion:
+        label: Publish snapshot as new feed version
+    missingNameAlert: Must give snapshot a valid name!
+    ok: OK
+    title: Create a new snapshot
   DatatoolsNavbar:
     account: My Account
     alerts: Alerts
