@@ -7348,6 +7348,10 @@ jest@^24.1.0:
     import-local "^2.0.0"
     jest-cli "^24.8.0"
 
+"jju@https://github.com/evansiroky/jju.git":
+  version "1.4.0"
+  resolved "https://github.com/evansiroky/jju.git#630943ba249852c3bfc1e92fb1de7a189d27e3ea"
+
 jmespath@0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/jmespath/-/jmespath-0.15.0.tgz#a3f222a9aae9f966f5d27c796510e28091764217"
