@@ -105,7 +105,7 @@ Object {
           "latest": null,
           "name": "mock-deployment",
           "organizationId": null,
-          "osmFileId": null,
+          "osmExtractUrl": null,
           "otpCommit": null,
           "otpVersion": null,
           "project": Object {
@@ -194,6 +194,7 @@ Object {
           "r5": false,
           "r5Version": null,
           "routerId": null,
+          "skipOsmExtract": false,
           "user": null,
         },
       ],
