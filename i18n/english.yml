@@ -7,6 +7,24 @@ components:
     root: Explore
   CreateUser:
     new: Create User
+  CreateSnapshotModal:
+    cancel: Cancel
+    description: >-
+      Snapshots are save points you can always revert back to when
+      editing a GTFS feed. To auto-publish a new GTFS file (and process as a
+      new feed version), create a snapshot with the below option checked.
+    fields:
+      name:
+        label: Name
+        placeholder: Snapshot name (required)
+      comment:
+        label: Comment
+        placeholder: Additional information (optional)
+      publishNewVersion:
+        label: Publish snapshot as new feed version
+    missingNameAlert: Must give snapshot a valid name!
+    ok: OK
+    title: Create a new snapshot
   DatatoolsNavbar:
     account: My Account
     alerts: Alerts
@@ -56,18 +74,6 @@ components:
       custom: Use Custom Extract Bounds
       gtfs: Use GTFS-Derived Extract Bounds
       title: OSM Extract
-    otpServers:
-      $index:
-        admin: Admin access only?
-        delete: Remove
-        internalUrl: Internal URLs
-        name: Name
-        namePlaceholder: Production
-        publicUrl: Public URL
-        s3Bucket: S3 bucket name
-      new: Add server
-      serverPlaceholder: Server name
-      title: Servers
     routerConfig:
       brandingUrlRoot: Branding URL Root
       carDropoffTime: Car Dropoff Time
@@ -294,10 +300,16 @@ components:
         delete: Remove
         ec2Info:
           amiId: AMI ID
+          buildAmiId: Graph build AMI ID
+          buildImageDescription: New Image Description
+          buildImageName: New Image Name
+          buildInstanceType: Graph build instance type
           instanceCount: Instance count
           instanceType: Instance type
           iamInstanceProfileArn: IAM Instance Profile ARN
           keyName: Key file name
+          recreateBuildImage: Recreate Build Image after Graph Build?
+          region: Region name
           securityGroupId: Security Group ID
           subnetId: Subnet ID
           targetGroupArn: Target Group ARN (load balancer)
@@ -305,6 +317,7 @@ components:
         name: Name
         namePlaceholder: Production
         publicUrl: Public URL
+        role: AWS Role
         s3Bucket: S3 bucket name
         serverPlaceholder: Server name
         title: Servers
@@ -393,7 +406,18 @@ components:
       stops: Stop issues
       trips: Trip issues
     noResults: No validation results to show.
-    title: Validation Results
+    tips:
+      DATE_NO_SERVICE: "If the transit service does not operate on weekends,
+      some or all of these validation issue may be ignored. Similarly, holidays
+      for which there is no transit service running may appear in this list."
+      FEED_TRAVEL_TIMES_ROUNDED: "This is a common feature of GTFS feeds that do
+      not use down-to-the-second precision for arrival/departure times. However,
+      if this precision is expected, there may be an issue occurring during feed
+      export."
+      MISSING_TABLE: "Missing a required table is a major issue that must be
+      resolved before most GTFS consumers can make use of the data for trip
+      planning or in other applications."
+    title: Validation issues
   LanguageSelect:
     placeholder: Select language...
   Login:
@@ -759,5 +783,8 @@ components:
     timestamp: File Timestamp
     version: version
   WatchButton:
+    emailVerificationConfirm: In order to receive email notification, you must first verify your email address. Would you like to resend the email verification message for your account?
     unwatch: Unwatch
+    verificationSendError: There was an error sending the email verification!
+    verificationSent: Please check your inbox and confirm your email address by clicking the verify link. You will then need to refresh this page after a moment or two and re-click the Watch button to subscribe to notifications.
     watch: Watch
