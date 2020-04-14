@@ -52,7 +52,7 @@ export function makeMockDeployment (
     latest: null,
     name: 'mock-deployment',
     organizationId: null,
-    osmFileId: null,
+    osmExtractUrl: null,
     otpCommit: null,
     otpVersion: null,
     project,
@@ -60,6 +60,7 @@ export function makeMockDeployment (
     r5: false,
     r5Version: null,
     routerId: null,
+    skipOsmExtract: false,
     user: null
   }
 }
