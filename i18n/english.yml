@@ -651,6 +651,10 @@ components:
         title: Deployment Server Management
     save: Save
     title: Settings
+  ShowAllRoutesOnMapFilter:
+    fetching: Fetching
+    showAllRoutesOnMap: Show all routes
+    tooManyShapeRecords: Too many shapes to display
   Sidebar:
     unknown: Unknown
   SnapshotItem:
