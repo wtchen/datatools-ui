@@ -1,8 +1,8 @@
 // @flow
 
-import multi from '@conveyal/woonerf/store/multi'
-import promise from '@conveyal/woonerf/store/promise'
-import {middleware as fetchMiddleware} from '@conveyal/woonerf/fetch'
+import multi from '../multi'
+import promise from '../promise'
+import {middleware as fetchMiddleware} from '../fetch'
 import Enzyme, {mount} from 'enzyme'
 import EnzymeReactAdapter from 'enzyme-adapter-react-16'
 import {mountToJson} from 'enzyme-to-json'
