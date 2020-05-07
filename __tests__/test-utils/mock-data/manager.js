@@ -55,7 +55,7 @@ export function makeMockDeployment (
     osmExtractUrl: null,
     otpCommit: null,
     otpVersion: null,
-    project,
+    projectId: project.id,
     projectBounds: {east: 0, west: 0, north: 0, south: 0},
     r5: false,
     r5Version: null,
