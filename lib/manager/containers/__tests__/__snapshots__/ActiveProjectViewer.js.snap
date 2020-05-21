@@ -412,8 +412,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
               removeRetiredJob={[Function]}
               revokeToken={[Function]}
               setJobMonitorVisible={[Function]}
-              setSidebarExpanded={[Function]}
-              setTutorialHidden={[Function]}
               startJobMonitor={[Function]}
               user={
                 Object {
@@ -1470,48 +1468,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                         className="popover-content"
                       >
                         <div>
-                          <Checkbox
-                            bsClass="checkbox"
-                            checked={true}
-                            disabled={false}
-                            inline={false}
-                            onChange={[Function]}
-                          >
-                            <div
-                              className="checkbox"
-                            >
-                              <label>
-                                <input
-                                  checked={true}
-                                  disabled={false}
-                                  onChange={[Function]}
-                                  type="checkbox"
-                                />
-                                Show Sidebar Labels
-                              </label>
-                            </div>
-                          </Checkbox>
-                          <Checkbox
-                            bsClass="checkbox"
-                            checked={false}
-                            disabled={false}
-                            inline={false}
-                            onChange={[Function]}
-                          >
-                            <div
-                              className="checkbox"
-                            >
-                              <label>
-                                <input
-                                  checked={false}
-                                  disabled={false}
-                                  onChange={[Function]}
-                                  type="checkbox"
-                                />
-                                Hide editor tutorial
-                              </label>
-                            </div>
-                          </Checkbox>
                           <div
                             className="app-info"
                           >
