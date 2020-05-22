@@ -257,6 +257,20 @@ td.feed-source-info {
   color: #969595;
 }
 
+.buffer-right {
+  margin-right: 5px;
+}
+
+/* Prevent text from being selectable */
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 /* EDITOR ENTITY LIST */
 
 .entity-list-row {

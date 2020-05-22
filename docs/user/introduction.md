@@ -17,12 +17,12 @@ Projects are collections of feed sources and deployments.
 Feed sources define the locations or upstream sources of GTFS feeds. These can be any combination of:
 
 1. **Manually Uploaded** - Manually collected/managed feeds provided directly by an external source.  
-2. **Fetched Automatically** - Public available feeds that can be fetch from a URL
+2. **Fetched Automatically** - Public available feeds that can be fetched from a URL
 3. **Produced In House** - Internally managed/created feeds produced by GTFS Editor
 
 ### Feed Versions
 
-Feed Versions store specific instances of a GTFS feed for a given feed source as published over time. Each Feed Version has an associated GTFS file that is stored within the Data Manager, can be downloaded by users, and for which detailed information such as validation results is available.
+Feed Versions store specific instances of a GTFS feed for a given feed source as published over time. Each Feed Version has an associated GTFS file that is stored within the Data Manager, can be downloaded by users, and for which detailed information, such as validation results, is available.
 
 ### Snapshots
 
