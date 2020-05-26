@@ -53,7 +53,7 @@ script:
   # upload coverage results from e2e tests and then delete coverage reports to
   # avoid uploading the same coverage results twice
   - if [ "$SHOULD_RUN_E2E" = "true" ]; then bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests; fi
-  - echo "travis_fold:e2e:install"
+  - echo "travis_fold:end:e2e"
   - yarn run build -- --minify
   - mkdocs build
 
