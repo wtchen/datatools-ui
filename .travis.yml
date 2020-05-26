@@ -32,18 +32,28 @@ before_install:
   # add aws credentials for datatools-server
   - if [ "$SHOULD_RUN_E2E" = "true" ]; then mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=us-east-1' > ~/.aws/config; else mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=foo' 'aws_secret_access_key=bar' 'region=us-east-1' > ~/.aws/config; fi
 script:
+  - echo "travis_fold:start:install"
   - yarn
+  - echo "travis_fold:end:install"
   - yarn run lint
+  - echo "travis_fold:start:lint-messages"
   - yarn run lint-messages
+  - echo "travis_fold:end:lint-messages"
+  - echo "travis_fold:start:flow"
   - yarn run flow
+  - echo "travis_fold:end:flow"
+  - echo "travis_fold:start:test"
   - yarn run cover-client
   # upload coverage results from unit tests and then delete coverage reports to
   # avoid uploading the same coverage results twice
   - bash <(curl -s https://codecov.io/bash) -c -F unit_tests
+  - echo "travis_fold:end:test"
+  - echo "travis_fold:start:e2e"
   - if [ "$SHOULD_RUN_E2E" = "true" ]; then yarn run cover-end-to-end; fi
   # upload coverage results from e2e tests and then delete coverage reports to
   # avoid uploading the same coverage results twice
   - if [ "$SHOULD_RUN_E2E" = "true" ]; then bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests; fi
+  - echo "travis_fold:e2e:install"
   - yarn run build -- --minify
   - mkdocs build
 
