@@ -15,7 +15,7 @@ const issueTypes = {
   undefinedComponentMessages: 'error',
   undefinedMessage: 'error',
   unneccessaryComponentMessageDefinition: 'error',
-  unusedMessageDefinition: 'warning',
+  unusedMessageDefinition: 'warning'
 }
 const error = []
 const jsMessageCounts = {}
@@ -24,8 +24,11 @@ const warning = []
 
 function addIssue (type, issue) {
   const issueErrorLevel = issueTypes[type]
-  if (issueErrorLevel === 'error' || process.argv.indexOf('--no-warn') == -1)
-    console[issueErrorLevel === 'warning' ? 'warn' : 'error'](`${issueErrorLevel.toUpperCase()}: ${issue}`)
+  if (issueErrorLevel === 'error' || process.argv.indexOf('--no-warn') === -1) {
+    console[issueErrorLevel === 'warning' ? 'warn' : 'error'](
+      `${issueErrorLevel.toUpperCase()}: ${issue}`
+    )
+  }
   if (issueErrorLevel === 'error') {
     error.push({ issue, type })
   } else {
@@ -61,7 +64,7 @@ function exploreDir (filePath) {
  * Analyze a .js file to keep track of messages found within .js code
  */
 function analyzeFile (filePath) {
-  const classRegex = /class (\w*) extends Component/gm
+  const classRegex = /class (\w*) extends (Pure)?Component/gm
   const componentMessagesRegex = /^\s*messages = getComponentMessages\('(\w*)'\)/gm
   const contents = fs.readFileSync(filePath, { encoding: 'utf8' }).split('\n')
   let curClass
@@ -70,11 +73,12 @@ function analyzeFile (filePath) {
   let messagesInCurClass = 0
 
   function checkForUnneccessaryComponentMessagesDefinition () {
-    if (curClass && foundComponetMessagesDefinition && messagesInCurClass === 0)
+    if (curClass && foundComponetMessagesDefinition && messagesInCurClass === 0) {
       addIssue(
         'unneccessaryComponentMessageDefinition',
         `Unneccessary component definition found in class '${curClass}' in file '${filePath}'`
       )
+    }
   }
 
   contents.forEach(line => {

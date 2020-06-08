@@ -3,6 +3,11 @@
   name: feed_info.txt
   helpContent: The file contains information about the feed itself, rather than the services that the feed describes. GTFS currently has an agency.txt file to provide information about the agencies that operate the services described by the feed. However, the publisher of the feed is sometimes a different entity than any of the agencies (in the case of regional aggregators). In addition, there are some fields that are really feed-wide settings, rather than agency-wide.
   fields:
+  - name: "feed_id"
+    required: false
+    inputType: TEXT
+    columnWidth: 12
+    helpContent: "The feed_id field contains the feed_id which should uniquely identify the GTFS feed within trip planning applications and ideally be universally unique among public transit operators."
   - name: "feed_publisher_name"
     required: true
     inputType: TEXT
@@ -97,7 +102,7 @@
     required: false
     inputType: TEXT
     columnWidth: 12
-    helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's "
+    helpContent: "The agency_phone field contains a single voice telephone number for the specified agency. This field is a string value that presents the telephone number as typical for the agency's service area. It can and should contain punctuation marks to group the digits of the number. Dialable text (for example, TriMet's \"503-238-RIDE\") is permitted, but the field must not contain any other descriptive text."
   - name: "agency_fare_url"
     required: false
     inputType: URL
@@ -136,11 +141,13 @@
   - name: "stop_name"
     required: true
     inputType: TEXT
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "The stop_name field contains the name of a stop or station. Please use a name that people will understand in the local and tourist vernacular."
   - name: "stop_desc"
     required: false
     inputType: TEXT
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "The stop_desc field contains a description of a stop. Please provide useful, quality information. Do not simply duplicate the name of the stop."
   - name: "stop_lat"
@@ -157,6 +164,7 @@
     required: false
     inputType: GTFS_ZONE
     columnWidth: 12
+    bulkEditEnabled: true
     helpContent: "The zone_id field defines the fare zone for a stop ID. Zone IDs are required if you want to provide fare information using fare_rules.txt. If this stop ID represents a station, the zone ID is ignored."
   - name: "stop_url"
     required: false
@@ -165,6 +173,7 @@
     helpContent: "The stop_url field contains the URL of a web page about a particular stop. This should be different from the agency_url and the route_url fields."
   - name: "location_type"
     required: false
+    bulkEditEnabled: true
     inputType: DROPDOWN
     options:
     - value: '0'
@@ -176,16 +185,19 @@
   - name: "parent_station"
     required: false
     inputType: GTFS_STOP
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "For stops that are physically located inside stations, the parent_station field identifies the station associated with the stop. To use this field, stops.txt must also contain a row where this stop ID is assigned location type=1."
   - name: "stop_timezone"
     required: false
     inputType: TIMEZONE
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "The stop_timezone field contains the timezone in which this stop or station is located. If omitted, the stop should be assumed to be located in the timezone specified byagency_timezone in agency.txt."
   - name: "wheelchair_boarding"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: 0
       text: No information (0)
@@ -204,6 +216,7 @@
   - name: status
     datatools: true
     displayName: Status
+    bulkEditEnabled: true
     required: true
     inputType: DROPDOWN
     options:
@@ -219,6 +232,7 @@
   - name: publicly_visible
     datatools: true
     displayName: Public?
+    bulkEditEnabled: true
     required: true
     inputType: DROPDOWN
     options:
@@ -247,6 +261,7 @@
   - name: agency_id
     required: false
     inputType: GTFS_AGENCY
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: The agency_id field defines an agency for the specified route. This value is referenced from the agency.txt file. Use this field when you are providing data for routes from more than one agency.
   - name: route_desc
@@ -257,6 +272,7 @@
   - name: route_type
     required: true
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: 3
       text: Bus
@@ -274,8 +290,13 @@
       text: Gondola
     - value: 7
       text: Funicular
-    columnWidth: 12
+    columnWidth: 6
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
+  - name: route_sort_order
+    required: false
+    inputType: POSITIVE_INT
+    columnWidth: 6
+    helpContent: The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values.
   - name: route_url
     required: false
     inputType: URL
@@ -286,11 +307,13 @@
     required: false
     inputType: COLOR
     placeholder: 'FF0000'
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: In systems that have colors assigned to routes, the route_color field defines a color that corresponds to a route. The color must be provided as a six-character hexadecimal number, for example, 00FFFF. If no color is specified, the default route color is white (FFFFFF).
   - name: route_text_color
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
       - value: 'FFFFFF'
         text: White
@@ -302,6 +325,7 @@
     required: false
     displayName: Is route wheelchair accessible?
     inputType: DROPDOWN
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: Indicates whether vehicles that operate on this route are wheelchair accessible.
     options:
@@ -342,16 +366,19 @@
   - name: "trip_headsign"
     required: false
     inputType: TEXT
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The trip_headsign field contains the text that appears on a sign that identifies the trip's destination to passengers. Use this field to distinguish between different patterns of service in the same route. If the headsign changes during a trip, you can override the trip_headsign by specifying values for the the stop_headsign field in stop_times.txt."
   - name: "trip_short_name"
     required: false
     inputType: TEXT
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The trip_short_name field contains the text that appears in schedules and sign boards to identify the trip to passengers, for example, to identify train numbers for commuter rail trips. If riders do not commonly rely on trip names, please leave this field blank."
   - name: "direction_id"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -360,6 +387,7 @@
   - name: "block_id"
     required: false
     inputType: GTFS_BLOCK
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The block_id field identifies the block to which the trip belongs. A block consists of two or more sequential trips made using the same vehicle, where a passenger can transfer from one trip to the next just by staying in the vehicle. The block_id must be referenced by two or more trips in trips.txt."
   - name: "shape_id"
@@ -370,6 +398,7 @@
   - name: "wheelchair_accessible"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -379,6 +408,7 @@
   - name: "bikes_allowed"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -419,11 +449,13 @@
   - name: "stop_headsign"
     required: false
     inputType: TEXT
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The stop_headsign field contains the text that appears on a sign that identifies the trip's destination to passengers. Use this field to override the defaulttrip_headsign when the headsign changes between stops. If this headsign is associated with an entire trip, use trip_headsign instead."
   - name: "pickup_type"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -434,6 +466,7 @@
   - name: "drop_off_type"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -449,6 +482,7 @@
   - name: "timepoint"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: ''
     - value: '0'
@@ -469,11 +503,13 @@
     required: false
     datatools: true
     inputType: TEXT
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent:
   - name: "monday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -482,6 +518,7 @@
   - name: "tuesday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -490,6 +527,7 @@
   - name: "wednesday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -498,6 +536,7 @@
   - name: "thursday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -506,6 +545,7 @@
   - name: "friday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -514,6 +554,7 @@
   - name: "saturday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -522,6 +563,7 @@
   - name: "sunday"
     required: true
     inputType: DAY_OF_WEEK_BOOLEAN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'
@@ -530,11 +572,13 @@
   - name: "start_date"
     required: true
     inputType: DATE
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "The start_date field contains the start date for the service."
   - name: "end_date"
     required: true
     inputType: DATE
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "The end_date field contains the end date for the service. This date is included in the service interval."
 
@@ -551,11 +595,13 @@
   - name: "date"
     required: true
     inputType: DATE
+    bulkEditEnabled: true
     columnWidth: 12
     helpContent: "The date field specifies a particular date when service availability is different than the norm. You can use the exception_type field to indicate whether service is available on the specified date."
   - name: "exception_type"
     required: true
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '1'
     - value: '2'
@@ -575,30 +621,34 @@
   - name: "price"
     required: true
     inputType: NUMBER
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The price field contains the fare price, in the unit specified by currency_type."
   - name: "currency_type"
     required: true
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: 'USD'
     - value: 'EUR'
     - value: 'GBP'
-    columnWidth: 6
+    columnWidth: 12
     helpContent: "The currency_type field defines the currency used to pay the fare. Please use the ISO 4217 alphabetical currency codes which can be found at the following URL:http://en.wikipedia.org/wiki/ISO_4217."
   - name: "payment_method"
     required: true
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
       text: Paid on board (0)
     - value: '1'
       text: Paid before boarding (1)
-    columnWidth: 6
+    columnWidth: 12
     helpContent: "The payment_method field indicates when the fare must be paid. Valid values for this field are:"
   - name: "transfers"
     required: true
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
       text: No transfers permitted (0)
@@ -613,8 +663,15 @@
   - name: "transfer_duration"
     required: false
     inputType: POSITIVE_INT
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The transfer_duration field specifies the length of time in seconds before a transfer expires."
+  - name: agency_id
+    required: false
+    inputType: GTFS_AGENCY
+    bulkEditEnabled: true
+    columnWidth: 12
+    helpContent: "Required for feeds with multiple agencies defined in the agency.txt file. Each fare attribute must specify an agency_id value to indicate which agency the fare applies to."
 
 
 - id: fare_rules
@@ -660,21 +717,25 @@
   - name: "start_time"
     required: true
     inputType: TIME
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The start_time field specifies the time at which service begins with the specified frequency. The time is measured from "
   - name: "end_time"
     required: true
     inputType: TIME
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The end_time field indicates the time at which service changes to a different frequency (or ceases) at the first stop in the trip. The time is measured from "
   - name: "headway_secs"
     required: true
     inputType: POSITIVE_INT
+    bulkEditEnabled: true
     columnWidth: 6
     helpContent: "The headway_secs field indicates the time between departures from the same stop (headway) for this trip type, during the time interval specified by start_time andend_time. The headway value must be entered in seconds."
   - name: "exact_times"
     required: false
     inputType: DROPDOWN
+    bulkEditEnabled: true
     options:
     - value: '0'
     - value: '1'

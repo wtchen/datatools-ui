@@ -46,7 +46,7 @@ At the top of the page is a set of tabs, which include:
 
 Feed Versions are created from the main Feed Source profile page. There are three methods for creating new versions:
 
-1. **Manually Upload a File**: Select "Manually Uploaded" from the `+ Create new version` dropdown. The button next the the dropdown should now say "Upload." Click the "Upload" button to select a GTFS file from your local machine.
+1. **Manually Upload a File**: Select "Manually Uploaded" from the `+ Create new version` dropdown. The button next to the dropdown should now say "Upload." Click the "Upload" button to select a GTFS file from your local machine.
 
 2. **Fetch From A Remote URL**: Select "Fetch" from the `+ Create new version` dropdown. **Note:** to fetch a new version, the "Feed source fetch URL" property must be set to a valid GTFS URL under `Feed Source > Settings`.
 

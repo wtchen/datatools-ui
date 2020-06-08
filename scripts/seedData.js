@@ -42,8 +42,8 @@ async function createProject (data) {
     headers,
     body: JSON.stringify(data)
   })
-  .then(res => res.json())
-  .catch(err => console.log(err))
+    .then(res => res.json())
+    .catch(err => console.log(err))
 }
 
 async function getFeedVersion (feedVersionId) {
@@ -51,8 +51,8 @@ async function getFeedVersion (feedVersionId) {
     method: 'get',
     headers
   })
-  .then(res => res.json())
-  .catch(err => console.log(err))
+    .then(res => res.json())
+    .catch(err => console.log(err))
 }
 
 async function createFeedSource (data) {
@@ -61,8 +61,8 @@ async function createFeedSource (data) {
     headers,
     body: JSON.stringify(data)
   })
-  .then(res => res.json())
-  .catch(err => console.log(err))
+    .then(res => res.json())
+    .catch(err => console.log(err))
 }
 
 async function uploadFeedVersion (feedSource, filePath) {
@@ -70,17 +70,17 @@ async function uploadFeedVersion (feedSource, filePath) {
   const formData = {file}
   const url = `${API_ENDPOINT}/feedversion?feedSourceId=${feedSource.id}`
   return request.post({url, formData})
-  .then(jobId => {
-    // make sure to close read stream
-    file.destroy()
-    return jobId
-  })
-  .catch(err => {
-    console.log(err)
+    .then(jobId => {
+      // make sure to close read stream
+      file.destroy()
+      return jobId
+    })
+    .catch(err => {
+      console.log(err)
 
-    //   // Exit script if upload fails
-    //   process.exit(1)
-  })
+      //   // Exit script if upload fails
+      //   process.exit(1)
+    })
 }
 
 async function jobIsActive (jobId) {
