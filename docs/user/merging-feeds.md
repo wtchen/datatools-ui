@@ -18,11 +18,15 @@ There are a set of rules that govern the requirements for input feed versions an
   identified.
 1. When difference is found in `agency.txt` file between active and future feeds, the future
   `agency.txt` file data should be used. Possible issue with missing `agency_id` referenced by routes
-1. When `stop_code` is included, stop merging will be based on that. If `stop_code` is not
-  included, it will be based on `stop_id`. All stops in future data will be carried forward and
-  any stops found in active data that are not in the future data shall be appended. If one
-  of the feed is missing `stop_code`, merge fails with a notification to the user with
-  suggestion that the feed with missing `stop_code` must be fixed with `stop_code`.
+1. Stops will be merged on `stop_code` or `stop_id` if `stop_code` is missing. However, some restrictions apply on
+  when missing stop_code values are permitted:
+    1. Stops with `location_type` greater than `0` (i.e., anything but `0` or `empty`) are permitted
+       to have empty `stop_codes` (even if there are other stops in the feed that have
+       `stop_code` values). This is because these location_types represent special entries
+       that are either stations, entrances/exits, or generic nodes (e.g., for
+       `pathways.txt`). The merge will happen on `stop_code` if provided, or fallback on stop_id.
+    2. For regular stops (`location_type = 0` or empty), all or none of the stops must
+       contain `stop_codes`. Otherwise, the merge feeds job will be failed.
 1. If any `service_id` in the active feed matches with the future feed, it should be modified
   and all associated trip records must also be changed with the modified `service_id`.
   If a `service_id` from the active calendar has both the `start_date` and `end_date` in the
