@@ -7,10 +7,18 @@ import fetch from 'isomorphic-fetch'
 import {safeLoad} from 'js-yaml'
 import md5File from 'md5-file/promise'
 import moment from 'moment'
-import puppeteer from 'puppeteer'
 import SimpleNodeLogger from 'simple-node-logger'
+import uuidv4 from 'uuid/v4'
 
 import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
+
+// not imported because of weird flow error
+const puppeteer = require('puppeteer')
+
+// if the ISOLATED_TEST is defined, only the specifed test (and any dependet
+// tests) will be ran and all others will be skipped.
+// const ISOLATED_TEST = 'should update a project by adding an otp server'
+const ISOLATED_TEST = null // null means run all tests
 
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
@@ -72,16 +80,64 @@ const testResults = {}
 const defaultTestTimeout = 100000
 const defaultJobTimeout = 100000
 
+// this variable gets modified as tests are defined. Each testname becomes a key
+// with a value of an array of strings of dependent test names
+const testDependencies = {}
+
+/**
+ * Recursively calculates all dependent tests and sets them in the
+ * testDependencies global.
+ */
+function addRecursiveDependencies (testName, dependentTests) {
+  const existingAndNew = dependentTests.concat(testDependencies[testName] || [])
+  testDependencies[testName] = [...(new Set(existingAndNew))]
+  // add additional dependencies that the dependentTests depend on
+  dependentTests.forEach(dependentTest => {
+    if (testDependencies[dependentTest]) {
+      addRecursiveDependencies(testName, testDependencies[dependentTest])
+    }
+  })
+}
+
+/**
+ * Creates and returns a helper function that is able to define a test case
+ * that will be ran with an awareness of other test dependencies, logging of
+ * test case beginning and ending, creation of screenshots upon failed tests and
+ * updating of coverage reports of lines covered as observed in the browser.
+ *
+ * @param  {Mixed} [defaultDependentTests=[]] either a string or array of
+ *  strings of which tests to always include as dependent tests.
+ */
 function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   if (!(defaultDependentTests instanceof Array)) {
     defaultDependentTests = [defaultDependentTests]
   }
+  /**
+   * A function that is returned that can be used to create actual test cases.
+   *
+   * @param  {String} name The name of the test case
+   * @param  {Function} fn The function to execute to run the test case
+   * @param  {Number} [timeout] The time in milliseconds to allow the †est to
+   *    complete before failing it due to a timeout
+   * @param  {Mixed} [dependentTests=[]] A string or an array of strings in
+   *    addition to the default dependent tests that this test case depends on.
+   */
   return (
     name: string,
     fn: Function,
     timeout?: number,
     dependentTests: Array<string> | string = []
   ) => {
+    // merge dependent tests
+    if (!(dependentTests instanceof Array)) {
+      dependentTests = [dependentTests]
+    }
+    dependentTests = [...defaultDependentTests, ...dependentTests]
+
+    // add to dependencies list
+    addRecursiveDependencies(name, dependentTests)
+
+    // actual test
     test(name, async () => {
       log.info(`Begin test: "${name}"`)
       if (failingFast) {
@@ -90,17 +146,30 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
       }
 
       // first make sure all dependent tests have passed
-      if (!(dependentTests instanceof Array)) {
-        dependentTests = [dependentTests]
-      }
-      dependentTests = [...defaultDependentTests, ...dependentTests]
-
+      // $FlowFixMe, should be an array by now
       dependentTests.forEach(test => {
         if (!testResults[test]) {
           log.error(`Dependent test "${test}" has not completed yet`)
           throw new Error(`Dependent test "${test}" has not completed yet`)
         }
       })
+
+      // if the ISOLATED_TEST is set, skip this test if it is not the named
+      // isolated test and the isolated test is not dependent on this test.
+      if (ISOLATED_TEST) {
+        if (!testDependencies[ISOLATED_TEST]) {
+          throw new Error(`Isolated test not defined: "${ISOLATED_TEST}"`)
+        }
+
+        if (
+          name !== ISOLATED_TEST ||
+            testDependencies[ISOLATED_TEST].indexOf(name) === -1
+        ) {
+          testResults[name] = true
+          log.warn(`Skipping test ${name}`)
+          return
+        }
+      }
 
       // do actual test
       try {
@@ -140,6 +209,8 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
   }
 }
 
+// create helper functions that can be used to create dependent tests with
+// varying dependencies
 const makeTest = makeMakeTest()
 const makeTestPostLogin = makeMakeTest('should login')
 const makeTestPostFeedSource = makeMakeTest(['should login', 'should create feed source'])
@@ -170,11 +241,19 @@ async function sendCoverageToServer () {
   }
 }
 
+/**
+ * Expect the innerHTML obtained from the given selector to contain the
+ * given string.
+ */
 async function expectSelectorToContainHtml (selector: string, html: string) {
   const innerHTML = await getInnerHTMLFromSelector(selector)
   expect(innerHTML).toContain(html)
 }
 
+/**
+ * Expect the innerHTML obtained from the given selector to NOT contain the
+ * given string.
+ */
 async function expectSelectorToNotContainHtml (selector: string, html: string) {
   const innerHTML = await getInnerHTMLFromSelector(selector)
   expect(innerHTML).not.toContain(html)
@@ -205,6 +284,9 @@ async function createProject (projectName: string) {
   log.info(`confirmed successful creation of project with name: ${projectName}`)
 }
 
+/**
+ * Helper function to delete a project with a given id string.
+ */
 async function deleteProject (projectId: string) {
   log.info(`deleting project with id: ${projectId}`)
   // navigate to that project's settings
@@ -223,6 +305,11 @@ async function deleteProject (projectId: string) {
   log.info(`confirmed successful deletion of project with id ${projectId}`)
 }
 
+/**
+ * Helper function to upload a GTFS file to a given feed source. This function
+ * assumes that the puppeteer instance is currnetly open on the desired feed
+ * source.
+ */
 async function uploadGtfs () {
   log.info('uploading gtfs')
   // create new feed version by clicking on dropdown and upload link
@@ -234,6 +321,7 @@ async function uploadGtfs () {
   // set file to upload in modal dialog
   // TODO replace with more specific selector
   await waitForSelector('.modal-body input')
+  // $FlowFixMe cryptic error that is hard to resolve :(
   const uploadInput = await page.$('.modal-body input')
   if (!uploadInput) throw new Error('Could not find upload input')
   await uploadInput.uploadFile(gtfsUploadFile)
@@ -269,7 +357,7 @@ async function createFeedSourceViaForm (feedSourceName) {
   await waitForSelector('.manager-header')
   await expectSelectorToContainHtml('.manager-header', feedSourceName)
 
-  // goto feed source's project page
+  // go to feed source's project page
   await click('[data-test-id="feed-project-link"]')
 
   // wait for data to load
@@ -282,6 +370,10 @@ async function createFeedSourceViaForm (feedSourceName) {
   log.info(`Successfully created Feed Source with name: ${feedSourceName}`)
 }
 
+/**
+ * A helper function to create a feed source by clicking through the project
+ * header button.
+ */
 async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   log.info(`create Feed Source with name: ${feedSourceName} via project header button`)
   // go to project page
@@ -296,6 +388,11 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   await createFeedSourceViaForm(feedSourceName)
 }
 
+/**
+ * A helper function to create a new stop in the feed editor. This function
+ * assumes that the stop editor is active and the map window is ready to receive
+ * a right click to create a new stop.
+ */
 async function createStop ({
   code,
   description,
@@ -409,6 +506,26 @@ async function createStop ({
   log.info(`created stop with name: ${name}`)
 }
 
+/**
+ * Enters in some text into the user search input, submits search and waits for
+ * results
+ * @param  {string} searchText the text to enter into the search input
+ */
+async function filterUsers (searchText: string) {
+  // type in text
+  await type('[data-test-id="search-user-input"]', searchText)
+
+  // submit search
+  await click('[data-test-id="submit-user-search-button"]')
+
+  // wait for results
+  await wait(2000, 'for user list to be updated')
+}
+
+/**
+ * Clears any text currently in an input field found at the given selector
+ * string. If an input is not found, an error is thrown.
+ */
 async function clearInput (inputSelector: string) {
   await page.$eval(
     inputSelector,
@@ -423,12 +540,19 @@ async function clearInput (inputSelector: string) {
   )
 }
 
+/**
+ * A helper method to choose a color from a color selector.
+ */
 async function pickColor (containerSelector: string, color: string) {
   await click(`${containerSelector} button`)
   await waitForSelector(`${containerSelector} .sketch-picker`)
   await clearAndType(`${containerSelector} input`, color)
 }
 
+/**
+ * A helper method to type in an autocomplete value and then select an option
+ * from an react-select component.
+ */
 async function reactSelectOption (
   containerSelector: string,
   initalText: string,
@@ -449,6 +573,9 @@ function formatSecondsElapsed (startTime: number) {
   return `${(new Date() - startTime) / 1000} seconds`
 }
 
+/**
+ * Waits for all currently running jobs to complete.
+ */
 async function waitAndClearCompletedJobs () {
   const startTime = new Date()
   // wait for jobs to get completed
@@ -466,17 +593,29 @@ async function waitAndClearCompletedJobs () {
   log.info(`cleared completed jobs in ${formatSecondsElapsed(startTime)}`)
 }
 
+/**
+ * Clears the current the value in an input found at the given selector and
+ * types in the new given text
+ */
 async function clearAndType (selector: string, text: string) {
   await clearInput(selector)
   await type(selector, text)
 }
 
+/**
+ * Adds text to the end of input field.
+ */
 async function appendText (selector: string, text: string) {
+  log.info(`focusing on selector: ${selector}`)
   await page.focus(selector)
   await page.keyboard.press('End')
+  log.info(`appending text: ${text}`)
   await page.keyboard.type(text)
 }
 
+/**
+ * Waits for a selector to be visible on the page. Does some logging about it.
+ */
 async function waitForSelector (selector: string, options?: any) {
   const startTime = new Date()
   await wait(100, 'delay before looking for selector...')
@@ -485,21 +624,48 @@ async function waitForSelector (selector: string, options?: any) {
   log.info(`selector ${selector} took ${formatSecondsElapsed(startTime)}`)
 }
 
+/**
+ * Clicks on the given selector
+ */
 async function click (selector: string) {
   log.info(`clicking selector: ${selector}`)
   await page.click(selector) // , {delay: 3})
 }
 
+/**
+ * Finds and then clicks on a selector within the dom tree of the given element
+ */
+async function elementClick (elementHandle: any, selector: string) {
+  log.info(`finding selector: ${selector} in element handle ${elementHandle}`)
+  const selectedElement = await elementHandle.$(selector)
+  if (!selectedElement) {
+    throw new Error(`Could't find "${selector}" within elementHandle ${elementHandle}`)
+  }
+  log.info(`clicking selector: ${selector} of element handle: ${elementHandle}`)
+  await selectedElement.click() // , {delay: 3})
+}
+
+/**
+ * Waits for a selector to show up and then clicks on it.
+ */
 async function waitForAndClick (selector: string, waitOptions?: any) {
   await waitForSelector(selector, waitOptions)
   await click(selector)
 }
 
+/**
+ * Waits for the specified amount of milliseconds and provides some useful
+ * logging.
+ */
 async function wait (milliseconds: number, reason?: string) {
   log.info(`waiting ${milliseconds} ms${reason ? ` ${reason}` : ''}...`)
   await page.waitFor(milliseconds)
 }
 
+/**
+ * Navigates to the given url. Sends the collected coverage to the server that
+ * has been obtained thus far.
+ */
 async function goto (url: string, options?: any) {
   // before navigating away from the page, collect and report coverage thus far
   await sendCoverageToServer()
@@ -509,12 +675,16 @@ async function goto (url: string, options?: any) {
   await wait(1000, 'for page to load')
 }
 
+/**
+ * Strips react tags from a string.
+ */
 function stripReactTags (str: any): any {
   return str.replace(/<!--[\s\w-:/]*-->/g, '')
 }
 
-// There was a weird error of not being able to dynamically get the attribute,
-// so the following 2 functions look very similar
+/**
+ * Gets the href attribute from the given element.
+ */
 async function getHref (element: any) {
   log.info(`getting href for element: ${element}`)
   const href = await page.evaluate(
@@ -528,6 +698,9 @@ async function getHref (element: any) {
   return href
 }
 
+/**
+ * Gets the innerHTML and strips the react tags of a given element.
+ */
 async function getInnerHTML (element: any) {
   log.info(`getting innerHTML for element: ${element}`)
   const html = await page.evaluate(
@@ -541,6 +714,9 @@ async function getInnerHTML (element: any) {
   return stripReactTags(html)
 }
 
+/**
+ * Gets the innerHTML and strips the react tags of a given selector.
+ */
 async function getInnerHTMLFromSelector (selector: string) {
   log.info(`getting innerHTML for selector: ${selector}`)
   const html = (await page.$eval(selector, el => {
@@ -551,6 +727,9 @@ async function getInnerHTMLFromSelector (selector: string) {
   return stripReactTags(html)
 }
 
+/**
+ * Gets all the element handles found using the given selector.
+ */
 async function getAllElements (selector: string) {
   log.info(`getting all elements for selector: ${selector}`)
   const elements = await page.$$(selector)
@@ -560,9 +739,26 @@ async function getAllElements (selector: string) {
   return elements
 }
 
+/**
+ * Types some text into the given selector.
+ */
 async function type (selector: string, text: string) {
   log.info(`typing text: "${text}" into selector: ${selector}`)
   await page.type(selector, text)
+}
+
+/**
+ * Types some text into an input found at a selector found within the element
+ * tree of the given element.
+ */
+async function elementType (elementHandle: any, selector: string, text: string) {
+  log.info(`finding selector: ${selector} in element handle ${elementHandle}`)
+  const selectedElement = await elementHandle.$(selector)
+  if (!selectedElement) {
+    throw new Error(`Could't find "${selector}" within elementHandle ${elementHandle}`)
+  }
+  log.info(`typing text: "${text}" into selector: ${selector}`)
+  await selectedElement.type(text)
 }
 
 // ---------------------------------------------------------------------------
@@ -668,12 +864,84 @@ describe('end-to-end', () => {
     await wait(2000, 'for projects to load')
   }, defaultTestTimeout, 'should load the page')
 
+  describe('admin', () => {
+    const testUserEmail = `e2e-test-${fileSafeTestTime}@ibigroup.com`.toLowerCase()
+    const testUserSlug = testUserEmail.split('@')[0]
+    makeTestPostLogin('should allow admin user to create another user', async () => {
+      // navigage to admin page
+      await goto('http://localhost:9966/admin/users', { waitUntil: 'networkidle0' })
+
+      // click on create user button
+      await waitForAndClick('[data-test-id="create-user-button"]')
+
+      // wait for create user dialog to show up
+      await waitForSelector('#formControlsEmail')
+
+      // enter in user data
+      await type('#formControlsEmail', testUserEmail)
+      await type('#formControlsPassword', uuidv4())
+
+      // submit form
+      await click('[data-test-id="confirm-create-user-button"]')
+
+      // wait for user to be saved
+      await wait(2000, 'for user to be created')
+
+      // filter users
+      await filterUsers(testUserSlug)
+
+      // verify that new user is found in list of filtered users
+      await waitForSelector(`[data-test-id="edit-user-${testUserSlug}"]`)
+      await expectSelectorToContainHtml('[data-test-id="user-list"]', testUserEmail)
+    }, defaultTestTimeout)
+
+    makeTestPostLogin('should update a user', async () => {
+      // click on edit button for user
+      await click(`[data-test-id="edit-user-${testUserSlug}"]`)
+
+      // make user an admin
+      await waitForAndClick(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
+
+      // save
+      await click(`[data-test-id="save-user-${testUserSlug}"]`)
+
+      // refresh page
+      await page.reload({ waitUntil: 'networkidle0' })
+
+      // filter users
+      await filterUsers(testUserSlug)
+
+      // verify that user is now an admin
+      await waitForAndClick(`[data-test-id="edit-user-${testUserSlug}"]`)
+      // $FlowFixMe cryptic error that is hard to resolve :(
+      const adminCheckbox = await page.$(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
+      const isAdmin = await (await adminCheckbox.getProperty('checked')).jsonValue()
+      expect(isAdmin).toBe(true)
+    }, defaultTestTimeout, 'should allow admin user to create another user')
+
+    makeTestPostLogin('should delete a user', async () => {
+      // click delete user button
+      await click(`[data-test-id="delete-user-${testUserSlug}"]`)
+
+      // confirm action in modal
+      await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
+      await wait(2000, 'for data to refresh')
+
+      // filter users
+      await filterUsers(testUserSlug)
+
+      // verify that test user is not in list
+      await expectSelectorToNotContainHtml('[data-test-id="user-list"]', testUserEmail)
+    }, defaultTestTimeout, 'should allow admin user to create another user')
+  })
+
   // ---------------------------------------------------------------------------
   // Project tests
   // ---------------------------------------------------------------------------
 
   describe('project', () => {
     makeTestPostLogin('should create a project', async () => {
+      await goto('http://localhost:9966/home', { waitUntil: 'networkidle0' })
       await createProject(testProjectName)
 
       // go into the project page and verify that it looks ok-ish
@@ -697,23 +965,41 @@ describe('end-to-end', () => {
       successfullyCreatedTestProject = true
     }, defaultTestTimeout)
 
-    makeTestPostLogin('should update a project by adding a otp server', async () => {
-      // open settings tab
-      await waitForAndClick('#project-viewer-tabs-tab-settings')
-
-      // navigate to deployments
-      await waitForAndClick('[data-test-id="deployment-settings-link"]', { visible: true })
+    makeTestPostLogin('should update a project by adding an otp server', async () => {
+      // navigate to server admin page
+      await goto(
+        `http://localhost:9966/admin/servers`,
+        {
+          waitUntil: 'networkidle0'
+        }
+      )
+      const containerSelector = '.server-settings-panel'
+      await waitForSelector(containerSelector)
       // add a server
-      await waitForAndClick('[data-test-id="add-server-button"]')
-      await waitForSelector('input[name="otpServers.$index.name"]')
-      await type('input[name="otpServers.$index.name"]', 'test-otp-server')
-      await type('input[name="otpServers.$index.publicUrl"]', 'http://localhost:8080')
-      await type('input[name="otpServers.$index.internalUrl"]', 'http://localhost:8080/otp')
-      await click('[data-test-id="save-settings-button"]')
+      const serverName = 'test-otp-server'
+      await click('[data-test-id="add-server-button"]')
+      await waitForSelector('[data-test-id="[Server name]"]')
+      const newServerPanel = await page.$('[data-test-id="[Server name]"]')
+      await elementType(
+        newServerPanel,
+        'input[name="otpServers.$index.name"]',
+        serverName
+      )
+      await elementType(
+        newServerPanel,
+        'input[name="otpServers.$index.publicUrl"]',
+        'http://localhost:8080'
+      )
+      await elementType(
+        newServerPanel,
+        'input[name="otpServers.$index.internalUrl"]',
+        'http://localhost:8080/otp'
+      )
+      await elementClick(newServerPanel, '[data-test-id="save-item-button"]')
 
       // reload page an verify test server persists
       await page.reload({ waitUntil: 'networkidle0' })
-      await expectSelectorToContainHtml('#project-viewer-tabs', 'test-otp-server')
+      await expectSelectorToContainHtml(containerSelector, serverName)
     }, defaultTestTimeout, 'should create a project')
 
     if (doNonEssentialSteps) {
@@ -821,7 +1107,7 @@ describe('end-to-end', () => {
       // set fetch url
       await type(
         '[data-test-id="feed-source-url-input-group"] input',
-        'https://github.com/catalogueglobal/datatools-ui/raw/dev/configurations/end-to-end/test-gtfs-to-fetch.zip'
+        'https://github.com/ibi-group/datatools-ui/raw/dev/configurations/end-to-end/test-gtfs-to-fetch.zip'
       )
       await click('[data-test-id="feed-source-url-input-group"] button')
       await wait(2000, 'for feed source to update')
@@ -2000,51 +2286,56 @@ describe('end-to-end', () => {
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the routes test suite
     describe('patterns', () => {
-      makeEditorEntityTest('should create pattern', async () => {
-        // open route sidebar
-        await click('[data-test-id="editor-route-nav-button"]')
+      makeEditorEntityTest(
+        'should create pattern',
+        async () => {
+          // open route sidebar
+          await click('[data-test-id="editor-route-nav-button"]')
 
-        // wait for route sidebar form to appear and select first route
-        await waitForAndClick('.entity-list-row')
-        // wait for route details sidebar to appear and go to trip pattern tab
-        await waitForAndClick('[data-test-id="trippattern-tab-button"]')
-        // wait for tab to load and click button to create pattern
-        await waitForAndClick('[data-test-id="new-pattern-button"]')
-        // wait for new pattern to appear
-        await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
+          // wait for route sidebar form to appear and select first route
+          await waitForAndClick('.entity-list-row')
+          // wait for route details sidebar to appear and go to trip pattern tab
+          await waitForAndClick('[data-test-id="trippattern-tab-button"]')
+          // wait for tab to load and click button to create pattern
+          await waitForAndClick('[data-test-id="new-pattern-button"]')
+          // wait for new pattern to appear
+          await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
 
-        // toggle the FeedInfoPanel in case it gets in the way of panel stuff
-        await click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
-        await wait(2000, 'for page to catch up with itself')
+          // toggle the FeedInfoPanel in case it gets in the way of panel stuff
+          await click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
+          await wait(2000, 'for page to catch up with itself')
 
-        // click add stop by name
-        await click('[data-test-id="add-stop-by-name-button"]')
+          // click add stop by name
+          await click('[data-test-id="add-stop-by-name-button"]')
 
-        // wait for stop selector to show up
-        await waitForSelector('.pattern-stop-card .Select-control')
+          // wait for stop selector to show up
+          await waitForSelector('.pattern-stop-card .Select-control')
 
-        // add 1st stop
-        await reactSelectOption('.pattern-stop-card', 'la', 1, true)
-        await wait(2000, 'for 1st stop to save')
+          // add 1st stop
+          await reactSelectOption('.pattern-stop-card', 'la', 1, true)
+          await wait(2000, 'for 1st stop to save')
 
-        // add 2nd stop
-        await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
-        await wait(2000, 'for auto-save to happen')
+          // add 2nd stop
+          await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
+          await wait(2000, 'for auto-save to happen')
 
-        // reload to make sure stuff was saved
-        await page.reload({ waitUntil: 'networkidle0' })
+          // reload to make sure stuff was saved
+          await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for pattern sidebar form to appear
-        await waitForSelector(
-          '[data-test-id="pattern-title-New Pattern"]'
-        )
+          // wait for pattern sidebar form to appear
+          await waitForSelector(
+            '[data-test-id="pattern-title-New Pattern"]'
+          )
 
-        // verify data was saved and retrieved from server
-        await expectSelectorToContainHtml(
-          '.trip-pattern-list',
-          'Russell Av'
-        )
-      }, defaultTestTimeout, ['should create route', 'should create stop'])
+          // verify data was saved and retrieved from server
+          await expectSelectorToContainHtml(
+            '.trip-pattern-list',
+            'Russell Av'
+          )
+        },
+        defaultTestTimeout,
+        ['should create route', 'should create stop', 'should update stop data']
+      )
 
       makeEditorEntityTest('should update pattern data', async () => {
         // change pattern name by appending to end
@@ -2100,7 +2391,7 @@ describe('end-to-end', () => {
           '.trip-pattern-list',
           'New Pattern updated copy'
         )
-      }, defaultTestTimeout, 'should create pattern')
+      }, defaultTestTimeout, 'should update pattern data')
     })
 
     // ---------------------------------------------------------------------------
@@ -2109,87 +2400,92 @@ describe('end-to-end', () => {
     // all of the following editor tests assume the use of the scratch feed and
     // successful completion of the patterns and calendars test suites
     describe('timetables', () => {
-      makeEditorEntityTest('should create trip', async () => {
-        // expand pattern
-        await click('[data-test-id="pattern-title-New Pattern updated"]')
+      makeEditorEntityTest(
+        'should create trip',
+        async () => {
+          // expand pattern
+          await click('[data-test-id="pattern-title-New Pattern updated"]')
 
-        // wait for edit schedules button to appear and click edit schedules
-        await waitForAndClick('[data-test-id="edit-schedules-button"]')
-        // wait for calendar selector to appear
-        await waitForSelector('[data-test-id="calendar-select-container"]')
+          // wait for edit schedules button to appear and click edit schedules
+          await waitForAndClick('[data-test-id="edit-schedules-button"]')
+          // wait for calendar selector to appear
+          await waitForSelector('[data-test-id="calendar-select-container"]')
 
-        // select first calendar
-        await reactSelectOption(
-          '[data-test-id="calendar-select-container"]',
-          'te',
-          1
-        )
+          // select first calendar
+          await reactSelectOption(
+            '[data-test-id="calendar-select-container"]',
+            'te',
+            1
+          )
 
-        // wait for new trip button to appear
-        await waitForSelector('[data-test-id="add-new-trip-button"]')
-        await wait(2000, 'for page to catch up with itself?')
+          // wait for new trip button to appear
+          await waitForSelector('[data-test-id="add-new-trip-button"]')
+          await wait(2000, 'for page to catch up with itself?')
 
-        // click button to create trip
-        await click('[data-test-id="add-new-trip-button"]')
+          // click button to create trip
+          await click('[data-test-id="add-new-trip-button"]')
 
-        // wait for new trip to appear
-        await waitForSelector('[data-test-id="timetable-area"]')
+          // wait for new trip to appear
+          await waitForSelector('[data-test-id="timetable-area"]')
 
-        // click first cell to begin editing
-        await click('.editable-cell')
+          // click first cell to begin editing
+          await click('.editable-cell')
 
-        // enter block id
-        await page.keyboard.type('test-block-id')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // enter block id
+          await page.keyboard.type('test-block-id')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // trip id
-        await page.keyboard.type('test-trip-id')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // trip id
+          await page.keyboard.type('test-trip-id')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // trip headsign
-        await page.keyboard.type('test-headsign')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // trip headsign
+          await page.keyboard.type('test-headsign')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Laurel Dr arrival
-        await page.keyboard.type('1234')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // Laurel Dr arrival
+          await page.keyboard.type('1234')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Laurel Dr departure
-        await page.keyboard.type('1235')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // Laurel Dr departure
+          await page.keyboard.type('1235')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Russell Av arrival
-        await page.keyboard.type('1244')
-        await page.keyboard.press('Tab')
-        await page.keyboard.press('Enter')
+          // Russell Av arrival
+          await page.keyboard.type('1244')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
 
-        // Russell Av departure
-        await page.keyboard.type('1245')
-        await page.keyboard.press('Enter')
+          // Russell Av departure
+          await page.keyboard.type('1245')
+          await page.keyboard.press('Enter')
 
-        // save
-        await click('[data-test-id="save-trip-button"]')
-        await wait(2000, 'for save to happen')
+          // save
+          await click('[data-test-id="save-trip-button"]')
+          await wait(2000, 'for save to happen')
 
-        // reload to make sure stuff was saved
-        await page.reload({ waitUntil: 'networkidle0' })
+          // reload to make sure stuff was saved
+          await page.reload({ waitUntil: 'networkidle0' })
 
-        // wait for trip sidebar form to appear
-        await waitForSelector(
-          '[data-test-id="timetable-area"]'
-        )
+          // wait for trip sidebar form to appear
+          await waitForSelector(
+            '[data-test-id="timetable-area"]'
+          )
 
-        // verify data was saved and retrieved from server
-        await expectSelectorToContainHtml(
-          '[data-test-id="timetable-area"]',
-          'test-trip-id'
-        )
-      }, defaultTestTimeout, ['should create calendar', 'should create pattern'])
+          // verify data was saved and retrieved from server
+          await expectSelectorToContainHtml(
+            '[data-test-id="timetable-area"]',
+            'test-trip-id'
+          )
+        },
+        defaultTestTimeout,
+        ['should create calendar', 'should delete pattern data']
+      )
 
       makeEditorEntityTest('should update trip data', async () => {
         // click first editable cell to begin editing
