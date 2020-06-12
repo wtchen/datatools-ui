@@ -162,7 +162,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         }
 
         if (
-          name !== ISOLATED_TEST ||
+          name !== ISOLATED_TEST &&
             testDependencies[ISOLATED_TEST].indexOf(name) === -1
         ) {
           testResults[name] = true
