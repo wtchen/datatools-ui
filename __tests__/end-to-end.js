@@ -1265,7 +1265,7 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForAndClick('[data-test-id="import-latest-version-button"]')
       // wait for snapshot to get created
-      waitAndClearCompletedJobs()
+      await waitAndClearCompletedJobs()
 
       // begin editing
       await waitForAndClick('[data-test-id="begin-editing-button"]')
@@ -1304,7 +1304,7 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForAndClick('[data-test-id="edit-from-scratch-button"]')
       // wait for snapshot to get created
-      waitAndClearCompletedJobs()
+      await waitAndClearCompletedJobs()
 
       // begin editing
       await waitForAndClick('[data-test-id="begin-editing-button"]')
