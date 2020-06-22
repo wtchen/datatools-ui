@@ -162,7 +162,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         }
 
         if (
-          name !== ISOLATED_TEST ||
+          name !== ISOLATED_TEST &&
             testDependencies[ISOLATED_TEST].indexOf(name) === -1
         ) {
           testResults[name] = true
@@ -1265,7 +1265,7 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForAndClick('[data-test-id="import-latest-version-button"]')
       // wait for snapshot to get created
-      waitAndClearCompletedJobs()
+      await waitAndClearCompletedJobs()
 
       // begin editing
       await waitForAndClick('[data-test-id="begin-editing-button"]')
@@ -1304,7 +1304,7 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForAndClick('[data-test-id="edit-from-scratch-button"]')
       // wait for snapshot to get created
-      waitAndClearCompletedJobs()
+      await waitAndClearCompletedJobs()
 
       // begin editing
       await waitForAndClick('[data-test-id="begin-editing-button"]')
@@ -1739,7 +1739,12 @@ describe('end-to-end', () => {
         // verify data was saved and retrieved from server
         await expectSelectorToContainHtml(
           '[data-test-id="stop-stop_id-input-container"]',
-          'test-stop-1'
+          dummyStop1.id
+        )
+        // verify stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop1.name
         )
       }, defaultTestTimeout)
 
@@ -1765,14 +1770,24 @@ describe('end-to-end', () => {
           '[data-test-id="stop-stop_desc-input-container"] input'
         )
 
-        // verify data was saved and retrieved from server
+        // verify the second stop was saved and retrieved from server
         await expectSelectorToContainHtml(
           '[data-test-id="stop-stop_desc-input-container"]',
           'test 2 updated'
         )
-      }, defaultTestTimeout)
+        // verify the second stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop2.name
+        )
+        // verify the first stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop1.name
+        )
+      }, defaultTestTimeout, 'should create stop')
 
-      makeEditorEntityTest('should delete stop data', async () => {
+      makeEditorEntityTest('should delete stop', async () => {
         // create a new stop that will get deleted
         await click('[data-test-id="clone-stop-button"]')
 
@@ -1822,7 +1837,17 @@ describe('end-to-end', () => {
           '.entity-list',
           'Russell Ave and Valley Dr to delete (3)'
         )
-      }, defaultTestTimeout, 'should create stop')
+        // verify the second stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop2.name
+        )
+        // verify the first stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop1.name
+        )
+      }, defaultTestTimeout, 'should update stop data')
     })
 
     // ---------------------------------------------------------------------------
