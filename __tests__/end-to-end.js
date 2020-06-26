@@ -2471,6 +2471,11 @@ describe('end-to-end', () => {
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 
+          // trip short name 
+          await page.keyboard.type('test-trip-short-name')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter') 
+
           // Laurel Dr arrival
           await page.keyboard.type('1234')
           await page.keyboard.press('Tab')
