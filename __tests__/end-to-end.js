@@ -2471,7 +2471,7 @@ describe('end-to-end', () => {
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 
-          // trip short name 
+          // trip short name
           await page.keyboard.type('test-trip-short-name')
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
