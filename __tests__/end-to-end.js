@@ -915,7 +915,8 @@ describe('end-to-end', () => {
       await waitForAndClick(`[data-test-id="edit-user-${testUserSlug}"]`)
       // $FlowFixMe cryptic error that is hard to resolve :(
       const adminCheckbox = await page.$(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
-      expect(await (await adminCheckbox.getProperty('checked')).jsonValue()).toBe(true)
+      const isAdmin = await (await adminCheckbox.getProperty('checked')).jsonValue()
+      expect(isAdmin).toBe(true)
     }, defaultTestTimeout, 'should allow admin user to create another user')
 
     makeTestPostLogin('should delete a user', async () => {
