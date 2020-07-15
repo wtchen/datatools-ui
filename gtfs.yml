@@ -776,6 +776,7 @@
 
 - id: scheduleexception
   name: (none)
+  datatools: true
   helpContent: Conveyal-specific table for classifying schedule exceptions.
   fields:
   - name: name

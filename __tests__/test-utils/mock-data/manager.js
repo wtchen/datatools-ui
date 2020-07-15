@@ -139,6 +139,7 @@ export const mockFeedWithVersion = {
   retrievalMethod: 'MANUALLY_UPLOADED',
   s3Url: null,
   snapshotVersion: null,
+  transformRules: [],
   url: 'http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip',
   user: null
 }
@@ -160,6 +161,7 @@ export const mockFeedWithoutVersion = {
   retrievalMethod: 'FETCHED_AUTOMATICALLY',
   s3Url: null,
   snapshotVersion: null,
+  transformRules: [],
   url: null,
   user: null
 }
