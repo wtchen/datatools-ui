@@ -64,6 +64,17 @@ Frequency details include:
 - **Trip ID** - unique identifier for the trip
 - **Trip Headsign** - headsign for the trip
 - **Start/End Times** - define the beginning and end time for the interval over which the frequency operates
-- **Headway** - headway (in minutes) that the pattern runs during the time interval
+- **Headway** - headway (in seconds) that the pattern runs during the time interval
 
 ![editing frequencies](../../img/edit-frequencies.png)
+
+## Tutorial Video: 
+The following video demonstrates the creation and editing of timetables described above. 
+<iframe 
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/ghr8IS-_fhc" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+</iframe>

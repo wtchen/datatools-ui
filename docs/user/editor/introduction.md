@@ -22,6 +22,8 @@ Some tables are nested underneath these primary tables. Here's how to find them 
 - **[Fares](fares)** (fare attributes)
     - **[Fare rules](fares/#fare-rules)**
 
+![editor primary tables](../../gif/editor-primary-tables.gif)
+
 ## Quick access toolbar
 
 In the bottom, righthand corner of the Editor, you'll find the quick access toolbar that has a few convenient features you might need while editing.
