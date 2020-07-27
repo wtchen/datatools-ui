@@ -54,7 +54,7 @@ Feed Versions are created from the main Feed Source profile page. There are thre
 
 4. **Service Period Merge** (certain Data Tools configurations only): If a Feed Source has two or more Feed Versions, a new Feed Version can be created by merging two versions representing a transit agency's service over different time periods. While viewing a particular Feed Version, click **Merge with version** (underneath the map view) to select which past version you would like to merge with.
 
-4. **Regional Merge**: For Projects that contain multiple Feed Sources across a region, it can be useful to merge multiple transit agencies together into a combined GTFS feed for the entire region. While viewing a Project's list of Feed Sources, click **Actions > Merge all** to produce a combined GTFS file for all Feed Sources.
+5. **Regional Merge**: For Projects that contain multiple Feed Sources across a region, it can be useful to merge multiple transit agencies together into a combined GTFS feed for the entire region. While viewing a Project's list of Feed Sources, click **Actions > Merge all** to produce a combined GTFS file for all Feed Sources.
 
 **Note:** when uploading or fetching a feed, and the file being uploaded or fetched is not different from the latest version, no new Feed Version will be created.
 
@@ -65,8 +65,6 @@ Data Tools now supports **Feed Transformations**, which can apply a set of chang
 1. **Replace File From Version** - any file in an incoming GTFS (e.g., feed_info.txt) can be overwritten or inserted with a file extracted from a previously loaded feed version.
 
 2. **Replace File From String** - any file in an incoming GTFS (e.g., feed_info.txt) can be overwritten or inserted with user-defined CSV data.
-
-3. **More on the way...** - are there other automatic transformations your agency needs to apply to its GTFS? Get in touch with IBI Group to chat about your needs.
 
 ### Configuring Feed Transformations
 
