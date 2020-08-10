@@ -19,7 +19,9 @@ Choose a calendar from the list to begin editing. To create a new calendar, clic
 
 Schedule exceptions allow users to define days where special services should replace the regularly operating calendars. To create a schedule exception, click the `Exceptions` tab and then click `+ New exception` (replaces the "New calendar" button).
 
-![schedule exception](../../img/schedule-exception.png)
+<div class="img-center">
+  ![create exception](../../gif/schedule-exception.gif)
+</div>
 
 ## Exception details
 
@@ -41,9 +43,8 @@ Click `Edit schedules` to begin creating or editing trips/frequencies for a trip
 
 **Note**: At least one route, pattern and calendar must have been created to edit schedules.
 
-## Documentation Video
-Please see below for a walkthrough of the general steps outlined above. 
-
+## Tutorial Video: Creating Calendars 
+The following video demonstrates the points outlined above. 
 <iframe
     width="560" 
     height="315"
@@ -54,4 +55,3 @@ Please see below for a walkthrough of the general steps outlined above.
     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
     allowfullscreen>
 </iframe>
-

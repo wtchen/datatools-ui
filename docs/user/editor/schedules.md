@@ -68,7 +68,7 @@ Frequency details include:
 
 ![editing frequencies](../../img/edit-frequencies.png)
 
-## Tutorial Video: 
+## Tutorial Video: Creating Timetables
 The following video demonstrates the creation and editing of timetables described above. 
 <iframe 
     width="560" 

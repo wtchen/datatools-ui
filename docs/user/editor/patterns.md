@@ -145,7 +145,7 @@ There are a few different editing modes that allow for the quick and easy creati
 
 **Note**: the last three advanced editing modes should only be used when creating routes in new areas where stops don't already exist.
 
-## Tutorial Video
+## Tutorial Video: Creating Patterns 
 The following video demonstrates the steps for editing patterns, as outlined above. 
 <iframe 
     width="560" 

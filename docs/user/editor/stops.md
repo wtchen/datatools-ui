@@ -1,5 +1,21 @@
 # Stops
 
+## Tutorial Video: Creating and Editing Stops
+The following video demonstrates the creation and editing of stops outlined below, in a step by step manner. The video covers:
+- Adding stops
+- Editing stop positions
+- Editing stop details
+- Showing all stops on map interface
+
+<iframe 
+    width="560" 
+    height="315" 
+    src="https://www.youtube.com/embed/xe3nFrkmw5o" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+</iframe>
+
 ## Editing stops
 
 To begin editing stops, click the map marker icon button on the lefthand navigation bar.
@@ -34,16 +50,7 @@ To view all stops for a feed, hover over the map layers icon (in the top, leftha
 
 Clicking on a stop shown in this layer will select the stop for editing, but be careful—it can be tricky to select the right stop from very far away!
 
-## Tutorial Video: 
-The following video demonstrates the creation and editing of stops outlined above in a step by step manner. 
-<iframe 
-    width="560" 
-    height="315" 
-    src="https://www.youtube.com/embed/xe3nFrkmw5o" 
-    frameborder="0" 
-    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-    allowfullscreen>
-</iframe>
+
 
 <!-- Need to add feature -->
 <!-- Merge/Manage Stops – By clicking the ‘Find Duplicate Stops’ button all stops within 15 meters of

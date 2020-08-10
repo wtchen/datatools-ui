@@ -16,9 +16,9 @@ Clicking the 🔍 button (in the top toolbar) with a route selected adjusts the 
 Some of the fields to be filled in are required before you can ‘Save and Continue’ and move to the next step, these are:
 
 - **Status** - takes the following values: 
-    - **In-Progress** - showing a route has not been completely entered.
+    - **In-Progress** - showing a route has not been completely entered
     - **Pending Approval** - a route has all the information entered and is awaiting a senior person to sign it off
-    - **Approved** - all the above stages have been completed.
+    - **Approved** - all the above stages have been completed
 - **Publicly Visible?** - this must be set to "Yes" for the route to be included in a GTFS output. 
 - **route_id** - an identifier for the route. A randomly generated ID is provided by default.
 - **route_short_name** – name of the service/route, this may just be a number
@@ -28,7 +28,7 @@ Some of the fields to be filled in are required before you can ‘Save and Conti
 Other fields in this section are optional and do not have to be filled in, these are:
 - **agency_id** - the agency identifier from the defined agencies. Generally this field is automatically populated. 
 - **route_desc** – a description of the route, do not simply repeat the information in ‘Long name’
-- **route_sort_order** - Orders the routes for presentation to GTFS consumers. Routes with smaller route_sort_order values should be displayed first. 
+- **route_sort_order** - Orders the routes for presentation to GTFS consumers. Routes with smaller route_sort_order values should be displayed first
 - **route_url** – a link to a webpage with information on the specific route, such as the timetable
 - **route_color** – if a route has a color (for use in trip planners etc) it can be assigned here
 - **route_text_color** – if a route has a text color (for use in trip planners etc) it can be assigned here
@@ -45,7 +45,7 @@ Once you've created and saved a route, you can then begin creating trip patterns
 
 [Learn about editing trip patterns »](patterns)
 
-## Tutorial Video: 
+## Tutorial Video: Creating Routes
 The following video demonstrates the editing of a new route outlined above, in a step by step manner. 
 <iframe 
     width="560" 
