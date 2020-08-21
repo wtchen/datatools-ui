@@ -147,6 +147,7 @@ There are a few different editing modes that allow for the quick and easy creati
 
 ## Tutorial Video: Creating Patterns 
 The following video demonstrates the steps for editing patterns, as outlined above. 
+
 <iframe 
     width="560" 
     height="315" 

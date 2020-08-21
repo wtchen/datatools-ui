@@ -70,6 +70,7 @@ Frequency details include:
 
 ## Tutorial Video: Creating Timetables
 The following video demonstrates the creation and editing of timetables described above. 
+
 <iframe 
     width="560" 
     height="315" 
