@@ -18,8 +18,8 @@ Each selection has a set of statistics associated with it to give you a sense of
 ![schedule selector](../../img/timetable-selector.png)
 
 ## Schedule toolbar
-<div class="img-center">
-  ![schedule toolbar](../../img/schedule-toolbar.png)
+<div style="text-align:center">
+    <img src = "../../img/schedule-toolbar.png"> </img>
 </div>
 
 - **Add trip** - add blank trip (first timepoint is `00:00:00`)
@@ -31,8 +31,8 @@ Each selection has a set of statistics associated with it to give you a sense of
 
 ## Selecting trips
 To select trips to offset, duplicate or delete, click the row number on the lefthand side of the row. To toggle selection of all trips, click the box in the upper lefthand corner.
-<div class="img-center">
-  ![select trips](../../img/select-trips.png)
+<div style = "text-align:center">
+    <img src = "../../img/select-trips.png" > </img>
 </div>
 
 ## Recognized time entry formats

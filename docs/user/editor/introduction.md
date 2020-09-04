@@ -27,8 +27,8 @@ Some tables are nested underneath these primary tables. Here's how to find them 
 ## Quick access toolbar
 
 In the bottom, righthand corner of the Editor, you'll find the quick access toolbar that has a few convenient features you might need while editing.
-<div class="img-center">
-![quick access toolbar](../../img/quick-access-toolbar.png)
+<div style = "text-align:center"> 
+    <img src = "../../img/quick-access-toolbar.png" > </img> 
 </div>
 
 From left to right, these functions are:
