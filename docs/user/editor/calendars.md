@@ -4,7 +4,7 @@
 
 To begin editing calendars, click the 📅 button on the lefthand navigation bar.
 
-![screenshot](../../img/edit-calendars.png)
+![editing calendars](../../gif/edit-calendar.gif)
 
 Choose a calendar from the list to begin editing. To create a new calendar, click `+ New calendar`. **Note:** as with all newly created items (except patterns), the new calendar will not be saved until the save icon (💾) is clicked.
 
@@ -19,9 +19,7 @@ Choose a calendar from the list to begin editing. To create a new calendar, clic
 
 Schedule exceptions allow users to define days where special services should replace the regularly operating calendars. To create a schedule exception, click the `Exceptions` tab and then click `+ New exception` (replaces the "New calendar" button).
 
-<div style = "text-align:center"> 
-    <img src = "../../gif/schedule-exception.gif"> </img>
-</div>
+![schedule exception](../../gif/schedule-exception.gif)
 
 ## Exception details
 

@@ -18,9 +18,7 @@ Each selection has a set of statistics associated with it to give you a sense of
 ![schedule selector](../../img/timetable-selector.png)
 
 ## Schedule toolbar
-<div style="text-align:center">
-    <img src = "../../img/schedule-toolbar.png"> </img>
-</div>
+![schedule-toolbar](../../img/schedule-toolbar.png)
 
 - **Add trip** - add blank trip (first timepoint is `00:00:00`)
 - **Duplicate trip(s)** - duplicate the last trip in the spreadsheet or whichever rows are selected
@@ -31,9 +29,8 @@ Each selection has a set of statistics associated with it to give you a sense of
 
 ## Selecting trips
 To select trips to offset, duplicate or delete, click the row number on the lefthand side of the row. To toggle selection of all trips, click the box in the upper lefthand corner.
-<div style = "text-align:center">
-    <img src = "../../img/select-trips.png" > </img>
-</div>
+
+![select trips](../../img/select-trips.png)
 
 ## Recognized time entry formats
 When entering times manually into the schedule editor they will automatically be converted to a standardized format `13:00:00`. The following time formats are automatically recognized and converted:
