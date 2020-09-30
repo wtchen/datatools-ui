@@ -620,6 +620,7 @@ h4.line:after {
   height: auto;
   max-height: 400px;
   overflow-x: hidden;
+  z-index: 99999 !important;
 }
 
 .manager-header {
