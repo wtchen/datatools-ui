@@ -52,14 +52,15 @@ export function makeMockDeployment (
     latest: null,
     name: 'mock-deployment',
     organizationId: null,
-    osmFileId: null,
+    osmExtractUrl: null,
     otpCommit: null,
     otpVersion: null,
-    project,
+    projectId: project.id,
     projectBounds: {east: 0, west: 0, north: 0, south: 0},
     r5: false,
     r5Version: null,
     routerId: null,
+    skipOsmExtract: false,
     user: null
   }
 }
@@ -138,6 +139,7 @@ export const mockFeedWithVersion = {
   retrievalMethod: 'MANUALLY_UPLOADED',
   s3Url: null,
   snapshotVersion: null,
+  transformRules: [],
   url: 'http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip',
   user: null
 }
@@ -159,6 +161,7 @@ export const mockFeedWithoutVersion = {
   retrievalMethod: 'FETCHED_AUTOMATICALLY',
   s3Url: null,
   snapshotVersion: null,
+  transformRules: [],
   url: null,
   user: null
 }

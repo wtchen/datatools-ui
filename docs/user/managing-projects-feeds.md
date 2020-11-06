@@ -46,16 +46,41 @@ At the top of the page is a set of tabs, which include:
 
 Feed Versions are created from the main Feed Source profile page. There are three methods for creating new versions:
 
-1. **Manually Upload a File**: Select "Manually Uploaded" from the `+ Create new version` dropdown. The button next the the dropdown should now say "Upload." Click the "Upload" button to select a GTFS file from your local machine.
+1. **Manually Upload a File**: Select "Manually Uploaded" from the `+ Create new version` dropdown. The button next to the dropdown should now say "Upload." Click the "Upload" button to select a GTFS file from your local machine.
 
 2. **Fetch From A Remote URL**: Select "Fetch" from the `+ Create new version` dropdown. **Note:** to fetch a new version, the "Feed source fetch URL" property must be set to a valid GTFS URL under `Feed Source > Settings`.
 
 3. **Import From the GTFS Editor**: Select "From snapshot" from the `+ Create new version` dropdown. The list of snapshots should now be visible showing any available snapshots of the feed in the Editor. Select the desired snapshot by clicking the "Publish" button to publish the snapshot as a new version.
 
+4. **Service Period Merge** (certain Data Tools configurations only): If a Feed Source has two or more Feed Versions, a new Feed Version can be created by merging two versions representing a transit agency's service over different time periods. While viewing a particular Feed Version, click `Merge with version` (underneath the map view) to select which past version you would like to merge with.
+
+5. **Regional Merge**: For Projects that contain multiple Feed Sources across a region, it can be useful to merge multiple transit agencies together into a combined GTFS feed for the entire region. While viewing a Project's list of Feed Sources, click `Actions > Merge all` to produce a combined GTFS file for all Feed Sources.
+
 **Note:** when uploading or fetching a feed, and the file being uploaded or fetched is not different from the latest version, no new Feed Version will be created.
 
-## Loading Feed Versions into Editor
+## Feed Transformations
 
+Data Tools now supports **Feed Transformations**, which can apply a set of changes automatically to each new GTFS feed loaded into the system. This is especially helpful for applying repeatable changes to or inserting supplementary files into GTFS feeds that need to be enhanced. It provides a critical stopgap to improve GTFS coming out of systems that cannot be modified (e.g., scheduling software that has a rigid export format). The different transformation types currently supported are:
+
+1. **Replace File From Version** - any file in an incoming GTFS (e.g., feed_info.txt) can be overwritten or inserted with a file extracted from a previously loaded feed version.
+
+2. **Replace File From String** - any file in an incoming GTFS (e.g., feed_info.txt) can be overwritten or inserted with user-defined CSV data.
+
+### Configuring Feed Transformations
+
+Follow the steps below to configure Feed Transformations for an existing Feed Source:
+
+1. Select a Feed Source and click `Settings > Feed Transformations`.
+2. From here, click `Add transformation` to begin creating a new set of rules for incoming GTFS feeds. Your first ruleset will automatically apply to GTFS that is fetched automatically *and* manually uploaded, but this can be changed for each ruleset to apply to any of the retrieval methods listed in [Creating Feed Versions](#creating-feed-versions).
+3. Click `Add step to transformation` to select a transformation type and fill in the required fields for each type. Multiple transformations can be specified and each will be applied to the incoming GTFS file in the order that they are defined.
+
+![screenshot](../img/configure-feed-transformations.png)
+
+### Viewing the Feed Transformation Summary
+
+Once the Feed Transformations have all been configured, you can import a new GTFS file using one of the retrieval methods you have specified for your ruleset. Once the GTFS file has been processed, a summary of the transformations is available by hovering over the wrench icon that is visible in the Feed Version panel.
+
+![screenshot](../img/feed-transformation-summary.png)
 
 
 ## Viewing and Managing Feed Versions
