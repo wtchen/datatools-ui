@@ -71,7 +71,7 @@
     "react": "^15.4.1",
     "react-addons-shallow-compare": "^15.4.1",
     "react-addons-update": "^15.4.1",
-    "react-bootstrap": "^0.33",
+    "react-bootstrap": "^0.30.0-rc.2",
     "react-bootstrap-datetimepicker": "^0.0.22",
     "react-bootstrap-table": "https://github.com/conveyal/react-bootstrap-table.git",
     "react-color": "^2.3.4",
