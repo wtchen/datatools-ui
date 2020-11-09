@@ -196,14 +196,11 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
               keyboard={true}
               manager={
                 ModalManager {
-                  "add": [Function],
                   "containers": Array [],
                   "data": Array [],
                   "handleContainerOverflow": true,
                   "hideSiblingNodes": true,
-                  "isTopModal": [Function],
                   "modals": Array [],
-                  "remove": [Function],
                 }
               }
               onHide={[Function]}
@@ -215,26 +212,23 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                 autoFocus={true}
                 backdrop={true}
                 backdropClassName="modal-backdrop"
-                backdropTransition={[Function]}
+                backdropTransitionTimeout={150}
                 containerClassName="modal-open"
+                dialogTransitionTimeout={300}
                 enforceFocus={true}
                 keyboard={true}
                 manager={
                   ModalManager {
-                    "add": [Function],
                     "containers": Array [],
                     "data": Array [],
                     "handleContainerOverflow": true,
                     "hideSiblingNodes": true,
-                    "isTopModal": [Function],
                     "modals": Array [],
-                    "remove": [Function],
                   }
                 }
                 onEntering={[Function]}
                 onExited={[Function]}
                 onHide={[Function]}
-                onMouseUp={[Function]}
                 renderBackdrop={[Function]}
                 restoreFocus={true}
                 show={false}
@@ -253,14 +247,11 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
               keyboard={true}
               manager={
                 ModalManager {
-                  "add": [Function],
                   "containers": Array [],
                   "data": Array [],
                   "handleContainerOverflow": true,
                   "hideSiblingNodes": true,
-                  "isTopModal": [Function],
                   "modals": Array [],
-                  "remove": [Function],
                 }
               }
               onHide={[Function]}
@@ -272,26 +263,23 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                 autoFocus={true}
                 backdrop={true}
                 backdropClassName="modal-backdrop"
-                backdropTransition={[Function]}
+                backdropTransitionTimeout={150}
                 containerClassName="modal-open"
+                dialogTransitionTimeout={300}
                 enforceFocus={true}
                 keyboard={true}
                 manager={
                   ModalManager {
-                    "add": [Function],
                     "containers": Array [],
                     "data": Array [],
                     "handleContainerOverflow": true,
                     "hideSiblingNodes": true,
-                    "isTopModal": [Function],
                     "modals": Array [],
-                    "remove": [Function],
                   }
                 }
                 onEntering={[Function]}
                 onExited={[Function]}
                 onHide={[Function]}
-                onMouseUp={[Function]}
                 renderBackdrop={[Function]}
                 restoreFocus={true}
                 show={false}
@@ -310,14 +298,11 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
               keyboard={true}
               manager={
                 ModalManager {
-                  "add": [Function],
                   "containers": Array [],
                   "data": Array [],
                   "handleContainerOverflow": true,
                   "hideSiblingNodes": true,
-                  "isTopModal": [Function],
                   "modals": Array [],
-                  "remove": [Function],
                 }
               }
               onHide={[Function]}
@@ -329,26 +314,23 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                 autoFocus={true}
                 backdrop={true}
                 backdropClassName="modal-backdrop"
-                backdropTransition={[Function]}
+                backdropTransitionTimeout={150}
                 containerClassName="modal-open"
+                dialogTransitionTimeout={300}
                 enforceFocus={true}
                 keyboard={true}
                 manager={
                   ModalManager {
-                    "add": [Function],
                     "containers": Array [],
                     "data": Array [],
                     "handleContainerOverflow": true,
                     "hideSiblingNodes": true,
-                    "isTopModal": [Function],
                     "modals": Array [],
-                    "remove": [Function],
                   }
                 }
                 onEntering={[Function]}
                 onExited={[Function]}
                 onHide={[Function]}
-                onMouseUp={[Function]}
                 renderBackdrop={[Function]}
                 restoreFocus={true}
                 show={false}
@@ -371,14 +353,11 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                 keyboard={true}
                 manager={
                   ModalManager {
-                    "add": [Function],
                     "containers": Array [],
                     "data": Array [],
                     "handleContainerOverflow": true,
                     "hideSiblingNodes": true,
-                    "isTopModal": [Function],
                     "modals": Array [],
-                    "remove": [Function],
                   }
                 }
                 onHide={[Function]}
@@ -390,26 +369,23 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                   autoFocus={true}
                   backdrop={true}
                   backdropClassName="modal-backdrop"
-                  backdropTransition={[Function]}
+                  backdropTransitionTimeout={150}
                   containerClassName="modal-open"
+                  dialogTransitionTimeout={300}
                   enforceFocus={true}
                   keyboard={true}
                   manager={
                     ModalManager {
-                      "add": [Function],
                       "containers": Array [],
                       "data": Array [],
                       "handleContainerOverflow": true,
                       "hideSiblingNodes": true,
-                      "isTopModal": [Function],
                       "modals": Array [],
-                      "remove": [Function],
                     }
                   }
                   onEntering={[Function]}
                   onExited={[Function]}
                   onHide={[Function]}
-                  onMouseUp={[Function]}
                   renderBackdrop={[Function]}
                   restoreFocus={true}
                   show={false}
@@ -1884,18 +1860,18 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                       eventKey="sources"
                                     >
                                       <Fade
-                                        appear={false}
                                         in={true}
                                         mountOnEnter={true}
                                         onEnter={[Function]}
                                         onExited={[Function]}
                                         timeout={300}
+                                        transitionAppear={false}
                                         unmountOnExit={false}
                                       >
                                         <Transition
-                                          appear={false}
-                                          enter={true}
-                                          exit={true}
+                                          className="fade"
+                                          enteredClassName="in"
+                                          enteringClassName="in"
                                           in={true}
                                           mountOnEnter={true}
                                           onEnter={[Function]}
@@ -1905,12 +1881,13 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                           onExited={[Function]}
                                           onExiting={[Function]}
                                           timeout={300}
+                                          transitionAppear={false}
                                           unmountOnExit={false}
                                         >
                                           <div
                                             aria-hidden={false}
                                             aria-labelledby="project-viewer-tabs-tab-sources"
-                                            className="fade tab-pane active in"
+                                            className="tab-pane active fade in"
                                             id="project-viewer-tabs-pane-sources"
                                             role="tabpanel"
                                           >
@@ -2082,7 +2059,10 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                           }
                                                         }
                                                       >
-                                                        <Uncontrolled(Panel)
+                                                        <Panel
+                                                          bsClass="panel"
+                                                          bsStyle="default"
+                                                          defaultExpanded={false}
                                                           header={
                                                             <Connect(ProjectFeedListToolbar)
                                                               onNewFeedSourceClick={[Function]}
@@ -2123,11 +2103,14 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                             />
                                                           }
                                                         >
-                                                          <Panel
-                                                            bsClass="panel"
-                                                            bsStyle="default"
-                                                            header={
+                                                          <div
+                                                            className="panel panel-default"
+                                                          >
+                                                            <div
+                                                              className="panel-heading"
+                                                            >
                                                               <Connect(ProjectFeedListToolbar)
+                                                                className="panel-title"
                                                                 onNewFeedSourceClick={[Function]}
                                                                 project={
                                                                   Object {
@@ -2163,15 +2146,35 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                     "user": null,
                                                                   }
                                                                 }
-                                                              />
-                                                            }
-                                                            onToggle={[Function]}
-                                                          >
-                                                            <div
-                                                              className="panel panel-default"
-                                                              header={
-                                                                <Connect(ProjectFeedListToolbar)
+                                                              >
+                                                                <ProjectFeedListToolbar
+                                                                  calculateFeedSourceTableComparisonColumn={[Function]}
+                                                                  className="panel-title"
+                                                                  downloadFeedForProject={[Function]}
+                                                                  fetchFeedsForProject={[Function]}
+                                                                  filter={
+                                                                    Object {
+                                                                      "feedSourceTableComparisonColumn": null,
+                                                                      "feedSourceTableFilterCountStrategy": "LATEST",
+                                                                      "filter": null,
+                                                                      "searchText": null,
+                                                                    }
+                                                                  }
+                                                                  filterCounts={
+                                                                    Object {
+                                                                      "active": 0,
+                                                                      "all": 0,
+                                                                      "expired": 0,
+                                                                      "expiring": 0,
+                                                                      "future": 0,
+                                                                    }
+                                                                  }
                                                                   onNewFeedSourceClick={[Function]}
+                                                                  possibleComparisons={
+                                                                    Array [
+                                                                      "LATEST",
+                                                                    ]
+                                                                  }
                                                                   project={
                                                                     Object {
                                                                       "autoFetchFeeds": true,
@@ -2206,60 +2209,1501 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                       "user": null,
                                                                     }
                                                                   }
-                                                                />
-                                                              }
-                                                            >
-                                                              <ListGroup
-                                                                bsClass="list-group"
-                                                                fill={true}
-                                                              >
-                                                                <ul
-                                                                  className="list-group"
-                                                                  fill={true}
+                                                                  projectEditDisabled={false}
+                                                                  setFeedSort={[Function]}
+                                                                  setFeedSourceTableFilterCountStrategy={[Function]}
+                                                                  setVisibilityFilter={[Function]}
+                                                                  setVisibilitySearchText={[Function]}
+                                                                  sort="alphabetically-asc"
+                                                                  thirdPartySync={[Function]}
+                                                                  user={
+                                                                    Object {
+                                                                      "isCheckingLogin": false,
+                                                                      "permissions": UserPermissions {
+                                                                        "appPermissionLookup": Object {
+                                                                          "administer-application": Object {
+                                                                            "type": "administer-application",
+                                                                          },
+                                                                        },
+                                                                        "orgPermissionLookup": Object {},
+                                                                        "organizationLookup": Object {},
+                                                                        "projectLookup": Object {},
+                                                                      },
+                                                                      "profile": Object {
+                                                                        "app_metadata": Object {
+                                                                          "datatools": Array [
+                                                                            Object {
+                                                                              "client_id": "mock-client-id",
+                                                                              "organizations": Array [],
+                                                                              "permissions": Array [
+                                                                                Object {
+                                                                                  "type": "administer-application",
+                                                                                },
+                                                                              ],
+                                                                              "projects": Array [],
+                                                                              "subscriptions": Array [],
+                                                                            },
+                                                                          ],
+                                                                        },
+                                                                        "clientID": "mock-client-id",
+                                                                        "created_at": "2016-03-04T18:59:22.569Z",
+                                                                        "email": "mock-user@conveyal.com",
+                                                                        "email_verified": true,
+                                                                        "identities": Array [
+                                                                          Object {
+                                                                            "connection": "Username-Password-Authentication",
+                                                                            "isSocial": false,
+                                                                            "provider": "auth0",
+                                                                            "user_id": "12345",
+                                                                          },
+                                                                        ],
+                                                                        "jti": "gibberish",
+                                                                        "last_password_reset": "2017-07-13T13:58:01.021Z",
+                                                                        "name": "mock-user@conveyal.com",
+                                                                        "nickname": "mock-user",
+                                                                        "persistent": Object {},
+                                                                        "picture": "https://s.gravatar.com/avatar/f8660ca52d1229e3d55e88f2db4affda?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fmu.png",
+                                                                        "sub": "auth0|12345",
+                                                                        "updated_at": "2019-03-21T19:05:30.180Z",
+                                                                        "user_id": "auth0|12345",
+                                                                        "user_metadata": Object {
+                                                                          "datatools": Array [
+                                                                            Object {
+                                                                              "client_id": "mock-client-id",
+                                                                              "editor": Object {
+                                                                                "map_id": "mapbox.streets",
+                                                                              },
+                                                                              "hideTutorial": true,
+                                                                              "sidebarExpanded": false,
+                                                                            },
+                                                                          ],
+                                                                          "lang": "en",
+                                                                        },
+                                                                      },
+                                                                      "recentActivity": null,
+                                                                      "redirectOnSuccess": null,
+                                                                      "subscriptions": UserSubscriptions {
+                                                                        "subscriptionLookup": Object {},
+                                                                      },
+                                                                      "token": "mock-token",
+                                                                    }
+                                                                  }
                                                                 >
-                                                                  <ListGroupItem
-                                                                    bsClass="list-group-item"
-                                                                    className="text-center"
-                                                                    key=".0"
-                                                                    listItem={true}
+                                                                  <Row
+                                                                    bsClass="row"
+                                                                    componentClass="div"
                                                                   >
-                                                                    <li
-                                                                      className="text-center list-group-item"
+                                                                    <div
+                                                                      className="row"
                                                                     >
-                                                                      <Button
-                                                                        active={false}
-                                                                        block={false}
-                                                                        bsClass="btn"
-                                                                        bsStyle="success"
+                                                                      <Col
+                                                                        bsClass="col"
+                                                                        componentClass="div"
+                                                                        style={
+                                                                          Object {
+                                                                            "marginTop": 25,
+                                                                          }
+                                                                        }
+                                                                        xs={4}
+                                                                      >
+                                                                        <div
+                                                                          className="col-xs-4"
+                                                                          style={
+                                                                            Object {
+                                                                              "marginTop": 25,
+                                                                            }
+                                                                          }
+                                                                        >
+                                                                          <Form
+                                                                            bsClass="form"
+                                                                            componentClass="form"
+                                                                            horizontal={false}
+                                                                            inline={true}
+                                                                            style={
+                                                                              Object {
+                                                                                "display": "inline",
+                                                                              }
+                                                                            }
+                                                                          >
+                                                                            <form
+                                                                              className="form-inline"
+                                                                              style={
+                                                                                Object {
+                                                                                  "display": "inline",
+                                                                                }
+                                                                              }
+                                                                            >
+                                                                              <FormGroup
+                                                                                bsClass="form-group"
+                                                                                className="feed-source-toolbar-formgroup"
+                                                                                controlId="formControlsSelect"
+                                                                              >
+                                                                                <div
+                                                                                  className="feed-source-toolbar-formgroup form-group"
+                                                                                >
+                                                                                  <FormControl
+                                                                                    bsClass="form-control"
+                                                                                    componentClass="input"
+                                                                                    onChange={[Function]}
+                                                                                    placeholder="Search by name"
+                                                                                  >
+                                                                                    <input
+                                                                                      className="form-control"
+                                                                                      id="formControlsSelect"
+                                                                                      onChange={[Function]}
+                                                                                      placeholder="Search by name"
+                                                                                    />
+                                                                                  </FormControl>
+                                                                                </div>
+                                                                              </FormGroup>
+                                                                            </form>
+                                                                          </Form>
+                                                                          <DropdownButton
+                                                                            id="project-feedsource-table-sort-button"
+                                                                            style={
+                                                                              Object {
+                                                                                "marginLeft": 20,
+                                                                              }
+                                                                            }
+                                                                            title="Sort By"
+                                                                          >
+                                                                            <Uncontrolled(Dropdown)
+                                                                              id="project-feedsource-table-sort-button"
+                                                                            >
+                                                                              <Dropdown
+                                                                                bsClass="dropdown"
+                                                                                componentClass={[Function]}
+                                                                                id="project-feedsource-table-sort-button"
+                                                                                onToggle={[Function]}
+                                                                              >
+                                                                                <ButtonGroup
+                                                                                  block={false}
+                                                                                  bsClass="btn-group"
+                                                                                  className="dropdown"
+                                                                                  justified={false}
+                                                                                  vertical={false}
+                                                                                >
+                                                                                  <div
+                                                                                    className="dropdown btn-group"
+                                                                                  >
+                                                                                    <DropdownToggle
+                                                                                      bsClass="dropdown-toggle"
+                                                                                      bsRole="toggle"
+                                                                                      id="project-feedsource-table-sort-button"
+                                                                                      key=".0"
+                                                                                      onClick={[Function]}
+                                                                                      onKeyDown={[Function]}
+                                                                                      open={false}
+                                                                                      style={
+                                                                                        Object {
+                                                                                          "marginLeft": 20,
+                                                                                        }
+                                                                                      }
+                                                                                      useAnchor={false}
+                                                                                    >
+                                                                                      <Button
+                                                                                        active={false}
+                                                                                        aria-expanded={false}
+                                                                                        aria-haspopup={true}
+                                                                                        block={false}
+                                                                                        bsClass="btn"
+                                                                                        bsStyle="default"
+                                                                                        className="dropdown-toggle"
+                                                                                        disabled={false}
+                                                                                        id="project-feedsource-table-sort-button"
+                                                                                        onClick={[Function]}
+                                                                                        onKeyDown={[Function]}
+                                                                                        role="button"
+                                                                                        style={
+                                                                                          Object {
+                                                                                            "marginLeft": 20,
+                                                                                          }
+                                                                                        }
+                                                                                      >
+                                                                                        <button
+                                                                                          aria-expanded={false}
+                                                                                          aria-haspopup={true}
+                                                                                          className="dropdown-toggle btn btn-default"
+                                                                                          disabled={false}
+                                                                                          id="project-feedsource-table-sort-button"
+                                                                                          onClick={[Function]}
+                                                                                          onKeyDown={[Function]}
+                                                                                          role="button"
+                                                                                          style={
+                                                                                            Object {
+                                                                                              "marginLeft": 20,
+                                                                                            }
+                                                                                          }
+                                                                                          type="button"
+                                                                                        >
+                                                                                          Sort By
+                                                                                           
+                                                                                          <span
+                                                                                            className="caret"
+                                                                                          />
+                                                                                        </button>
+                                                                                      </Button>
+                                                                                    </DropdownToggle>
+                                                                                    <DropdownMenu
+                                                                                      bsClass="dropdown-menu"
+                                                                                      bsRole="menu"
+                                                                                      key=".1"
+                                                                                      labelledBy="project-feedsource-table-sort-button"
+                                                                                      onClose={[Function]}
+                                                                                      onSelect={[Function]}
+                                                                                      pullRight={false}
+                                                                                    >
+                                                                                      <RootCloseWrapper
+                                                                                        disabled={true}
+                                                                                        event="click"
+                                                                                        onRootClose={[Function]}
+                                                                                      >
+                                                                                        <ul
+                                                                                          aria-labelledby="project-feedsource-table-sort-button"
+                                                                                          className="dropdown-menu"
+                                                                                          role="menu"
+                                                                                        >
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={true}
+                                                                                            key=".$sort-header-note"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="dropdown-header"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="heading"
+                                                                                            >
+                                                                                              Note: sorting only available on latest version data
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={true}
+                                                                                            key=".$feed-sort-alphabetically-header"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="dropdown-header"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="heading"
+                                                                                            >
+                                                                                              Alphabetically
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-alphabetically-asc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  A-Z
+                                                                                                  <Icon
+                                                                                                    style={
+                                                                                                      Object {
+                                                                                                        "marginLeft": 6,
+                                                                                                      }
+                                                                                                    }
+                                                                                                    type="check"
+                                                                                                  >
+                                                                                                    <i
+                                                                                                      className="fa fa-check fa-fw "
+                                                                                                      style={
+                                                                                                        Object {
+                                                                                                          "marginLeft": 6,
+                                                                                                        }
+                                                                                                      }
+                                                                                                    />
+                                                                                                  </Icon>
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-alphabetically-desc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Z-A
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={true}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-alphabetically-divider"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="divider"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="separator"
+                                                                                            />
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={true}
+                                                                                            key=".$feed-sort-endDate-header"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="dropdown-header"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="heading"
+                                                                                            >
+                                                                                              Expiration Date
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-endDate-asc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Earliest-Latest
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-endDate-desc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Latest-Earliest
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={true}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-endDate-divider"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="divider"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="separator"
+                                                                                            />
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={true}
+                                                                                            key=".$feed-sort-startDate-header"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="dropdown-header"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="heading"
+                                                                                            >
+                                                                                              Start Date
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-startDate-asc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Earliest-Latest
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-startDate-desc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Latest-Earliest
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={true}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-startDate-divider"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="divider"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="separator"
+                                                                                            />
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={true}
+                                                                                            key=".$feed-sort-lastUpdated-header"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="dropdown-header"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="heading"
+                                                                                            >
+                                                                                              Last Update
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-lastUpdated-asc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Stale-Recent
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-lastUpdated-desc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Recent-Stale
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={true}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-lastUpdated-divider"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="divider"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="separator"
+                                                                                            />
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={true}
+                                                                                            key=".$feed-sort-numErrors-header"
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className="dropdown-header"
+                                                                                              onKeyDown={[Function]}
+                                                                                              role="heading"
+                                                                                            >
+                                                                                              Number of Issues
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-numErrors-asc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Least-Most
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$feed-sort-numErrors-desc"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  Most-Least
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                        </ul>
+                                                                                      </RootCloseWrapper>
+                                                                                    </DropdownMenu>
+                                                                                  </div>
+                                                                                </ButtonGroup>
+                                                                              </Dropdown>
+                                                                            </Uncontrolled(Dropdown)>
+                                                                          </DropdownButton>
+                                                                        </div>
+                                                                      </Col>
+                                                                      <Col
+                                                                        bsClass="col"
+                                                                        componentClass="div"
+                                                                        xs={6}
+                                                                      >
+                                                                        <div
+                                                                          className="col-xs-6"
+                                                                        >
+                                                                          <FormGroup
+                                                                            bsClass="form-group"
+                                                                            id="feedFilterToolbarControl"
+                                                                          >
+                                                                            <div
+                                                                              className="form-group"
+                                                                              id="feedFilterToolbarControl"
+                                                                            >
+                                                                              <ControlLabel
+                                                                                bsClass="control-label"
+                                                                                srOnly={false}
+                                                                                style={
+                                                                                  Object {
+                                                                                    "display": "block",
+                                                                                  }
+                                                                                }
+                                                                              >
+                                                                                <label
+                                                                                  className="control-label"
+                                                                                  style={
+                                                                                    Object {
+                                                                                      "display": "block",
+                                                                                    }
+                                                                                  }
+                                                                                >
+                                                                                  Filter feed sources on
+                                                                                  <span
+                                                                                    style={
+                                                                                      Object {
+                                                                                        "marginLeft": 5,
+                                                                                        "marginRight": 5,
+                                                                                      }
+                                                                                    }
+                                                                                  >
+                                                                                    Latest
+                                                                                  </span>
+                                                                                  version
+                                                                                </label>
+                                                                              </ControlLabel>
+                                                                              <ButtonGroup
+                                                                                block={false}
+                                                                                bsClass="btn-group"
+                                                                                justified={false}
+                                                                                vertical={false}
+                                                                              >
+                                                                                <div
+                                                                                  className="btn-group"
+                                                                                >
+                                                                                  <OptionButton
+                                                                                    active={true}
+                                                                                    className="active"
+                                                                                    key="all"
+                                                                                    onClick={[Function]}
+                                                                                    value="all"
+                                                                                  >
+                                                                                    <Button
+                                                                                      active={true}
+                                                                                      block={false}
+                                                                                      bsClass="btn"
+                                                                                      bsStyle="default"
+                                                                                      className="active"
+                                                                                      disabled={false}
+                                                                                      href="#"
+                                                                                      onClick={[Function]}
+                                                                                      value="all"
+                                                                                    >
+                                                                                      <SafeAnchor
+                                                                                        className="active btn btn-default active"
+                                                                                        componentClass="a"
+                                                                                        disabled={false}
+                                                                                        href="#"
+                                                                                        onClick={[Function]}
+                                                                                        value="all"
+                                                                                      >
+                                                                                        <a
+                                                                                          className="active btn btn-default active"
+                                                                                          href="#"
+                                                                                          onClick={[Function]}
+                                                                                          role="button"
+                                                                                          value="all"
+                                                                                        >
+                                                                                          All
+                                                                                           
+                                                                                          <Badge
+                                                                                            bsClass="badge"
+                                                                                            pullRight={false}
+                                                                                            style={
+                                                                                              Object {
+                                                                                                "backgroundColor": "#babec0",
+                                                                                              }
+                                                                                            }
+                                                                                          >
+                                                                                            <span
+                                                                                              className="badge"
+                                                                                              style={
+                                                                                                Object {
+                                                                                                  "backgroundColor": "#babec0",
+                                                                                                }
+                                                                                              }
+                                                                                            >
+                                                                                              0
+                                                                                            </span>
+                                                                                          </Badge>
+                                                                                        </a>
+                                                                                      </SafeAnchor>
+                                                                                    </Button>
+                                                                                  </OptionButton>
+                                                                                  <OptionButton
+                                                                                    active={false}
+                                                                                    className=""
+                                                                                    key="active"
+                                                                                    onClick={[Function]}
+                                                                                    value="active"
+                                                                                  >
+                                                                                    <Button
+                                                                                      active={false}
+                                                                                      block={false}
+                                                                                      bsClass="btn"
+                                                                                      bsStyle="default"
+                                                                                      className=""
+                                                                                      disabled={false}
+                                                                                      href="#"
+                                                                                      onClick={[Function]}
+                                                                                      value="active"
+                                                                                    >
+                                                                                      <SafeAnchor
+                                                                                        className="btn btn-default"
+                                                                                        componentClass="a"
+                                                                                        disabled={false}
+                                                                                        href="#"
+                                                                                        onClick={[Function]}
+                                                                                        value="active"
+                                                                                      >
+                                                                                        <a
+                                                                                          className="btn btn-default"
+                                                                                          href="#"
+                                                                                          onClick={[Function]}
+                                                                                          role="button"
+                                                                                          value="active"
+                                                                                        >
+                                                                                          Active
+                                                                                           
+                                                                                          <Badge
+                                                                                            bsClass="badge"
+                                                                                            pullRight={false}
+                                                                                            style={
+                                                                                              Object {
+                                                                                                "backgroundColor": "#babec0",
+                                                                                              }
+                                                                                            }
+                                                                                          >
+                                                                                            <span
+                                                                                              className="badge"
+                                                                                              style={
+                                                                                                Object {
+                                                                                                  "backgroundColor": "#babec0",
+                                                                                                }
+                                                                                              }
+                                                                                            >
+                                                                                              0
+                                                                                            </span>
+                                                                                          </Badge>
+                                                                                        </a>
+                                                                                      </SafeAnchor>
+                                                                                    </Button>
+                                                                                  </OptionButton>
+                                                                                  <OptionButton
+                                                                                    active={false}
+                                                                                    className=""
+                                                                                    key="expiring"
+                                                                                    onClick={[Function]}
+                                                                                    value="expiring"
+                                                                                  >
+                                                                                    <Button
+                                                                                      active={false}
+                                                                                      block={false}
+                                                                                      bsClass="btn"
+                                                                                      bsStyle="default"
+                                                                                      className=""
+                                                                                      disabled={false}
+                                                                                      href="#"
+                                                                                      onClick={[Function]}
+                                                                                      value="expiring"
+                                                                                    >
+                                                                                      <SafeAnchor
+                                                                                        className="btn btn-default"
+                                                                                        componentClass="a"
+                                                                                        disabled={false}
+                                                                                        href="#"
+                                                                                        onClick={[Function]}
+                                                                                        value="expiring"
+                                                                                      >
+                                                                                        <a
+                                                                                          className="btn btn-default"
+                                                                                          href="#"
+                                                                                          onClick={[Function]}
+                                                                                          role="button"
+                                                                                          value="expiring"
+                                                                                        >
+                                                                                          Expiring
+                                                                                           
+                                                                                          <Badge
+                                                                                            bsClass="badge"
+                                                                                            pullRight={false}
+                                                                                            style={
+                                                                                              Object {
+                                                                                                "backgroundColor": "#babec0",
+                                                                                              }
+                                                                                            }
+                                                                                          >
+                                                                                            <span
+                                                                                              className="badge"
+                                                                                              style={
+                                                                                                Object {
+                                                                                                  "backgroundColor": "#babec0",
+                                                                                                }
+                                                                                              }
+                                                                                            >
+                                                                                              0
+                                                                                            </span>
+                                                                                          </Badge>
+                                                                                        </a>
+                                                                                      </SafeAnchor>
+                                                                                    </Button>
+                                                                                  </OptionButton>
+                                                                                  <OptionButton
+                                                                                    active={false}
+                                                                                    className=""
+                                                                                    key="expired"
+                                                                                    onClick={[Function]}
+                                                                                    value="expired"
+                                                                                  >
+                                                                                    <Button
+                                                                                      active={false}
+                                                                                      block={false}
+                                                                                      bsClass="btn"
+                                                                                      bsStyle="default"
+                                                                                      className=""
+                                                                                      disabled={false}
+                                                                                      href="#"
+                                                                                      onClick={[Function]}
+                                                                                      value="expired"
+                                                                                    >
+                                                                                      <SafeAnchor
+                                                                                        className="btn btn-default"
+                                                                                        componentClass="a"
+                                                                                        disabled={false}
+                                                                                        href="#"
+                                                                                        onClick={[Function]}
+                                                                                        value="expired"
+                                                                                      >
+                                                                                        <a
+                                                                                          className="btn btn-default"
+                                                                                          href="#"
+                                                                                          onClick={[Function]}
+                                                                                          role="button"
+                                                                                          value="expired"
+                                                                                        >
+                                                                                          Expired
+                                                                                           
+                                                                                          <Badge
+                                                                                            bsClass="badge"
+                                                                                            pullRight={false}
+                                                                                            style={
+                                                                                              Object {
+                                                                                                "backgroundColor": "#babec0",
+                                                                                              }
+                                                                                            }
+                                                                                          >
+                                                                                            <span
+                                                                                              className="badge"
+                                                                                              style={
+                                                                                                Object {
+                                                                                                  "backgroundColor": "#babec0",
+                                                                                                }
+                                                                                              }
+                                                                                            >
+                                                                                              0
+                                                                                            </span>
+                                                                                          </Badge>
+                                                                                        </a>
+                                                                                      </SafeAnchor>
+                                                                                    </Button>
+                                                                                  </OptionButton>
+                                                                                  <OptionButton
+                                                                                    active={false}
+                                                                                    className=""
+                                                                                    key="future"
+                                                                                    onClick={[Function]}
+                                                                                    value="future"
+                                                                                  >
+                                                                                    <Button
+                                                                                      active={false}
+                                                                                      block={false}
+                                                                                      bsClass="btn"
+                                                                                      bsStyle="default"
+                                                                                      className=""
+                                                                                      disabled={false}
+                                                                                      href="#"
+                                                                                      onClick={[Function]}
+                                                                                      value="future"
+                                                                                    >
+                                                                                      <SafeAnchor
+                                                                                        className="btn btn-default"
+                                                                                        componentClass="a"
+                                                                                        disabled={false}
+                                                                                        href="#"
+                                                                                        onClick={[Function]}
+                                                                                        value="future"
+                                                                                      >
+                                                                                        <a
+                                                                                          className="btn btn-default"
+                                                                                          href="#"
+                                                                                          onClick={[Function]}
+                                                                                          role="button"
+                                                                                          value="future"
+                                                                                        >
+                                                                                          Future
+                                                                                           
+                                                                                          <Badge
+                                                                                            bsClass="badge"
+                                                                                            pullRight={false}
+                                                                                            style={
+                                                                                              Object {
+                                                                                                "backgroundColor": "#babec0",
+                                                                                              }
+                                                                                            }
+                                                                                          >
+                                                                                            <span
+                                                                                              className="badge"
+                                                                                              style={
+                                                                                                Object {
+                                                                                                  "backgroundColor": "#babec0",
+                                                                                                }
+                                                                                              }
+                                                                                            >
+                                                                                              0
+                                                                                            </span>
+                                                                                          </Badge>
+                                                                                        </a>
+                                                                                      </SafeAnchor>
+                                                                                    </Button>
+                                                                                  </OptionButton>
+                                                                                </div>
+                                                                              </ButtonGroup>
+                                                                            </div>
+                                                                          </FormGroup>
+                                                                        </div>
+                                                                      </Col>
+                                                                      <Col
+                                                                        bsClass="col"
+                                                                        componentClass="div"
+                                                                        style={
+                                                                          Object {
+                                                                            "marginTop": 25,
+                                                                          }
+                                                                        }
+                                                                        xs={2}
+                                                                      >
+                                                                        <div
+                                                                          className="col-xs-2"
+                                                                          style={
+                                                                            Object {
+                                                                              "marginTop": 25,
+                                                                            }
+                                                                          }
+                                                                        >
+                                                                          <DropdownButton
+                                                                            bsStyle="primary"
+                                                                            data-test-id="project-header-action-dropdown-button"
+                                                                            id="project-header-actions"
+                                                                            style={
+                                                                              Object {
+                                                                                "marginLeft": 20,
+                                                                              }
+                                                                            }
+                                                                            title="Actions"
+                                                                          >
+                                                                            <Uncontrolled(Dropdown)
+                                                                              bsStyle="primary"
+                                                                              id="project-header-actions"
+                                                                            >
+                                                                              <Dropdown
+                                                                                bsClass="dropdown"
+                                                                                bsStyle="primary"
+                                                                                componentClass={[Function]}
+                                                                                id="project-header-actions"
+                                                                                onToggle={[Function]}
+                                                                              >
+                                                                                <ButtonGroup
+                                                                                  block={false}
+                                                                                  bsClass="btn-group"
+                                                                                  bsStyle="primary"
+                                                                                  className="dropdown"
+                                                                                  justified={false}
+                                                                                  vertical={false}
+                                                                                >
+                                                                                  <div
+                                                                                    className="dropdown btn-group btn-group-primary"
+                                                                                  >
+                                                                                    <DropdownToggle
+                                                                                      bsClass="dropdown-toggle"
+                                                                                      bsRole="toggle"
+                                                                                      bsStyle="primary"
+                                                                                      data-test-id="project-header-action-dropdown-button"
+                                                                                      id="project-header-actions"
+                                                                                      key=".0"
+                                                                                      onClick={[Function]}
+                                                                                      onKeyDown={[Function]}
+                                                                                      open={false}
+                                                                                      style={
+                                                                                        Object {
+                                                                                          "marginLeft": 20,
+                                                                                        }
+                                                                                      }
+                                                                                      useAnchor={false}
+                                                                                    >
+                                                                                      <Button
+                                                                                        active={false}
+                                                                                        aria-expanded={false}
+                                                                                        aria-haspopup={true}
+                                                                                        block={false}
+                                                                                        bsClass="btn"
+                                                                                        bsStyle="primary"
+                                                                                        className="dropdown-toggle"
+                                                                                        data-test-id="project-header-action-dropdown-button"
+                                                                                        disabled={false}
+                                                                                        id="project-header-actions"
+                                                                                        onClick={[Function]}
+                                                                                        onKeyDown={[Function]}
+                                                                                        role="button"
+                                                                                        style={
+                                                                                          Object {
+                                                                                            "marginLeft": 20,
+                                                                                          }
+                                                                                        }
+                                                                                      >
+                                                                                        <button
+                                                                                          aria-expanded={false}
+                                                                                          aria-haspopup={true}
+                                                                                          className="dropdown-toggle btn btn-primary"
+                                                                                          data-test-id="project-header-action-dropdown-button"
+                                                                                          disabled={false}
+                                                                                          id="project-header-actions"
+                                                                                          onClick={[Function]}
+                                                                                          onKeyDown={[Function]}
+                                                                                          role="button"
+                                                                                          style={
+                                                                                            Object {
+                                                                                              "marginLeft": 20,
+                                                                                            }
+                                                                                          }
+                                                                                          type="button"
+                                                                                        >
+                                                                                          Actions
+                                                                                           
+                                                                                          <span
+                                                                                            className="caret"
+                                                                                          />
+                                                                                        </button>
+                                                                                      </Button>
+                                                                                    </DropdownToggle>
+                                                                                    <DropdownMenu
+                                                                                      bsClass="dropdown-menu"
+                                                                                      bsRole="menu"
+                                                                                      key=".1"
+                                                                                      labelledBy="project-header-actions"
+                                                                                      onClose={[Function]}
+                                                                                      onSelect={[Function]}
+                                                                                      pullRight={false}
+                                                                                    >
+                                                                                      <RootCloseWrapper
+                                                                                        disabled={true}
+                                                                                        event="click"
+                                                                                        onRootClose={[Function]}
+                                                                                      >
+                                                                                        <ul
+                                                                                          aria-labelledby="project-header-actions"
+                                                                                          className="dropdown-menu"
+                                                                                          role="menu"
+                                                                                        >
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            data-test-id="project-header-create-new-feed-source-button"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$create-feedsource-button"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                data-test-id="project-header-create-new-feed-source-button"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  data-test-id="project-header-create-new-feed-source-button"
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  <Glyphicon
+                                                                                                    bsClass="glyphicon"
+                                                                                                    glyph="plus"
+                                                                                                  >
+                                                                                                    <span
+                                                                                                      className="glyphicon glyphicon-plus"
+                                                                                                    />
+                                                                                                  </Glyphicon>
+                                                                                                   
+                                                                                                  New
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$update-feeds-button"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  <Icon
+                                                                                                    type="cloud-download"
+                                                                                                  >
+                                                                                                    <i
+                                                                                                      className="fa fa-cloud-download fa-fw "
+                                                                                                    />
+                                                                                                  </Icon>
+                                                                                                   
+                                                                                                  Fetch all
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$merge-feeds-button"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  <Glyphicon
+                                                                                                    bsClass="glyphicon"
+                                                                                                    glyph="download"
+                                                                                                  >
+                                                                                                    <span
+                                                                                                      className="glyphicon glyphicon-download"
+                                                                                                    />
+                                                                                                  </Glyphicon>
+                                                                                                   
+                                                                                                  Merge all
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                          <MenuItem
+                                                                                            bsClass="dropdown"
+                                                                                            disabled={false}
+                                                                                            divider={false}
+                                                                                            header={false}
+                                                                                            key=".$csv-download-button"
+                                                                                            onClick={[Function]}
+                                                                                            onKeyDown={[Function]}
+                                                                                            onSelect={[Function]}
+                                                                                          >
+                                                                                            <li
+                                                                                              className=""
+                                                                                              role="presentation"
+                                                                                            >
+                                                                                              <SafeAnchor
+                                                                                                componentClass="a"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="menuitem"
+                                                                                                tabIndex="-1"
+                                                                                              >
+                                                                                                <a
+                                                                                                  href="#"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="menuitem"
+                                                                                                  tabIndex="-1"
+                                                                                                >
+                                                                                                  <Icon
+                                                                                                    type="table"
+                                                                                                  >
+                                                                                                    <i
+                                                                                                      className="fa fa-table fa-fw "
+                                                                                                    />
+                                                                                                  </Icon>
+                                                                                                   
+                                                                                                  Download Summary as CSV
+                                                                                                </a>
+                                                                                              </SafeAnchor>
+                                                                                            </li>
+                                                                                          </MenuItem>
+                                                                                        </ul>
+                                                                                      </RootCloseWrapper>
+                                                                                    </DropdownMenu>
+                                                                                  </div>
+                                                                                </ButtonGroup>
+                                                                              </Dropdown>
+                                                                            </Uncontrolled(Dropdown)>
+                                                                          </DropdownButton>
+                                                                        </div>
+                                                                      </Col>
+                                                                    </div>
+                                                                  </Row>
+                                                                </ProjectFeedListToolbar>
+                                                              </Connect(ProjectFeedListToolbar)>
+                                                            </div>
+                                                            <ListGroup
+                                                              bsClass="list-group"
+                                                              key=".0"
+                                                            >
+                                                              <ul
+                                                                className="list-group"
+                                                              >
+                                                                <ListGroupItem
+                                                                  bsClass="list-group-item"
+                                                                  className="text-center"
+                                                                  key=".0"
+                                                                  listItem={true}
+                                                                >
+                                                                  <li
+                                                                    className="text-center list-group-item"
+                                                                  >
+                                                                    <Button
+                                                                      active={false}
+                                                                      block={false}
+                                                                      bsClass="btn"
+                                                                      bsStyle="success"
+                                                                      data-test-id="create-first-feed-source-button"
+                                                                      disabled={false}
+                                                                      onClick={[Function]}
+                                                                    >
+                                                                      <button
+                                                                        className="btn btn-success"
                                                                         data-test-id="create-first-feed-source-button"
                                                                         disabled={false}
                                                                         onClick={[Function]}
+                                                                        type="button"
                                                                       >
-                                                                        <button
-                                                                          className="btn btn-success"
-                                                                          data-test-id="create-first-feed-source-button"
-                                                                          disabled={false}
-                                                                          onClick={[Function]}
-                                                                          type="button"
+                                                                        <Icon
+                                                                          type="plus"
                                                                         >
-                                                                          <Icon
-                                                                            type="plus"
-                                                                          >
-                                                                            <i
-                                                                              className="fa fa-plus fa-fw "
-                                                                            />
-                                                                          </Icon>
-                                                                           
-                                                                          Create first feed source!
-                                                                        </button>
-                                                                      </Button>
-                                                                    </li>
-                                                                  </ListGroupItem>
-                                                                </ul>
-                                                              </ListGroup>
-                                                            </div>
-                                                          </Panel>
-                                                        </Uncontrolled(Panel)>
+                                                                          <i
+                                                                            className="fa fa-plus fa-fw "
+                                                                          />
+                                                                        </Icon>
+                                                                         
+                                                                        Create first feed source!
+                                                                      </button>
+                                                                    </Button>
+                                                                  </li>
+                                                                </ListGroupItem>
+                                                              </ul>
+                                                            </ListGroup>
+                                                          </div>
+                                                        </Panel>
                                                       </FeedSourceTable>
                                                     </Connect(FeedSourceTable)>
                                                   </div>
@@ -2369,7 +3813,10 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                         }
                                                       }
                                                     >
-                                                      <Uncontrolled(Panel)
+                                                      <Panel
+                                                        bsClass="panel"
+                                                        bsStyle="default"
+                                                        defaultExpanded={false}
                                                         header={
                                                           <h3>
                                                             mock-project
@@ -2377,103 +3824,95 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                           </h3>
                                                         }
                                                       >
-                                                        <Panel
-                                                          bsClass="panel"
-                                                          bsStyle="default"
-                                                          header={
-                                                            <h3>
+                                                        <div
+                                                          className="panel panel-default"
+                                                        >
+                                                          <div
+                                                            className="panel-heading"
+                                                          >
+                                                            <h3
+                                                              className="panel-title"
+                                                            >
                                                               mock-project
                                                                summary
                                                             </h3>
-                                                          }
-                                                          onToggle={[Function]}
-                                                        >
-                                                          <div
-                                                            className="panel panel-default"
-                                                            header={
-                                                              <h3>
-                                                                mock-project
-                                                                 summary
-                                                              </h3>
-                                                            }
-                                                          >
-                                                            <ListGroup
-                                                              bsClass="list-group"
-                                                              fill={true}
-                                                            >
-                                                              <ul
-                                                                className="list-group"
-                                                                fill={true}
-                                                              >
-                                                                <ListGroupItem
-                                                                  bsClass="list-group-item"
-                                                                  key=".0"
-                                                                  listItem={true}
-                                                                >
-                                                                  <li
-                                                                    className="list-group-item"
-                                                                  >
-                                                                    Number of feeds: 
-                                                                    0
-                                                                  </li>
-                                                                </ListGroupItem>
-                                                                <ListGroupItem
-                                                                  bsClass="list-group-item"
-                                                                  key=".1"
-                                                                  listItem={true}
-                                                                >
-                                                                  <li
-                                                                    className="list-group-item"
-                                                                  >
-                                                                    Total errors: 
-                                                                    0
-                                                                  </li>
-                                                                </ListGroupItem>
-                                                                <ListGroupItem
-                                                                  bsClass="list-group-item"
-                                                                  key=".2"
-                                                                  listItem={true}
-                                                                >
-                                                                  <li
-                                                                    className="list-group-item"
-                                                                  >
-                                                                    Total service:
-                                                                     
-                                                                    0
-                                                                     
-                                                                    hours per weekday
-                                                                  </li>
-                                                                </ListGroupItem>
-                                                              </ul>
-                                                            </ListGroup>
                                                           </div>
-                                                        </Panel>
-                                                      </Uncontrolled(Panel)>
+                                                          <ListGroup
+                                                            bsClass="list-group"
+                                                            key=".0"
+                                                          >
+                                                            <ul
+                                                              className="list-group"
+                                                            >
+                                                              <ListGroupItem
+                                                                bsClass="list-group-item"
+                                                                key=".0"
+                                                                listItem={true}
+                                                              >
+                                                                <li
+                                                                  className="list-group-item"
+                                                                >
+                                                                  Number of feeds: 
+                                                                  0
+                                                                </li>
+                                                              </ListGroupItem>
+                                                              <ListGroupItem
+                                                                bsClass="list-group-item"
+                                                                key=".1"
+                                                                listItem={true}
+                                                              >
+                                                                <li
+                                                                  className="list-group-item"
+                                                                >
+                                                                  Total errors: 
+                                                                  0
+                                                                </li>
+                                                              </ListGroupItem>
+                                                              <ListGroupItem
+                                                                bsClass="list-group-item"
+                                                                key=".2"
+                                                                listItem={true}
+                                                              >
+                                                                <li
+                                                                  className="list-group-item"
+                                                                >
+                                                                  Total service:
+                                                                   
+                                                                  0
+                                                                   
+                                                                  hours per weekday
+                                                                </li>
+                                                              </ListGroupItem>
+                                                            </ul>
+                                                          </ListGroup>
+                                                        </div>
+                                                      </Panel>
                                                     </ProjectSummaryPanel>
-                                                    <Uncontrolled(Panel)
+                                                    <Panel
+                                                      bsClass="panel"
+                                                      bsStyle="default"
+                                                      defaultExpanded={false}
                                                       header={
                                                         <h3>
                                                           What is a feed source?
                                                         </h3>
                                                       }
                                                     >
-                                                      <Panel
-                                                        bsClass="panel"
-                                                        bsStyle="default"
-                                                        header={
-                                                          <h3>
-                                                            What is a feed source?
-                                                          </h3>
-                                                        }
-                                                        onToggle={[Function]}
+                                                      <div
+                                                        className="panel panel-default"
                                                       >
                                                         <div
-                                                          className="panel panel-default"
-                                                          header={
-                                                            <h3>
-                                                              What is a feed source?
-                                                            </h3>
-                                                          }
+                                                          className="panel-heading"
+                                                        >
+                                                          <h3
+                                                            className="panel-title"
+                                                          >
+                                                            What is a feed source?
+                                                          </h3>
+                                                        </div>
+                                                        <div
+                                                          className="panel-body"
+                                                          key="0"
                                                         >
                                                           A feed source defines the location or upstream source of a
                                                            
@@ -2481,8 +3920,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                            
                                                           directly editing or uploading a zip file.
                                                         </div>
-                                                      </Panel>
-                                                    </Uncontrolled(Panel)>
+                                                      </div>
+                                                    </Panel>
                                                   </div>
                                                 </Col>
                                               </div>
@@ -2515,18 +3954,18 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                       eventKey="deployments"
                                     >
                                       <Fade
-                                        appear={false}
                                         in={false}
                                         mountOnEnter={true}
                                         onEnter={[Function]}
                                         onExited={[Function]}
                                         timeout={300}
+                                        transitionAppear={false}
                                         unmountOnExit={false}
                                       >
                                         <Transition
-                                          appear={false}
-                                          enter={true}
-                                          exit={true}
+                                          className="fade"
+                                          enteredClassName="in"
+                                          enteringClassName="in"
                                           in={false}
                                           mountOnEnter={true}
                                           onEnter={[Function]}
@@ -2536,6 +3975,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                           onExited={[Function]}
                                           onExiting={[Function]}
                                           timeout={300}
+                                          transitionAppear={false}
                                           unmountOnExit={false}
                                         />
                                       </Fade>
@@ -2564,18 +4004,18 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                       eventKey="settings"
                                     >
                                       <Fade
-                                        appear={false}
                                         in={false}
                                         mountOnEnter={true}
                                         onEnter={[Function]}
                                         onExited={[Function]}
                                         timeout={300}
+                                        transitionAppear={false}
                                         unmountOnExit={false}
                                       >
                                         <Transition
-                                          appear={false}
-                                          enter={true}
-                                          exit={true}
+                                          className="fade"
+                                          enteredClassName="in"
+                                          enteringClassName="in"
                                           in={false}
                                           mountOnEnter={true}
                                           onEnter={[Function]}
@@ -2585,6 +4025,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                           onExited={[Function]}
                                           onExiting={[Function]}
                                           timeout={300}
+                                          transitionAppear={false}
                                           unmountOnExit={false}
                                         />
                                       </Fade>
