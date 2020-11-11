@@ -773,6 +773,8 @@ components:
     delete: Delete
     deleteConfirm: Are you sure you want to permanently delete this user?
     edit: Edit
+    missingProject: unknown
+    noProjectsFound: No projects
     orgAdmin: Org admin
     save: Save
   UserSettings:
