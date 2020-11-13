@@ -176,6 +176,8 @@ components:
     snapshot: snapshot
     title: Snapshots
     version: Version
+  FeedFetchFrequency:
+    fetchFeedEvery: Fetch feed every
   FeedInfoPanel:
     uploadShapefile:
       body: 'Select a zipped shapefile to display on map. Note: this is only for use as a visual aid.'
