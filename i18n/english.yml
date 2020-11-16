@@ -764,6 +764,7 @@ components:
   UserList:
     filterByOrg: Filter by org.
     of: of
+    perPage: Users per page
     search: Search by username
     showing: Showing Users
     title: User Management
