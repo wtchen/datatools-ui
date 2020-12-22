@@ -676,7 +676,7 @@ components:
   ShowAllRoutesOnMapFilter:
     fetching: Fetching
     showAllRoutesOnMap: Show all routes
-    tooManyShapeRecords: Too many shapes to display
+    tooManyShapeRecords: large shapes.txt may impact performance
   Sidebar:
     unknown: Unknown
   SnapshotItem:
