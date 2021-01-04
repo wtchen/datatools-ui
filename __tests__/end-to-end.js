@@ -885,7 +885,7 @@ describe('end-to-end', () => {
       await click('[data-test-id="confirm-create-user-button"]')
 
       // wait for user to be saved
-      await wait(2000, 'for user to be created')
+      await wait(30000, 'for user to be created')
 
       // filter users
       await filterUsers(testUserSlug)
