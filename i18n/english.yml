@@ -57,6 +57,19 @@ components:
     success: Success!
     warning: Warning!
   DeploymentSettings:
+    autoDeploy:
+      description: >
+        Once a pinned deployment has been configured and deployed to a
+        server (at least once), auto-deployment can be enabled so that whenever
+        a new version is processed for an associated feed source, a deployment
+        will be kicked off (assuming there are no critical errors with the new
+        version).
+      label: Enable auto-deploy
+      noPinnedDeployment: None selected
+      pinnedDeploymentHelp: >
+        Tip: Under the Deployments tab, click the thumbtack icon next to the
+        deployment you would like to target for auto-deployments.
+      title: Auto-deployment
     boundsPlaceholder: 'min_lon, min_lat, max_lon, max_lat'
     buildConfig:
       elevationBucket:
@@ -69,6 +82,8 @@ components:
       stationTransfers: Sta. Transfers
       subwayAccessTime: Subway Access Time
       title: Build Config
+    clear: Clear
+    manageServers: Manage deployment servers
     osm:
       bounds: Custom Extract Bounds
       custom: Use Custom Extract Bounds
