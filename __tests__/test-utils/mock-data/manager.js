@@ -70,6 +70,7 @@ export const mockProject = {
   autoFetchFeeds: true,
   autoFetchHour: 0,
   autoFetchMinute: 0,
+  autoDeploy: false,
   bounds: null,
   buildConfig: {
     fares: null,
