@@ -27,8 +27,11 @@ jobs:
       - uses: actions/checkout@v2
       # Set up Python so that mkdocs command can be run.
       - uses: actions/setup-python@v2
-      - name: Install mkdocs
-        run: pip install --user mkdocs
+      - name: Install mkdocs with pip
+        uses: actions/pip-action@v1
+        with:
+          packages: mkdocs
+          extra: --user
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
