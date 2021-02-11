@@ -63,7 +63,7 @@ jobs:
       - name: Run e2e tests
         if: env.SHOULD_RUN_E2E == 'true'
         run: 
-          - mvn test
+          - yarn cover-end-to-end
         env:
           AUTH0_API_CLIENT: ${{ secrets.AUTH0_API_CLIENT }}
           AUTH0_API_SECRET: ${{ secrets.AUTH0_API_SECRET }}
