@@ -25,6 +25,8 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v2
+      # Set up Python so that mkdocs command can be run.
+      - uses: actions/setup-python@v2
       - name: Install mkdocs
         run: pip install --user mkdocs
       - name: Use Node.js 12.x
