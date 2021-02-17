@@ -150,7 +150,7 @@ components:
         Tip: Under the Deployments tab, click the thumbtack icon next to the
         deployment you would like to target for auto-deployments.
       title: Auto-deployment
-    configuration:
+    config:
       body: >
         Deployments can use project-level configurations (e.g., for build or
         router config files) or be configured individually.
