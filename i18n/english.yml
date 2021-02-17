@@ -57,19 +57,6 @@ components:
     success: Success!
     warning: Warning!
   DeploymentSettings:
-    autoDeploy:
-      description: >
-        Once a pinned deployment has been configured and deployed to a
-        server (at least once), auto-deployment can be enabled so that whenever
-        a new version is processed for an associated feed source, a deployment
-        will be kicked off (assuming there are no critical errors with the new
-        version).
-      label: Enable auto-deploy
-      noPinnedDeployment: None selected
-      pinnedDeploymentHelp: >
-        Tip: Under the Deployments tab, click the thumbtack icon next to the
-        deployment you would like to target for auto-deployments.
-      title: Auto-deployment
     boundsPlaceholder: 'min_lon, min_lat, max_lon, max_lat'
     buildConfig:
       elevationBucket:
@@ -153,8 +140,29 @@ components:
       name: Name
     title: Deployments
   DeploymentsPanel:
+    autoDeploy:
+      help: >
+        Whenever a new version is processed, a deployment will automatically be
+        kicked off (assuming there are no critical errors).
+      label: Enable auto-deploy?
+      noPinnedDeployment: None selected
+      pinnedDeploymentHelp: >
+        Tip: Under the Deployments tab, click the thumbtack icon next to the
+        deployment you would like to target for auto-deployments.
+      title: Auto-deployment
+    configuration:
+      body: >
+        Deployments can use project-level configurations (e.g., for build or
+        router config files) or be configured individually.
+      editSettings: Edit deployment settings
+      manageServers: Manage deployment servers
+      title: Configuring deployments
     delete: Remove deployment
     new: New Deployment
+    pinnedDeployment:
+      help: Pin a deployment (and deploy to a server at least once) to enable auto-deployment.
+      label: Pinned deployment
+      placeholder: Select a deployment to pin
     search: Search for deployments
     table:
       creationDate: Created
