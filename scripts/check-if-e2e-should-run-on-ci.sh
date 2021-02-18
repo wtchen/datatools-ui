@@ -16,5 +16,6 @@ if [[ "$SHOULD_RUN_E2E" != "true" ]]; then
 fi
 
 # FIXME: Re-enable e2e for conditions above.
-echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
-echo 'Overriding E2E. Temporarily forcing to be true...'
+OVERRIDE=false
+echo "SHOULD_RUN_E2E=${OVERRIDE}" >> $GITHUB_ENV && export SHOULD_RUN_E2E=${OVERRIDE}
+echo "Overriding E2E. Temporarily forcing to be ${OVERRIDE}..."
