@@ -73,7 +73,7 @@ jobs:
           mongodb-version: 4.2
       - name: Add aws credentials for datatools-server
         if: env.SHOULD_RUN_E2E == 'true'
-        run: mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=us-east-1' > ~/.aws/config; else mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=foo' 'aws_secret_access_key=bar' 'region=us-east-1' > ~/.aws/config
+        run: mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=us-east-1' > ~/.aws/config
       - name: Run e2e tests
         if: env.SHOULD_RUN_E2E == 'true'
         run: yarn cover-end-to-end
