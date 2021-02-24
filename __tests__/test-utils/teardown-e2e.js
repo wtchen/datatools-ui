@@ -19,10 +19,10 @@ const {
 const slackConfigured = process.env.SLACK_TOKEN && process.env.SLACK_CHANNEL
 const msTeamsConfigured = process.env.MS_TEAMS_WEBHOOK_URL
 const logsZipfile = 'logs.zip'
-const repo = process.env.TRAVIS_BUILD_DIR
-  ? process.env.TRAVIS_BUILD_DIR.split(path.sep).pop()
+const repo = process.env.GITHUB_WORKSPACE
+  ? process.env.GITHUB_WORKSPACE.split(path.sep).pop()
   : ''
-const buildNum = process.env.TRAVIS_BUILD_NUMBER
+const buildNum = process.env.GITHUB_RUN_ID
 const uploadedLogsFilename = `${repo}-build-${buildNum}-e2e-logs.zip`
 const {LOGS_S3_BUCKET} = process.env
 
@@ -115,6 +115,10 @@ function shutdownOtp () {
   return killDetachedProcess('otp')
 }
 
+function getBuildUrl () {
+  return `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+}
+
 function makeUploadFailureHandler (handlerErrorMsg) {
   return (err) => {
     console.error(handlerErrorMsg)
@@ -160,7 +164,7 @@ async function uploadToMicrosoftTeams () {
     targets: [
       {
         os: 'default',
-        uri: process.env.TRAVIS_BUILD_WEB_URL
+        uri: getBuildUrl()
       }
     ]
   }]
@@ -228,7 +232,7 @@ async function uploadToSlack () {
       file: fs.createReadStream(logsZipfile),
       filename: uploadedLogsFilename,
       filetype: 'zip',
-      initial_comment: `View build logs here: ${process.env.TRAVIS_BUILD_WEB_URL}`
+      initial_comment: `View build logs here: ${getBuildUrl()}`
     })
   } catch (e) {
     console.error('failed to upload logs to slack!')

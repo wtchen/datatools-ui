@@ -52,7 +52,7 @@ async function startBackendServer () {
   }
 
   const serverFolder = path.join(
-    process.env.TRAVIS_BUILD_DIR,
+    process.env.GITHUB_WORKSPACE,
     '..',
     'datatools-server'
   )
@@ -200,7 +200,7 @@ async function startClientServer () {
 
   // set the working directories for datatools-ui
   const datatoolsUiDir = path.join(
-    process.env.TRAVIS_BUILD_DIR,
+    process.env.GITHUB_WORKSPACE,
     '..',
     'datatools-ui'
   )
