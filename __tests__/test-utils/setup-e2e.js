@@ -47,7 +47,7 @@ async function startBackendServer () {
       'TRANSITFEEDS_KEY'
     ])
   } catch (e) {
-    console.error(`At least one required env var is missin: ${e}`)
+    console.error(`At least one required env var is missing: ${e}`)
     throw e
   }
 
@@ -194,7 +194,7 @@ async function startClientServer () {
       'TRANSITFEEDS_KEY'
     ])
   } catch (e) {
-    console.error(`At least one required env var is missin: ${e}`)
+    console.error(`At least one required env var is missing: ${e}`)
     throw e
   }
 

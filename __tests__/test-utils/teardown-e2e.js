@@ -183,7 +183,7 @@ async function uploadToMicrosoftTeams () {
   }
 
   let fetchResponse
-  const commit = process.env.TRAVIS_COMMIT
+  const commit = process.env.GITHUB_SHA
   const baseRepoUrl = `https://github.com/ibi-group/datatools-${isUiRepo ? 'ui' : 'server'}`
   const commitUrl = `${baseRepoUrl}/commit/${commit}`
   try {
@@ -196,7 +196,7 @@ async function uploadToMicrosoftTeams () {
           '@type': 'MessageCard',
           themeColor: '0072C6',
           title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
-          text: `📁 **branch:** ${process.env.TRAVIS_BRANCH}\n
+          text: `📁 **branch:** ${process.env.GITHUB_REF_SLUG}\n
 📄 **commit:** [${commit.slice(0, 6)}](${commitUrl})\n
 📊 **result:** ${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed\n
 `,
