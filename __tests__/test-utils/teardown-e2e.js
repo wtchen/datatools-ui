@@ -160,7 +160,7 @@ async function uploadToMicrosoftTeams () {
   )
   const actions = [{
     '@type': 'OpenUri',
-    name: `View Travis Build #${buildNum}`,
+    name: `View GitHub Action Build #${buildNum}`,
     targets: [
       {
         os: 'default',
