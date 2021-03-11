@@ -94,6 +94,7 @@ jobs:
           GTFS_DATABASE_USER: ${{ secrets.GTFS_DATABASE_USER }}
           MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
           MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
           OSM_VEX: ${{ secrets.OSM_VEX }}
           RUN_E2E: "true"
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
