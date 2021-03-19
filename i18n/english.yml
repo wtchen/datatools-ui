@@ -244,6 +244,9 @@ components:
     DeleteRecordsTransformation:
       label: Delete records from %tablePlaceholder%
       name: Delete records transformation
+    NormalizeFieldTransformation:
+      label: Normalize fields
+      name: Normalize fields transformation
     ReplaceFileFromStringTransformation:
       label: Replace %tablePlaceholder% from %filePlaceholder%
       name: Replace file from string transformation
