@@ -1,4 +1,4 @@
-_**NOTE:** This issue system is intended for reporting bugs and tracking progress in software development. Although this software is licensed with an open-source license, any issue opened here may not be responded to in a timely manner. [Conveyal](https://www.conveyal.com) is unable to provide technical support for custom deployments of this software unless your company has a support contract with us. Please remove this note when creating the issue._
+_**NOTE:** This issue system is intended for reporting bugs and tracking progress in software development. Although this software is licensed with an open-source license, any issue opened here may not be responded to in a timely manner. [IBI Group](https://www.ibigroup.com/) is unable to provide technical support for custom deployments of this software unless your company has a support contract with us. Please remove this note when creating the issue._
 
 ## Observed behavior (please include a screenshot if possible)
 
