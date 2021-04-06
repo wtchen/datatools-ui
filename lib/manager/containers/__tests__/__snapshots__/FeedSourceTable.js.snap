@@ -128,10 +128,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
               "west": 0,
             },
             "projectId": "mock-project-with-deployments-id",
-            "r5": false,
-            "r5Version": null,
             "routerId": null,
             "skipOsmExtract": false,
+            "tripPlannerVersion": "OTP_1",
             "user": null,
           },
         ],
@@ -411,10 +410,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                 "west": 0,
               },
               "projectId": "mock-project-with-deployments-id",
-              "r5": false,
-              "r5Version": null,
               "routerId": null,
               "skipOsmExtract": false,
+              "tripPlannerVersion": "OTP_1",
               "user": null,
             },
           ],
@@ -675,10 +673,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                       "west": 0,
                     },
                     "projectId": "mock-project-with-deployments-id",
-                    "r5": false,
-                    "r5Version": null,
                     "routerId": null,
                     "skipOsmExtract": false,
+                    "tripPlannerVersion": "OTP_1",
                     "user": null,
                   },
                 ],
@@ -870,10 +867,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                         "west": 0,
                       },
                       "projectId": "mock-project-with-deployments-id",
-                      "r5": false,
-                      "r5Version": null,
                       "routerId": null,
                       "skipOsmExtract": false,
+                      "tripPlannerVersion": "OTP_1",
                       "user": null,
                     },
                   ],
@@ -1083,10 +1079,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           "west": 0,
                         },
                         "projectId": "mock-project-with-deployments-id",
-                        "r5": false,
-                        "r5Version": null,
                         "routerId": null,
                         "skipOsmExtract": false,
+                        "tripPlannerVersion": "OTP_1",
                         "user": null,
                       },
                     ],
@@ -1442,87 +1437,105 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                           </li>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-alphabetically-asc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={true}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                A-Z
-                                                <Icon
-                                                  style={
-                                                    Object {
-                                                      "marginLeft": 6,
-                                                    }
-                                                  }
-                                                  type="check"
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
                                                 >
-                                                  <i
-                                                    className="fa fa-check fa-fw "
+                                                  <Icon
                                                     style={
                                                       Object {
-                                                        "marginLeft": 6,
+                                                        "left": "2px",
+                                                        "marginTop": "3px",
+                                                        "position": "absolute",
                                                       }
                                                     }
-                                                  />
-                                                </Icon>
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                    type="check"
+                                                  >
+                                                    <i
+                                                      className="fa fa-check fa-fw "
+                                                      style={
+                                                        Object {
+                                                          "left": "2px",
+                                                          "marginTop": "3px",
+                                                          "position": "absolute",
+                                                        }
+                                                      }
+                                                    />
+                                                  </Icon>
+                                                  A-Z
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-alphabetically-desc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Z-A
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Z-A
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
                                           bsClass="dropdown"
@@ -1557,70 +1570,84 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                           </li>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-endDate-asc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Earliest-Latest
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Earliest-Latest
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-endDate-desc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Latest-Earliest
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Latest-Earliest
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
                                           bsClass="dropdown"
@@ -1655,70 +1682,84 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                           </li>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-startDate-asc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Earliest-Latest
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Earliest-Latest
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-startDate-desc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Latest-Earliest
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Latest-Earliest
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
                                           bsClass="dropdown"
@@ -1753,70 +1794,84 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                           </li>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-lastUpdated-asc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Stale-Recent
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Stale-Recent
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-lastUpdated-desc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Recent-Stale
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Recent-Stale
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
                                           bsClass="dropdown"
@@ -1851,70 +1906,84 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                           </li>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-numErrors-asc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Least-Most
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Least-Most
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                         <MenuItem
-                                          bsClass="dropdown"
-                                          disabled={false}
-                                          divider={false}
-                                          header={false}
                                           key=".$feed-sort-numErrors-desc"
                                           onClick={[Function]}
                                           onKeyDown={[Function]}
                                           onSelect={[Function]}
+                                          selected={false}
                                         >
-                                          <li
-                                            className=""
-                                            role="presentation"
+                                          <MenuItem
+                                            bsClass="dropdown"
+                                            disabled={false}
+                                            divider={false}
+                                            header={false}
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            onSelect={[Function]}
                                           >
-                                            <SafeAnchor
-                                              componentClass="a"
-                                              onClick={[Function]}
-                                              onKeyDown={[Function]}
-                                              role="menuitem"
-                                              tabIndex="-1"
+                                            <li
+                                              className=""
+                                              role="presentation"
                                             >
-                                              <a
-                                                href="#"
+                                              <SafeAnchor
+                                                componentClass="a"
                                                 onClick={[Function]}
                                                 onKeyDown={[Function]}
                                                 role="menuitem"
                                                 tabIndex="-1"
                                               >
-                                                Most-Least
-                                              </a>
-                                            </SafeAnchor>
-                                          </li>
+                                                <a
+                                                  href="#"
+                                                  onClick={[Function]}
+                                                  onKeyDown={[Function]}
+                                                  role="menuitem"
+                                                  tabIndex="-1"
+                                                >
+                                                  Most-Least
+                                                </a>
+                                              </SafeAnchor>
+                                            </li>
+                                          </MenuItem>
                                         </MenuItem>
                                       </ul>
                                     </RootCloseWrapper>
@@ -2875,10 +2944,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               "west": 0,
                             },
                             "projectId": "mock-project-with-deployments-id",
-                            "r5": false,
-                            "r5Version": null,
                             "routerId": null,
                             "skipOsmExtract": false,
+                            "tripPlannerVersion": "OTP_1",
                             "user": null,
                           },
                         ],
@@ -3132,10 +3200,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 "west": 0,
                               },
                               "projectId": "mock-project-with-deployments-id",
-                              "r5": false,
-                              "r5Version": null,
                               "routerId": null,
                               "skipOsmExtract": false,
+                              "tripPlannerVersion": "OTP_1",
                               "user": null,
                             },
                           ],
@@ -3673,10 +3740,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       "west": 0,
                                     },
                                     "projectId": "mock-project-with-deployments-id",
-                                    "r5": false,
-                                    "r5Version": null,
                                     "routerId": null,
                                     "skipOsmExtract": false,
+                                    "tripPlannerVersion": "OTP_1",
                                     "user": null,
                                   },
                                 ],

@@ -176,6 +176,11 @@ components:
     snapshot: snapshot
     title: Snapshots
     version: Version
+  FeedFetchFrequency:
+    DAYS: days
+    fetchFeedEvery: Fetch feed every
+    HOURS: hours
+    MINUTES: minutes
   FeedInfoPanel:
     uploadShapefile:
       body: 'Select a zipped shapefile to display on map. Note: this is only for use as a visual aid.'
@@ -671,7 +676,7 @@ components:
   ShowAllRoutesOnMapFilter:
     fetching: Fetching
     showAllRoutesOnMap: Show all routes
-    tooManyShapeRecords: Too many shapes to display
+    tooManyShapeRecords: large shapes.txt may impact performance
   Sidebar:
     unknown: Unknown
   SnapshotItem:
@@ -764,6 +769,7 @@ components:
   UserList:
     filterByOrg: Filter by org.
     of: of
+    perPage: Users per page
     search: Search by username
     showing: Showing Users
     title: User Management
@@ -773,6 +779,8 @@ components:
     delete: Delete
     deleteConfirm: Are you sure you want to permanently delete this user?
     edit: Edit
+    missingProject: unknown
+    noProjectsFound: No projects
     orgAdmin: Org admin
     save: Save
   UserSettings:
