@@ -276,170 +276,253 @@
     options:
     - value: 3
       text: Bus
+      group: Standard
     - value: 0
       text: Tram
+      group: Standard
     - value: 1
       text: Subway
+      group: Standard
     - value: 2
       text: Rail
+      group: Standard
     - value: 4
       text: Ferry
+      group: Standard
     - value: 5
       text: Cable car
+      group: Standard
     - value: 6
       text: Gondola
+      group: Standard
     - value: 7
       text: Funicular
+      group: Extended
     - value: 100
       text: Railway Service
+      group: Extended
     - value: 100
       text: Railway Service
+      group: Extended
     - value: 101
       text: High Speed Rail Service
+      group: Extended
     - value: 102
       text: Long Distance Trains
+      group: Extended
     - value: 103
       text: Inter Regional Rail Service
+      group: Extended
     - value: 104
       text: Car Transport Rail Service
+      group: Extended
     - value: 105
       text: Sleeper Rail Service
+      group: Extended
     - value: 106
       text: Regional Rail Service
+      group: Extended
     - value: 107
       text: Tourist Railway Service
+      group: Extended
     - value: 108
       text: Rail Shuttle (Within Complex)
+      group: Extended
     - value: 109
       text: Suburban Railway
+      group: Extended
     - value: 110
       text: Replacement Rail Service
+      group: Extended
     - value: 111
       text: Special Rail Service
+      group: Extended
     - value: 112
       text: Lorry Transport Rail Service
+      group: Extended
     - value: 113
       text: All Rail Services
+      group: Extended
     - value: 114
       text: Cross-Country Rail Service
+      group: Extended
     - value: 115
       text: Vehicle Transport Rail Service
+      group: Extended
     - value: 116
       text: Rack and Pinion Railway
+      group: Extended
     - value: 117
       text: Additional Rail Service
+      group: Extended
     - value: 200
       text: Coach Service
+      group: Extended
     - value: 201
       text: International Coach Service
+      group: Extended
     - value: 202
       text: National Coach Service
+      group: Extended
     - value: 203
       text: Shuttle Coach Service
+      group: Extended
     - value: 204
       text: Regional Coach Service
+      group: Extended
     - value: 205
       text: Special Coach Service
+      group: Extended
     - value: 206
       text: Sightseeing Coach Service
+      group: Extended
     - value: 207
       text: Tourist Coach Service
+      group: Extended
     - value: 208
       text: Commuter Coach Service
+      group: Extended
     - value: 209
       text: All Coach Services
+      group: Extended
     - value: 400
       text: Urban Railway Service
+      group: Extended
     - value: 401
       text: Metro Service
+      group: Extended
     - value: 402
       text: Underground Service
+      group: Extended
     - value: 403
       text: Urban Railway Service
+      group: Extended
     - value: 404
       text: All Urban Railway Services
+      group: Extended
     - value: 405
       text: Monorail
+      group: Extended
     - value: 700
       text: Bus Service
+      group: Extended
     - value: 701
       text: Regional Bus Service
+      group: Extended
     - value: 702
       text: Express Bus Service
+      group: Extended
     - value: 703
       text: Stopping Bus Service
+      group: Extended
     - value: 704
       text: Local Bus Service
+      group: Extended
     - value: 705
       text: Night Bus Service
+      group: Extended
     - value: 706
       text: Post Bus Service
+      group: Extended
     - value: 707
       text: Special Needs Bus
+      group: Extended
     - value: 708
       text: Mobility Bus Service
+      group: Extended
     - value: 709
       text: Mobility Bus for Registered Disabled
+      group: Extended
     - value: 710
       text: Sightseeing Bus
+      group: Extended
     - value: 711
       text: Shuttle Bus
+      group: Extended
     - value: 712
       text: School Bus
+      group: Extended
     - value: 713
       text: School and Public Service Bus
+      group: Extended
     - value: 714
       text: Rail Replacement Bus Service
+      group: Extended
     - value: 715
       text: Demand and Response Bus Service
+      group: Extended
     - value: 716
       text: All Bus Services
+      group: Extended
     - value: 800
       text: Trolleybus Service
+      group: Extended
     - value: 900
       text: Tram Service
+      group: Extended
     - value: 901
       text: City Tram Service
+      group: Extended
     - value: 902
       text: Local Tram Service
+      group: Extended
     - value: 903
       text: Regional Tram Service
+      group: Extended
     - value: 904
       text: Sightseeing Tram Service
+      group: Extended
     - value: 905
       text: Shuttle Tram Service
+      group: Extended
     - value: 906
       text: All Tram Services
+      group: Extended
     - value: 1000
       text: Water Transport Service
+      group: Extended
     - value: 1100
       text: Air Service
+      group: Extended
     - value: 1200
       text: Ferry Service
+      group: Extended
     - value: 1300
       text: Aerial Lift Service
+      group: Extended
     - value: 1400
       text: Funicular Service
+      group: Extended
     - value: 1500
       text: Taxi Service
+      group: Extended
     - value: 1501
       text: Communal Taxi Service
+      group: Extended
     - value: 1502
       text: Water Taxi Service
+      group: Extended
     - value: 1503
       text: Rail Taxi Service
+      group: Extended
     - value: 1504
       text: Bike Taxi Service
+      group: Extended
     - value: 1505
       text: Licensed Taxi Service
+      group: Extended
     - value: 1506
       text: Private Hire Service Vehicle
+      group: Extended
     - value: 1507
       text: All Taxi Services
+      group: Extended
     - value: 1700
       text: Miscellaneous Service
+      group: Extended
     - value: 1702
       text: Horse-drawn Carriage
+      group: Extended
     columnWidth: 6
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
   - name: route_sort_order
