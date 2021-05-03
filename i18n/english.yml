@@ -142,14 +142,18 @@ components:
   DeploymentsPanel:
     autoDeploy:
       help: >
-        Whenever a new version is processed, a deployment will automatically be
-        kicked off (assuming there are no critical errors).
-      label: Enable auto-deploy?
+        A deployment will automatically be kicked off (assuming there are no
+        critical errors) whenever one of the above-defined events occurs.
+      label: Auto-deploy events
       noPinnedDeployment: None selected
       pinnedDeploymentHelp: >
         Tip: Under the Deployments tab, click the thumbtack icon next to the
         deployment you would like to target for auto-deployments.
+      placeholder: Specify auto-deploy events
       title: Auto-deployment
+      types:
+        ON_FEED_FETCH: A new version is fetched
+        ON_PROCESS_FEED: A new version is processed
     config:
       body: >
         Deployments can use project-level configurations (e.g., for build or
