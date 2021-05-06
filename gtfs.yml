@@ -151,12 +151,12 @@
     columnWidth: 12
     helpContent: "The stop_desc field contains a description of a stop. Please provide useful, quality information. Do not simply duplicate the name of the stop."
   - name: "stop_lat"
-    required: true
+    required: false
     inputType: LATITUDE
     columnWidth: 6
     helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
   - name: "stop_lon"
-    required: true
+    required: false
     inputType: LONGITUDE
     columnWidth: 6
     helpContent: "The stop_lon field contains the longitude of a stop or station. The field value must be a valid WGS 84 longitude value from -180 to 180."
@@ -180,6 +180,12 @@
       text: Stop (0)
     - value: '1'
       text: Station (1)
+    - value: '2'
+      text: Entrance/Exit (2)
+    - value: '3'
+      text: Generic Node (3)
+    - value: '4'
+      text: Boarding Area (4)
     columnWidth: 12
     helpContent: "The location_type field identifies whether this stop ID represents a stop or station. If no location type is specified, or the location_type is blank, stop IDs are treated as stops. Stations may have different properties from stops when they are represented on a map or used in trip planning."
   - name: "parent_station"
