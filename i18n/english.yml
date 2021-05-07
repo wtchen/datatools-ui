@@ -151,10 +151,6 @@ components:
         A deployment will automatically be kicked off (assuming there are no
         critical errors) whenever one of the above-defined events occurs.
       label: Auto-deploy events
-      noPinnedDeployment: None selected
-      pinnedDeploymentHelp: >
-        Tip: Under the Deployments tab, click the thumbtack icon next to the
-        deployment you would like to target for auto-deployments.
       placeholder: Specify auto-deploy events
       title: Auto-deployment
       types:
