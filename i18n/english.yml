@@ -141,6 +141,12 @@ components:
     title: Deployments
   DeploymentsPanel:
     autoDeploy:
+      deployWithErrors:
+        checklabel: Deploy even if some feed versions have critical errors
+        help: >
+          If this is unchecked, an auto-deployment will halt if any of the feed
+          versions in the deployment have at least one critical error
+        title: Critical Errors Handling
       help: >
         A deployment will automatically be kicked off (assuming there are no
         critical errors) whenever one of the above-defined events occurs.

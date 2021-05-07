@@ -19,6 +19,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
     project={
       Object {
         "autoDeploy": false,
+        "autoDeployTypes": Array [],
+        "autoDeployWithCriticalErrors": false,
         "autoFetchFeeds": true,
         "autoFetchHour": 0,
         "autoFetchMinute": 0,
@@ -123,6 +125,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
               "east": 0,
               "north": 0,
@@ -154,6 +157,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
               "east": 0,
               "north": 0,
@@ -239,6 +243,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
       project={
         Object {
           "autoDeploy": false,
+          "autoDeployTypes": Array [],
+          "autoDeployWithCriticalErrors": false,
           "autoFetchFeeds": true,
           "autoFetchHour": 0,
           "autoFetchMinute": 0,
@@ -343,6 +349,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
                 "east": 0,
                 "north": 0,
@@ -374,6 +381,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
                 "east": 0,
                 "north": 0,
@@ -617,6 +625,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
                         "east": 0,
                         "north": 0,
@@ -624,10 +633,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "west": 0,
                       },
                       "projectId": "mock-project-with-deployments-id",
-                      "r5": false,
-                      "r5Version": null,
                       "routerId": null,
                       "skipOsmExtract": false,
+                      "tripPlannerVersion": "OTP_1",
                       "user": null,
                     },
                     Object {
@@ -649,6 +657,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
                         "east": 0,
                         "north": 0,
@@ -656,10 +665,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "west": 0,
                       },
                       "projectId": "mock-project-with-deployments-id",
-                      "r5": false,
-                      "r5Version": null,
                       "routerId": null,
                       "skipOsmExtract": false,
+                      "tripPlannerVersion": "OTP_1",
                       "user": null,
                     },
                   ]
@@ -667,6 +675,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                 project={
                   Object {
                     "autoDeploy": false,
+                    "autoDeployTypes": Array [],
+                    "autoDeployWithCriticalErrors": false,
                     "autoFetchFeeds": true,
                     "autoFetchHour": 0,
                     "autoFetchMinute": 0,
@@ -771,6 +781,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
                           "east": 0,
                           "north": 0,
@@ -802,6 +813,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
                           "east": 0,
                           "north": 0,
@@ -1135,6 +1147,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
                                   "east": 0,
                                   "north": 0,
@@ -1152,6 +1165,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             project={
                               Object {
                                 "autoDeploy": false,
+                                "autoDeployTypes": Array [],
+                                "autoDeployWithCriticalErrors": false,
                                 "autoFetchFeeds": true,
                                 "autoFetchHour": 0,
                                 "autoFetchMinute": 0,
@@ -1256,6 +1271,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1287,6 +1303,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1527,6 +1544,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
                                   "east": 0,
                                   "north": 0,
@@ -1544,6 +1562,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             project={
                               Object {
                                 "autoDeploy": false,
+                                "autoDeployTypes": Array [],
+                                "autoDeployWithCriticalErrors": false,
                                 "autoFetchFeeds": true,
                                 "autoFetchHour": 0,
                                 "autoFetchMinute": 0,
@@ -1648,6 +1668,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1679,6 +1700,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -2178,41 +2200,256 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         </HelpBlock>
                       </div>
                     </FormGroup>
-                    <Checkbox
-                      bsClass="checkbox"
-                      checked={false}
-                      disabled={false}
-                      inline={false}
+                    <FormGroup
+                      bsClass="form-group"
+                      controlId="autoDeployTypes"
                       key=".1"
-                      name="autoDeploy"
-                      onChange={[Function]}
                     >
                       <div
-                        className="checkbox"
+                        className="form-group"
                       >
-                        <label>
-                          <input
-                            checked={false}
-                            disabled={false}
-                            name="autoDeploy"
-                            onChange={[Function]}
-                            type="checkbox"
-                          />
-                          Enable auto-deploy?
-                        </label>
+                        <ControlLabel
+                          bsClass="control-label"
+                          srOnly={false}
+                        >
+                          <label
+                            className="control-label"
+                            htmlFor="autoDeployTypes"
+                          >
+                            <Icon
+                              type="bolt"
+                            >
+                              <i
+                                className="fa fa-bolt fa-fw "
+                              />
+                            </Icon>
+                             
+                            Auto-deploy events
+                          </label>
+                        </ControlLabel>
+                        <Select
+                          arrowRenderer={[Function]}
+                          autosize={true}
+                          backspaceRemoves={true}
+                          backspaceToRemoveMessage="Press backspace to remove {label}"
+                          clearAllText="Clear all"
+                          clearRenderer={[Function]}
+                          clearValueText="Clear value"
+                          clearable={true}
+                          closeOnSelect={true}
+                          deleteRemoves={true}
+                          delimiter=","
+                          disabled={false}
+                          escapeClearsValue={true}
+                          filterOptions={[Function]}
+                          ignoreAccents={true}
+                          ignoreCase={true}
+                          inputProps={Object {}}
+                          isLoading={false}
+                          joinValues={false}
+                          labelKey="label"
+                          matchPos="any"
+                          matchProp="any"
+                          menuBuffer={0}
+                          menuRenderer={[Function]}
+                          multi={true}
+                          name="autoDeployTypes"
+                          noResultsText="No results found"
+                          onBlurResetsInput={true}
+                          onChange={[Function]}
+                          onCloseResetsInput={true}
+                          onSelectResetsInput={true}
+                          openOnClick={true}
+                          optionComponent={[Function]}
+                          options={
+                            Array [
+                              Object {
+                                "label": "A new version is fetched",
+                                "value": "ON_FEED_FETCH",
+                              },
+                              Object {
+                                "label": "A new version is processed",
+                                "value": "ON_PROCESS_FEED",
+                              },
+                            ]
+                          }
+                          pageSize={5}
+                          placeholder="Specify auto-deploy events"
+                          removeSelected={true}
+                          required={false}
+                          rtl={false}
+                          scrollMenuIntoView={true}
+                          searchable={true}
+                          simpleValue={false}
+                          tabSelectsValue={true}
+                          trimFilter={true}
+                          value={Array []}
+                          valueComponent={[Function]}
+                          valueKey="value"
+                        >
+                          <div
+                            className="Select is-clearable is-searchable Select--multi"
+                          >
+                            <div
+                              className="Select-control"
+                              onKeyDown={[Function]}
+                              onMouseDown={[Function]}
+                              onTouchEnd={[Function]}
+                              onTouchMove={[Function]}
+                              onTouchStart={[Function]}
+                            >
+                              <div
+                                className="Select-multi-value-wrapper"
+                                id="react-select-3--value"
+                              >
+                                <div
+                                  className="Select-placeholder"
+                                >
+                                  Specify auto-deploy events
+                                </div>
+                                <AutosizeInput
+                                  aria-activedescendant="react-select-3--value"
+                                  aria-expanded="false"
+                                  aria-haspopup="false"
+                                  aria-owns=""
+                                  className="Select-input"
+                                  injectStyles={true}
+                                  minWidth="5"
+                                  onBlur={[Function]}
+                                  onChange={[Function]}
+                                  onFocus={[Function]}
+                                  required={false}
+                                  role="combobox"
+                                  value=""
+                                >
+                                  <div
+                                    className="Select-input"
+                                    style={
+                                      Object {
+                                        "display": "inline-block",
+                                      }
+                                    }
+                                  >
+                                    <input
+                                      aria-activedescendant="react-select-3--value"
+                                      aria-expanded="false"
+                                      aria-haspopup="false"
+                                      aria-owns=""
+                                      onBlur={[Function]}
+                                      onChange={[Function]}
+                                      onFocus={[Function]}
+                                      required={false}
+                                      role="combobox"
+                                      style={
+                                        Object {
+                                          "boxSizing": "content-box",
+                                          "width": "5px",
+                                        }
+                                      }
+                                      value=""
+                                    />
+                                    <div
+                                      style={
+                                        Object {
+                                          "height": 0,
+                                          "left": 0,
+                                          "overflow": "scroll",
+                                          "position": "absolute",
+                                          "top": 0,
+                                          "visibility": "hidden",
+                                          "whiteSpace": "pre",
+                                        }
+                                      }
+                                    />
+                                  </div>
+                                </AutosizeInput>
+                              </div>
+                              <span
+                                className="Select-arrow-zone"
+                                onMouseDown={[Function]}
+                              >
+                                <span
+                                  className="Select-arrow"
+                                  onMouseDown={[Function]}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </Select>
+                        <HelpBlock
+                          bsClass="help-block"
+                        >
+                          <span
+                            className="help-block"
+                          >
+                            A deployment will automatically be kicked off (assuming there are no critical errors) whenever one of the above-defined events occurs.
+
+                          </span>
+                        </HelpBlock>
                       </div>
-                    </Checkbox>
-                    <HelpBlock
-                      bsClass="help-block"
+                    </FormGroup>
+                    <FormGroup
+                      bsClass="form-group"
+                      controlId="autoDeployWithCriticalErrors"
                       key=".2"
                     >
-                      <span
-                        className="help-block"
+                      <div
+                        className="form-group"
                       >
-                        Whenever a new version is processed, a deployment will automatically be kicked off (assuming there are no critical errors).
+                        <ControlLabel
+                          bsClass="control-label"
+                          srOnly={false}
+                        >
+                          <label
+                            className="control-label"
+                            htmlFor="autoDeployWithCriticalErrors"
+                          >
+                            <Icon
+                              type="warning"
+                            >
+                              <i
+                                className="fa fa-warning fa-fw "
+                              />
+                            </Icon>
+                             
+                            Critical Errors Handling
+                          </label>
+                        </ControlLabel>
+                        <Checkbox
+                          bsClass="checkbox"
+                          checked={false}
+                          disabled={false}
+                          inline={false}
+                          name="autoDeployWithCriticalErrors"
+                          onChange={[Function]}
+                        >
+                          <div
+                            className="checkbox"
+                          >
+                            <label>
+                              <input
+                                checked={false}
+                                disabled={false}
+                                name="autoDeployWithCriticalErrors"
+                                onChange={[Function]}
+                                type="checkbox"
+                              />
+                              Deploy even if some feed versions have critical errors
+                            </label>
+                          </div>
+                        </Checkbox>
+                        <HelpBlock
+                          bsClass="help-block"
+                        >
+                          <span
+                            className="help-block"
+                          >
+                            If this is unchecked, an auto-deployment will halt if any of the feed versions in the deployment have at least one critical error
 
-                      </span>
-                    </HelpBlock>
+                          </span>
+                        </HelpBlock>
+                      </div>
+                    </FormGroup>
                   </div>
                 </div>
               </Panel>

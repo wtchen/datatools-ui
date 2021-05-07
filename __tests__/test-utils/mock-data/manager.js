@@ -55,6 +55,7 @@ export function makeMockDeployment (
     osmExtractUrl: null,
     otpCommit: null,
     otpVersion: null,
+    pinnedfeedVersionIds: [],
     projectId: project.id,
     projectBounds: {east: 0, west: 0, north: 0, south: 0},
     routerId: null,
@@ -70,6 +71,8 @@ export const mockProject = {
   autoFetchHour: 0,
   autoFetchMinute: 0,
   autoDeploy: false,
+  autoDeployTypes: [],
+  autoDeployWithCriticalErrors: false,
   bounds: null,
   buildConfig: {
     fares: null,

@@ -50,6 +50,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
       project={
         Object {
           "autoDeploy": false,
+          "autoDeployTypes": Array [],
+          "autoDeployWithCriticalErrors": false,
           "autoFetchFeeds": true,
           "autoFetchHour": 0,
           "autoFetchMinute": 0,
@@ -1913,6 +1915,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                       project={
                                                         Object {
                                                           "autoDeploy": false,
+                                                          "autoDeployTypes": Array [],
+                                                          "autoDeployWithCriticalErrors": false,
                                                           "autoFetchFeeds": true,
                                                           "autoFetchHour": 0,
                                                           "autoFetchMinute": 0,
@@ -1956,6 +1960,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                         project={
                                                           Object {
                                                             "autoDeploy": false,
+                                                            "autoDeployTypes": Array [],
+                                                            "autoDeployWithCriticalErrors": false,
                                                             "autoFetchFeeds": true,
                                                             "autoFetchHour": 0,
                                                             "autoFetchMinute": 0,
@@ -2072,6 +2078,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                               project={
                                                                 Object {
                                                                   "autoDeploy": false,
+                                                                  "autoDeployTypes": Array [],
+                                                                  "autoDeployWithCriticalErrors": false,
                                                                   "autoFetchFeeds": true,
                                                                   "autoFetchHour": 0,
                                                                   "autoFetchMinute": 0,
@@ -2119,6 +2127,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                 project={
                                                                   Object {
                                                                     "autoDeploy": false,
+                                                                    "autoDeployTypes": Array [],
+                                                                    "autoDeployWithCriticalErrors": false,
                                                                     "autoFetchFeeds": true,
                                                                     "autoFetchHour": 0,
                                                                     "autoFetchMinute": 0,
@@ -2183,6 +2193,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                   project={
                                                                     Object {
                                                                       "autoDeploy": false,
+                                                                      "autoDeployTypes": Array [],
+                                                                      "autoDeployWithCriticalErrors": false,
                                                                       "autoFetchFeeds": true,
                                                                       "autoFetchHour": 0,
                                                                       "autoFetchMinute": 0,
@@ -3861,6 +3873,8 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                       project={
                                                         Object {
                                                           "autoDeploy": false,
+                                                          "autoDeployTypes": Array [],
+                                                          "autoDeployWithCriticalErrors": false,
                                                           "autoFetchFeeds": true,
                                                           "autoFetchHour": 0,
                                                           "autoFetchMinute": 0,
