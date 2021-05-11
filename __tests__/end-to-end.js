@@ -418,7 +418,7 @@ async function createStop ({
     option: number
   },
   url: string,
-  wheelchairBoarding?: string, // make optional due to https://github.com/facebook/flow/issues/183
+  wheelchairBoarding?: number, // make optional due to https://github.com/facebook/flow/issues/183
   zoneId?: string // make optional due to https://github.com/facebook/flow/issues/183
 }) {
   log.info(`creating stop with name: ${name}`)

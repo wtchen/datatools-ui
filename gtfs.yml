@@ -139,7 +139,7 @@
     columnWidth: 6
     helpContent: "The stop_code field contains short text or a number that uniquely identifies the stop for passengers. Stop codes are often used in phone-based transit information systems or printed on stop signage to make it easier for riders to get a stop schedule or real-time arrival information for a particular stop."
   - name: "stop_name"
-    required: true
+    required: false
     inputType: TEXT
     bulkEditEnabled: true
     columnWidth: 12
@@ -186,8 +186,13 @@
       text: Generic Node (3)
     - value: '4'
       text: Boarding Area (4)
-    columnWidth: 12
+    columnWidth: 7
     helpContent: "The location_type field identifies whether this stop ID represents a stop or station. If no location type is specified, or the location_type is blank, stop IDs are treated as stops. Stations may have different properties from stops when they are represented on a map or used in trip planning."
+  - name: "platform_code"
+    required: false
+    inputType: TEXT
+    columnWidth: 5
+    helpContent: "Platform identifier for a platform stop (a stop belonging to a station). This should be just the platform identifier (eg. G or 3)."
   - name: "parent_station"
     required: false
     inputType: GTFS_STOP
