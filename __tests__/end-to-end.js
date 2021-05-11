@@ -162,7 +162,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
         }
 
         if (
-          name !== ISOLATED_TEST ||
+          name !== ISOLATED_TEST &&
             testDependencies[ISOLATED_TEST].indexOf(name) === -1
         ) {
           testResults[name] = true
@@ -885,7 +885,7 @@ describe('end-to-end', () => {
       await click('[data-test-id="confirm-create-user-button"]')
 
       // wait for user to be saved
-      await wait(2000, 'for user to be created')
+      await wait(30000, 'for user to be created')
 
       // filter users
       await filterUsers(testUserSlug)
@@ -915,7 +915,8 @@ describe('end-to-end', () => {
       await waitForAndClick(`[data-test-id="edit-user-${testUserSlug}"]`)
       // $FlowFixMe cryptic error that is hard to resolve :(
       const adminCheckbox = await page.$(`[data-test-id="app-admin-checkbox-${testUserSlug}"]`)
-      expect(await (await adminCheckbox.getProperty('checked')).jsonValue()).toBe(true)
+      const isAdmin = await (await adminCheckbox.getProperty('checked')).jsonValue()
+      expect(isAdmin).toBe(true)
     }, defaultTestTimeout, 'should allow admin user to create another user')
 
     makeTestPostLogin('should delete a user', async () => {
@@ -1264,7 +1265,7 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForAndClick('[data-test-id="import-latest-version-button"]')
       // wait for snapshot to get created
-      waitAndClearCompletedJobs()
+      await waitAndClearCompletedJobs()
 
       // begin editing
       await waitForAndClick('[data-test-id="begin-editing-button"]')
@@ -1303,7 +1304,7 @@ describe('end-to-end', () => {
       // wait for editor to get ready and show starting dialog
       await waitForAndClick('[data-test-id="edit-from-scratch-button"]')
       // wait for snapshot to get created
-      waitAndClearCompletedJobs()
+      await waitAndClearCompletedJobs()
 
       // begin editing
       await waitForAndClick('[data-test-id="begin-editing-button"]')
@@ -1738,7 +1739,12 @@ describe('end-to-end', () => {
         // verify data was saved and retrieved from server
         await expectSelectorToContainHtml(
           '[data-test-id="stop-stop_id-input-container"]',
-          'test-stop-1'
+          dummyStop1.id
+        )
+        // verify stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop1.name
         )
       }, defaultTestTimeout)
 
@@ -1764,14 +1770,24 @@ describe('end-to-end', () => {
           '[data-test-id="stop-stop_desc-input-container"] input'
         )
 
-        // verify data was saved and retrieved from server
+        // verify the second stop was saved and retrieved from server
         await expectSelectorToContainHtml(
           '[data-test-id="stop-stop_desc-input-container"]',
           'test 2 updated'
         )
-      }, defaultTestTimeout)
+        // verify the second stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop2.name
+        )
+        // verify the first stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop1.name
+        )
+      }, defaultTestTimeout, 'should create stop')
 
-      makeEditorEntityTest('should delete stop data', async () => {
+      makeEditorEntityTest('should delete stop', async () => {
         // create a new stop that will get deleted
         await click('[data-test-id="clone-stop-button"]')
 
@@ -1821,7 +1837,17 @@ describe('end-to-end', () => {
           '.entity-list',
           'Russell Ave and Valley Dr to delete (3)'
         )
-      }, defaultTestTimeout, 'should create stop')
+        // verify the second stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop2.name
+        )
+        // verify the first stop shows up in stop entity list
+        await expectSelectorToContainHtml(
+          '.EntityList',
+          dummyStop1.name
+        )
+      }, defaultTestTimeout, 'should update stop data')
     })
 
     // ---------------------------------------------------------------------------
@@ -2312,10 +2338,14 @@ describe('end-to-end', () => {
 
           // add 1st stop
           await reactSelectOption('.pattern-stop-card', 'la', 1, true)
+          await wait(500, 'for 1st stop to be selected')
+          await click('[data-test-id="add-pattern-stop-button"]')
           await wait(2000, 'for 1st stop to save')
 
           // add 2nd stop
           await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
+          await wait(500, 'for 2nd stop to be selected')
+          await click('[data-test-id="add-pattern-stop-button"]')
           await wait(2000, 'for auto-save to happen')
 
           // reload to make sure stuff was saved
@@ -2442,6 +2472,11 @@ describe('end-to-end', () => {
 
           // trip headsign
           await page.keyboard.type('test-headsign')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
+
+          // trip short name
+          await page.keyboard.type('test-trip-short-name')
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 

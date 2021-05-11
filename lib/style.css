@@ -261,6 +261,17 @@ td.feed-source-info {
   margin-right: 5px;
 }
 
+.custom-file {
+  border: 1px solid lightgray;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+.custom-file .btn-group {
+  margin-bottom: 8px;
+}
+
 /* Prevent text from being selectable */
 .unselectable {
     -webkit-touch-callout: none;
@@ -620,6 +631,7 @@ h4.line:after {
   height: auto;
   max-height: 400px;
   overflow-x: hidden;
+  z-index: 99999 !important;
 }
 
 .manager-header {
