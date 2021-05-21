@@ -50,7 +50,7 @@ jobs:
         run: yarn lint-messages
       - name: Run flow check
         run: yarn flow
-      - name: Run tests with coverage
+      - name: Run tests
         run: yarn test-client
       - name: Build with minification
         run: yarn run build -- --minify
