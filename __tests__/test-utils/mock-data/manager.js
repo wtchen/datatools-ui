@@ -144,7 +144,8 @@ export const mockFeedWithVersion = {
   snapshotVersion: null,
   transformRules: [],
   url: 'http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip',
-  user: null
+  user: null,
+  versions: 1
 }
 
 // a mock feed with no versions
@@ -166,7 +167,8 @@ export const mockFeedWithoutVersion = {
   snapshotVersion: null,
   transformRules: [],
   url: null,
-  user: null
+  user: null,
+  versions: 0
 }
 
 // a mock feedversion that has validation data
