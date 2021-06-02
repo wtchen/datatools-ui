@@ -244,10 +244,16 @@ components:
     DeleteRecordsTransformation:
       label: Delete records from %tablePlaceholder%
       name: Delete records transformation
+    NormalizeFieldTransformation:
+      filePlaceholder: Choose file/table to normalize
+      label: Normalize field
+      name: Normalize field transformation
     ReplaceFileFromStringTransformation:
+      filePlaceholder: Choose the file/table to replace
       label: Replace %tablePlaceholder% from %filePlaceholder%
       name: Replace file from string transformation
     ReplaceFileFromVersionTransformation:
+      filePlaceholder: Choose the file/table to replace
       label: Replace %tablePlaceholder% from %versionPlaceholder%
       name: Replace file from version transformation
   FeedVersionNavigator:
