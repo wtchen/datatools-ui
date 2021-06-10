@@ -450,6 +450,23 @@ components:
     placeholder: Select language...
   Login:
     title: Log in
+  MergeFeedsResult:
+    body:
+      failure: Merge failed with $errorCount errors.
+      success: Merge was completed successfully. A new version will be processed/validated containing the resulting feed.
+    idConflicts: ID conflicts
+    remappedIdCount: Remapped ID count
+    remappedIds: Remapped IDs
+    skipped: Skipped records
+    strategyUsed: Strategy used
+    DEFAULT: 'Condition 1: Both feeds have non-matching service IDs and trip IDs - future feed appended to active feed'
+    EXTEND_FUTURE: 'Condition 2: Both feeds have same service IDs and trip IDs - future feed starts from active feed start date'
+    CHECK_STOP_TIMES: 'Condition 3: Matching service IDs, partial non matching trip IDs - non matching trip IDs included, merged feed extends from active start date to future end date'
+    FAIL_DUE_TO_MATCHING_TRIP_IDS: 'Condition 4: Merge failed due non matching service IDs and matching trip IDs'
+    title:
+      failure: 'Warning: Errors encountered during feed merge!'
+      success: 'Feed merge was successful!'
+
   NormalizeStopTimesTip:
     info: "Tip: when changing travel times, consider
     using the 'Normalize stop times' button above to automatically update
