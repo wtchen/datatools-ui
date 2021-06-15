@@ -55,6 +55,7 @@ export function makeMockDeployment (
     osmExtractUrl: null,
     otpCommit: null,
     otpVersion: null,
+    pinnedfeedVersionIds: [],
     projectId: project.id,
     projectBounds: {east: 0, west: 0, north: 0, south: 0},
     routerId: null,
@@ -69,6 +70,9 @@ export const mockProject = {
   autoFetchFeeds: true,
   autoFetchHour: 0,
   autoFetchMinute: 0,
+  autoDeploy: false,
+  autoDeployTypes: [],
+  autoDeployWithCriticalErrors: false,
   bounds: null,
   buildConfig: {
     fares: null,
@@ -140,7 +144,8 @@ export const mockFeedWithVersion = {
   snapshotVersion: null,
   transformRules: [],
   url: 'http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip',
-  user: null
+  user: null,
+  versionCount: 1
 }
 
 // a mock feed with no versions
@@ -162,7 +167,8 @@ export const mockFeedWithoutVersion = {
   snapshotVersion: null,
   transformRules: [],
   url: null,
-  user: null
+  user: null,
+  versionCount: 0
 }
 
 // a mock feedversion that has validation data
