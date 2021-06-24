@@ -23,6 +23,7 @@
     "flow": "mastarm flow",
     "lint": "mastarm lint __mocks__ __tests__ lib scripts --quiet",
     "lint-messages": "node scripts/lint-messages.js",
+    "postinstall": "husky install",
     "predeploy": "yarn",
     "prestart": "yarn",
     "semantic-release": "semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github",
@@ -128,9 +129,11 @@
     "flow-bin": "0.84",
     "flow-coverage-report": "^0.3.0",
     "fs-extra": "^6.0.1",
+    "husky": "^6.0.0",
     "istanbul-middleware": "^0.2.2",
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^7.4.1",
+    "lint-staged": "^11.0.0",
     "mastarm": "^5.3.1",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
@@ -141,6 +144,11 @@
     "semantic-release": "^17.2.3",
     "simple-node-logger": "^0.93.37",
     "slack": "^11.0.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --config node_modules/mastarm/lib/eslintrc.json --fix"
+    ]
   },
   "standard": {
     "env": [
