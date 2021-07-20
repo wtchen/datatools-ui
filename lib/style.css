@@ -147,8 +147,14 @@ td.feed-source-info {
 .feedLabelContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 10px;
+  grid-gap: 5px;
   grid-auto-flow: dense;
+  width: 100%;
+}
+.feedSourceLabelRow {
+  display: inline-flex;
+  width: 100%;
+  align-items: baseline;
 }
 .feedLabel {
   display: inline-block;
@@ -162,6 +168,9 @@ td.feed-source-info {
   border: 1px solid;
 
   padding: 5px;
+}
+.feedLabel.small {
+  padding: 2.5px;
 }
 
 /* Feed transformation substitution styling */
