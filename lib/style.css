@@ -162,15 +162,48 @@ td.feed-source-info {
 
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 
   border-radius: 5px;
   border: 1px solid;
 
-  padding: 5px;
+  padding: 5px 0 8px 0;
 }
 .feedLabel.small {
-  padding: 2.5px;
+  /* removing bottom padding seems to be only way to account for the icon baseline fix */
+  padding: 2px 0 0 0;
+  align-items: baseline;
+  justify-content: center;
+}
+.feedLabel.small .labelName span {
+  /* The icon adds this, so we have to add it as well */
+  margin-bottom: 5px;
+}
+.feedLabel .labelName {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  padding: 5px;
+}
+.feedLabel.small .labelName {
+  padding: 0;
+}
+
+/* Delete Button */
+.feedLabel .actionButtons {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+.feedLabel .actionButtons button {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  opacity: 0.7;
+}
+.feedLabel .actionButtons button:hover {
+  opacity: 1;
 }
 
 /* Feed transformation substitution styling */
