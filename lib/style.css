@@ -150,6 +150,7 @@ td.feed-source-info {
   grid-gap: 5px;
   grid-auto-flow: dense;
   width: 100%;
+  align-items: center;
 }
 .feedSourceLabelRow {
   display: inline-flex;
@@ -171,7 +172,7 @@ td.feed-source-info {
 }
 .feedLabel.small {
   /* removing bottom padding seems to be only way to account for the icon baseline fix */
-  padding: 2px 0 0 0;
+  padding: 2px 4px 0 4px;
   align-items: baseline;
   justify-content: center;
 }
