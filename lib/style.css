@@ -156,6 +156,10 @@ td.feed-source-info {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   grid-gap: 15px;
 }
+.feedLabelContainer.large .noLabelsMessage {
+  /* Match the margin of the new labels "button" */
+  margin: 0 0 10px 0;
+}
 .feedSourceLabelRow {
   display: inline-flex;
   width: 100%;
