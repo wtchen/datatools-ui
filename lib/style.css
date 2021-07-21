@@ -152,6 +152,10 @@ td.feed-source-info {
   width: 100%;
   align-items: center;
 }
+.feedLabelContainer.large {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-gap: 15px;
+}
 .feedSourceLabelRow {
   display: inline-flex;
   width: 100%;
@@ -169,6 +173,10 @@ td.feed-source-info {
   border: 1px solid;
 
   padding: 5px 0 8px 0;
+  height: 100%;
+}
+.feedLabel.clickable {
+  cursor: pointer;
 }
 .feedLabel.small {
   /* removing bottom padding seems to be only way to account for the icon baseline fix */
@@ -189,6 +197,8 @@ td.feed-source-info {
 }
 .feedLabel.small .labelName {
   padding: 0;
+  height: 100%;
+  align-items: center;
 }
 
 .feedLabel .labelName i {
@@ -200,6 +210,10 @@ td.feed-source-info {
   display: flex;
   align-items: flex-end;
   flex-direction: column;
+}
+.feedLabel .actionButtons input[type="checkbox"] {
+  margin: 0 5px 2px 0;
+  padding: 0;
 }
 .feedLabel .actionButtons button {
   background: none;
