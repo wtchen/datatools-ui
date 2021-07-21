@@ -50,6 +50,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                   "externalProperties": Object {},
                   "id": "mock-feed-with-version-id",
                   "isPublic": false,
+                  "labels": Array [],
                   "lastFetched": 1543389038810,
                   "lastUpdated": 1543389038810,
                   "latestValidation": Object {
@@ -147,6 +148,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             "externalProperties": Object {},
             "id": "mock-feed-with-version-id",
             "isPublic": false,
+            "labels": Array [],
             "lastFetched": 1543389038810,
             "lastUpdated": 1543389038810,
             "latestValidation": Object {
@@ -186,6 +188,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
           },
         ],
         "id": "mock-project-with-deployments-id",
+        "labels": Array [],
         "lastUpdated": 1553236399556,
         "name": "mock-project-with-deployments",
         "organizationId": null,
@@ -215,6 +218,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             "externalProperties": Object {},
             "id": "mock-feed-with-version-id",
             "isPublic": false,
+            "labels": Array [],
             "lastFetched": 1543389038810,
             "lastUpdated": 1543389038810,
             "latestValidation": Object {
@@ -263,6 +267,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             "externalProperties": Object {},
             "id": "mock-feed-with-version-id",
             "isPublic": false,
+            "labels": Array [],
             "lastFetched": 1543389038810,
             "lastUpdated": 1543389038810,
             "latestValidation": Object {
@@ -340,6 +345,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                     "externalProperties": Object {},
                     "id": "mock-feed-with-version-id",
                     "isPublic": false,
+                    "labels": Array [],
                     "lastFetched": 1543389038810,
                     "lastUpdated": 1543389038810,
                     "latestValidation": Object {
@@ -437,6 +443,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
               "externalProperties": Object {},
               "id": "mock-feed-with-version-id",
               "isPublic": false,
+              "labels": Array [],
               "lastFetched": 1543389038810,
               "lastUpdated": 1543389038810,
               "latestValidation": Object {
@@ -476,6 +483,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             },
           ],
           "id": "mock-project-with-deployments-id",
+          "labels": Array [],
           "lastUpdated": 1553236399556,
           "name": "mock-project-with-deployments",
           "organizationId": null,
@@ -609,6 +617,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           "externalProperties": Object {},
                           "id": "mock-feed-with-version-id",
                           "isPublic": false,
+                          "labels": Array [],
                           "lastFetched": 1543389038810,
                           "lastUpdated": 1543389038810,
                           "latestValidation": Object {
@@ -706,6 +715,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                     "externalProperties": Object {},
                     "id": "mock-feed-with-version-id",
                     "isPublic": false,
+                    "labels": Array [],
                     "lastFetched": 1543389038810,
                     "lastUpdated": 1543389038810,
                     "latestValidation": Object {
@@ -745,6 +755,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                   },
                 ],
                 "id": "mock-project-with-deployments-id",
+                "labels": Array [],
                 "lastUpdated": 1553236399556,
                 "name": "mock-project-with-deployments",
                 "organizationId": null,
@@ -809,6 +820,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                             "externalProperties": Object {},
                             "id": "mock-feed-with-version-id",
                             "isPublic": false,
+                            "labels": Array [],
                             "lastFetched": 1543389038810,
                             "lastUpdated": 1543389038810,
                             "latestValidation": Object {
@@ -906,6 +918,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                       "externalProperties": Object {},
                       "id": "mock-feed-with-version-id",
                       "isPublic": false,
+                      "labels": Array [],
                       "lastFetched": 1543389038810,
                       "lastUpdated": 1543389038810,
                       "latestValidation": Object {
@@ -945,6 +958,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                     },
                   ],
                   "id": "mock-project-with-deployments-id",
+                  "labels": Array [],
                   "lastUpdated": 1553236399556,
                   "name": "mock-project-with-deployments",
                   "organizationId": null,
@@ -1027,6 +1041,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               "externalProperties": Object {},
                               "id": "mock-feed-with-version-id",
                               "isPublic": false,
+                              "labels": Array [],
                               "lastFetched": 1543389038810,
                               "lastUpdated": 1543389038810,
                               "latestValidation": Object {
@@ -1124,6 +1139,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                         "externalProperties": Object {},
                         "id": "mock-feed-with-version-id",
                         "isPublic": false,
+                        "labels": Array [],
                         "lastFetched": 1543389038810,
                         "lastUpdated": 1543389038810,
                         "latestValidation": Object {
@@ -1163,6 +1179,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                       },
                     ],
                     "id": "mock-project-with-deployments-id",
+                    "labels": Array [],
                     "lastUpdated": 1553236399556,
                     "name": "mock-project-with-deployments",
                     "organizationId": null,
@@ -2825,6 +2842,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                         "externalProperties": Object {},
                         "id": "mock-feed-with-version-id",
                         "isPublic": false,
+                        "labels": Array [],
                         "lastFetched": 1543389038810,
                         "lastUpdated": 1543389038810,
                         "latestValidation": Object {
@@ -2899,6 +2917,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                   "externalProperties": Object {},
                                   "id": "mock-feed-with-version-id",
                                   "isPublic": false,
+                                  "labels": Array [],
                                   "lastFetched": 1543389038810,
                                   "lastUpdated": 1543389038810,
                                   "latestValidation": Object {
@@ -2996,6 +3015,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                             "externalProperties": Object {},
                             "id": "mock-feed-with-version-id",
                             "isPublic": false,
+                            "labels": Array [],
                             "lastFetched": 1543389038810,
                             "lastUpdated": 1543389038810,
                             "latestValidation": Object {
@@ -3035,6 +3055,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           },
                         ],
                         "id": "mock-project-with-deployments-id",
+                        "labels": Array [],
                         "lastUpdated": 1553236399556,
                         "name": "mock-project-with-deployments",
                         "organizationId": null,
@@ -3089,6 +3110,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           "externalProperties": Object {},
                           "id": "mock-feed-with-version-id",
                           "isPublic": false,
+                          "labels": Array [],
                           "lastFetched": 1543389038810,
                           "lastUpdated": 1543389038810,
                           "latestValidation": Object {
@@ -3162,6 +3184,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     "externalProperties": Object {},
                                     "id": "mock-feed-with-version-id",
                                     "isPublic": false,
+                                    "labels": Array [],
                                     "lastFetched": 1543389038810,
                                     "lastUpdated": 1543389038810,
                                     "latestValidation": Object {
@@ -3259,6 +3282,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               "externalProperties": Object {},
                               "id": "mock-feed-with-version-id",
                               "isPublic": false,
+                              "labels": Array [],
                               "lastFetched": 1543389038810,
                               "lastUpdated": 1543389038810,
                               "latestValidation": Object {
@@ -3298,6 +3322,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                             },
                           ],
                           "id": "mock-project-with-deployments-id",
+                          "labels": Array [],
                           "lastUpdated": 1553236399556,
                           "name": "mock-project-with-deployments",
                           "organizationId": null,
@@ -3407,6 +3432,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 "externalProperties": Object {},
                                 "id": "mock-feed-with-version-id",
                                 "isPublic": false,
+                                "labels": Array [],
                                 "lastFetched": 1543389038810,
                                 "lastUpdated": 1543389038810,
                                 "latestValidation": Object {
@@ -3443,6 +3469,197 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                                 "user": null,
                                 "versionCount": 1,
+                              }
+                            }
+                            project={
+                              Object {
+                                "autoDeploy": false,
+                                "autoDeployTypes": Array [],
+                                "autoDeployWithCriticalErrors": false,
+                                "autoFetchFeeds": true,
+                                "autoFetchHour": 0,
+                                "autoFetchMinute": 0,
+                                "bounds": null,
+                                "buildConfig": Object {
+                                  "fares": null,
+                                  "fetchElevationUS": null,
+                                  "stationTransfers": null,
+                                  "subwayAccessTime": null,
+                                },
+                                "dateCreated": 1526305321824,
+                                "defaultTimeZone": null,
+                                "deployments": Array [
+                                  Object {
+                                    "customBuildConfig": null,
+                                    "customRouterConfig": null,
+                                    "dateCreated": 1553292345720,
+                                    "deployJobSummaries": Array [],
+                                    "deployedTo": null,
+                                    "ec2Instances": Array [],
+                                    "feedSourceId": null,
+                                    "feedVersions": Array [
+                                      Object {
+                                        "feedSource": Object {
+                                          "dateCreated": 1536195264564,
+                                          "deployable": false,
+                                          "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                          "externalProperties": Object {},
+                                          "id": "mock-feed-with-version-id",
+                                          "isPublic": false,
+                                          "labels": Array [],
+                                          "lastFetched": 1543389038810,
+                                          "lastUpdated": 1543389038810,
+                                          "latestValidation": Object {
+                                            "agencies": null,
+                                            "agencyCount": 1,
+                                            "avgDailyRevenueTime": 0,
+                                            "bounds": Object {
+                                              "east": -76.481211,
+                                              "north": 39.0486949672717,
+                                              "south": 38.92884,
+                                              "west": -76.5673055566884,
+                                            },
+                                            "endDate": "20190801",
+                                            "errorCount": 78,
+                                            "feedVersionId": "mock-feed-version-id",
+                                            "loadFailureReason": null,
+                                            "loadStatus": "SUCCESS",
+                                            "routeCount": 10,
+                                            "startDate": "20180801",
+                                            "stopCount": 237,
+                                            "stopTimesCount": 11170,
+                                            "tripCount": 415,
+                                          },
+                                          "latestVersionId": "mock-feed-version-id",
+                                          "name": "test feed with a version",
+                                          "noteCount": 0,
+                                          "organizationId": null,
+                                          "projectId": "mock-project-id",
+                                          "publishedVersionId": null,
+                                          "retrievalMethod": "MANUALLY_UPLOADED",
+                                          "s3Url": null,
+                                          "snapshotVersion": null,
+                                          "transformRules": Array [],
+                                          "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                          "user": null,
+                                          "versionCount": 1,
+                                        },
+                                        "id": "mock-feed-version-id",
+                                        "nextVersionId": null,
+                                        "previousVersionId": null,
+                                        "updated": 1543389038810,
+                                        "validationResult": Object {
+                                          "agencies": null,
+                                          "agencyCount": 1,
+                                          "avgDailyRevenueTime": 0,
+                                          "bounds": Object {
+                                            "east": -76.481211,
+                                            "north": 39.0486949672717,
+                                            "south": 38.92884,
+                                            "west": -76.5673055566884,
+                                          },
+                                          "endDate": "20190801",
+                                          "errorCount": 78,
+                                          "feedVersionId": "mock-feed-version-id",
+                                          "loadFailureReason": null,
+                                          "loadStatus": "SUCCESS",
+                                          "routeCount": 10,
+                                          "startDate": "20180801",
+                                          "stopCount": 237,
+                                          "stopTimesCount": 11170,
+                                          "tripCount": 415,
+                                        },
+                                        "version": 1,
+                                      },
+                                    ],
+                                    "id": "mock-deployment-id-0",
+                                    "invalidFeedSources": Array [],
+                                    "lastDeployed": null,
+                                    "lastUpdated": 1553292345726,
+                                    "latest": null,
+                                    "name": "mock-deployment",
+                                    "organizationId": null,
+                                    "osmExtractUrl": null,
+                                    "otpCommit": null,
+                                    "otpVersion": null,
+                                    "pinnedfeedVersionIds": Array [],
+                                    "projectBounds": Object {
+                                      "east": 0,
+                                      "north": 0,
+                                      "south": 0,
+                                      "west": 0,
+                                    },
+                                    "projectId": "mock-project-with-deployments-id",
+                                    "routerId": null,
+                                    "skipOsmExtract": false,
+                                    "tripPlannerVersion": "OTP_1",
+                                    "user": null,
+                                  },
+                                ],
+                                "feedSources": Array [
+                                  Object {
+                                    "dateCreated": 1536195264564,
+                                    "deployable": false,
+                                    "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                    "externalProperties": Object {},
+                                    "id": "mock-feed-with-version-id",
+                                    "isPublic": false,
+                                    "labels": Array [],
+                                    "lastFetched": 1543389038810,
+                                    "lastUpdated": 1543389038810,
+                                    "latestValidation": Object {
+                                      "agencies": null,
+                                      "agencyCount": 1,
+                                      "avgDailyRevenueTime": 0,
+                                      "bounds": Object {
+                                        "east": -76.481211,
+                                        "north": 39.0486949672717,
+                                        "south": 38.92884,
+                                        "west": -76.5673055566884,
+                                      },
+                                      "endDate": "20190801",
+                                      "errorCount": 78,
+                                      "feedVersionId": "mock-feed-version-id",
+                                      "loadFailureReason": null,
+                                      "loadStatus": "SUCCESS",
+                                      "routeCount": 10,
+                                      "startDate": "20180801",
+                                      "stopCount": 237,
+                                      "stopTimesCount": 11170,
+                                      "tripCount": 415,
+                                    },
+                                    "latestVersionId": "mock-feed-version-id",
+                                    "name": "test feed with a version",
+                                    "noteCount": 0,
+                                    "organizationId": null,
+                                    "projectId": "mock-project-id",
+                                    "publishedVersionId": null,
+                                    "retrievalMethod": "MANUALLY_UPLOADED",
+                                    "s3Url": null,
+                                    "snapshotVersion": null,
+                                    "transformRules": Array [],
+                                    "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                    "user": null,
+                                    "versionCount": 1,
+                                  },
+                                ],
+                                "id": "mock-project-with-deployments-id",
+                                "labels": Array [],
+                                "lastUpdated": 1553236399556,
+                                "name": "mock-project-with-deployments",
+                                "organizationId": null,
+                                "otpServers": Array [],
+                                "pinnedDeploymentId": null,
+                                "routerConfig": Object {
+                                  "carDropoffTime": null,
+                                  "numItineraries": null,
+                                  "requestLogFile": null,
+                                  "stairsReluctance": null,
+                                  "updaters": null,
+                                  "walkSpeed": null,
+                                },
+                                "useCustomOsmBounds": false,
+                                "user": null,
                               }
                             }
                           >
@@ -3517,6 +3734,331 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                         />
                                       </Icon>
                                       Private
+                                    </div>
+                                  </Col>
+                                  <Col
+                                    bsClass="col"
+                                    componentClass="div"
+                                    xs={12}
+                                  >
+                                    <div
+                                      className="col-xs-12"
+                                    >
+                                      <div
+                                        className="feedSourceLabelRow"
+                                      >
+                                        <Icon
+                                          type="tag"
+                                        >
+                                          <i
+                                            className="fa fa-tag fa-fw "
+                                          />
+                                        </Icon>
+                                        <LabelEditorModal
+                                          feedSource={
+                                            Object {
+                                              "dateCreated": 1536195264564,
+                                              "deployable": false,
+                                              "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                              "externalProperties": Object {},
+                                              "id": "mock-feed-with-version-id",
+                                              "isPublic": false,
+                                              "labels": Array [],
+                                              "lastFetched": 1543389038810,
+                                              "lastUpdated": 1543389038810,
+                                              "latestValidation": Object {
+                                                "agencies": null,
+                                                "agencyCount": 1,
+                                                "avgDailyRevenueTime": 0,
+                                                "bounds": Object {
+                                                  "east": -76.481211,
+                                                  "north": 39.0486949672717,
+                                                  "south": 38.92884,
+                                                  "west": -76.5673055566884,
+                                                },
+                                                "endDate": "20190801",
+                                                "errorCount": 78,
+                                                "feedVersionId": "mock-feed-version-id",
+                                                "loadFailureReason": null,
+                                                "loadStatus": "SUCCESS",
+                                                "routeCount": 10,
+                                                "startDate": "20180801",
+                                                "stopCount": 237,
+                                                "stopTimesCount": 11170,
+                                                "tripCount": 415,
+                                              },
+                                              "latestVersionId": "mock-feed-version-id",
+                                              "name": "test feed with a version",
+                                              "noteCount": 0,
+                                              "organizationId": null,
+                                              "projectId": "mock-project-id",
+                                              "publishedVersionId": null,
+                                              "retrievalMethod": "MANUALLY_UPLOADED",
+                                              "s3Url": null,
+                                              "snapshotVersion": null,
+                                              "transformRules": Array [],
+                                              "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                              "user": null,
+                                              "versionCount": 1,
+                                            }
+                                          }
+                                          project={
+                                            Object {
+                                              "autoDeploy": false,
+                                              "autoDeployTypes": Array [],
+                                              "autoDeployWithCriticalErrors": false,
+                                              "autoFetchFeeds": true,
+                                              "autoFetchHour": 0,
+                                              "autoFetchMinute": 0,
+                                              "bounds": null,
+                                              "buildConfig": Object {
+                                                "fares": null,
+                                                "fetchElevationUS": null,
+                                                "stationTransfers": null,
+                                                "subwayAccessTime": null,
+                                              },
+                                              "dateCreated": 1526305321824,
+                                              "defaultTimeZone": null,
+                                              "deployments": Array [
+                                                Object {
+                                                  "customBuildConfig": null,
+                                                  "customRouterConfig": null,
+                                                  "dateCreated": 1553292345720,
+                                                  "deployJobSummaries": Array [],
+                                                  "deployedTo": null,
+                                                  "ec2Instances": Array [],
+                                                  "feedSourceId": null,
+                                                  "feedVersions": Array [
+                                                    Object {
+                                                      "feedSource": Object {
+                                                        "dateCreated": 1536195264564,
+                                                        "deployable": false,
+                                                        "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                                        "externalProperties": Object {},
+                                                        "id": "mock-feed-with-version-id",
+                                                        "isPublic": false,
+                                                        "labels": Array [],
+                                                        "lastFetched": 1543389038810,
+                                                        "lastUpdated": 1543389038810,
+                                                        "latestValidation": Object {
+                                                          "agencies": null,
+                                                          "agencyCount": 1,
+                                                          "avgDailyRevenueTime": 0,
+                                                          "bounds": Object {
+                                                            "east": -76.481211,
+                                                            "north": 39.0486949672717,
+                                                            "south": 38.92884,
+                                                            "west": -76.5673055566884,
+                                                          },
+                                                          "endDate": "20190801",
+                                                          "errorCount": 78,
+                                                          "feedVersionId": "mock-feed-version-id",
+                                                          "loadFailureReason": null,
+                                                          "loadStatus": "SUCCESS",
+                                                          "routeCount": 10,
+                                                          "startDate": "20180801",
+                                                          "stopCount": 237,
+                                                          "stopTimesCount": 11170,
+                                                          "tripCount": 415,
+                                                        },
+                                                        "latestVersionId": "mock-feed-version-id",
+                                                        "name": "test feed with a version",
+                                                        "noteCount": 0,
+                                                        "organizationId": null,
+                                                        "projectId": "mock-project-id",
+                                                        "publishedVersionId": null,
+                                                        "retrievalMethod": "MANUALLY_UPLOADED",
+                                                        "s3Url": null,
+                                                        "snapshotVersion": null,
+                                                        "transformRules": Array [],
+                                                        "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                                        "user": null,
+                                                        "versionCount": 1,
+                                                      },
+                                                      "id": "mock-feed-version-id",
+                                                      "nextVersionId": null,
+                                                      "previousVersionId": null,
+                                                      "updated": 1543389038810,
+                                                      "validationResult": Object {
+                                                        "agencies": null,
+                                                        "agencyCount": 1,
+                                                        "avgDailyRevenueTime": 0,
+                                                        "bounds": Object {
+                                                          "east": -76.481211,
+                                                          "north": 39.0486949672717,
+                                                          "south": 38.92884,
+                                                          "west": -76.5673055566884,
+                                                        },
+                                                        "endDate": "20190801",
+                                                        "errorCount": 78,
+                                                        "feedVersionId": "mock-feed-version-id",
+                                                        "loadFailureReason": null,
+                                                        "loadStatus": "SUCCESS",
+                                                        "routeCount": 10,
+                                                        "startDate": "20180801",
+                                                        "stopCount": 237,
+                                                        "stopTimesCount": 11170,
+                                                        "tripCount": 415,
+                                                      },
+                                                      "version": 1,
+                                                    },
+                                                  ],
+                                                  "id": "mock-deployment-id-0",
+                                                  "invalidFeedSources": Array [],
+                                                  "lastDeployed": null,
+                                                  "lastUpdated": 1553292345726,
+                                                  "latest": null,
+                                                  "name": "mock-deployment",
+                                                  "organizationId": null,
+                                                  "osmExtractUrl": null,
+                                                  "otpCommit": null,
+                                                  "otpVersion": null,
+                                                  "pinnedfeedVersionIds": Array [],
+                                                  "projectBounds": Object {
+                                                    "east": 0,
+                                                    "north": 0,
+                                                    "south": 0,
+                                                    "west": 0,
+                                                  },
+                                                  "projectId": "mock-project-with-deployments-id",
+                                                  "routerId": null,
+                                                  "skipOsmExtract": false,
+                                                  "tripPlannerVersion": "OTP_1",
+                                                  "user": null,
+                                                },
+                                              ],
+                                              "feedSources": Array [
+                                                Object {
+                                                  "dateCreated": 1536195264564,
+                                                  "deployable": false,
+                                                  "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                                                  "externalProperties": Object {},
+                                                  "id": "mock-feed-with-version-id",
+                                                  "isPublic": false,
+                                                  "labels": Array [],
+                                                  "lastFetched": 1543389038810,
+                                                  "lastUpdated": 1543389038810,
+                                                  "latestValidation": Object {
+                                                    "agencies": null,
+                                                    "agencyCount": 1,
+                                                    "avgDailyRevenueTime": 0,
+                                                    "bounds": Object {
+                                                      "east": -76.481211,
+                                                      "north": 39.0486949672717,
+                                                      "south": 38.92884,
+                                                      "west": -76.5673055566884,
+                                                    },
+                                                    "endDate": "20190801",
+                                                    "errorCount": 78,
+                                                    "feedVersionId": "mock-feed-version-id",
+                                                    "loadFailureReason": null,
+                                                    "loadStatus": "SUCCESS",
+                                                    "routeCount": 10,
+                                                    "startDate": "20180801",
+                                                    "stopCount": 237,
+                                                    "stopTimesCount": 11170,
+                                                    "tripCount": 415,
+                                                  },
+                                                  "latestVersionId": "mock-feed-version-id",
+                                                  "name": "test feed with a version",
+                                                  "noteCount": 0,
+                                                  "organizationId": null,
+                                                  "projectId": "mock-project-id",
+                                                  "publishedVersionId": null,
+                                                  "retrievalMethod": "MANUALLY_UPLOADED",
+                                                  "s3Url": null,
+                                                  "snapshotVersion": null,
+                                                  "transformRules": Array [],
+                                                  "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                                                  "user": null,
+                                                  "versionCount": 1,
+                                                },
+                                              ],
+                                              "id": "mock-project-with-deployments-id",
+                                              "labels": Array [],
+                                              "lastUpdated": 1553236399556,
+                                              "name": "mock-project-with-deployments",
+                                              "organizationId": null,
+                                              "otpServers": Array [],
+                                              "pinnedDeploymentId": null,
+                                              "routerConfig": Object {
+                                                "carDropoffTime": null,
+                                                "numItineraries": null,
+                                                "requestLogFile": null,
+                                                "stairsReluctance": null,
+                                                "updaters": null,
+                                                "walkSpeed": null,
+                                              },
+                                              "useCustomOsmBounds": false,
+                                              "user": null,
+                                            }
+                                          }
+                                        >
+                                          <Modal
+                                            animation={true}
+                                            autoFocus={true}
+                                            backdrop={true}
+                                            bsClass="modal"
+                                            dialogComponentClass={[Function]}
+                                            enforceFocus={true}
+                                            keyboard={true}
+                                            manager={
+                                              ModalManager {
+                                                "containers": Array [],
+                                                "data": Array [],
+                                                "handleContainerOverflow": true,
+                                                "hideSiblingNodes": true,
+                                                "modals": Array [],
+                                              }
+                                            }
+                                            onHide={[Function]}
+                                            renderBackdrop={[Function]}
+                                            restoreFocus={true}
+                                            show={false}
+                                          >
+                                            <Modal
+                                              autoFocus={true}
+                                              backdrop={true}
+                                              backdropClassName="modal-backdrop"
+                                              backdropTransitionTimeout={150}
+                                              containerClassName="modal-open"
+                                              dialogTransitionTimeout={300}
+                                              enforceFocus={true}
+                                              keyboard={true}
+                                              manager={
+                                                ModalManager {
+                                                  "containers": Array [],
+                                                  "data": Array [],
+                                                  "handleContainerOverflow": true,
+                                                  "hideSiblingNodes": true,
+                                                  "modals": Array [],
+                                                }
+                                              }
+                                              onEntering={[Function]}
+                                              onExited={[Function]}
+                                              onHide={[Function]}
+                                              renderBackdrop={[Function]}
+                                              restoreFocus={true}
+                                              show={false}
+                                              transition={[Function]}
+                                            />
+                                          </Modal>
+                                        </LabelEditorModal>
+                                        <button
+                                          className="labelActionButton small"
+                                          onClick={[Function]}
+                                          style={
+                                            Object {
+                                              "marginRight": "5px",
+                                            }
+                                          }
+                                        >
+                                          Edit
+                                        </button>
+                                        <div
+                                          className="feedLabelContainer"
+                                        />
+                                      </div>
                                     </div>
                                   </Col>
                                 </div>
@@ -3637,6 +4179,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 "externalProperties": Object {},
                                 "id": "mock-feed-with-version-id",
                                 "isPublic": false,
+                                "labels": Array [],
                                 "lastFetched": 1543389038810,
                                 "lastUpdated": 1543389038810,
                                 "latestValidation": Object {
@@ -3710,6 +4253,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                           "externalProperties": Object {},
                                           "id": "mock-feed-with-version-id",
                                           "isPublic": false,
+                                          "labels": Array [],
                                           "lastFetched": 1543389038810,
                                           "lastUpdated": 1543389038810,
                                           "latestValidation": Object {
@@ -3807,6 +4351,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     "externalProperties": Object {},
                                     "id": "mock-feed-with-version-id",
                                     "isPublic": false,
+                                    "labels": Array [],
                                     "lastFetched": 1543389038810,
                                     "lastUpdated": 1543389038810,
                                     "latestValidation": Object {
@@ -3846,6 +4391,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                   },
                                 ],
                                 "id": "mock-project-with-deployments-id",
+                                "labels": Array [],
                                 "lastUpdated": 1553236399556,
                                 "name": "mock-project-with-deployments",
                                 "organizationId": null,
