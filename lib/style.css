@@ -230,7 +230,7 @@ td.feed-source-info {
 }
 
 /* New Label "button" */
-.newLabel {
+.labelActionButton {
   background: none;
   border: none;
   margin: 0 0 10px 0;
@@ -238,7 +238,7 @@ td.feed-source-info {
   color: #337ab7;
   text-decoration: none;
 }
-.newLabel:hover {
+.labelActionButton:hover {
   text-decoration: underline;
 }
 
