@@ -3662,6 +3662,78 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 "user": null,
                               }
                             }
+                            user={
+                              Object {
+                                "isCheckingLogin": false,
+                                "permissions": UserPermissions {
+                                  "appPermissionLookup": Object {
+                                    "administer-application": Object {
+                                      "type": "administer-application",
+                                    },
+                                  },
+                                  "orgPermissionLookup": Object {},
+                                  "organizationLookup": Object {},
+                                  "projectLookup": Object {},
+                                },
+                                "profile": Object {
+                                  "app_metadata": Object {
+                                    "datatools": Array [
+                                      Object {
+                                        "client_id": "mock-client-id",
+                                        "organizations": Array [],
+                                        "permissions": Array [
+                                          Object {
+                                            "type": "administer-application",
+                                          },
+                                        ],
+                                        "projects": Array [],
+                                        "subscriptions": Array [],
+                                      },
+                                    ],
+                                  },
+                                  "clientID": "mock-client-id",
+                                  "created_at": "2016-03-04T18:59:22.569Z",
+                                  "email": "mock-user@conveyal.com",
+                                  "email_verified": true,
+                                  "identities": Array [
+                                    Object {
+                                      "connection": "Username-Password-Authentication",
+                                      "isSocial": false,
+                                      "provider": "auth0",
+                                      "user_id": "12345",
+                                    },
+                                  ],
+                                  "jti": "gibberish",
+                                  "last_password_reset": "2017-07-13T13:58:01.021Z",
+                                  "name": "mock-user@conveyal.com",
+                                  "nickname": "mock-user",
+                                  "persistent": Object {},
+                                  "picture": "https://s.gravatar.com/avatar/f8660ca52d1229e3d55e88f2db4affda?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fmu.png",
+                                  "sub": "auth0|12345",
+                                  "updated_at": "2019-03-21T19:05:30.180Z",
+                                  "user_id": "auth0|12345",
+                                  "user_metadata": Object {
+                                    "datatools": Array [
+                                      Object {
+                                        "client_id": "mock-client-id",
+                                        "editor": Object {
+                                          "map_id": "mapbox.streets",
+                                        },
+                                        "hideTutorial": true,
+                                        "sidebarExpanded": false,
+                                      },
+                                    ],
+                                    "lang": "en",
+                                  },
+                                },
+                                "recentActivity": null,
+                                "redirectOnSuccess": null,
+                                "subscriptions": UserSubscriptions {
+                                  "subscriptionLookup": Object {},
+                                },
+                                "token": "mock-token",
+                              }
+                            }
                           >
                             <div>
                               <h4>
