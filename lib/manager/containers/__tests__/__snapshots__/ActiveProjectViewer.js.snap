@@ -2237,6 +2237,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                   setFeedSort={[Function]}
                                                                   setFeedSourceTableFilterCountStrategy={[Function]}
                                                                   setVisibilityFilter={[Function]}
+                                                                  setVisibilityLabel={[Function]}
                                                                   setVisibilitySearchText={[Function]}
                                                                   sort="alphabetically-asc"
                                                                   thirdPartySync={[Function]}
@@ -3431,6 +3432,169 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                       </SafeAnchor>
                                                                                     </Button>
                                                                                   </OptionButton>
+                                                                                  <DropdownButton
+                                                                                    id="project-feedsource-label-filter-button"
+                                                                                    style={
+                                                                                      Object {
+                                                                                        "paddingBottom": 7,
+                                                                                      }
+                                                                                    }
+                                                                                    title={
+                                                                                      <span
+                                                                                        style={
+                                                                                          Object {
+                                                                                            "fontWeight": "",
+                                                                                          }
+                                                                                        }
+                                                                                      >
+                                                                                        Labels
+                                                                                      </span>
+                                                                                    }
+                                                                                  >
+                                                                                    <Uncontrolled(Dropdown)
+                                                                                      id="project-feedsource-label-filter-button"
+                                                                                    >
+                                                                                      <Dropdown
+                                                                                        bsClass="dropdown"
+                                                                                        componentClass={[Function]}
+                                                                                        id="project-feedsource-label-filter-button"
+                                                                                        onToggle={[Function]}
+                                                                                      >
+                                                                                        <ButtonGroup
+                                                                                          block={false}
+                                                                                          bsClass="btn-group"
+                                                                                          className="dropdown"
+                                                                                          justified={false}
+                                                                                          vertical={false}
+                                                                                        >
+                                                                                          <div
+                                                                                            className="dropdown btn-group"
+                                                                                          >
+                                                                                            <DropdownToggle
+                                                                                              bsClass="dropdown-toggle"
+                                                                                              bsRole="toggle"
+                                                                                              id="project-feedsource-label-filter-button"
+                                                                                              key=".0"
+                                                                                              onClick={[Function]}
+                                                                                              onKeyDown={[Function]}
+                                                                                              open={false}
+                                                                                              style={
+                                                                                                Object {
+                                                                                                  "paddingBottom": 7,
+                                                                                                }
+                                                                                              }
+                                                                                              useAnchor={false}
+                                                                                            >
+                                                                                              <Button
+                                                                                                active={false}
+                                                                                                aria-expanded={false}
+                                                                                                aria-haspopup={true}
+                                                                                                block={false}
+                                                                                                bsClass="btn"
+                                                                                                bsStyle="default"
+                                                                                                className="dropdown-toggle"
+                                                                                                disabled={false}
+                                                                                                id="project-feedsource-label-filter-button"
+                                                                                                onClick={[Function]}
+                                                                                                onKeyDown={[Function]}
+                                                                                                role="button"
+                                                                                                style={
+                                                                                                  Object {
+                                                                                                    "paddingBottom": 7,
+                                                                                                  }
+                                                                                                }
+                                                                                              >
+                                                                                                <button
+                                                                                                  aria-expanded={false}
+                                                                                                  aria-haspopup={true}
+                                                                                                  className="dropdown-toggle btn btn-default"
+                                                                                                  disabled={false}
+                                                                                                  id="project-feedsource-label-filter-button"
+                                                                                                  onClick={[Function]}
+                                                                                                  onKeyDown={[Function]}
+                                                                                                  role="button"
+                                                                                                  style={
+                                                                                                    Object {
+                                                                                                      "paddingBottom": 7,
+                                                                                                    }
+                                                                                                  }
+                                                                                                  type="button"
+                                                                                                >
+                                                                                                  <span
+                                                                                                    style={
+                                                                                                      Object {
+                                                                                                        "fontWeight": "",
+                                                                                                      }
+                                                                                                    }
+                                                                                                  >
+                                                                                                    Labels
+                                                                                                  </span>
+                                                                                                   
+                                                                                                  <span
+                                                                                                    className="caret"
+                                                                                                  />
+                                                                                                </button>
+                                                                                              </Button>
+                                                                                            </DropdownToggle>
+                                                                                            <DropdownMenu
+                                                                                              bsClass="dropdown-menu"
+                                                                                              bsRole="menu"
+                                                                                              key=".1"
+                                                                                              labelledBy="project-feedsource-label-filter-button"
+                                                                                              onClose={[Function]}
+                                                                                              onSelect={[Function]}
+                                                                                              pullRight={false}
+                                                                                            >
+                                                                                              <RootCloseWrapper
+                                                                                                disabled={true}
+                                                                                                event="click"
+                                                                                                onRootClose={[Function]}
+                                                                                              >
+                                                                                                <ul
+                                                                                                  aria-labelledby="project-feedsource-label-filter-button"
+                                                                                                  className="dropdown-menu"
+                                                                                                  role="menu"
+                                                                                                >
+                                                                                                  <MenuItem
+                                                                                                    bsClass="dropdown"
+                                                                                                    disabled={false}
+                                                                                                    divider={false}
+                                                                                                    header={true}
+                                                                                                    key=".0"
+                                                                                                    onKeyDown={[Function]}
+                                                                                                    onSelect={[Function]}
+                                                                                                    style={
+                                                                                                      Object {
+                                                                                                        "minWidth": 275,
+                                                                                                      }
+                                                                                                    }
+                                                                                                  >
+                                                                                                    <li
+                                                                                                      className="dropdown-header"
+                                                                                                      onKeyDown={[Function]}
+                                                                                                      role="heading"
+                                                                                                      style={
+                                                                                                        Object {
+                                                                                                          "minWidth": 275,
+                                                                                                        }
+                                                                                                      }
+                                                                                                    >
+                                                                                                      <h5>
+                                                                                                        Select labels to filter by
+                                                                                                      </h5>
+                                                                                                      <div
+                                                                                                        className="feedLabelContainer"
+                                                                                                      />
+                                                                                                    </li>
+                                                                                                  </MenuItem>
+                                                                                                </ul>
+                                                                                              </RootCloseWrapper>
+                                                                                            </DropdownMenu>
+                                                                                          </div>
+                                                                                        </ButtonGroup>
+                                                                                      </Dropdown>
+                                                                                    </Uncontrolled(Dropdown)>
+                                                                                  </DropdownButton>
                                                                                 </div>
                                                                               </ButtonGroup>
                                                                             </div>

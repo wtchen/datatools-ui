@@ -191,6 +191,12 @@ td.feed-source-info {
 .feedLabel.small .labelName span {
   /* The icon adds this, so we have to add it as well */
   margin-bottom: 5px;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.feedLabel.small.clickable .labelName span {
+  /* The checkbox changes the math from above */
+  margin-bottom: 2px;
 }
 .feedLabel .labelName {
   flex: 2;
@@ -202,6 +208,9 @@ td.feed-source-info {
 .feedLabel.small .labelName {
   padding: 0;
   height: 100%;
+  align-items: baseline;
+}
+.feedLabel.small.clickable .labelName {
   align-items: center;
 }
 
