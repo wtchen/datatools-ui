@@ -987,6 +987,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                     "feedSourceTableComparisonColumn": "DEPLOYED",
                     "feedSourceTableFilterCountStrategy": "LATEST",
                     "filter": null,
+                    "labelsFilterMode": "any",
                     "searchText": null,
                   }
                 }
@@ -1202,6 +1203,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                 setFeedSourceTableFilterCountStrategy={[Function]}
                 setVisibilityFilter={[Function]}
                 setVisibilityLabel={[Function]}
+                setVisibilityLabelMode={[Function]}
                 setVisibilitySearchText={[Function]}
                 sort="alphabetically-asc"
                 thirdPartySync={[Function]}
@@ -2557,7 +2559,27 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                                     }
                                                   >
                                                     <h5>
-                                                      Select labels to filter by
+                                                      Show
+                                                       
+                                                      <select
+                                                        id="anyonly"
+                                                        name="anyonly"
+                                                        onChange={[Function]}
+                                                        value="any"
+                                                      >
+                                                        <option
+                                                          value="any"
+                                                        >
+                                                          any
+                                                        </option>
+                                                        <option
+                                                          value="only"
+                                                        >
+                                                          only
+                                                        </option>
+                                                      </select>
+                                                       
+                                                      feeds with the labels
                                                     </h5>
                                                     <div
                                                       className="feedLabelContainer"

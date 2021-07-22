@@ -2177,6 +2177,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                       "feedSourceTableComparisonColumn": null,
                                                                       "feedSourceTableFilterCountStrategy": "LATEST",
                                                                       "filter": null,
+                                                                      "labelsFilterMode": "any",
                                                                       "searchText": null,
                                                                     }
                                                                   }
@@ -2238,6 +2239,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                   setFeedSourceTableFilterCountStrategy={[Function]}
                                                                   setVisibilityFilter={[Function]}
                                                                   setVisibilityLabel={[Function]}
+                                                                  setVisibilityLabelMode={[Function]}
                                                                   setVisibilitySearchText={[Function]}
                                                                   sort="alphabetically-asc"
                                                                   thirdPartySync={[Function]}
@@ -3580,7 +3582,27 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                                       }
                                                                                                     >
                                                                                                       <h5>
-                                                                                                        Select labels to filter by
+                                                                                                        Show
+                                                                                                         
+                                                                                                        <select
+                                                                                                          id="anyonly"
+                                                                                                          name="anyonly"
+                                                                                                          onChange={[Function]}
+                                                                                                          value="any"
+                                                                                                        >
+                                                                                                          <option
+                                                                                                            value="any"
+                                                                                                          >
+                                                                                                            any
+                                                                                                          </option>
+                                                                                                          <option
+                                                                                                            value="only"
+                                                                                                          >
+                                                                                                            only
+                                                                                                          </option>
+                                                                                                        </select>
+                                                                                                         
+                                                                                                        feeds with the labels
                                                                                                       </h5>
                                                                                                       <div
                                                                                                         className="feedLabelContainer"
