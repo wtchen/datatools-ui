@@ -145,16 +145,11 @@ td.feed-source-info {
 
 /* LABELS */
 .feedLabelContainer {
-  align-items: center;
-  display: grid;
-  grid-auto-flow: dense;
-  grid-gap: 5px;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   width: 100%;
 }
-.feedLabelContainer.large {
-  grid-gap: 15px;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+.feedLabelContainer.grid {
+  display: grid;
+  grid-template-columns: 100%;
 }
 .feedLabelContainer.large .noLabelsMessage {
   /* Match the margin of the new labels "button" */
@@ -169,26 +164,19 @@ td.feed-source-info {
   align-items: center;
   border-radius: 5px;
   border: 1px solid;
-  display: flex;
   height: 100%;
-  justify-content: space-between;
   padding: 5px 0 8px 0;
   word-break: break-word;
+  max-width: 100%;
+  min-width: 60px;
 }
 .feedLabel.clickable {
   cursor: pointer;
 }
-.feedLabel.small {
-  align-items: baseline;
+.feedLabel.smaller {
+  align-items: center;
   justify-content: center;
-  /* removing bottom padding seems to be only way to account for the icon baseline fix */
-  padding: 2px 4px 0 4px;
-}
-.feedLabel.small .labelName span {
-  /* The icon adds this, so we have to add it as well */
-  margin-bottom: 5px;
-  text-overflow: ellipsis;
-  white-space: normal;
+  padding: 0px 4px;
 }
 .feedLabel.small.clickable .labelName span {
   /* The checkbox changes the math from above */
@@ -197,41 +185,56 @@ td.feed-source-info {
 .feedLabel .labelName {
   align-items: baseline;
   display: flex;
-  flex: 2;
   justify-content: center;
   padding: 5px;
+  overflow: hidden;
+  width: 100%;
 }
-.feedLabel.small .labelName {
+.feedLabel.smaller .labelName {
   align-items: baseline;
   height: 100%;
   padding: 0;
 }
-.feedLabel.small.clickable .labelName {
+.feedLabel.smaller.clickable .labelName {
   align-items: center;
 }
 
 .feedLabel .labelName i {
   padding-right: 2px;
+  margin: 0;
+}
+.feedLabel .labelName span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0 0 2px 0;
+  white-space: nowrap;
+}
+
+.feedLabelWrapper {
+  height: 100%;
+  display: inline-flex;
+  justify-content: flex-start; /* No option looks particularly good... */
+  align-items: center;
+  padding: 0 5px 2px 0;
 }
 
 /* Label Buttons */
-.feedLabel .actionButtons {
+.feedLabelWrapper .actionButtons {
   align-items: flex-end;
   display: flex;
   flex-direction: column;
 }
-.feedLabel .actionButtons input[type="checkbox"] {
-  margin: 0 5px 2px 0;
-  padding: 0;
-}
-.feedLabel .actionButtons button {
+.feedLabelWrapper .actionButtons button {
   background: none;
   border: none;
   opacity: 0.7;
   text-decoration: underline;
 }
-.feedLabel .actionButtons button:hover {
+.feedLabelWrapper .actionButtons button:hover {
   opacity: 1;
+}
+.feedLabelWrapper .actionButtons input[type="checkbox"] {
+  margin: 0 7px 0 0;
 }
 
 /* New Label "button" */
@@ -242,6 +245,7 @@ td.feed-source-info {
   margin: 0 0 10px 0;
   padding: 0;
   text-decoration: none;
+  grid-column: 1 / -1;
 }
 .labelActionButton:hover {
   text-decoration: underline;
