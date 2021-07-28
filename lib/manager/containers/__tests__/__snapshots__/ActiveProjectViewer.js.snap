@@ -2177,6 +2177,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                       "feedSourceTableComparisonColumn": null,
                                                                       "feedSourceTableFilterCountStrategy": "LATEST",
                                                                       "filter": null,
+                                                                      "labels": Array [],
                                                                       "labelsFilterMode": "any",
                                                                       "searchText": null,
                                                                     }
@@ -4203,7 +4204,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                             key="0"
                                                           >
                                                             <div
-                                                              className="feedLabelContainer "
+                                                              className="feedLabelContainer  grid"
                                                               key=".0"
                                                             >
                                                               <LabelEditorModal

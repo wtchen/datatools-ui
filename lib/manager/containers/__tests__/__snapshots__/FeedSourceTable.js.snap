@@ -987,6 +987,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                     "feedSourceTableComparisonColumn": "DEPLOYED",
                     "feedSourceTableFilterCountStrategy": "LATEST",
                     "filter": null,
+                    "labels": Array [],
                     "labelsFilterMode": "any",
                     "searchText": null,
                   }
