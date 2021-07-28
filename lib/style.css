@@ -165,10 +165,10 @@ td.feed-source-info {
   border-radius: 5px;
   border: 1px solid;
   height: 100%;
-  padding: 5px 0 8px 0;
-  word-break: break-word;
   max-width: 100%;
   min-width: 60px;
+  padding: 5px 0 8px 0;
+  word-break: break-word;
 }
 .feedLabel.clickable {
   cursor: pointer;
@@ -186,8 +186,8 @@ td.feed-source-info {
   align-items: baseline;
   display: flex;
   justify-content: center;
-  padding: 5px;
   overflow: hidden;
+  padding: 5px;
   width: 100%;
 }
 .feedLabel.smaller .labelName {
@@ -200,21 +200,21 @@ td.feed-source-info {
 }
 
 .feedLabel .labelName i {
-  padding-right: 2px;
   margin: 0;
+  padding-right: 2px;
 }
 .feedLabel .labelName span {
-  text-overflow: ellipsis;
-  overflow: hidden;
   margin: 0 0 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .feedLabelWrapper {
-  height: 100%;
-  display: inline-flex;
-  justify-content: flex-start; /* No option looks particularly good... */
   align-items: center;
+  display: inline-flex;
+  height: 100%;
+  justify-content: flex-start; /* No option looks particularly good... */
   padding: 0 5px 2px 0;
 }
 
@@ -242,10 +242,10 @@ td.feed-source-info {
   background: none;
   border: none;
   color: #337ab7;
+  grid-column: 1 / -1;
   margin: 0 0 10px 0;
   padding: 0;
   text-decoration: none;
-  grid-column: 1 / -1;
 }
 .labelActionButton:hover {
   text-decoration: underline;
