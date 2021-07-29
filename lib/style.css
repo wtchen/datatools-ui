@@ -164,6 +164,7 @@ td.feed-source-info {
   border-radius: 5px;
   border: 1px solid;
   height: 100%;
+  line-height: 200%;
   max-width: 100%;
   min-width: 60px;
   overflow: hidden;
@@ -171,15 +172,14 @@ td.feed-source-info {
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
   word-break: break-word;
 }
 .feedLabel.clickable {
   cursor: pointer;
 }
 .feedLabel.smaller {
-  align-items: center;
-  justify-content: center;
-  padding: 0px 4px;
+  padding: 1px 4px 3px;
 }
 .feedLabel.small.clickable .labelName span {
   /* The checkbox changes the math from above */
@@ -214,19 +214,15 @@ td.feed-source-info {
 }
 
 .feedLabelWrapper {
-  /*
-  align-items: center;
-  display: inline-flex;
-  height: 100%;
-  */
-  /*justify-content: flex-start;*/ /* No option looks particularly good... */
   padding: 0 5px 2px 0;
+}
+.feedLabelWrapper input {
+  margin-top: 6px;
 }
 .feedLabelWrapper.larger {
   align-items: center;
   display: inline-flex;
   height: 100%;
-  justify-content: flex-start; /* No option looks particularly good... */
 }
 
 /* Label Buttons */
