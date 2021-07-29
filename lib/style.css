@@ -161,13 +161,15 @@ td.feed-source-info {
   width: 100%;
 }
 .feedLabel {
-  align-items: center;
   border-radius: 5px;
   border: 1px solid;
   height: 100%;
   max-width: 100%;
   min-width: 60px;
-  padding: 5px 0 8px 0;
+  overflow: hidden;
+  padding: 5px;
+  text-align: center;
+  text-overflow: ellipsis;
   white-space: nowrap;
   word-break: break-word;
 }
