@@ -4,7 +4,6 @@ import clone from 'lodash/cloneDeep'
 
 import UserPermissions from '../../../lib/common/user/UserPermissions'
 import UserSubscriptions from '../../../lib/common/user/UserSubscriptions'
-
 import type {
   Deployment,
   FeedVersion,
@@ -61,6 +60,8 @@ export function makeMockDeployment (
     routerId: null,
     skipOsmExtract: false,
     tripPlannerVersion: 'OTP_1',
+    peliasUpdate: null,
+    peliasWebhookUrl: null,
     user: null
   }
 }
@@ -86,6 +87,7 @@ export const mockProject = {
   feedSources: [],
   id: 'mock-project-id',
   lastUpdated: 1553236399556,
+  lastUsedPeliasWebhookUrl: null,
   name: 'mock-project',
   organizationId: null,
   otpServers: [],

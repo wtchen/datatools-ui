@@ -126,6 +126,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasUpdate": null,
+            "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
               "east": 0,
@@ -158,6 +160,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasUpdate": null,
+            "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
               "east": 0,
@@ -220,6 +224,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
         ],
         "id": "mock-project-with-deployments-id",
         "lastUpdated": 1553236399556,
+        "lastUsedPeliasWebhookUrl": null,
         "name": "mock-project-with-deployments",
         "organizationId": null,
         "otpServers": Array [],
@@ -352,6 +357,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasUpdate": null,
+              "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
                 "east": 0,
@@ -384,6 +391,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasUpdate": null,
+              "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
                 "east": 0,
@@ -446,6 +455,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
           ],
           "id": "mock-project-with-deployments-id",
           "lastUpdated": 1553236399556,
+          "lastUsedPeliasWebhookUrl": null,
           "name": "mock-project-with-deployments",
           "organizationId": null,
           "otpServers": Array [],
@@ -630,6 +640,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "peliasUpdate": null,
+                      "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
                         "east": 0,
@@ -662,6 +674,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "peliasUpdate": null,
+                      "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
                         "east": 0,
@@ -787,6 +801,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasUpdate": null,
+                        "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
                           "east": 0,
@@ -819,6 +835,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasUpdate": null,
+                        "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
                           "east": 0,
@@ -881,6 +899,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     ],
                     "id": "mock-project-with-deployments-id",
                     "lastUpdated": 1553236399556,
+                    "lastUsedPeliasWebhookUrl": null,
                     "name": "mock-project-with-deployments",
                     "organizationId": null,
                     "otpServers": Array [],
@@ -1155,6 +1174,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "peliasUpdate": null,
+                                "peliasWebhookUrl": null,
                                 "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
                                   "east": 0,
@@ -1280,6 +1301,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasUpdate": null,
+                                    "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
@@ -1312,6 +1335,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasUpdate": null,
+                                    "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
@@ -1374,6 +1399,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 ],
                                 "id": "mock-project-with-deployments-id",
                                 "lastUpdated": 1553236399556,
+                                "lastUsedPeliasWebhookUrl": null,
                                 "name": "mock-project-with-deployments",
                                 "organizationId": null,
                                 "otpServers": Array [],
@@ -1554,6 +1580,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "peliasUpdate": null,
+                                "peliasWebhookUrl": null,
                                 "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
                                   "east": 0,
@@ -1679,6 +1707,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasUpdate": null,
+                                    "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
@@ -1711,6 +1741,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasUpdate": null,
+                                    "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
@@ -1773,6 +1805,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 ],
                                 "id": "mock-project-with-deployments-id",
                                 "lastUpdated": 1553236399556,
+                                "lastUsedPeliasWebhookUrl": null,
                                 "name": "mock-project-with-deployments",
                                 "organizationId": null,
                                 "otpServers": Array [],
