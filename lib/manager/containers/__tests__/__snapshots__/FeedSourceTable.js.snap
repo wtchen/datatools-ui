@@ -1351,6 +1351,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           </form>
                         </Form>
                         <DropdownButton
+                          bsSize="small"
                           id="project-feedsource-table-sort-button"
                           style={
                             Object {
@@ -1360,10 +1361,12 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           title="Sort By"
                         >
                           <Uncontrolled(Dropdown)
+                            bsSize="small"
                             id="project-feedsource-table-sort-button"
                           >
                             <Dropdown
                               bsClass="dropdown"
+                              bsSize="small"
                               componentClass={[Function]}
                               id="project-feedsource-table-sort-button"
                               onToggle={[Function]}
@@ -1371,16 +1374,18 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               <ButtonGroup
                                 block={false}
                                 bsClass="btn-group"
+                                bsSize="small"
                                 className="dropdown"
                                 justified={false}
                                 vertical={false}
                               >
                                 <div
-                                  className="dropdown btn-group"
+                                  className="dropdown btn-group btn-group-sm"
                                 >
                                   <DropdownToggle
                                     bsClass="dropdown-toggle"
                                     bsRole="toggle"
+                                    bsSize="small"
                                     id="project-feedsource-table-sort-button"
                                     key=".0"
                                     onClick={[Function]}
@@ -1399,6 +1404,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       aria-haspopup={true}
                                       block={false}
                                       bsClass="btn"
+                                      bsSize="small"
                                       bsStyle="default"
                                       className="dropdown-toggle"
                                       disabled={false}
@@ -1415,7 +1421,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       <button
                                         aria-expanded={false}
                                         aria-haspopup={true}
-                                        className="dropdown-toggle btn btn-default"
+                                        className="dropdown-toggle btn btn-sm btn-default"
                                         disabled={false}
                                         id="project-feedsource-table-sort-button"
                                         onClick={[Function]}
@@ -2112,13 +2118,24 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               block={false}
                               bsClass="btn-group"
                               justified={false}
+                              style={
+                                Object {
+                                  "marginRight": 10,
+                                }
+                              }
                               vertical={false}
                             >
                               <div
                                 className="btn-group"
+                                style={
+                                  Object {
+                                    "marginRight": 10,
+                                  }
+                                }
                               >
                                 <OptionButton
                                   active={true}
+                                  bsSize="small"
                                   className="active"
                                   key="all"
                                   onClick={[Function]}
@@ -2128,6 +2145,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     active={true}
                                     block={false}
                                     bsClass="btn"
+                                    bsSize="small"
                                     bsStyle="default"
                                     className="active"
                                     disabled={false}
@@ -2136,7 +2154,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     value="all"
                                   >
                                     <SafeAnchor
-                                      className="active btn btn-default active"
+                                      className="active btn btn-sm btn-default active"
                                       componentClass="a"
                                       disabled={false}
                                       href="#"
@@ -2144,7 +2162,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       value="all"
                                     >
                                       <a
-                                        className="active btn btn-default active"
+                                        className="active btn btn-sm btn-default active"
                                         href="#"
                                         onClick={[Function]}
                                         role="button"
@@ -2178,6 +2196,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 </OptionButton>
                                 <OptionButton
                                   active={false}
+                                  bsSize="small"
                                   className=""
                                   key="active"
                                   onClick={[Function]}
@@ -2187,6 +2206,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     active={false}
                                     block={false}
                                     bsClass="btn"
+                                    bsSize="small"
                                     bsStyle="default"
                                     className=""
                                     disabled={false}
@@ -2195,7 +2215,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     value="active"
                                   >
                                     <SafeAnchor
-                                      className="btn btn-default"
+                                      className="btn btn-sm btn-default"
                                       componentClass="a"
                                       disabled={false}
                                       href="#"
@@ -2203,7 +2223,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       value="active"
                                     >
                                       <a
-                                        className="btn btn-default"
+                                        className="btn btn-sm btn-default"
                                         href="#"
                                         onClick={[Function]}
                                         role="button"
@@ -2237,6 +2257,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 </OptionButton>
                                 <OptionButton
                                   active={false}
+                                  bsSize="small"
                                   className=""
                                   key="expiring"
                                   onClick={[Function]}
@@ -2246,6 +2267,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     active={false}
                                     block={false}
                                     bsClass="btn"
+                                    bsSize="small"
                                     bsStyle="default"
                                     className=""
                                     disabled={false}
@@ -2254,7 +2276,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     value="expiring"
                                   >
                                     <SafeAnchor
-                                      className="btn btn-default"
+                                      className="btn btn-sm btn-default"
                                       componentClass="a"
                                       disabled={false}
                                       href="#"
@@ -2262,7 +2284,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       value="expiring"
                                     >
                                       <a
-                                        className="btn btn-default"
+                                        className="btn btn-sm btn-default"
                                         href="#"
                                         onClick={[Function]}
                                         role="button"
@@ -2296,6 +2318,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 </OptionButton>
                                 <OptionButton
                                   active={false}
+                                  bsSize="small"
                                   className=""
                                   key="expired"
                                   onClick={[Function]}
@@ -2305,6 +2328,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     active={false}
                                     block={false}
                                     bsClass="btn"
+                                    bsSize="small"
                                     bsStyle="default"
                                     className=""
                                     disabled={false}
@@ -2313,7 +2337,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     value="expired"
                                   >
                                     <SafeAnchor
-                                      className="btn btn-default"
+                                      className="btn btn-sm btn-default"
                                       componentClass="a"
                                       disabled={false}
                                       href="#"
@@ -2321,7 +2345,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       value="expired"
                                     >
                                       <a
-                                        className="btn btn-default"
+                                        className="btn btn-sm btn-default"
                                         href="#"
                                         onClick={[Function]}
                                         role="button"
@@ -2355,6 +2379,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 </OptionButton>
                                 <OptionButton
                                   active={false}
+                                  bsSize="small"
                                   className=""
                                   key="future"
                                   onClick={[Function]}
@@ -2364,6 +2389,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     active={false}
                                     block={false}
                                     bsClass="btn"
+                                    bsSize="small"
                                     bsStyle="default"
                                     className=""
                                     disabled={false}
@@ -2372,7 +2398,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     value="future"
                                   >
                                     <SafeAnchor
-                                      className="btn btn-default"
+                                      className="btn btn-sm btn-default"
                                       componentClass="a"
                                       disabled={false}
                                       href="#"
@@ -2380,7 +2406,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       value="future"
                                     >
                                       <a
-                                        className="btn btn-default"
+                                        className="btn btn-sm btn-default"
                                         href="#"
                                         onClick={[Function]}
                                         role="button"
@@ -2414,6 +2440,211 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                 </OptionButton>
                               </div>
                             </ButtonGroup>
+                            <DropdownButton
+                              bsSize="small"
+                              id="project-feedsource-label-filter-button"
+                              title={
+                                <span
+                                  title="Filter feeds by labels"
+                                >
+                                  <Icon
+                                    type="tag"
+                                  />
+                                   
+                                  <Badge
+                                    bsClass="badge"
+                                    pullRight={false}
+                                    style={
+                                      Object {
+                                        "backgroundColor": "#babec0",
+                                      }
+                                    }
+                                  >
+                                    0
+                                  </Badge>
+                                </span>
+                              }
+                            >
+                              <Uncontrolled(Dropdown)
+                                bsSize="small"
+                                id="project-feedsource-label-filter-button"
+                              >
+                                <Dropdown
+                                  bsClass="dropdown"
+                                  bsSize="small"
+                                  componentClass={[Function]}
+                                  id="project-feedsource-label-filter-button"
+                                  onToggle={[Function]}
+                                >
+                                  <ButtonGroup
+                                    block={false}
+                                    bsClass="btn-group"
+                                    bsSize="small"
+                                    className="dropdown"
+                                    justified={false}
+                                    vertical={false}
+                                  >
+                                    <div
+                                      className="dropdown btn-group btn-group-sm"
+                                    >
+                                      <DropdownToggle
+                                        bsClass="dropdown-toggle"
+                                        bsRole="toggle"
+                                        bsSize="small"
+                                        id="project-feedsource-label-filter-button"
+                                        key=".0"
+                                        onClick={[Function]}
+                                        onKeyDown={[Function]}
+                                        open={false}
+                                        useAnchor={false}
+                                      >
+                                        <Button
+                                          active={false}
+                                          aria-expanded={false}
+                                          aria-haspopup={true}
+                                          block={false}
+                                          bsClass="btn"
+                                          bsSize="small"
+                                          bsStyle="default"
+                                          className="dropdown-toggle"
+                                          disabled={false}
+                                          id="project-feedsource-label-filter-button"
+                                          onClick={[Function]}
+                                          onKeyDown={[Function]}
+                                          role="button"
+                                        >
+                                          <button
+                                            aria-expanded={false}
+                                            aria-haspopup={true}
+                                            className="dropdown-toggle btn btn-sm btn-default"
+                                            disabled={false}
+                                            id="project-feedsource-label-filter-button"
+                                            onClick={[Function]}
+                                            onKeyDown={[Function]}
+                                            role="button"
+                                            type="button"
+                                          >
+                                            <span
+                                              title="Filter feeds by labels"
+                                            >
+                                              <Icon
+                                                type="tag"
+                                              >
+                                                <i
+                                                  className="fa fa-tag fa-fw "
+                                                />
+                                              </Icon>
+                                               
+                                              <Badge
+                                                bsClass="badge"
+                                                pullRight={false}
+                                                style={
+                                                  Object {
+                                                    "backgroundColor": "#babec0",
+                                                  }
+                                                }
+                                              >
+                                                <span
+                                                  className="badge"
+                                                  style={
+                                                    Object {
+                                                      "backgroundColor": "#babec0",
+                                                    }
+                                                  }
+                                                >
+                                                  0
+                                                </span>
+                                              </Badge>
+                                            </span>
+                                             
+                                            <span
+                                              className="caret"
+                                            />
+                                          </button>
+                                        </Button>
+                                      </DropdownToggle>
+                                      <DropdownMenu
+                                        bsClass="dropdown-menu"
+                                        bsRole="menu"
+                                        key=".1"
+                                        labelledBy="project-feedsource-label-filter-button"
+                                        onClose={[Function]}
+                                        onSelect={[Function]}
+                                        pullRight={false}
+                                      >
+                                        <RootCloseWrapper
+                                          disabled={true}
+                                          event="click"
+                                          onRootClose={[Function]}
+                                        >
+                                          <ul
+                                            aria-labelledby="project-feedsource-label-filter-button"
+                                            className="dropdown-menu"
+                                            role="menu"
+                                          >
+                                            <MenuItem
+                                              bsClass="dropdown"
+                                              disabled={false}
+                                              divider={false}
+                                              header={true}
+                                              key=".0"
+                                              onKeyDown={[Function]}
+                                              onSelect={[Function]}
+                                              style={
+                                                Object {
+                                                  "width": 275,
+                                                }
+                                              }
+                                            >
+                                              <li
+                                                className="dropdown-header"
+                                                onKeyDown={[Function]}
+                                                role="heading"
+                                                style={
+                                                  Object {
+                                                    "width": 275,
+                                                  }
+                                                }
+                                              >
+                                                <h5>
+                                                  Show feeds with
+                                                  <select
+                                                    id="anyall"
+                                                    name="anyall"
+                                                    onChange={[Function]}
+                                                    style={
+                                                      Object {
+                                                        "margin": "0 3px",
+                                                      }
+                                                    }
+                                                    value="any"
+                                                  >
+                                                    <option
+                                                      value="any"
+                                                    >
+                                                      any
+                                                    </option>
+                                                    <option
+                                                      value="all"
+                                                    >
+                                                      all
+                                                    </option>
+                                                  </select>
+                                                  of the labels:
+                                                </h5>
+                                                <div
+                                                  className="feedLabelContainer grid"
+                                                />
+                                              </li>
+                                            </MenuItem>
+                                          </ul>
+                                        </RootCloseWrapper>
+                                      </DropdownMenu>
+                                    </div>
+                                  </ButtonGroup>
+                                </Dropdown>
+                              </Uncontrolled(Dropdown)>
+                            </DropdownButton>
                           </div>
                         </FormGroup>
                       </div>
@@ -2437,6 +2668,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                         }
                       >
                         <DropdownButton
+                          bsSize="small"
                           bsStyle="primary"
                           data-test-id="project-header-action-dropdown-button"
                           id="project-header-actions"
@@ -2448,11 +2680,13 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           title="Actions"
                         >
                           <Uncontrolled(Dropdown)
+                            bsSize="small"
                             bsStyle="primary"
                             id="project-header-actions"
                           >
                             <Dropdown
                               bsClass="dropdown"
+                              bsSize="small"
                               bsStyle="primary"
                               componentClass={[Function]}
                               id="project-header-actions"
@@ -2461,17 +2695,19 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               <ButtonGroup
                                 block={false}
                                 bsClass="btn-group"
+                                bsSize="small"
                                 bsStyle="primary"
                                 className="dropdown"
                                 justified={false}
                                 vertical={false}
                               >
                                 <div
-                                  className="dropdown btn-group btn-group-primary"
+                                  className="dropdown btn-group btn-group-sm btn-group-primary"
                                 >
                                   <DropdownToggle
                                     bsClass="dropdown-toggle"
                                     bsRole="toggle"
+                                    bsSize="small"
                                     bsStyle="primary"
                                     data-test-id="project-header-action-dropdown-button"
                                     id="project-header-actions"
@@ -2492,6 +2728,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       aria-haspopup={true}
                                       block={false}
                                       bsClass="btn"
+                                      bsSize="small"
                                       bsStyle="primary"
                                       className="dropdown-toggle"
                                       data-test-id="project-header-action-dropdown-button"
@@ -2509,7 +2746,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                       <button
                                         aria-expanded={false}
                                         aria-haspopup={true}
-                                        className="dropdown-toggle btn btn-primary"
+                                        className="dropdown-toggle btn btn-sm btn-primary"
                                         data-test-id="project-header-action-dropdown-button"
                                         disabled={false}
                                         id="project-header-actions"
