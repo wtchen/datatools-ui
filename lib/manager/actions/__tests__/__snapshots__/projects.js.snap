@@ -113,7 +113,9 @@ Object {
           "osmExtractUrl": null,
           "otpCommit": null,
           "otpVersion": null,
+          "peliasPassword": null,
           "peliasUpdate": null,
+          "peliasUsername": null,
           "peliasWebhookUrl": null,
           "pinnedfeedVersionIds": Array [],
           "projectBounds": Object {

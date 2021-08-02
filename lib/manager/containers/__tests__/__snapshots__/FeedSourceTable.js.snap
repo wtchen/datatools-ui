@@ -125,7 +125,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasPassword": null,
             "peliasUpdate": null,
+            "peliasUsername": null,
             "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
@@ -418,7 +420,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasPassword": null,
               "peliasUpdate": null,
+              "peliasUsername": null,
               "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
@@ -690,7 +694,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                     "osmExtractUrl": null,
                     "otpCommit": null,
                     "otpVersion": null,
+                    "peliasPassword": null,
                     "peliasUpdate": null,
+                    "peliasUsername": null,
                     "peliasWebhookUrl": null,
                     "pinnedfeedVersionIds": Array [],
                     "projectBounds": Object {
@@ -893,7 +899,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "peliasPassword": null,
                       "peliasUpdate": null,
+                      "peliasUsername": null,
                       "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
@@ -1114,7 +1122,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasPassword": null,
                         "peliasUpdate": null,
+                        "peliasUsername": null,
                         "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
@@ -2989,7 +2999,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                             "osmExtractUrl": null,
                             "otpCommit": null,
                             "otpVersion": null,
+                            "peliasPassword": null,
                             "peliasUpdate": null,
+                            "peliasUsername": null,
                             "peliasWebhookUrl": null,
                             "pinnedfeedVersionIds": Array [],
                             "projectBounds": Object {
@@ -3255,7 +3267,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               "osmExtractUrl": null,
                               "otpCommit": null,
                               "otpVersion": null,
+                              "peliasPassword": null,
                               "peliasUpdate": null,
+                              "peliasUsername": null,
                               "peliasWebhookUrl": null,
                               "pinnedfeedVersionIds": Array [],
                               "projectBounds": Object {
@@ -3806,7 +3820,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasPassword": null,
                                     "peliasUpdate": null,
+                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {

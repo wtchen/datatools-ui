@@ -126,7 +126,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasPassword": null,
             "peliasUpdate": null,
+            "peliasUsername": null,
             "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
@@ -160,7 +162,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasPassword": null,
             "peliasUpdate": null,
+            "peliasUsername": null,
             "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
@@ -357,7 +361,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasPassword": null,
               "peliasUpdate": null,
+              "peliasUsername": null,
               "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
@@ -391,7 +397,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasPassword": null,
               "peliasUpdate": null,
+              "peliasUsername": null,
               "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
@@ -640,7 +648,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "peliasPassword": null,
                       "peliasUpdate": null,
+                      "peliasUsername": null,
                       "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
@@ -674,7 +684,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "osmExtractUrl": null,
                       "otpCommit": null,
                       "otpVersion": null,
+                      "peliasPassword": null,
                       "peliasUpdate": null,
+                      "peliasUsername": null,
                       "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
@@ -801,7 +813,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasPassword": null,
                         "peliasUpdate": null,
+                        "peliasUsername": null,
                         "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
@@ -835,7 +849,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasPassword": null,
                         "peliasUpdate": null,
+                        "peliasUsername": null,
                         "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
@@ -1174,7 +1190,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "peliasPassword": null,
                                 "peliasUpdate": null,
+                                "peliasUsername": null,
                                 "peliasWebhookUrl": null,
                                 "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
@@ -1301,7 +1319,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasPassword": null,
                                     "peliasUpdate": null,
+                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
@@ -1335,7 +1355,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasPassword": null,
                                     "peliasUpdate": null,
+                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
@@ -1580,7 +1602,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "peliasPassword": null,
                                 "peliasUpdate": null,
+                                "peliasUsername": null,
                                 "peliasWebhookUrl": null,
                                 "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
@@ -1707,7 +1731,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasPassword": null,
                                     "peliasUpdate": null,
+                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
@@ -1741,7 +1767,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasPassword": null,
                                     "peliasUpdate": null,
+                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
