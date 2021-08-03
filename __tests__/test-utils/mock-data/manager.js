@@ -134,7 +134,7 @@ export const mockFeedWithVersion = {
     tripCount: 415
   },
   latestVersionId: 'mock-feed-version-id',
-  labels: [],
+  labelIds: [],
   name: 'test feed with a version',
   noteCount: 0,
   organizationId: null,
@@ -159,7 +159,7 @@ export const mockFeedWithoutVersion = {
   isPublic: false,
   lastFetched: null,
   name: 'test feed with no version',
-  labels: [],
+  labelIds: [],
   noteCount: 0,
   organizationId: null,
   projectId: mockProject.id,

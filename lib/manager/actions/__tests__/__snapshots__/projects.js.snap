@@ -38,7 +38,7 @@ Object {
                 "externalProperties": Object {},
                 "id": "mock-feed-with-version-id",
                 "isPublic": false,
-                "labels": Array [],
+                "labelIds": Array [],
                 "lastFetched": 1543389038810,
                 "lastUpdated": 1543389038810,
                 "latestValidation": Object {
@@ -136,7 +136,7 @@ Object {
           "externalProperties": Object {},
           "id": "mock-feed-with-version-id",
           "isPublic": false,
-          "labels": Array [],
+          "labelIds": Array [],
           "lastFetched": 1543389038810,
           "lastUpdated": 1543389038810,
           "latestValidation": Object {
