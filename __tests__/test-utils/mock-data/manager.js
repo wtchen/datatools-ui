@@ -64,6 +64,7 @@ export function makeMockDeployment (
     peliasUsername: null,
     peliasPassword: null,
     peliasWebhookUrl: null,
+    peliasCsvFiles: [],
     user: null
   }
 }

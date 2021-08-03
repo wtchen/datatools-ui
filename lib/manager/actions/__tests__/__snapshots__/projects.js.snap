@@ -113,6 +113,7 @@ Object {
           "osmExtractUrl": null,
           "otpCommit": null,
           "otpVersion": null,
+          "peliasCsvFiles": Array [],
           "peliasPassword": null,
           "peliasUpdate": null,
           "peliasUsername": null,
