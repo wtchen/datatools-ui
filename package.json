@@ -21,7 +21,7 @@
     "cover-end-to-end": "cross-env COLLECT_COVERAGE=true npm run test-end-to-end",
     "deploy": "mastarm deploy --minify --env production",
     "flow": "mastarm flow",
-    "lint": "mastarm lint __mocks__ __tests__ lib scripts --quiet",
+    "lint": "eslint --config node_modules/mastarm/lib/eslintrc.json --fix",
     "lint-messages": "node scripts/lint-messages.js",
     "postinstall": "husky install",
     "predeploy": "yarn",
@@ -147,7 +147,7 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "eslint --config node_modules/mastarm/lib/eslintrc.json --fix"
+      "yarn lint && yarn flow"
     ]
   },
   "standard": {
