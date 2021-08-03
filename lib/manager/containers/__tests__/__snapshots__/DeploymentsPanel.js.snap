@@ -127,9 +127,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "otpCommit": null,
             "otpVersion": null,
             "peliasCsvFiles": Array [],
-            "peliasPassword": null,
             "peliasUpdate": null,
-            "peliasUsername": null,
             "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
@@ -164,9 +162,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "otpCommit": null,
             "otpVersion": null,
             "peliasCsvFiles": Array [],
-            "peliasPassword": null,
             "peliasUpdate": null,
-            "peliasUsername": null,
             "peliasWebhookUrl": null,
             "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
@@ -364,9 +360,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "otpCommit": null,
               "otpVersion": null,
               "peliasCsvFiles": Array [],
-              "peliasPassword": null,
               "peliasUpdate": null,
-              "peliasUsername": null,
               "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
@@ -401,9 +395,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "otpCommit": null,
               "otpVersion": null,
               "peliasCsvFiles": Array [],
-              "peliasPassword": null,
               "peliasUpdate": null,
-              "peliasUsername": null,
               "peliasWebhookUrl": null,
               "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
@@ -653,9 +645,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "otpCommit": null,
                       "otpVersion": null,
                       "peliasCsvFiles": Array [],
-                      "peliasPassword": null,
                       "peliasUpdate": null,
-                      "peliasUsername": null,
                       "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
@@ -690,9 +680,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       "otpCommit": null,
                       "otpVersion": null,
                       "peliasCsvFiles": Array [],
-                      "peliasPassword": null,
                       "peliasUpdate": null,
-                      "peliasUsername": null,
                       "peliasWebhookUrl": null,
                       "pinnedfeedVersionIds": Array [],
                       "projectBounds": Object {
@@ -820,9 +808,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "otpCommit": null,
                         "otpVersion": null,
                         "peliasCsvFiles": Array [],
-                        "peliasPassword": null,
                         "peliasUpdate": null,
-                        "peliasUsername": null,
                         "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
@@ -857,9 +843,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "otpCommit": null,
                         "otpVersion": null,
                         "peliasCsvFiles": Array [],
-                        "peliasPassword": null,
                         "peliasUpdate": null,
-                        "peliasUsername": null,
                         "peliasWebhookUrl": null,
                         "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
@@ -1199,9 +1183,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "otpCommit": null,
                                 "otpVersion": null,
                                 "peliasCsvFiles": Array [],
-                                "peliasPassword": null,
                                 "peliasUpdate": null,
-                                "peliasUsername": null,
                                 "peliasWebhookUrl": null,
                                 "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
@@ -1329,9 +1311,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "otpCommit": null,
                                     "otpVersion": null,
                                     "peliasCsvFiles": Array [],
-                                    "peliasPassword": null,
                                     "peliasUpdate": null,
-                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
@@ -1366,9 +1346,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "otpCommit": null,
                                     "otpVersion": null,
                                     "peliasCsvFiles": Array [],
-                                    "peliasPassword": null,
                                     "peliasUpdate": null,
-                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
@@ -1614,9 +1592,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "otpCommit": null,
                                 "otpVersion": null,
                                 "peliasCsvFiles": Array [],
-                                "peliasPassword": null,
                                 "peliasUpdate": null,
-                                "peliasUsername": null,
                                 "peliasWebhookUrl": null,
                                 "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
@@ -1744,9 +1720,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "otpCommit": null,
                                     "otpVersion": null,
                                     "peliasCsvFiles": Array [],
-                                    "peliasPassword": null,
                                     "peliasUpdate": null,
-                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
@@ -1781,9 +1755,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "otpCommit": null,
                                     "otpVersion": null,
                                     "peliasCsvFiles": Array [],
-                                    "peliasPassword": null,
                                     "peliasUpdate": null,
-                                    "peliasUsername": null,
                                     "peliasWebhookUrl": null,
                                     "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {

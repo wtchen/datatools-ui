@@ -61,8 +61,6 @@ export function makeMockDeployment (
     skipOsmExtract: false,
     tripPlannerVersion: 'OTP_1',
     peliasUpdate: null,
-    peliasUsername: null,
-    peliasPassword: null,
     peliasWebhookUrl: null,
     peliasCsvFiles: [],
     user: null
