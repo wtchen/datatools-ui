@@ -181,7 +181,6 @@ Object {
       "id": "mock-project-with-deployments-id",
       "labels": Array [],
       "lastUpdated": 1553236399556,
-      "lastUsedPeliasWebhookUrl": null,
       "name": "mock-project-with-deployments",
       "organizationId": null,
       "otpServers": Array [],

@@ -88,7 +88,6 @@ export const mockProject = {
   feedSources: [],
   id: 'mock-project-id',
   lastUpdated: 1553236399556,
-  lastUsedPeliasWebhookUrl: null,
   labels: [],
   name: 'mock-project',
   organizationId: null,
