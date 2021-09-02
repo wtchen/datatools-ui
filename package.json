@@ -23,6 +23,7 @@
     "flow": "mastarm flow",
     "lint": "mastarm lint __mocks__ __tests__ lib scripts --quiet",
     "lint-messages": "node scripts/lint-messages.js",
+    "postinstall": "husky install",
     "predeploy": "yarn",
     "prestart": "yarn",
     "semantic-release": "semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github",
@@ -61,7 +62,7 @@
     "lodash": "^4.17.10",
     "moment": "^2.11.2",
     "numeral": "2.0.4",
-    "object-path": "^0.11.1",
+    "object-path": "^0.11.5",
     "polyline": "^0.2.0",
     "prop-types": "^15.6.0",
     "qs": "^6.2.1",
@@ -98,6 +99,7 @@
     "redux-undo": "^1.0.0-beta9-9-7",
     "reselect": "^3.0.0",
     "shpjs": "^3.3.2",
+    "tinycolor2": "^1.4.2",
     "truncate": "^2.0.0",
     "turf-area": "^3.0.12",
     "turf-bbox-polygon": "^3.0.12",
@@ -128,9 +130,11 @@
     "flow-bin": "0.84",
     "flow-coverage-report": "^0.3.0",
     "fs-extra": "^6.0.1",
+    "husky": "^6.0.0",
     "istanbul-middleware": "^0.2.2",
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^7.4.1",
+    "lint-staged": "^11.0.0",
     "mastarm": "^5.3.1",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
@@ -141,6 +145,11 @@
     "semantic-release": "^17.2.3",
     "simple-node-logger": "^0.93.37",
     "slack": "^11.0.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --config node_modules/mastarm/lib/eslintrc.json --fix"
+    ]
   },
   "standard": {
     "env": [
