@@ -260,6 +260,20 @@ async function expectSelectorToNotContainHtml (selector: string, html: string) {
 }
 
 /**
+ * Checks that the expected feed version validity dates are displayed.
+ */
+async function expectFeedVersionValidityDates (startDate: string, endDate: string) {
+  await expectSelectorToContainHtml(
+    '[data-test-id="active-feed-version-validity-start"]',
+    startDate
+  )
+  await expectSelectorToContainHtml(
+    '[data-test-id="active-feed-version-validity-end"]',
+    endDate
+  )
+}
+
+/**
  * Create a new project.  Assumes that this is called while the browser is on
  * the home page.
  */
@@ -1085,13 +1099,10 @@ describe('end-to-end', () => {
       await uploadGtfs()
 
       // wait for main tab to show up with version validity info
-      await waitForSelector('[data-test-id="feed-version-validity"]')
+      await waitForSelector('[data-test-id="active-feed-version-validity-start"]')
 
       // verify feed was uploaded
-      await expectSelectorToContainHtml(
-        '[data-test-id="feed-version-validity"]',
-        'Valid from Jan. 01, 2014 to Dec. 31, 2018'
-      )
+      await expectFeedVersionValidityDates('Jan 1, 2014', 'Dec 31, 2018')
     }, defaultTestTimeout)
 
     // this test also sets the feed source as deployable
@@ -1132,10 +1143,7 @@ describe('end-to-end', () => {
       await wait(2000, 'for feed source to update')
 
       // verify that feed was fetched and processed
-      await expectSelectorToContainHtml(
-        '[data-test-id="feed-version-validity"]',
-        'Valid from Apr. 08, 2018 to Jun. 30, 2018'
-      )
+      await expectFeedVersionValidityDates('Apr 08, 2018', 'Jun 30, 2018')
     }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
@@ -1245,10 +1253,7 @@ describe('end-to-end', () => {
         await wait(2000, 'for data to refresh')
         await waitForSelector('#feed-source-viewer-tabs')
         // verify that the previous feed is now the displayed feed
-        await expectSelectorToContainHtml(
-          '[data-test-id="feed-version-validity"]',
-          'Valid from Apr. 08, 2018 to Jun. 30, 2018'
-        )
+        await expectFeedVersionValidityDates('Apr 08, 2018', 'Jun 30, 2018')
       }, defaultTestTimeout)
     }
   })
@@ -2657,13 +2662,10 @@ describe('end-to-end', () => {
       await click('#feed-source-viewer-tabs-tab-')
 
       // wait for main tab to show up with version validity info
-      await waitForSelector('[data-test-id="feed-version-validity"]')
+      await waitForSelector('[data-test-id="active-feed-version-validity-start"]')
 
       // verify that snapshot was made active version
-      await expectSelectorToContainHtml(
-        '[data-test-id="feed-version-validity"]',
-        'Valid from May. 29, 2018 to May. 29, 2028'
-      )
+      await expectFeedVersionValidityDates('May 29, 2018', 'May 29, 2028')
     }, defaultTestTimeout, 'should create snapshot')
 
     // TODO: download and validate gtfs??
