@@ -16,6 +16,6 @@ if [[ "$SHOULD_RUN_E2E" != "true" ]]; then
 fi
 
 # Optionally override the conditions above with the below block:
-# OVERRIDE=true
-# echo "SHOULD_RUN_E2E=${OVERRIDE}" >> $GITHUB_ENV && export SHOULD_RUN_E2E=${OVERRIDE}
-# echo "Overriding E2E. Temporarily forcing to be ${OVERRIDE}..."
+OVERRIDE=true
+echo "SHOULD_RUN_E2E=${OVERRIDE}" >> $GITHUB_ENV && export SHOULD_RUN_E2E=${OVERRIDE}
+echo "Overriding E2E. Temporarily forcing to be ${OVERRIDE}..."
