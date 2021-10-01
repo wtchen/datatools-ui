@@ -1143,7 +1143,7 @@ describe('end-to-end', () => {
       await wait(2000, 'for feed source to update')
 
       // verify that feed was fetched and processed
-      await expectFeedVersionValidityDates('Apr 08, 2018', 'Jun 30, 2018')
+      await expectFeedVersionValidityDates('Apr 8, 2018', 'Jun 30, 2018')
     }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
@@ -1253,7 +1253,7 @@ describe('end-to-end', () => {
         await wait(2000, 'for data to refresh')
         await waitForSelector('#feed-source-viewer-tabs')
         // verify that the previous feed is now the displayed feed
-        await expectFeedVersionValidityDates('Apr 08, 2018', 'Jun 30, 2018')
+        await expectFeedVersionValidityDates('Apr 8, 2018', 'Jun 30, 2018')
       }, defaultTestTimeout)
     }
   })
