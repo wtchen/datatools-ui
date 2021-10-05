@@ -342,7 +342,7 @@ async function startOtp () {
   // Ensure default folder for graphs exists.
   // (OTP 1.4.0 autoscan() does a directory listing without checking directory existence.)
   const otpBasePath = '/tmp/otp'
-  await fs.mkdirp(otpBasePath)
+  await fs.mkdirp(`${otpBasePath}/graphs`)
 
   // start otp
   try {
