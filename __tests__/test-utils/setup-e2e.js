@@ -349,6 +349,7 @@ async function startOtp () {
         '-jar',
         otpJarFilename,
         '--server',
+        '--autoScan',
         '--insecure',
         '--router',
         'default'
@@ -483,8 +484,6 @@ module.exports = async function () {
   if (isCi) {
     setupItems.push(setupForContinuousIntegrationEnvironment())
   } else {
-    await startOtp()
-    await execa('sleep', ['5s'])
     setupItems.push(verifySetupForLocalEnvironment())
   }
   if (collectingCoverage) setupItems.push(startCoverageServer())

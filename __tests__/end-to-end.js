@@ -9,6 +9,7 @@ import md5File from 'md5-file/promise'
 import moment from 'moment'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
+import execa from 'execa'
 
 import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
 
@@ -2694,7 +2695,10 @@ describe('end-to-end', () => {
         '[data-test-id="deployment-router-id"]'
       )
       // get rid of router id text and react tags
-      routerId = innerHTML.replace('Router ID: ', '')
+      // (remove any square brackets too)
+      routerId = innerHTML
+        .replace('Router ID: ', '')
+        .replace(/[[\]]/g, '')
 
       // confirm deployment
       await click('[data-test-id="confirm-deploy-server-button"]')
@@ -2704,9 +2708,12 @@ describe('end-to-end', () => {
     }, defaultTestTimeout + 30000) // Add thirty seconds for deployment job
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
+      // Wait a few seconds before sending query, so that OTP picks up the newly-built graph.
+      await execa('sleep', ['5s'])
       // hit the otp endpoint
+      const url = `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=00%3A32&date=2018-07-24&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`
       const response = await fetch(
-        `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
+        url,
         {
           headers: {
             'Content-Type': 'application/json; charset=utf-8'
