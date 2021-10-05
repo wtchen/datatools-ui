@@ -7,6 +7,7 @@ const {safeDump, safeLoad} = require('js-yaml')
 const request = require('request')
 
 const collectingCoverage = process.env.COLLECT_COVERAGE
+console.log(`CI: ${process.env.CI}`)
 const isCi = !!process.env.CI
 const isUiRepo = process.env.GITHUB_REPOSITORY === 'ibi-group/datatools-ui'
 const testFolderPath = 'e2e-test-results'
