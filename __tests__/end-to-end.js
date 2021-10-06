@@ -2709,7 +2709,7 @@ describe('end-to-end', () => {
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
       // Wait a few seconds before sending query, so that OTP picks up the newly-built graph.
-      await execa('sleep', ['5s'])
+      await execa('sleep', ['15s'])
       // hit the otp endpoint
       const url = `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=00%3A32&date=2018-07-24&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`
       const response = await fetch(
