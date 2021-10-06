@@ -9,7 +9,6 @@ import md5File from 'md5-file/promise'
 import moment from 'moment'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
-import execa from 'execa'
 
 import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
 
@@ -316,6 +315,7 @@ async function deleteProject (projectId: string) {
   // verify deletion
   await goto(`http://localhost:9966/project/${projectId}`)
   await waitForSelector('.project-not-found')
+  await wait(5000, 'for previously rendered project markup to be removed')
   await expectSelectorToContainHtml('.project-not-found', projectId)
   log.info(`confirmed successful deletion of project with id ${projectId}`)
 }
@@ -2708,8 +2708,7 @@ describe('end-to-end', () => {
     }, defaultTestTimeout + 30000) // Add thirty seconds for deployment job
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
-      // Wait a few seconds before sending query, so that OTP picks up the newly-built graph.
-      await execa('sleep', ['15s'])
+      await wait(15000, 'for OTP picks up the newly-built graph')
       // hit the otp endpoint
       const url = `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=00%3A32&date=2018-07-24&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`
       const response = await fetch(
