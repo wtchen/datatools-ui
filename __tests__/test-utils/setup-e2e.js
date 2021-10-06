@@ -19,7 +19,7 @@ const {
   writeYamlFile
 } = require('./utils')
 
-const serverJarFilename = 'dt-latest-fix-otp-runner-e2e.jar' // 'dt-latest-dev.jar'
+const serverJarFilename = 'dt-latest-dev.jar'
 const ENV_YML_VARIABLES = [
   'AUTH0_CLIENT_ID',
   'AUTH0_DOMAIN',

@@ -2708,7 +2708,7 @@ describe('end-to-end', () => {
     }, defaultTestTimeout + 30000) // Add thirty seconds for deployment job
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
-      await wait(15000, 'for OTP picks up the newly-built graph')
+      await wait(15000, 'for OTP to pick up the newly-built graph')
       // hit the otp endpoint
       const url = `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=00%3A32&date=2018-07-24&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`
       const response = await fetch(
