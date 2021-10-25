@@ -62,7 +62,6 @@ export function makeMockDeployment (
     tripPlannerVersion: 'OTP_1',
     peliasUpdate: null,
     peliasResetDb: null,
-    peliasWebhookUrl: null,
     peliasCsvFiles: [],
     user: null
   }
@@ -94,6 +93,7 @@ export const mockProject = {
   organizationId: null,
   otpServers: [],
   pinnedDeploymentId: null,
+  peliasWebhookUrl: null,
   routerConfig: {
     carDropoffTime: null,
     numItineraries: null,
