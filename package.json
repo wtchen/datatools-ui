@@ -11,7 +11,7 @@
     "type": "git",
     "url": "https://github.com/ibi-group/datatools-ui.git"
   },
-  "author": "Conveyal LLC",
+  "author": "Conveyal LLC, IBI Group",
   "license": "MIT",
   "scripts": {
     "build": "mastarm build --env production",
