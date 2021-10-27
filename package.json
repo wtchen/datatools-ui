@@ -1,7 +1,7 @@
 {
   "name": "datatools-manager",
   "version": "0.0.0-development",
-  "description": "Core application for the Conveyal transit data tools suite",
+  "description": "Core application for the IBI Group transit data tools suite",
   "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/__tests__/test-utils/setup-test-framework.js"
