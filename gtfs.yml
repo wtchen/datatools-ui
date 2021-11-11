@@ -867,3 +867,77 @@
     required: false
   - name: added_service
     required: false
+
+# FIXME: helpContent is lifted from https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
+- id: bookingrules
+  name: booking_rules.txt
+  datatools: true
+  helpContent: Booking information for rider-requested services using GTFS-FlexibleTrips, such as how far in advance booking should occur or a phone number that should be called.
+  fields:
+    - name: booking_rule_id
+      required: true
+      inputType: GTFS_ID
+      helpContent: ID which identifies the booking rule
+    - name: booking_type
+      required: true
+      inputType: DROPDOWN
+      helpContent: Indicates how far in advance booking can be made
+      bulkEditEnabled: true
+      options:
+        - value: "0"
+          text: Real time booking
+        - value: "1"
+          text: Up to same-day booking with advance notice
+        - value: "2"
+          text: Up to prior day(s) booking
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_duration_min
+      inputType: POSITIVE_NUM
+      helpContent: Minimum number of minutes before travel to make the request
+      bulkEditEnabled: true
+      columnWidth: 6
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_duration_max
+      inputType: POSITIVE_NUM
+      helpContent: Maximum number of minutes before travel to make the request
+      bulkEditEnabled: true
+      columnWidth: 6
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_last_time
+      inputType: TIME
+      helpContent: Last time on the last day before travel to make the booking request
+      bulkEditEnabled: true
+      columnWidth: 6
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_start_day
+      inputType: POSITIVE_NUM
+      helpContent: Earliest day before travel to make the booking request
+      bulkEditEnabled: true
+      columnWidth: 6
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_start_time
+      inputType: TIME
+      helpContent: Earliest time on the earliest day before travel to make the booking request
+      bulkEditEnabled: true
+      columnWidth: 6
+    # prior_notice_service_id is skipped
+    - name: message
+      inputType: TEXT
+      helpContent: Message to riders utilizing service at a stop_time when booking on-demand pickup and drop off. Meant to provide minimal information to be transmitted within a user interface about the action a rider must take in order to utilize the service
+      bulkEditEnabled: true
+    - name: pickup_message
+      inputType: TEXT
+      helpContent: Functions in the same way as message but used when riders have on-demand pickup only
+      bulkEditEnabled: true 
+    - name: drop_off_message
+      inputType: TEXT
+      helpContent: Functions in the same way as message but used when riders have on-demand drop off only
+    - name: phone_number
+      inputType: TEXT # TODO: VALIDATION
+      helpContent: Phone number to call to make the booking request
+    - name: info_url
+      inputType: URL
+      helpContent: URL providing information about the booking rule
+    - name: booking_url
+      inputType: URL
+      helpContent: URL to an online interface or app where the booking request can be made
