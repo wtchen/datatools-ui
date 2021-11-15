@@ -492,10 +492,8 @@ components:
     skipped: "Skipped records:"
     skippedTableRecords: "%table%: %skippedCount%"
     strategyUsed: "Strategy used: %strategy%"
-    DEFAULT: 'Condition 1: Feeds had unique service IDs and trip IDs - future feed was appended to active feed'
-    EXTEND_FUTURE: "Condition 2: Feeds had matching service IDs and trip IDs - future feed took precedence and was extended to the active feed's start date"
-    CHECK_STOP_TIMES: 'Condition 3: Feeds had matching service IDs, but not all trip IDs were unique - matching trips will span the active and future service period and unique trips will be included under modified service IDs'
-    FAIL_DUE_TO_MATCHING_TRIP_IDS: 'Condition 4: Merge failed due to unique service IDs, yet trip IDs that match exactly'
+    DEFAULT: Trip IDs were unique in the source feeds. The merged feed was successfully created.
+    CHECK_STOP_TIMES: Some trip IDs were found in both feeds. The merged feed was successfully created.
     title:
       failure: 'Warning: Errors encountered during feed merge!'
       success: 'Feed merge was successful!'
