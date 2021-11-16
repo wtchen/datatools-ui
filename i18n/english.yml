@@ -487,7 +487,6 @@ components:
     body:
       failure: Merge failed with %errorCount% errors.
       success: Merge was completed successfully. A new version will be processed/validated containing the resulting feed.
-    idConflicts: "ID conflicts:"
     remappedIds: "Remapped IDs: %remappedIdCount%"
     skipped: "Skipped records:"
     skippedTableRecords: "%table%: %skippedCount%"
