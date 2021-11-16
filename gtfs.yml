@@ -869,7 +869,7 @@
     required: false
 
 # FIXME: helpContent is lifted from https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
-- id: bookingrules
+- id: bookingrule
   name: booking_rules.txt
   datatools: true
   helpContent: Booking information for rider-requested services using GTFS-FlexibleTrips, such as how far in advance booking should occur or a phone number that should be called.
