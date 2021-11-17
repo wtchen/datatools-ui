@@ -491,6 +491,7 @@ components:
     skipped: "Skipped records:"
     skippedTableRecords: "%table%: %skippedCount%"
     strategyUsed: "Strategy used: %strategy%"
+    tripIdsToCheck: "Trip IDs to check: %tripIdCount%"
     DEFAULT: Trip IDs were unique in the source feeds. The merged feed was successfully created.
     CHECK_STOP_TIMES: Some trip IDs were found in both feeds. The merged feed was successfully created.
     title:
