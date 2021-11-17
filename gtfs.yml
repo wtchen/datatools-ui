@@ -921,7 +921,7 @@
       inputType: TIME
       helpContent: Earliest time on the earliest day before travel to make the booking request
       bulkEditEnabled: true
-      columnWidth: 6
+      columnWidth: 5
     # TODO: enable validation to match spec (only appear when appropriate)
     - name: prior_notice_start_day
       inputType: POSITIVE_NUM
