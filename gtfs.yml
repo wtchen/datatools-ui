@@ -878,10 +878,12 @@
       required: true
       inputType: GTFS_ID
       helpContent: ID which identifies the booking rule
+      columnWidth: 12
     - name: booking_type
       required: true
       inputType: DROPDOWN
       helpContent: Indicates how far in advance booking can be made
+      columnWidth: 12
       bulkEditEnabled: true
       options:
         - value: "0"
@@ -895,13 +897,13 @@
       inputType: POSITIVE_NUM
       helpContent: Minimum number of minutes before travel to make the request
       bulkEditEnabled: true
-      columnWidth: 6
+      columnWidth: 8
     # TODO: enable validation to match spec (only appear when appropriate)
     - name: prior_notice_duration_max
       inputType: POSITIVE_NUM
       helpContent: Maximum number of minutes before travel to make the request
       bulkEditEnabled: true
-      columnWidth: 6
+      columnWidth: 8
     # TODO: enable validation to match spec (only appear when appropriate)
     - name: prior_notice_last_time
       inputType: TIME
@@ -909,35 +911,52 @@
       bulkEditEnabled: true
       columnWidth: 6
     # TODO: enable validation to match spec (only appear when appropriate)
-    - name: prior_notice_start_day
-      inputType: POSITIVE_NUM
-      helpContent: Earliest day before travel to make the booking request
-      bulkEditEnabled: true
-      columnWidth: 6
-    # TODO: enable validation to match spec (only appear when appropriate)
     - name: prior_notice_start_time
       inputType: TIME
       helpContent: Earliest time on the earliest day before travel to make the booking request
       bulkEditEnabled: true
+      columnWidth: 5
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_start_day
+      inputType: POSITIVE_NUM
+      helpContent: Earliest day before travel to make the booking request
       columnWidth: 6
-    # prior_notice_service_id is skipped
+      bulkEditEnabled: true
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_last_day
+      inputType: POSITIVE_NUM
+      helpContent: Earliest day before travel to make the booking request
+      columnWidth: 6
+      bulkEditEnabled: true
+    # TODO: enable validation to match spec (only appear when appropriate)
+    - name: prior_notice_service_id
+      inputType: GTFS_SERVICE
+      helpContent: Indicates the service days on which prior_notice_last_day or prior_notice_start_day are counted.
+      columnWidth: 12
+      bulkEditEnabled: true
     - name: message
       inputType: TEXT
       helpContent: Message to riders utilizing service at a stop_time when booking on-demand pickup and drop off. Meant to provide minimal information to be transmitted within a user interface about the action a rider must take in order to utilize the service
       bulkEditEnabled: true
+      columnWidth: 12
     - name: pickup_message
       inputType: TEXT
       helpContent: Functions in the same way as message but used when riders have on-demand pickup only
-      bulkEditEnabled: true 
+      bulkEditEnabled: true
+      columnWidth: 12
     - name: drop_off_message
       inputType: TEXT
       helpContent: Functions in the same way as message but used when riders have on-demand drop off only
+      columnWidth: 12
     - name: phone_number
       inputType: TEXT # TODO: VALIDATION
       helpContent: Phone number to call to make the booking request
+      columnWidth: 12
     - name: info_url
       inputType: URL
       helpContent: URL providing information about the booking rule
+      columnWidth: 12
     - name: booking_url
       inputType: URL
       helpContent: URL to an online interface or app where the booking request can be made
+      columnWidth: 12
