@@ -528,6 +528,20 @@
         - value: "3"
       columnWidth: 6
       helpContent: "The drop_off_type field indicates whether passengers are dropped off at a stop as part of the normal schedule or whether a drop off at the stop is not available. This field also allows the transit agency to indicate that passengers must call the agency or notify the driver to arrange a drop off at a particular stop. Valid values for this field are:"
+    - name: "pickup_booking_rule_id"
+      required: false
+      displayName: Pickup Booking Rule
+      # TODO: make this a real type
+      inputType: GTFSFLEX_BOOKING_RULE
+      bulkEditEnabled: true
+      helpContent: "Identifies the boarding booking rule at this stop time."
+    - name: "drop_off_booking_rule_id"
+      required: false
+      displayName: Dropoff Booking Rule
+      # TODO: make this a real type
+      inputType: GTFSFLEX_BOOKING_RULE
+      bulkEditEnabled: true
+      helpContent: "Identifies the alighting booking rule at this stop time."
     - name: "shape_dist_traveled"
       required: false
       inputType: POSITIVE_NUM
@@ -907,7 +921,7 @@
       inputType: TIME
       helpContent: Earliest time on the earliest day before travel to make the booking request
       bulkEditEnabled: true
-      columnWidth: 5
+      columnWidth: 6
     # TODO: enable validation to match spec (only appear when appropriate)
     - name: prior_notice_start_day
       inputType: POSITIVE_NUM
