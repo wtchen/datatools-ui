@@ -23,8 +23,8 @@ components:
       publishNewVersion:
         label: Publish snapshot as new feed version
       confirmPublishWithUnapproved:
-        label: Confirm publish with unapproved routes. 
-    unapprovedRoutesHeader: The following routes are not approved.
+        label: Confirm publish with unapproved routes 
+    unapprovedRoutesHeader: "The following routes are not approved:"
     unapprovedRoutesDesc: These routes will not be included in the output.
     missingNameAlert: Must give snapshot a valid name!
     ok: OK
