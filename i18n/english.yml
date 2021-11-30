@@ -444,6 +444,10 @@ components:
       updates:
         autoFetchFeeds: Auto fetch feed sources?
         title: Updates
+    flex:
+      title: Flex Service
+      checkbox: Feed includes flex service
+      description: Enable this feed source to include flex service.  Flex service describes operations that follow a schedule, but also include flexible features such as dial-a-ride service, route deviation, continuous stops, or point to zone service.
     rename: Rename
     save: Save
     title: Settings
