@@ -481,6 +481,15 @@ textarea:focus {
   width: 102%;
 }
 
+/* EDITOR FLEX LOCATION STYLES */
+.location-polygon-instructions {
+  background-color: rgba(245, 185, 19, 0.589);
+  border-radius: 6px;
+  margin: 3px;
+  padding: 8px;
+  width: 90%;
+}
+
 /* EDITOR TRIP PATTERN STYLES */
 
 .trip-pattern-controls {

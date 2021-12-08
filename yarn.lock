@@ -8010,6 +8010,11 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
+leaflet-draw@^0.4.9:
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.14.tgz#1b5b06d570873a015aa96b80d664dab496c45a4a"
+  integrity sha512-O99KSPjyHNMDE+uD/fpdPydvQfTE8QruaG7ylEEtKCIaSSb60mCWoDdGUqGEHU9PGPu2JxbEfkGTXY9eYv7aEw==
+
 leaflet-textpath@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/leaflet-textpath/-/leaflet-textpath-1.2.0.tgz#03950b49ad51f8b2b1ecf3d40ea720d6ad291ccb"
@@ -11790,6 +11795,11 @@ react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4:
   version "16.11.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.11.0.tgz#b85dfecd48ad1ce469ff558a882ca8e8313928fa"
   integrity sha512-gbBVYR2p8mnriqAwWx9LbuUrShnAuSCNnuPGyc7GJrMVQtPDAh8iLpv7FRuMPFb56KkaVZIYSz1PrjI9q0QPCw==
+
+react-leaflet-draw@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/react-leaflet-draw/-/react-leaflet-draw-0.17.0.tgz#c0fe6e2c3a1b622abc0dc63e9c2fcb54ec271123"
+  integrity sha1-wP5uLDobYiq8DcY+nC/LVOwnESM=
 
 react-leaflet@1.1.0:
   version "1.1.0"
