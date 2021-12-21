@@ -29,6 +29,7 @@ import {defaultState as defaultEditorSettingsState} from '../../../lib/editor/re
 import {defaultState as defaultEditorTimetableState} from '../../../lib/editor/reducers/timetable'
 import gtfs from '../../../lib/gtfs/reducers'
 import {defaultState as defaultGtfsFilterState} from '../../../lib/gtfs/reducers/filter'
+import {defaultState as defaultGtfsLocationsState} from '../../../lib/gtfs/reducers/locations'
 import {defaultState as defaultGtfsPatternState} from '../../../lib/gtfs/reducers/patterns'
 import {defaultState as defaultGtfsRoutesState} from '../../../lib/gtfs/reducers/routes'
 import {defaultState as defaultGtfsShapesState} from '../../../lib/gtfs/reducers/shapes'
@@ -43,9 +44,9 @@ import {defaultState as defaultManagerProjectsState} from '../../../lib/manager/
 import {defaultState as defaultManagerStatusState} from '../../../lib/manager/reducers/status'
 import {defaultState as defaultManagerUiState} from '../../../lib/manager/reducers/ui'
 import {defaultState as defaultManagerUserState} from '../../../lib/manager/reducers/user'
-import * as manager from './manager'
-
 import type {AppState} from '../../../lib/types/reducers'
+
+import * as manager from './manager'
 
 Enzyme.configure({ adapter: new EnzymeReactAdapter() })
 
@@ -97,6 +98,7 @@ export function getMockInitialState (): AppState {
     },
     gtfs: {
       filter: defaultGtfsFilterState,
+      locations: defaultGtfsLocationsState,
       patterns: defaultGtfsPatternState,
       routes: defaultGtfsRoutesState,
       shapes: defaultGtfsShapesState,
