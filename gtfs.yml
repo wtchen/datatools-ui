@@ -984,6 +984,11 @@
     inputType: TEXT
     columnWidth: 12
     helpContent: "The stop_name field contains the name of the location as displayed to riders."
+  - name: "stop_desc"
+    required: false
+    inputType: TEXT
+    columnWidth: 12
+    helpContent: "The stop_desc field contains a meaningful description of the location to help orient riders."
   # TODO: enable validation to match spec (only appear when appropriate)
   - name: "zone_id"
     required: false
