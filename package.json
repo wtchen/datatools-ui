@@ -74,7 +74,7 @@
     "react-bootstrap": "0.32.3",
     "react-bootstrap-table": "^4.3.1",
     "react-color": "^2.3.4",
-    "react-datetime": "^3.1.1",
+    "react-bootstrap-datetimepicker": "miles-grant-ibigroup/react-bootstrap-datetimepicker#bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^17.0.2",
