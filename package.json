@@ -147,6 +147,9 @@
     "simple-node-logger": "^0.93.37",
     "slack": "^11.0.1"
   },
+  "resolutions": {
+    "react-overlays": "0.9.3"
+  },
   "lint-staged": {
     "*.{js,jsx}": [
       "eslint --config node_modules/mastarm/lib/eslintrc.json --fix"
