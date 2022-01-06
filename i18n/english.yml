@@ -214,6 +214,13 @@ components:
     fetchFeedEvery: Fetch feed every
     HOURS: hours
     MINUTES: minutes
+  FeedInfo:
+    autoFetch: Auto fetch
+    autoPublish: Auto publish
+    deployable: Deployable
+    edit: Edit
+    private: Private
+    public: Public
   FeedInfoPanel:
     uploadShapefile:
       body: 'Select a zipped shapefile to display on map. Note: this is only for use as a visual aid.'
@@ -229,13 +236,6 @@ components:
       PUBLISHED: Published Version
     createFirst: Create first feed source!
   FeedSourceTableRow:
-    badges:
-      autoFetch: Auto fetch
-      autoPublish: Auto publish
-      deployable: Deployable
-      edit: Edit
-      private: Private
-      public: Public
     status:
       active: Active
       all: All
