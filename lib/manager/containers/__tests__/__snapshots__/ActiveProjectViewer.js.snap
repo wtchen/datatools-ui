@@ -72,6 +72,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
           "name": "mock-project",
           "organizationId": null,
           "otpServers": Array [],
+          "peliasWebhookUrl": null,
           "pinnedDeploymentId": null,
           "routerConfig": Object {
             "carDropoffTime": null,
@@ -1956,6 +1957,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                           "name": "mock-project",
                                                           "organizationId": null,
                                                           "otpServers": Array [],
+                                                          "peliasWebhookUrl": null,
                                                           "pinnedDeploymentId": null,
                                                           "routerConfig": Object {
                                                             "carDropoffTime": null,
@@ -2002,6 +2004,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                             "name": "mock-project",
                                                             "organizationId": null,
                                                             "otpServers": Array [],
+                                                            "peliasWebhookUrl": null,
                                                             "pinnedDeploymentId": null,
                                                             "routerConfig": Object {
                                                               "carDropoffTime": null,
@@ -2132,6 +2135,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                         "name": "mock-project",
                                                                         "organizationId": null,
                                                                         "otpServers": Array [],
+                                                                        "peliasWebhookUrl": null,
                                                                         "pinnedDeploymentId": null,
                                                                         "routerConfig": Object {
                                                                           "carDropoffTime": null,
@@ -2200,6 +2204,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                           "name": "mock-project",
                                                                           "organizationId": null,
                                                                           "otpServers": Array [],
+                                                                          "peliasWebhookUrl": null,
                                                                           "pinnedDeploymentId": null,
                                                                           "routerConfig": Object {
                                                                             "carDropoffTime": null,
@@ -4128,6 +4133,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                           "name": "mock-project",
                                                           "organizationId": null,
                                                           "otpServers": Array [],
+                                                          "peliasWebhookUrl": null,
                                                           "pinnedDeploymentId": null,
                                                           "routerConfig": Object {
                                                             "carDropoffTime": null,
@@ -4241,6 +4247,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                           "name": "mock-project",
                                                           "organizationId": null,
                                                           "otpServers": Array [],
+                                                          "peliasWebhookUrl": null,
                                                           "pinnedDeploymentId": null,
                                                           "routerConfig": Object {
                                                             "carDropoffTime": null,
@@ -4314,6 +4321,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                           "name": "mock-project",
                                                           "organizationId": null,
                                                           "otpServers": Array [],
+                                                          "peliasWebhookUrl": null,
                                                           "pinnedDeploymentId": null,
                                                           "routerConfig": Object {
                                                             "carDropoffTime": null,
