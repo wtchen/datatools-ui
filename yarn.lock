@@ -11795,9 +11795,9 @@ react-addons-update@^15.6.3:
   dependencies:
     object-assign "^4.1.0"
 
-react-bootstrap-datetimepicker@miles-grant-ibigroup/react-bootstrap-datetimepicker#bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99:
+react-bootstrap-datetimepicker@ibi-group/react-bootstrap-datetimepicker#bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99:
   version "0.0.26"
-  resolved "https://codeload.github.com/miles-grant-ibigroup/react-bootstrap-datetimepicker/tar.gz/bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99"
+  resolved "https://codeload.github.com/ibi-group/react-bootstrap-datetimepicker/tar.gz/bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99"
   dependencies:
     babel-runtime "^5.6.18"
     classnames "^2.1.2"
