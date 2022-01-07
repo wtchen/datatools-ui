@@ -9,6 +9,10 @@ To begin a feed merge, navigate to one of the feed versions to be merged (it doe
 </div>
 
 ### Merge rules
+We call "active" and "future" GTFS feeds the feeds with the earliest and latest start dates, respectively.
+This is in reference to the typical use case where, to avoid disruptions to trip planning software,
+a feed with service that starts in the future needs to be merged with a feed with active service that has not expired yet.  
+
 There are a set of rules that govern the requirements for input feed versions and how different tables are merged in the output feed version:
 
 1. Merging will be based on `route_short_name` in the current and future datasets. All matching
@@ -27,18 +31,31 @@ There are a set of rules that govern the requirements for input feed versions an
        `pathways.txt`). The merge will happen on `stop_code` if provided, or fallback on stop_id.
     2. For regular stops (`location_type = 0` or empty), all or none of the stops must
        contain `stop_codes`. Otherwise, the merge feeds job will be failed.
-1. If any `service_id` in the active feed matches with the future feed, it should be modified
-  and all associated trip records must also be changed with the modified `service_id`.
-  If a `service_id` from the active calendar has both the `start_date` and `end_date` in the
-  future, the service shall not be appended to the merged file. Records in trips,
-  `calendar_dates`, and `calendar_attributes` referencing this `service_id` shall also be
-  removed/ignored. `stop_time` records for the ignored trips shall also be removed.
-  If a `service_id` from the active calendar has only the `end_date` in the future, the `end_date`
-  shall be set to one day prior to the earliest `start_date` in future dataset before appending
-  the calendar record to the merged file.
-  `trip_ids` between active and future datasets must not match. If any `trip_id` is found to be
-  matching, the merge should fail with appropriate notification to user with the cause of the
-  failure. Notification should include all matched `trip_ids`.
+
+1. Trips will be merged as follows:
+   1. All `trip_id`s from one version and that is not in the other version will be added to the merged feed.
+
+   2. Reusing `trip_id`s between the feed versions is permitted,
+      however the **trip signature** must all be identical in both feeds.
+      Two trips have the save signature if all their `arrival_time`, `departure_time`, `stop_id`, and `stop_sequence`
+      fields in `stop_times.txt` are exactly the same in both feeds. If a time or stop is changed on a trip,
+      the trip will have a different signature.
+      
+      If a single trip signature changes, the merge process will fail and report the `trip_id`s with mismatching signatures.
+
+1. Calendar entries are added with some modifications.
+   1. For trips with `trip_id` in the active feed and not in the future feed, the corresponding service entry
+      in `calendar.txt` in the active feed is kept and renamed. The reference in the trip entry is updated accordingly.
+      If that service ends after the future feed start date, it is set to end one day before  the future feed start date.
+
+   2. For `trip_id`s found in both feeds, a new entry in `calendar.txt` is created,
+      starting from the active feed’s start date and end at future feed’s end date.
+
+   3. For trips with `trip_id` only in the future feed, the service entry in `calendar.txt` from the future feed is added.
+
+   4. Entries from the active feed's `calendar_dates` and `calendar_attributes` that are after the start of the future feed
+      or that become unreferenced are removed.
+
 1. New `shape_ids` in the future datasets should be appended in the merged feed.
 1. Merging `fare_attributes` will be based on `fare_id` in the current and future datasets. All
   matching `fare_ids` between the datasets shall be considered same fare. Any `fare_id` in active
