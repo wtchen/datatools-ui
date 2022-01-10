@@ -1,11 +1,32 @@
 # Publishing Feeds
 
-## Publishing a Feed Version
+## Publishing a Feed Version Manually
+
 Once a feed version has been loaded into the manager either through direct upload, URL fetch or loaded from the editor, in order to make this feed active (i.e., available for creating alerts or visible in other 511 systems) you must first publish the feed.  This step allows users to review the feed contents (such as number of routes or stops) as well as any validation issues before beginning the publication process.
 
 Once you have checked these details, you must click the yellow `Publish to MTC` button.
 
 ![publish feed version](../img/feed-manager-publish.png)
+
+## Auto Publishing Feed Versions Fetched Automatically
+
+To avoid repeating the manual publishing steps above, 
+you can set up auto publishing for feeds that are to be fetched automatically.
+
+When creating new feeds, the auto-publishing setting is under the `Automatic publishing` section.
+For existing feeds, the auto-publishing setting is found under the `Settings` tab, `Auto-publish` category.
+
+![Auto-publish settings](../img/auto-publish-feed.png)
+
+In the list of feed sources, feeds that are set to be auto-published have an indicator displayed the feed name.
+
+![Auto-publish status](../img/auto-publish-status.png)
+
+Auto-publishing will occur immediately after the feed is auto-fetched,
+at the time set under the project's auto-fetch settings and at the frequency set for the feed source.
+
+If an auto-fetched feed version has a blocking issue (see below), that feed version will not be automatically published,
+and you must correct the issues and publish the feed manually instead.
 
 ## Feed Publication Blocking Issues
 There are a number of validation issues for both standard GTFS files and GTFS+ files that will disable the `Publish to MTC` button. When there is a blocking issue, a message will appear below the publish button giving a general description of why you cannot publish the feed. Generally, you will need to review the standard GTFS validation issues or the GTFS+ issues (you can view these by selecting the appropriate tab in the vertical nav bar on the lefthand side of the screen) and fix the issues with either the in-app editors or by re-importing a valid version. Once all of the blocking issues are resolved, the publish button will be enabled, allowing you to publish the new dataset.
