@@ -20,8 +20,9 @@ There are a set of rules that govern the requirements for input feed versions an
   in active data not present in the future will be appended to the future routes file.
 1. Future `feed_info.txt` file should get priority over active feed file when difference is
   identified.
-1. When difference is found in `agency.txt` file between active and future feeds, the future
-  `agency.txt` file data should be used. Possible issue with missing `agency_id` referenced by routes
+1. When a difference is found in `agency.txt` between the active and future feeds, the future
+  `agency.txt` file data should be used. If `agency_id` is not specified (e.g. because a feed only has one agency),
+  one is automatically generated for the merged feed.
 1. Stops will be merged on `stop_code` or `stop_id` if `stop_code` is missing. However, some restrictions apply on
   when missing stop_code values are permitted:
     1. Stops with `location_type` greater than `0` (i.e., anything but `0` or `empty`) are permitted
@@ -38,7 +39,7 @@ There are a set of rules that govern the requirements for input feed versions an
    2. Reusing `trip_id`s between the feed versions is permitted,
       however the **trip signature** must all be identical in both feeds.
       Two trips have the save signature if all their `arrival_time`, `departure_time`, `stop_id`, and `stop_sequence`
-      fields in `stop_times.txt` are exactly the same in both feeds. If a time or stop is changed on a trip,
+      fields in `stop_times.txt` are exactly the same in both feeds. If a time, stop, or stop sequence is changed on a trip,
       the trip will have a different signature.
       
       If a single trip signature changes, the merge process will fail and report the `trip_id`s with mismatching signatures.
@@ -46,15 +47,15 @@ There are a set of rules that govern the requirements for input feed versions an
 1. Calendar entries are added with some modifications.
    1. For trips with `trip_id` in the active feed and not in the future feed, the corresponding service entry
       in `calendar.txt` in the active feed is kept and renamed. The reference in the trip entry is updated accordingly.
-      If that service ends after the future feed start date, it is set to end one day before  the future feed start date.
+      If that service ends after the future feed start date, it is set to end one day before the future feed start date.
 
    2. For `trip_id`s found in both feeds, a new entry in `calendar.txt` is created,
-      starting from the active feed’s start date and end at future feed’s end date.
+      starting from the active feed’s start date and ending at future feed’s end date.
 
    3. For trips with `trip_id` only in the future feed, the service entry in `calendar.txt` from the future feed is added.
 
-   4. Entries from the active feed's `calendar_dates` and `calendar_attributes` that are after the start of the future feed
-      or that become unreferenced are removed.
+   4. Entries from the active feed's `calendar_dates` and `calendar_attributes` that are after the start of the future feed,
+      or entries that become unreferenced are removed.
 
 1. New `shape_ids` in the future datasets should be appended in the merged feed.
 1. Merging `fare_attributes` will be based on `fare_id` in the current and future datasets. All
@@ -69,8 +70,6 @@ There are a set of rules that govern the requirements for input feed versions an
 1. All GTFS+ files should be merged based on how the associated base GTFS file is merged. For
   example, directions for routes that are not in the future `routes.txt` file should be appended
   to the future `directions.txt` file in the merged feed.
-
-###
 
 ### Merge Feed Versions Result
 Once the merge feeds task has been completed, a notification window will appear describing the results of the merge process. If the feeds did not meet the rules for input datasets, the merge will fail and you will see a message describing the reason for failure and any offending records (e.g., duplicate `trip_ids` shared between the feeds). Otherwise, you will see a success message, with a list of any IDs that were modified for the output feeds (note: the input feeds will never be modified). Upon success, a new Feed Version will be created as the latest version for the feed source.
