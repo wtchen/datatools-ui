@@ -239,6 +239,13 @@ components:
     fetchFeedEvery: Pobieraj kanał co
     HOURS: godzin
     MINUTES: minut
+  FeedInfo: # Need to check these translations.
+    autoFetch: Automatyczne pobieranie
+    autoPublish: Automatycznie publikuj
+    deployable: Rozmieszczany
+    edit: Edytować
+    private: Prywatny
+    public: Publiczny
   FeedInfoPanel:
     uploadShapefile:
       body: >-
