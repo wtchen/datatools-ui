@@ -34,11 +34,11 @@ There are a set of rules that govern the requirements for input feed versions an
        contain `stop_codes`. Otherwise, the merge feeds job will be failed.
 
 1. Trips will be merged as follows:
-   1. All `trip_id`s from one version and that is not in the other version will be added to the merged feed.
+   1. All `trip_id`s from one version and that are not in the other version will be added to the merged feed.
 
    2. Reusing `trip_id`s between the feed versions is permitted,
       however the **trip signature** must all be identical in both feeds.
-      Two trips have the save signature if all their `arrival_time`, `departure_time`, `stop_id`, and `stop_sequence`
+      Two trips have the same signature if all their `arrival_time`, `departure_time`, `stop_id`, and `stop_sequence`
       fields in `stop_times.txt` are exactly the same in both feeds. If a time, stop, or stop sequence is changed on a trip,
       the trip will have a different signature.
       
