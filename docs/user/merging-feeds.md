@@ -34,28 +34,28 @@ There are a set of rules that govern the requirements for input feed versions an
        contain `stop_codes`. Otherwise, the merge feeds job will be failed.
 
 1. Trips will be merged as follows:
-   1. All `trip_id`s from one version and that are not in the other version will be added to the merged feed.
+    1. All `trip_id`s from one version and that are not in the other version will be added to the merged feed.
 
-   2. Reusing `trip_id`s between the feed versions is permitted,
-      however the **trip signature** must all be identical in both feeds.
-      Two trips have the same signature if all their `arrival_time`, `departure_time`, `stop_id`, and `stop_sequence`
-      fields in `stop_times.txt` are exactly the same in both feeds. If a time, stop, or stop sequence is changed on a trip,
-      the trip will have a different signature.
+    2. Reusing `trip_id`s between the feed versions is permitted,
+       however the **trip signature** must all be identical in both feeds.
+       Two trips have the same signature if all their `arrival_time`, `departure_time`, `stop_id`, and `stop_sequence`
+       fields in `stop_times.txt` are exactly the same in both feeds. If a time, stop, or stop sequence is changed on a trip,
+       the trip will have a different signature.
       
-      If a single trip signature changes, the merge process will fail and report the `trip_id`s with mismatching signatures.
+       If a single trip signature changes, the merge process will fail and report the `trip_id`s with mismatching signatures.
 
-1. Calendar entries are added with some modifications.
-   1. For trips with `trip_id` in the active feed and not in the future feed, the corresponding service entry
-      in `calendar.txt` in the active feed is kept and renamed. The reference in the trip entry is updated accordingly.
-      If that service ends after the future feed start date, it is set to end one day before the future feed start date.
+2. Calendar entries are added with some modifications.
+    1. For trips with `trip_id` in the active feed and not in the future feed, the corresponding service entry
+       in `calendar.txt` in the active feed is kept and renamed. The reference in the trip entry is updated accordingly.
+       If that service ends after the future feed start date, it is set to end one day before the future feed start date.
 
-   2. For `trip_id`s found in both feeds, a new entry in `calendar.txt` is created,
-      starting from the active feed’s start date and ending at future feed’s end date.
+    2. For `trip_id`s found in both feeds, a new entry in `calendar.txt` is created,
+       starting from the active feed’s start date and ending at future feed’s end date.
 
-   3. For trips with `trip_id` only in the future feed, the service entry in `calendar.txt` from the future feed is added.
+    3. For trips with `trip_id` only in the future feed, the service entry in `calendar.txt` from the future feed is added.
 
-   4. Entries from the active feed's `calendar_dates` and `calendar_attributes` that are after the start of the future feed,
-      or entries that become unreferenced are removed.
+    4. Entries from the active feed's `calendar_dates` and `calendar_attributes` that are after the start of the future feed,
+       or entries that become unreferenced are removed.
 
 1. New `shape_ids` in the future datasets should be appended in the merged feed.
 1. Merging `fare_attributes` will be based on `fare_id` in the current and future datasets. All
