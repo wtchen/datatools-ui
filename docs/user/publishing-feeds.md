@@ -18,7 +18,7 @@ For existing feeds, the auto-publishing setting is found under the `Settings` ta
 
 ![Auto-publish settings](../img/auto-publish-feed.png)
 
-In the list of feed sources, feeds that are set to be auto-published have an indicator displayed the feed name.
+In the list of feed sources, feeds that are set to be auto-published have an indicator displayed below the feed name.
 
 ![Auto-publish status](../img/auto-publish-status.png)
 
