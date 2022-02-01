@@ -28,9 +28,9 @@ There are a set of rules that govern the requirements for input feed versions an
 
     (i) Stops with `location_type` greater than `0` (i.e., anything but `0` or `empty`) are permitted
     to have empty `stop_codes` (even if there are other stops in the feed that have
-    `stop_code` values). This is because these location_types represent special entries
+    `stop_code` values). This is because these `location_type`s represent special entries
     that are either stations, entrances/exits, or generic nodes (e.g., for
-    `pathways.txt`). The merge will happen on `stop_code` if provided, or fallback on stop_id.
+    `pathways.txt`). The merge will happen on `stop_code` if provided, or fallback on `stop_id`.
     
     (ii) For regular stops (`location_type = 0` or empty), all or none of the stops must
     contain `stop_codes`. Otherwise, the merge feeds job will be failed.
