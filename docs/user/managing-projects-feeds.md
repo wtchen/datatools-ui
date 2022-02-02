@@ -84,6 +84,8 @@ Once the Feed Transformations have all been configured, you can import a new GTF
 
 A more in depth summary is available under the Transformation Results tab on the left sidebar. This panel will show you the modifications made to each file in the feed, along with how many rows were added, deleted, or modified. 
 
+![screenshot](../img/feed-transformation-results.png)
+
 ## Viewing and Managing Feed Versions
 
 The Feed Version navigator allows you to navigate through all available versions of a given feed using the `←` and `→` buttons (or view a list of all versions). You can also use this interface to:
