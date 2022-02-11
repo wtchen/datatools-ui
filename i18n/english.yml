@@ -218,7 +218,7 @@ components:
     autoFetch: Auto fetch
     autoPublish: Auto publish
     deployable: Deployable
-    flex: Contains flex
+    flex: Flexible service
     edit: Edit
     private: Private
     public: Public
