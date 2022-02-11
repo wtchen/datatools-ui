@@ -23,7 +23,7 @@ components:
       publishNewVersion:
         label: Publikuj migawkę jako nowa wersja pliku
       confirmPublishWithUnapproved:
-        label: Potwierdź publikację z niezatwierdzonymi trasami 
+        label: Potwierdź publikację z niezatwierdzonymi trasami
     unapprovedRoutesHeader: "Następujące trasy nie są akceptowane:"
     unapprovedRoutesDesc: "Trasy te nie zostaną uwzględnione w danych wyjściowych:"
     missingNameAlert: Migawce należy nadać prawidłową nazwę!
@@ -243,6 +243,7 @@ components:
     autoFetch: Automatyczne pobieranie
     autoPublish: Automatycznie publikuj
     deployable: Rozmieszczany
+    flex: Flex
     edit: Edytować
     private: Prywatny
     public: Publiczny
