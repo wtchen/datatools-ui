@@ -50,12 +50,8 @@ jobs:
         run: yarn lint-messages
       - name: Run flow check
         run: yarn flow
-      - name: Run tests with coverage
-        run: yarn cover-client
-      # Upload coverage results from unit tests and then delete coverage reports to
-      # avoid uploading the same coverage results twice.
-      - name: Upload coverage results from unit tests
-        run: bash <(curl -s https://codecov.io/bash) -c -F unit_tests
+      - name: Run tests
+        run: yarn test-client
       - name: Build with minification
         run: yarn run build -- --minify
       - name: Build docs
@@ -72,9 +68,12 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Install otp-runner
+        if: env.SHOULD_RUN_E2E == 'true'
+        run: yarn global add https://github.com/ibi-group/otp-runner.git
       - name: Run e2e tests
         if: env.SHOULD_RUN_E2E == 'true'
-        run: yarn cover-end-to-end
+        run: yarn test-end-to-end
         env:
           AUTH0_API_CLIENT: ${{ secrets.AUTH0_API_CLIENT }}
           AUTH0_API_SECRET: ${{ secrets.AUTH0_API_SECRET }}
@@ -101,12 +100,6 @@ jobs:
           SPARKPOST_KEY: ${{ secrets.SPARKPOST_KEY }}
           TRANSITFEEDS_KEY: ${{ secrets.TRANSITFEEDS_KEY }}
       # At this point, the build is successful.
-      # Upload coverage results from e2e tests and then delete coverage reports to
-      # avoid uploading the same coverage results twice.
-      - name: Upload coverage results from e2e
-        if: env.SHOULD_RUN_E2E == 'true'
-        run: bash <(curl -s https://codecov.io/bash) -c -F end_to_end_tests
-        continue-on-error: true
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
