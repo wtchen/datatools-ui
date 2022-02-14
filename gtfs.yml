@@ -466,7 +466,7 @@
       text: Miscellaneous Service
     - value: 1702
       text: Horse-drawn Carriage
-    columnWidth: 6
+    columnWidth: 12
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
   - name: route_sort_order
     required: false
