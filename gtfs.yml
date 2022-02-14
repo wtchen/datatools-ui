@@ -271,7 +271,7 @@
     helpContent: 'Contains a description of a route. Please provide useful, quality information. Do not simply duplicate the name of the route. For example, "A trains operate between Inwood-207 St, Manhattan and Far Rockaway-Mott Avenue, Queens at all times. Also from about 6AM until about midnight, additional A trains operate between Inwood-207 St and Lefferts Boulevard (trains typically alternate between Lefferts Blvd and Far Rockaway)."'
   - name: route_type
     required: true
-    inputType: DROPDOWN
+    inputType: GTFS_ROUTE_TYPE
     bulkEditEnabled: true
     options:
     - value: 3

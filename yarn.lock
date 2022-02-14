@@ -1899,6 +1899,11 @@ array-unique@^0.3.2:
   resolved "https://registry.yarnpkg.com/array-unique/-/array-unique-0.3.2.tgz#a894b75d4bc4f6cd679ef3244a9fd8f46ae2d428"
   integrity sha1-qJS3XUvE9s1nnvMkSp/Y9Gri1Cg=
 
+array.partial@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/array.partial/-/array.partial-1.0.5.tgz#f514595aacbf6a99ea20bbcffbcacc10316f0d56"
+  integrity sha512-nkHH1dU6JXrwppCqdUD5M1R85vihgBqhk9miq+3WFwwRayNY1ggpOT6l99PppqYQ1Hcjv2amFfUzhe25eAcYfA==
+
 array.prototype.find@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/array.prototype.find/-/array.prototype.find-2.0.0.tgz#56a9ab1edde2a7701ed6d9166acec338919d8430"
@@ -9695,7 +9700,6 @@ npm@^6.14.8:
     cmd-shim "^3.0.3"
     columnify "~1.5.4"
     config-chain "^1.1.12"
-    debuglog "*"
     detect-indent "~5.0.0"
     detect-newline "^2.1.0"
     dezalgo "~1.0.3"
@@ -9710,7 +9714,6 @@ npm@^6.14.8:
     has-unicode "~2.0.1"
     hosted-git-info "^2.8.8"
     iferr "^1.0.2"
-    imurmurhash "*"
     infer-owner "^1.0.4"
     inflight "~1.0.6"
     inherits "^2.0.4"
@@ -9729,14 +9732,8 @@ npm@^6.14.8:
     libnpx "^10.2.4"
     lock-verify "^2.1.0"
     lockfile "^1.0.4"
-    lodash._baseindexof "*"
     lodash._baseuniq "~4.6.0"
-    lodash._bindcallback "*"
-    lodash._cacheindexof "*"
-    lodash._createcache "*"
-    lodash._getnative "*"
     lodash.clonedeep "~4.5.0"
-    lodash.restparam "*"
     lodash.union "~4.6.0"
     lodash.uniq "~4.5.0"
     lodash.without "~4.4.0"
@@ -11794,6 +11791,14 @@ react-dom@^15.4.1, react-dom@^15.6.2:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
+react-dropdown-tree-select@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/react-dropdown-tree-select/-/react-dropdown-tree-select-2.5.1.tgz#071bef6193352cda8f3177d7f56e906a8fa175e3"
+  integrity sha512-9sN62pIci6EZ0Fni5fqB7b5e7UG/FQ/qSwYtcc0+P3VaE1bHnEYQ9XxTSkFqpbVsy9dfq94RGaECzWcErgB+jw==
+  dependencies:
+    array.partial "^1.0.5"
+    react-infinite-scroll-component "^4.0.2"
+
 react-dropzone@^3.5.3:
   version "3.13.4"
   resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-3.13.4.tgz#84da26815c40339691c49b4544c2ef7a16912ccc"
@@ -11806,6 +11811,11 @@ react-ga@^2.3.5:
   version "2.5.6"
   resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.5.6.tgz#5a2e2fa78ae298e5b0a4498210eeec631ef1b562"
   integrity sha512-g04dz6zrbdHRxVaURPWT3RUbjLflh74sS6dCuhGeZupj7ii+UEt9lwTjALb2ST2w+7wAmzG1YqYlNX4yvRXe1g==
+
+react-infinite-scroll-component@^4.0.2:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/react-infinite-scroll-component/-/react-infinite-scroll-component-4.5.3.tgz#008c2ec358628b490117ffc4aa6ce6982b26f8be"
+  integrity sha512-8O0PIeYZx0xFVS1ChLlLl/1obn64vylzXeheLsm+t0qUibmet7U6kDaKFg6jVRQJwDikWBTcyqEFFsxrbFCO5w==
 
 react-input-autosize@^2.1.2:
   version "2.2.1"
