@@ -350,57 +350,36 @@
     inputType: GTFS_ROUTE
     columnWidth: 4
     helpContent: From GTFS routes.txt file. This is necessary to maintain relationship between routes in this file and routes in the standard GTFS routes.txt file.
-  - name: category_id
+  - name: category
     required: true
     inputType: DROPDOWN
     options:
-    - value: '1'
-      text: Interregional / Intercity
-    - value: '2'
-      text: Regional
-    - value: '3'
-      text: Local
-    - value: '4'
-      text: Community
-    - value: '5'
-      text: Connector
-  - name: subcategory_id
+    - value: 'Interregional / Intercity'
+    - value: 'Regional'
+    - value: Local
+    - value: Community
+    - value: Connector
+  - name: subcategory
     required: true
     inputType: DROPDOWN
     options:
-    - value: '1'
-      text: Interregional / Intercity
-    - value: '2'
-      text: Regional All Day
-    - value: '3'
-      text: Regional Peak
-    - value: '4'
-      text: Regional Owl
-    - value: '5'
-      text: Local All Day
-    - value: '6'
-      text: Local Peak
-    - value: '7'
-      text: Local Owl
-    - value: '8'
-      text: Community All Day
-    - value: '9'
-      text: Community Special
-    - value: '10'
-      text: Community On Demand
-    - value: '11'
-      text: First / Last Mile Connector
-  - name: running_way_id
+    - value: Interregional / Intercity
+    - value: Regional All Day
+    - value: Regional Peak
+    - value: Regional Owl
+    - value: Local All Day
+    - value: Local Peak
+    - value: Local Owl
+    - value: Community All Day
+    - value: Community Special
+    - value: Community On Demand
+    - value: First / Last Mile Connector
+  - name: running_way
     required: true
     inputType: DROPDOWN
     options:
-      - value: '1'
-        text: Fully / Primarily Dedicated
-      - value: '2'
-        text: "Limited Dedicated: Highway/HOV"
-      - value: '3'
-        text: "Limited Dedicated: Local Roadway"
-      - value: '4'
-        text: "Shared, With Signal Priority"
-      - value: '5'
-        text: "Shared, No Priority"
+      - value: Fully / Primarily Dedicated
+      - value: "Limited Dedicated: Highway/HOV"
+      - value: "Limited Dedicated: Local Roadway"
+      - value: "Shared, With Signal Priority"
+      - value: "Shared, No Priority"
