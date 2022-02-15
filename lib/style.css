@@ -901,10 +901,6 @@ h4.line:after {
   width: 100%;
 }
 
-.route-type-select .infinite-scroll-component {
-  overflow-x: hidden!important;
-}
-
 /* Remove border and background of tags
  * (a "tag" is a selected item displayed inside the input portion of the selector). */
 .route-type-select .dropdown-trigger .tag {
@@ -928,7 +924,7 @@ h4.line:after {
   border-style: solid;
   height: 0;
   position: absolute;
-  right: 5px;
+  right: 8px;
   top: 50%;
   width: 0;
 }
@@ -943,6 +939,12 @@ h4.line:after {
   border-width: 2.5px 5px 5px;
   content: ''!important;
   margin-top: -7.5px;
+}
+
+/* Adjust position and width of the dropdown content wrt the input itself. */
+.route-type-select .dropdown-content {
+  margin-top: -4px;
+  width: 100%;
 }
 
 /* Hide the radio boxes in the tree list. */
@@ -965,8 +967,10 @@ h4.line:after {
   padding: 2px;
 }
 
-/* Make labels clickable on their entire width... */
 .route-type-select .dropdown-content .node > label {
+  /* Use regular font weight on labels rendered by the tree dropdown. */
+  font-weight: normal;
+  /* Make labels clickable on their entire width on their right... */
   width: 100%;
 }
 
