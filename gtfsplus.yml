@@ -366,30 +366,42 @@
           text: Connector
     - name: subcategory
       required: true
-      inputType: GTFS_PLUS_ROUTE_SUBCATEGORY
+      inputType: DROPDOWN
+      parent: 'category'
       options:
-        - value: '0'
+        - parentValue: '0'
           text: Interregional / Intercity
-        - value: '1'
+          value: '0'
+        - parentValue: '1'
           text: Regional All Day
-        - value: '2'
+          value: '1'
+        - parentValue: '1'
           text: Regional Peak
-        - value: '3'
+          value: '2'
+        - parentValue: '1'
           text: Regional Owl
-        - value: '4'
+          value: '3'
+        - parentValue: '2'
           text: Local All Day
-        - value: '5'
+          value: '4'
+        - parentValue: '2'
           text: Local Peak
-        - value: '6'
+          value: '5'
+        - parentValue: '2'
           text: Local Owl
-        - value: '7'
+          value: '6'
+        - parentValue: '3'
           text: Community All Day
-        - value: '8'
+          value: '7'
+        - parentValue: '3'
           text: Community Special
-        - value: '9'
+          value: '8'
+        - parentValue: '3'
           text: Community On Demand
-        - value: '10'
+          value: '9'
+        - parentValue: '4'
           text: First / Last Mile Connector
+          value: '10'
     - name: running_way
       required: true
       inputType: DROPDOWN
