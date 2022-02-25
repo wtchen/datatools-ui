@@ -355,9 +355,9 @@
       inputType: DROPDOWN
       options:
         - value: '0'
-          text: 'Interregional / Intercity'
+          text: Interregional / Intercity
         - value: '1'
-          text: 'Regional'
+          text: Regional
         - value: '2'
           text: Local
         - value: '3'
@@ -413,6 +413,6 @@
         - value: '2'
           text: "Limited Dedicated: Local Roadway"
         - value: '3'
-          text: "Shared, With Signal Priority"
+          text: Shared, With Signal Priority
         - value: '4'
-          text: "Shared, No Priority"
+          text: Shared, No Priority
