@@ -961,6 +961,11 @@ h4.line:after {
   background-color: #ebf5ff;
 }
 
+/* Don't show disabled itens (e.g. because they represent invalid values) */
+.route-type-select .dropdown-content .node.disabled {
+  display: none;
+}
+
 /* Reduce v-space between tree items, adjust font color. */
 .route-type-select .dropdown-content .node {
   color: #555;
