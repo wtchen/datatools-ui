@@ -30,4 +30,4 @@ env.yml-original
 scripts/*client.json
 
 # Vs code settings
-.vscode
+.vscode/
