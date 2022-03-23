@@ -26,6 +26,7 @@
     "postinstall": "husky install",
     "predeploy": "yarn",
     "prestart": "yarn",
+    "generate-changelog": "bash scripts/generate-changelog.sh > CHANGELOG.md",
     "semantic-release": "semantic-release --prepare false --publish @semantic-release/github --verify-conditions @semantic-release/github",
     "start": "mastarm build --env dev --serve --proxy http://localhost:4000/api",
     "test": "npm run lint && npm run lint-messages && yarn run flow && npm run test-client",
