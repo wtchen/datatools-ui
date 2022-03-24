@@ -31,7 +31,7 @@ jobs:
           python-version: '3.x'
       - name: Install mkdocs
         run: |
-          pip install mkdocs
+          pip install Jinja2==3.0.3 mkdocs
           mkdocs --version
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
