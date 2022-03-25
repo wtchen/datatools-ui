@@ -86,7 +86,8 @@ GTFS_DATABASE_URL: jdbc:postgresql://localhost/gtfs_storage_db
 Application data storage (i.e., where projects, feed sources, and feed versions
 are stored) is handled by MongoDB. There is no need to manually initialize a
 database in MongoDB (MongoDB will handle this automatically if you prefer).
-Connection details for MongoDB are also set in the server's `env.yml`:
+Connection details for MongoDB are also set in the `datatools-server`'s
+[env.yml](https://github.com/ibi-group/datatools-server/blob/dev/configurations/default/env.yml.tmp):
 ```yaml
 MONGO_URI: # defaults to localhost:27017 (MongoDB default) if empty
 MONGO_DB_NAME: application_db
