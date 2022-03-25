@@ -73,8 +73,9 @@ database for instance by using the CLI [createdb](https://www.postgresql.org/doc
 ```bash
 $ createdb gtfs_storage_db
 ```
-Pass the URL of the database in the server's `env.yml` (and optionally add
-additional connection variables):
+Pass the URL of the database in the `datatools-server`'s
+[env.yml](https://github.com/ibi-group/datatools-server/blob/dev/configurations/default/env.yml.tmp)
+(and optionally add additional connection variables):
 ```yaml
 GTFS_DATABASE_URL: jdbc:postgresql://localhost/gtfs_storage_db
 # GTFS_DATABASE_USER:
