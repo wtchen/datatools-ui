@@ -37,10 +37,12 @@ $ cp datatools-server/configurations/default/env.yml.tmp datatools-server/config
 You'll then need to supply Auth0 account information (see below) and API keys
 for various services used in the application.
 
-The default `server.yml` (for `datatools-server`) and `settings.yml` (for
-`datatools-ui`) should work out of the box, but you may want to specify
-alternative settings files outside of these repositories. These can be specified
-as a directory during `datatools-ui` build with mastarm:
+The default
+[server.yml](https://github.com/ibi-group/datatools-server/blob/dev/configurations/default/server.yml.tmp) for `datatools-server` and
+[settings.yml](https://github.com/ibi-group/datatools-ui/blob/dev/configurations/default/settings.yml) for
+`datatools-ui` should work out of the box, but you may want to specify
+alternative settings files outside of these repositories.
+These can be specified as a directory during `datatools-ui` build with mastarm:
 
 ```bash
 $ mastarm build --config /path/to/configurations/dir
