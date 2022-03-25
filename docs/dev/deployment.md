@@ -182,9 +182,10 @@ function (user, context, callback) {
 
 ## Building and Running the Application
 
-Install the Javascript dependencies using yarn:
+Install the Javascript dependencies for `datatools-ui` using yarn:
 
 ```bash
+$ cd datatools-ui
 $ yarn
 ```
 
