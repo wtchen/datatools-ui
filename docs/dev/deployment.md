@@ -53,8 +53,7 @@ AND as individual file args for `datatools-server`:
 ```bash
 $ java -jar target/dt-v1.0.0.jar /path/to/env.yml /path/to/server.yml
 ```
-In `datatools-server:server.yml`, be sure to update the paths for where the
-databases will be stored:
+In `datatools-server:server.yml`, be sure to update the paths for the place where databases will be stored:
 
 ```yaml
 application:
