@@ -189,26 +189,33 @@ $ cd datatools-ui
 $ yarn
 ```
 
-Build and deploy the frontend to s3 using npm script (which calls [mastarm](https://github.com/conveyal/mastarm)):
+Build and deploy `datatools-ui` to s3 using npm script
+(which calls [mastarm](https://github.com/conveyal/mastarm)):
 
 ```bash
 $ npm run deploy -- s3://$S3_BUCKET_NAME/dist
 ```
 
-Package the application using Maven:
+Package `datatools-server` using Maven:
 
 ```bash
+$ cd datatools-server
 $ mvn package
 ```
 
-Deploy the application with Java:
+Deploy `datatools-server` with Java:
 
 ```bash
 $ java -jar target/dt-v1.0.0.jar /path/to/env.yml /path/to/server.yml
 ```
 
-
-The application back-end should now be running at `http://localhost:9000` (or whatever port you specified in `server.yml`). The front-end assets are obtained from the `dist` folder relative the url specified in `server.yml` at `application.client_assets_url`. While running a development server of datatools-ui, these assets are delivered to the client using budo, so the links defined in the backend `server.yml` are only used in a production setting.
+`Datatools-server` should now be running at `http://localhost:9000`
+(or whatever port you specified in `server.yml`).
+`Datatools-ui` assets are obtained from the `dist`
+folder relative the url specified in `server.yml` at `application.client_assets_url`.
+While running a development server of datatools-ui,
+these assets are delivered to the client using budo,
+so the links defined in the backend `server.yml` are only used in a production setting.
 
 ## Configuring Modules
 
