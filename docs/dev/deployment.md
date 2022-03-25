@@ -69,7 +69,7 @@ the application has been significantly tuned and optimized for PostgreSQL 9, so
 we highly recommend using PostgreSQL.
 
 Once PostgreSQL is installed and the service has been started, create the
-database:
+database for instance by using the CLI [createdb](https://www.postgresql.org/docs/9.1/app-createdb.html):
 ```bash
 $ createdb gtfs_storage_db
 ```
