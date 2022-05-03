@@ -1022,3 +1022,7 @@ h4.line:after {
   vertical-align: middle;
   width: 2em;
 }
+/* Datatools backend exception in popover overflows the container */
+.popover-content {
+  overflow-x: scroll;
+}
