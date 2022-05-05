@@ -958,74 +958,83 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         <div
                           className="panel-heading"
                         >
-                          <Row
-                            bsClass="row"
-                            componentClass="div"
+                          <PanelTitle
+                            bsClass="panel"
+                            componentClass="h3"
                           >
-                            <div
-                              className="row"
+                            <h3
+                              className="panel-title"
                             >
-                              <Col
-                                bsClass="col"
+                              <Row
+                                bsClass="row"
                                 componentClass="div"
-                                xs={4}
                               >
                                 <div
-                                  className="col-xs-4"
+                                  className="row"
                                 >
-                                  <FormControl
-                                    bsClass="form-control"
-                                    componentClass="input"
-                                    onChange={[Function]}
-                                    placeholder="Search for deployments"
+                                  <Col
+                                    bsClass="col"
+                                    componentClass="div"
+                                    xs={4}
                                   >
-                                    <input
-                                      className="form-control"
-                                      onChange={[Function]}
-                                      placeholder="Search for deployments"
-                                    />
-                                  </FormControl>
-                                </div>
-                              </Col>
-                              <Col
-                                bsClass="col"
-                                componentClass="div"
-                                xs={8}
-                              >
-                                <div
-                                  className="col-xs-8"
-                                >
-                                  <Button
-                                    active={false}
-                                    block={false}
-                                    bsClass="btn"
-                                    bsStyle="success"
-                                    className="pull-right"
-                                    disabled={false}
-                                    onClick={[Function]}
-                                  >
-                                    <button
-                                      className="pull-right btn btn-success"
-                                      disabled={false}
-                                      onClick={[Function]}
-                                      type="button"
+                                    <div
+                                      className="col-xs-4"
                                     >
-                                      <Glyphicon
-                                        bsClass="glyphicon"
-                                        glyph="plus"
+                                      <FormControl
+                                        bsClass="form-control"
+                                        componentClass="input"
+                                        onChange={[Function]}
+                                        placeholder="Search for deployments"
                                       >
-                                        <span
-                                          className="glyphicon glyphicon-plus"
+                                        <input
+                                          className="form-control"
+                                          onChange={[Function]}
+                                          placeholder="Search for deployments"
                                         />
-                                      </Glyphicon>
-                                       
-                                      New Deployment
-                                    </button>
-                                  </Button>
+                                      </FormControl>
+                                    </div>
+                                  </Col>
+                                  <Col
+                                    bsClass="col"
+                                    componentClass="div"
+                                    xs={8}
+                                  >
+                                    <div
+                                      className="col-xs-8"
+                                    >
+                                      <Button
+                                        active={false}
+                                        block={false}
+                                        bsClass="btn"
+                                        bsStyle="success"
+                                        className="pull-right"
+                                        disabled={false}
+                                        onClick={[Function]}
+                                      >
+                                        <button
+                                          className="pull-right btn btn-success"
+                                          disabled={false}
+                                          onClick={[Function]}
+                                          type="button"
+                                        >
+                                          <Glyphicon
+                                            bsClass="glyphicon"
+                                            glyph="plus"
+                                          >
+                                            <span
+                                              className="glyphicon glyphicon-plus"
+                                            />
+                                          </Glyphicon>
+                                           
+                                          New Deployment
+                                        </button>
+                                      </Button>
+                                    </div>
+                                  </Col>
                                 </div>
-                              </Col>
-                            </div>
-                          </Row>
+                              </Row>
+                            </h3>
+                          </PanelTitle>
                         </div>
                       </PanelHeading>
                       <Table
@@ -1984,15 +1993,24 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       <div
                         className="panel-heading"
                       >
-                        <Icon
-                          type="rocket"
+                        <PanelTitle
+                          bsClass="panel"
+                          componentClass="h3"
                         >
-                          <i
-                            className="fa fa-rocket fa-fw "
-                          />
-                        </Icon>
-                         
-                        Auto-deployment
+                          <h3
+                            className="panel-title"
+                          >
+                            <Icon
+                              type="rocket"
+                            >
+                              <i
+                                className="fa fa-rocket fa-fw "
+                              />
+                            </Icon>
+                             
+                            Auto-deployment
+                          </h3>
+                        </PanelTitle>
                       </div>
                     </PanelHeading>
                     <PanelBody
@@ -2506,15 +2524,24 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                       <div
                         className="panel-heading"
                       >
-                        <Icon
-                          type="cog"
+                        <PanelTitle
+                          bsClass="panel"
+                          componentClass="h3"
                         >
-                          <i
-                            className="fa fa-cog fa-fw "
-                          />
-                        </Icon>
-                         
-                        Configuring deployments
+                          <h3
+                            className="panel-title"
+                          >
+                            <Icon
+                              type="cog"
+                            >
+                              <i
+                                className="fa fa-cog fa-fw "
+                              />
+                            </Icon>
+                             
+                            Configuring deployments
+                          </h3>
+                        </PanelTitle>
                       </div>
                     </PanelHeading>
                     <PanelBody
