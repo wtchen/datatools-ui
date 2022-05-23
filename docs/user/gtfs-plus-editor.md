@@ -89,13 +89,3 @@ From them GTFS+ summary page, click "Create a New Version". This will create an 
 To access the new version, select the latest version number from the feed version selector.
 
 To access the newly updated `route_attributes.txt` file, click "Download Version" from the Feed Version summary view.
-
-
-
-
-
-
-
-
-
-
