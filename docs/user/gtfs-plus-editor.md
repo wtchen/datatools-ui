@@ -46,7 +46,7 @@ Note that route attributes can only be added for the transit routes defined for 
 
 ### Route Attributes Editor Overview
 
-Once in the GTFS+ editor, select "route_attributes" from the GTFS+ files shown on the left side. "route attributes" will be grayed-out but still available for editing if no data were previously entered.
+Once in the GTFS+ editor, select "route_attributes" from the GTFS+ files shown on the left side. "route_attributes" will be grayed-out but still available for editing if no data were previously entered.
 
 The empty route attributes editor is shown in the screenshot below.
 
