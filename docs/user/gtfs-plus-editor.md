@@ -33,3 +33,59 @@ After making changes to the data, the "Save and Revalidate" button can be used t
 
 Once the GTFS+ data for a given Feed Version is to a point where it is complete and ready for external use, it may be exported as a new Feed Version in the main Data Manager using the "Create a New Version" button within the GTFS+ summary panel (note that this button does not appear until the GTFS+ for a given Feed Version has been edited and saved at least once). In addition to the updated GTFS+ data, any standard GTFS data from the original Feed Version will be retained and included in the newly created version.
 ![publish GTFS+ as new version](../img/gtfsplus-publish.png)
+
+## Editing `route_attributes.txt`
+
+### Opening the GTFS+ Editor
+
+From the Feed Version viewer, clicking the "GTFS+ for this version" shortcut on the left side of the screen will open the GTFS+ summary page that lists GTFS+ files and validation summary.
+
+If editing `route_attributes.txt` from scratch, the row for `route_attributes.txt` will be grayed out in the GTFS+ summary page. Click "Edit GTFS+" to the top-right corner to open the GTFS+ Editor.
+
+Note that route attributes can only be added for the transit routes defined for the active agency feed. To edit route attributes for another agency, navigate back to the applicable project and select the desired agency and feed version.
+
+### Route Attributes Editor Overview
+
+Once in the GTFS+ editor, select "route_attributes" from the GTFS+ files shown on the left side. "route_attributes" will be grayed-out but still available for editing if no data were previously entered.
+
+The empty route attributes editor is shown in the screenshot below.
+
+![empty route attributes editor](../img/gtfsplus-editor-route-attr-empty.png)
+
+To add attributes to a transit route, click "New Row". A set of selectors is shown.
+
+### Editing Route Attributes
+
+To fill out route attributes, first, select a transit route from the left-most dropdown selector.
+Once you select the route, click the selectors and pick the desired value under each route attribute.
+
+To add another route to route_attributes, click "New Row" again and repeat the operation above.
+Note that a given route cannot be added twice to `route_attributes.txt`.
+
+To modify existing route attributes, pick the desired attribute and value in the corresponding row (see screenshot).
+
+![empty route attributes editor](../img/gtfsplus-editor-route-attr.png)
+
+If there are more than 25 routes in route_attributes, use the pagination feature to find the route you need to edit.
+
+To remove a route from `route_attributes.txt`, use the delete button, denoted with an "X",
+at the right of the corresponding row.
+
+When you are done editing, click "Save & Revalidate" at the top right corner of the editor page.
+Any invalid fields (e.g. required fields left blank) will be denoted with a warning sign.
+
+### Exiting the GTFS+ Editor
+
+To exit the GTFS+ editor, click the feed (agency) name in the navigation path at the top of the editor page
+(see screenshot below). You will be taken back to the GTFS+ summary page.
+
+![empty route attributes editor](../img/gtfsplus-editor-nav.png)
+
+### Publishing A New Feed Version
+
+To publish a new feed version, you must have first entered and saved new route attribute data in the GTFS+ editor.
+From them GTFS+ summary page, click "Create a New Version". This will create an exportable feed version with the route_attributes and other GTFS+ data from the GTFS+ editor in the current feed version.
+
+To access the new version, select the latest version number from the feed version selector.
+
+To access the newly updated `route_attributes.txt` file, click "Download Version" from the Feed Version summary view.
