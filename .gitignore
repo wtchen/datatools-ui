@@ -22,6 +22,9 @@ configurations/*
 dist
 assets
 
+# Mkdocs local build
+target/
+
 # Secret config files
 env.yml
 env.yml-original

@@ -1,5 +1,5 @@
 site_name: Transit Data Tools Docs
-site_url: http://conveyal-data-tools.readthedocs.io
+site_url: http://mtc-datatools.readthedocs.io
 repo_url: https://github.com/conveyal/datatools-manager
 docs_dir: docs
 site_dir: target/mkdocs
@@ -11,7 +11,13 @@ nav:
 - Data Manager:
   - 'Introduction': 'user/introduction.md'
   - 'Managing Projects & Feeds': 'user/managing-projects-feeds.md'
+  - 'Publishing Feeds': 'user/publishing-feeds.md'
+  - 'Merging Feeds': 'user/merging-feeds.md'
+  - 'Feed Version Summary': 'user/feed-version-summary.md'
   - 'Managing Users': 'user/managing-users.md'
+  - 'Service Alerts Manager': 'user/service-alerts.md'
+  - 'Searching for Routes and Stops': 'user/searching-routes-stops.md'
+  - 'GTFS+ Editor': 'user/gtfs-plus-editor.md'
 - 'GTFS Editor':
   - Introduction: 'user/editor/introduction.md'
   - Stops: 'user/editor/stops.md'
@@ -29,6 +35,5 @@ nav:
   - Deployment: dev/deployment.md
   - Development: dev/development.md
   - Migration: dev/migration.md
-- Appendices: 
+- Appendices:
   - GTFS Validation Warnings: 'user/appendix-gtfs-warnings.md'
-

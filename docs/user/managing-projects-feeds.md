@@ -84,14 +84,19 @@ Once the Feed Transformations have all been configured, you can import a new GTF
 
 A more in depth summary is available under the Transformation Results tab on the left sidebar. This panel will show you the modifications made to each file in the feed, along with how many rows were added, deleted, or modified. 
 
+![screenshot](../img/feed-transformation-results.png)
+
 ## Viewing and Managing Feed Versions
 
 The Feed Version navigator allows you to navigate through all available versions of a given feed using the `←` and `→` buttons (or view a list of all versions). You can also use this interface to:
 
 - download a Feed Version to your local machine as a GTFS data file,
+- export the route patterns or stops as a shapefile (.shp),
+- merge two Feed Versions into a single version (MTC only),
+- publish a Feed Version externally (MTC only),
 - load a version into the Editor, and
 - delete a Feed Version from the Data Manager. (Note: deleting a Feed Version cannot be undone.)
 
 ![screenshot](../img/feed-version-navigator.png)
 
-To the left of the navigator is a list of views available for to the currently active version. These include basic feed statistics, the detailed feed validation report, and any user comments specific to this feed.
+To the left of the navigator is a list of views available for to the currently active version. These include basic feed statistics, the detailed feed validation report, and any user comments specific to this feed. See [Feed Version Summary](./feed-version-summary) for more.
