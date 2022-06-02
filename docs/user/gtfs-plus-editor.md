@@ -97,7 +97,7 @@ Feed transformations are set up in Data Manager outside the GTFS+ Editor, under 
 4. Select `route_attributes.txt` as the table to replace.
 5. Select the feed version which `route_attributes.txt` is to be used (see screenshot below).
 
-![Transformation for route attributes using CSV](../img/transform-route-attr-from-version.png)
+![Replace route attributes from version screenshot](../img/transform-route-attr-from-version.png)
 
 #### Using external CSV data
 
@@ -109,7 +109,7 @@ Feed transformations are set up in Data Manager outside the GTFS+ Editor, under 
 4. Select `route_attributes.txt` as the table to replace.
 5. Enter or paste the desired route attributes CSV data (see screenshot below).
 
-![Transformation for route attributes using CSV](../img/transform-route-attr-from-csv.png)
+![Replace route attributes from CSV screenshot](../img/transform-route-attr-from-csv.png)
 
 ### Exiting the GTFS+ Editor
 
