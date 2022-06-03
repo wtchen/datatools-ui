@@ -74,6 +74,44 @@ at the right of the corresponding row.
 When you are done editing, click "Save & Revalidate" at the top right corner of the editor page.
 Any invalid fields (e.g. required fields left blank) will be denoted with a warning sign.
 
+### Injecting Existing GTFS+ Route Attributes Data
+
+Instead of using the GTFS+ Editor to manually enter route attributes for each feed version,
+you can have existing GTFS+ route attributes data be automatically injected to a future or new feed version
+when that version is imported or uploaded to Data Manager.
+
+Using Data Manager's [Feed Transformations feature](./managing-projects-feeds.md#feed-transformations),
+existing route attribute data can be added from two methods:
+
+1. by using `route_attributes.txt` from an existing feed version, or
+2. by using CSV data external from Data Manager.
+
+Feed transformations are set up in Data Manager outside the GTFS+ Editor, under `Feed > Settings > Feed Transformations`.
+
+#### Using `route_attributes.txt` from another feed version
+
+1. Under "Transformation Settings", click "New Transformation".
+2. Check that the applicable conditions to execute the transformation are listed:
+    * To inject `route_attributes.txt` when importing/fetching a new feed version, ensure that "Fetched Automatically" and "Manually Uploaded" are listed.
+    * To inject `route_attributes.txt` when exporting editor snapshots, ensure that "Produced In-House" is listed.
+3. Click "Add a step to transformation" dropdown, and select "Replace file from version transformation".
+4. Select `route_attributes.txt` as the table to replace.
+5. Select the feed version that will provide `route_attributes.txt` (see screenshot below).
+
+![Replace route attributes from version screenshot](../img/transform-route-attr-from-version.png)
+
+#### Using external CSV data
+
+1. Under "Transformation Settings", click "New Transformation".
+2. Check that the applicable conditions to execute the transformation are listed:
+    * To inject `route_attributes.txt` when importing/fetching a new feed version, ensure that "Fetched Automatically" and "Manually Uploaded" are listed.
+    * To inject `route_attributes.txt` when exporting editor snapshots, ensure that "Produced In-House" is listed.
+3. Click "Add a step to transformation" dropdown, and select "Replace file from string transformation".
+4. Select `route_attributes.txt` as the table to replace.
+5. Enter or paste the desired route attributes CSV data (see screenshot below).
+
+![Replace route attributes from CSV screenshot](../img/transform-route-attr-from-csv.png)
+
 ### Exiting the GTFS+ Editor
 
 To exit the GTFS+ editor, click the feed (agency) name in the navigation path at the top of the editor page
