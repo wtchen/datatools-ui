@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@andrewdodd/react-leaflet-draw@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.yarnpkg.com/@andrewdodd/react-leaflet-draw/-/react-leaflet-draw-0.20.0.tgz#3d40331c102e00257e382398cb0c66fd5f732083"
+  integrity sha512-inr781C6ExoQrvBoSDwplqIkl/sbyTsBLDLY0UNNchaX2LTEmaGq195Jw8ejF5uN0TvYik/Wac/WDT6Q146Szg==
+  dependencies:
+    lodash-es "^4.17.10"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.5.5":
   version "7.5.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.5.5.tgz#bc0782f6d69f7b7d49531219699b988f669a8f9d"
@@ -8143,6 +8150,11 @@ lcid@^2.0.0:
   dependencies:
     invert-kv "^2.0.0"
 
+leaflet-draw@^0.4.9:
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/leaflet-draw/-/leaflet-draw-0.4.14.tgz#1b5b06d570873a015aa96b80d664dab496c45a4a"
+  integrity sha512-O99KSPjyHNMDE+uD/fpdPydvQfTE8QruaG7ylEEtKCIaSSb60mCWoDdGUqGEHU9PGPu2JxbEfkGTXY9eYv7aEw==
+
 leaflet-textpath@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/leaflet-textpath/-/leaflet-textpath-1.2.3.tgz#0adef3a2d438c1c781f4e1154b8fa2f963cfd8a7"
@@ -8427,6 +8439,11 @@ lockfile@^1.0.4:
   integrity sha512-cvbTwETRfsFh4nHsL1eGWapU1XFi5Ot9E85sWAwia7Y7EgB7vfqcZhTKZ+l7hCGxSPoushMv5GKhT5PdLv03WA==
   dependencies:
     signal-exit "^3.0.2"
+
+lodash-es@^4.17.10:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash-es@^4.2.1:
   version "4.17.14"

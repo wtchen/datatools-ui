@@ -23,7 +23,7 @@ components:
       publishNewVersion:
         label: Publikuj migawkę jako nowa wersja pliku
       confirmPublishWithUnapproved:
-        label: Potwierdź publikację z niezatwierdzonymi trasami 
+        label: Potwierdź publikację z niezatwierdzonymi trasami
     unapprovedRoutesHeader: "Następujące trasy nie są akceptowane:"
     unapprovedRoutesDesc: "Trasy te nie zostaną uwzględnione w danych wyjściowych:"
     missingNameAlert: Migawce należy nadać prawidłową nazwę!
@@ -243,6 +243,7 @@ components:
     autoFetch: Automatyczne pobieranie
     autoPublish: Automatycznie publikuj
     deployable: Rozmieszczany
+    flex: Flex
     edit: Edytować
     private: Prywatny
     public: Publiczny
@@ -493,6 +494,10 @@ components:
       updates:
         autoFetchFeeds: Auto fetch feed sources?
         title: Updates
+    flex:
+      title: Flex Service
+      checkbox: Feed includes flex service
+      description: Enable this feed source to include flex service.  Flex service describes operations that follow a schedule, but also include flexible features such as dial-a-ride service, route deviation, continuous stops, or point to zone service.
     rename: Rename
     save: Save
     title: Settings
