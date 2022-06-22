@@ -9,6 +9,12 @@ else
     echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
     echo 'Will run E2E tests because this is a commit to master or dev'
   fi
+  # Also run e2e tests on automatic dependabot PR branches to facilitate approval of security-related PRs.
+  # We check that the branch ref starts with "dependabot/" (refs are in the format "dependabot/<module>/<package-version>").
+  if [[ "$GITHUB_REPOSITORY" = "ibi-group/datatools-ui" ]] && [[ $GITHUB_REF_NAME = dependabot/* ]] && [[ "$GITHUB_REF_SLUG" = "master" || "$GITHUB_REF_SLUG" = "dev" || "$GITHUB_REF_SLUG" = "github-actions" ]]; then
+    echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
+    echo 'Will run E2E tests because this is an automatic dependabot PR to master or dev'
+  fi
 fi
 
 if [[ "$SHOULD_RUN_E2E" != "true" ]]; then
