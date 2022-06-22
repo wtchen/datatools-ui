@@ -20,7 +20,21 @@ const {
 } = require('./utils')
 
 const serverJarFilename = 'dt-latest-dev.jar'
-
+const otpJarMavenUrl = 'https://repo1.maven.org/maven2/org/opentripplanner/otp/1.4.0/otp-1.4.0-shaded.jar'
+const otpJarForOtpRunner = '/opt/otp/otp-v1.4.0'
+const ENV_YML_VARIABLES = [
+  'AUTH0_CLIENT_ID',
+  'AUTH0_DOMAIN',
+  'AUTH0_SECRET',
+  'AUTH0_API_CLIENT',
+  'AUTH0_API_SECRET',
+  'GTFS_DATABASE_PASSWORD',
+  'GTFS_DATABASE_USER',
+  'GTFS_DATABASE_URL',
+  'OSM_VEX',
+  'SPARKPOST_KEY',
+  'SPARKPOST_EMAIL'
+]
 /**
  * download, configure and start an instance of datatools-server
  */
@@ -35,24 +49,17 @@ async function startBackendServer () {
   // make sure required environment variables are set
   try {
     requireEnvVars([
-      'AUTH0_CLIENT_ID',
-      'AUTH0_DOMAIN',
-      'AUTH0_SECRET',
-      'AUTH0_API_CLIENT',
-      'AUTH0_API_SECRET',
-      'OSM_VEX',
-      'SPARKPOST_EMAIL',
-      'SPARKPOST_KEY',
+      ...ENV_YML_VARIABLES,
       'S3_BUCKET',
       'TRANSITFEEDS_KEY'
     ])
   } catch (e) {
-    console.error(`At least one required env var is missin: ${e}`)
+    console.error(`At least one required env var is missing: ${e}`)
     throw e
   }
 
   const serverFolder = path.join(
-    process.env.TRAVIS_BUILD_DIR,
+    process.env.GITHUB_WORKSPACE,
     '..',
     'datatools-server'
   )
@@ -109,16 +116,7 @@ async function startBackendServer () {
             results.readEnvTemplate,
             pick(
               process.env,
-              [
-                'AUTH0_CLIENT_ID',
-                'AUTH0_DOMAIN',
-                'AUTH0_SECRET',
-                'AUTH0_API_CLIENT',
-                'AUTH0_API_SECRET',
-                'OSM_VEX',
-                'SPARKPOST_KEY',
-                'SPARKPOST_EMAIL'
-              ]
+              ENV_YML_VARIABLES
             )
           )
         )
@@ -194,13 +192,13 @@ async function startClientServer () {
       'TRANSITFEEDS_KEY'
     ])
   } catch (e) {
-    console.error(`At least one required env var is missin: ${e}`)
+    console.error(`At least one required env var is missing: ${e}`)
     throw e
   }
 
   // set the working directories for datatools-ui
   const datatoolsUiDir = path.join(
-    process.env.TRAVIS_BUILD_DIR,
+    process.env.GITHUB_WORKSPACE,
     '..',
     'datatools-ui'
   )
@@ -337,12 +335,13 @@ async function startOtp () {
   console.log('downloading otp jar')
 
   // download otp
-  await downloadFile(
-    'https://repo1.maven.org/maven2/org/opentripplanner/otp/1.4.0/otp-1.4.0-shaded.jar',
-    otpJarFilename
-  )
+  await downloadFile(otpJarMavenUrl, otpJarFilename)
 
   console.log('starting otp')
+  // Ensure default folder for graphs exists.
+  // (OTP 1.4.0 autoscan() does a directory listing without checking directory existence.)
+  const otpBasePath = '/tmp/otp'
+  await fs.mkdirp(`${otpBasePath}/graphs`)
 
   // start otp
   try {
@@ -353,6 +352,9 @@ async function startOtp () {
         '-jar',
         otpJarFilename,
         '--server',
+        '--autoScan',
+        '--basePath',
+        otpBasePath,
         '--insecure',
         '--router',
         'default'
@@ -403,6 +405,19 @@ async function verifySetupForLocalEnvironment () {
       url: 'http://localhost:8080'
     }
   ]
+
+  // Make sure that certain e2e folders have permissions (assumes running on Linux/MacOS).
+  const desiredMode = 0o2777
+  await fs.ensureDir('/tmp/otp', desiredMode) // For otp-runner manifest files
+  await fs.ensureDir('/tmp/otp/graphs', desiredMode) // For OTP graph
+  await fs.ensureDir('/var/log', desiredMode) // For otp-runner log
+  await fs.ensureDir('/opt/otp', desiredMode) // For OTP jar referenced by otp-runner
+
+  // Download OTP jar into /opt/otp/ if not already present.
+  const otpJarExists = await fs.exists(otpJarForOtpRunner)
+  if (!otpJarExists) {
+    await downloadFile(otpJarMavenUrl, otpJarForOtpRunner)
+  }
 
   await Promise.all(
     endpointChecks.map(

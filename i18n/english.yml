@@ -22,6 +22,10 @@ components:
         placeholder: Additional information (optional)
       publishNewVersion:
         label: Publish snapshot as new feed version
+      confirmPublishWithUnapproved:
+        label: Confirm publish with unapproved routes 
+    unapprovedRoutesHeader: "The following routes are not approved"
+    unapprovedRoutesDesc: "These routes will not be included in the output:"
     missingNameAlert: Must give snapshot a valid name!
     ok: OK
     title: Create a new snapshot
@@ -69,6 +73,8 @@ components:
       stationTransfers: Sta. Transfers
       subwayAccessTime: Subway Access Time
       title: Build Config
+    clear: Clear
+    manageServers: Manage deployment servers
     osm:
       bounds: Custom Extract Bounds
       custom: Use Custom Extract Bounds
@@ -138,8 +144,35 @@ components:
       name: Name
     title: Deployments
   DeploymentsPanel:
+    autoDeploy:
+      deployWithErrors:
+        checklabel: Deploy even if some feed versions have critical errors
+        help: >
+          If this is unchecked, an auto-deployment will halt if any of the feed
+          versions in the deployment have at least one critical error
+        title: Critical Errors Handling
+      help: >
+        A deployment will automatically be kicked off (assuming there are no
+        critical errors) whenever one of the above-defined events occurs.
+      label: Auto-deploy events
+      placeholder: Specify auto-deploy events
+      title: Auto-deployment
+      types:
+        ON_FEED_FETCH: A new version is fetched
+        ON_PROCESS_FEED: A new version is processed
+    config:
+      body: >
+        Deployments can use project-level configurations (e.g., for build or
+        router config files) or be configured individually.
+      editSettings: Edit deployment settings
+      manageServers: Manage deployment servers
+      title: Configuring deployments
     delete: Remove deployment
     new: New Deployment
+    pinnedDeployment:
+      help: Pin a deployment (and deploy to a server at least once) to enable auto-deployment.
+      label: Pinned deployment
+      placeholder: Select a deployment to pin
     search: Search for deployments
     table:
       creationDate: Created
@@ -176,6 +209,18 @@ components:
     snapshot: snapshot
     title: Snapshots
     version: Version
+  FeedFetchFrequency:
+    DAYS: days
+    fetchFeedEvery: Fetch feed every
+    HOURS: hours
+    MINUTES: minutes
+  FeedInfo:
+    autoFetch: Auto fetch
+    autoPublish: Auto publish
+    deployable: Deployable
+    edit: Edit
+    private: Private
+    public: Public
   FeedInfoPanel:
     uploadShapefile:
       body: 'Select a zipped shapefile to display on map. Note: this is only for use as a visual aid.'
@@ -192,17 +237,17 @@ components:
     createFirst: Create first feed source!
   FeedSourceTableRow:
     status:
-        active: Active
-        all: All
-        expired: Expired
-        expiring-within-20-days: Expiring within 20 days
-        expiring-within-5-days: Expiring within 5 days
-        feedNotInDeployment: Feed not in deployment
-        feedNotPublished: Feed not published
-        future: Future
-        no-version: No version
-        same-as-deployed: Same as Deployed
-        same-as-published: Same as Published
+      active: Active
+      all: All
+      expired: Expired
+      expiring-within-20-days: Expiring within 20 days
+      expiring-within-5-days: Expiring within 5 days
+      feedNotInDeployment: Feed not in deployment
+      feedNotPublished: Feed not published
+      future: Future
+      no-version: No version
+      same-as-deployed: Same as Deployed
+      same-as-published: Same as Published
   FeedSourceViewer:
     deploy: Deploy
     edit: Edit GTFS
@@ -219,6 +264,10 @@ components:
         fetchedAutomatically: Fetched Automatically
         manuallyUploaded: Manually Uploaded
         producedInHouse: Produced In-house
+        producedInHouseGtfsPlus: Produced In-house (GTFS+)
+        regionalMerge: Regional Merge
+        servicePeriodMerge: Service Period Merge
+        versionClone: Version Clone
         title: Retrieval Method
       snapshot: Editor Snapshot
       title: Settings
@@ -239,10 +288,16 @@ components:
     DeleteRecordsTransformation:
       label: Delete records from %tablePlaceholder%
       name: Delete records transformation
+    NormalizeFieldTransformation:
+      filePlaceholder: Choose file/table to normalize
+      label: Normalize field
+      name: Normalize field transformation
     ReplaceFileFromStringTransformation:
+      filePlaceholder: Choose the file/table to replace
       label: Replace %tablePlaceholder% from %filePlaceholder%
       name: Replace file from string transformation
     ReplaceFileFromVersionTransformation:
+      filePlaceholder: Choose the file/table to replace
       label: Replace %tablePlaceholder% from %versionPlaceholder%
       name: Replace file from version transformation
   FeedVersionNavigator:
@@ -439,17 +494,35 @@ components:
     placeholder: Select language...
   Login:
     title: Log in
+  MergeFeedsResult:
+    body:
+      failure: Merge failed with %errorCount% errors.
+      success: Merge was completed successfully. A new version will be processed/validated containing the resulting feed.
+    remappedIds: "Remapped IDs: %remappedIdCount%"
+    skipped: "Skipped records:"
+    skippedTableRecords: "%table%: %skippedCount%"
+    strategyUsed: "Strategy used: %strategy%"
+    tripIdsToCheck: "Trip IDs to check: %tripIdCount%"
+    DEFAULT: Trip IDs were unique in the source feeds. The merged feed was successfully created.
+    CHECK_STOP_TIMES: Some trip IDs were found in both feeds. The merged feed was successfully created.
+    title:
+      failure: 'Warning: Errors encountered during feed merge!'
+      success: 'Feed merge was successful!'
+
   NormalizeStopTimesTip:
     info: "Tip: when changing travel times, consider
     using the 'Normalize stop times' button above to automatically update
     all stop times to the updated travel time."
+  NoteForm:
+    adminOnly: 'Admin only?'
+    new: Post
+    postComment: Post a New Comment
   NotesViewer:
+    adminOnly: 'This message is visible to admins only.'
     all: All Comments
     feedSource: Feed Source
     feedVersion: Version
-    new: Post
     none: No comments.
-    postComment: Post a New Comment
     refresh: Refresh
     title: Comments
   OrganizationList:
@@ -671,7 +744,7 @@ components:
   ShowAllRoutesOnMapFilter:
     fetching: Fetching
     showAllRoutesOnMap: Show all routes
-    tooManyShapeRecords: Too many shapes to display
+    tooManyShapeRecords: large shapes.txt may impact performance
   Sidebar:
     unknown: Unknown
   SnapshotItem:
@@ -764,6 +837,7 @@ components:
   UserList:
     filterByOrg: Filter by org.
     of: of
+    perPage: Users per page
     search: Search by username
     showing: Showing Users
     title: User Management
@@ -773,6 +847,8 @@ components:
     delete: Delete
     deleteConfirm: Are you sure you want to permanently delete this user?
     edit: Edit
+    missingProject: unknown
+    noProjectsFound: No projects
     orgAdmin: Org admin
     save: Save
   UserSettings:

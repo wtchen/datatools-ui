@@ -21,6 +21,7 @@ The OTP user interface is delivered using a plain HTTP file server that does not
 1. From [AWS S3](https://console.aws.amazon.com/s3/home), click `Create Bucket`. Each deployment uses its own bucket.
 2. Specify a name (write down the name for use in Data Tools later).
 3. When specifying options, uncheck `Block All Public Access`.
+Do not grant additional access from the bucket's `Permissions` tab. 
 
 ### Create a CloudFront instance
 

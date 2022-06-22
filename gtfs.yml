@@ -23,6 +23,11 @@
     inputType: LANGUAGE
     columnWidth: 12
     helpContent: "The feed_lang field contains a IETF BCP 47 language code specifying the default language used for the text in this feed. This setting helps GTFS consumers choose capitalization rules and other language-specific settings for the feed. For an introduction to IETF BCP 47, please refer to http://www.rfc-editor.org/rfc/bcp/bcp47.txt and http://www.w3.org/International/articles/language-tags/."
+  - name: "default_lang"
+    required: false
+    inputType: LANGUAGE
+    columnWidth: 12
+    helpContent: "Defines the language used when the data consumer doesn’t know the language of the rider. It's often defined as en, English."
   - name: "feed_start_date"
     required: false
     inputType: DATE
@@ -67,6 +72,16 @@
     inputType: TEXT
     columnWidth: 12
     helpContent: "The feed publisher can specify a string here that indicates the current version of their GTFS feed. GTFS-consuming applications can display this value to help feed publishers determine whether the latest version of their feed has been incorporated."
+  - name: "feed_contact_email"
+    required: false
+    inputType: EMAIL
+    columnWidth: 12
+    helpContent: "Email address for communication regarding the GTFS dataset and data publishing practices."
+  - name: "feed_contact_url"
+    required: false
+    inputType: URL
+    columnWidth: 12
+    helpContent: "URL for contact information, a web-form, support desk, or other tools for communication regarding the GTFS dataset and data publishing practices."
 
 - id: agency
   name: agency.txt
@@ -139,7 +154,7 @@
     columnWidth: 6
     helpContent: "The stop_code field contains short text or a number that uniquely identifies the stop for passengers. Stop codes are often used in phone-based transit information systems or printed on stop signage to make it easier for riders to get a stop schedule or real-time arrival information for a particular stop."
   - name: "stop_name"
-    required: true
+    required: false
     inputType: TEXT
     bulkEditEnabled: true
     columnWidth: 12
@@ -151,12 +166,12 @@
     columnWidth: 12
     helpContent: "The stop_desc field contains a description of a stop. Please provide useful, quality information. Do not simply duplicate the name of the stop."
   - name: "stop_lat"
-    required: true
+    required: false
     inputType: LATITUDE
     columnWidth: 6
     helpContent: "The stop_lat field contains the latitude of a stop or station. The field value must be a valid WGS 84 latitude."
   - name: "stop_lon"
-    required: true
+    required: false
     inputType: LONGITUDE
     columnWidth: 6
     helpContent: "The stop_lon field contains the longitude of a stop or station. The field value must be a valid WGS 84 longitude value from -180 to 180."
@@ -180,8 +195,19 @@
       text: Stop (0)
     - value: '1'
       text: Station (1)
-    columnWidth: 12
+    - value: '2'
+      text: Entrance/Exit (2)
+    - value: '3'
+      text: Generic Node (3)
+    - value: '4'
+      text: Boarding Area (4)
+    columnWidth: 7
     helpContent: "The location_type field identifies whether this stop ID represents a stop or station. If no location type is specified, or the location_type is blank, stop IDs are treated as stops. Stations may have different properties from stops when they are represented on a map or used in trip planning."
+  - name: "platform_code"
+    required: false
+    inputType: TEXT
+    columnWidth: 5
+    helpContent: "Platform identifier for a platform stop (a stop belonging to a station). This should be just the platform identifier (eg. G or 3)."
   - name: "parent_station"
     required: false
     inputType: GTFS_STOP
@@ -271,7 +297,7 @@
     helpContent: 'Contains a description of a route. Please provide useful, quality information. Do not simply duplicate the name of the route. For example, "A trains operate between Inwood-207 St, Manhattan and Far Rockaway-Mott Avenue, Queens at all times. Also from about 6AM until about midnight, additional A trains operate between Inwood-207 St and Lefferts Boulevard (trains typically alternate between Lefferts Blvd and Far Rockaway)."'
   - name: route_type
     required: true
-    inputType: DROPDOWN
+    inputType: GTFS_ROUTE_TYPE
     bulkEditEnabled: true
     options:
     - value: 3
@@ -290,13 +316,193 @@
       text: Gondola
     - value: 7
       text: Funicular
-    columnWidth: 6
+    - value: 11
+      text: Trolleybus
+    - value: 12
+      text: Monorail
+    - value: 100
+      text: Railway Service
+    - value: 101
+      text: High Speed Rail Service
+    - value: 102
+      text: Long Distance Trains
+    - value: 103
+      text: Inter Regional Rail Service
+    - value: 104
+      text: Car Transport Rail Service
+    - value: 105
+      text: Sleeper Rail Service
+    - value: 106
+      text: Regional Rail Service
+    - value: 107
+      text: Tourist Railway Service
+    - value: 108
+      text: Rail Shuttle (Within Complex)
+    - value: 109
+      text: Suburban Railway
+    - value: 110
+      text: Replacement Rail Service
+    - value: 111
+      text: Special Rail Service
+    - value: 112
+      text: Lorry Transport Rail Service
+    - value: 113
+      text: All Rail Services
+    - value: 114
+      text: Cross-Country Rail Service
+    - value: 115
+      text: Vehicle Transport Rail Service
+    - value: 116
+      text: Rack and Pinion Railway
+    - value: 117
+      text: Additional Rail Service
+    - value: 200
+      text: Coach Service
+    - value: 201
+      text: International Coach Service
+    - value: 202
+      text: National Coach Service
+    - value: 203
+      text: Shuttle Coach Service
+    - value: 204
+      text: Regional Coach Service
+    - value: 205
+      text: Special Coach Service
+    - value: 206
+      text: Sightseeing Coach Service
+    - value: 207
+      text: Tourist Coach Service
+    - value: 208
+      text: Commuter Coach Service
+    - value: 209
+      text: All Coach Services
+    - value: 400
+      text: Urban Railway Service
+    - value: 401
+      text: Metro Service
+    - value: 402
+      text: Underground Service
+    - value: 403
+      text: Urban Railway Service
+    - value: 404
+      text: All Urban Railway Services
+    - value: 405
+      text: Monorail
+    - value: 700
+      text: Bus Service
+    - value: 701
+      text: Regional Bus Service
+    - value: 702
+      text: Express Bus Service
+    - value: 703
+      text: Stopping Bus Service
+    - value: 704
+      text: Local Bus Service
+    - value: 705
+      text: Night Bus Service
+    - value: 706
+      text: Post Bus Service
+    - value: 707
+      text: Special Needs Bus
+    - value: 708
+      text: Mobility Bus Service
+    - value: 709
+      text: Mobility Bus for Registered Disabled
+    - value: 710
+      text: Sightseeing Bus
+    - value: 711
+      text: Shuttle Bus
+    - value: 712
+      text: School Bus
+    - value: 713
+      text: School and Public Service Bus
+    - value: 714
+      text: Rail Replacement Bus Service
+    - value: 715
+      text: Demand and Response Bus Service
+    - value: 716
+      text: All Bus Services
+    - value: 900
+      text: Tram Service
+    - value: 901
+      text: City Tram Service
+    - value: 902
+      text: Local Tram Service
+    - value: 903
+      text: Regional Tram Service
+    - value: 904
+      text: Sightseeing Tram Service
+    - value: 905
+      text: Shuttle Tram Service
+    - value: 906
+      text: All Tram Services
+    - value: 1000
+      text: Water Transport Service
+    - value: 1100
+      text: Air Service
+    - value: 1200
+      text: Ferry Service
+    - value: 1300
+      text: Aerial Lift Service
+    - value: 1400
+      text: Funicular Service
+    - value: 1500
+      text: Taxi Service
+    - value: 1501
+      text: Communal Taxi Service
+    - value: 1502
+      text: Water Taxi Service
+    - value: 1503
+      text: Rail Taxi Service
+    - value: 1504
+      text: Bike Taxi Service
+    - value: 1505
+      text: Licensed Taxi Service
+    - value: 1506
+      text: Private Hire Service Vehicle
+    - value: 1507
+      text: All Taxi Services
+    - value: 1700
+      text: Miscellaneous Service
+    - value: 1702
+      text: Horse-drawn Carriage
+    columnWidth: 12
     helpContent: The route_type field describes the type of transportation used on a route. Valid values for this field are...
   - name: route_sort_order
     required: false
     inputType: POSITIVE_INT
     columnWidth: 6
     helpContent: The route_sort_order field can be used to order the routes in a way which is ideal for presentation to customers. It must be a non-negative integer. Routes with smaller route_sort_order values should be displayed before routes with larger route_sort_order values.
+  - name: continuous_pickup
+    required: false
+    inputType: DROPDOWN
+    bulkEditEnabled: true
+    options:
+    - value: 0
+      text: Continuous stopping pickup (0)
+    - value: 1
+      text: No continuous stopping pickup (1)
+    - value: 2
+      text: Must phone an agency to arrange continuous stopping pickup (2)
+    - value: 3
+      text: Must coordinate with a driver to arrange continuous stopping pickup (3)
+    columnWidth: 12
+    helpContent: Indicates whether a rider can board the transit vehicle anywhere along the vehicle’s travel path.
+  - name: continuous_drop_off
+    required: false
+    inputType: DROPDOWN
+    bulkEditEnabled: true
+    options:
+    - value: 0
+      text: Continuous stopping drop-off (0)
+    - value: 1
+      text: No continuous stopping drop-off (1)
+    - value: 2
+      text: Must phone an agency to arrange continuous stopping drop-off (2)
+    - value: 3
+      text: Must coordinate with a driver to arrange continuous stopping drop-off (3)
+    columnWidth: 12
+    helpContent: Indicates whether a rider can alight from the transit vehicle at any point along the vehicle’s travel path.
   - name: route_url
     required: false
     inputType: URL
