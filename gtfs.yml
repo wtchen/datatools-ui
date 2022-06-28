@@ -1168,13 +1168,13 @@
   # TODO: enable validation to match spec (only appear when appropriate)
   - name: "location_group_id"
     required: true
-    inputType: GTFS_ID
+    inputType: TEXT
     columnWidth: 12
     helpContent: "Identifies a location group. A location group is a group of stops or GeoJSON locations that together indicate locations where a rider may request pickup or drop off. "
   # TODO: enable validation to match spec (only appear when appropriate)
   - name: "location_id"
     required: false
-    inputType: GTFS_ID
+    inputType: GTFS_STOP_OR_LOCATION
     columnWidth: 12
     helpContent: "Identifies a stop or location belonging to the location group."
   - name: "location_group_name"
