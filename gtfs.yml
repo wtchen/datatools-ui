@@ -1174,7 +1174,7 @@
   # TODO: enable validation to match spec (only appear when appropriate)
   - name: "location_id"
     required: false
-    inputType: GTFS_STOP_OR_LOCATION
+    inputType: GTFS_STOP_OR_LOCATION_LIST
     columnWidth: 12
     helpContent: "Identifies a stop or location belonging to the location group."
   - name: "location_group_name"
