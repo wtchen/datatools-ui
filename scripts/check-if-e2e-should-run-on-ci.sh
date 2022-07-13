@@ -11,11 +11,22 @@ elif [[ "$GITHUB_REPOSITORY" = "ibi-group/datatools-ui" ]]; then
     echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
     echo 'Will run E2E tests because this is a commit to master or dev'
   fi
-  # Also run e2e tests on automatic dependabot PR branches to dev to facilitate approval of security-related PRs.
-  # We check that the branch ref starts with "dependabot/" (refs are in the format "dependabot/<module>/<package-version>").
-  if [[ $GITHUB_HEAD_REF = dependabot/* ]] && [[ "$GITHUB_BASE_REF_SLUG" = "dev" ]]; then
-    echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
-    echo 'Will run E2E tests because this is an automatic dependabot PR to dev'
+
+  # The following is only for PR activity against dev (not push)
+  if [[ "$GITHUB_BASE_REF_SLUG" = "dev" ]]; then
+    # Also run e2e tests on automatic dependabot PR branches to dev to facilitate approval of security-related PRs.
+    # We check that the branch ref starts with "dependabot/" (refs are in the format "dependabot/<module>/<package-version>").
+    if [[ $GITHUB_HEAD_REF = dependabot/* ]]; then
+      if [[ "$GITHUB_EVENT_NAME" = "pull_request" ]]; then
+        echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
+        echo 'Will run E2E tests because this is an automatic dependabot PR to dev'
+      fi
+    # On non-dependabot PRs, also run e2e tests after a pull request approval or when updating an approved a pull request.
+    # This is to limit the number of e2e runs while ensuring e2e tests pass before merging.
+    elif [[ "$PR_REVIEW_DECISION" = "approved" ]]; then
+      echo "SHOULD_RUN_E2E=true" >> $GITHUB_ENV && export SHOULD_RUN_E2E=true
+      echo 'Will run E2E tests because this PR has been approved'
+    fi
   fi
 fi
 
