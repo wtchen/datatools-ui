@@ -16,4 +16,3 @@ jobs:
         (github.base_ref == 'dev' && startsWith(github.ref_name, 'dependabot/'))
         }}"
       failIfNotE2e: true
-    secrets: inherit

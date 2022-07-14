@@ -9,4 +9,3 @@ jobs:
       # Run e2e tests on pushes to dev and master.
       e2e: ${{ github.ref_name == 'dev' || github.ref_name == 'master' }}
       failIfNotE2e: false
-    secrets: inherit
