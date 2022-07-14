@@ -8,7 +8,8 @@ on:
 jobs:
   pr-e2e-check:
     # Run e2e tests
-    # on pull request approval:
+    # on pull request approval
+    # on pull request review request
     # on commits to:
     # - PRs to master
     # - Approved PRs to dev
@@ -16,6 +17,7 @@ jobs:
     if: "${{
       github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ||
       github.event_name == 'pull_request' && (
+        github.event.action == 'review_requested'
         github.base_ref == 'master' ||
         (github.base_ref == 'dev' && (
           github.event.pull_request.reviewDecision == 'approved' ||
