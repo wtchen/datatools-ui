@@ -1,19 +1,27 @@
 name: PR E2E Checks
 
-on: [pull_request]
-
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, review_requested]
+  pull_request_review:
+    types: [submitted]
 jobs:
-  pull-request-e2e-check:
+  pr-e2e-check:
+    # Run e2e tests
+    # on pull request approval:
+    # on commits to:
+    # - PRs to master
+    # - Approved PRs to dev
+    # - PRs to dev on branches created by dependabot
     if: "${{
-      github.base_ref == 'master' ||
-      (github.base_ref == 'dev' && github.event.pull_request.reviewDecision == 'approved') ||
-      (github.base_ref == 'dev' && startsWith(github.ref_name, 'dependabot/'))
+      github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ||
+      github.event_name == 'pull_request' && (
+        github.base_ref == 'master' ||
+        (github.base_ref == 'dev' && (
+          github.event.pull_request.reviewDecision == 'approved' ||
+          startsWith(github.ref_name, 'dependabot/')
+        ))
       }}"
     uses: ./.github/workflows/node-ci.yml
     with:
-      alwaysRun: false
-      # Run e2e tests on commits to:
-      # - PRs to master
-      # - Approved PRs to dev
-      # - PRs to dev on branches created by dependabot
       e2e: true

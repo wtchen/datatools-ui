@@ -3,16 +3,12 @@ name: Node.js CI
 on:
   workflow_call:
     inputs:
-      alwaysRun:
-        required: true
-        type: boolean
       e2e:
         required: true
         type: boolean
     
 jobs:
   test-build-release:
-    if: ${{ inputs.e2e || inputs.alwaysRun }}
     runs-on: ubuntu-latest
     # Add postgres for end-to-end
     services:
