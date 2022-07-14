@@ -16,7 +16,7 @@ jobs:
     if: ${{ !inputs.e2e && inputs.failIfNotE2e }}
     runs-on: ubuntu-latest
     steps:
-      run: exit 1
+      - run: exit 1
 
   test-build-release:
     if: ${{ inputs.e2e || !inputs.failIfNotE2e }}
