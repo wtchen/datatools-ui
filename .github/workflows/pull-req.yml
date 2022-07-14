@@ -11,12 +11,12 @@ env:
 
 jobs:
   pull-request-e2e-check:
-    if: env.e2e
+    if: ${{ env.e2e }}
     uses: ./.github/workflows/node-ci.yml
     with:
       # Run e2e tests on commits to:
       # - PRs to master
       # - Approved PRs to dev
       # - PRs to dev on branches created by dependabot
-      e2e: env.e2e
+      e2e: ${{ env.e2e }}
       secrets: inherit
