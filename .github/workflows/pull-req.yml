@@ -1,18 +1,22 @@
 name: Commit Checks
 
-on: [push, pull_request]
+on: [pull_request]
+
+env:
+  e2e: "${{ github.event_name == 'pull_request' && (
+    github.base_ref == 'master' ||
+    (github.base_ref == 'dev' && github.event.pull_request.reviewDecision == 'approved') ||
+    (github.base_ref == 'dev' && startsWith(github.ref_name, 'dependabot/'))
+    ) }}"
 
 jobs:
-  pull-request-checks:
+  pull-request-e2e-check:
+    if: env.e2e
     uses: ./.github/workflows/node-ci.yml
     with:
       # Run e2e tests on commits to:
       # - PRs to master
       # - Approved PRs to dev
       # - PRs to dev on branches created by dependabot
-      e2e: "${{ github.event_name == 'pull_request' && (
-        github.base_ref == 'master' ||
-        (github.base_ref == 'dev' && github.event.pull_request.reviewDecision == 'approved') ||
-        (github.base_ref == 'dev' && startsWith(github.ref_name, 'dependabot/'))
-        ) }}"
-    secrets: inherit
+      e2e: env.e2e
+      secrets: inherit
