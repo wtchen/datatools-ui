@@ -3,23 +3,16 @@ name: Node.js CI
 on:
   workflow_call:
     inputs:
-      e2e:
+      alwaysRun:
         required: true
         type: boolean
-      failIfNotE2e:
+      e2e:
         required: true
         type: boolean
     
 jobs:
-  precheck:
-    # Fail the job if e2e is set as required but was set to false
-    if: ${{ !inputs.e2e && inputs.failIfNotE2e }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: exit 1
-
   test-build-release:
-    if: ${{ inputs.e2e || !inputs.failIfNotE2e }}
+    if: ${{ inputs.e2e || inputs.alwaysRun }}
     runs-on: ubuntu-latest
     # Add postgres for end-to-end
     services:

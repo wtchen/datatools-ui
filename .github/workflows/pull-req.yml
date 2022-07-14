@@ -11,9 +11,9 @@ jobs:
       }}"
     uses: ./.github/workflows/node-ci.yml
     with:
+      alwaysRun: false
       # Run e2e tests on commits to:
       # - PRs to master
       # - Approved PRs to dev
       # - PRs to dev on branches created by dependabot
       e2e: true
-      failIfNotE2e: true
