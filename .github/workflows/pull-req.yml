@@ -21,6 +21,7 @@ jobs:
           github.event.pull_request.reviewDecision == 'approved' ||
           startsWith(github.ref_name, 'dependabot/')
         ))
+      )
       }}"
     uses: ./.github/workflows/node-ci.yml
     with:
