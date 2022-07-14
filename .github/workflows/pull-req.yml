@@ -1,10 +1,10 @@
-name: Pull Request Checks
+name: Commit Checks
 
 on: [push, pull_request]
 
 jobs:
   pull-request-checks:
-    uses: ./.github/workflows/node-ci
+    uses: ./.github/workflows/node-ci.yml
     with:
       # Run e2e tests on:
       # - All commits to PRs to master

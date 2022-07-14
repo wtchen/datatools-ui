@@ -7,7 +7,7 @@ on:
 jobs:
   approval-checks:
     if: github.event.review.state == 'approved'
-    uses: ./.github/workflows/node-ci
+    uses: ./.github/workflows/node-ci.yml
     with:
       e2e: true
     secrets: inherit
