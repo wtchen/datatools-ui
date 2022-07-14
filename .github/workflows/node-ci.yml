@@ -15,8 +15,8 @@ jobs:
     # Fail the job if e2e is set as required but was set to false
     if: ${{ !inputs.e2e && inputs.failIfNotE2e }}
     runs-on: ubuntu-latest
-      steps:
-        run: exit 1
+    steps:
+      run: exit 1
 
   test-build-release:
     if: ${{ inputs.e2e || !inputs.failIfNotE2e }}
