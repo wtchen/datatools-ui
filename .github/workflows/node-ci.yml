@@ -44,9 +44,6 @@ jobs:
           node-version: 12.x
       - name: Install npm/yarn packages using cache
         uses: bahmutov/npm-install@v1
-      # Inject slug vars, so that we can reference $GITHUB_HEAD_REF_SLUG for branch name
-      - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
       - name: Lint code
         run: yarn lint
       - name: Lint messages
