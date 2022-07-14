@@ -33,7 +33,7 @@ jobs:
           --health-retries 5
     steps:
       # Fail the job if e2e is set as required but was set to false
-      - if: !inputs.e2e && inputs.failIfNotE2e
+      - if: ${{ !inputs.e2e && inputs.failIfNotE2e }}
         run: exit 1
       - uses: actions/checkout@v2
       # install python 3.x in order to have mkdocs properly installed
