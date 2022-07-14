@@ -1,0 +1,18 @@
+name: Pull Request Checks
+
+on: [push, pull_request]
+
+jobs:
+  pull-request-checks:
+    uses: ./.github/workflows/node-ci
+    with:
+      # Run e2e tests on:
+      # - All commits to PRs to master
+      # - All commits to approved PRs to dev
+      # - All commits to PR to dev on branches created by dependabot
+      e2e: ${{ > github.event.pull_request && (
+        github.base_ref == 'master' ||
+        (github.base_ref == 'dev' && github.event.pull_request.reviewDecision == 'approved') ||
+        (github.base_ref == 'dev' && startsWith(github.ref_name, 'dependabot/')
+        ) }}
+    secrets: inherit
