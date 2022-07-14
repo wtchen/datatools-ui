@@ -11,8 +11,15 @@ on:
         type: boolean
     
 jobs:
-  test-build-release:
+  precheck:
+    # Fail the job if e2e is set as required but was set to false
+    if: ${{ !inputs.e2e && inputs.failIfNotE2e }}
+    runs-on: ubuntu-latest
+      steps:
+        run: exit 1
 
+  test-build-release:
+    if: ${{ inputs.e2e || !inputs.failIfNotE2e }}
     runs-on: ubuntu-latest
     # Add postgres for end-to-end
     services:
@@ -32,9 +39,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      # Fail the job if e2e is set as required but was set to false
-      - if: ${{ !inputs.e2e && inputs.failIfNotE2e }}
-        run: exit 1
       - uses: actions/checkout@v2
       # install python 3.x in order to have mkdocs properly installed
       - uses: actions/setup-python@v2
