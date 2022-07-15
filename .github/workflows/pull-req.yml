@@ -25,9 +25,7 @@ jobs:
         ))
       )
       }}"
-    # HACK: For pull request review submittals, use full workflow path.
-    # See https://github.com/github-community/community/discussions/14306#discussioncomment-2635181
-    uses: ibi-group/datatools-ui/.github/workflows/node-ci.yml
+    uses: ./.github/workflows/node-ci.yml
     with:
       e2e: true
     secrets: inherit
