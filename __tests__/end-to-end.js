@@ -2027,7 +2027,7 @@ describe('end-to-end', () => {
     describe('exceptions', () => {
       makeEditorEntityTest('should create exception', async () => {
         // open exception sidebar
-        await click('[data-test-id="exception-tab-button"]')
+        await waitForAndClick('[data-test-id="exception-tab-button"]')
 
         // wait for exception sidebar form to appear and click button to open
         // form to create exception
