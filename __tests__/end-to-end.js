@@ -2341,7 +2341,7 @@ describe('end-to-end', () => {
         'should create pattern',
         async () => {
           // open route sidebar
-          await click('[data-test-id="editor-route-nav-button"]')
+          await waitForAndClick('[data-test-id="editor-route-nav-button"]')
 
           // wait for route sidebar form to appear and select first route
           await waitForAndClick('.entity-list-row')
