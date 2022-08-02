@@ -7,13 +7,13 @@ on:
     types: [submitted]
 jobs:
   pr-e2e-check:
-    # Run e2e tests
-    # on pull request approval
-    # on pull request review request
-    # on commits to:
-    # - PRs to master
-    # - Approved PRs to dev
-    # - PRs to dev on branches created by dependabot
+    # Run e2e tests:
+    # - on pull request approval
+    # - on pull request review request
+    # - on commits to:
+    #   * PRs to master
+    #   * Approved PRs to dev
+    #   * PRs to dev on branches created by dependabot
     if: "${{
       github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ||
       github.event_name == 'pull_request' && (
