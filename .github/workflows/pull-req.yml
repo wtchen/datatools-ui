@@ -6,6 +6,12 @@ on:
   pull_request_review:
     types: [submitted]
 jobs:
+  pr-e2e-precheck:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "github.event.name: ${{ github.event_name }}"     
+      - run: echo "github.event.pull_request.reviewDecision: ${{ github.event.pull_request.reviewDecision }}"     
+  
   pr-e2e-check:
     # Run e2e tests:
     # - on pull request approval
