@@ -9,8 +9,10 @@ jobs:
   pr-e2e-precheck:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "github.ref_name = ${{ github.ref_name }}"     
       - run: echo "github.event.name = ${{ github.event_name }}"     
-      - run: echo "github.event.pull_request.reviewDecision = ${{ github.event.pull_request.reviewDecision }}"     
+      - run: echo "github.event.pull_request.reviewDecision = ${{ github.event.pull_request.reviewDecision }}"
+      - run: echo "github.event.review.state = ${{ github.event.review.state }}" 
   
   pr-e2e-check:
     # Run e2e tests:
