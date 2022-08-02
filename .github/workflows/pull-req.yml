@@ -2,9 +2,7 @@ name: PR E2E Checks
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, review_requested]
-  pull_request_review:
-    types: [submitted]
+    types: [opened, synchronize, reopened, ready_for_review]
 jobs:
   pr-e2e-precheck:
     runs-on: ubuntu-latest
@@ -12,23 +10,21 @@ jobs:
       - run: echo "github.base_ref = ${{ github.base_ref }}"
       - run: echo "github.head_ref = ${{ github.head_ref }}"
       - run: echo "github.event.name = ${{ github.event_name }}"
-      - run: echo "github.event.review.state = ${{ github.event.review.state }}"
+      - run: echo "github.event.pull_request.draft = ${{ github.event.pull_request.draft }}"
   
   pr-e2e-check:
     # Run e2e tests:
-    # - on pull request approval
-    # - on pull request review request
+    # - on pull request changed from draft to ready-for-review
     # - on commits to:
     #   * PRs to master
-    #   * Approved PRs to dev
+    #   * PRs to dev that are not draft
     #   * PRs to dev on branches created by dependabot
     if: "${{
-      github.event_name == 'pull_request_review' && github.event.review.state == 'approved' ||
       github.event_name == 'pull_request' && (
         github.event.action == 'review_requested' ||
         github.base_ref == 'master' ||
         (github.base_ref == 'dev' && (
-          github.event.pull_request.reviewDecision == 'approved' ||
+          github.event.pull_request.draft == false ||
           startsWith(github.head_ref, 'dependabot/')
         ))
       )
