@@ -9,12 +9,10 @@ jobs:
   pr-e2e-precheck:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "github.base_ref = {{ github.base_ref }}"
-      - run: echo "github.ref_name = ${{ github.ref_name }}"     
-      - run: echo "github.head_ref = ${{ github.head_ref }}"     
-      - run: echo "github.event.name = ${{ github.event_name }}"     
-      - run: echo "github.event.pull_request.reviewDecision = ${{ github.event.pull_request.reviewDecision }}"
-      - run: echo "github.event.review.state = ${{ github.event.review.state }}" 
+      - run: echo "github.base_ref = ${{ github.base_ref }}"
+      - run: echo "github.head_ref = ${{ github.head_ref }}"
+      - run: echo "github.event.name = ${{ github.event_name }}"
+      - run: echo "github.event.review.state = ${{ github.event.review.state }}"
   
   pr-e2e-check:
     # Run e2e tests:
@@ -31,7 +29,7 @@ jobs:
         github.base_ref == 'master' ||
         (github.base_ref == 'dev' && (
           github.event.pull_request.reviewDecision == 'approved' ||
-          startsWith(github.ref_name, 'dependabot/')
+          startsWith(github.head_ref, 'dependabot/')
         ))
       )
       }}"
