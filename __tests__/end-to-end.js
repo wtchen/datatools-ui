@@ -2372,7 +2372,7 @@ describe('end-to-end', () => {
           await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
           await wait(500, 'for 2nd stop to be selected')
           await click('[data-test-id="add-pattern-stop-button"]')
-          await wait(2000, 'for auto-save to happen')
+          await wait(4000, 'for auto-save to happen')
 
           // reload to make sure stuff was saved
           await page.reload({ waitUntil: 'networkidle0' })
