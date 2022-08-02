@@ -4,14 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 jobs:
-  pr-e2e-precheck:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "github.base_ref = ${{ github.base_ref }}"
-      - run: echo "github.head_ref = ${{ github.head_ref }}"
-      - run: echo "github.event.name = ${{ github.event_name }}"
-      - run: echo "github.event.pull_request.draft = ${{ github.event.pull_request.draft }}"
-  
   pr-e2e-check:
     # Run e2e tests:
     # - on pull request changed from draft to ready-for-review
