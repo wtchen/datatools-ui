@@ -33,6 +33,7 @@
     "test-end-to-end": "mastarm test --run-in-band --test-path-ignore-patterns \"lib __tests__/test-utils\" --test-environment ./__tests__/test-utils/e2e-environment.js --jest-cli-args=\"--json --outputFile e2e-test-results/results.json\""
   },
   "dependencies": {
+    "@auth0/auth0-react": "^1.10.2",
     "@conveyal/lonlat": "^1.3.0",
     "@conveyal/woonerf": "^4.2.1",
     "@turf/along": "^5.1.5",
@@ -72,9 +73,9 @@
     "react-addons-shallow-compare": "^15.4.1",
     "react-addons-update": "^15.6.3",
     "react-bootstrap": "0.32.3",
+    "react-bootstrap-datetimepicker": "ibi-group/react-bootstrap-datetimepicker#bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99",
     "react-bootstrap-table": "^4.3.1",
     "react-color": "^2.3.4",
-    "react-bootstrap-datetimepicker": "ibi-group/react-bootstrap-datetimepicker#bb3054c6dcccbb6b7009d9cc4a2f3b80d4830c99",
     "react-dnd": "^2.1.4",
     "react-dnd-html5-backend": "^2.1.2",
     "react-dom": "^17.0.2",
