@@ -455,7 +455,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                   }
                 }
                 expanded={true}
-                fetchAppInfo={[Function]}
                 hideTutorial={false}
                 jobMonitor={
                   Object {
@@ -467,7 +466,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                 }
                 logout={[Function]}
                 removeRetiredJob={[Function]}
-                revokeToken={[Function]}
                 setJobMonitorVisible={[Function]}
                 startJobMonitor={[Function]}
                 user={
