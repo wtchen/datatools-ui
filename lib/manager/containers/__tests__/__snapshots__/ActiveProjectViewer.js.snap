@@ -357,42 +357,49 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
               />
             </Modal>
           </SelectFileModal>
-          <Connect(StatusModal)>
-            <StatusModal
-              clearStatusModal={[Function]}
-              removeEditorLock={[Function]}
+          <WithAuth>
+            <Connect(StatusModal)
+              auth0={
+                Object {
+                  "buildAuthorizeUrl": [Function],
+                  "buildLogoutUrl": [Function],
+                  "getAccessTokenSilently": [Function],
+                  "getAccessTokenWithPopup": [Function],
+                  "getIdTokenClaims": [Function],
+                  "handleRedirectCallback": [Function],
+                  "isAuthenticated": false,
+                  "isLoading": true,
+                  "loginWithPopup": [Function],
+                  "loginWithRedirect": [Function],
+                  "logout": [Function],
+                }
+              }
             >
-              <Modal
-                animation={true}
-                autoFocus={true}
-                backdrop={true}
-                bsClass="modal"
-                dialogComponentClass={[Function]}
-                enforceFocus={true}
-                keyboard={true}
-                manager={
-                  ModalManager {
-                    "add": [Function],
-                    "containers": Array [],
-                    "data": Array [],
-                    "handleContainerOverflow": true,
-                    "hideSiblingNodes": true,
-                    "isTopModal": [Function],
-                    "modals": Array [],
-                    "remove": [Function],
+              <StatusModal
+                auth0={
+                  Object {
+                    "buildAuthorizeUrl": [Function],
+                    "buildLogoutUrl": [Function],
+                    "getAccessTokenSilently": [Function],
+                    "getAccessTokenWithPopup": [Function],
+                    "getIdTokenClaims": [Function],
+                    "handleRedirectCallback": [Function],
+                    "isAuthenticated": false,
+                    "isLoading": true,
+                    "loginWithPopup": [Function],
+                    "loginWithRedirect": [Function],
+                    "logout": [Function],
                   }
                 }
-                onHide={[Function]}
-                renderBackdrop={[Function]}
-                restoreFocus={true}
-                show={false}
+                clearStatusModal={[Function]}
+                removeEditorLock={[Function]}
               >
                 <Modal
+                  animation={true}
                   autoFocus={true}
                   backdrop={true}
-                  backdropClassName="modal-backdrop"
-                  backdropTransition={[Function]}
-                  containerClassName="modal-open"
+                  bsClass="modal"
+                  dialogComponentClass={[Function]}
                   enforceFocus={true}
                   keyboard={true}
                   manager={
@@ -407,17 +414,43 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                       "remove": [Function],
                     }
                   }
-                  onEntering={[Function]}
-                  onExited={[Function]}
                   onHide={[Function]}
                   renderBackdrop={[Function]}
                   restoreFocus={true}
                   show={false}
-                  transition={[Function]}
-                />
-              </Modal>
-            </StatusModal>
-          </Connect(StatusModal)>
+                >
+                  <Modal
+                    autoFocus={true}
+                    backdrop={true}
+                    backdropClassName="modal-backdrop"
+                    backdropTransition={[Function]}
+                    containerClassName="modal-open"
+                    enforceFocus={true}
+                    keyboard={true}
+                    manager={
+                      ModalManager {
+                        "add": [Function],
+                        "containers": Array [],
+                        "data": Array [],
+                        "handleContainerOverflow": true,
+                        "hideSiblingNodes": true,
+                        "isTopModal": [Function],
+                        "modals": Array [],
+                        "remove": [Function],
+                      }
+                    }
+                    onEntering={[Function]}
+                    onExited={[Function]}
+                    onHide={[Function]}
+                    renderBackdrop={[Function]}
+                    restoreFocus={true}
+                    show={false}
+                    transition={[Function]}
+                  />
+                </Modal>
+              </StatusModal>
+            </Connect(StatusModal)>
+          </WithAuth>
           <WithAuth>
             <Connect(Sidebar)
               auth0={
