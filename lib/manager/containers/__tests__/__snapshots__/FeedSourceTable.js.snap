@@ -575,7 +575,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             },
           },
           "recentActivity": null,
-          "redirectOnSuccess": null,
           "subscriptions": UserSubscriptions {
             "subscriptionLookup": Object {},
           },
@@ -1103,7 +1102,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               },
                             },
                             "recentActivity": null,
-                            "redirectOnSuccess": null,
                             "subscriptions": UserSubscriptions {
                               "subscriptionLookup": Object {},
                             },
@@ -3496,7 +3494,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               },
                             },
                             "recentActivity": null,
-                            "redirectOnSuccess": null,
                             "subscriptions": UserSubscriptions {
                               "subscriptionLookup": Object {},
                             },
@@ -3819,7 +3816,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     },
                                   },
                                   "recentActivity": null,
-                                  "redirectOnSuccess": null,
                                   "subscriptions": UserSubscriptions {
                                     "subscriptionLookup": Object {},
                                   },
@@ -4636,7 +4632,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     },
                                   },
                                   "recentActivity": null,
-                                  "redirectOnSuccess": null,
                                   "subscriptions": UserSubscriptions {
                                     "subscriptionLookup": Object {},
                                   },

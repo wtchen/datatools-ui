@@ -158,7 +158,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
             },
           },
           "recentActivity": null,
-          "redirectOnSuccess": null,
           "subscriptions": UserSubscriptions {
             "subscriptionLookup": Object {},
           },
@@ -533,7 +532,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                       },
                     },
                     "recentActivity": null,
-                    "redirectOnSuccess": null,
                     "subscriptions": UserSubscriptions {
                       "subscriptionLookup": Object {},
                     },
@@ -1278,7 +1276,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                   },
                                 },
                                 "recentActivity": null,
-                                "redirectOnSuccess": null,
                                 "subscriptions": UserSubscriptions {
                                   "subscriptionLookup": Object {},
                                 },
@@ -2115,7 +2112,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                               },
                                                             },
                                                             "recentActivity": null,
-                                                            "redirectOnSuccess": null,
                                                             "subscriptions": UserSubscriptions {
                                                               "subscriptionLookup": Object {},
                                                             },
@@ -2330,7 +2326,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                 },
                                                                               },
                                                                               "recentActivity": null,
-                                                                              "redirectOnSuccess": null,
                                                                               "subscriptions": UserSubscriptions {
                                                                                 "subscriptionLookup": Object {},
                                                                               },
@@ -4458,7 +4453,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                             },
                                                           },
                                                           "recentActivity": null,
-                                                          "redirectOnSuccess": null,
                                                           "subscriptions": UserSubscriptions {
                                                             "subscriptionLookup": Object {},
                                                           },
