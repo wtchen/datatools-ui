@@ -282,7 +282,7 @@ td.feed-source-info {
 }
 
 /* Exception date range date picker */
-.entity-details-body .input-group.date .input-group-addon {
+.exception-date-picker .input-group.date .input-group-addon {
   padding: 6px 4px;
 }
 
