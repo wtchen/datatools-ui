@@ -9,11 +9,12 @@ import md5File from 'md5-file/promise'
 import moment from 'moment'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
+import puppeteer from 'puppeteer'
 
 import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
 
 // not imported because of weird flow error
-const puppeteer = require('puppeteer')
+// const puppeteer = require('puppeteer')
 
 // if the ISOLATED_TEST is defined, only the specifed test (and any dependet
 // tests) will be ran and all others will be skipped.
@@ -42,6 +43,7 @@ let config: {
 }
 let browser
 let page
+let cdpSession
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
 const OTP_ROOT = 'http://localhost:8080/otp/routers/'
 const testTime = moment().format()
@@ -685,7 +687,7 @@ async function waitForAndClick (selector: string, waitOptions?: any) {
  */
 async function wait (milliseconds: number, reason?: string) {
   log.info(`waiting ${milliseconds} ms${reason ? ` ${reason}` : ''}...`)
-  await page.waitFor(milliseconds)
+  await page.waitForTimeout(milliseconds)
 }
 
 /**
@@ -814,6 +816,7 @@ describe('end-to-end', () => {
     log.info('Launching chromium for testing...')
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
+    cdpSession = await page.target().createCDPSession()
 
     // setup listeners for various events that happen in the browser. In each of
     // the following instances, write to the browser events log that will be
@@ -838,7 +841,7 @@ describe('end-to-end', () => {
     })
 
     // set the default download behavior to download files to the cwd
-    page._client.send(
+    cdpSession.send(
       'Page.setDownloadBehavior',
       { behavior: 'allow', downloadPath: './' }
     )
