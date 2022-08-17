@@ -18,6 +18,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
     expanded={true}
     project={
       Object {
+        "autoDeploy": false,
+        "autoDeployTypes": Array [],
+        "autoDeployWithCriticalErrors": false,
         "autoFetchFeeds": true,
         "autoFetchHour": 0,
         "autoFetchMinute": 0,
@@ -48,6 +51,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                   "externalProperties": Object {},
                   "id": "mock-feed-with-version-id",
                   "isPublic": false,
+                  "labelIds": Array [],
                   "lastFetched": 1543389038810,
                   "lastUpdated": 1543389038810,
                   "latestValidation": Object {
@@ -80,8 +84,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                   "retrievalMethod": "MANUALLY_UPLOADED",
                   "s3Url": null,
                   "snapshotVersion": null,
+                  "transformRules": Array [],
                   "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                   "user": null,
+                  "versionCount": 1,
                 },
                 "id": "mock-feed-version-id",
                 "nextVersionId": null,
@@ -121,6 +127,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasCsvFiles": Array [],
+            "peliasResetDb": null,
+            "peliasUpdate": null,
+            "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
               "east": 0,
               "north": 0,
@@ -128,10 +138,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "west": 0,
             },
             "projectId": "mock-project-with-deployments-id",
-            "r5": false,
-            "r5Version": null,
             "routerId": null,
             "skipOsmExtract": false,
+            "tripPlannerVersion": "OTP_1",
             "user": null,
           },
           Object {
@@ -153,6 +162,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "osmExtractUrl": null,
             "otpCommit": null,
             "otpVersion": null,
+            "peliasCsvFiles": Array [],
+            "peliasResetDb": null,
+            "peliasUpdate": null,
+            "pinnedfeedVersionIds": Array [],
             "projectBounds": Object {
               "east": 0,
               "north": 0,
@@ -160,10 +173,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "west": 0,
             },
             "projectId": "mock-project-with-deployments-id",
-            "r5": false,
-            "r5Version": null,
             "routerId": null,
             "skipOsmExtract": false,
+            "tripPlannerVersion": "OTP_1",
             "user": null,
           },
         ],
@@ -175,6 +187,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "externalProperties": Object {},
             "id": "mock-feed-with-version-id",
             "isPublic": false,
+            "labelIds": Array [],
             "lastFetched": 1543389038810,
             "lastUpdated": 1543389038810,
             "latestValidation": Object {
@@ -207,15 +220,19 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
             "retrievalMethod": "MANUALLY_UPLOADED",
             "s3Url": null,
             "snapshotVersion": null,
+            "transformRules": Array [],
             "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
             "user": null,
+            "versionCount": 1,
           },
         ],
         "id": "mock-project-with-deployments-id",
+        "labels": Array [],
         "lastUpdated": 1553236399556,
         "name": "mock-project-with-deployments",
         "organizationId": null,
         "otpServers": Array [],
+        "peliasWebhookUrl": null,
         "pinnedDeploymentId": "mock-deployment-id-0",
         "routerConfig": Object {
           "carDropoffTime": null,
@@ -235,10 +252,11 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
       createDeployment={[Function]}
       deleteDeployment={[Function]}
       expanded={true}
-      fetchProjectDeployments={[Function]}
-      fetchProjectFeeds={[Function]}
       project={
         Object {
+          "autoDeploy": false,
+          "autoDeployTypes": Array [],
+          "autoDeployWithCriticalErrors": false,
           "autoFetchFeeds": true,
           "autoFetchHour": 0,
           "autoFetchMinute": 0,
@@ -269,6 +287,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     "externalProperties": Object {},
                     "id": "mock-feed-with-version-id",
                     "isPublic": false,
+                    "labelIds": Array [],
                     "lastFetched": 1543389038810,
                     "lastUpdated": 1543389038810,
                     "latestValidation": Object {
@@ -301,8 +320,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     "retrievalMethod": "MANUALLY_UPLOADED",
                     "s3Url": null,
                     "snapshotVersion": null,
+                    "transformRules": Array [],
                     "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                     "user": null,
+                    "versionCount": 1,
                   },
                   "id": "mock-feed-version-id",
                   "nextVersionId": null,
@@ -342,6 +363,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasCsvFiles": Array [],
+              "peliasResetDb": null,
+              "peliasUpdate": null,
+              "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
                 "east": 0,
                 "north": 0,
@@ -349,10 +374,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                 "west": 0,
               },
               "projectId": "mock-project-with-deployments-id",
-              "r5": false,
-              "r5Version": null,
               "routerId": null,
               "skipOsmExtract": false,
+              "tripPlannerVersion": "OTP_1",
               "user": null,
             },
             Object {
@@ -374,6 +398,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "osmExtractUrl": null,
               "otpCommit": null,
               "otpVersion": null,
+              "peliasCsvFiles": Array [],
+              "peliasResetDb": null,
+              "peliasUpdate": null,
+              "pinnedfeedVersionIds": Array [],
               "projectBounds": Object {
                 "east": 0,
                 "north": 0,
@@ -381,10 +409,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                 "west": 0,
               },
               "projectId": "mock-project-with-deployments-id",
-              "r5": false,
-              "r5Version": null,
               "routerId": null,
               "skipOsmExtract": false,
+              "tripPlannerVersion": "OTP_1",
               "user": null,
             },
           ],
@@ -396,6 +423,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "externalProperties": Object {},
               "id": "mock-feed-with-version-id",
               "isPublic": false,
+              "labelIds": Array [],
               "lastFetched": 1543389038810,
               "lastUpdated": 1543389038810,
               "latestValidation": Object {
@@ -428,15 +456,19 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
               "retrievalMethod": "MANUALLY_UPLOADED",
               "s3Url": null,
               "snapshotVersion": null,
+              "transformRules": Array [],
               "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
               "user": null,
+              "versionCount": 1,
             },
           ],
           "id": "mock-project-with-deployments-id",
+          "labels": Array [],
           "lastUpdated": 1553236399556,
           "name": "mock-project-with-deployments",
           "organizationId": null,
           "otpServers": Array [],
+          "peliasWebhookUrl": null,
           "pinnedDeploymentId": "mock-deployment-id-0",
           "routerConfig": Object {
             "carDropoffTime": null,
@@ -515,18 +547,168 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
           <Col
             bsClass="col"
             componentClass="div"
-            xs={9}
+            md={9}
+            sm={12}
           >
             <div
-              className="col-xs-9"
+              className="col-md-9 col-sm-12"
             >
               <DeploymentsList
                 createDeployment={[Function]}
                 deleteDeployment={[Function]}
-                fetchProjectDeployments={[Function]}
-                fetchProjectFeeds={[Function]}
+                deployments={
+                  Array [
+                    Object {
+                      "customBuildConfig": null,
+                      "customRouterConfig": null,
+                      "dateCreated": 1553292345720,
+                      "deployJobSummaries": Array [],
+                      "deployedTo": null,
+                      "ec2Instances": Array [],
+                      "feedSourceId": null,
+                      "feedVersions": Array [
+                        Object {
+                          "feedSource": Object {
+                            "dateCreated": 1536195264564,
+                            "deployable": false,
+                            "editorNamespace": "gzek_ztquwiwjmselpeswgbsrre",
+                            "externalProperties": Object {},
+                            "id": "mock-feed-with-version-id",
+                            "isPublic": false,
+                            "labelIds": Array [],
+                            "lastFetched": 1543389038810,
+                            "lastUpdated": 1543389038810,
+                            "latestValidation": Object {
+                              "agencies": null,
+                              "agencyCount": 1,
+                              "avgDailyRevenueTime": 0,
+                              "bounds": Object {
+                                "east": -76.481211,
+                                "north": 39.0486949672717,
+                                "south": 38.92884,
+                                "west": -76.5673055566884,
+                              },
+                              "endDate": "20190801",
+                              "errorCount": 78,
+                              "feedVersionId": "mock-feed-version-id",
+                              "loadFailureReason": null,
+                              "loadStatus": "SUCCESS",
+                              "routeCount": 10,
+                              "startDate": "20180801",
+                              "stopCount": 237,
+                              "stopTimesCount": 11170,
+                              "tripCount": 415,
+                            },
+                            "latestVersionId": "mock-feed-version-id",
+                            "name": "test feed with a version",
+                            "noteCount": 0,
+                            "organizationId": null,
+                            "projectId": "mock-project-id",
+                            "publishedVersionId": null,
+                            "retrievalMethod": "MANUALLY_UPLOADED",
+                            "s3Url": null,
+                            "snapshotVersion": null,
+                            "transformRules": Array [],
+                            "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
+                            "user": null,
+                            "versionCount": 1,
+                          },
+                          "id": "mock-feed-version-id",
+                          "nextVersionId": null,
+                          "previousVersionId": null,
+                          "updated": 1543389038810,
+                          "validationResult": Object {
+                            "agencies": null,
+                            "agencyCount": 1,
+                            "avgDailyRevenueTime": 0,
+                            "bounds": Object {
+                              "east": -76.481211,
+                              "north": 39.0486949672717,
+                              "south": 38.92884,
+                              "west": -76.5673055566884,
+                            },
+                            "endDate": "20190801",
+                            "errorCount": 78,
+                            "feedVersionId": "mock-feed-version-id",
+                            "loadFailureReason": null,
+                            "loadStatus": "SUCCESS",
+                            "routeCount": 10,
+                            "startDate": "20180801",
+                            "stopCount": 237,
+                            "stopTimesCount": 11170,
+                            "tripCount": 415,
+                          },
+                          "version": 1,
+                        },
+                      ],
+                      "id": "mock-deployment-id-0",
+                      "invalidFeedSources": Array [],
+                      "lastDeployed": null,
+                      "lastUpdated": 1553292345726,
+                      "latest": null,
+                      "name": "mock-deployment",
+                      "organizationId": null,
+                      "osmExtractUrl": null,
+                      "otpCommit": null,
+                      "otpVersion": null,
+                      "peliasCsvFiles": Array [],
+                      "peliasResetDb": null,
+                      "peliasUpdate": null,
+                      "pinnedfeedVersionIds": Array [],
+                      "projectBounds": Object {
+                        "east": 0,
+                        "north": 0,
+                        "south": 0,
+                        "west": 0,
+                      },
+                      "projectId": "mock-project-with-deployments-id",
+                      "routerId": null,
+                      "skipOsmExtract": false,
+                      "tripPlannerVersion": "OTP_1",
+                      "user": null,
+                    },
+                    Object {
+                      "customBuildConfig": null,
+                      "customRouterConfig": null,
+                      "dateCreated": 1553292345720,
+                      "deployJobSummaries": Array [],
+                      "deployedTo": null,
+                      "ec2Instances": Array [],
+                      "feedSourceId": null,
+                      "feedVersions": Array [],
+                      "id": "mock-deployment-id-1",
+                      "invalidFeedSources": Array [],
+                      "lastDeployed": null,
+                      "lastUpdated": 1553292345726,
+                      "latest": null,
+                      "name": "mock-deployment",
+                      "organizationId": null,
+                      "osmExtractUrl": null,
+                      "otpCommit": null,
+                      "otpVersion": null,
+                      "peliasCsvFiles": Array [],
+                      "peliasResetDb": null,
+                      "peliasUpdate": null,
+                      "pinnedfeedVersionIds": Array [],
+                      "projectBounds": Object {
+                        "east": 0,
+                        "north": 0,
+                        "south": 0,
+                        "west": 0,
+                      },
+                      "projectId": "mock-project-with-deployments-id",
+                      "routerId": null,
+                      "skipOsmExtract": false,
+                      "tripPlannerVersion": "OTP_1",
+                      "user": null,
+                    },
+                  ]
+                }
                 project={
                   Object {
+                    "autoDeploy": false,
+                    "autoDeployTypes": Array [],
+                    "autoDeployWithCriticalErrors": false,
                     "autoFetchFeeds": true,
                     "autoFetchHour": 0,
                     "autoFetchMinute": 0,
@@ -557,6 +739,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               "externalProperties": Object {},
                               "id": "mock-feed-with-version-id",
                               "isPublic": false,
+                              "labelIds": Array [],
                               "lastFetched": 1543389038810,
                               "lastUpdated": 1543389038810,
                               "latestValidation": Object {
@@ -589,8 +772,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               "retrievalMethod": "MANUALLY_UPLOADED",
                               "s3Url": null,
                               "snapshotVersion": null,
+                              "transformRules": Array [],
                               "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                               "user": null,
+                              "versionCount": 1,
                             },
                             "id": "mock-feed-version-id",
                             "nextVersionId": null,
@@ -630,6 +815,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasCsvFiles": Array [],
+                        "peliasResetDb": null,
+                        "peliasUpdate": null,
+                        "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
                           "east": 0,
                           "north": 0,
@@ -637,10 +826,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                           "west": 0,
                         },
                         "projectId": "mock-project-with-deployments-id",
-                        "r5": false,
-                        "r5Version": null,
                         "routerId": null,
                         "skipOsmExtract": false,
+                        "tripPlannerVersion": "OTP_1",
                         "user": null,
                       },
                       Object {
@@ -662,6 +850,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "osmExtractUrl": null,
                         "otpCommit": null,
                         "otpVersion": null,
+                        "peliasCsvFiles": Array [],
+                        "peliasResetDb": null,
+                        "peliasUpdate": null,
+                        "pinnedfeedVersionIds": Array [],
                         "projectBounds": Object {
                           "east": 0,
                           "north": 0,
@@ -669,10 +861,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                           "west": 0,
                         },
                         "projectId": "mock-project-with-deployments-id",
-                        "r5": false,
-                        "r5Version": null,
                         "routerId": null,
                         "skipOsmExtract": false,
+                        "tripPlannerVersion": "OTP_1",
                         "user": null,
                       },
                     ],
@@ -684,6 +875,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "externalProperties": Object {},
                         "id": "mock-feed-with-version-id",
                         "isPublic": false,
+                        "labelIds": Array [],
                         "lastFetched": 1543389038810,
                         "lastUpdated": 1543389038810,
                         "latestValidation": Object {
@@ -716,15 +908,19 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         "retrievalMethod": "MANUALLY_UPLOADED",
                         "s3Url": null,
                         "snapshotVersion": null,
+                        "transformRules": Array [],
                         "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                         "user": null,
+                        "versionCount": 1,
                       },
                     ],
                     "id": "mock-project-with-deployments-id",
+                    "labels": Array [],
                     "lastUpdated": 1553236399556,
                     "name": "mock-project-with-deployments",
                     "organizationId": null,
                     "otpServers": Array [],
+                    "peliasWebhookUrl": null,
                     "pinnedDeploymentId": "mock-deployment-id-0",
                     "routerConfig": Object {
                       "carDropoffTime": null,
@@ -740,7 +936,6 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                 }
                 saveDeployment={[Function]}
                 updateDeployment={[Function]}
-                updateProject={[Function]}
               >
                 <Panel
                   bsClass="panel"
@@ -903,7 +1098,6 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                         </thead>
                         <tbody>
                           <DeploymentListItem
-                            createDeployment={[Function]}
                             deleteDeployment={[Function]}
                             deployment={
                               Object {
@@ -923,6 +1117,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "externalProperties": Object {},
                                       "id": "mock-feed-with-version-id",
                                       "isPublic": false,
+                                      "labelIds": Array [],
                                       "lastFetched": 1543389038810,
                                       "lastUpdated": 1543389038810,
                                       "latestValidation": Object {
@@ -955,8 +1150,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "retrievalMethod": "MANUALLY_UPLOADED",
                                       "s3Url": null,
                                       "snapshotVersion": null,
+                                      "transformRules": Array [],
                                       "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                                       "user": null,
+                                      "versionCount": 1,
                                     },
                                     "id": "mock-feed-version-id",
                                     "nextVersionId": null,
@@ -996,6 +1193,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "peliasCsvFiles": Array [],
+                                "peliasResetDb": null,
+                                "peliasUpdate": null,
+                                "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
                                   "east": 0,
                                   "north": 0,
@@ -1003,18 +1204,18 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "west": 0,
                                 },
                                 "projectId": "mock-project-with-deployments-id",
-                                "r5": false,
-                                "r5Version": null,
                                 "routerId": null,
                                 "skipOsmExtract": false,
+                                "tripPlannerVersion": "OTP_1",
                                 "user": null,
                               }
                             }
-                            fetchProjectDeployments={[Function]}
-                            fetchProjectFeeds={[Function]}
                             key="mock-deployment-id-0"
                             project={
                               Object {
+                                "autoDeploy": false,
+                                "autoDeployTypes": Array [],
+                                "autoDeployWithCriticalErrors": false,
                                 "autoFetchFeeds": true,
                                 "autoFetchHour": 0,
                                 "autoFetchMinute": 0,
@@ -1045,6 +1246,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                           "externalProperties": Object {},
                                           "id": "mock-feed-with-version-id",
                                           "isPublic": false,
+                                          "labelIds": Array [],
                                           "lastFetched": 1543389038810,
                                           "lastUpdated": 1543389038810,
                                           "latestValidation": Object {
@@ -1077,8 +1279,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                           "retrievalMethod": "MANUALLY_UPLOADED",
                                           "s3Url": null,
                                           "snapshotVersion": null,
+                                          "transformRules": Array [],
                                           "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                                           "user": null,
+                                          "versionCount": 1,
                                         },
                                         "id": "mock-feed-version-id",
                                         "nextVersionId": null,
@@ -1118,6 +1322,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasCsvFiles": Array [],
+                                    "peliasResetDb": null,
+                                    "peliasUpdate": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1125,10 +1333,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "west": 0,
                                     },
                                     "projectId": "mock-project-with-deployments-id",
-                                    "r5": false,
-                                    "r5Version": null,
                                     "routerId": null,
                                     "skipOsmExtract": false,
+                                    "tripPlannerVersion": "OTP_1",
                                     "user": null,
                                   },
                                   Object {
@@ -1150,6 +1357,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasCsvFiles": Array [],
+                                    "peliasResetDb": null,
+                                    "peliasUpdate": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1157,10 +1368,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "west": 0,
                                     },
                                     "projectId": "mock-project-with-deployments-id",
-                                    "r5": false,
-                                    "r5Version": null,
                                     "routerId": null,
                                     "skipOsmExtract": false,
+                                    "tripPlannerVersion": "OTP_1",
                                     "user": null,
                                   },
                                 ],
@@ -1172,6 +1382,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "externalProperties": Object {},
                                     "id": "mock-feed-with-version-id",
                                     "isPublic": false,
+                                    "labelIds": Array [],
                                     "lastFetched": 1543389038810,
                                     "lastUpdated": 1543389038810,
                                     "latestValidation": Object {
@@ -1204,15 +1415,19 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "retrievalMethod": "MANUALLY_UPLOADED",
                                     "s3Url": null,
                                     "snapshotVersion": null,
+                                    "transformRules": Array [],
                                     "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                                     "user": null,
+                                    "versionCount": 1,
                                   },
                                 ],
                                 "id": "mock-project-with-deployments-id",
+                                "labels": Array [],
                                 "lastUpdated": 1553236399556,
                                 "name": "mock-project-with-deployments",
                                 "organizationId": null,
                                 "otpServers": Array [],
+                                "peliasWebhookUrl": null,
                                 "pinnedDeploymentId": "mock-deployment-id-0",
                                 "routerConfig": Object {
                                   "carDropoffTime": null,
@@ -1228,23 +1443,38 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             }
                             saveDeployment={[Function]}
                             updateDeployment={[Function]}
-                            updateProject={[Function]}
                           >
                             <tr
                               className="pinned-deployment"
                             >
                               <td>
+                                <Icon
+                                  type="thumb-tack"
+                                >
+                                  <i
+                                    className="fa fa-thumb-tack fa-fw "
+                                  />
+                                </Icon>
                                 <EditableTextField
+                                  inline={true}
                                   isEditing={false}
                                   link="/project/mock-project-with-deployments-id/deployments/mock-deployment-id-0"
                                   onChange={[Function]}
                                   rejectEmptyValue={true}
-                                  style={Object {}}
+                                  style={
+                                    Object {
+                                      "display": "inline-block",
+                                    }
+                                  }
                                   type="text"
                                   value="mock-deployment"
                                 >
                                   <div
-                                    style={Object {}}
+                                    style={
+                                      Object {
+                                        "display": "inline-block",
+                                      }
+                                    }
                                   >
                                     <span>
                                       <span
@@ -1296,7 +1526,6 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 <span
                                   title="Mar 22nd 2019, 3:05pm"
                                 >
-                                   
                                   2 months ago
                                 </span>
                               </td>
@@ -1315,9 +1544,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 </span>
                               </td>
                               <td>
-                                <span>
-                                  1
-                                </span>
+                                1
                               </td>
                               <td>
                                 <span
@@ -1327,73 +1554,36 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 </span>
                               </td>
                               <td>
-                                <ButtonGroup
+                                <Button
+                                  active={false}
                                   block={false}
-                                  bsClass="btn-group"
+                                  bsClass="btn"
+                                  bsSize="xsmall"
+                                  bsStyle="danger"
                                   className="pull-right"
-                                  justified={false}
-                                  vertical={false}
+                                  disabled={false}
+                                  onClick={[Function]}
                                 >
-                                  <div
-                                    className="pull-right btn-group"
+                                  <button
+                                    className="pull-right btn btn-xs btn-danger"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    type="button"
                                   >
-                                    <Button
-                                      active={false}
-                                      block={false}
-                                      bsClass="btn"
-                                      bsSize="xsmall"
-                                      bsStyle="info"
-                                      disabled={false}
-                                      onClick={[Function]}
+                                    <Glyphicon
+                                      bsClass="glyphicon"
+                                      glyph="remove"
                                     >
-                                      <button
-                                        className="btn btn-xs btn-info"
-                                        disabled={false}
-                                        onClick={[Function]}
-                                        type="button"
-                                      >
-                                        <Glyphicon
-                                          bsClass="glyphicon"
-                                          glyph="pushpin"
-                                        >
-                                          <span
-                                            className="glyphicon glyphicon-pushpin"
-                                          />
-                                        </Glyphicon>
-                                      </button>
-                                    </Button>
-                                    <Button
-                                      active={false}
-                                      block={false}
-                                      bsClass="btn"
-                                      bsSize="xsmall"
-                                      bsStyle="danger"
-                                      disabled={false}
-                                      onClick={[Function]}
-                                    >
-                                      <button
-                                        className="btn btn-xs btn-danger"
-                                        disabled={false}
-                                        onClick={[Function]}
-                                        type="button"
-                                      >
-                                        <Glyphicon
-                                          bsClass="glyphicon"
-                                          glyph="remove"
-                                        >
-                                          <span
-                                            className="glyphicon glyphicon-remove"
-                                          />
-                                        </Glyphicon>
-                                      </button>
-                                    </Button>
-                                  </div>
-                                </ButtonGroup>
+                                      <span
+                                        className="glyphicon glyphicon-remove"
+                                      />
+                                    </Glyphicon>
+                                  </button>
+                                </Button>
                               </td>
                             </tr>
                           </DeploymentListItem>
                           <DeploymentListItem
-                            createDeployment={[Function]}
                             deleteDeployment={[Function]}
                             deployment={
                               Object {
@@ -1415,6 +1605,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 "osmExtractUrl": null,
                                 "otpCommit": null,
                                 "otpVersion": null,
+                                "peliasCsvFiles": Array [],
+                                "peliasResetDb": null,
+                                "peliasUpdate": null,
+                                "pinnedfeedVersionIds": Array [],
                                 "projectBounds": Object {
                                   "east": 0,
                                   "north": 0,
@@ -1422,18 +1616,18 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "west": 0,
                                 },
                                 "projectId": "mock-project-with-deployments-id",
-                                "r5": false,
-                                "r5Version": null,
                                 "routerId": null,
                                 "skipOsmExtract": false,
+                                "tripPlannerVersion": "OTP_1",
                                 "user": null,
                               }
                             }
-                            fetchProjectDeployments={[Function]}
-                            fetchProjectFeeds={[Function]}
                             key="mock-deployment-id-1"
                             project={
                               Object {
+                                "autoDeploy": false,
+                                "autoDeployTypes": Array [],
+                                "autoDeployWithCriticalErrors": false,
                                 "autoFetchFeeds": true,
                                 "autoFetchHour": 0,
                                 "autoFetchMinute": 0,
@@ -1464,6 +1658,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                           "externalProperties": Object {},
                                           "id": "mock-feed-with-version-id",
                                           "isPublic": false,
+                                          "labelIds": Array [],
                                           "lastFetched": 1543389038810,
                                           "lastUpdated": 1543389038810,
                                           "latestValidation": Object {
@@ -1496,8 +1691,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                           "retrievalMethod": "MANUALLY_UPLOADED",
                                           "s3Url": null,
                                           "snapshotVersion": null,
+                                          "transformRules": Array [],
                                           "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                                           "user": null,
+                                          "versionCount": 1,
                                         },
                                         "id": "mock-feed-version-id",
                                         "nextVersionId": null,
@@ -1537,6 +1734,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasCsvFiles": Array [],
+                                    "peliasResetDb": null,
+                                    "peliasUpdate": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1544,10 +1745,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "west": 0,
                                     },
                                     "projectId": "mock-project-with-deployments-id",
-                                    "r5": false,
-                                    "r5Version": null,
                                     "routerId": null,
                                     "skipOsmExtract": false,
+                                    "tripPlannerVersion": "OTP_1",
                                     "user": null,
                                   },
                                   Object {
@@ -1569,6 +1769,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "osmExtractUrl": null,
                                     "otpCommit": null,
                                     "otpVersion": null,
+                                    "peliasCsvFiles": Array [],
+                                    "peliasResetDb": null,
+                                    "peliasUpdate": null,
+                                    "pinnedfeedVersionIds": Array [],
                                     "projectBounds": Object {
                                       "east": 0,
                                       "north": 0,
@@ -1576,10 +1780,9 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                       "west": 0,
                                     },
                                     "projectId": "mock-project-with-deployments-id",
-                                    "r5": false,
-                                    "r5Version": null,
                                     "routerId": null,
                                     "skipOsmExtract": false,
+                                    "tripPlannerVersion": "OTP_1",
                                     "user": null,
                                   },
                                 ],
@@ -1591,6 +1794,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "externalProperties": Object {},
                                     "id": "mock-feed-with-version-id",
                                     "isPublic": false,
+                                    "labelIds": Array [],
                                     "lastFetched": 1543389038810,
                                     "lastUpdated": 1543389038810,
                                     "latestValidation": Object {
@@ -1623,15 +1827,19 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                     "retrievalMethod": "MANUALLY_UPLOADED",
                                     "s3Url": null,
                                     "snapshotVersion": null,
+                                    "transformRules": Array [],
                                     "url": "http://mdtrip.org/googletransit/AnnapolisTransit/google_transit.zip",
                                     "user": null,
+                                    "versionCount": 1,
                                   },
                                 ],
                                 "id": "mock-project-with-deployments-id",
+                                "labels": Array [],
                                 "lastUpdated": 1553236399556,
                                 "name": "mock-project-with-deployments",
                                 "organizationId": null,
                                 "otpServers": Array [],
+                                "peliasWebhookUrl": null,
                                 "pinnedDeploymentId": "mock-deployment-id-0",
                                 "routerConfig": Object {
                                   "carDropoffTime": null,
@@ -1647,23 +1855,31 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                             }
                             saveDeployment={[Function]}
                             updateDeployment={[Function]}
-                            updateProject={[Function]}
                           >
                             <tr
                               className=""
                             >
                               <td>
                                 <EditableTextField
+                                  inline={true}
                                   isEditing={false}
                                   link="/project/mock-project-with-deployments-id/deployments/mock-deployment-id-1"
                                   onChange={[Function]}
                                   rejectEmptyValue={true}
-                                  style={Object {}}
+                                  style={
+                                    Object {
+                                      "display": "inline-block",
+                                    }
+                                  }
                                   type="text"
                                   value="mock-deployment"
                                 >
                                   <div
-                                    style={Object {}}
+                                    style={
+                                      Object {
+                                        "display": "inline-block",
+                                      }
+                                    }
                                   >
                                     <span>
                                       <span
@@ -1715,7 +1931,6 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 <span
                                   title="Mar 22nd 2019, 3:05pm"
                                 >
-                                   
                                   2 months ago
                                 </span>
                               </td>
@@ -1734,9 +1949,7 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 </span>
                               </td>
                               <td>
-                                <span>
-                                  0
-                                </span>
+                                0
                               </td>
                               <td>
                                 <span
@@ -1746,68 +1959,32 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                 </span>
                               </td>
                               <td>
-                                <ButtonGroup
+                                <Button
+                                  active={false}
                                   block={false}
-                                  bsClass="btn-group"
+                                  bsClass="btn"
+                                  bsSize="xsmall"
+                                  bsStyle="danger"
                                   className="pull-right"
-                                  justified={false}
-                                  vertical={false}
+                                  disabled={false}
+                                  onClick={[Function]}
                                 >
-                                  <div
-                                    className="pull-right btn-group"
+                                  <button
+                                    className="pull-right btn btn-xs btn-danger"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    type="button"
                                   >
-                                    <Button
-                                      active={false}
-                                      block={false}
-                                      bsClass="btn"
-                                      bsSize="xsmall"
-                                      bsStyle="warning"
-                                      disabled={false}
-                                      onClick={[Function]}
+                                    <Glyphicon
+                                      bsClass="glyphicon"
+                                      glyph="remove"
                                     >
-                                      <button
-                                        className="btn btn-xs btn-warning"
-                                        disabled={false}
-                                        onClick={[Function]}
-                                        type="button"
-                                      >
-                                        <Glyphicon
-                                          bsClass="glyphicon"
-                                          glyph="pushpin"
-                                        >
-                                          <span
-                                            className="glyphicon glyphicon-pushpin"
-                                          />
-                                        </Glyphicon>
-                                      </button>
-                                    </Button>
-                                    <Button
-                                      active={false}
-                                      block={false}
-                                      bsClass="btn"
-                                      bsSize="xsmall"
-                                      bsStyle="danger"
-                                      disabled={false}
-                                      onClick={[Function]}
-                                    >
-                                      <button
-                                        className="btn btn-xs btn-danger"
-                                        disabled={false}
-                                        onClick={[Function]}
-                                        type="button"
-                                      >
-                                        <Glyphicon
-                                          bsClass="glyphicon"
-                                          glyph="remove"
-                                        >
-                                          <span
-                                            className="glyphicon glyphicon-remove"
-                                          />
-                                        </Glyphicon>
-                                      </button>
-                                    </Button>
-                                  </div>
-                                </ButtonGroup>
+                                      <span
+                                        className="glyphicon glyphicon-remove"
+                                      />
+                                    </Glyphicon>
+                                  </button>
+                                </Button>
                               </td>
                             </tr>
                           </DeploymentListItem>
@@ -1822,10 +1999,11 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
           <Col
             bsClass="col"
             componentClass="div"
-            xs={3}
+            md={3}
+            sm={12}
           >
             <div
-              className="col-xs-3"
+              className="col-md-3 col-sm-12"
             >
               <Panel
                 bsClass="panel"
@@ -1833,7 +2011,11 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                 defaultExpanded={false}
                 header={
                   <h3>
-                    Deploying feeds to OTP
+                    <Icon
+                      type="rocket"
+                    />
+                     
+                    Auto-deployment
                   </h3>
                 }
               >
@@ -1846,7 +2028,539 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     <h3
                       className="panel-title"
                     >
-                      Deploying feeds to OTP
+                      <Icon
+                        type="rocket"
+                      >
+                        <i
+                          className="fa fa-rocket fa-fw "
+                        />
+                      </Icon>
+                       
+                      Auto-deployment
+                    </h3>
+                  </div>
+                  <div
+                    className="panel-body"
+                    key="0"
+                  >
+                    <FormGroup
+                      bsClass="form-group"
+                      controlId="pinnedDeploymentId"
+                      key=".0"
+                    >
+                      <div
+                        className="form-group"
+                      >
+                        <ControlLabel
+                          bsClass="control-label"
+                          srOnly={false}
+                        >
+                          <label
+                            className="control-label"
+                            htmlFor="pinnedDeploymentId"
+                          >
+                            <Icon
+                              type="thumb-tack"
+                            >
+                              <i
+                                className="fa fa-thumb-tack fa-fw "
+                              />
+                            </Icon>
+                             
+                            Pinned deployment
+                          </label>
+                        </ControlLabel>
+                        <Select
+                          arrowRenderer={[Function]}
+                          autosize={true}
+                          backspaceRemoves={true}
+                          backspaceToRemoveMessage="Press backspace to remove {label}"
+                          clearAllText="Clear all"
+                          clearRenderer={[Function]}
+                          clearValueText="Clear value"
+                          clearable={true}
+                          closeOnSelect={true}
+                          deleteRemoves={true}
+                          delimiter=","
+                          disabled={false}
+                          escapeClearsValue={true}
+                          filterOptions={[Function]}
+                          ignoreAccents={true}
+                          ignoreCase={true}
+                          inputProps={Object {}}
+                          isLoading={false}
+                          joinValues={false}
+                          labelKey="label"
+                          matchPos="any"
+                          matchProp="any"
+                          menuBuffer={0}
+                          menuRenderer={[Function]}
+                          multi={false}
+                          name="pinnedDeploymentId"
+                          noResultsText="No results found"
+                          onBlurResetsInput={true}
+                          onChange={[Function]}
+                          onCloseResetsInput={true}
+                          onSelectResetsInput={true}
+                          openOnClick={true}
+                          optionComponent={[Function]}
+                          options={
+                            Array [
+                              Object {
+                                "label": "mock-deployment",
+                                "value": "mock-deployment-id-0",
+                              },
+                              Object {
+                                "label": "mock-deployment",
+                                "value": "mock-deployment-id-1",
+                              },
+                            ]
+                          }
+                          pageSize={5}
+                          placeholder="Select a deployment to pin"
+                          removeSelected={true}
+                          required={false}
+                          rtl={false}
+                          scrollMenuIntoView={true}
+                          searchable={true}
+                          simpleValue={false}
+                          tabSelectsValue={true}
+                          trimFilter={true}
+                          value="mock-deployment-id-0"
+                          valueComponent={[Function]}
+                          valueKey="value"
+                        >
+                          <div
+                            className="Select has-value is-clearable is-searchable Select--single"
+                          >
+                            <input
+                              disabled={false}
+                              key="hidden.0"
+                              name="pinnedDeploymentId"
+                              type="hidden"
+                              value="mock-deployment-id-0"
+                            />
+                            <div
+                              className="Select-control"
+                              onKeyDown={[Function]}
+                              onMouseDown={[Function]}
+                              onTouchEnd={[Function]}
+                              onTouchMove={[Function]}
+                              onTouchStart={[Function]}
+                            >
+                              <div
+                                className="Select-multi-value-wrapper"
+                                id="react-select-2--value"
+                              >
+                                <Value
+                                  disabled={false}
+                                  id="react-select-2--value-item"
+                                  instancePrefix="react-select-2-"
+                                  onClick={null}
+                                  placeholder="Select a deployment to pin"
+                                  value={
+                                    Object {
+                                      "label": "mock-deployment",
+                                      "value": "mock-deployment-id-0",
+                                    }
+                                  }
+                                >
+                                  <div
+                                    className="Select-value"
+                                  >
+                                    <span
+                                      aria-selected="true"
+                                      className="Select-value-label"
+                                      id="react-select-2--value-item"
+                                      role="option"
+                                    >
+                                      mock-deployment
+                                    </span>
+                                  </div>
+                                </Value>
+                                <AutosizeInput
+                                  aria-activedescendant="react-select-2--value"
+                                  aria-expanded="false"
+                                  aria-haspopup="false"
+                                  aria-owns=""
+                                  className="Select-input"
+                                  injectStyles={true}
+                                  minWidth="5"
+                                  onBlur={[Function]}
+                                  onChange={[Function]}
+                                  onFocus={[Function]}
+                                  required={false}
+                                  role="combobox"
+                                  value=""
+                                >
+                                  <div
+                                    className="Select-input"
+                                    style={
+                                      Object {
+                                        "display": "inline-block",
+                                      }
+                                    }
+                                  >
+                                    <input
+                                      aria-activedescendant="react-select-2--value"
+                                      aria-expanded="false"
+                                      aria-haspopup="false"
+                                      aria-owns=""
+                                      onBlur={[Function]}
+                                      onChange={[Function]}
+                                      onFocus={[Function]}
+                                      required={false}
+                                      role="combobox"
+                                      style={
+                                        Object {
+                                          "boxSizing": "content-box",
+                                          "width": "5px",
+                                        }
+                                      }
+                                      value=""
+                                    />
+                                    <div
+                                      style={
+                                        Object {
+                                          "height": 0,
+                                          "left": 0,
+                                          "overflow": "scroll",
+                                          "position": "absolute",
+                                          "top": 0,
+                                          "visibility": "hidden",
+                                          "whiteSpace": "pre",
+                                        }
+                                      }
+                                    />
+                                  </div>
+                                </AutosizeInput>
+                              </div>
+                              <span
+                                aria-label="Clear value"
+                                className="Select-clear-zone"
+                                onMouseDown={[Function]}
+                                onTouchEnd={[Function]}
+                                onTouchMove={[Function]}
+                                onTouchStart={[Function]}
+                                title="Clear value"
+                              >
+                                <span
+                                  className="Select-clear"
+                                  dangerouslySetInnerHTML={
+                                    Object {
+                                      "__html": "&times;",
+                                    }
+                                  }
+                                />
+                              </span>
+                              <span
+                                className="Select-arrow-zone"
+                                onMouseDown={[Function]}
+                              >
+                                <span
+                                  className="Select-arrow"
+                                  onMouseDown={[Function]}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </Select>
+                        <HelpBlock
+                          bsClass="help-block"
+                        >
+                          <span
+                            className="help-block"
+                          >
+                            Pin a deployment (and deploy to a server at least once) to enable auto-deployment.
+                          </span>
+                        </HelpBlock>
+                      </div>
+                    </FormGroup>
+                    <FormGroup
+                      bsClass="form-group"
+                      controlId="autoDeployTypes"
+                      key=".1"
+                    >
+                      <div
+                        className="form-group"
+                      >
+                        <ControlLabel
+                          bsClass="control-label"
+                          srOnly={false}
+                        >
+                          <label
+                            className="control-label"
+                            htmlFor="autoDeployTypes"
+                          >
+                            <Icon
+                              type="bolt"
+                            >
+                              <i
+                                className="fa fa-bolt fa-fw "
+                              />
+                            </Icon>
+                             
+                            Auto-deploy events
+                          </label>
+                        </ControlLabel>
+                        <Select
+                          arrowRenderer={[Function]}
+                          autosize={true}
+                          backspaceRemoves={true}
+                          backspaceToRemoveMessage="Press backspace to remove {label}"
+                          clearAllText="Clear all"
+                          clearRenderer={[Function]}
+                          clearValueText="Clear value"
+                          clearable={true}
+                          closeOnSelect={true}
+                          deleteRemoves={true}
+                          delimiter=","
+                          disabled={false}
+                          escapeClearsValue={true}
+                          filterOptions={[Function]}
+                          ignoreAccents={true}
+                          ignoreCase={true}
+                          inputProps={Object {}}
+                          isLoading={false}
+                          joinValues={false}
+                          labelKey="label"
+                          matchPos="any"
+                          matchProp="any"
+                          menuBuffer={0}
+                          menuRenderer={[Function]}
+                          multi={true}
+                          name="autoDeployTypes"
+                          noResultsText="No results found"
+                          onBlurResetsInput={true}
+                          onChange={[Function]}
+                          onCloseResetsInput={true}
+                          onSelectResetsInput={true}
+                          openOnClick={true}
+                          optionComponent={[Function]}
+                          options={
+                            Array [
+                              Object {
+                                "label": "A new version is fetched",
+                                "value": "ON_FEED_FETCH",
+                              },
+                              Object {
+                                "label": "A new version is processed",
+                                "value": "ON_PROCESS_FEED",
+                              },
+                            ]
+                          }
+                          pageSize={5}
+                          placeholder="Specify auto-deploy events"
+                          removeSelected={true}
+                          required={false}
+                          rtl={false}
+                          scrollMenuIntoView={true}
+                          searchable={true}
+                          simpleValue={false}
+                          tabSelectsValue={true}
+                          trimFilter={true}
+                          value={Array []}
+                          valueComponent={[Function]}
+                          valueKey="value"
+                        >
+                          <div
+                            className="Select is-clearable is-searchable Select--multi"
+                          >
+                            <div
+                              className="Select-control"
+                              onKeyDown={[Function]}
+                              onMouseDown={[Function]}
+                              onTouchEnd={[Function]}
+                              onTouchMove={[Function]}
+                              onTouchStart={[Function]}
+                            >
+                              <div
+                                className="Select-multi-value-wrapper"
+                                id="react-select-3--value"
+                              >
+                                <div
+                                  className="Select-placeholder"
+                                >
+                                  Specify auto-deploy events
+                                </div>
+                                <AutosizeInput
+                                  aria-activedescendant="react-select-3--value"
+                                  aria-expanded="false"
+                                  aria-haspopup="false"
+                                  aria-owns=""
+                                  className="Select-input"
+                                  injectStyles={true}
+                                  minWidth="5"
+                                  onBlur={[Function]}
+                                  onChange={[Function]}
+                                  onFocus={[Function]}
+                                  required={false}
+                                  role="combobox"
+                                  value=""
+                                >
+                                  <div
+                                    className="Select-input"
+                                    style={
+                                      Object {
+                                        "display": "inline-block",
+                                      }
+                                    }
+                                  >
+                                    <input
+                                      aria-activedescendant="react-select-3--value"
+                                      aria-expanded="false"
+                                      aria-haspopup="false"
+                                      aria-owns=""
+                                      onBlur={[Function]}
+                                      onChange={[Function]}
+                                      onFocus={[Function]}
+                                      required={false}
+                                      role="combobox"
+                                      style={
+                                        Object {
+                                          "boxSizing": "content-box",
+                                          "width": "5px",
+                                        }
+                                      }
+                                      value=""
+                                    />
+                                    <div
+                                      style={
+                                        Object {
+                                          "height": 0,
+                                          "left": 0,
+                                          "overflow": "scroll",
+                                          "position": "absolute",
+                                          "top": 0,
+                                          "visibility": "hidden",
+                                          "whiteSpace": "pre",
+                                        }
+                                      }
+                                    />
+                                  </div>
+                                </AutosizeInput>
+                              </div>
+                              <span
+                                className="Select-arrow-zone"
+                                onMouseDown={[Function]}
+                              >
+                                <span
+                                  className="Select-arrow"
+                                  onMouseDown={[Function]}
+                                />
+                              </span>
+                            </div>
+                          </div>
+                        </Select>
+                        <HelpBlock
+                          bsClass="help-block"
+                        >
+                          <span
+                            className="help-block"
+                          >
+                            A deployment will automatically be kicked off (assuming there are no critical errors) whenever one of the above-defined events occurs.
+
+                          </span>
+                        </HelpBlock>
+                      </div>
+                    </FormGroup>
+                    <FormGroup
+                      bsClass="form-group"
+                      controlId="autoDeployWithCriticalErrors"
+                      key=".2"
+                    >
+                      <div
+                        className="form-group"
+                      >
+                        <ControlLabel
+                          bsClass="control-label"
+                          srOnly={false}
+                        >
+                          <label
+                            className="control-label"
+                            htmlFor="autoDeployWithCriticalErrors"
+                          >
+                            <Icon
+                              type="warning"
+                            >
+                              <i
+                                className="fa fa-warning fa-fw "
+                              />
+                            </Icon>
+                             
+                            Critical Errors Handling
+                          </label>
+                        </ControlLabel>
+                        <Checkbox
+                          bsClass="checkbox"
+                          checked={false}
+                          disabled={false}
+                          inline={false}
+                          name="autoDeployWithCriticalErrors"
+                          onChange={[Function]}
+                        >
+                          <div
+                            className="checkbox"
+                          >
+                            <label>
+                              <input
+                                checked={false}
+                                disabled={false}
+                                name="autoDeployWithCriticalErrors"
+                                onChange={[Function]}
+                                type="checkbox"
+                              />
+                              Deploy even if some feed versions have critical errors
+                            </label>
+                          </div>
+                        </Checkbox>
+                        <HelpBlock
+                          bsClass="help-block"
+                        >
+                          <span
+                            className="help-block"
+                          >
+                            If this is unchecked, an auto-deployment will halt if any of the feed versions in the deployment have at least one critical error
+
+                          </span>
+                        </HelpBlock>
+                      </div>
+                    </FormGroup>
+                  </div>
+                </div>
+              </Panel>
+              <Panel
+                bsClass="panel"
+                bsStyle="default"
+                defaultExpanded={false}
+                header={
+                  <h3>
+                    <Icon
+                      type="cog"
+                    />
+                     
+                    Configuring deployments
+                  </h3>
+                }
+              >
+                <div
+                  className="panel panel-default"
+                >
+                  <div
+                    className="panel-heading"
+                  >
+                    <h3
+                      className="panel-title"
+                    >
+                      <Icon
+                        type="cog"
+                      >
+                        <i
+                          className="fa fa-cog fa-fw "
+                        />
+                      </Icon>
+                       
+                      Configuring deployments
                     </h3>
                   </div>
                   <div
@@ -1856,7 +2570,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     <p
                       key=".0"
                     >
-                      A collection of feeds can be deployed to OpenTripPlanner (OTP) instances that have been defined in the organization settings.
+                      Deployments can use project-level configurations (e.g., for build or router config files) or be configured individually.
+
                     </p>
                     <LinkContainer
                       action="push"
@@ -1887,7 +2602,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               className="fa fa-cog fa-fw "
                             />
                           </Icon>
-                           Edit deployment settings
+                           
+                          Edit deployment settings
                         </button>
                       </Button>
                     </LinkContainer>
@@ -1920,7 +2636,8 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                               className="fa fa-server fa-fw "
                             />
                           </Icon>
-                           Manage deployment servers
+                           
+                          Manage deployment servers
                         </button>
                       </Button>
                     </LinkContainer>

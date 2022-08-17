@@ -260,6 +260,20 @@ async function expectSelectorToNotContainHtml (selector: string, html: string) {
 }
 
 /**
+ * Checks that the expected feed version validity dates are displayed.
+ */
+async function expectFeedVersionValidityDates (startDate: string, endDate: string) {
+  await expectSelectorToContainHtml(
+    '[data-test-id="active-feed-version-validity-start"]',
+    startDate
+  )
+  await expectSelectorToContainHtml(
+    '[data-test-id="active-feed-version-validity-end"]',
+    endDate
+  )
+}
+
+/**
  * Create a new project.  Assumes that this is called while the browser is on
  * the home page.
  */
@@ -301,6 +315,7 @@ async function deleteProject (projectId: string) {
   // verify deletion
   await goto(`http://localhost:9966/project/${projectId}`)
   await waitForSelector('.project-not-found')
+  await wait(5000, 'for previously rendered project markup to be removed')
   await expectSelectorToContainHtml('.project-not-found', projectId)
   log.info(`confirmed successful deletion of project with id ${projectId}`)
 }
@@ -550,6 +565,17 @@ async function pickColor (containerSelector: string, color: string) {
 }
 
 /**
+ * A helper method to choose a route type
+ * in the route editor (but not in the feed editor).
+ */
+async function pickRouteType (containerSelector: string, routeOptionId: string) {
+  await click(`${containerSelector} a`)
+  await waitForSelector(`${containerSelector} .dropdown-content`)
+  await waitForSelector(`[data-test-id="${routeOptionId}"]`)
+  await click(`[data-test-id="${routeOptionId}"] label`)
+}
+
+/**
  * A helper method to type in an autocomplete value and then select an option
  * from an react-select component.
  */
@@ -744,6 +770,7 @@ async function getAllElements (selector: string) {
  */
 async function type (selector: string, text: string) {
   log.info(`typing text: "${text}" into selector: ${selector}`)
+  await page.focus(selector)
   await page.type(selector, text)
 }
 
@@ -885,7 +912,7 @@ describe('end-to-end', () => {
       await click('[data-test-id="confirm-create-user-button"]')
 
       // wait for user to be saved
-      await wait(2000, 'for user to be created')
+      await wait(30000, 'for user to be created')
 
       // filter users
       await filterUsers(testUserSlug)
@@ -1085,13 +1112,10 @@ describe('end-to-end', () => {
       await uploadGtfs()
 
       // wait for main tab to show up with version validity info
-      await waitForSelector('[data-test-id="feed-version-validity"]')
+      await waitForSelector('[data-test-id="active-feed-version-validity-start"]')
 
       // verify feed was uploaded
-      await expectSelectorToContainHtml(
-        '[data-test-id="feed-version-validity"]',
-        'Valid from Jan. 01, 2014 to Dec. 31, 2018'
-      )
+      await expectFeedVersionValidityDates('Jan 1, 2014', 'Dec 31, 2018')
     }, defaultTestTimeout)
 
     // this test also sets the feed source as deployable
@@ -1132,10 +1156,7 @@ describe('end-to-end', () => {
       await wait(2000, 'for feed source to update')
 
       // verify that feed was fetched and processed
-      await expectSelectorToContainHtml(
-        '[data-test-id="feed-version-validity"]',
-        'Valid from Apr. 08, 2018 to Jun. 30, 2018'
-      )
+      await expectFeedVersionValidityDates('Apr 8, 2018', 'Jun 30, 2018')
     }, defaultTestTimeout)
 
     if (doNonEssentialSteps) {
@@ -1245,10 +1266,7 @@ describe('end-to-end', () => {
         await wait(2000, 'for data to refresh')
         await waitForSelector('#feed-source-viewer-tabs')
         // verify that the previous feed is now the displayed feed
-        await expectSelectorToContainHtml(
-          '[data-test-id="feed-version-validity"]',
-          'Valid from Apr. 08, 2018 to Jun. 30, 2018'
-        )
+        await expectFeedVersionValidityDates('Apr 8, 2018', 'Jun 30, 2018')
       }, defaultTestTimeout)
     }
   })
@@ -1581,9 +1599,9 @@ describe('end-to-end', () => {
         )
 
         // route type
-        await page.select(
-          '[data-test-id="route-route_type-input-container"] select',
-          '3'
+        await pickRouteType(
+          '[data-test-id="route-route_type-input-container"]',
+          'route-type-option-3'
         )
 
         // route color
@@ -1610,6 +1628,13 @@ describe('end-to-end', () => {
           'example.branding.test'
         )
 
+        // Set status to approved so the route is exported to a snapshot.
+        // Do this last, otherwise the approved status will change back to in-progress.
+        await page.select(
+          '[data-test-id="route-status-input-container"] select',
+          '2'
+        )
+
         // save
         await click('[data-test-id="save-entity-button"]')
         await wait(2000, 'for save to happen')
@@ -1634,6 +1659,13 @@ describe('end-to-end', () => {
         await appendText(
           '[data-test-id="route-route_long_name-input-container"] input',
           ' updated'
+        )
+
+        // Set status to approved so the route is exported to a snapshot.
+        // Do this last, otherwise the approved status will change back to in-progress.
+        await page.select(
+          '[data-test-id="route-status-input-container"] select',
+          '2'
         )
 
         // save
@@ -1989,7 +2021,7 @@ describe('end-to-end', () => {
     describe('exceptions', () => {
       makeEditorEntityTest('should create exception', async () => {
         // open exception sidebar
-        await click('[data-test-id="exception-tab-button"]')
+        await waitForAndClick('[data-test-id="exception-tab-button"]')
 
         // wait for exception sidebar form to appear and click button to open
         // form to create exception
@@ -2109,6 +2141,64 @@ describe('end-to-end', () => {
         await expectSelectorToNotContainHtml(
           '.entity-list',
           'test exception updated to delete'
+        )
+      }, defaultTestTimeout, 'should create calendar')
+
+      makeEditorEntityTest('should create exception range', async () => {
+        // create a new exception
+        await waitForAndClick('[data-test-id="new-scheduleexception-button"]')
+
+        // name
+        await type(
+          '[data-test-id="exception-name-input-container"] input',
+          'test exception range'
+        )
+
+        // exception type
+        await page.select(
+          '[data-test-id="exception-type-input-container"] select',
+          '7' // no service
+        )
+
+        // add start range exception date
+        await click('[data-test-id="exception-add-date-button"]')
+        await waitForSelector(
+          '[data-test-id="exception-dates-container"] input'
+        )
+        await clearAndType(
+          '[data-test-id="exception-dates-container"] input',
+          '08/04/18'
+        )
+
+        await click('[data-test-id="exception-add-range"]')
+
+        // add end of range exception date (July 10, 2018)
+        await waitForSelector(
+          '[data-test-id="exception-date-range-0-2"] input'
+        )
+
+        await clearAndType(
+          '[data-test-id="exception-date-range-0-2"] input',
+          '08/10/18'
+        )
+
+        // save
+        await click('[data-test-id="save-entity-button"]')
+        await wait(2000, 'for save to happen')
+
+        // reload to make sure stuff was saved
+        await page.reload({ waitUntil: 'networkidle0' })
+
+        // wait for exception sidebar form to appear
+        await waitForSelector(
+          '[data-test-id="exception-name-input-container"]'
+        )
+
+        // verify data was saved and retrieved from server
+        // TODO: verify the contents of the range?
+        await expectSelectorToContainHtml(
+          '[data-test-id="exception-name-input-container"]',
+          'test exception range'
         )
       }, defaultTestTimeout, 'should create calendar')
     })
@@ -2303,7 +2393,7 @@ describe('end-to-end', () => {
         'should create pattern',
         async () => {
           // open route sidebar
-          await click('[data-test-id="editor-route-nav-button"]')
+          await waitForAndClick('[data-test-id="editor-route-nav-button"]')
 
           // wait for route sidebar form to appear and select first route
           await waitForAndClick('.entity-list-row')
@@ -2326,10 +2416,14 @@ describe('end-to-end', () => {
 
           // add 1st stop
           await reactSelectOption('.pattern-stop-card', 'la', 1, true)
+          await wait(500, 'for 1st stop to be selected')
+          await click('[data-test-id="add-pattern-stop-button"]')
           await wait(2000, 'for 1st stop to save')
 
           // add 2nd stop
           await reactSelectOption('.pattern-stop-card', 'ru', 1, true)
+          await wait(500, 'for 2nd stop to be selected')
+          await click('[data-test-id="add-pattern-stop-button"]')
           await wait(2000, 'for auto-save to happen')
 
           // reload to make sure stuff was saved
@@ -2456,6 +2550,11 @@ describe('end-to-end', () => {
 
           // trip headsign
           await page.keyboard.type('test-headsign')
+          await page.keyboard.press('Tab')
+          await page.keyboard.press('Enter')
+
+          // trip short name
+          await page.keyboard.type('test-trip-short-name')
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 
@@ -2636,13 +2735,10 @@ describe('end-to-end', () => {
       await click('#feed-source-viewer-tabs-tab-')
 
       // wait for main tab to show up with version validity info
-      await waitForSelector('[data-test-id="feed-version-validity"]')
+      await waitForSelector('[data-test-id="active-feed-version-validity-start"]')
 
       // verify that snapshot was made active version
-      await expectSelectorToContainHtml(
-        '[data-test-id="feed-version-validity"]',
-        'Valid from May. 29, 2018 to May. 29, 2028'
-      )
+      await expectFeedVersionValidityDates('May 29, 2018', 'May 29, 2028')
     }, defaultTestTimeout, 'should create snapshot')
 
     // TODO: download and validate gtfs??
@@ -2671,7 +2767,10 @@ describe('end-to-end', () => {
         '[data-test-id="deployment-router-id"]'
       )
       // get rid of router id text and react tags
-      routerId = innerHTML.replace('Router ID: ', '')
+      // (remove any square brackets too)
+      routerId = innerHTML
+        .replace('Router ID: ', '')
+        .replace(/[[\]]/g, '')
 
       // confirm deployment
       await click('[data-test-id="confirm-deploy-server-button"]')
@@ -2681,9 +2780,11 @@ describe('end-to-end', () => {
     }, defaultTestTimeout + 30000) // Add thirty seconds for deployment job
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
+      await wait(15000, 'for OTP to pick up the newly-built graph')
       // hit the otp endpoint
+      const url = `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=00%3A32&date=2018-07-24&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`
       const response = await fetch(
-        `${OTP_ROOT}${routerId}/plan?fromPlace=37.04532992924222%2C-122.07542181015015&toPlace=37.04899494106061%2C-122.07432746887208&time=12%3A32am&date=07-24-2018&mode=TRANSIT%2CWALK&maxWalkDistance=804.672&arriveBy=false&wheelchair=false&locale=en`,
+        url,
         {
           headers: {
             'Content-Type': 'application/json; charset=utf-8'
