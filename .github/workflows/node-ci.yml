@@ -60,31 +60,31 @@ jobs:
       - name: Write .env file for Docker
         # if: inputs.e2e
         run: |
-          touch .env 
-          echo AUTH0_API_CLIENT= ${{ secrets.AUTH0_API_CLIENT }} >> .env
-          echo AUTH0_API_SECRET= ${{ secrets.AUTH0_API_SECRET }} >> .env
-          echo AUTH0_CLIENT_ID= ${{ secrets.AUTH0_CLIENT_ID }} >> .env
-          echo AUTH0_DOMAIN= ${{ secrets.AUTH0_DOMAIN }} >> .env
-          echo AUTH0_SECRET= ${{ secrets.AUTH0_SECRET }} >> .env
-          echo AWS_ACCESS_KEY_ID= ${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
-          echo AWS_REGION= ${{ secrets.AWS_REGION }} >> .env
-          echo AWS_SECRET_ACCESS_KEY= ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
-          echo E2E_AUTH0_PASSWORD= ${{ secrets.E2E_AUTH0_PASSWORD }} >> .env
-          echo E2E_AUTH0_USERNAME= ${{ secrets.E2E_AUTH0_USERNAME }} >> .env
-          echo GRAPH_HOPPER_KEY= ${{ secrets.GRAPH_HOPPER_KEY }} >> .env
-          echo GTFS_DATABASE_PASSWORD= ${{ secrets.GTFS_DATABASE_PASSWORD }} >> .env
-          echo GTFS_DATABASE_URL= ${{ secrets.GTFS_DATABASE_URL }} >> .env
-          echo GTFS_DATABASE_USER= ${{ secrets.GTFS_DATABASE_USER }} >> .env
-          echo LOGS_S3_BUCKET= ${{ secrets.LOGS_S3_BUCKET }} >> .env
-          echo MAPBOX_ACCESS_TOKEN= ${{ secrets.MAPBOX_ACCESS_TOKEN }} >> .env
-          echo MONGO_DB_NAME= ${{ secrets.MONGO_DB_NAME }} >> .env
-          echo MS_TEAMS_WEBHOOK_URL= ${{ secrets.MS_TEAMS_WEBHOOK_URL }} >> .env
-          echo OSM_VEX= ${{ secrets.OSM_VEX }} >> .env
-          echo RUN_E2E= "true" >> .env
-          echo S3_BUCKET= ${{ secrets.S3_BUCKET }} >> .env
-          echo SPARKPOST_EMAIL= ${{ secrets.SPARKPOST_EMAIL }} >> .env
-          echo SPARKPOST_KEY= ${{ secrets.SPARKPOST_KEY }} >> .env
-          echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> .env
+          touch __tests__/e2e/.env 
+          echo AUTH0_API_CLIENT= ${{ secrets.AUTH0_API_CLIENT }} >> __tests__/e2e/.env
+          echo AUTH0_API_SECRET= ${{ secrets.AUTH0_API_SECRET }} >> __tests__/e2e/.env
+          echo AUTH0_CLIENT_ID= ${{ secrets.AUTH0_CLIENT_ID }} >> __tests__/e2e/.env
+          echo AUTH0_DOMAIN= ${{ secrets.AUTH0_DOMAIN }} >> __tests__/e2e/.env
+          echo AUTH0_SECRET= ${{ secrets.AUTH0_SECRET }} >> __tests__/e2e/.env
+          echo AWS_ACCESS_KEY_ID= ${{ secrets.AWS_ACCESS_KEY_ID }} >> __tests__/e2e/.env
+          echo AWS_REGION= ${{ secrets.AWS_REGION }} >> __tests__/e2e/.env
+          echo AWS_SECRET_ACCESS_KEY= ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> __tests__/e2e/.env
+          echo E2E_AUTH0_PASSWORD= ${{ secrets.E2E_AUTH0_PASSWORD }} >> __tests__/e2e/.env
+          echo E2E_AUTH0_USERNAME= ${{ secrets.E2E_AUTH0_USERNAME }} >> __tests__/e2e/.env
+          echo GRAPH_HOPPER_KEY= ${{ secrets.GRAPH_HOPPER_KEY }} >> __tests__/e2e/.env
+          echo GTFS_DATABASE_PASSWORD= ${{ secrets.GTFS_DATABASE_PASSWORD }} >> __tests__/e2e/.env
+          echo GTFS_DATABASE_URL= ${{ secrets.GTFS_DATABASE_URL }} >> __tests__/e2e/.env
+          echo GTFS_DATABASE_USER= ${{ secrets.GTFS_DATABASE_USER }} >> __tests__/e2e/.env
+          echo LOGS_S3_BUCKET= ${{ secrets.LOGS_S3_BUCKET }} >> __tests__/e2e/.env
+          echo MAPBOX_ACCESS_TOKEN= ${{ secrets.MAPBOX_ACCESS_TOKEN }} >> __tests__/e2e/.env
+          echo MONGO_DB_NAME= ${{ secrets.MONGO_DB_NAME }} >> __tests__/e2e/.env
+          echo MS_TEAMS_WEBHOOK_URL= ${{ secrets.MS_TEAMS_WEBHOOK_URL }} >> __tests__/e2e/.env
+          echo OSM_VEX= ${{ secrets.OSM_VEX }} >> __tests__/e2e/.env
+          echo RUN_E2E= "true" >> __tests__/e2e/.env
+          echo S3_BUCKET= ${{ secrets.S3_BUCKET }} >> __tests__/e2e/.env
+          echo SPARKPOST_EMAIL= ${{ secrets.SPARKPOST_EMAIL }} >> __tests__/e2e/.env
+          echo SPARKPOST_KEY= ${{ secrets.SPARKPOST_KEY }} >> __tests__/e2e/.env
+          echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> __tests__/e2e/.env
       - name: Run e2e tests
         # if: inputs.e2e
         run: docker-compose -f __tests__/e2e/docker-compose.yml up --abort-on-container-exit
