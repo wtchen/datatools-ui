@@ -81,10 +81,6 @@ jobs:
           echo SPARKPOST_EMAIL= ${{ secrets.SPARKPOST_EMAIL }} >> __tests__/e2e/.env
           echo SPARKPOST_KEY= ${{ secrets.SPARKPOST_KEY }} >> __tests__/e2e/.env
           echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> __tests__/e2e/.env
-        
-      # Pull the latest image to build, and avoid caching pull-only images.
-      # (docker pull is faster than caching in most cases.)
-      - run: docker-compose pull
 
       # In this step, this action saves a list of existing images,
       # the cache is created without them in the post run.
