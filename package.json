@@ -137,7 +137,7 @@
     "js-yaml": "^3.11.0",
     "jsonwebtoken": "^7.4.1",
     "lint-staged": "^11.0.0",
-    "mastarm": "miles-grant-ibigroup/mastarm#f61ca541a788e8cae8a0e32b886de754846ea16f",
+    "mastarm": "^5.3.1",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
     "react-addons-test-utils": "^15.6.2",
