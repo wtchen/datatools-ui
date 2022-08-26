@@ -140,7 +140,6 @@
     "mastarm": "miles-grant-ibigroup/mastarm#f61ca541a788e8cae8a0e32b886de754846ea16f",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
-    "puppeteer": "^16.1.0",
     "react-addons-test-utils": "^15.6.2",
     "redux-mock-store": "^1.5.3",
     "request": "^2.88.0",
