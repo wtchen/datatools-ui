@@ -87,7 +87,7 @@ jobs:
           echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> .env
       - name: Run e2e tests
         # if: inputs.e2e
-        run: docker-compose -f __tests__/e2e/docker-compose.yml up
+        run: docker-compose -f __tests__/e2e/docker-compose.yml up --abort-on-container-exit
       # At this point, the build is successful.
       - name: Semantic Release
         env:
