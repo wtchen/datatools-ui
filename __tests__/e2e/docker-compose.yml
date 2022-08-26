@@ -17,7 +17,7 @@ x-common-variables: &common-variables
     - OSM_VEX=${OSM_VEX}
     - SPARKPOST_KEY=${SPARKPOST_KEY}
     - SPARKPOST_EMAIL=${SPARKPOST_EMAIL}
-    - GTFS_DATABASE_URL=${SPARKPOST_EMAIL}
+    - GTFS_DATABASE_URL=jdbc:postgresql://postgres/dmtest
     - GTFS_DATABASE_USER=root
     - GTFS_DATABASE_PASSWORD=e2e
     - MONGO_DB_NAME=data_manager

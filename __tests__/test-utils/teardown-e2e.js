@@ -22,7 +22,7 @@ const logsZipfile = 'logs.zip'
 const repo = process.env.GITHUB_WORKSPACE
   ? process.env.GITHUB_WORKSPACE.split(path.sep).pop()
   : ''
-const buildNum = process.env.GITHUB_RUN_ID
+const buildNum = process.env.GITHUB_RUN_ID || Date.now()
 const uploadedLogsFilename = `${repo}-build-${buildNum}-e2e-logs.zip`
 const {LOGS_S3_BUCKET} = process.env
 
@@ -273,6 +273,7 @@ function uploadLogs () {
       })
       .catch(err => {
         if (err) {
+          console.log(err)
           return makeUploadFailureHandler(
             'An error occurred while uploading the logs'
           )(err)
