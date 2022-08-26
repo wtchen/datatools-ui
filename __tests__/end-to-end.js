@@ -8,6 +8,7 @@ import md5File from 'md5-file/promise'
 import moment from 'moment'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
+// $FlowFixMe we rely on puppeteer being imported externally, as the latest version conflicts with mastarm
 import puppeteer from 'puppeteer'
 
 import {collectingCoverage, getTestFolderFilename, isCi, isDocker} from './test-utils/utils'
@@ -873,12 +874,16 @@ describe('end-to-end', () => {
   })
 
   makeTest('should login', async () => {
+    const username = process.env.E2E_AUTH0_USERNAME
+    const password = process.env.E2E_AUTH0_PASSWORD
+    if (!username || !password) throw Error('E2E username and password must be set!')
+
     await goto('http://datatools-ui:9966', { waitUntil: 'networkidle0' })
     await waitForAndClick('[data-test-id="header-log-in-button"]')
     await waitForSelector('button[class="auth0-lock-submit"]', { visible: true })
     await waitForSelector('input[class="auth0-lock-input"][name="email"]')
-    await type('input[class="auth0-lock-input"][name="email"]', process.env.E2E_AUTH0_USERNAME)
-    await type('input[class="auth0-lock-input"][name="password"]', process.env.E2E_AUTH0_PASSWORD)
+    await type('input[class="auth0-lock-input"][name="email"]', username)
+    await type('input[class="auth0-lock-input"][name="password"]', password)
     await click('button[class="auth0-lock-submit"]')
     await waitForSelector('#context-dropdown')
     await wait(2000, 'for projects to load')
@@ -1220,6 +1225,7 @@ describe('end-to-end', () => {
       // file should get saved to the current root directory, go looking for it
       // verify that file exists
       const downloadsDir = './'
+      // $FlowFixMe old version of flow doesn't know latest fs methods
       const files = await fs.readdir(downloadsDir)
       let feedVersionDownloadFile = ''
       // assume that this file will be the only one matching the feed source ID
@@ -1238,6 +1244,7 @@ describe('end-to-end', () => {
       expect(await md5File(filePath)).toEqual(await md5File(gtfsUploadFile))
 
       // delete file
+      // $FlowFixMe old version of flow doesn't know latest fs methods
       await fs.remove(filePath)
     }, defaultTestTimeout)
 
