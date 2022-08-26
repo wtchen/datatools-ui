@@ -57,34 +57,37 @@ jobs:
       #   run: mkdocs build
       # - name: Whether e2e should run
       #   run: echo Running e2e - {{ inputs.e2e }}
+      - name: Write .env file for Docker
+        # if: inputs.e2e
+        run: |
+          touch .env 
+          echo AUTH0_API_CLIENT= ${{ secrets.AUTH0_API_CLIENT }} >> .env
+          echo AUTH0_API_SECRET= ${{ secrets.AUTH0_API_SECRET }} >> .env
+          echo AUTH0_CLIENT_ID= ${{ secrets.AUTH0_CLIENT_ID }} >> .env
+          echo AUTH0_DOMAIN= ${{ secrets.AUTH0_DOMAIN }} >> .env
+          echo AUTH0_SECRET= ${{ secrets.AUTH0_SECRET }} >> .env
+          echo AWS_ACCESS_KEY_ID= ${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
+          echo AWS_REGION= ${{ secrets.AWS_REGION }} >> .env
+          echo AWS_SECRET_ACCESS_KEY= ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
+          echo E2E_AUTH0_PASSWORD= ${{ secrets.E2E_AUTH0_PASSWORD }} >> .env
+          echo E2E_AUTH0_USERNAME= ${{ secrets.E2E_AUTH0_USERNAME }} >> .env
+          echo GRAPH_HOPPER_KEY= ${{ secrets.GRAPH_HOPPER_KEY }} >> .env
+          echo GTFS_DATABASE_PASSWORD= ${{ secrets.GTFS_DATABASE_PASSWORD }} >> .env
+          echo GTFS_DATABASE_URL= ${{ secrets.GTFS_DATABASE_URL }} >> .env
+          echo GTFS_DATABASE_USER= ${{ secrets.GTFS_DATABASE_USER }} >> .env
+          echo LOGS_S3_BUCKET= ${{ secrets.LOGS_S3_BUCKET }} >> .env
+          echo MAPBOX_ACCESS_TOKEN= ${{ secrets.MAPBOX_ACCESS_TOKEN }} >> .env
+          echo MONGO_DB_NAME= ${{ secrets.MONGO_DB_NAME }} >> .env
+          echo MS_TEAMS_WEBHOOK_URL= ${{ secrets.MS_TEAMS_WEBHOOK_URL }} >> .env
+          echo OSM_VEX= ${{ secrets.OSM_VEX }} >> .env
+          echo RUN_E2E= "true" >> .env
+          echo S3_BUCKET= ${{ secrets.S3_BUCKET }} >> .env
+          echo SPARKPOST_EMAIL= ${{ secrets.SPARKPOST_EMAIL }} >> .env
+          echo SPARKPOST_KEY= ${{ secrets.SPARKPOST_KEY }} >> .env
+          echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> .env
       - name: Run e2e tests
         # if: inputs.e2e
         run: docker-compose -f __tests__/e2e/docker-compose.yml up
-        env:
-          AUTH0_API_CLIENT: ${{ secrets.AUTH0_API_CLIENT }}
-          AUTH0_API_SECRET: ${{ secrets.AUTH0_API_SECRET }}
-          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
-          AUTH0_SECRET: ${{ secrets.AUTH0_SECRET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          E2E_AUTH0_PASSWORD: ${{ secrets.E2E_AUTH0_PASSWORD }}
-          E2E_AUTH0_USERNAME: ${{ secrets.E2E_AUTH0_USERNAME }}
-          GRAPH_HOPPER_KEY: ${{ secrets.GRAPH_HOPPER_KEY }}
-          GTFS_DATABASE_PASSWORD: ${{ secrets.GTFS_DATABASE_PASSWORD }}
-          GTFS_DATABASE_URL: ${{ secrets.GTFS_DATABASE_URL }}
-          GTFS_DATABASE_USER: ${{ secrets.GTFS_DATABASE_USER }}
-          LOGS_S3_BUCKET: ${{ secrets.LOGS_S3_BUCKET }}
-          MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
-          MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
-          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
-          OSM_VEX: ${{ secrets.OSM_VEX }}
-          RUN_E2E: "true"
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          SPARKPOST_EMAIL: ${{ secrets.SPARKPOST_EMAIL }}
-          SPARKPOST_KEY: ${{ secrets.SPARKPOST_KEY }}
-          TRANSITFEEDS_KEY: ${{ secrets.TRANSITFEEDS_KEY }}
       # At this point, the build is successful.
       - name: Semantic Release
         env:
