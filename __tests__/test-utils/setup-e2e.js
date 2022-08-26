@@ -389,13 +389,6 @@ function recreateEndToEndTestResultDirectory () {
 async function verifySetupForLocalEnvironment () {
   const errors = []
 
-  // make sure e2e.yml exists
-  try {
-    await fs.stat('configurations/end-to-end/env.yml')
-  } catch (e) {
-    errors.push(new Error('Failed to detect file `configurations/end-to-end/env.yml`'))
-  }
-
   // make sure services are running
   const endpointChecks = [
     {
