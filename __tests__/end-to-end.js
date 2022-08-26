@@ -1,19 +1,16 @@
 // @flow
 
 import path from 'path'
+import fs from 'fs'
 
-import fs from 'fs-extra'
 import fetch from 'isomorphic-fetch'
-import {safeLoad} from 'js-yaml'
 import md5File from 'md5-file/promise'
 import moment from 'moment'
 import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
+import puppeteer from 'puppeteer'
 
-import {collectingCoverage, getTestFolderFilename, isCi} from './test-utils/utils'
-
-// not imported because of weird flow error
-const puppeteer = require('puppeteer')
+import {collectingCoverage, getTestFolderFilename, isCi, isDocker} from './test-utils/utils'
 
 // if the ISOLATED_TEST is defined, only the specifed test (and any dependet
 // tests) will be ran and all others will be skipped.
@@ -23,12 +20,12 @@ const ISOLATED_TEST = null // null means run all tests
 // TODO: Allow the below options (puppeteer and test) to be enabled via command
 // line options parsed by mastarm.
 const puppeteerOptions = {
-  headless: isCi,
+  headless: isCi || isDocker,
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
   // slowMo: 30 // puts xx milliseconds between events (for easier watching in non-headless)
   // NOTE: In order to run on Travis CI, use args --no-sandbox option
-  args: isCi ? ['--no-sandbox'] : []
+  args: isCi || isDocker ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'] : []
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
@@ -36,14 +33,11 @@ const testOptions = {
 }
 let failingFast = false
 let successfullyCreatedTestProject = false
-let config: {
-  password: string,
-  username: string
-}
 let browser
 let page
+let cdpSession
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
-const OTP_ROOT = 'http://localhost:8080/otp/routers/'
+const OTP_ROOT = 'http://datatools-server:8080/otp/routers/'
 const testTime = moment().format()
 const fileSafeTestTime = moment().format('YYYY-MM-DDTHH-mm-ss')
 const testProjectName = `test-project-${testTime}`
@@ -291,7 +285,7 @@ async function createProject (projectName: string) {
   await expectSelectorToContainHtml('.project-header', projectName)
 
   // go back to project list
-  await goto('http://localhost:9966/project', {waitUntil: 'networkidle0'})
+  await goto('http://datatools-ui:9966/project', {waitUntil: 'networkidle0'})
 
   // verify the new project is listed in the project list
   await expectSelectorToContainHtml('[data-test-id="project-list-table"]', projectName)
@@ -304,7 +298,7 @@ async function createProject (projectName: string) {
 async function deleteProject (projectId: string) {
   log.info(`deleting project with id: ${projectId}`)
   // navigate to that project's settings
-  await goto(`http://localhost:9966/project/${projectId}/settings`)
+  await goto(`http://datatools-ui:9966/project/${projectId}/settings`)
 
   // delete that project
   await waitForAndClick('[data-test-id="delete-project-button"]')
@@ -313,7 +307,7 @@ async function deleteProject (projectId: string) {
   log.info('deleted project')
 
   // verify deletion
-  await goto(`http://localhost:9966/project/${projectId}`)
+  await goto(`http://datatools-ui:9966/project/${projectId}`)
   await waitForSelector('.project-not-found')
   await wait(5000, 'for previously rendered project markup to be removed')
   await expectSelectorToContainHtml('.project-not-found', projectId)
@@ -393,7 +387,7 @@ async function createFeedSourceViaProjectHeaderButton (feedSourceName) {
   log.info(`create Feed Source with name: ${feedSourceName} via project header button`)
   // go to project page
   await goto(
-    `http://localhost:9966/project/${testProjectId}`,
+    `http://datatools-ui:9966/project/${testProjectId}`,
     {
       waitUntil: 'networkidle0'
     }
@@ -517,7 +511,7 @@ async function createStop ({
 
   // save
   await click('[data-test-id="save-entity-button"]')
-  await wait(2000, 'for save to happen')
+  await wait(5000, 'for save to happen')
   log.info(`created stop with name: ${name}`)
 }
 
@@ -685,7 +679,7 @@ async function waitForAndClick (selector: string, waitOptions?: any) {
  */
 async function wait (milliseconds: number, reason?: string) {
   log.info(`waiting ${milliseconds} ms${reason ? ` ${reason}` : ''}...`)
-  await page.waitFor(milliseconds)
+  await page.waitForTimeout(milliseconds)
 }
 
 /**
@@ -796,8 +790,6 @@ async function elementType (elementHandle: any, selector: string, text: string) 
 
 describe('end-to-end', () => {
   beforeAll(async () => {
-    config = (safeLoad(fs.readFileSync('configurations/end-to-end/env.yml')): any)
-
     // Ping the otp endpoint to ensure the server is running.
     try {
       log.info(`Pinging OTP at ${OTP_ROOT}`)
@@ -814,6 +806,7 @@ describe('end-to-end', () => {
     log.info('Launching chromium for testing...')
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
+    cdpSession = await page.target().createCDPSession()
 
     // setup listeners for various events that happen in the browser. In each of
     // the following instances, write to the browser events log that will be
@@ -838,7 +831,7 @@ describe('end-to-end', () => {
     })
 
     // set the default download behavior to download files to the cwd
-    page._client.send(
+    cdpSession.send(
       'Page.setDownloadBehavior',
       { behavior: 'allow', downloadPath: './' }
     )
@@ -873,19 +866,19 @@ describe('end-to-end', () => {
   // ---------------------------------------------------------------------------
 
   makeTest('should load the page', async () => {
-    await goto('http://localhost:9966')
+    await goto('http://datatools-ui:9966')
     await waitForSelector('h1')
     await expectSelectorToContainHtml('h1', 'Data Tools')
     testResults['should load the page'] = true
   })
 
   makeTest('should login', async () => {
-    await goto('http://localhost:9966', { waitUntil: 'networkidle0' })
+    await goto('http://datatools-ui:9966', { waitUntil: 'networkidle0' })
     await waitForAndClick('[data-test-id="header-log-in-button"]')
     await waitForSelector('button[class="auth0-lock-submit"]', { visible: true })
     await waitForSelector('input[class="auth0-lock-input"][name="email"]')
-    await type('input[class="auth0-lock-input"][name="email"]', config.username)
-    await type('input[class="auth0-lock-input"][name="password"]', config.password)
+    await type('input[class="auth0-lock-input"][name="email"]', process.env.E2E_AUTH0_USERNAME)
+    await type('input[class="auth0-lock-input"][name="password"]', process.env.E2E_AUTH0_PASSWORD)
     await click('button[class="auth0-lock-submit"]')
     await waitForSelector('#context-dropdown')
     await wait(2000, 'for projects to load')
@@ -896,7 +889,7 @@ describe('end-to-end', () => {
     const testUserSlug = testUserEmail.split('@')[0]
     makeTestPostLogin('should allow admin user to create another user', async () => {
       // navigage to admin page
-      await goto('http://localhost:9966/admin/users', { waitUntil: 'networkidle0' })
+      await goto('http://datatools-ui:9966/admin/users', { waitUntil: 'networkidle0' })
 
       // click on create user button
       await waitForAndClick('[data-test-id="create-user-button"]')
@@ -968,7 +961,7 @@ describe('end-to-end', () => {
 
   describe('project', () => {
     makeTestPostLogin('should create a project', async () => {
-      await goto('http://localhost:9966/home', { waitUntil: 'networkidle0' })
+      await goto('http://datatools-ui:9966/home', { waitUntil: 'networkidle0' })
       await createProject(testProjectName)
 
       // go into the project page and verify that it looks ok-ish
@@ -995,7 +988,7 @@ describe('end-to-end', () => {
     makeTestPostLogin('should update a project by adding an otp server', async () => {
       // navigate to server admin page
       await goto(
-        `http://localhost:9966/admin/servers`,
+        `http://datatools-ui:9966/admin/servers`,
         {
           waitUntil: 'networkidle0'
         }
@@ -1015,12 +1008,12 @@ describe('end-to-end', () => {
       await elementType(
         newServerPanel,
         'input[name="otpServers.$index.publicUrl"]',
-        'http://localhost:8080'
+        'http://datatools-server:8080'
       )
       await elementType(
         newServerPanel,
         'input[name="otpServers.$index.internalUrl"]',
-        'http://localhost:8080/otp'
+        'http://datatools-server:8080/otp'
       )
       await elementClick(newServerPanel, '[data-test-id="save-item-button"]')
 
@@ -1035,7 +1028,7 @@ describe('end-to-end', () => {
 
         // navigate to home project view
         await goto(
-          `http://localhost:9966/home/${testProjectId}`,
+          `http://datatools-ui:9966/home/${testProjectId}`,
           {
             waitUntil: 'networkidle0'
           }
@@ -1075,7 +1068,7 @@ describe('end-to-end', () => {
     makeTestPostLogin('should create feed source', async () => {
       // go to project page
       await goto(
-        `http://localhost:9966/project/${testProjectId}`,
+        `http://datatools-ui:9966/project/${testProjectId}`,
         {
           waitUntil: 'networkidle0'
         }
@@ -1216,7 +1209,7 @@ describe('end-to-end', () => {
 
   describe('feed version', () => {
     makeTestPostFeedSource('should download a feed version', async () => {
-      await goto(`http://localhost:9966/feed/${feedSourceId}`)
+      await goto(`http://datatools-ui:9966/feed/${feedSourceId}`)
       // Select previous version
       await waitForAndClick('[data-test-id="decrement-feed-version-button"]')
       await wait(2000, 'for previous version to be active')
@@ -1253,7 +1246,7 @@ describe('end-to-end', () => {
       // feed versions after this test takes place
       makeTestPostFeedSource('should delete a feed version', async () => {
         // browse to feed source page
-        await goto(`http://localhost:9966/feed/${feedSourceId}`)
+        await goto(`http://datatools-ui:9966/feed/${feedSourceId}`)
         // for whatever reason, waitUntil: networkidle0 was not working with the
         // above goto, so wait for a few seconds here
         await wait(5000, 'additional time for page to load')
@@ -2727,7 +2720,7 @@ describe('end-to-end', () => {
     makeEditorEntityTest('should make snapshot active version', async () => {
       // go back to feed
       // not sure why, but clicking on the nav home button doesn't work
-      await goto(`http://localhost:9966/feed/${scratchFeedSourceId}`)
+      await goto(`http://datatools-ui:9966/feed/${scratchFeedSourceId}`)
 
       // wait for page to be visible and go to snapshots tab
       await waitForAndClick('#feed-source-viewer-tabs-tab-snapshots')

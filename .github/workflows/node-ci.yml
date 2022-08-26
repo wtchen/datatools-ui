@@ -57,24 +57,11 @@ jobs:
         run: mkdocs build
       - name: Whether e2e should run
         run: echo Running e2e - {{ inputs.e2e }}
-      - name: Start MongoDB
-        if: inputs.e2e
-        uses: supercharge/mongodb-github-action@1.3.0
-        with:
-          mongodb-version: 4.2
-      - name: Add aws credentials for datatools-server
-        if: inputs.e2e
-        run: mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=${AWS_REGION}' > ~/.aws/config
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Install otp-runner
-        if: inputs.e2e
-        run: yarn global add https://github.com/ibi-group/otp-runner.git
+      - name: build pp docker image
+        run: docker build ./__tests__/e2e/puppeteer/ --tag pp
       - name: Run e2e tests
-        if: inputs.e2e
-        run: yarn test-end-to-end
+        # if: inputs.e2e
+        run: docker-compose -f __tests__/e2e/docker-compose.yml up
         env:
           AUTH0_API_CLIENT: ${{ secrets.AUTH0_API_CLIENT }}
           AUTH0_API_SECRET: ${{ secrets.AUTH0_API_SECRET }}

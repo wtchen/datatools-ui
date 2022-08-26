@@ -1,0 +1,72 @@
+version: '3.8'
+
+x-common-variables: &common-variables
+    - E2E_AUTH0_USERNAME=${E2E_AUTH0_USERNAME}
+    - E2E_AUTH0_PASSWORD=${E2E_AUTH0_PASSWORD}
+    - S3_BUCKET=${S3_BUCKET}
+    - TRANSITFEEDS_KEY=${TRANSITFEEDS_KEY}
+    - GITHUB_REPOSITORY=${GITHUB_REPOSITORY}
+    - GITHUB_WORKSPACE=${GITHUB_WORKSPACE}
+    - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+    - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+    - AUTH0_SECRET=${AUTH0_SECRET}
+    - AUTH0_API_CLIENT=${AUTH0_API_CLIENT}
+    - AUTH0_API_SECRET=${AUTH0_API_SECRET}
+    - OSM_VEX=${OSM_VEX}
+    - SPARKPOST_KEY=${SPARKPOST_KEY}
+    - SPARKPOST_EMAIL=${SPARKPOST_EMAIL}
+    - GTFS_DATABASE_URL=${SPARKPOST_EMAIL}
+    - GTFS_DATABASE_USER=root
+    - GTFS_DATABASE_PASSWORD=e2e
+    - MONGO_DB_NAME=data_manager
+    - MONGO_HOST=mongo:27017
+    - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    - AWS_REGION=${AWS_REGION}
+    - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+
+services:
+  datatools-e2e-tests:
+    build:
+      context: ../../
+      args: *common-variables
+      dockerfile: ./__tests__/e2e/Dockerfile
+
+    command: /bin/sh -c "./wait-for-command.sh -c 'nc -z datatools-ui 9966' && sleep 10 && yarn test-end-to-end"
+    shm_size: '2gb'
+    cap_add:
+      - ALL
+    depends_on:
+      - "datatools-server" 
+      - "datatools-ui"
+      - "mongo"
+      - "postgres"
+    environment: *common-variables
+
+  mongo:
+    image: mongo
+    restart: always
+  datatools-server:
+    build:
+      context: ../../
+      dockerfile: ./__tests__/e2e/server/Dockerfile
+      args: *common-variables
+    restart: always
+    environment: *common-variables
+    ports:
+    - "4000:4000"
+  datatools-ui:
+    build:
+      context: ../../
+      dockerfile: ./__tests__/e2e/ui/Dockerfile
+    restart: always
+    environment: *common-variables
+    ports:
+    - "9966:9966"
+  postgres:
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: root
+      POSTGRES_PASS: e2e
+      POSTGRES_DB: dmtest
+    image: postgres
+    restart: always 
