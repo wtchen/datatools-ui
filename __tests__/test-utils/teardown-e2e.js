@@ -247,10 +247,10 @@ async function uploadToSlack () {
  * slack or MS Teams channel (if defined)
  */
 function uploadLogs () {
-  if (!(slackConfigured || msTeamsConfigured)) {
-    console.warn('Log upload environment variables undefined, not uploading logs anywhere!')
-    return
-  }
+  // if (!(slackConfigured || msTeamsConfigured)) {
+  //   console.warn('Log upload environment variables undefined, not uploading logs anywhere!')
+  //   return
+  // }
 
   const output = fs.createWriteStream(logsZipfile)
   const archive = archiver('zip')
