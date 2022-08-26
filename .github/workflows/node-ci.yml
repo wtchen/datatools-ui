@@ -57,8 +57,6 @@ jobs:
       #   run: mkdocs build
       # - name: Whether e2e should run
       #   run: echo Running e2e - {{ inputs.e2e }}
-      - name: build pp docker image
-        run: docker build ./__tests__/e2e/puppeteer/ --tag pp
       - name: Run e2e tests
         # if: inputs.e2e
         run: docker-compose -f __tests__/e2e/docker-compose.yml up
