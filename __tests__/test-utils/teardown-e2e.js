@@ -155,9 +155,9 @@ async function uploadToMicrosoftTeams () {
 
   console.log('posting message to MS Teams')
 
-  const testResults = require(
-    path.resolve(`./${getTestFolderFilename('results.json')}`)
-  )
+  // const testResults = require(
+  //   path.resolve(`./${getTestFolderFilename('results.json')}`)
+  // )
   const actions = [{
     '@type': 'OpenUri',
     name: `View GitHub Action Build #${buildNum}`,
@@ -195,10 +195,10 @@ async function uploadToMicrosoftTeams () {
           '@context': 'https://schema.org/extensions',
           '@type': 'MessageCard',
           themeColor: '0072C6',
-          title: `${repo} e2e test ${testResults.success ? 'passed. ✅' : 'failed. ❌'}`,
+          title: `${repo} e2e test ${false ? 'passed. ✅' : 'failed. ❌'}`,
           text: `📁 **branch:** ${process.env.GITHUB_REF_SLUG}\n
 📄 **commit:** [${commit.slice(0, 6)}](${commitUrl})\n
-📊 **result:** ${testResults.numPassedTests} / ${testResults.numTotalTests} tests passed\n
+📊 **result:** ${0} / ${0} tests passed\n
 `,
           potentialAction: actions
         })
