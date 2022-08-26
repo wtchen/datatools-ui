@@ -61,7 +61,7 @@ jobs:
         # if: inputs.e2e
         run: |
           touch __tests__/e2e/.env 
-          echo MONGO_DB_NAME=$MONGO_DB_NAME >> __tests__/e2e/.env
+          echo MONGO_DB_NAME=${{ secrets.OSM_VEX }} >> __tests__/e2e/.env
           echo RUN_E2E="true" >> __tests__/e2e/.env
         env:
           AUTH0_API_CLIENT: ${{ secrets.AUTH0_API_CLIENT }}
