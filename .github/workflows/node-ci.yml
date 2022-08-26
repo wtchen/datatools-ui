@@ -61,30 +61,56 @@ jobs:
         # if: inputs.e2e
         run: |
           touch __tests__/e2e/.env 
-          echo AUTH0_API_CLIENT= ${{ secrets.AUTH0_API_CLIENT }} >> __tests__/e2e/.env
-          echo AUTH0_API_SECRET= ${{ secrets.AUTH0_API_SECRET }} >> __tests__/e2e/.env
-          echo AUTH0_CLIENT_ID= ${{ secrets.AUTH0_CLIENT_ID }} >> __tests__/e2e/.env
-          echo AUTH0_DOMAIN= ${{ secrets.AUTH0_DOMAIN }} >> __tests__/e2e/.env
-          echo AUTH0_SECRET= ${{ secrets.AUTH0_SECRET }} >> __tests__/e2e/.env
-          echo AWS_ACCESS_KEY_ID= ${{ secrets.AWS_ACCESS_KEY_ID }} >> __tests__/e2e/.env
-          echo AWS_REGION= ${{ secrets.AWS_REGION }} >> __tests__/e2e/.env
-          echo AWS_SECRET_ACCESS_KEY= ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> __tests__/e2e/.env
-          echo E2E_AUTH0_PASSWORD= ${{ secrets.E2E_AUTH0_PASSWORD }} >> __tests__/e2e/.env
-          echo E2E_AUTH0_USERNAME= ${{ secrets.E2E_AUTH0_USERNAME }} >> __tests__/e2e/.env
-          echo GRAPH_HOPPER_KEY= ${{ secrets.GRAPH_HOPPER_KEY }} >> __tests__/e2e/.env
-          echo GTFS_DATABASE_PASSWORD= ${{ secrets.GTFS_DATABASE_PASSWORD }} >> __tests__/e2e/.env
-          echo GTFS_DATABASE_URL= ${{ secrets.GTFS_DATABASE_URL }} >> __tests__/e2e/.env
-          echo GTFS_DATABASE_USER= ${{ secrets.GTFS_DATABASE_USER }} >> __tests__/e2e/.env
-          echo LOGS_S3_BUCKET= ${{ secrets.LOGS_S3_BUCKET }} >> __tests__/e2e/.env
-          echo MAPBOX_ACCESS_TOKEN= ${{ secrets.MAPBOX_ACCESS_TOKEN }} >> __tests__/e2e/.env
-          echo MONGO_DB_NAME= ${{ secrets.MONGO_DB_NAME }} >> __tests__/e2e/.env
-          echo MS_TEAMS_WEBHOOK_URL= ${{ secrets.MS_TEAMS_WEBHOOK_URL }} >> __tests__/e2e/.env
-          echo OSM_VEX= ${{ secrets.OSM_VEX }} >> __tests__/e2e/.env
-          echo RUN_E2E= "true" >> __tests__/e2e/.env
-          echo S3_BUCKET= ${{ secrets.S3_BUCKET }} >> __tests__/e2e/.env
-          echo SPARKPOST_EMAIL= ${{ secrets.SPARKPOST_EMAIL }} >> __tests__/e2e/.env
-          echo SPARKPOST_KEY= ${{ secrets.SPARKPOST_KEY }} >> __tests__/e2e/.env
-          echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> __tests__/e2e/.env
+          echo AUTH0_API_CLIENT=$AUTH0_API_CLIENT >> __tests__/e2e/.env
+          echo AUTH0_API_SECRET=$AUTH0_API_SECRET >> __tests__/e2e/.env
+          echo AUTH0_CLIENT_ID=$AUTH0_CLIENT_ID >> __tests__/e2e/.env
+          echo AUTH0_DOMAIN=$AUTH0_DOMAIN >> __tests__/e2e/.env
+          echo AUTH0_SECRET=$AUTH0_SECRET >> __tests__/e2e/.env
+          echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> __tests__/e2e/.env
+          echo AWS_REGION=$AWS_REGION >> __tests__/e2e/.env
+          echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> __tests__/e2e/.env
+          echo E2E_AUTH0_PASSWORD=$E2E_AUTH0_PASSWORD >> __tests__/e2e/.env
+          echo E2E_AUTH0_USERNAME=$E2E_AUTH0_USERNAME >> __tests__/e2e/.env
+          echo GRAPH_HOPPER_KEY=$secrets.GRAPH_HOPPER_KEY >> __tests__/e2e/.env
+          echo GTFS_DATABASE_PASSWORD=$GTFS_DATABASE_PASSWORD >> __tests__/e2e/.env
+          echo GTFS_DATABASE_URL=$GTFS_DATABASE_URL >> __tests__/e2e/.env
+          echo GTFS_DATABASE_USER=$GTFS_DATABASE_USER >> __tests__/e2e/.env
+          echo LOGS_S3_BUCKET=$LOGS_S3_BUCKET >> __tests__/e2e/.env
+          echo MAPBOX_ACCESS_TOKEN=$MAPBOX_ACCESS_TOKEN >> __tests__/e2e/.env
+          echo MONGO_DB_NAME=$MONGO_DB_NAME >> __tests__/e2e/.env
+          echo MS_TEAMS_WEBHOOK_URL=$MS_TEAMS_WEBHOOK_URL >> __tests__/e2e/.env
+          echo OSM_VEX=$OSM_VEX >> __tests__/e2e/.env
+          echo RUN_E2E="true" >> __tests__/e2e/.env
+          echo S3_BUCKET=$S3_BUCKET >> __tests__/e2e/.env
+          echo SPARKPOST_EMAIL=$SPARKPOST_EMAIL >> __tests__/e2e/.env
+          echo SPARKPOST_KEY=$SPARKPOST_KEY >> __tests__/e2e/.env
+          echo TRANSITFEEDS_KEY=$TRANSITFEEDS_KEY >> __tests__/e2e/.env
+        env:
+          AUTH0_API_CLIENT: ${{ secrets.AUTH0_API_CLIENT }}
+          AUTH0_API_SECRET: ${{ secrets.AUTH0_API_SECRET }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_SECRET: ${{ secrets.AUTH0_SECRET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          E2E_AUTH0_PASSWORD: ${{ secrets.E2E_AUTH0_PASSWORD }}
+          E2E_AUTH0_USERNAME: ${{ secrets.E2E_AUTH0_USERNAME }}
+          GRAPH_HOPPER_KEY: ${{ secrets.GRAPH_HOPPER_KEY }}
+          GTFS_DATABASE_PASSWORD: ${{ secrets.GTFS_DATABASE_PASSWORD }}
+          GTFS_DATABASE_URL: ${{ secrets.GTFS_DATABASE_URL }}
+          GTFS_DATABASE_USER: ${{ secrets.GTFS_DATABASE_USER }}
+          LOGS_S3_BUCKET: ${{ secrets.LOGS_S3_BUCKET }}
+          MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
+          MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+          MS_TEAMS_WEBHOOK_URL: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+          OSM_VEX: ${{ secrets.OSM_VEX }}
+          RUN_E2E: "true"
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          SPARKPOST_EMAIL: ${{ secrets.SPARKPOST_EMAIL }}
+          SPARKPOST_KEY: ${{ secrets.SPARKPOST_KEY }}
+          TRANSITFEEDS_KEY: ${{ secrets.TRANSITFEEDS_KEY }}
+
       - name: Run e2e tests
         # if: inputs.e2e
         run: docker-compose --env-file __tests__/e2e/.env -f __tests__/e2e/docker-compose.yml up --abort-on-container-exit -d
