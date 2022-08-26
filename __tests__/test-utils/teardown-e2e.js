@@ -22,7 +22,7 @@ const logsZipfile = 'logs.zip'
 const repo = process.env.GITHUB_WORKSPACE
   ? process.env.GITHUB_WORKSPACE.split(path.sep).pop()
   : ''
-const buildNum = process.env.GITHUB_RUN_ID || Date.now()
+const buildNum = process.env.GITHUB_RUN_ID || 'localhost'
 const uploadedLogsFilename = `${repo}-build-${buildNum}-e2e-logs.zip`
 const {LOGS_S3_BUCKET} = process.env
 
