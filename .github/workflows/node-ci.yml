@@ -84,7 +84,7 @@ jobs:
         
       - name: Run e2e tests
         # if: inputs.e2e
-        run: docker-compose --env-file __tests__/e2e/.env -f __tests__/e2e/docker-compose.yml up --abort-on-container-exit -d
+        run: docker-compose --env-file __tests__/e2e/.env -f __tests__/e2e/docker-compose.yml up --abort-on-container-exit
       # At this point, the build is successful.
       - name: Semantic Release
         env:
