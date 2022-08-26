@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1
-# TODO: real source
-FROM pp
+FROM public.ecr.aws/s2a5w2n9/puppeteer:latest
 WORKDIR /datatools-ui
 
 USER root
