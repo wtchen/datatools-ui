@@ -1222,7 +1222,7 @@ describe('end-to-end', () => {
       await wait(2000, 'for previous version to be active')
       // Download version
       await click('[data-test-id="download-feed-version-button"]')
-      await wait(5000, 'for file to download')
+      await wait(15000, 'for file to download')
 
       // file should get saved to the current root directory, go looking for it
       // verify that file exists
