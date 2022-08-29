@@ -24,7 +24,7 @@ const puppeteerOptions = {
   headless: isCi || isDocker,
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
-  slowMo: 50, // puts xx milliseconds between events (for easier watching in non-headless)
+  // slowMo: 50, // puts xx milliseconds between events (for easier watching in non-headless)
   // NOTE: In order to run on Travis CI, use args --no-sandbox option
   args: isCi || isDocker ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'] : []
 }
