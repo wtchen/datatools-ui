@@ -183,7 +183,7 @@ async function uploadToMicrosoftTeams () {
   }
 
   let fetchResponse
-  const commit = process.env.GITHUB_SHA
+  const commit = process.env.GITHUB_SHA || 'localhost'
   const baseRepoUrl = `https://github.com/ibi-group/datatools-${isUiRepo ? 'ui' : 'server'}`
   const commitUrl = `${baseRepoUrl}/commit/${commit}`
   try {
