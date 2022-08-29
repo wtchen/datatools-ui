@@ -24,7 +24,7 @@ const puppeteerOptions = {
   headless: isCi || isDocker,
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
-  // slowMo: 30 // puts xx milliseconds between events (for easier watching in non-headless)
+  slowMo: 50, // puts xx milliseconds between events (for easier watching in non-headless)
   // NOTE: In order to run on Travis CI, use args --no-sandbox option
   args: isCi || isDocker ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'] : []
 }
@@ -276,13 +276,13 @@ async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await click('#context-dropdown')
   await waitForAndClick('a[href="/project/new"]')
-  await wait(1000)
+  await wait(2500)
   await page.reload({ waitUntil: 'networkidle0' })
   await waitForSelector('[data-test-id="project-name-input-container"]')
   await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
   log.info('saving new project')
-  await wait(2000, 'for project to get saved')
+  await wait(3500, 'for project to get saved')
 
   // verify that the project was created with the proper name
   await expectSelectorToContainHtml('.project-header', projectName)

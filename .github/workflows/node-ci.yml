@@ -10,37 +10,20 @@ on:
 jobs:
   test-build-release:
     runs-on: ubuntu-latest
-    # Add postgres for end-to-end
-    services:
-      postgres:
-        image: postgres:10.8
-        # Set postgres env variables according to test env.yml config
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v2
       # install python 3.x in order to have mkdocs properly installed
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-      - name: Install mkdocs
-        run: |
-          pip install mkdocs
-          mkdocs --version
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
+      # - uses: actions/setup-python@v2
+      #   with:
+      #     python-version: '3.x'
+      # - name: Install mkdocs
+      #   run: |
+      #     pip install mkdocs
+      #     mkdocs --version
+      # - name: Use Node.js 12.x
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: 12.x
       # - name: Install npm/yarn packages using cache
       #   uses: bahmutov/npm-install@v1
       # - name: Lint code
@@ -86,9 +69,9 @@ jobs:
       # In this step, this action saves a list of existing images,
       # the cache is created without them in the post run.
       # It also restores the cache if it exists.
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
+      # - uses: satackey/action-docker-layer-caching@v0.0.11
+      #   # Ignore the failure of a step and avoid terminating the job.
+      #   continue-on-error: true
       - name: Run e2e tests
         # if: inputs.e2e
         run: docker-compose --env-file __tests__/e2e/.env -f __tests__/e2e/docker-compose.yml up --abort-on-container-exit
