@@ -274,10 +274,11 @@ async function expectFeedVersionValidityDates (startDate: string, endDate: strin
  */
 async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
+  await wait(3000)
   await click('#context-dropdown')
+  await wait(3000)
   await waitForAndClick('a[href="/project/new"]')
-  await wait(2500)
-  await page.reload({ waitUntil: 'networkidle0' })
+  await wait(3000)
   await waitForSelector('[data-test-id="project-name-input-container"]')
   await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
