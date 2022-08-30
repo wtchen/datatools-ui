@@ -1,8 +1,8 @@
 // @flow
 
 import path from 'path'
-import fs from 'fs'
 
+import fs from 'fs-extra'
 import fetch from 'isomorphic-fetch'
 import md5File from 'md5-file/promise'
 import moment from 'moment'
@@ -30,7 +30,7 @@ const puppeteerOptions = {
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
-  failFast: false
+  failFast: true
 }
 let failingFast = false
 let successfullyCreatedTestProject = false
@@ -279,6 +279,13 @@ async function createProject (projectName: string) {
   await wait(3000)
   await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
+  try {
+    await page.$('[data-test-id="project-name-input-container"]')
+    // Does exist
+  } catch {
+    // Does not
+    await page.reload()
+  }
   await waitForSelector('[data-test-id="project-name-input-container"]')
   await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
@@ -312,6 +319,7 @@ async function deleteProject (projectId: string) {
 
   // verify deletion
   await goto(`http://datatools-ui:9966/project/${projectId}`)
+  await wait(3000, 'for project page to load')
   await waitForSelector('.project-not-found')
   await wait(5000, 'for previously rendered project markup to be removed')
   await expectSelectorToContainHtml('.project-not-found', projectId)
