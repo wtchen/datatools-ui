@@ -279,7 +279,7 @@ async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await wait(3000)
   await click('#context-dropdown')
-  await wait(3000)
+  await wait(6000)
   await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
   try {
@@ -840,9 +840,9 @@ describe('end-to-end', () => {
       browserEventLogs.error(`Request failed: ${req.method()} ${req.url()}`)
     })
     // log all successful requests
-    page.on('requestfinished', req => {
-      browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
-    })
+    // page.on('requestfinished', req => {
+    //   browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
+    // })
 
     // set the default download behavior to download files to the cwd
     cdpSession.send(
