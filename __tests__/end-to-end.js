@@ -284,7 +284,7 @@ async function createProject (projectName: string) {
     // Does exist
   } catch {
     // Does not
-    await page.reload()
+    await goto('http://datatools-ui:9966/project/new', {waitUntil: 'networkidle0'})
   }
   await waitForSelector('[data-test-id="project-name-input-container"]')
   await type('[data-test-id="project-name-input-container"] input', projectName)
