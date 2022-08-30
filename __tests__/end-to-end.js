@@ -280,11 +280,9 @@ async function createProject (projectName: string) {
   await wait(3000)
   await click('#context-dropdown')
   await wait(3000)
-  await waitForAndClick('a[href="/project/new"]')
+  // await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
-  log.info('did the source code update?')
   await goto('http://datatools-ui:9966/project/new', {waitUntil: 'networkidle0'})
-  log.info('did the source code update?')
   await wait(3000)
   await waitForSelector('[data-test-id="project-name-input-container"]')
   await type('[data-test-id="project-name-input-container"] input', projectName)
@@ -820,7 +818,7 @@ describe('end-to-end', () => {
     page = await browser.newPage()
     cdpSession = await page.target().createCDPSession()
     recorder = new PuppeteerScreenRecorder(page)
-    await recorder.start('/datatools-ui/e2e-test-results/out.mp4')
+    await recorder.start('/datatools-ui/e2e-test-results/recording.mp4')
 
     // setup listeners for various events that happen in the browser. In each of
     // the following instances, write to the browser events log that will be
