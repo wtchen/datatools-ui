@@ -52,7 +52,8 @@ jobs:
           echo AWS_ACCESS_KEY_ID= ${{ secrets.AWS_ACCESS_KEY_ID }} >> __tests__/e2e/.env
           echo AWS_REGION=us-east-1 >> __tests__/e2e/.env
           echo AWS_SECRET_ACCESS_KEY= ${{ secrets.AWS_SECRET_ACCESS_KEY }} >> __tests__/e2e/.env
-          echo MS_TEAMS_WEBHOOK_URL= ${{ secrets.MS_TEAMS_WEBHOOK_URL }} >> __tests__/e2e/.env
+          echo GITHUB_REF_SLUG= ${{ secrets.GITHUB_REF_SLUG }} >> __tests__/e2e/.env
+          echo GITHUB_SHA= ${{ secrets.GITHUB_SHA }} >> __tests__/e2e/.env
           echo E2E_AUTH0_PASSWORD= ${{ secrets.E2E_AUTH0_PASSWORD }} >> __tests__/e2e/.env
           echo E2E_AUTH0_USERNAME= ${{ secrets.E2E_AUTH0_USERNAME }} >> __tests__/e2e/.env
           echo GRAPH_HOPPER_KEY= ${{ secrets.GRAPH_HOPPER_KEY }} >> __tests__/e2e/.env
