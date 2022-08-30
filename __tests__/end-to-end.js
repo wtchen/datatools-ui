@@ -10,6 +10,7 @@ import SimpleNodeLogger from 'simple-node-logger'
 import uuidv4 from 'uuid/v4'
 // $FlowFixMe we rely on puppeteer being imported externally, as the latest version conflicts with mastarm
 import puppeteer from 'puppeteer'
+import { PuppeteerScreenRecorder } from 'puppeteer-screen-recorder'
 
 import {collectingCoverage, getTestFolderFilename, isCi, isDocker} from './test-utils/utils'
 
@@ -816,6 +817,8 @@ describe('end-to-end', () => {
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
     cdpSession = await page.target().createCDPSession()
+    const recorder = new PuppeteerScreenRecorder(page)
+    await recorder.start('/datatools-ui/e2e-test-results/out.mp4')
 
     // setup listeners for various events that happen in the browser. In each of
     // the following instances, write to the browser events log that will be
