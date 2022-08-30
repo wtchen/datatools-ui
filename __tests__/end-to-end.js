@@ -280,11 +280,13 @@ async function createProject (projectName: string) {
   await wait(3000)
   await click('#context-dropdown')
   await wait(3000)
-  // await waitForAndClick('a[href="/project/new"]')
+  await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
-  await goto('http://datatools-ui:9966/project/new', {waitUntil: 'networkidle0'})
-  await wait(3000)
-  await waitForSelector('[data-test-id="project-name-input-container"]')
+  try {
+    await waitForSelector('[data-test-id="project-name-input-container"]')
+  } catch {
+    await page.refresh()
+  }
   await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
   log.info('saving new project')
