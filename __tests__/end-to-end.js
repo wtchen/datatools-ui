@@ -279,7 +279,10 @@ async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await wait(3000)
   await click('#context-dropdown')
-  await wait(6000)
+  await page.reload()
+  await wait(3000)
+  await page.reload()
+  await wait(3000)
   await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
   try {
