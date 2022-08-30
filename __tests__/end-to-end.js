@@ -37,6 +37,7 @@ let failingFast = false
 let successfullyCreatedTestProject = false
 let browser
 let page
+let recorder
 let cdpSession
 const gtfsUploadFile = './configurations/end-to-end/test-gtfs-to-upload.zip'
 const OTP_ROOT = 'http://datatools-server:8080/otp/routers/'
@@ -173,6 +174,7 @@ function makeMakeTest (defaultDependentTests: Array<string> | string = []) {
       } catch (e) {
         log.error(`test "${name}" failed due to error: ${e}`)
         // Take screenshot of page to help debugging.
+        await recorder.stop()
         await page.screenshot({
           path: getTestFolderFilename(
             `e2e-error-${name.replace(' ', '_')}-${fileSafeTestTime}.jpeg`
@@ -817,7 +819,7 @@ describe('end-to-end', () => {
     browser = await puppeteer.launch(puppeteerOptions)
     page = await browser.newPage()
     cdpSession = await page.target().createCDPSession()
-    const recorder = new PuppeteerScreenRecorder(page)
+    recorder = new PuppeteerScreenRecorder(page)
     await recorder.start('/datatools-ui/e2e-test-results/out.mp4')
 
     // setup listeners for various events that happen in the browser. In each of
