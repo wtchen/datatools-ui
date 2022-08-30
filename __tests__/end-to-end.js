@@ -285,7 +285,7 @@ async function createProject (projectName: string) {
   try {
     await waitForSelector('[data-test-id="project-name-input-container"]')
   } catch {
-    await page.refresh()
+    await page.reload()
   }
   await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
