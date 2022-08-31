@@ -648,7 +648,11 @@ async function waitForSelector (selector: string, options?: any) {
   const startTime = new Date()
   await wait(100, 'delay before looking for selector...')
   log.info(`waiting for selector: ${selector}`)
-  await page.waitForSelector(selector, options)
+  try {
+    await page.waitForSelector(selector, options)
+  } catch {
+    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] })
+  }
   log.info(`selector ${selector} took ${formatSecondsElapsed(startTime)}`)
 }
 
@@ -1121,12 +1125,9 @@ describe('end-to-end', () => {
     makeTestPostFeedSource('should process uploaded gtfs', async () => {
       await uploadGtfs()
 
-      try {
       // wait for main tab to show up with version validity info
-        await waitForSelector('[data-test-id="active-feed-version-validity-start"]')
-      } catch {
-        await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] })
-      }
+      await waitForSelector('[data-test-id="active-feed-version-validity-start"]')
+
       // verify feed was uploaded
       await expectFeedVersionValidityDates('Jan 1, 2014', 'Dec 31, 2018')
     }, defaultTestTimeout)
