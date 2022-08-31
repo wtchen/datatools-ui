@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:12
+FROM node:14
 WORKDIR /datatools-build
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
@@ -10,5 +10,4 @@ COPY package.json yarn.lock /datatools-build/
 RUN yarn
 COPY . /datatools-build/ 
 COPY configurations/default /datatools-config/
-# CMD yarn run start -c /datatools-config
 CMD yarn run mastarm build --env dev --serve --proxy http://datatools-server:4000/api # 
