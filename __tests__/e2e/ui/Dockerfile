@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:14
+FROM node:12
 WORKDIR /datatools-build
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
