@@ -279,20 +279,12 @@ async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await wait(3000)
   await click('#context-dropdown')
-  await page.reload()
   await wait(3000)
   await page.reload()
-  await wait(3000)
+  await wait(5000)
   await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
-  try {
-    await waitForSelector('[data-test-id="project-name-input-container"]')
-  } catch {
-    await page.reload()
-    await wait(3000)
-  }
-  await page.reload()
-  await wait(3000)
+  await waitForSelector('[data-test-id="project-name-input-container"]')
   await type('[data-test-id="project-name-input-container"] input', projectName)
   await click('[data-test-id="project-settings-form-save-button"]')
   log.info('saving new project')
@@ -833,9 +825,7 @@ describe('end-to-end', () => {
     // included in the zipped upload of the e2e logs.
 
     // log everything that was logged to the browser console
-    page.on('console', async msg => browserEventLogs.info(
-      ...await Promise.all(msg.args().map(arg => arg.jsonValue()))
-    ))
+    page.on('console', msg => { browserEventLogs.info(msg.text()) })
     // log all errors that were logged to the browser console
     page.on('error', error => {
       browserEventLogs.error(error)
