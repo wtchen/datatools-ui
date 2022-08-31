@@ -1,6 +1,7 @@
 version: '3.8'
 
 x-common-variables: &common-variables
+    - BUGSNAG_KEY=${BUGSNAG_KEY}
     - E2E_AUTH0_USERNAME=${E2E_AUTH0_USERNAME:?err}
     - E2E_AUTH0_PASSWORD=${E2E_AUTH0_PASSWORD:?err}
     - S3_BUCKET=${S3_BUCKET:?err}
