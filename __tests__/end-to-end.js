@@ -652,6 +652,7 @@ async function waitForSelector (selector: string, options?: any) {
     await page.waitForSelector(selector, options)
   } catch {
     await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] })
+    await page.waitForSelector(selector, options)
   }
   log.info(`selector ${selector} took ${formatSecondsElapsed(startTime)}`)
 }
