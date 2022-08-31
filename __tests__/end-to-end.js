@@ -279,8 +279,6 @@ async function createProject (projectName: string) {
   log.info(`creating project with name: ${projectName}`)
   await wait(3000)
   await click('#context-dropdown')
-  await wait(3000)
-  await page.reload()
   await wait(5000)
   await waitForAndClick('a[href="/project/new"]')
   await wait(3000)
@@ -827,6 +825,9 @@ describe('end-to-end', () => {
     // log everything that was logged to the browser console
     page.on('console', msg => { browserEventLogs.info(msg.text()) })
     // log all errors that were logged to the browser console
+    page.on('warn', warn => {
+      browserEventLogs.error(warn)
+    })
     page.on('error', error => {
       browserEventLogs.error(error)
       browserEventLogs.error(error.stack)
