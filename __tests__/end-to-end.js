@@ -833,7 +833,7 @@ describe('end-to-end', () => {
     // included in the zipped upload of the e2e logs.
 
     // log everything that was logged to the browser console
-    page.on('console', async msg => browserEventLogs[msg._type](
+    page.on('console', async msg => browserEventLogs.info(
       ...await Promise.all(msg.args().map(arg => arg.jsonValue()))
     ))
     // log all errors that were logged to the browser console
