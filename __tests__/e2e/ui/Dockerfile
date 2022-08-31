@@ -3,6 +3,7 @@ FROM node:14
 WORKDIR /datatools-build
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ARG BUGSNAG_KEY
 
 RUN cd /datatools-build
 COPY package.json yarn.lock /datatools-build/
