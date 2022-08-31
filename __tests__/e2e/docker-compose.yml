@@ -64,6 +64,7 @@ services:
     build:
       context: ../../
       dockerfile: ./__tests__/e2e/ui/Dockerfile
+      args: *common-variables
     restart: always
     environment: *common-variables
     ports:
