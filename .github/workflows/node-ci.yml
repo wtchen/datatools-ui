@@ -44,6 +44,7 @@ jobs:
         # if: inputs.e2e
         run: |
           touch __tests__/e2e/.env 
+          echo BUGSNAG_KEY= ${{ secrets.BUGSNAG_KEY }} >> __tests__/e2e/.env
           echo AUTH0_API_CLIENT= ${{ secrets.AUTH0_API_CLIENT }} >> __tests__/e2e/.env
           echo AUTH0_API_SECRET= ${{ secrets.AUTH0_API_SECRET }} >> __tests__/e2e/.env
           echo AUTH0_CLIENT_ID= ${{ secrets.AUTH0_CLIENT_ID }} >> __tests__/e2e/.env
