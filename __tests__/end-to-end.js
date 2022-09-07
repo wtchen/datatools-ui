@@ -615,13 +615,18 @@ function formatSecondsElapsed (startTime: number) {
  */
 async function waitAndClearCompletedJobs () {
   const startTime = new Date()
-  // wait for an active job to appear
-  await waitForSelector('[data-test-id="possibly-active-jobs"]')
-  // All jobs completed span will appear when all jobs are done.
-  await waitForSelector(
-    '[data-test-id="all-jobs-completed"]',
-    {timeout: defaultJobTimeout}
-  )
+  try {
+    // wait for an active job to appear
+    await waitForSelector('[data-test-id="possibly-active-jobs"]')
+    // All jobs completed span will appear when all jobs are done.
+    await waitForSelector(
+      '[data-test-id="all-jobs-completed"]',
+      {timeout: defaultJobTimeout}
+    )
+  } catch {
+    console.log("couldn't find active job panel. assuming job completed")
+  }
+
   await waitForSelector('[data-test-id="clear-completed-jobs-button"]')
   // Clear retired jobs to remove all jobs completed span.
   await click('[data-test-id="clear-completed-jobs-button"]')
