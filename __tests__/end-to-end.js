@@ -615,8 +615,6 @@ function formatSecondsElapsed (startTime: number) {
  */
 async function waitAndClearCompletedJobs () {
   const startTime = new Date()
-  // wait for jobs to get completed
-  await wait(50, 'for job monitoring to begin')
   // wait for an active job to appear
   await waitForSelector('[data-test-id="possibly-active-jobs"]')
   // All jobs completed span will appear when all jobs are done.
