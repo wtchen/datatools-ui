@@ -252,7 +252,7 @@ async function expectSelectorToContainHtml (selector: string, html: string, retr
     if (!retry) {
       log.warn('failed to find selector on problematic page, attempting page reload before retrying')
       await page.reload({ waitUntil: 'networkidle0' })
-      await expectSelectorToContainHtml(selector, html, false)
+      await expectSelectorToContainHtml(selector, html, true)
     }
   }
 }
@@ -851,9 +851,9 @@ describe('end-to-end', () => {
       browserEventLogs.error(`Request failed: ${req.method()} ${req.url()}`)
     })
     // log all successful requests
-    // page.on('requestfinished', req => {
-    //   browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
-    // })
+    page.on('requestfinished', req => {
+      browserEventLogs.info(`Request finished: ${req.method()} ${req.url()}`)
+    })
 
     // set the default download behavior to download files to the cwd
     cdpSession.send(
@@ -1596,7 +1596,7 @@ describe('end-to-end', () => {
     describe('routes', () => {
       makeEditorEntityTest('should create route', async () => {
         // open routes sidebar
-        // await waitForAndClick('[data-test-id="editor-route-nav-button"]')
+        await waitForAndClick('[data-test-id="editor-route-nav-button"]')
 
         await wait(1500, 'for route page to open')
 
@@ -2729,7 +2729,8 @@ describe('end-to-end', () => {
 
         // confirm delete
         await waitForAndClick('[data-test-id="modal-confirm-ok-button"]')
-        await wait(2000, 'for delete to happen')
+        await wait(3000, 'for delete to happen')
+        await page.reload({ waitUntil: 'networkidle0' })
 
         // verify that trip to delete is no longer listed
         await expectSelectorToNotContainHtml(
