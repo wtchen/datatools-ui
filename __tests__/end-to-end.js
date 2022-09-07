@@ -252,7 +252,7 @@ async function expectSelectorToContainHtml (selector: string, html: string, retr
     if (!retry) {
       log.warn('failed to find selector on problematic page, attempting page reload before retrying')
       await page.reload({ waitUntil: 'networkidle0' })
-      expectSelectorToContainHtml(selector, html, false)
+      await expectSelectorToContainHtml(selector, html, false)
     }
   }
 }
@@ -688,7 +688,7 @@ async function elementClick (elementHandle: any, selector: string) {
 /**
  * Waits for a selector to show up and then clicks on it.
  */
-async function waitForAndClick (selector: string, waitOptions?: any) {
+async function waitForAndClick (selector: string, waitOptions?: any, retry?: boolean) {
   await waitForSelector(selector, waitOptions)
   await click(selector)
 }
@@ -1596,7 +1596,9 @@ describe('end-to-end', () => {
     describe('routes', () => {
       makeEditorEntityTest('should create route', async () => {
         // open routes sidebar
-        await click('[data-test-id="editor-route-nav-button"]')
+        // await waitForAndClick('[data-test-id="editor-route-nav-button"]')
+
+        await wait(1500, 'for route page to open')
 
         // wait for route sidebar form to appear and click button to open form
         // to create route
@@ -2435,23 +2437,24 @@ describe('end-to-end', () => {
         'should create pattern',
         async () => {
           // open route sidebar
-          await waitForAndClick('[data-test-id="editor-route-nav-button"]', true)
+          await waitForAndClick('[data-test-id="editor-route-nav-button"]')
+          await wait(2000, 'for page to catch up with itself')
 
           // wait for route sidebar form to appear and select first route
-          await waitForAndClick('.entity-list-row', true)
+          await waitForAndClick('.entity-list-row')
           // wait for route details sidebar to appear and go to trip pattern tab
-          await waitForAndClick('[data-test-id="trippattern-tab-button"]', true)
+          await waitForAndClick('[data-test-id="trippattern-tab-button"]')
           // wait for tab to load and click button to create pattern
-          await waitForAndClick('[data-test-id="new-pattern-button"]', true)
+          await waitForAndClick('[data-test-id="new-pattern-button"]')
           // wait for new pattern to appear
-          await waitForAndClick('[data-test-id="pattern-title-New Pattern"]', true)
+          await waitForSelector('[data-test-id="pattern-title-New Pattern"]')
 
           // toggle the FeedInfoPanel in case it gets in the way of panel stuff
           await click('[data-test-id="FeedInfoPanel-visibility-toggle"]')
           await wait(2000, 'for page to catch up with itself')
 
           // click add stop by name
-          await click('[data-test-id="add-stop-by-name-button"]')
+          await waitForAndClick('[data-test-id="add-stop-by-name-button"]')
 
           // wait for stop selector to show up
           await waitForSelector('.pattern-stop-card .Select-control')
