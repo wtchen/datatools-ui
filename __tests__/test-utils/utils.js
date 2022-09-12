@@ -7,8 +7,6 @@ const {safeDump, safeLoad} = require('js-yaml')
 const request = require('request')
 
 const collectingCoverage = process.env.COLLECT_COVERAGE
-const isCi = !!process.env.CI
-const isDocker = !!process.env.IS_DOCKER
 const isUiRepo = process.env.GITHUB_REPOSITORY === 'ibi-group/datatools-ui'
 const testFolderPath = process.env.TEST_FOLDER_PATH || 'e2e-test-results'
 
@@ -148,8 +146,6 @@ module.exports = {
   collectingCoverage,
   downloadFile,
   getTestFolderFilename,
-  isCi,
-  isDocker,
   isUiRepo,
   killDetachedProcess,
   loadYamlFile,

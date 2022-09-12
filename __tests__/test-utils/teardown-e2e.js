@@ -11,7 +11,6 @@ const {
   collectingCoverage,
   downloadFile,
   getTestFolderFilename,
-  isCi,
   isUiRepo,
   killDetachedProcess
 } = require('./utils')
@@ -86,33 +85,6 @@ function promisifiedExtractZip (filename, options) {
       resolve()
     })
   })
-}
-
-/**
- * Stub for shutting down a datatools-server instance if needed
- */
-function shutdownDatatoolsServer () {
-  if (!isCi || !isUiRepo) return Promise.resolve()
-
-  return killDetachedProcess('datatools-server')
-}
-
-/**
- * Stub for shutting down a client if needed
- */
-function shutdownClient () {
-  if (!isCi) return Promise.resolve()
-
-  return killDetachedProcess('client-dev-server')
-}
-
-/**
- * Stub for shutting down the OTP server if needed
- */
-function shutdownOtp () {
-  if (!isCi) return Promise.resolve()
-
-  return killDetachedProcess('otp')
 }
 
 function getBuildUrl () {
@@ -306,9 +278,6 @@ module.exports = function () {
     }, 3333)
   })
   return Promise.all([
-    collectCoverageAndStopSever(),
-    shutdownDatatoolsServer(),
-    shutdownClient(),
-    shutdownOtp()
+    collectCoverageAndStopSever()
   ])
 }

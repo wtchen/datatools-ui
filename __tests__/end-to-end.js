@@ -12,7 +12,7 @@ import uuidv4 from 'uuid/v4'
 import puppeteer from 'puppeteer'
 import { PuppeteerScreenRecorder } from 'puppeteer-screen-recorder'
 
-import {collectingCoverage, getTestFolderFilename, isCi, isDocker} from './test-utils/utils'
+import { collectingCoverage, getTestFolderFilename } from './test-utils/utils'
 
 // if the ISOLATED_TEST is defined, only the specifed test (and any dependet
 // tests) will be ran and all others will be skipped.
@@ -23,12 +23,12 @@ const ISOLATED_TEST = null // null means run all tests
 // line options parsed by mastarm.
 const puppeteerOptions = {
   // dumpio: true, // dumps all browser console to docker logs
-  headless: isCi || isDocker,
+  headless: true,
   // The following options can be enabled manually to help with debugging.
   // dumpio: true, // Logs all of browser console to stdout
   // slowMo: 50, // puts xx milliseconds between events (for easier watching in non-headless)
-  // NOTE: In order to run on Travis CI, use args --no-sandbox option
-  args: isCi || isDocker ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu'] : []
+  // NOTE: In order to run on Docker, use args --no-sandbox option
+  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu']
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.

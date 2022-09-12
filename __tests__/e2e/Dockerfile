@@ -17,7 +17,8 @@ RUN mkdir -p /datatools-ui/e2e-test-results/
 RUN mkdir ~/.aws && printf '%s\n' '[default]' 'aws_access_key_id=${AWS_ACCESS_KEY_ID}' 'aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}' 'region=${AWS_REGION}' > ~/.aws/config
 
 RUN wget https://raw.githubusercontent.com/ettore26/wait-for-command/master/wait-for-command.sh
+# Make sure the script hasn't been tampered with
+RUN echo "8f74674a50338190c129b65c1af1a26f83beea69bf04c90cad47fae7dd4af76d  wait-for-command.sh" | sha256sum -c
 RUN chmod +x ./wait-for-command.sh
 
 ENV TEST_FOLDER_PATH=/datatools-ui/e2e-test-results
-ENV IS_DOCKER=true
