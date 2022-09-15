@@ -1607,13 +1607,6 @@ describe('end-to-end', () => {
         await waitForSelector('[data-test-id="route-route_id-input-container"]')
 
         // fill out form
-
-        // set public to yes
-        await page.select(
-          '[data-test-id="route-publicly_visible-input-container"] select',
-          '1'
-        )
-
         // set route_id
         await clearAndType(
           '[data-test-id="route-route_id-input-container"] input',
