@@ -28,7 +28,7 @@ const puppeteerOptions = {
   // dumpio: true, // Logs all of browser console to stdout
   // slowMo: 50, // puts xx milliseconds between events (for easier watching in non-headless)
   // NOTE: In order to run on Travis CI, use args --no-sandbox option
-  args: isCi || isDocker ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--unsafely-treat-insecure-origin-as-secure="http://datatools-ui:9966"'] : []
+  args: isCi || isDocker ? ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--unsafely-treat-insecure-origin-as-secure="http://datatools-ui:9966/"', '--allow-running-insecure-content'] : []
 }
 const testOptions = {
   // If enabled, failFast will break out of the test script immediately.
