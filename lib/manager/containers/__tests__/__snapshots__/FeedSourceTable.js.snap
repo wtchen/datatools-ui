@@ -2809,11 +2809,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             </PanelHeading>
             <ListGroup
               bsClass="list-group"
-              fill={true}
             >
               <div
                 className="list-group"
-                fill={true}
               >
                 <table
                   className="feed-source-table"
