@@ -69,7 +69,7 @@ jobs:
           echo SPARKPOST_KEY= ${{ secrets.SPARKPOST_KEY }} >> __tests__/e2e/.env
           echo TRANSITFEEDS_KEY= ${{ secrets.TRANSITFEEDS_KEY }} >> __tests__/e2e/.env
           touch __tests__/e2e/server/datatools.pem
-          echo ${{ secrets.AUTH0_DATATOOLS_PEM }} >> __tests__/e2e/server/datatools.pem
+          echo ${{ secrets.AUTH0_DATATOOLS_PEM }} | base64 --decode > __tests__/e2e/server/datatools.pem
 
       # In this step, this action saves a list of existing images,
       # the cache is created without them in the post run.
