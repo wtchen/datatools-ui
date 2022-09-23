@@ -71,12 +71,6 @@ jobs:
           touch __tests__/e2e/server/datatools.pem
           echo ${{ secrets.AUTH0_DATATOOLS_PEM }} | base64 --decode > __tests__/e2e/server/datatools.pem
 
-      # In this step, this action saves a list of existing images,
-      # the cache is created without them in the post run.
-      # It also restores the cache if it exists.
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
       - name: Run e2e tests
         if: inputs.e2e
         run: |
