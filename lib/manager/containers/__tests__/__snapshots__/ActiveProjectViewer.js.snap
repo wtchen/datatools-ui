@@ -158,7 +158,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
             },
           },
           "recentActivity": null,
-          "redirectOnSuccess": null,
           "subscriptions": UserSubscriptions {
             "subscriptionLookup": Object {},
           },
@@ -358,42 +357,49 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
               />
             </Modal>
           </SelectFileModal>
-          <Connect(StatusModal)>
-            <StatusModal
-              clearStatusModal={[Function]}
-              removeEditorLock={[Function]}
+          <WithAuth>
+            <Connect(StatusModal)
+              auth0={
+                Object {
+                  "buildAuthorizeUrl": [Function],
+                  "buildLogoutUrl": [Function],
+                  "getAccessTokenSilently": [Function],
+                  "getAccessTokenWithPopup": [Function],
+                  "getIdTokenClaims": [Function],
+                  "handleRedirectCallback": [Function],
+                  "isAuthenticated": false,
+                  "isLoading": true,
+                  "loginWithPopup": [Function],
+                  "loginWithRedirect": [Function],
+                  "logout": [Function],
+                }
+              }
             >
-              <Modal
-                animation={true}
-                autoFocus={true}
-                backdrop={true}
-                bsClass="modal"
-                dialogComponentClass={[Function]}
-                enforceFocus={true}
-                keyboard={true}
-                manager={
-                  ModalManager {
-                    "add": [Function],
-                    "containers": Array [],
-                    "data": Array [],
-                    "handleContainerOverflow": true,
-                    "hideSiblingNodes": true,
-                    "isTopModal": [Function],
-                    "modals": Array [],
-                    "remove": [Function],
+              <StatusModal
+                auth0={
+                  Object {
+                    "buildAuthorizeUrl": [Function],
+                    "buildLogoutUrl": [Function],
+                    "getAccessTokenSilently": [Function],
+                    "getAccessTokenWithPopup": [Function],
+                    "getIdTokenClaims": [Function],
+                    "handleRedirectCallback": [Function],
+                    "isAuthenticated": false,
+                    "isLoading": true,
+                    "loginWithPopup": [Function],
+                    "loginWithRedirect": [Function],
+                    "logout": [Function],
                   }
                 }
-                onHide={[Function]}
-                renderBackdrop={[Function]}
-                restoreFocus={true}
-                show={false}
+                clearStatusModal={[Function]}
+                removeEditorLock={[Function]}
               >
                 <Modal
+                  animation={true}
                   autoFocus={true}
                   backdrop={true}
-                  backdropClassName="modal-backdrop"
-                  backdropTransition={[Function]}
-                  containerClassName="modal-open"
+                  bsClass="modal"
+                  dialogComponentClass={[Function]}
                   enforceFocus={true}
                   keyboard={true}
                   manager={
@@ -408,133 +414,170 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                       "remove": [Function],
                     }
                   }
-                  onEntering={[Function]}
-                  onExited={[Function]}
                   onHide={[Function]}
                   renderBackdrop={[Function]}
                   restoreFocus={true}
                   show={false}
-                  transition={[Function]}
-                />
-              </Modal>
-            </StatusModal>
-          </Connect(StatusModal)>
-          <Connect(Sidebar)>
-            <Sidebar
-              appInfo={null}
-              expanded={true}
-              fetchAppInfo={[Function]}
-              hideTutorial={false}
-              jobMonitor={
+                >
+                  <Modal
+                    autoFocus={true}
+                    backdrop={true}
+                    backdropClassName="modal-backdrop"
+                    backdropTransition={[Function]}
+                    containerClassName="modal-open"
+                    enforceFocus={true}
+                    keyboard={true}
+                    manager={
+                      ModalManager {
+                        "add": [Function],
+                        "containers": Array [],
+                        "data": Array [],
+                        "handleContainerOverflow": true,
+                        "hideSiblingNodes": true,
+                        "isTopModal": [Function],
+                        "modals": Array [],
+                        "remove": [Function],
+                      }
+                    }
+                    onEntering={[Function]}
+                    onExited={[Function]}
+                    onHide={[Function]}
+                    renderBackdrop={[Function]}
+                    restoreFocus={true}
+                    show={false}
+                    transition={[Function]}
+                  />
+                </Modal>
+              </StatusModal>
+            </Connect(StatusModal)>
+          </WithAuth>
+          <WithAuth>
+            <Connect(Sidebar)
+              auth0={
                 Object {
-                  "jobs": Array [],
-                  "retired": Array [],
-                  "timer": null,
-                  "visible": false,
-                }
-              }
-              logout={[Function]}
-              removeRetiredJob={[Function]}
-              revokeToken={[Function]}
-              setJobMonitorVisible={[Function]}
-              startJobMonitor={[Function]}
-              user={
-                Object {
-                  "isCheckingLogin": false,
-                  "permissions": UserPermissions {
-                    "appPermissionLookup": Object {
-                      "administer-application": Object {
-                        "type": "administer-application",
-                      },
-                    },
-                    "orgPermissionLookup": Object {},
-                    "organizationLookup": Object {},
-                    "projectLookup": Object {},
-                  },
-                  "profile": Object {
-                    "app_metadata": Object {
-                      "datatools": Array [
-                        Object {
-                          "client_id": "mock-client-id",
-                          "organizations": Array [],
-                          "permissions": Array [
-                            Object {
-                              "type": "administer-application",
-                            },
-                          ],
-                          "projects": Array [],
-                          "subscriptions": Array [],
-                        },
-                      ],
-                    },
-                    "clientID": "mock-client-id",
-                    "created_at": "2016-03-04T18:59:22.569Z",
-                    "email": "mock-user@conveyal.com",
-                    "email_verified": true,
-                    "identities": Array [
-                      Object {
-                        "connection": "Username-Password-Authentication",
-                        "isSocial": false,
-                        "provider": "auth0",
-                        "user_id": "12345",
-                      },
-                    ],
-                    "jti": "gibberish",
-                    "last_password_reset": "2017-07-13T13:58:01.021Z",
-                    "name": "mock-user@conveyal.com",
-                    "nickname": "mock-user",
-                    "persistent": Object {},
-                    "picture": "https://s.gravatar.com/avatar/f8660ca52d1229e3d55e88f2db4affda?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fmu.png",
-                    "sub": "auth0|12345",
-                    "updated_at": "2019-03-21T19:05:30.180Z",
-                    "user_id": "auth0|12345",
-                    "user_metadata": Object {
-                      "datatools": Array [
-                        Object {
-                          "client_id": "mock-client-id",
-                          "editor": Object {
-                            "map_id": "mapbox.streets",
-                          },
-                          "hideTutorial": true,
-                          "sidebarExpanded": false,
-                        },
-                      ],
-                      "lang": "en",
-                    },
-                  },
-                  "recentActivity": null,
-                  "redirectOnSuccess": null,
-                  "subscriptions": UserSubscriptions {
-                    "subscriptionLookup": Object {},
-                  },
-                  "token": "mock-token",
+                  "buildAuthorizeUrl": [Function],
+                  "buildLogoutUrl": [Function],
+                  "getAccessTokenSilently": [Function],
+                  "getAccessTokenWithPopup": [Function],
+                  "getIdTokenClaims": [Function],
+                  "handleRedirectCallback": [Function],
+                  "isAuthenticated": false,
+                  "isLoading": true,
+                  "loginWithPopup": [Function],
+                  "loginWithRedirect": [Function],
+                  "logout": [Function],
                 }
               }
             >
-              <div
-                className="Sidebar"
-              >
-                <Uncontrolled(Navbar)
-                  bsStyle="default"
-                  inverse={true}
-                  style={
-                    Object {
-                      "minHeight": "500px",
-                      "width": 130,
-                    }
+              <Sidebar
+                appInfo={null}
+                auth0={
+                  Object {
+                    "buildAuthorizeUrl": [Function],
+                    "buildLogoutUrl": [Function],
+                    "getAccessTokenSilently": [Function],
+                    "getAccessTokenWithPopup": [Function],
+                    "getIdTokenClaims": [Function],
+                    "handleRedirectCallback": [Function],
+                    "isAuthenticated": false,
+                    "isLoading": true,
+                    "loginWithPopup": [Function],
+                    "loginWithRedirect": [Function],
+                    "logout": [Function],
                   }
+                }
+                expanded={true}
+                hideTutorial={false}
+                jobMonitor={
+                  Object {
+                    "jobs": Array [],
+                    "retired": Array [],
+                    "timer": null,
+                    "visible": false,
+                  }
+                }
+                logout={[Function]}
+                removeRetiredJob={[Function]}
+                setJobMonitorVisible={[Function]}
+                startJobMonitor={[Function]}
+                user={
+                  Object {
+                    "isCheckingLogin": false,
+                    "permissions": UserPermissions {
+                      "appPermissionLookup": Object {
+                        "administer-application": Object {
+                          "type": "administer-application",
+                        },
+                      },
+                      "orgPermissionLookup": Object {},
+                      "organizationLookup": Object {},
+                      "projectLookup": Object {},
+                    },
+                    "profile": Object {
+                      "app_metadata": Object {
+                        "datatools": Array [
+                          Object {
+                            "client_id": "mock-client-id",
+                            "organizations": Array [],
+                            "permissions": Array [
+                              Object {
+                                "type": "administer-application",
+                              },
+                            ],
+                            "projects": Array [],
+                            "subscriptions": Array [],
+                          },
+                        ],
+                      },
+                      "clientID": "mock-client-id",
+                      "created_at": "2016-03-04T18:59:22.569Z",
+                      "email": "mock-user@conveyal.com",
+                      "email_verified": true,
+                      "identities": Array [
+                        Object {
+                          "connection": "Username-Password-Authentication",
+                          "isSocial": false,
+                          "provider": "auth0",
+                          "user_id": "12345",
+                        },
+                      ],
+                      "jti": "gibberish",
+                      "last_password_reset": "2017-07-13T13:58:01.021Z",
+                      "name": "mock-user@conveyal.com",
+                      "nickname": "mock-user",
+                      "persistent": Object {},
+                      "picture": "https://s.gravatar.com/avatar/f8660ca52d1229e3d55e88f2db4affda?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fmu.png",
+                      "sub": "auth0|12345",
+                      "updated_at": "2019-03-21T19:05:30.180Z",
+                      "user_id": "auth0|12345",
+                      "user_metadata": Object {
+                        "datatools": Array [
+                          Object {
+                            "client_id": "mock-client-id",
+                            "editor": Object {
+                              "map_id": "mapbox.streets",
+                            },
+                            "hideTutorial": true,
+                            "sidebarExpanded": false,
+                          },
+                        ],
+                        "lang": "en",
+                      },
+                    },
+                    "recentActivity": null,
+                    "subscriptions": UserSubscriptions {
+                      "subscriptionLookup": Object {},
+                    },
+                    "token": "mock-token",
+                  }
+                }
+              >
+                <div
+                  className="Sidebar"
                 >
-                  <Navbar
-                    bsClass="navbar"
+                  <Uncontrolled(Navbar)
                     bsStyle="default"
-                    collapseOnSelect={false}
-                    componentClass="nav"
-                    fixedBottom={false}
-                    fixedTop={false}
-                    fluid={false}
                     inverse={true}
-                    onToggle={[Function]}
-                    staticTop={false}
                     style={
                       Object {
                         "minHeight": "500px",
@@ -542,8 +585,17 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                       }
                     }
                   >
-                    <nav
-                      className="navbar navbar-inverse"
+                    <Navbar
+                      bsClass="navbar"
+                      bsStyle="default"
+                      collapseOnSelect={false}
+                      componentClass="nav"
+                      fixedBottom={false}
+                      fixedTop={false}
+                      fluid={false}
+                      inverse={true}
+                      onToggle={[Function]}
+                      staticTop={false}
                       style={
                         Object {
                           "minHeight": "500px",
@@ -551,356 +603,350 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                         }
                       }
                     >
-                      <Grid
-                        bsClass="container"
-                        componentClass="div"
-                        fluid={false}
+                      <nav
+                        className="navbar navbar-inverse"
+                        style={
+                          Object {
+                            "minHeight": "500px",
+                            "width": 130,
+                          }
+                        }
                       >
-                        <div
-                          className="container"
+                        <Grid
+                          bsClass="container"
+                          componentClass="div"
+                          fluid={false}
                         >
-                          <Brand
-                            expanded={true}
+                          <div
+                            className="container"
                           >
-                            <Link
-                              onlyActiveOnIndex={false}
-                              style={Object {}}
-                              to="/home"
+                            <Brand
+                              expanded={true}
                             >
-                              <a
-                                onClick={[Function]}
+                              <Link
+                                onlyActiveOnIndex={false}
                                 style={Object {}}
+                                to="/home"
                               >
-                                <div
-                                  className="LogoContainer"
+                                <a
+                                  onClick={[Function]}
+                                  style={Object {}}
                                 >
                                   <div
-                                    className="Logo"
-                                    style={
-                                      Object {
-                                        "backgroundImage": "url(http://example.com/data_manager.png)",
-                                      }
-                                    }
-                                  />
-                                  <div
-                                    className="LogoLabel"
+                                    className="LogoContainer"
                                   >
-                                    Data Tools
+                                    <div
+                                      className="Logo"
+                                      style={
+                                        Object {
+                                          "backgroundImage": "url(http://example.com/data_manager.png)",
+                                        }
+                                      }
+                                    />
+                                    <div
+                                      className="LogoLabel"
+                                    >
+                                      Data Tools
+                                    </div>
+                                    <div
+                                      className="clearfix"
+                                    />
                                   </div>
-                                  <div
-                                    className="clearfix"
-                                  />
-                                </div>
-                              </a>
-                            </Link>
-                          </Brand>
-                          <div
-                            className="TopNav"
-                          >
-                            <Connect(SidebarNavItem)
-                              active={false}
-                              icon="home"
-                              label="Home"
-                              link="/home"
+                                </a>
+                              </Link>
+                            </Brand>
+                            <div
+                              className="TopNav"
                             >
-                              <SidebarNavItem
+                              <Connect(SidebarNavItem)
                                 active={false}
-                                expanded={true}
                                 icon="home"
                                 label="Home"
                                 link="/home"
                               >
-                                <Link
-                                  onlyActiveOnIndex={false}
-                                  style={
-                                    Object {
-                                      "textDecoration": "none",
-                                    }
-                                  }
-                                  to="/home"
+                                <SidebarNavItem
+                                  active={false}
+                                  expanded={true}
+                                  icon="home"
+                                  label="Home"
+                                  link="/home"
                                 >
-                                  <a
-                                    onClick={[Function]}
+                                  <Link
+                                    onlyActiveOnIndex={false}
                                     style={
                                       Object {
                                         "textDecoration": "none",
                                       }
                                     }
+                                    to="/home"
                                   >
-                                    <button
-                                      onMouseEnter={[Function]}
-                                      onMouseLeave={[Function]}
+                                    <a
+                                      onClick={[Function]}
                                       style={
                                         Object {
-                                          "backgroundColor": "rgba(0,0,0,0)",
-                                          "border": "none",
-                                          "borderLeft": "4px solid rgba(0,0,0,0)",
-                                          "color": "#ccc",
-                                          "cursor": "pointer",
-                                          "marginBottom": 5,
-                                          "marginLeft": -15,
-                                          "marginRight": 0,
-                                          "marginTop": 5,
-                                          "paddingBottom": 10,
-                                          "paddingLeft": 10,
-                                          "paddingRight": 10,
-                                          "paddingTop": 10,
                                           "textDecoration": "none",
                                         }
                                       }
                                     >
-                                      <NavIcon
-                                        icon="home"
-                                      >
-                                        <div
-                                          className="SidebarNavItemIcon"
-                                        >
-                                          <Icon
-                                            className="fa-lg"
-                                            size="lg"
-                                            type="home"
-                                          >
-                                            <i
-                                              className="fa fa-home fa-fw fa-lg"
-                                              size="lg"
-                                            />
-                                          </Icon>
-                                        </div>
-                                      </NavIcon>
-                                      <div
-                                        className="sidebar-nav-label"
-                                      >
-                                        Home
-                                      </div>
-                                      <div
+                                      <button
+                                        onMouseEnter={[Function]}
+                                        onMouseLeave={[Function]}
                                         style={
                                           Object {
-                                            "clear": "both",
+                                            "backgroundColor": "rgba(0,0,0,0)",
+                                            "border": "none",
+                                            "borderLeft": "4px solid rgba(0,0,0,0)",
+                                            "color": "#ccc",
+                                            "cursor": "pointer",
+                                            "marginBottom": 5,
+                                            "marginLeft": -15,
+                                            "marginRight": 0,
+                                            "marginTop": 5,
+                                            "paddingBottom": 10,
+                                            "paddingLeft": 10,
+                                            "paddingRight": 10,
+                                            "paddingTop": 10,
+                                            "textDecoration": "none",
                                           }
                                         }
-                                      />
-                                    </button>
-                                  </a>
-                                </Link>
+                                      >
+                                        <NavIcon
+                                          icon="home"
+                                        >
+                                          <div
+                                            className="SidebarNavItemIcon"
+                                          >
+                                            <Icon
+                                              className="fa-lg"
+                                              size="lg"
+                                              type="home"
+                                            >
+                                              <i
+                                                className="fa fa-home fa-fw fa-lg"
+                                                size="lg"
+                                              />
+                                            </Icon>
+                                          </div>
+                                        </NavIcon>
+                                        <div
+                                          className="sidebar-nav-label"
+                                        >
+                                          Home
+                                        </div>
+                                        <div
+                                          style={
+                                            Object {
+                                              "clear": "both",
+                                            }
+                                          }
+                                        />
+                                      </button>
+                                    </a>
+                                  </Link>
+                                </SidebarNavItem>
+                              </Connect(SidebarNavItem)>
+                            </div>
+                            <div
+                              className="BottomNav"
+                            >
+                              <SidebarNavItem
+                                expanded={true}
+                                finished={false}
+                                icon="bell"
+                                keyName="job"
+                                label="Server jobs"
+                                loading={false}
+                                onClick={[Function]}
+                              >
+                                <button
+                                  onClick={[Function]}
+                                  onMouseEnter={[Function]}
+                                  onMouseLeave={[Function]}
+                                  style={
+                                    Object {
+                                      "backgroundColor": "rgba(0,0,0,0)",
+                                      "border": "none",
+                                      "borderLeft": "4px solid rgba(0,0,0,0)",
+                                      "color": "#ccc",
+                                      "cursor": "pointer",
+                                      "marginBottom": 5,
+                                      "marginLeft": -15,
+                                      "marginRight": 0,
+                                      "marginTop": 5,
+                                      "paddingBottom": 10,
+                                      "paddingLeft": 10,
+                                      "paddingRight": 10,
+                                      "paddingTop": 10,
+                                      "textDecoration": "none",
+                                    }
+                                  }
+                                >
+                                  <NavIcon
+                                    icon="bell"
+                                    loading={false}
+                                  >
+                                    <div
+                                      className="SidebarNavItemIcon"
+                                    >
+                                      <Icon
+                                        className="fa-lg"
+                                        size="lg"
+                                        type="bell"
+                                      >
+                                        <i
+                                          className="fa fa-bell fa-fw fa-lg"
+                                          size="lg"
+                                        />
+                                      </Icon>
+                                    </div>
+                                  </NavIcon>
+                                  <div
+                                    className="sidebar-nav-label"
+                                  >
+                                    Server jobs
+                                  </div>
+                                  <div
+                                    style={
+                                      Object {
+                                        "clear": "both",
+                                      }
+                                    }
+                                  />
+                                </button>
                               </SidebarNavItem>
-                            </Connect(SidebarNavItem)>
+                              <SidebarNavItem
+                                expanded={true}
+                                icon="user"
+                                keyName="user"
+                                label="Account"
+                                onClick={[Function]}
+                              >
+                                <button
+                                  onClick={[Function]}
+                                  onMouseEnter={[Function]}
+                                  onMouseLeave={[Function]}
+                                  style={
+                                    Object {
+                                      "backgroundColor": "rgba(0,0,0,0)",
+                                      "border": "none",
+                                      "borderLeft": "4px solid rgba(0,0,0,0)",
+                                      "color": "#ccc",
+                                      "cursor": "pointer",
+                                      "marginBottom": 5,
+                                      "marginLeft": -15,
+                                      "marginRight": 0,
+                                      "marginTop": 5,
+                                      "paddingBottom": 10,
+                                      "paddingLeft": 10,
+                                      "paddingRight": 10,
+                                      "paddingTop": 10,
+                                      "textDecoration": "none",
+                                    }
+                                  }
+                                >
+                                  <NavIcon
+                                    icon="user"
+                                  >
+                                    <div
+                                      className="SidebarNavItemIcon"
+                                    >
+                                      <Icon
+                                        className="fa-lg"
+                                        size="lg"
+                                        type="user"
+                                      >
+                                        <i
+                                          className="fa fa-user fa-fw fa-lg"
+                                          size="lg"
+                                        />
+                                      </Icon>
+                                    </div>
+                                  </NavIcon>
+                                  <div
+                                    className="sidebar-nav-label"
+                                  >
+                                    Account
+                                  </div>
+                                  <div
+                                    style={
+                                      Object {
+                                        "clear": "both",
+                                      }
+                                    }
+                                  />
+                                </button>
+                              </SidebarNavItem>
+                              <SidebarNavItem
+                                expanded={true}
+                                icon="gear"
+                                keyName="help"
+                                label="Settings"
+                                onClick={[Function]}
+                              >
+                                <button
+                                  onClick={[Function]}
+                                  onMouseEnter={[Function]}
+                                  onMouseLeave={[Function]}
+                                  style={
+                                    Object {
+                                      "backgroundColor": "rgba(0,0,0,0)",
+                                      "border": "none",
+                                      "borderLeft": "4px solid rgba(0,0,0,0)",
+                                      "color": "#ccc",
+                                      "cursor": "pointer",
+                                      "marginBottom": 5,
+                                      "marginLeft": -15,
+                                      "marginRight": 0,
+                                      "marginTop": 5,
+                                      "paddingBottom": 10,
+                                      "paddingLeft": 10,
+                                      "paddingRight": 10,
+                                      "paddingTop": 10,
+                                      "textDecoration": "none",
+                                    }
+                                  }
+                                >
+                                  <NavIcon
+                                    icon="gear"
+                                  >
+                                    <div
+                                      className="SidebarNavItemIcon"
+                                    >
+                                      <Icon
+                                        className="fa-lg"
+                                        size="lg"
+                                        type="gear"
+                                      >
+                                        <i
+                                          className="fa fa-gear fa-fw fa-lg"
+                                          size="lg"
+                                        />
+                                      </Icon>
+                                    </div>
+                                  </NavIcon>
+                                  <div
+                                    className="sidebar-nav-label"
+                                  >
+                                    Settings
+                                  </div>
+                                  <div
+                                    style={
+                                      Object {
+                                        "clear": "both",
+                                      }
+                                    }
+                                  />
+                                </button>
+                              </SidebarNavItem>
+                            </div>
                           </div>
-                          <div
-                            className="BottomNav"
-                          >
-                            <SidebarNavItem
-                              expanded={true}
-                              finished={false}
-                              icon="bell"
-                              keyName="job"
-                              label="Server jobs"
-                              loading={false}
-                              onClick={[Function]}
-                            >
-                              <button
-                                onClick={[Function]}
-                                onMouseEnter={[Function]}
-                                onMouseLeave={[Function]}
-                                style={
-                                  Object {
-                                    "backgroundColor": "rgba(0,0,0,0)",
-                                    "border": "none",
-                                    "borderLeft": "4px solid rgba(0,0,0,0)",
-                                    "color": "#ccc",
-                                    "cursor": "pointer",
-                                    "marginBottom": 5,
-                                    "marginLeft": -15,
-                                    "marginRight": 0,
-                                    "marginTop": 5,
-                                    "paddingBottom": 10,
-                                    "paddingLeft": 10,
-                                    "paddingRight": 10,
-                                    "paddingTop": 10,
-                                    "textDecoration": "none",
-                                  }
-                                }
-                              >
-                                <NavIcon
-                                  icon="bell"
-                                  loading={false}
-                                >
-                                  <div
-                                    className="SidebarNavItemIcon"
-                                  >
-                                    <Icon
-                                      className="fa-lg"
-                                      size="lg"
-                                      type="bell"
-                                    >
-                                      <i
-                                        className="fa fa-bell fa-fw fa-lg"
-                                        size="lg"
-                                      />
-                                    </Icon>
-                                  </div>
-                                </NavIcon>
-                                <div
-                                  className="sidebar-nav-label"
-                                >
-                                  Server jobs
-                                </div>
-                                <div
-                                  style={
-                                    Object {
-                                      "clear": "both",
-                                    }
-                                  }
-                                />
-                              </button>
-                            </SidebarNavItem>
-                            <SidebarNavItem
-                              expanded={true}
-                              icon="user"
-                              keyName="user"
-                              label="Account"
-                              onClick={[Function]}
-                            >
-                              <button
-                                onClick={[Function]}
-                                onMouseEnter={[Function]}
-                                onMouseLeave={[Function]}
-                                style={
-                                  Object {
-                                    "backgroundColor": "rgba(0,0,0,0)",
-                                    "border": "none",
-                                    "borderLeft": "4px solid rgba(0,0,0,0)",
-                                    "color": "#ccc",
-                                    "cursor": "pointer",
-                                    "marginBottom": 5,
-                                    "marginLeft": -15,
-                                    "marginRight": 0,
-                                    "marginTop": 5,
-                                    "paddingBottom": 10,
-                                    "paddingLeft": 10,
-                                    "paddingRight": 10,
-                                    "paddingTop": 10,
-                                    "textDecoration": "none",
-                                  }
-                                }
-                              >
-                                <NavIcon
-                                  icon="user"
-                                >
-                                  <div
-                                    className="SidebarNavItemIcon"
-                                  >
-                                    <Icon
-                                      className="fa-lg"
-                                      size="lg"
-                                      type="user"
-                                    >
-                                      <i
-                                        className="fa fa-user fa-fw fa-lg"
-                                        size="lg"
-                                      />
-                                    </Icon>
-                                  </div>
-                                </NavIcon>
-                                <div
-                                  className="sidebar-nav-label"
-                                >
-                                  Account
-                                </div>
-                                <div
-                                  style={
-                                    Object {
-                                      "clear": "both",
-                                    }
-                                  }
-                                />
-                              </button>
-                            </SidebarNavItem>
-                            <SidebarNavItem
-                              expanded={true}
-                              icon="gear"
-                              keyName="help"
-                              label="Settings"
-                              onClick={[Function]}
-                            >
-                              <button
-                                onClick={[Function]}
-                                onMouseEnter={[Function]}
-                                onMouseLeave={[Function]}
-                                style={
-                                  Object {
-                                    "backgroundColor": "rgba(0,0,0,0)",
-                                    "border": "none",
-                                    "borderLeft": "4px solid rgba(0,0,0,0)",
-                                    "color": "#ccc",
-                                    "cursor": "pointer",
-                                    "marginBottom": 5,
-                                    "marginLeft": -15,
-                                    "marginRight": 0,
-                                    "marginTop": 5,
-                                    "paddingBottom": 10,
-                                    "paddingLeft": 10,
-                                    "paddingRight": 10,
-                                    "paddingTop": 10,
-                                    "textDecoration": "none",
-                                  }
-                                }
-                              >
-                                <NavIcon
-                                  icon="gear"
-                                >
-                                  <div
-                                    className="SidebarNavItemIcon"
-                                  >
-                                    <Icon
-                                      className="fa-lg"
-                                      size="lg"
-                                      type="gear"
-                                    >
-                                      <i
-                                        className="fa fa-gear fa-fw fa-lg"
-                                        size="lg"
-                                      />
-                                    </Icon>
-                                  </div>
-                                </NavIcon>
-                                <div
-                                  className="sidebar-nav-label"
-                                >
-                                  Settings
-                                </div>
-                                <div
-                                  style={
-                                    Object {
-                                      "clear": "both",
-                                    }
-                                  }
-                                />
-                              </button>
-                            </SidebarNavItem>
-                          </div>
-                        </div>
-                      </Grid>
-                    </nav>
-                  </Navbar>
-                </Uncontrolled(Navbar)>
-                <JobMonitor
-                  close={[Function]}
-                  expanded={true}
-                  jobMonitor={
-                    Object {
-                      "jobs": Array [],
-                      "retired": Array [],
-                      "timer": null,
-                      "visible": false,
-                    }
-                  }
-                  removeRetiredJob={[Function]}
-                  visible={false}
-                >
-                  <SidebarPopover
+                        </Grid>
+                      </nav>
+                    </Navbar>
+                  </Uncontrolled(Navbar)>
+                  <JobMonitor
                     close={[Function]}
                     expanded={true}
-                    fixedHeight={300}
                     jobMonitor={
                       Object {
                         "jobs": Array [],
@@ -909,9 +955,198 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                         "visible": false,
                       }
                     }
-                    minMarginBottom={75}
                     removeRetiredJob={[Function]}
-                    title="Server Jobs"
+                    visible={false}
+                  >
+                    <SidebarPopover
+                      close={[Function]}
+                      expanded={true}
+                      fixedHeight={300}
+                      jobMonitor={
+                        Object {
+                          "jobs": Array [],
+                          "retired": Array [],
+                          "timer": null,
+                          "visible": false,
+                        }
+                      }
+                      minMarginBottom={75}
+                      removeRetiredJob={[Function]}
+                      title="Server Jobs"
+                      visible={false}
+                    >
+                      <Popover
+                        arrowOffsetTop={15}
+                        bsClass="popover"
+                        id="ptest"
+                        placement="right"
+                        style={
+                          Object {
+                            "height": 300,
+                            "marginLeft": 140,
+                            "maxWidth": 276,
+                            "position": "fixed",
+                            "top": 10,
+                            "visibility": "hidden",
+                            "width": 276,
+                          }
+                        }
+                        title={
+                          <div>
+                            <span>
+                              Server Jobs
+                            </span>
+                            <Icon
+                              className="pull-right"
+                              onClick={[Function]}
+                              style={
+                                Object {
+                                  "cursor": "pointer",
+                                }
+                              }
+                              type="remove"
+                            />
+                          </div>
+                        }
+                      >
+                        <div
+                          className="popover right"
+                          id="ptest"
+                          role="tooltip"
+                          style={
+                            Object {
+                              "display": "block",
+                              "height": 300,
+                              "left": undefined,
+                              "marginLeft": 140,
+                              "maxWidth": 276,
+                              "position": "fixed",
+                              "top": 10,
+                              "visibility": "hidden",
+                              "width": 276,
+                            }
+                          }
+                        >
+                          <div
+                            className="arrow"
+                            style={
+                              Object {
+                                "left": undefined,
+                                "top": 15,
+                              }
+                            }
+                          />
+                          <h3
+                            className="popover-title"
+                          >
+                            <div>
+                              <span>
+                                Server Jobs
+                              </span>
+                              <Icon
+                                className="pull-right"
+                                onClick={[Function]}
+                                style={
+                                  Object {
+                                    "cursor": "pointer",
+                                  }
+                                }
+                                type="remove"
+                              >
+                                <i
+                                  className="fa fa-remove fa-fw pull-right"
+                                  onClick={[Function]}
+                                  style={
+                                    Object {
+                                      "cursor": "pointer",
+                                    }
+                                  }
+                                />
+                              </Icon>
+                            </div>
+                          </h3>
+                          <div
+                            className="popover-content"
+                          >
+                            <div
+                              className="job-monitor"
+                            >
+                              <div
+                                className="job-list"
+                              >
+                                <ul
+                                  className="list-unstyled"
+                                />
+                              </div>
+                              <div
+                                style={
+                                  Object {
+                                    "marginTop": 8,
+                                  }
+                                }
+                              >
+                                <Button
+                                  active={false}
+                                  block={false}
+                                  bsClass="btn"
+                                  bsSize="small"
+                                  bsStyle="default"
+                                  data-test-id="clear-completed-jobs-button"
+                                  disabled={true}
+                                  onClick={[Function]}
+                                  style={
+                                    Object {
+                                      "float": "right",
+                                    }
+                                  }
+                                >
+                                  <button
+                                    className="btn btn-sm btn-default"
+                                    data-test-id="clear-completed-jobs-button"
+                                    disabled={true}
+                                    onClick={[Function]}
+                                    style={
+                                      Object {
+                                        "float": "right",
+                                      }
+                                    }
+                                    type="button"
+                                  >
+                                    <Icon
+                                      type="times-circle"
+                                    >
+                                      <i
+                                        className="fa fa-times-circle fa-fw "
+                                      />
+                                    </Icon>
+                                     Clear completed
+                                  </button>
+                                </Button>
+                                <div
+                                  style={
+                                    Object {
+                                      "fontSize": 13,
+                                      "paddingTop": 6,
+                                    }
+                                  }
+                                >
+                                  <span
+                                    data-test-id="possibly-active-jobs"
+                                  >
+                                    No active jobs
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Popover>
+                    </SidebarPopover>
+                  </JobMonitor>
+                  <SidebarPopover
+                    close={[Function]}
+                    expanded={true}
+                    title="mock-user@conveyal.com"
                     visible={false}
                   >
                     <Popover
@@ -921,7 +1156,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                       placement="right"
                       style={
                         Object {
-                          "height": 300,
+                          "height": undefined,
                           "marginLeft": 140,
                           "maxWidth": 276,
                           "position": "fixed",
@@ -933,7 +1168,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                       title={
                         <div>
                           <span>
-                            Server Jobs
+                            mock-user@conveyal.com
                           </span>
                           <Icon
                             className="pull-right"
@@ -955,7 +1190,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                         style={
                           Object {
                             "display": "block",
-                            "height": 300,
+                            "height": undefined,
                             "left": undefined,
                             "marginLeft": 140,
                             "maxWidth": 276,
@@ -980,7 +1215,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                         >
                           <div>
                             <span>
-                              Server Jobs
+                              mock-user@conveyal.com
                             </span>
                             <Icon
                               className="pull-right"
@@ -1007,440 +1242,230 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                         <div
                           className="popover-content"
                         >
-                          <div
-                            className="job-monitor"
-                          >
-                            <div
-                              className="job-list"
-                            >
-                              <ul
-                                className="list-unstyled"
-                              />
-                            </div>
-                            <div
-                              style={
-                                Object {
-                                  "marginTop": 8,
-                                }
+                          <UserButtons
+                            logout={[Function]}
+                            user={
+                              Object {
+                                "isCheckingLogin": false,
+                                "permissions": UserPermissions {
+                                  "appPermissionLookup": Object {
+                                    "administer-application": Object {
+                                      "type": "administer-application",
+                                    },
+                                  },
+                                  "orgPermissionLookup": Object {},
+                                  "organizationLookup": Object {},
+                                  "projectLookup": Object {},
+                                },
+                                "profile": Object {
+                                  "app_metadata": Object {
+                                    "datatools": Array [
+                                      Object {
+                                        "client_id": "mock-client-id",
+                                        "organizations": Array [],
+                                        "permissions": Array [
+                                          Object {
+                                            "type": "administer-application",
+                                          },
+                                        ],
+                                        "projects": Array [],
+                                        "subscriptions": Array [],
+                                      },
+                                    ],
+                                  },
+                                  "clientID": "mock-client-id",
+                                  "created_at": "2016-03-04T18:59:22.569Z",
+                                  "email": "mock-user@conveyal.com",
+                                  "email_verified": true,
+                                  "identities": Array [
+                                    Object {
+                                      "connection": "Username-Password-Authentication",
+                                      "isSocial": false,
+                                      "provider": "auth0",
+                                      "user_id": "12345",
+                                    },
+                                  ],
+                                  "jti": "gibberish",
+                                  "last_password_reset": "2017-07-13T13:58:01.021Z",
+                                  "name": "mock-user@conveyal.com",
+                                  "nickname": "mock-user",
+                                  "persistent": Object {},
+                                  "picture": "https://s.gravatar.com/avatar/f8660ca52d1229e3d55e88f2db4affda?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fmu.png",
+                                  "sub": "auth0|12345",
+                                  "updated_at": "2019-03-21T19:05:30.180Z",
+                                  "user_id": "auth0|12345",
+                                  "user_metadata": Object {
+                                    "datatools": Array [
+                                      Object {
+                                        "client_id": "mock-client-id",
+                                        "editor": Object {
+                                          "map_id": "mapbox.streets",
+                                        },
+                                        "hideTutorial": true,
+                                        "sidebarExpanded": false,
+                                      },
+                                    ],
+                                    "lang": "en",
+                                  },
+                                },
+                                "recentActivity": null,
+                                "subscriptions": UserSubscriptions {
+                                  "subscriptionLookup": Object {},
+                                },
+                                "token": "mock-token",
                               }
+                            }
+                          >
+                            <ButtonToolbar
+                              bsClass="btn-toolbar"
                             >
-                              <Button
-                                active={false}
-                                block={false}
-                                bsClass="btn"
-                                bsSize="small"
-                                bsStyle="default"
-                                data-test-id="clear-completed-jobs-button"
-                                disabled={true}
-                                onClick={[Function]}
-                                style={
-                                  Object {
-                                    "float": "right",
-                                  }
-                                }
+                              <div
+                                className="btn-toolbar"
+                                role="toolbar"
                               >
-                                <button
-                                  className="btn btn-sm btn-default"
-                                  data-test-id="clear-completed-jobs-button"
-                                  disabled={true}
+                                <LinkContainer
+                                  action="push"
+                                  onlyActiveOnIndex={false}
+                                  to="/settings/profile"
+                                >
+                                  <Button
+                                    action="push"
+                                    active={false}
+                                    block={false}
+                                    bsClass="btn"
+                                    bsSize="small"
+                                    bsStyle="default"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    style={
+                                      Object {
+                                        "margin": 2,
+                                      }
+                                    }
+                                  >
+                                    <button
+                                      action="push"
+                                      className="btn btn-sm btn-default"
+                                      disabled={false}
+                                      onClick={[Function]}
+                                      style={
+                                        Object {
+                                          "margin": 2,
+                                        }
+                                      }
+                                      type="button"
+                                    >
+                                      <Icon
+                                        type="user"
+                                      >
+                                        <i
+                                          className="fa fa-user fa-fw "
+                                        />
+                                      </Icon>
+                                       My account
+                                    </button>
+                                  </Button>
+                                </LinkContainer>
+                                <LinkContainer
+                                  action="push"
+                                  onlyActiveOnIndex={false}
+                                  to="/admin/users"
+                                >
+                                  <Button
+                                    action="push"
+                                    active={false}
+                                    block={false}
+                                    bsClass="btn"
+                                    bsSize="small"
+                                    bsStyle="default"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    style={
+                                      Object {
+                                        "margin": 2,
+                                      }
+                                    }
+                                  >
+                                    <button
+                                      action="push"
+                                      className="btn btn-sm btn-default"
+                                      disabled={false}
+                                      onClick={[Function]}
+                                      style={
+                                        Object {
+                                          "margin": 2,
+                                        }
+                                      }
+                                      type="button"
+                                    >
+                                      <Icon
+                                        type="cog"
+                                      >
+                                        <i
+                                          className="fa fa-cog fa-fw "
+                                        />
+                                      </Icon>
+                                       Admin
+                                    </button>
+                                  </Button>
+                                </LinkContainer>
+                                <Button
+                                  active={false}
+                                  block={false}
+                                  bsClass="btn"
+                                  bsSize="small"
+                                  bsStyle="primary"
+                                  disabled={false}
                                   onClick={[Function]}
                                   style={
                                     Object {
-                                      "float": "right",
+                                      "margin": 2,
                                     }
                                   }
-                                  type="button"
                                 >
-                                  <Icon
-                                    type="times-circle"
+                                  <button
+                                    className="btn btn-sm btn-primary"
+                                    disabled={false}
+                                    onClick={[Function]}
+                                    style={
+                                      Object {
+                                        "margin": 2,
+                                      }
+                                    }
+                                    type="button"
                                   >
-                                    <i
-                                      className="fa fa-times-circle fa-fw "
-                                    />
-                                  </Icon>
-                                   Clear completed
-                                </button>
-                              </Button>
-                              <div
-                                style={
-                                  Object {
-                                    "fontSize": 13,
-                                    "paddingTop": 6,
-                                  }
-                                }
-                              >
-                                <span
-                                  data-test-id="possibly-active-jobs"
-                                >
-                                  No active jobs
-                                </span>
+                                    <Icon
+                                      type="sign-out"
+                                    >
+                                      <i
+                                        className="fa fa-sign-out fa-fw "
+                                      />
+                                    </Icon>
+                                     Log out
+                                  </button>
+                                </Button>
                               </div>
-                            </div>
-                          </div>
+                            </ButtonToolbar>
+                          </UserButtons>
                         </div>
                       </div>
                     </Popover>
                   </SidebarPopover>
-                </JobMonitor>
-                <SidebarPopover
-                  close={[Function]}
-                  expanded={true}
-                  title="mock-user@conveyal.com"
-                  visible={false}
-                >
-                  <Popover
-                    arrowOffsetTop={15}
-                    bsClass="popover"
-                    id="ptest"
-                    placement="right"
-                    style={
-                      Object {
-                        "height": undefined,
-                        "marginLeft": 140,
-                        "maxWidth": 276,
-                        "position": "fixed",
-                        "top": 10,
-                        "visibility": "hidden",
-                        "width": 276,
-                      }
-                    }
-                    title={
-                      <div>
-                        <span>
-                          mock-user@conveyal.com
-                        </span>
-                        <Icon
-                          className="pull-right"
-                          onClick={[Function]}
-                          style={
-                            Object {
-                              "cursor": "pointer",
-                            }
-                          }
-                          type="remove"
-                        />
-                      </div>
-                    }
+                  <SidebarPopover
+                    close={[Function]}
+                    expanded={true}
+                    title="Settings"
+                    visible={false}
+                    width={300}
                   >
-                    <div
-                      className="popover right"
+                    <Popover
+                      arrowOffsetTop={15}
+                      bsClass="popover"
                       id="ptest"
-                      role="tooltip"
+                      placement="right"
                       style={
                         Object {
-                          "display": "block",
                           "height": undefined,
-                          "left": undefined,
-                          "marginLeft": 140,
-                          "maxWidth": 276,
-                          "position": "fixed",
-                          "top": 10,
-                          "visibility": "hidden",
-                          "width": 276,
-                        }
-                      }
-                    >
-                      <div
-                        className="arrow"
-                        style={
-                          Object {
-                            "left": undefined,
-                            "top": 15,
-                          }
-                        }
-                      />
-                      <h3
-                        className="popover-title"
-                      >
-                        <div>
-                          <span>
-                            mock-user@conveyal.com
-                          </span>
-                          <Icon
-                            className="pull-right"
-                            onClick={[Function]}
-                            style={
-                              Object {
-                                "cursor": "pointer",
-                              }
-                            }
-                            type="remove"
-                          >
-                            <i
-                              className="fa fa-remove fa-fw pull-right"
-                              onClick={[Function]}
-                              style={
-                                Object {
-                                  "cursor": "pointer",
-                                }
-                              }
-                            />
-                          </Icon>
-                        </div>
-                      </h3>
-                      <div
-                        className="popover-content"
-                      >
-                        <UserButtons
-                          logout={[Function]}
-                          user={
-                            Object {
-                              "isCheckingLogin": false,
-                              "permissions": UserPermissions {
-                                "appPermissionLookup": Object {
-                                  "administer-application": Object {
-                                    "type": "administer-application",
-                                  },
-                                },
-                                "orgPermissionLookup": Object {},
-                                "organizationLookup": Object {},
-                                "projectLookup": Object {},
-                              },
-                              "profile": Object {
-                                "app_metadata": Object {
-                                  "datatools": Array [
-                                    Object {
-                                      "client_id": "mock-client-id",
-                                      "organizations": Array [],
-                                      "permissions": Array [
-                                        Object {
-                                          "type": "administer-application",
-                                        },
-                                      ],
-                                      "projects": Array [],
-                                      "subscriptions": Array [],
-                                    },
-                                  ],
-                                },
-                                "clientID": "mock-client-id",
-                                "created_at": "2016-03-04T18:59:22.569Z",
-                                "email": "mock-user@conveyal.com",
-                                "email_verified": true,
-                                "identities": Array [
-                                  Object {
-                                    "connection": "Username-Password-Authentication",
-                                    "isSocial": false,
-                                    "provider": "auth0",
-                                    "user_id": "12345",
-                                  },
-                                ],
-                                "jti": "gibberish",
-                                "last_password_reset": "2017-07-13T13:58:01.021Z",
-                                "name": "mock-user@conveyal.com",
-                                "nickname": "mock-user",
-                                "persistent": Object {},
-                                "picture": "https://s.gravatar.com/avatar/f8660ca52d1229e3d55e88f2db4affda?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fmu.png",
-                                "sub": "auth0|12345",
-                                "updated_at": "2019-03-21T19:05:30.180Z",
-                                "user_id": "auth0|12345",
-                                "user_metadata": Object {
-                                  "datatools": Array [
-                                    Object {
-                                      "client_id": "mock-client-id",
-                                      "editor": Object {
-                                        "map_id": "mapbox.streets",
-                                      },
-                                      "hideTutorial": true,
-                                      "sidebarExpanded": false,
-                                    },
-                                  ],
-                                  "lang": "en",
-                                },
-                              },
-                              "recentActivity": null,
-                              "redirectOnSuccess": null,
-                              "subscriptions": UserSubscriptions {
-                                "subscriptionLookup": Object {},
-                              },
-                              "token": "mock-token",
-                            }
-                          }
-                        >
-                          <ButtonToolbar
-                            bsClass="btn-toolbar"
-                          >
-                            <div
-                              className="btn-toolbar"
-                              role="toolbar"
-                            >
-                              <LinkContainer
-                                action="push"
-                                onlyActiveOnIndex={false}
-                                to="/settings/profile"
-                              >
-                                <Button
-                                  action="push"
-                                  active={false}
-                                  block={false}
-                                  bsClass="btn"
-                                  bsSize="small"
-                                  bsStyle="default"
-                                  disabled={false}
-                                  onClick={[Function]}
-                                  style={
-                                    Object {
-                                      "margin": 2,
-                                    }
-                                  }
-                                >
-                                  <button
-                                    action="push"
-                                    className="btn btn-sm btn-default"
-                                    disabled={false}
-                                    onClick={[Function]}
-                                    style={
-                                      Object {
-                                        "margin": 2,
-                                      }
-                                    }
-                                    type="button"
-                                  >
-                                    <Icon
-                                      type="user"
-                                    >
-                                      <i
-                                        className="fa fa-user fa-fw "
-                                      />
-                                    </Icon>
-                                     My account
-                                  </button>
-                                </Button>
-                              </LinkContainer>
-                              <LinkContainer
-                                action="push"
-                                onlyActiveOnIndex={false}
-                                to="/admin/users"
-                              >
-                                <Button
-                                  action="push"
-                                  active={false}
-                                  block={false}
-                                  bsClass="btn"
-                                  bsSize="small"
-                                  bsStyle="default"
-                                  disabled={false}
-                                  onClick={[Function]}
-                                  style={
-                                    Object {
-                                      "margin": 2,
-                                    }
-                                  }
-                                >
-                                  <button
-                                    action="push"
-                                    className="btn btn-sm btn-default"
-                                    disabled={false}
-                                    onClick={[Function]}
-                                    style={
-                                      Object {
-                                        "margin": 2,
-                                      }
-                                    }
-                                    type="button"
-                                  >
-                                    <Icon
-                                      type="cog"
-                                    >
-                                      <i
-                                        className="fa fa-cog fa-fw "
-                                      />
-                                    </Icon>
-                                     Admin
-                                  </button>
-                                </Button>
-                              </LinkContainer>
-                              <Button
-                                active={false}
-                                block={false}
-                                bsClass="btn"
-                                bsSize="small"
-                                bsStyle="primary"
-                                disabled={false}
-                                onClick={[Function]}
-                                style={
-                                  Object {
-                                    "margin": 2,
-                                  }
-                                }
-                              >
-                                <button
-                                  className="btn btn-sm btn-primary"
-                                  disabled={false}
-                                  onClick={[Function]}
-                                  style={
-                                    Object {
-                                      "margin": 2,
-                                    }
-                                  }
-                                  type="button"
-                                >
-                                  <Icon
-                                    type="sign-out"
-                                  >
-                                    <i
-                                      className="fa fa-sign-out fa-fw "
-                                    />
-                                  </Icon>
-                                   Log out
-                                </button>
-                              </Button>
-                            </div>
-                          </ButtonToolbar>
-                        </UserButtons>
-                      </div>
-                    </div>
-                  </Popover>
-                </SidebarPopover>
-                <SidebarPopover
-                  close={[Function]}
-                  expanded={true}
-                  title="Settings"
-                  visible={false}
-                  width={300}
-                >
-                  <Popover
-                    arrowOffsetTop={15}
-                    bsClass="popover"
-                    id="ptest"
-                    placement="right"
-                    style={
-                      Object {
-                        "height": undefined,
-                        "marginLeft": 140,
-                        "maxWidth": 300,
-                        "position": "fixed",
-                        "top": 10,
-                        "visibility": "hidden",
-                        "width": 300,
-                      }
-                    }
-                    title={
-                      <div>
-                        <span>
-                          Settings
-                        </span>
-                        <Icon
-                          className="pull-right"
-                          onClick={[Function]}
-                          style={
-                            Object {
-                              "cursor": "pointer",
-                            }
-                          }
-                          type="remove"
-                        />
-                      </div>
-                    }
-                  >
-                    <div
-                      className="popover right"
-                      id="ptest"
-                      role="tooltip"
-                      style={
-                        Object {
-                          "display": "block",
-                          "height": undefined,
-                          "left": undefined,
                           "marginLeft": 140,
                           "maxWidth": 300,
                           "position": "fixed",
@@ -1449,19 +1474,7 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                           "width": 300,
                         }
                       }
-                    >
-                      <div
-                        className="arrow"
-                        style={
-                          Object {
-                            "left": undefined,
-                            "top": 15,
-                          }
-                        }
-                      />
-                      <h3
-                        className="popover-title"
-                      >
+                      title={
                         <div>
                           <span>
                             Settings
@@ -1475,66 +1488,114 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                               }
                             }
                             type="remove"
-                          >
-                            <i
-                              className="fa fa-remove fa-fw pull-right"
+                          />
+                        </div>
+                      }
+                    >
+                      <div
+                        className="popover right"
+                        id="ptest"
+                        role="tooltip"
+                        style={
+                          Object {
+                            "display": "block",
+                            "height": undefined,
+                            "left": undefined,
+                            "marginLeft": 140,
+                            "maxWidth": 300,
+                            "position": "fixed",
+                            "top": 10,
+                            "visibility": "hidden",
+                            "width": 300,
+                          }
+                        }
+                      >
+                        <div
+                          className="arrow"
+                          style={
+                            Object {
+                              "left": undefined,
+                              "top": 15,
+                            }
+                          }
+                        />
+                        <h3
+                          className="popover-title"
+                        >
+                          <div>
+                            <span>
+                              Settings
+                            </span>
+                            <Icon
+                              className="pull-right"
                               onClick={[Function]}
                               style={
                                 Object {
                                   "cursor": "pointer",
                                 }
                               }
-                            />
-                          </Icon>
-                        </div>
-                      </h3>
-                      <div
-                        className="popover-content"
-                      >
-                        <div>
-                          <div
-                            className="app-info"
-                          >
-                            <h5>
-                              About this app
-                            </h5>
-                            <table>
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    UI Version:
-                                  </td>
-                                  <td>
-                                    Unknown
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>
-                                    UI deployed at:
-                                  </td>
-                                  <td>
-                                    Unknown
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>
-                                    Server version:
-                                  </td>
-                                  <td>
-                                    Unknown
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
+                              type="remove"
+                            >
+                              <i
+                                className="fa fa-remove fa-fw pull-right"
+                                onClick={[Function]}
+                                style={
+                                  Object {
+                                    "cursor": "pointer",
+                                  }
+                                }
+                              />
+                            </Icon>
+                          </div>
+                        </h3>
+                        <div
+                          className="popover-content"
+                        >
+                          <div>
+                            <div
+                              className="app-info"
+                            >
+                              <h5>
+                                About this app
+                              </h5>
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      UI Version:
+                                    </td>
+                                    <td>
+                                      Unknown
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      UI deployed at:
+                                    </td>
+                                    <td>
+                                      Unknown
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      Server version:
+                                    </td>
+                                    <td>
+                                      Unknown
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </Popover>
-                </SidebarPopover>
-              </div>
-            </Sidebar>
-          </Connect(Sidebar)>
+                    </Popover>
+                  </SidebarPopover>
+                </div>
+              </Sidebar>
+            </Connect(Sidebar)>
+          </WithAuth>
           <Connect(Content)>
             <Content
               sidebarExpanded={true}
@@ -2084,7 +2145,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                               },
                                                             },
                                                             "recentActivity": null,
-                                                            "redirectOnSuccess": null,
                                                             "subscriptions": UserSubscriptions {
                                                               "subscriptionLookup": Object {},
                                                             },
@@ -2299,7 +2359,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                                                 },
                                                                               },
                                                                               "recentActivity": null,
-                                                                              "redirectOnSuccess": null,
                                                                               "subscriptions": UserSubscriptions {
                                                                                 "subscriptionLookup": Object {},
                                                                               },
@@ -3994,11 +4053,9 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                               </PanelHeading>
                                                               <ListGroup
                                                                 bsClass="list-group"
-                                                                fill={true}
                                                               >
                                                                 <ul
                                                                   className="list-group"
-                                                                  fill={true}
                                                                 >
                                                                   <ListGroupItem
                                                                     bsClass="list-group-item"
@@ -4188,11 +4245,9 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                             </PanelHeading>
                                                             <ListGroup
                                                               bsClass="list-group"
-                                                              fill={true}
                                                             >
                                                               <ul
                                                                 className="list-group"
-                                                                fill={true}
                                                               >
                                                                 <ListGroupItem
                                                                   bsClass="list-group-item"
@@ -4427,7 +4482,6 @@ exports[`lib > manager > ActiveProjectViewer should render with newly created pr
                                                             },
                                                           },
                                                           "recentActivity": null,
-                                                          "redirectOnSuccess": null,
                                                           "subscriptions": UserSubscriptions {
                                                             "subscriptionLookup": Object {},
                                                           },

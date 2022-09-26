@@ -575,7 +575,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             },
           },
           "recentActivity": null,
-          "redirectOnSuccess": null,
           "subscriptions": UserSubscriptions {
             "subscriptionLookup": Object {},
           },
@@ -1103,7 +1102,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               },
                             },
                             "recentActivity": null,
-                            "redirectOnSuccess": null,
                             "subscriptions": UserSubscriptions {
                               "subscriptionLookup": Object {},
                             },
@@ -2811,11 +2809,9 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
             </PanelHeading>
             <ListGroup
               bsClass="list-group"
-              fill={true}
             >
               <div
                 className="list-group"
-                fill={true}
               >
                 <table
                   className="feed-source-table"
@@ -3496,7 +3492,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                               },
                             },
                             "recentActivity": null,
-                            "redirectOnSuccess": null,
                             "subscriptions": UserSubscriptions {
                               "subscriptionLookup": Object {},
                             },
@@ -3819,7 +3814,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     },
                                   },
                                   "recentActivity": null,
-                                  "redirectOnSuccess": null,
                                   "subscriptions": UserSubscriptions {
                                     "subscriptionLookup": Object {},
                                   },
@@ -4636,7 +4630,6 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                     },
                                   },
                                   "recentActivity": null,
-                                  "redirectOnSuccess": null,
                                   "subscriptions": UserSubscriptions {
                                     "subscriptionLookup": Object {},
                                   },
