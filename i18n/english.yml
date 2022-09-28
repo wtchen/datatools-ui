@@ -851,6 +851,7 @@ components:
     noProjectsFound: No projects
     orgAdmin: Org admin
     save: Save
+    unknownAccount: Unknown
   UserSettings:
     admin:
       description: Application administrators have full access to all projects.
