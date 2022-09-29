@@ -2200,7 +2200,7 @@ describe('end-to-end', () => {
         await waitForSelector(
           '[data-test-id="exception-dates-container"] input'
         )
-        await wait(250, 'for date range picker to load')
+        await wait(1050, 'for date range picker to load')
         await clearAndType(
           '[data-test-id="exception-dates-container"] input',
           '08/04/18'
@@ -2213,7 +2213,7 @@ describe('end-to-end', () => {
           '[data-test-id="exception-date-range-0-2"] input'
         )
 
-        await wait(250, 'for date range picker to load')
+        await wait(1050, 'for date range picker to load')
         await clearAndType(
           '[data-test-id="exception-date-range-0-2"] input',
           '08/10/18'
