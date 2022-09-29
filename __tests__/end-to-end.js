@@ -2822,7 +2822,7 @@ describe('end-to-end', () => {
 
       // wait for jobs to complete
       await waitAndClearCompletedJobs()
-    }, defaultTestTimeout + 30000) // Add thirty seconds for deployment job
+    }, defaultTestTimeout + 60000) // Add sixty seconds for deployment job
 
     makeEditorEntityTest('should be able to do a trip plan on otp', async () => {
       await wait(15000, 'for OTP to pick up the newly-built graph')
