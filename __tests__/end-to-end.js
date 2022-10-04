@@ -2082,6 +2082,7 @@ describe('end-to-end', () => {
           '[data-test-id="exception-dates-container"] input'
         )
         await wait(250, 'for date range picker to load')
+        await wait(1000, 'for date range animation to finish')
         await clearAndType(
           '[data-test-id="exception-dates-container"] input',
           '07/04/18'
@@ -2143,7 +2144,7 @@ describe('end-to-end', () => {
         )
 
         // set new date
-        await wait(250, 'for date range picker to load')
+        await wait(1250, 'for date range picker to load')
         await clearAndType(
           '[data-test-id="exception-dates-container"] input',
           '07/05/18'
