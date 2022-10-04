@@ -2206,9 +2206,11 @@ describe('end-to-end', () => {
           '08/04/18'
         )
 
+        await wait(1050, 'for date range picker to load')
         await click('[data-test-id="exception-add-range"]')
 
         // add end of range exception date (July 10, 2018)
+        await wait(1050, 'for date range picker to load')
         await waitForSelector(
           '[data-test-id="exception-date-range-0-2"] input'
         )
