@@ -17,6 +17,23 @@ let COUNTER = 0
  * Make a mock deployment given a project and some FeedVersions. This is a
  * function so that circular references can be defined.
  */
+export function makeMockDeploymentSummary (
+  project: Project,
+  feedVersions: Array<FeedVersion> = []
+) {
+  return {
+    dateCreated: 1553292345720,
+    deployedTo: null,
+    // Don't increment counter as we want to match the main deployment
+    id: `mock-deployment-id-${COUNTER}`,
+    lastDeployed: null,
+    name: 'mock-deployment'
+  }
+}
+/**
+ * Make a mock deployment given a project and some FeedVersions. This is a
+ * function so that circular references can be defined.
+ */
 export function makeMockDeployment (
   project: Project,
   feedVersions: Array<FeedVersion> = []
@@ -350,6 +367,10 @@ mockProjectWithDeployment.id = 'mock-project-with-deployments-id'
 mockProjectWithDeployment.name = 'mock-project-with-deployments'
 
 export const mockDeployment = makeMockDeployment(
+  mockProjectWithDeployment,
+  [mockFeedVersion]
+)
+export const mockDeploymentSummary = makeMockDeploymentSummary(
   mockProjectWithDeployment,
   [mockFeedVersion]
 )
