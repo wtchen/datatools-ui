@@ -14,7 +14,7 @@ import type {
 let COUNTER = 0
 
 /**
- * Make a mock deployment given a project and some FeedVersions. This is a
+ * Make a mock deployment summary given a project and some FeedVersions. This is a
  * function so that circular references can be defined.
  */
 export function makeMockDeploymentSummary (
