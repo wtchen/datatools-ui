@@ -318,7 +318,7 @@ components:
     attributes: Attribute
     feedInfo: Feed Info
     noValidationIssues: Keine Validierungsfehler
-    requiredField: '* kenzeichnet verpflichtendes Feld'
+    requiredField: '* kenzeichnet Pflichtfeld'
     routeDetails: Routen-Details
     rules: Regeln
     saveChanges: Änderungen speicheren
