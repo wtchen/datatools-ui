@@ -357,7 +357,7 @@ components:
   FeedSourceAttributes:
     lastUpdated: Updated
   FeedSourcePanel:
-    chooseProject: [choose project]
+    chooseProject: '[choose project]'
     chooseProjectToView: Choose a project to view feeds
     createOne: Create one.
     filters:

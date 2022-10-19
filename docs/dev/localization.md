@@ -19,7 +19,7 @@ To internationalize components not yet translated, perform the following steps:
 	* assign getComponentMessages('<ComponentName>') to a component properties `messages`
 	* extract not yet translated messages from component files to `i18n/english.yml` and replace their original text by this.messages('<key>')
 	* in case the original message was haad some dynamic parts, you should create placeholders (using `%placeholder%` and use replace to substitute that string with the intended value). Note that numic parameters should be converted to strings.
-* When done, add the new message keys to the existing translation files, e.g. using [yq](https://mikefarah.gitbook.io/yq/v/v2.x/), like e.g. `yq merge i18n/german.yml i18n/english.yml | sponge i18n/german.yml`. Note: Besides merging the missing keys, yq has some reformatting/reordering side effects.
+* When done, add the new message keys to the existing translation files, e.g. using [yq](https://mikefarah.gitbook.io/yq/v/v2.x/), like e.g. `yq merge i18n/german.yml i18n/english.yml | sponge i18n/german.yml`. Note: Besides merging the missing keys, yq has some reformatting/reordering side effects, i.e. messages surrounded by brackets need to be quoted, otherwise they are converted to nested arrays.
 * Periodically, and especially before commiting, run `yarn run lint-messages` or `yarn run test` to be sure all tests are still running. 
 
 Note: console log messages are not intended to be localized
