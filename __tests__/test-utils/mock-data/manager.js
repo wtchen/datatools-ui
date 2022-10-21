@@ -17,10 +17,7 @@ let COUNTER = 0
  * Make a mock deployment summary given a project and some FeedVersions. This is a
  * function so that circular references can be defined.
  */
-export function makeMockDeploymentSummary (
-  project: Project,
-  feedVersions: Array<FeedVersion> = []
-) {
+export function makeMockDeploymentSummary () {
   return {
     dateCreated: 1553292345720,
     deployedTo: null,
