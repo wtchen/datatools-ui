@@ -24,6 +24,9 @@ Object {
         Object {
           "dateCreated": 1553292345720,
           "deployedTo": null,
+          "feedVersions": Array [
+            undefined,
+          ],
           "id": "mock-deployment-id-1",
           "lastDeployed": null,
           "name": "mock-deployment",
