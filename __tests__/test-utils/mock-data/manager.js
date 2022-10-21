@@ -367,10 +367,7 @@ export const mockDeployment = makeMockDeployment(
   mockProjectWithDeployment,
   [mockFeedVersion]
 )
-export const mockDeploymentSummary = makeMockDeploymentSummary(
-  mockProjectWithDeployment,
-  [mockFeedVersion]
-)
+export const mockDeploymentSummary = makeMockDeploymentSummary()
 mockProjectWithDeployment.deployments.push(mockDeployment)
 mockProjectWithDeployment.feedSources.push(mockFeedWithVersion)
 
