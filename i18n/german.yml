@@ -1350,6 +1350,11 @@ components:
     welcomeTo: Willkommen zu
   UserList:
     filterByOrg: Filtere nach Org.
+    headings:
+      accountType: Typ
+      lastLogin: Letzte Anmeldung
+      projects: Projekte
+      user: Konto
     noResults: (Keine anzuzeigenden Ergebnisse)
     of: von
     perPage: Konten pro Seite
