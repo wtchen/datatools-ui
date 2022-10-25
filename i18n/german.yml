@@ -1366,6 +1366,7 @@ components:
     noProjectsFound: Keine Projekte
     orgAdmin: Organisation-Admin
     save: Speichern
+    unknownAccount: Unbekannt
   UserSettings:
     admin:
       description: Applikations-Admininistrator*innen haben vollen Zugriff auf alle
