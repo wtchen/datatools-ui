@@ -2602,22 +2602,22 @@ describe('end-to-end', () => {
           await page.keyboard.press('Enter')
 
           // Laurel Dr arrival
-          await page.keyboard.type('1234')
+          await page.keyboard.type('12:34')
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 
           // Laurel Dr departure
-          await page.keyboard.type('1235')
+          await page.keyboard.type('12:35')
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 
           // Russell Av arrival
-          await page.keyboard.type('1244')
+          await page.keyboard.type('12:44')
           await page.keyboard.press('Tab')
           await page.keyboard.press('Enter')
 
           // Russell Av departure
-          await page.keyboard.type('1245')
+          await page.keyboard.type('12:45')
           await page.keyboard.press('Enter')
 
           // save
