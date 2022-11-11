@@ -286,6 +286,14 @@ td.feed-source-info {
   padding: 6px 4px;
 }
 
+/* Exception ranges  */
+
+.exception-subtitle {
+  text-transform: uppercase;
+  font-size: 80%;
+  opacity: 0.7;
+}
+
 /* Feed version status styling */
 .feed-status {
   border-radius: 5px;
