@@ -352,6 +352,7 @@ components:
     MINUTES: Minuten
     fetchFeedEvery: Feed-Abruf alle
   FeedInfo:
+    flex: Flexible service
     autoFetch: Automatischer Abruf
     autoPublish: Automatische Veröffentlichung
     dateFormat: DD.MM.YYYY
@@ -603,6 +604,10 @@ components:
         title: Real-time Updater
       walkSpeed: Geh-Geschwindigkeit
   GeneralSettings:
+    flex:
+      title: Flexible Routen
+      checkbox: Feed-Quelle enthält flexible Routen.
+      description: Erlauben Sie dieser Feed-Quelle, den Flex-Service einzuschließen. Wenn Sie dieses Kontrollkästchen markieren, werden die Flex-Tools im Editor aktiviert. Flex-Service beschreibt Routen, die einem Fahrplan folgen, aber auch flexible Routen wie Dial-a-Ride-Service, Routenabweichung, kontinuierliche Haltestellen oder Punkt-zu-Zone-Service.
     autoFetch:
       checkbox: Feed-Quelle automatisch abrufen
       hint: Aktiviert den automatischen Feed-Abruf. (Feed-Quelle-URL must angegeben

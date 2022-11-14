@@ -2715,6 +2715,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                                   onClick={[Function]}
                                                   onKeyDown={[Function]}
                                                   onSelect={[Function]}
+                                                  title={false}
                                                 >
                                                   <li
                                                     className=""
@@ -2726,6 +2727,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                                       onKeyDown={[Function]}
                                                       role="menuitem"
                                                       tabIndex="-1"
+                                                      title={false}
                                                     >
                                                       <a
                                                         href="#"
@@ -2733,6 +2735,7 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                                         onKeyDown={[Function]}
                                                         role="menuitem"
                                                         tabIndex="-1"
+                                                        title={false}
                                                       >
                                                         <Glyphicon
                                                           bsClass="glyphicon"
