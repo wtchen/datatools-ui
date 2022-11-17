@@ -33,6 +33,8 @@ ARG AWS_SECRET_ACCESS_KEY
 # Grab latest dev build of Datatools Server
 RUN git clone https://github.com/ibi-group/datatools-server.git
 WORKDIR /datatools/datatools-server
+# TODO: Remove once dev-flex is merged into dev!
+RUN git checkout dev-flex
 
 RUN mvn package -DskipTests
 RUN cp target/dt*.jar ./datatools-server-3.8.1-SNAPSHOT.jar
