@@ -39,7 +39,7 @@ services:
       args: *common-variables
       dockerfile: ./__tests__/e2e/Dockerfile
 
-    command: /bin/sh -c "./wait-for-command.sh -t 15 -c 'nc -z datatools-ui 9966' && sleep 40 && yarn test-end-to-end"
+    command: /bin/sh -c "./wait-for-command.sh -t 15 -c 'nc -z datatools-ui 9966' && sleep 25 && yarn test-end-to-end"
     shm_size: '2gb'
     cap_add:
       - ALL
