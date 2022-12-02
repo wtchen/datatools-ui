@@ -1035,7 +1035,6 @@
 # FIXME: helpContent is lifted from https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
 - id: bookingrule
   name: booking_rules.txt
-  datatools: true
   helpContent: Booking information for rider-requested services using GTFS-FlexibleTrips, such as how far in advance booking should occur or a phone number that should be called.
   fields:
     - name: booking_rule_id
@@ -1128,6 +1127,7 @@
   # FIXME: helpContent is lifted from https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
 - id: location
   name: locations.geojson
+  flex: true
   helpContent: Adds features that indicate areas where riders can request either pickup or drop off.
   fields:
   # TODO: enable validation to match spec (only appear when appropriate)
@@ -1162,6 +1162,7 @@
     
   # FIXME: helpContent is lifted from https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
 - id: locationgroup
+  flex: true
   name: location_groups.txt
   helpContent: Adds location groups. Location groups are groups of stops and GeoJSON locations, which allow predetermined groups of these features to be specified on individual rows of stop_times.txt.
   fields:
