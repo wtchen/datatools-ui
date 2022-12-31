@@ -1243,6 +1243,11 @@ components:
     title: Timetable editor keyboard shortcuts
   TimezoneSelect:
     placeholder: Select timezone...
+  TripSeriesModal:
+    close: Close
+    createTripSeriesBody: Enter the start time (24 hour, HH:mm format),headway between trips, and trip number and click create to generate the series of trips. 
+    createTripSeriesQuestion: Create a series of trips
+    generateTrips: Generate Trips
   UserAccount:
     account:
       title: Account
