@@ -1245,9 +1245,12 @@ components:
     placeholder: Select timezone...
   TripSeriesModal:
     close: Close
-    createTripSeriesBody: Enter the start time (24 hour, HH:mm format),headway between trips, and trip number and click create to generate the series of trips. 
+    createTripSeriesBody: Enter the start and end time for the trip series (24 hour time) and headway between trips. Click generate to create the series of trips. 
     createTripSeriesQuestion: Create a series of trips
+    endTime: "End Time:"
     generateTrips: Generate Trips
+    headway: "Headway:"
+    startTime: "Start Time:"
   UserAccount:
     account:
       title: Account
