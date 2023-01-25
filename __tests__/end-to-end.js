@@ -377,7 +377,7 @@ async function createFeedSourceViaForm (feedSourceName) {
 
   // save and wait
   await click('[data-test-id="create-feed-source-button"]')
-  await wait(2000, 'for feed source to be created and saved')
+  await wait(10000, 'for feed source to be created and saved')
 
   // verify that feed source was created
   await waitForSelector('.manager-header')
