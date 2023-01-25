@@ -1247,7 +1247,7 @@ components:
     close: Close
     createTripSeriesBody: Enter the start and end time for the trip series (24 hour time) and headway between trips. Click generate to create the series of trips. 
     createTripSeriesQuestion: Create a series of trips
-    disabledTooltip: There is an issue with the input data.
+    disabledTooltip: There is an issue with the input data
     endTime: "End Time:"
     generateTrips: Generate Trips
     headway: "Headway:"
