@@ -827,6 +827,9 @@ components:
       defaultDwellTime: Default dwell time
       defaultTravelTime: Default travel time
       firstStopTravelTime: Travel time for first stop must be zero
+      stopHeadsignPlaceholder: Outbound
+      stopHeadsignText: Stop headsign
+      stopHeadsignTitle: Headsign that overrides trip headsign between stops.
       timepoint: Timepoint?
       travelTimeHelp: Define the default time it takes to travel to this stop from the previous stop.
     PickupDropOffSelect:
