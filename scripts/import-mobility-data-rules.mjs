@@ -11,9 +11,12 @@ const findDescription = (text, header) => {
 
   const description = lines.findIndex(l => l.includes(header))
 
-  // Edge case? Something is strange about the file
+  // Edge cases? Something is strange about the file
   if (header === 'equal_shape_distance_diff_coordinates') {
     return lines[description + 4]
+  }
+  if (header === 'same_name_and_description_for_stop' || header === 'same_name_and_description_for_route') {
+    return lines[description + 2] + '\n\n' + lines[description + 4]
   }
 
   return lines[description + 2]
