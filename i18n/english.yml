@@ -1132,6 +1132,7 @@ components:
     noEC2Instances: No EC2 instances associated with server.
   ShowAllRoutesOnMapFilter:
     fetching: Fetching
+    noShapes: The feed does not have any route shapes created yet.
     showAllRoutesOnMap: Show all routes
     tooManyShapeRecords: large shapes.txt may impact performance
   Sidebar:
