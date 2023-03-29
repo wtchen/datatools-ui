@@ -1,9 +1,70 @@
-# Trips
+# Schedules
 
-## Selecting schedules
-The schedule editor allows users to create trips/frequencies for any route, pattern, and calendar combination.  The selectors at the top of the page allow users to navigate between calendars for a given pattern or switch between patterns for a route or even routes within the feed.
+The schedule editor allows for the creation of trips/frequencies for any combination of route, pattern, and/or calendar. To manage or edit schedules or exceptions, navigate to the `Calendar` tab located in the left-hand menu:
 
-Each selection has a set of statistics associated with it to give you a sense of how it fits in with the feed:
+calendar-tab IMAGE HERE
+
+## Terminology
+
+### Calendars
+Transit calendars in GTFS are used to define the days of the week on which transit services are available. See the [GTFS specification calendar reference](https://gtfs.org/schedule/reference/#calendartxt) for more information.
+
+### Exceptions
+Exceptions are deviations from the regular transit service schedule, such as holidays, special events, cancellations and service disruptions. See the [GTFS specification calendar dates reference](https://gtfs.org/schedule/reference/#calendar_datestxt) for more information.
+
+### Schedules/Timetable-based routes
+Timetable-based routes follow a fixed schedule in which the start time, end time, and all the intermediate stops are pre-defined.
+
+### Frequency-based routes
+Unlike the fixed nature of timetable-based trips, frequency-based trips run at regular intervals, with a fixed amount of time between consecutive trips. Frequency-based service offers more flexibility and easier adjustment to changing demand. Visit [GTFS specification frequency reference](https://gtfs.org/schedule/reference/#frequenciestxt) for more information.
+
+## Editing/Creating Calendars
+To start editing a calendar, click on `+ Create first calendar` if this is the first calendar being added or click on an existing calendar to begin adding/editing its properties.
+
+**Note: Be sure to click the save button (💾) after changes any changes to calendars are made.**
+
+### Tutorial Video: Creating/Editing Calendars
+<iframe 
+    width="560" 
+    height="315" 
+    src="https://youtube.com/embed/Ozvroe7EFHs" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+</iframe>
+<br>
+
+## Editing/Creating Exceptions
+To start editing an exception, select any existing exception (if applicable) on the left pane. You will be able to edit properties such as exception name, customize the exception type, add calendars to add, remove or swap and the time range the exception is applied to. To make a new exception, click on `New exception` on the top left of the pane.
+
+new-exception IMAGE HERE
+
+You will be able to add properties such as exception name, customize the exception type, add calendars to add, remove or swap and the time range the exception is applied to.
+
+**Note: Be sure to click the save button (💾) after changes any changes to exceptions are made.**
+### Tutorial Video: Creating/Editing Exceptions
+<iframe 
+    width="560" 
+    height="315" 
+    src="https://youtube.com/embed/GX5sjxI_nK8" 
+    frameborder="0" 
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+</iframe>
+<br>
+
+## Editing/Creating Timetables
+To begin editing a timetable, click the `Edit schedules` button in the top left corner of the screen (highlighed in yellow).
+
+(Alternatively, if you are in the `Routes` tab (see [Routes](/user/editor/routes/)), select an existing route or route click the `New route` button --> select the `Trip patterns` tab --> select a pattern --> select `Use timetables` in the 'Type:` dropdown --> select the `Edit schedules` button)
+
+edit-schedules IMAGE HERE
+
+The selectors located at the top of the page allow users to navigate between calendars for a specific pattern or switch between patterns for a route or multiple routes within the feed. Variations of route, pattern and the schedule can be selected to generate the desired timetable.
+
+timetable-selector IMAGE HERE
+
+Each selection has a set of statistics associated with it shown as a number in a grey or green box, that, when hovered over, provides the following information:
 
 - **Route**
     - \# of trips for the entire route
@@ -15,10 +76,20 @@ Each selection has a set of statistics associated with it to give you a sense of
     - \# of routes with trips in calendar
     - \# of trips in calendar for entire feed
 
-![schedule selector](../../img/timetable-selector.png)
+Once a route, pattern and calendar is selected, a timetable with the following trip details will appear:
 
-## Schedule toolbar
-![schedule-toolbar](../../img/schedule-toolbar.png)
+- **Block ID** - identifies the vehicle used for the trip
+- **Trip ID** - unique identifier for the trip
+- **Trip Headsign** - headsign for the trip
+- **Arrival/Departure Times** - arrival and departure times (departures shown in grey text) for each stop along the pattern
+
+edit-timetables IMAGE HERE
+
+To select trips to offset, duplicate or delete, click the row number on the lefthand side of the row. To toggle selection of all trips, click the box in the upper lefthand corner.
+
+select-trips IMAGE HERE
+
+After trips are selected, navigate to the schedule toolbar at the top right of the screen.
 
 - **Add trip** - add blank trip (first timepoint is `00:00:00`)
 - **Duplicate trip(s)** - duplicate the last trip in the spreadsheet or whichever rows are selected
@@ -27,13 +98,11 @@ Each selection has a set of statistics associated with it to give you a sense of
 - **Save** - save all changes
 - **Offset trip(s)** - specify an offset (`HH:MM`) to offset the last trip in the spreadsheet or whichever rows are selected
 
-## Selecting trips
-To select trips to offset, duplicate or delete, click the row number on the lefthand side of the row. To toggle selection of all trips, click the box in the upper lefthand corner.
+schedule-toolbar IMAGE HERE
 
-![select trips](../../img/select-trips.png)
+** Note: When entering times manually into the schedule editor they will automatically be converted to a standardized format `13:00:00`** 
 
-## Recognized time entry formats
-When entering times manually into the schedule editor they will automatically be converted to a standardized format `13:00:00`. The following time formats are automatically recognized and converted:
+The following time formats are automatically recognized and converted:
 
 - 24-hr
     - `13:00:00`
@@ -44,28 +113,7 @@ When entering times manually into the schedule editor they will automatically be
     - `1:00 pm`
     - `1:00:00 pm`
 
-## Editing timetables
-Trip details include:
-
-- **Block ID** - identifies the vehicle used for the trip
-- **Trip ID** - unique identifier for the trip
-- **Trip Headsign** - headsign for the trip
-- **Arrival/Departure Times** - arrival and departure times (departures shown in grey text) for each stop along the pattern
-
-![editing timetables](../../img/edit-timetables.png)
-
-## Editing frequencies
-Frequency details include:
-
-- **Block ID** - identifies the vehicle used for the trip
-- **Trip ID** - unique identifier for the trip
-- **Trip Headsign** - headsign for the trip
-- **Start/End Times** - define the beginning and end time for the interval over which the frequency operates
-- **Headway** - headway (in seconds) that the pattern runs during the time interval
-
-![editing frequencies](../../img/edit-frequencies.png)
-
-## Tutorial Video: Creating Timetables
+### Tutorial Video: Editing/Creating Timetables
 The following video demonstrates the creation and editing of timetables described above. 
 
 <iframe 
@@ -76,3 +124,19 @@ The following video demonstrates the creation and editing of timetables describe
     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
     allowfullscreen>
 </iframe>
+
+<br>
+## Editing/Creating Frequencies
+To edit/create frequencies, navigate to the `Routes` tab (see [Routes](/user/editor/routes/)), select an existing route or route click the `New route` button --> select the `Trip patterns` tab --> select a pattern --> select `Use frequencies` in the 'Type:` dropdown --> select the `Edit schedules` button
+
+Frequency details include:
+
+- **Block ID** - identifies the vehicle used for the trip
+- **Trip ID** - unique identifier for the trip
+- **Trip Headsign** - headsign for the trip
+- **Start/End Times** - define the beginning and end time for the interval over which the frequency operates
+- **Headway** - headway (in seconds) that the pattern runs during the time interval
+
+Editing frequencies follow the [same editing procedures](#tutorial-video-editingcreating-timetables) as editing timetables.
+
+edit-frequencies IMAGE HERE

@@ -3,13 +3,13 @@
 ## Terminology
 ### Fare attributes
 
-Fare attributes describe the basic information about a fare including the price, currency type and transfer information. See the [GTFS specification fare attribute reference](https://developers.google.com/transit/gtfs/reference/fare_attributes-file) for more information.
+Fare attributes describe the basic information about a fare including the price, currency type and transfer information. See the [GTFS specification fare attribute reference](https://gtfs.org/schedule/reference/#fare_attributestxt) for more information.
 ### Fare rules
 
-Fare rules describe how much riders pay to use a transit system, based on factors such as distance traveled, time of day, and type of fare media used (such as a mobile app). In other words, they govern how fare attributes are applied. See the [GTFS specification fare rule reference](https://developers.google.com/transit/gtfs/reference/fare_rules-file) for more information.
+Fare rules describe how much riders pay to use a transit system, based on factors such as distance traveled, time of day, and type of fare media used (such as a mobile app). In other words, they govern how fare attributes are applied. See the [GTFS specification fare rule reference](https://gtfs.org/schedule/reference/#fare_rulestxt) for more information.
 
 
-## Creating/editing a fare
+## Editing/Creating Fares
 
 To begin editing fares, click the fare ticket button on the lefthand navigation bar (outlined in red).
 
@@ -40,7 +40,7 @@ To create a fare zone, you must first select a stop that you would like to inclu
 
 adding fare zone IMAGE HERE
 
-## Video Tutorial
+### Tutorial Video: Editing/Creating Fares
 <iframe 
     width="560"
     height="315" 
