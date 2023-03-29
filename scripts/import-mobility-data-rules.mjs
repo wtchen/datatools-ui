@@ -2,6 +2,10 @@ import { writeFileSync } from 'fs'
 
 import fetch from 'isomorphic-fetch'
 
+const logger = (msg) => {
+  console.log(`[MOBILITY DATA RULES IMPORTER]: ${msg}`)
+}
+
 const findDescription = (text, header) => {
   // Split the rules.MD file into lines
   let lines = text.split('\n')
@@ -22,11 +26,13 @@ const findDescription = (text, header) => {
   return lines[description + 2]
 }
 
+logger('Writing gtfs-validator rules.MD to JSON')
 fetch(
   'https://raw.githubusercontent.com/MobilityData/gtfs-validator/master/RULES.md'
 )
   .then((raw) => raw.text())
   .then((text) => {
+    logger('rules.MD downloaded!')
     // Match all rule headings
     const rules = text
       .match(/### .*/g)
@@ -38,5 +44,7 @@ fetch(
       rule,
       description: findDescription(text, rule)
     }))
+    logger('rules.MD data extracted successfully!')
     writeFileSync('lib/manager/components/validation/rules.json', JSON.stringify(rulesAndDescriptions))
+    logger('Wrote gtfs-validator rules.MD to JSON')
   })
