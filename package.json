@@ -42,6 +42,7 @@
     "@turf/distance": "^5.1.5",
     "@turf/line-slice-along": "^4.6.0",
     "@turf/nearest-point-on-line": "^5.1.5",
+    "array.prototype.move": "^0.0.4",
     "bootstrap": "^3.4.1",
     "bugsnag-js": "^4.7.2",
     "bugsnag-react": "^1.1.1",
