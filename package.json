@@ -139,7 +139,7 @@
     "istanbul-middleware": "^0.2.2",
     "js-yaml": "^3.11.0",
     "lint-staged": "^11.0.0",
-    "mastarm": "^5.3.1",
+    "mastarm": "miles-grant-ibigroup/mastarm#fc47c1e9a228d7326d42ad6133f337a1ff1c83a9",
     "md5-file": "^4.0.0",
     "nock": "^9.0.14",
     "patch-package": "^6.4.7",
