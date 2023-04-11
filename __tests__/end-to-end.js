@@ -2809,7 +2809,7 @@ describe('end-to-end', () => {
       await waitForAndClick('[data-test-id="deploy-server-0-button"]')
       // wait for deployment dialog to appear
       await waitForSelector('[data-test-id="confirm-deploy-server-button"]')
-      await wait(1500, 'for deployment panel to properly load')
+      await wait(1501, 'for deployment panel to properly load')
 
       // get the router name
       const innerHTML = await getInnerHTMLFromSelector(
