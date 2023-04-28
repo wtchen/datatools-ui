@@ -1,89 +1,90 @@
 # Trip Patterns
 
-## Editing trip patterns
+## Terminology
 
-To begin editing trip patterns (or patterns), first select or create a route. Click the `Trip patterns` tab.
+### Patterns
+Patterns refer to the recurring schedules and frequencies of transit trips. They can be thought of as a template for a particular route, indicating the days of the week and times of day that trips will be available, as well as the frequency of service during those periods.
 
-![screenshot](../../img/edit-patterns.png)
+## Editing/Creating Trip Patterns
 
-Choose a pattern from the list to begin editing. To create a new pattern, click `+ New pattern`.
+To begin editing trip patterns, first click the `Routes` tab (outlined in red). Then, select or create a route Click the `Trip patterns` tab, and start editing any relevant fields including: 
 
-## Pattern toolbar
-
-### Zoom to pattern extents
-Clicking the 🔍 button (in the top toolbar) with a pattern selected adjusts the map view to show the entire pattern you are editing.
-
-### Duplicate pattern
-Creates a duplicate of the active pattern (duplicated pattern name becomes `[Pattern name] copy`) if you need to create a similar, but different trip pattern.
-
-### Reverse pattern
-To reverse the sequence of stops for a pattern, click the yellow opposing arrows button. **Note**: this is a destructive action and should usually only be used with Duplicate Pattern.
-
-### Delete pattern
-
-Deletes the active pattern. **Note**: deleted patterns cannot be recovered.
-
-## Pattern details
-
-- **Name** – the name of the trip pattern within the route, for example a service that runs the full length of the route or a service that only runs part of the length of the route.
 <!-- TODO: add transitwand to GTFS Editor -->
 <!-- - Transitwand id (optional) – the trip pattern can be imported from a Transitwand route trace, if you have one enter the phone id here and click the ‘Load from Transitwand’ box. -->
-- **Use timetables/frequencies** - whether the pattern uses timetables, i.e., individual entries for each trip made over the course of a day, or frequencies, which define varying frequencies (or headways) according to time intervals over the course of a day.
-- **Direction** - corresponds to the `direction_id` field in GTFS. All trips associated with this pattern will be assigned the direction provided here.
-
-## Editing schedules
+- **Name:** the name of the pattern within the route, for example: "27 stops from Willowridge Rd at Richgrove Dr to Kipling Station (268 trips)"
+- **Type:** specify whether the pattern uses timetables or schedules. For more information on the differences between schedules and timetables, consult [Schedules](schedules.md)
+- **Direction:** specify whether the pattern is inbound or outbound. This corresponds to the `direction_id` field in GTFS. All trips associated with this pattern will be assigned the direction provided here.
+- **Editing schedules:**
 Click `Edit schedules` to begin creating or editing trips/frequencies for a trip pattern. You will be redirected to the Schedule Editor. For more information on creating schedules for a pattern, see [Trips](schedules).
+
+To add a pattern, select the `+ New pattern` button (highlighted in yellow).
+
+edit-pattern IMAGE HERE
+
+### Pattern editing tools:
+The pattern toolbar contains several helpful buttons to help with the pattern editing process.
+pattern-toolbar IMAGE HERE
+
+
+- **Zoom to pattern extents:**
+Clicking the search (🔍) button (in the top toolbar) with a pattern selected adjusts the map view to show the entire pattern you are editing.
+- **Duplicating pattern:**
+Used to create a similar, but different trip pattern. When duplicating of the active pattern, it's name becomes `[Pattern name] copy`.
+- **Reverse pattern:**
+To reverse the sequence of stops for a pattern, click the button with opposing arrows. Note: this is a destructive action and should usually only be used after duplicating a pattern.
+- **Delete pattern:** Deletes the active pattern. Note: deleted patterns cannot be recovered.
+
 
 ## Stop sequence
 ### Adding stops
-To begin constructing a pattern, click `+ Add stop`. You can then search for stops to add by name in the dropdown that appears or zoom into the map and add stops by clicking on them and clicking `+ Add stop`.
+To start creating a pattern, click on the `+ Add stop` button. From here, zoom in on the map and add stops by clicking on them and clicking the green plus symbol: `+`. 
 
-![adding stop](../../img/pattern-add-stop.png)
+Alternatively, scroll to the end of the stop sequence and select `+ Add stop by name` which will provide a dropdown of options to select from. From there, you'll have the option to add the stop to the end or to the beginning of the pattern.
 
+pattern-add-stop IMAGE HERE
 
 As you add stops, the pattern shape will update according to the street network. Keep selecting and adding stops in the sequence the route passes through them until the route is complete.
 
 ### Inserting stops mid-sequence
-If you realize you have missed a stop from the sequence it can be added in after the fact. When adding via the dropdown, stops can only be added to the end of the sequence; however, if you're adding via the map, you can choose where exactly to insert the stop.
+First, click the `From Stops` button so that Datatools knows the pattern can be regenerated by editing stops. If you realize that you have missed a stop from the sequence, it can be added after the fact. When adding via the dropdown, stops can only be added to the end of the sequence. However, if you're adding via the map, you can choose exactly where to insert the stop.
 
-![inserting stop](../../img/pattern-insert-stop.png)
+pattern-insert-stop IMAGE HERE
 
 ### Pattern stop toolbar
 The pattern stop toolbar can be found by clicking the pattern stop in the map view.
 
-![pattern stop toolbar](../../img/pattern-stop-toolbar.png)
-
-- **Save** - saves any edits to the travel and dwell times.
-- **Edit** - allows user to begin editing the stop's details (clicking the browser **Back** button will bring you back to editing the pattern). **Note**: be sure you have saved any pattern information before jumping to edit a stop.
-- **Remove** - removes the stop from the pattern.
-- **Add** - add the stop to the sequence at an additional location. This is useful for patterns that might visit the same stop more than once (e.g., loop routes).
+- **Save:** saves any edits to the travel and dwell times.
+- **Edit:** allows user to begin editing the stop's details (clicking the browser **Back** button will bring you back to editing the pattern). **Note**: be sure you have saved any pattern information before jumping to edit a stop.
+- **Remove:** removes the stop from the pattern.
+- **Add:** add the stop to the sequence at an additional location. This is useful for patterns that might visit the same stop more than once (e.g., loop routes).
 
 ### Changing the order of stops
-If a stop is in the wrong order, you can click and drag the stop from the list view into the correct sequence. The sequence displayed on the stop being dragged will only update after being dropped into place.
+First, click the `From Stops` button so that Datatools knows the pattern can be regenerated by editing stops. If a stop is in the wrong order, you can click and drag and drop the stop from the list view into the correct sequence.
 
-![pattern stop order](../../img/pattern-stop-order.png)
-
-**Note**: if inserting stops mid-sequence or changing the order of stops, the pattern shape will not update automatically. You must edit the pattern manually or click the `From Stops` button to regenerate the pattern shape from the stops.
+pattern-stop-order IMAGE HERE
 
 ### Removing stops
-Stops can be removed from the pattern by clicking the red 🗑 button found in the expanded stop card or by clicking the pattern stop on the map view.
-
+Stops can be removed from the pattern by clicking the red trash (🗑) icon found in the expanded stop card or by clicking the pattern stop on the map view.
 
 ## Stop timings
 ### Calculate timings
-The average speed for the route can be used to calculate all the time gaps between stops in one go. Once the stops have been added and the pattern alignment is drawn simply click **Calc. Times** and the time between stops will automatically fill in.
+The average speed for the route can be used to calculate all the time gaps between stops in one go. A few parameters can be specified before calculating times:
 
 - **Average speed** - average speed (in km/hr) to use when calculating timings
 - **Dwell time** – allows you to assign the same dwell time to all stops within a trip
  pattern
 
+Once the stops have been added and the pattern alignment is drawn simply click `Calc. times` and the time between stops will automatically fill in. 
+
+Another option is to click the `Normalize stop times` button above all the stops make all arrival and departure times on the pattern match a default travel time for each stop.
+
 ### Manual timings
-Individual timings for each pattern stop can also be assigned either through expanded the stop card in the list of stops or via clicking the pattern stop on the map view.
+Sspecific timings for each pattern stop can be set by either clicking on the stop on the map view or expanding the stop card in the list view. The two types of times that can be edited are: 
 
-- Travel time – the time it took to get from the previous station (should be 00:00 on the first stop of the sequence)
-- Dwell time – the time the vehicle rests at the stop
+- **Travel time:** – the time it took to get from the previous station (should be 00:00 on the first stop of the sequence)
+- **Dwell time:** – the time the vehicle rests at the stop
 
-## Tutorial Video
+### Tutorial Video: Editing/Creating Patterns
 The following video demonstrates how to create patterns as outlined above, in a step by step manner. 
 <iframe 
     width="560"
@@ -95,6 +96,7 @@ The following video demonstrates how to create patterns as outlined above, in a 
 </iframe>
 <!-- TODO: clear pattern stops feature -->
 <!-- - Clear pattern – removes stop sequence from pattern -->
+<br>
 
 ## Creating pattern alignments
 As mentioned above, pattern shapes will begin to draw automatically as stops are added in sequence. However, if you need to make adjustments to the auto-generated shape, clicking `Edit` will allow you to begin editing the shape segments between stops.
