@@ -150,7 +150,7 @@ components:
       title: Router Config
       updaters:
         $index:
-          defaultAgencyId: Default agency ID
+          feedId: Feed ID
           frequencySec: Frequency (in seconds)
           sourceType: Source type
           type: Type
@@ -539,7 +539,7 @@ components:
       title: Router Config
       updaters:
         $index:
-          defaultAgencyId: Default agency ID
+          feedId: Feed ID
           frequencySec: Frequency (in seconds)
           sourceType: Source type
           type: Type
@@ -625,7 +625,7 @@ components:
         title: Router Config
         updaters:
           $index:
-            defaultAgencyId: Default agency ID
+            feedId: Feed ID
             frequencySec: Frequency (in seconds)
             sourceType: Source type
             type: Type
@@ -897,7 +897,7 @@ components:
         title: Router Config
         updaters:
           $index:
-            defaultAgencyId: Default agency ID
+            feedId: Feed ID
             frequencySec: Frequency (in seconds)
             sourceType: Source type
             type: Type
