@@ -236,8 +236,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
         "peliasWebhookUrl": null,
         "pinnedDeploymentId": "mock-deployment-id-0",
         "routerConfig": Object {
-          "carDropoffTime": null,
-          "numItineraries": null,
+          "driveDistanceReluctance": null,
+          "itineraryFilters": Object {
+            "nonTransitGeneralizedCostLimit": null,
+          },
           "requestLogFile": null,
           "stairsReluctance": null,
           "updaters": null,
@@ -473,8 +475,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
           "peliasWebhookUrl": null,
           "pinnedDeploymentId": "mock-deployment-id-0",
           "routerConfig": Object {
-            "carDropoffTime": null,
-            "numItineraries": null,
+            "driveDistanceReluctance": null,
+            "itineraryFilters": Object {
+              "nonTransitGeneralizedCostLimit": null,
+            },
             "requestLogFile": null,
             "stairsReluctance": null,
             "updaters": null,
@@ -932,8 +936,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                     "peliasWebhookUrl": null,
                     "pinnedDeploymentId": "mock-deployment-id-0",
                     "routerConfig": Object {
-                      "carDropoffTime": null,
-                      "numItineraries": null,
+                      "driveDistanceReluctance": null,
+                      "itineraryFilters": Object {
+                        "nonTransitGeneralizedCostLimit": null,
+                      },
                       "requestLogFile": null,
                       "stairsReluctance": null,
                       "updaters": null,
@@ -1415,8 +1421,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "peliasWebhookUrl": null,
                                   "pinnedDeploymentId": "mock-deployment-id-0",
                                   "routerConfig": Object {
-                                    "carDropoffTime": null,
-                                    "numItineraries": null,
+                                    "driveDistanceReluctance": null,
+                                    "itineraryFilters": Object {
+                                      "nonTransitGeneralizedCostLimit": null,
+                                    },
                                     "requestLogFile": null,
                                     "stairsReluctance": null,
                                     "updaters": null,
@@ -1824,8 +1832,10 @@ exports[`lib > manager > DeploymentsPanel should render with the list of deploym
                                   "peliasWebhookUrl": null,
                                   "pinnedDeploymentId": "mock-deployment-id-0",
                                   "routerConfig": Object {
-                                    "carDropoffTime": null,
-                                    "numItineraries": null,
+                                    "driveDistanceReluctance": null,
+                                    "itineraryFilters": Object {
+                                      "nonTransitGeneralizedCostLimit": null,
+                                    },
                                     "requestLogFile": null,
                                     "stairsReluctance": null,
                                     "updaters": null,

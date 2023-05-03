@@ -109,8 +109,8 @@ export const mockProject = {
   pinnedDeploymentId: null,
   peliasWebhookUrl: null,
   routerConfig: {
-    carDropoffTime: null,
-    numItineraries: null,
+    driveDistanceReluctance: null,
+    itineraryFilters: {nonTransitGeneralizedCostLimit: null},
     requestLogFile: null,
     stairsReluctance: null,
     updaters: null,
