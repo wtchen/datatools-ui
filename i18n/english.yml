@@ -144,10 +144,13 @@ components:
     routerConfig:
       brandingUrlRoot: Branding URL Root
       carDropoffTime: Car Dropoff Time
+      driveDistanceReluctance: Drive Distance Reluctance
       numItineraries: '# of itineraries'
       requestLogFile: Request log file
       stairsReluctance: Stairs Reluctance
       title: Router Config
+      itineraryFilters:
+        nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
       updaters:
         $index:
           feedId: Feed ID
@@ -533,10 +536,13 @@ components:
     routerConfig:
       brandingUrlRoot: Branding URL Root
       carDropoffTime: Car Dropoff Time
+      driveDistanceReluctance: Drive Distance Reluctance
       numItineraries: '# of itineraries'
       requestLogFile: Request log file
       stairsReluctance: Stairs Reluctance
       title: Router Config
+      itineraryFilters:
+        nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
       updaters:
         $index:
           feedId: Feed ID
@@ -619,10 +625,13 @@ components:
       routerConfig:
         brandingUrlRoot: Branding URL Root
         carDropoffTime: Car Dropoff Time
+        driveDistanceReluctance: Drive Distance Reluctance
         numItineraries: '# of itineraries'
         requestLogFile: Request log file
         stairsReluctance: Stairs Reluctance
         title: Router Config
+        itineraryFilters:
+          nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
         updaters:
           $index:
             feedId: Feed ID
@@ -891,10 +900,13 @@ components:
       routerConfig:
         brandingUrlRoot: Branding URL Root
         carDropoffTime: Car Dropoff Time
+        driveDistanceReluctance: Drive Distance Reluctance
         numItineraries: '# of itineraries'
         requestLogFile: Request log file
         stairsReluctance: Stairs Reluctance
         title: Router Config
+        itineraryFilters:
+          nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
         updaters:
           $index:
             feedId: Feed ID
