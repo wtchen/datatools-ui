@@ -1,5 +1,10 @@
 # Routes
 
+## Terminology
+
+### Routes
+In GTFS, a route is a group of trips that follow the same sequence of stops, but may have different stop times. It's identified by a unique route_id and contains information such as the route name, type, and operating agency. For more information, view the [GTFS specification route reference](https://gtfs.org/schedule/reference/#routestxt)
+
 ## Editing/Creating Routes
 
 To begin editing routes, click the bus (🚍) button on the lefthand navigation bar.
