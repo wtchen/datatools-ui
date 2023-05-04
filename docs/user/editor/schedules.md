@@ -19,7 +19,12 @@ Timetable-based routes follow a fixed schedule in which the start time, end time
 Unlike the fixed nature of timetable-based trips, frequency-based trips run at regular intervals, with a fixed amount of time between consecutive trips. Frequency-based service offers more flexibility and easier adjustment to changing demand. Visit [GTFS specification frequency reference](https://gtfs.org/schedule/reference/#frequenciestxt) for more information.
 
 ## Editing/Creating Calendars
-To start editing a calendar, click on `+ Create first calendar` if this is the first calendar being added or click on an existing calendar to begin adding/editing its properties.
+To start editing a calendar, click on `+ Create first calendar` if this is the first calendar being added or click on an existing calendar to begin adding/editing its properties which include:
+
+- **Service ID:** Unique ID for the calendar
+- **Description:** Optional description for calendar (defaults to initial days of week specified)
+- **Days of service:** Days of week on which the service operates
+- **Start/End dates:** The first and last day of that service assigned to the calendar should run
 
 **Note: Be sure to click the save button (💾) after changes any changes to calendars are made.**
 
@@ -39,7 +44,20 @@ To start editing an exception, select any existing exception (if applicable) on 
 
 new-exception IMAGE HERE
 
-You will be able to add properties such as exception name, customize the exception type, add calendars to add, remove or swap and the time range the exception is applied to.
+You will be able to add or edit properties such as:
+
+- **Name:** Name of schedule exception
+- **Schedule to run:** The chosen schedule that should replace the regularly operating calendars (see below Exception types)
+- **Dates:** One or more dates to which the schedule exception applies
+
+### Exception types
+
+There are a number of built-in exception types (or available schedules to run) that allow for a high degree of flexibility when assigning special services.
+
+- **[Su, M, Tu, W, Th, F, Sa]** - replaces all service for the specified dates with the calendar(s) that operate on the chosen day of the week
+- **No service** - indicates that no service of any kind should operated on the specified dates
+- **Custom** - replace all service for the specified dates with trips operating on the one or more calendars specified with this option. E.g., run only `holiday` and `holiday-plus` calendar on Thanksgiving Day.
+- **Swap** - similar to the **Custom** option, however this option allows for removing one or more specific calendars for the specified dates and/or adding one or more specific calendars. This option is especially useful if only certain routes have altered service on specific dates. For example, a user could remove the `weekday-route-1` calendar and add the `special-route-1` calendar.
 
 **Note: Be sure to click the save button (💾) after changes any changes to exceptions are made.**
 ### Tutorial Video: Creating/Editing Exceptions
@@ -59,6 +77,8 @@ To begin editing a timetable, click the `Edit schedules` button in the top left 
 (Alternatively, if you are in the `Routes` tab (see [Routes](/user/editor/routes/)), select an existing route or route click the `New route` button --> select the `Trip patterns` tab --> select a pattern --> select `Use timetables` in the 'Type:` dropdown --> select the `Edit schedules` button)
 
 edit-schedules IMAGE HERE
+
+**Note**: At least one route, pattern and calendar must have been created to edit schedules.
 
 The selectors located at the top of the page allow users to navigate between calendars for a specific pattern or switch between patterns for a route or multiple routes within the feed. Variations of route, pattern and the schedule can be selected to generate the desired timetable.
 

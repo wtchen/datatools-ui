@@ -15,10 +15,9 @@ nav:
 - 'GTFS Editor':
   - Introduction: 'user/editor/introduction.md'
   - Stops: 'user/editor/stops.md'
-  - Calendars: 'user/editor/calendars.md'
   - Routes: 'user/editor/routes.md'
   - Patterns: 'user/editor/patterns.md'
-  - Schedules: 'user/editor/schedules.md'
+  - Schedules/Calendars: 'user/editor/schedules.md'
   - Fares: 'user/editor/fares.md'
 - Deploying to OTP:
   - Overview: user/otp-deployment.md
