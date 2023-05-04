@@ -79,10 +79,10 @@ Once the stops have been added and the pattern alignment is drawn simply click `
 Another option is to click the `Normalize stop times` button above all the stops make all arrival and departure times on the pattern match a default travel time for each stop.
 
 ### Manual timings
-Sspecific timings for each pattern stop can be set by either clicking on the stop on the map view or expanding the stop card in the list view. The two types of times that can be edited are: 
+Specific timings for each pattern stop can be set by either clicking on the stop on the map view or expanding the stop card in the list view. The two types of times that can be edited are: 
 
-- **Travel time:** – the time it took to get from the previous station (should be 00:00 on the first stop of the sequence)
-- **Dwell time:** – the time the vehicle rests at the stop
+- **Travel time:** the time it took to get from the previous station (should be 00:00 on the first stop of the sequence)
+- **Dwell time:** the time the vehicle rests at the stop
 
 ### Tutorial Video: Editing/Creating Patterns
 The following video demonstrates how to create patterns as outlined above, in a step by step manner. 
@@ -98,11 +98,11 @@ The following video demonstrates how to create patterns as outlined above, in a 
 <!-- - Clear pattern – removes stop sequence from pattern -->
 <br>
 
-## Creating pattern alignments
-As mentioned above, pattern shapes will begin to draw automatically as stops are added in sequence. However, if you need to make adjustments to the auto-generated shape, clicking `Edit` will allow you to begin editing the shape segments between stops.
+## Editing/Creating Pattern Geometry
+As mentioned above, pattern shapes will begin to draw automatically as stops are added in sequence. However, if you need to make adjustments to the auto-generated shape, clicking `Edit pattern geometry` will allow you to begin editing the shape segments between stops.
 
 ### Basic editing
-Once editing a pattern shape, there are a few behaviors you should be aware of:
+While editing a pattern shape, there are a few behaviors you should be aware of:
 
 - Dragging a handle (✕) will create a new alignment between stops or surrounding handles
 - Clicking the pattern will add additional handles to the segment
@@ -110,39 +110,39 @@ Once editing a pattern shape, there are a few behaviors you should be aware of:
 
 ### Shape toolbar
 #### Before editing
-- **Edit** - begin editing the pattern shape
-- **Delete** - delete the pattern shape
-- **Create** - creates alignment that follows streets from pattern stops
+- **Edit:** Begin editing the pattern shape
+- **Delete:** Delete the pattern shape
+- **Create:** Creates alignment that follows streets from pattern stops
 
 #### While editing
-- **Save** - Save changes to pattern shape and leave editing mode.
-- **Undo** - Undo last change.
-- **Cancel** - Cancel edits and leave editing mode.
+- **Save:** Save changes to pattern shape and leave editing mode
+- **Undo:** Undo last change
+- **Cancel:** Cancel edits and leave editing mode
 
 ### Edit settings
-- **Snap to streets** - snaps segments between handles and stops to streets. If unchecked, segments will form straight lines between handles and stops (e.g., for drawing shapes for rail lines).
-- **Hide stop handles** - keeps shape segments snapped to stops. If unchecked, stop handles will become draggable. In most cases, this setting should remain checked.
-- **Hide inactive segments** - toggles whether to show segments that are not currently being edited. 
-- **Show stops** - toggles whether stops are visible because sometimes stop markers can get in the way when trying to draw shapes.
-- **Show tooltips** - toggles whether to show tips when hovering over a segment, e.g. "Click to edit segment" or "Click to add control point". 
+- **Snap to streets:** Snaps segments between handles and stops to streets. If unchecked, segments will form straight lines between handles and stops (e.g., for drawing shapes for rail lines).
+- **Hide stop handles:** Keeps shape segments snapped to stops. If unchecked, stop handles will become draggable. In most cases, this setting should remain checked.
+- **Hide inactive segments:** Toggles whether to show segments that are not currently being edited. 
+- **Show stops** Toggles whether stops are visible because sometimes stop markers can get in the way when trying to draw shapes.
+- **Show tooltips:** Toggles whether to show tips when hovering over a segment, e.g. "Click to edit segment" or "Click to add control point". 
 
-![pattern shape panel](../../img/pattern-shape-panel.png)
+pattern-shape-panel IMAGE HERE
 
 ### Editing modes
 
 There are a few different editing modes that allow for the quick and easy creation of pattern shapes:
 
-- **Drag handles** (default) - drag handles to change the pattern segment between stops. This mode is also in effect during the advanced modes listed below.
-- **Add stop at click** - at each click on the map, a new stop is generated and the pattern is extended to this stop.
-- **Add stop at interval** - at each click on the map, stops are generated along the auto-generated pattern extended to the map click at the user-defined spacing interval from 100 to 2000 meters.
-- **Add stop at intersection** (experimental, not available in all regions) - at each click on the map, stops are generated along the auto-generated pattern extended to the map click according to the user-defined parameters:
-    - **Offset from intersection** - distance the stop should be placed from the intersection
-    - **Before/after** - whether stop should be placed before or after intersection
-    - **Every *n* intersections** - the number of intersections at which each new stop should be placed
+- **Drag handles:** (default) Drag handles to change the pattern segment between stops. This mode is also in effect during the advanced modes listed below.
+- **Add stop at click:** At each click on the map, a new stop is generated and the pattern is extended to this stop.
+- **Add stop at interval:** At each click on the map, stops are generated along the auto-generated pattern extended to the map click at the user-defined spacing interval from 100 to 2000 meters.
+- **Add stop at intersection:** (experimental, not available in all regions) - at each click on the map, stops are generated along the auto-generated pattern extended to the map click according to the user-defined parameters:
+    - **Offset from intersection:** Distance the stop should be placed from the intersection
+    - **Before/after:** Whether stop should be placed before or after intersection
+    - **Every *n* intersections:** The number of intersections at which each new stop should be placed
 
 **Note**: the last three advanced editing modes should only be used when creating routes in new areas where stops don't already exist.
 
-## Tutorial Video: Editing Patterns 
+### Tutorial Video: Editing Pattern Geometry 
 The following video demonstrates the steps for editing patterns, as outlined above. 
 <iframe 
     width="560" 
