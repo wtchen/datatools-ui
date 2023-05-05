@@ -200,8 +200,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
         "peliasWebhookUrl": null,
         "pinnedDeploymentId": null,
         "routerConfig": Object {
-          "carDropoffTime": null,
-          "numItineraries": null,
+          "driveDistanceReluctance": null,
+          "itineraryFilters": Object {
+            "nonTransitGeneralizedCostLimit": null,
+          },
           "requestLogFile": null,
           "stairsReluctance": null,
           "updaters": null,
@@ -500,8 +502,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
           "peliasWebhookUrl": null,
           "pinnedDeploymentId": null,
           "routerConfig": Object {
-            "carDropoffTime": null,
-            "numItineraries": null,
+            "driveDistanceReluctance": null,
+            "itineraryFilters": Object {
+              "nonTransitGeneralizedCostLimit": null,
+            },
             "requestLogFile": null,
             "stairsReluctance": null,
             "updaters": null,
@@ -794,8 +798,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           "peliasWebhookUrl": null,
                           "pinnedDeploymentId": null,
                           "routerConfig": Object {
-                            "carDropoffTime": null,
-                            "numItineraries": null,
+                            "driveDistanceReluctance": null,
+                            "itineraryFilters": Object {
+                              "nonTransitGeneralizedCostLimit": null,
+                            },
                             "requestLogFile": null,
                             "stairsReluctance": null,
                             "updaters": null,
@@ -1021,8 +1027,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                             "peliasWebhookUrl": null,
                             "pinnedDeploymentId": null,
                             "routerConfig": Object {
-                              "carDropoffTime": null,
-                              "numItineraries": null,
+                              "driveDistanceReluctance": null,
+                              "itineraryFilters": Object {
+                                "nonTransitGeneralizedCostLimit": null,
+                              },
                               "requestLogFile": null,
                               "stairsReluctance": null,
                               "updaters": null,
@@ -3147,8 +3155,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                           "peliasWebhookUrl": null,
                           "pinnedDeploymentId": null,
                           "routerConfig": Object {
-                            "carDropoffTime": null,
-                            "numItineraries": null,
+                            "driveDistanceReluctance": null,
+                            "itineraryFilters": Object {
+                              "nonTransitGeneralizedCostLimit": null,
+                            },
                             "requestLogFile": null,
                             "stairsReluctance": null,
                             "updaters": null,
@@ -3420,8 +3430,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                             "peliasWebhookUrl": null,
                             "pinnedDeploymentId": null,
                             "routerConfig": Object {
-                              "carDropoffTime": null,
-                              "numItineraries": null,
+                              "driveDistanceReluctance": null,
+                              "itineraryFilters": Object {
+                                "nonTransitGeneralizedCostLimit": null,
+                              },
                               "requestLogFile": null,
                               "stairsReluctance": null,
                               "updaters": null,
@@ -3746,8 +3758,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                   "peliasWebhookUrl": null,
                                   "pinnedDeploymentId": null,
                                   "routerConfig": Object {
-                                    "carDropoffTime": null,
-                                    "numItineraries": null,
+                                    "driveDistanceReluctance": null,
+                                    "itineraryFilters": Object {
+                                      "nonTransitGeneralizedCostLimit": null,
+                                    },
                                     "requestLogFile": null,
                                     "stairsReluctance": null,
                                     "updaters": null,
@@ -4146,8 +4160,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                                 "peliasWebhookUrl": null,
                                                 "pinnedDeploymentId": null,
                                                 "routerConfig": Object {
-                                                  "carDropoffTime": null,
-                                                  "numItineraries": null,
+                                                  "driveDistanceReluctance": null,
+                                                  "itineraryFilters": Object {
+                                                    "nonTransitGeneralizedCostLimit": null,
+                                                  },
                                                   "requestLogFile": null,
                                                   "stairsReluctance": null,
                                                   "updaters": null,
@@ -4564,8 +4580,10 @@ exports[`lib > manager > FeedSourceTable should render with a project with feeds
                                   "peliasWebhookUrl": null,
                                   "pinnedDeploymentId": null,
                                   "routerConfig": Object {
-                                    "carDropoffTime": null,
-                                    "numItineraries": null,
+                                    "driveDistanceReluctance": null,
+                                    "itineraryFilters": Object {
+                                      "nonTransitGeneralizedCostLimit": null,
+                                    },
                                     "requestLogFile": null,
                                     "stairsReluctance": null,
                                     "updaters": null,

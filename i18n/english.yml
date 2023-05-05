@@ -144,13 +144,16 @@ components:
     routerConfig:
       brandingUrlRoot: Branding URL Root
       carDropoffTime: Car Dropoff Time
+      driveDistanceReluctance: Drive Distance Reluctance
       numItineraries: '# of itineraries'
       requestLogFile: Request log file
       stairsReluctance: Stairs Reluctance
       title: Router Config
+      itineraryFilters:
+        nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
       updaters:
         $index:
-          defaultAgencyId: Default agency ID
+          feedId: Feed ID
           frequencySec: Frequency (in seconds)
           sourceType: Source type
           type: Type
@@ -533,13 +536,16 @@ components:
     routerConfig:
       brandingUrlRoot: Branding URL Root
       carDropoffTime: Car Dropoff Time
+      driveDistanceReluctance: Drive Distance Reluctance
       numItineraries: '# of itineraries'
       requestLogFile: Request log file
       stairsReluctance: Stairs Reluctance
       title: Router Config
+      itineraryFilters:
+        nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
       updaters:
         $index:
-          defaultAgencyId: Default agency ID
+          feedId: Feed ID
           frequencySec: Frequency (in seconds)
           sourceType: Source type
           type: Type
@@ -619,13 +625,16 @@ components:
       routerConfig:
         brandingUrlRoot: Branding URL Root
         carDropoffTime: Car Dropoff Time
+        driveDistanceReluctance: Drive Distance Reluctance
         numItineraries: '# of itineraries'
         requestLogFile: Request log file
         stairsReluctance: Stairs Reluctance
         title: Router Config
+        itineraryFilters:
+          nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
         updaters:
           $index:
-            defaultAgencyId: Default agency ID
+            feedId: Feed ID
             frequencySec: Frequency (in seconds)
             sourceType: Source type
             type: Type
@@ -891,13 +900,16 @@ components:
       routerConfig:
         brandingUrlRoot: Branding URL Root
         carDropoffTime: Car Dropoff Time
+        driveDistanceReluctance: Drive Distance Reluctance
         numItineraries: '# of itineraries'
         requestLogFile: Request log file
         stairsReluctance: Stairs Reluctance
         title: Router Config
+        itineraryFilters:
+          nonTransitGeneralizedCostLimit: Non-Transit Generalized Cost Limit
         updaters:
           $index:
-            defaultAgencyId: Default agency ID
+            feedId: Feed ID
             frequencySec: Frequency (in seconds)
             sourceType: Source type
             type: Type
