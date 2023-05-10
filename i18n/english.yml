@@ -467,6 +467,10 @@ components:
       filePlaceholder: Choose file/table to normalize
       label: Normalize field
       name: Normalize field transformation
+    PreserveCustomFieldsTransformation:
+      filePlaceholder: Choose the file/table with custom field
+      label: Preserve fields in %tablePlaceholder% from %filePlaceholder%
+      name: Preserve custom fields transformation
     ReplaceFileFromStringTransformation:
       filePlaceholder: Choose the file/table to replace
       label: Replace %tablePlaceholder% from %filePlaceholder%
