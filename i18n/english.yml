@@ -90,6 +90,12 @@ components:
     missingNameAlert: Must give snapshot a valid name!
     ok: OK
     title: Create a new snapshot
+  CustomCSVForm:
+    addCsvData: "Add the CSV data to add to/replace in the incoming GTFS:"
+    addCustomCsvData: Add the custom CSV data.
+    numLines: "%numLines% lines."
+    saveCsv: Save CSV
+    saveCsvAndFileName: Save CSV and file name
   DatatoolsNavbar:
     account: My Account
     alerts: Alerts
@@ -453,6 +459,9 @@ components:
     properties: properties
     warning: Warning!
   FeedTransformationDescriptions:
+    AddCustomFileTransformation: 
+      label: Add custom file in GTFS.
+      name: Add custom file transformation
     general:
       fileDefined: below text
       filePlaceholder: '[choose file]'
