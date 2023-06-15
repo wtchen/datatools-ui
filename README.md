@@ -1,6 +1,6 @@
 # datatools-ui
 
-[![Join the chat at https://gitter.im/transit-data-tools/datatools-ui](https://badges.gitter.im/repo.png)](https://gitter.im/transit-data-tools/datatools-ui)
+[![Join the chat at https://matrix.to/#/#transit-data-tools:gitter.im](https://badges.gitter.im/repo.png)](https://matrix.to/#/#transit-data-tools:gitter.im)
 
 The core application for IBI Group's TRANSIT-Data-Tools suite. This application provides GTFS editing, management, validation, and deployment to OpenTripPlanner.
 
