@@ -492,6 +492,13 @@ components:
       tablePlaceholder: '[Tabelle auswählen]'
       version: Version
       versionPlaceholder: '[Version auswählen]'
+    AddCustomFileTransformation:
+      label: Add custom file in GTFS.
+      name: Add custom file transformation
+    PreserveCustomFieldsTransformation:
+      filePlaceholder: Choose the file/table with custom field
+      label: Preserve fields in %tablePlaceholder% from %filePlaceholder%
+      name: Preserve custom fields transformation
   FeedVersionNavigator:
     confirmDelete: Sind Sie sicher, dass sie diese Version endgültig löschen möchten?
     confirmLoad: Dies wird alle aktiven GTFS Editor Daten dieser Feed-Quelle mit den
@@ -1430,3 +1437,49 @@ components:
   WrapComponentInAuthStrategy:
     adminTestFailed: Sie haben versucht, eine eingeschränkt sichtbare Seite aufzurufen,
       verfügen jedoch nicht über die erforderlichen Rechte.
+  CustomCSVForm:
+    addCsvData: "Add the CSV data to add to/replace in the incoming GTFS:"
+    addCsvWithCustomFields: "Add the CSV data with custom fields to preserve in the
+      final output."
+    addCustomCsvData: Add the custom CSV data.
+    numLines: "%numLines% lines."
+    saveCsv: Save CSV
+    saveCsvAndFileName: Save CSV and file name
+  FeedTransformationErrors:
+    csvMissingName: Custom CSV must have a name.
+    undefinedCSVData: CSV data must be defined.
+    undefinedTable: Table must be defined
+  PatternStopCard:
+    PatternStopContents:
+      defaultDwellTime: Default dwell time
+      defaultTravelTime: Default travel time
+      firstStopTravelTime: Travel time for first stop must be zero
+      stopHeadsignPlaceholder: Outbound
+      stopHeadsignText: Stop headsign
+      stopHeadsignTitle: Headsign that overrides trip headsign between stops.
+      timepoint: Timepoint?
+      travelTimeHelp: Define the default time it takes to travel to this stop from
+        the previous stop.
+    PickupDropOffSelect:
+      available: Available (0)
+      continuousDropOffTitle: Indicates whether a rider can alight from the transit
+        vehicle at any point along the vehicle's travel path.
+      continuousPickupTitle: Indicates whether a rider can board the transit vehicle
+        anywhere along the vehicle's travel path.
+      continuousServiceDefault: (Inherit from route)
+      dropOffTitle: Define the dropff method/availability at this stop.
+      mustCoordinate: Must coordinate with driver to arrange (3)
+      mustPhoneAgency: Must phone agency to arrange (2)
+      notAvailable: Not available (1)
+      pickupDropOffDefault: (Default - Available)
+      pickupTitle: Define the pickup method/availability at this stop.
+  TripSeriesModal:
+    close: Close
+    createTripSeriesBody: Enter the start and end time for the trip series (24 hour
+      time) and headway between trips. Click generate to create the series of trips.
+    createTripSeriesQuestion: Create a series of trips
+    disabledTooltip: There is an issue with the input data
+    endTime: "End Time:"
+    generateTrips: Generate Trips
+    headway: "Headway:"
+    startTime: "Start Time:"
