@@ -89,6 +89,13 @@ components:
       label: Password
       placeholder: Enter password for new user
     title: Create User
+  CustomCSVForm:
+    addCsvData: "Add the CSV data to add to/replace in the incoming GTFS:"
+    addCsvWithCustomFields: "Add the CSV data with custom fields to preserve in the final output."
+    addCustomCsvData: Add the custom CSV data.
+    numLines: "%numLines% lines."
+    saveCsv: Save CSV
+    saveCsvAndFileName: Save CSV and file name
   DatatoolsNavbar:
     account: Moje konto
     alerts: Alerty
