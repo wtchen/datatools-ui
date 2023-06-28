@@ -7,6 +7,10 @@ components:
     errorWithStatus: Error (%status%) making %method% request to %url%
     networkError: Network error (%status%)!\n\n(%method% request on %url%)
     noFile: No file to upload!
+  AddCustomFile: 
+    addCustomCsvData: Add the custom CSV data.
+    customFileName: Custom file name
+    saveCsvAndFileName: Save CSV and file name
   AdminPage:
     applicationLogs: Application logs
     backToDashboard: Back to dashboard
@@ -91,12 +95,7 @@ components:
     ok: OK
     title: Create a new snapshot
   CustomCSVForm:
-    addCsvData: "Add the CSV data to add to/replace in the incoming GTFS:"
-    addCsvWithCustomFields: "Add the CSV data with custom fields to preserve in the final output."
-    addCustomCsvData: Add the custom CSV data.
     numLines: "%numLines% lines."
-    saveCsv: Save CSV
-    saveCsvAndFileName: Save CSV and file name
   DatatoolsNavbar:
     account: My Account
     alerts: Alerts
@@ -876,6 +875,9 @@ components:
     edit-alert: Edit GTFS-RT Alerts
     edit-gtfs: Edit GTFS Feeds
     manage-feed: Manage Feed Configuration
+  PreserveCustomFields: 
+    addCsvWithCustomFields: "Add the CSV data with custom fields to preserve in the final output."
+    saveCsv: Save CSV
   ProjectAccessSettings:
     admin: Admin
     cannotFetchFeeds: Cannot fetch feeds
@@ -1131,6 +1133,9 @@ components:
     viewDashboard: View dashboard
   RegionSearch:
     placeholder: Search for regions or agencies
+  ReplaceFileFromString:
+    addCsvData: "Add the CSV data to add to/replace in the incoming GTFS:"
+    saveCsv: Save CSV
   ResultTable:
     affectedIds: Affected ID(s)
     description: Description
