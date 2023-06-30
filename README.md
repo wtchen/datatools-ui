@@ -1,6 +1,8 @@
 # datatools-ui
 
-The core application for IBI Group's transit Data Tools suite. This application provides GTFS editing, management, validation, and deployment to OpenTripPlanner.
+[![Join the chat at https://matrix.to/#/#transit-data-tools:gitter.im](https://badges.gitter.im/repo.png)](https://matrix.to/#/#transit-data-tools:gitter.im)
+
+The core application for IBI Group's TRANSIT-Data-Tools suite. This application provides GTFS editing, management, validation, and deployment to OpenTripPlanner.
 
 ## Configuration
 
@@ -11,6 +13,10 @@ This repository serves as the front end UI for the Data Manager application. It 
 View the [latest release documentation](http://data-tools-docs.ibi-transit.com/en/latest/) at ReadTheDocs for more info on deployment and development as well as a user guide.
 
 Note: `dev` branch docs (which refer to the default `branch` and are more up-to-date and accurate for most users) can be found [here](http://data-tools-docs.ibi-transit.com/en/dev/).
+
+## Getting in touch
+
+We have a Gitter [space](https://matrix.to/#/#transit-data-tools:gitter.im) for the full TRANSIT-Data-Tools project where you can post questions and comments. 
 
 ## Shoutouts 🙏
 
